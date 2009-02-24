@@ -37,7 +37,7 @@ public interface ApplicationAuthenticationService extends SafeOnlineService {
      * @return the application Id of the authentication application.
      * @throws ApplicationNotFoundException
      */
-    String authenticate(X509Certificate certificate)
+    long authenticate(X509Certificate certificate)
             throws ApplicationNotFoundException;
 
     /**
@@ -48,7 +48,18 @@ public interface ApplicationAuthenticationService extends SafeOnlineService {
      * @return the X509 application certificates.
      * @throws ApplicationNotFoundException
      */
-    List<X509Certificate> getCertificates(String applicationId)
+    List<X509Certificate> getCertificates(long applicationId)
+            throws ApplicationNotFoundException;
+
+    /**
+     * Gives back the application X509 certificates given the application name.
+     * 
+     * @param applicationName
+     *            the application name.
+     * @return the X509 application certificates.
+     * @throws ApplicationNotFoundException
+     */
+    List<X509Certificate> getCertificates(String applicationName)
             throws ApplicationNotFoundException;
 
     /**
@@ -60,6 +71,6 @@ public interface ApplicationAuthenticationService extends SafeOnlineService {
      * @return <code>true</code> if we can skip the message integrity check.
      * @throws ApplicationNotFoundException
      */
-    boolean skipMessageIntegrityCheck(String applicationId)
+    boolean skipMessageIntegrityCheck(long applicationId)
             throws ApplicationNotFoundException;
 }

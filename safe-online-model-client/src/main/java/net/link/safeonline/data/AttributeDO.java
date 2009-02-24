@@ -423,8 +423,8 @@ public class AttributeDO implements Serializable, Cloneable {
     @Override
     public AttributeDO clone() {
 
-        AttributeDO attribute = new AttributeDO(name, type, multivalued, index, humanReadableName,
-                description, editable, dataMining, stringValue, booleanValue);
+        AttributeDO attribute = new AttributeDO(name, type, multivalued, index, humanReadableName, description, editable, dataMining,
+                stringValue, booleanValue);
         attribute.integerValue = integerValue;
         attribute.doubleValue = doubleValue;
         attribute.dateValue = dateValue;
@@ -434,9 +434,8 @@ public class AttributeDO implements Serializable, Cloneable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", name).append("multi-valued",
-                multivalued).append("index", index).append("string-value", stringValue).append("integer-value",
-                integerValue).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", name).append("multi-valued", multivalued).append(
+                "index", index).append("string-value", stringValue).append("integer-value", integerValue).toString();
     }
 
     /**
@@ -450,23 +449,23 @@ public class AttributeDO implements Serializable, Cloneable {
 
         switch (attributeType.getType()) {
             case STRING:
-                targetAttribute.setStringValue(stringValue);
-            break;
+            case COMPOUNDED:
+                targetAttribute.setValue(stringValue);
+                return;
             case BOOLEAN:
-                targetAttribute.setBooleanValue(booleanValue);
-            break;
+                targetAttribute.setValue(booleanValue);
+                return;
             case INTEGER:
-                targetAttribute.setIntegerValue(integerValue);
-            break;
+                targetAttribute.setValue(integerValue);
+                return;
             case DOUBLE:
-                targetAttribute.setDoubleValue(doubleValue);
-            break;
+                targetAttribute.setValue(doubleValue);
+                return;
             case DATE:
-                targetAttribute.setDateValue(dateValue);
-            break;
-            default:
-                throw new EJBException("datatype not supported: " + type);
+                targetAttribute.setValue(dateValue);
+                return;
         }
+        throw new EJBException("datatype not supported: " + type);
     }
 
 }

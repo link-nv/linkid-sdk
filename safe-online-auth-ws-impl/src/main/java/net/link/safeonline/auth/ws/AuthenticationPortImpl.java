@@ -9,7 +9,7 @@ package net.link.safeonline.auth.ws;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
-import java.util.Calendar;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -27,6 +27,9 @@ import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -61,6 +64,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
@@ -70,13 +74,16 @@ import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
+import net.link.safeonline.saml.common.Saml2Util;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.auth.DataType;
 import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
@@ -90,16 +97,9 @@ import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
-import oasis.names.tc.saml._2_0.assertion.AudienceRestrictionType;
-import oasis.names.tc.saml._2_0.assertion.AuthnContextType;
-import oasis.names.tc.saml._2_0.assertion.AuthnStatementType;
-import oasis.names.tc.saml._2_0.assertion.ConditionsType;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
-import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
 import oasis.names.tc.saml._2_0.assertion.StatementAbstractType;
-import oasis.names.tc.saml._2_0.assertion.SubjectConfirmationDataType;
 import oasis.names.tc.saml._2_0.assertion.SubjectConfirmationType;
-import oasis.names.tc.saml._2_0.assertion.SubjectType;
 import oasis.names.tc.saml._2_0.protocol.StatusCodeType;
 import oasis.names.tc.saml._2_0.protocol.StatusType;
 
@@ -108,9 +108,16 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.security.SimplePrincipal;
 import org.jboss.security.auth.callback.UsernamePasswordHandler;
+import org.joda.time.DateTime;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.xml.Configuration;
+import org.opensaml.xml.io.Marshaller;
+import org.opensaml.xml.io.MarshallerFactory;
+import org.opensaml.xml.io.MarshallingException;
 import org.w3._2000._09.xmldsig_.KeyInfoType;
+import org.w3c.dom.Element;
 
 import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.developer.Stateful;
@@ -144,6 +151,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     private SubjectEntity                                       authenticatedSubject;
 
     private DeviceEntity                                        authenticatedDevice;
+
+    private ApplicationEntity                                   application;
 
     private String                                              applicationName;
 
@@ -186,7 +195,6 @@ public class AuthenticationPortImpl implements AuthenticationPort {
          */
         public void onTimeout(AuthenticationPort timedOutObject, StatefulWebServiceManager<AuthenticationPort> serviceManager) {
 
-            // XXX: notify stateful device ws of timeout ?
         }
 
     }
@@ -206,8 +214,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         }
 
         language = request.getLanguage();
-        applicationName = request.getApplicationId();
         keyInfo = request.getKeyInfo();
+        applicationName = request.getApplicationId();
 
         // proxy request to specified device
         WSAuthenticationResponseType response;
@@ -368,15 +376,16 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 // lookup application's usage agreement
                 UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING,
                         UsageAgreementService.class);
-                String usageAgreement = usageAgreementService.getUsageAgreementText(applicationName, language);
+                String usageAgreement = usageAgreementService.getUsageAgreementText(application.getId(), language);
                 if (null == usageAgreement) {
                     // check is subscription is needed
                     SubscriptionService subscriptionService = EjbUtils.getEJB(SubscriptionService.JNDI_BINDING, SubscriptionService.class);
-                    if (!subscriptionService.isSubscribed(applicationName)) {
+                    if (!subscriptionService.isSubscribed(application.getId())) {
                         usageAgreement = "";
                     }
                 }
@@ -422,20 +431,21 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 // confirm application usage agreement / subscribe
                 UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING,
                         UsageAgreementService.class);
                 SubscriptionService subscriptionService = EjbUtils.getEJB(SubscriptionService.JNDI_BINDING, SubscriptionService.class);
 
-                if (!subscriptionService.isSubscribed(applicationName)) {
-                    LOG.debug("subscribe to application " + applicationName);
-                    subscriptionService.subscribe(applicationName);
+                if (!subscriptionService.isSubscribed(application.getId())) {
+                    LOG.debug("subscribe to application " + application.getName());
+                    subscriptionService.subscribe(application.getId());
                 }
 
-                if (usageAgreementService.requiresUsageAgreementAcceptation(applicationName, language)) {
-                    LOG.debug("confirm usage agreement for application " + applicationName);
-                    usageAgreementService.confirmUsageAgreementVersion(applicationName);
+                if (usageAgreementService.requiresUsageAgreementAcceptation(application.getId(), language)) {
+                    LOG.debug("confirm usage agreement for application " + application.getName());
+                    usageAgreementService.confirmUsageAgreementVersion(application.getId());
                 }
             } catch (ApplicationNotFoundException e) {
                 throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
@@ -485,10 +495,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(applicationName, new Locale(language));
+                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(application.getId(), new Locale(
+                        language));
                 List<AttributeType> confirmationAttributes = getAttributes(confirmationList, false);
                 AssertionType attributeAssertion = getAttributeAssertion(confirmationAttributes);
                 response.getAssertion().add(attributeAssertion);
@@ -536,11 +548,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 // confirm application identity
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                identityService.confirmIdentity(applicationName);
+                identityService.confirmIdentity(application.getId());
 
             } catch (SubscriptionNotFoundException e) {
                 throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
@@ -588,9 +601,11 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
+
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(applicationName, new Locale(language));
+                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(application.getId(), new Locale(language));
 
                 // first check if all there are non-user-editable attributes missing, if so user cannot authenticate.
                 String unavailableAttributes = "";
@@ -604,7 +619,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                             + unavailableAttributes + "] is(are) unavailable");
 
                 // include optional attributes
-                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(applicationName, new Locale(language));
+                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(application.getId(), new Locale(language));
 
                 List<AttributeType> missingAttributes = getAttributes(missingAttributeList, false);
                 List<AttributeType> optionalAttributes = getAttributes(optionalAttributeList, true);
@@ -753,7 +768,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         response.setUserId(applicationUserId);
         response.setDeviceName(authenticatedDevice.getName());
-        AssertionType assertion = generateAssertion(id, applicationUserId);
+        // AssertionType assertion = generateAssertion(id, applicationUserId);
+        AssertionType assertion = getAssertion(id, applicationUserId);
         response.getAssertion().add(assertion);
         manager.unexport(this);
     }
@@ -772,6 +788,25 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             throw new WSAuthenticationException(WSAuthenticationErrorCode.DEVICE_NOT_FOUND, e.getMessage());
         }
         return device;
+    }
+
+    private void getApplication()
+            throws ApplicationNotFoundException {
+
+        LOG.debug("applicationName = " + applicationName);
+
+        if (null == applicationName)
+            throw new ApplicationNotFoundException();
+
+        if (null == application) {
+            LOG.debug("a");
+            ApplicationService applicationService = EjbUtils.getEJB(ApplicationService.JNDI_BINDING, ApplicationService.class);
+            LOG.debug("b");
+            application = applicationService.getApplication(applicationName);
+            LOG.debug("c");
+        }
+
+        LOG.debug("application = " + application);
     }
 
     /**
@@ -922,7 +957,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         DevicePolicyService devicePolicyService = EjbUtils.getEJB(DevicePolicyService.JNDI_BINDING, DevicePolicyService.class);
         List<DeviceEntity> devicePolicy;
         try {
-            devicePolicy = devicePolicyService.getDevicePolicy(applicationName, null);
+            getApplication();
+            if (null == application) {
+                LOG.debug("que");
+            }
+
+            devicePolicy = devicePolicyService.getDevicePolicy(application.getId(), null);
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
@@ -955,9 +995,11 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING, UsageAgreementService.class);
 
         try {
-            subscriptionRequired = !subscriptionService.isSubscribed(applicationName);
+            getApplication();
+
+            subscriptionRequired = !subscriptionService.isSubscribed(application.getId());
             if (!subscriptionRequired) {
-                subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(applicationName, language);
+                subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(application.getId(), language);
             }
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
@@ -977,7 +1019,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
         try {
-            confirmationRequired = identityService.isConfirmationRequired(applicationName);
+            getApplication();
+
+            confirmationRequired = identityService.isConfirmationRequired(application.getId());
         } catch (SubscriptionNotFoundException e) {
             LOG.error("subscription not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
@@ -1000,7 +1044,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
         try {
-            hasMissingAttributes = identityService.hasMissingAttributes(applicationName);
+            getApplication();
+
+            hasMissingAttributes = identityService.hasMissingAttributes(application.getId());
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
@@ -1110,7 +1156,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         UserIdMappingService userIdMappingService = EjbUtils.getEJB(UserIdMappingService.JNDI_BINDING, UserIdMappingService.class);
 
         try {
-            return userIdMappingService.getApplicationUserId(applicationName, authenticatedSubject.getUserId());
+            getApplication();
+
+            return userIdMappingService.getApplicationUserId(application.getId(), authenticatedSubject.getUserId());
         } catch (SubscriptionNotFoundException e) {
             LOG.error("subscription not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
@@ -1166,75 +1214,54 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         return assertion;
     }
 
-    /**
-     * Generate SAML v2.0 assertion.
-     * 
-     * @param applicationUserId
-     */
-    private AssertionType generateAssertion(String id, String applicationUserId)
+    private AssertionType getAssertion(String id, String applicationUserId)
             throws WSAuthenticationException {
 
-        AssertionType assertion = generateBaseAssertion();
-
-        DatatypeFactory datatypeFactory;
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException("datatype config error");
-        }
-
         SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
+        PrivateKeyEntry olasKeyPair = SafeOnlineKeyStore.getPrivateKeyEntry();
 
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(new Date());
-        XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-
-        gregorianCalendar.add(Calendar.SECOND, samlAuthorityService.getAuthnAssertionValidity());
-        XMLGregorianCalendar notAfter = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-
-        // Subject
-        SubjectType subject = new SubjectType();
-        NameIDType subjectName = new NameIDType();
-        subjectName.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
-        subjectName.setValue(applicationUserId);
-        ObjectFactory samlObjectFactory = new ObjectFactory();
-        subject.getContent().add(samlObjectFactory.createNameID(subjectName));
-        assertion.setSubject(subject);
-
-        // Conditions
-        ConditionsType conditions = new ConditionsType();
-        conditions.setNotBefore(now);
-        conditions.setNotOnOrAfter(notAfter);
-        AudienceRestrictionType audienceRestriction = new AudienceRestrictionType();
-        audienceRestriction.getAudience().add(applicationName);
-        conditions.getConditionOrAudienceRestrictionOrOneTimeUse().add(audienceRestriction);
-        assertion.setConditions(conditions);
-
-        // SubjectConfirmation
-        SubjectConfirmationType subjectConfirmation = new SubjectConfirmationType();
-        SubjectConfirmationDataType subjectConfirmationData = new SubjectConfirmationDataType();
+        Element assertionElement = null;
         if (null != keyInfo) {
-            subjectConfirmation.setMethod(Saml2SubjectConfirmationMethod.HOLDER_OF_KEY.getMethodURI());
-            org.w3._2000._09.xmldsig_.ObjectFactory dsigObjectFactory = new org.w3._2000._09.xmldsig_.ObjectFactory();
-            subjectConfirmationData.getContent().add(dsigObjectFactory.createKeyInfo(keyInfo));
+            // holder-of-key : SAML assertion SHOULD contain a <ds:signature> element that protects the integrity of the confirmation
+            // <ds:KeyInfo> established by the assertion authority.
+            Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),
+                    authenticatedDevice.getName(), samlAuthorityService.getAuthnAssertionValidity(), null, new DateTime(),
+                    Saml2SubjectConfirmationMethod.HOLDER_OF_KEY, null);
+            assertionElement = Saml2Util.sign(assertion, olasKeyPair.getCertificate().getPublicKey(), olasKeyPair.getPrivateKey());
+
         } else {
-            subjectConfirmation.setMethod(Saml2SubjectConfirmationMethod.SENDER_VOUCHES.getMethodURI());
+            Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),
+                    authenticatedDevice.getName(), samlAuthorityService.getAuthnAssertionValidity(), null, new DateTime(),
+                    Saml2SubjectConfirmationMethod.SENDER_VOUCHES, null);
+            MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+            Marshaller marshaller = marshallerFactory.getMarshaller(assertion);
+            try {
+                assertionElement = marshaller.marshall(assertion);
+            } catch (MarshallingException e) {
+                throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
+            }
+
         }
-        subjectConfirmationData.setInResponseTo(id);
-        subjectConfirmationData.setNotBefore(now);
-        subjectConfirmationData.setNotOnOrAfter(notAfter);
-        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
-        subject.getContent().add(samlObjectFactory.createSubjectConfirmation(subjectConfirmation));
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(AssertionType.class);
+            javax.xml.bind.Unmarshaller unmarshaller = context.createUnmarshaller();
+            JAXBElement<?> assertionObject = (JAXBElement<?>) unmarshaller.unmarshal(assertionElement);
+            AssertionType assertion = (AssertionType) assertionObject.getValue();
+            if (null != keyInfo) {
+                org.w3._2000._09.xmldsig_.ObjectFactory dsigObjectFactory = new org.w3._2000._09.xmldsig_.ObjectFactory();
+                for (JAXBElement<?> element : assertion.getSubject().getContent()) {
+                    if (element.getValue() instanceof SubjectConfirmationType) {
+                        SubjectConfirmationType subjectConfirmation = (SubjectConfirmationType) element.getValue();
+                        subjectConfirmation.getSubjectConfirmationData().getContent().add(dsigObjectFactory.createKeyInfo(keyInfo));
+                    }
+                }
+            }
+            return assertion;
+        } catch (JAXBException e) {
+            throw new WSAuthenticationException(WSAuthenticationErrorCode.INTERNAL_ERROR, e.getMessage());
+        }
 
-        // Authentication Statement
-        AuthnStatementType authnStatement = new AuthnStatementType();
-        authnStatement.setAuthnInstant(now);
-        AuthnContextType authnContext = new AuthnContextType();
-        authnContext.getContent().add(samlObjectFactory.createAuthnContextClassRef(authenticatedDevice.getName()));
-        authnStatement.setAuthnContext(authnContext);
-        assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement().add(authnStatement);
-
-        return assertion;
     }
 
     private AssertionType getAttributeAssertion(List<AttributeType> attributes)

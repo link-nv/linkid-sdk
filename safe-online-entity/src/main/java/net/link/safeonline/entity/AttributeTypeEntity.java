@@ -269,9 +269,8 @@ public class AttributeTypeEntity implements Serializable {
 
         if (memberAttributeType.isCompoundMember())
             throw new EJBException("attribute type cannot be member of more than one compounded: " + memberAttributeType.getName());
-        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType, memberSequence,
-                required);
-        getMembers().add(member);
+
+        getMembers().add(new CompoundedAttributeTypeMemberEntity(this, memberAttributeType, memberSequence, required));
         memberAttributeType.setCompoundMember(true);
     }
 

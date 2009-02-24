@@ -88,9 +88,9 @@ public class TimeoutFilter extends AbstractInjectionFilter {
              * This means that the servlet container found a matching session context for the requested session Id.
              */
             HttpSession session = httpRequest.getSession();
-            String applicationId = LoginManager.findApplication(session);
+            Long applicationId = LoginManager.findApplication(session);
             if (null != applicationId) {
-                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId, cookiePath, httpResponse);
+                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId.toString(), cookiePath, httpResponse);
             }
             /*
              * Remove the possible timeout cookie, add entry cookie to prevent timing out again on first entry after a previous timeout.

@@ -7,8 +7,10 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.ApplicationEntity.NAME_COLUMN;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_ALL;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERT_SUBJECT;
+import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_NAME;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_USER_ALL;
 
@@ -20,6 +22,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
@@ -28,12 +32,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.entity.listener.SecurityApplicationEntityListener;
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -45,8 +49,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * 
  */
 @Entity
-@Table(name = "application")
+@Table(name = "application", uniqueConstraints = @UniqueConstraint(columnNames = { NAME_COLUMN }))
 @NamedQueries( {
+        @NamedQuery(name = QUERY_WHERE_NAME, query = "SELECT application FROM ApplicationEntity AS application WHERE application.name = :name"),
         @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationEntity"),
         @NamedQuery(name = QUERY_WHERE_USER_ALL, query = "SELECT application " + "FROM ApplicationEntity AS application "
                 + "WHERE application.allowUserSubscription = true"),
@@ -59,13 +64,16 @@ public class ApplicationEntity implements Serializable {
 
     private static final long           serialVersionUID         = 1L;
 
+    public static final String          QUERY_WHERE_NAME         = "app.name";
     public static final String          QUERY_WHERE_ALL          = "app.all";
-
     public static final String          QUERY_WHERE_USER_ALL     = "app.user.all";
-
     public static final String          QUERY_WHERE_OWNER        = "app.owner";
-
     public static final String          QUERY_WHERE_CERT_SUBJECT = "app.cert.sub";
+
+    public static final String          NAME_COLUMN              = "name";
+    public static final String          FRIENDLY_NAME_COLUMN     = "friendlyName";
+
+    private long                        id;
 
     protected String                    name;
 
@@ -153,22 +161,23 @@ public class ApplicationEntity implements Serializable {
         }
     }
 
-    public String getDescription() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-        return description;
+        return id;
     }
 
-    public void setDescription(String description) {
+    public void setId(long id) {
 
-        this.description = description;
+        this.id = id;
     }
 
     /**
-     * The unique name of the application. This field is used as primary key on the application entity.
+     * The unique name of the application.
      * 
      */
-    @Id
-    @Column(name = "name")
+    @Column(name = NAME_COLUMN)
     public String getName() {
 
         return name;
@@ -183,7 +192,7 @@ public class ApplicationEntity implements Serializable {
      * The optional user friendly name of the application
      * 
      */
-    @Column(name = "friendlyName")
+    @Column(name = FRIENDLY_NAME_COLUMN)
     public String getFriendlyName() {
 
         return friendlyName;
@@ -192,6 +201,16 @@ public class ApplicationEntity implements Serializable {
     public void setFriendlyName(String friendlyName) {
 
         this.friendlyName = friendlyName;
+    }
+
+    public String getDescription() {
+
+        return description;
+    }
+
+    public void setDescription(String description) {
+
+        this.description = description;
     }
 
     /**
@@ -430,20 +449,32 @@ public class ApplicationEntity implements Serializable {
             return true;
         if (false == obj instanceof ApplicationEntity)
             return false;
+
         ApplicationEntity rhs = (ApplicationEntity) obj;
-        return new EqualsBuilder().append(name, rhs.name).isEquals();
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return (int) id;
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("name", name).append("description", description)
-                                                                    .append("allowUserSubscription", allowUserSubscription).append(
-                                                                            "removable", removable).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("name", name).append("description", description).append(
+                "allowUserSubscription", allowUserSubscription).append("removable", removable).toString();
     }
 
 
     public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
+        ApplicationEntity findApplication(@QueryParam("name") String applicationName);
 
         @QueryMethod(QUERY_WHERE_ALL)
         List<ApplicationEntity> listApplications();

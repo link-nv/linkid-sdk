@@ -27,6 +27,8 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.IdentityServiceRemote;
+import net.link.safeonline.authentication.service.NodeService;
+import net.link.safeonline.authentication.service.NodeServiceRemote;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.ProxyAttributeServiceRemote;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -41,6 +43,8 @@ import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.pkix.service.PkiServiceRemote;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.AttributeTypeServiceRemote;
+import net.link.safeonline.service.NodeMappingService;
+import net.link.safeonline.service.NodeMappingServiceRemote;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.service.SubjectServiceRemote;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -77,6 +81,22 @@ public class IntegrationTestUtils {
         Hashtable environment = new Hashtable();
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
         environment.put(Context.PROVIDER_URL, "localhost:1099");
+        InitialContext initialContext = new InitialContext(environment);
+        return initialContext;
+    }
+
+    /**
+     * Retrieves the JNDI initial context.
+     * 
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    public static InitialContext getInitialContext(String location)
+            throws Exception {
+
+        Hashtable environment = new Hashtable();
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
+        environment.put(Context.PROVIDER_URL, location + ":1099");
         InitialContext initialContext = new InitialContext(environment);
         return initialContext;
     }
@@ -205,5 +225,18 @@ public class IntegrationTestUtils {
 
         AccountService accountService = EjbUtils.getEJB(initialContext, AccountServiceRemote.JNDI_BINDING, AccountServiceRemote.class);
         return accountService;
+    }
+
+    public static NodeMappingService getNodeMappingService(InitialContext initialContext) {
+
+        NodeMappingService nodeMappingService = EjbUtils.getEJB(initialContext, NodeMappingServiceRemote.JNDI_BINDING,
+                NodeMappingService.class);
+        return nodeMappingService;
+    }
+
+    public static NodeService getNodeService(InitialContext initialContext) {
+
+        NodeService nodeService = EjbUtils.getEJB(initialContext, NodeServiceRemote.JNDI_BINDING, NodeService.class);
+        return nodeService;
     }
 }

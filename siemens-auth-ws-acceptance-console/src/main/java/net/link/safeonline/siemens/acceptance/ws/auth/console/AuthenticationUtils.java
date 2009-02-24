@@ -567,6 +567,7 @@ public class AuthenticationUtils extends Observable {
                     throws Exception {
 
                 return consoleManager.getAcceptanceWsClient().getAttribute();
+                // return consoleManager.getAcceptanceMetroWsClient().getAttribute();
             }
 
             @SuppressWarnings("synthetic-access")
@@ -577,9 +578,9 @@ public class AuthenticationUtils extends Observable {
                 try {
                     notifyObservers(get());
                 } catch (ExecutionException e) {
-                    LOG.error("Authentication failed to execute ...");
+                    LOG.error("Authentication failed to execute ... : ", e);
                 } catch (InterruptedException e) {
-                    LOG.error("Interrupted exception ...");
+                    LOG.error("Interrupted exception ...", e);
                 }
             }
 

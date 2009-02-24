@@ -113,11 +113,12 @@ public class BeIdAuthentication extends DeviceAuthenticationPanel {
     private AuthenticationApplet getAuthenticationApplet() {
 
         AuthenticationApplet authenticationApplet;
-        if (consoleManager.getUsePcscApplet()) {
-            authenticationApplet = new net.link.safeonline.sc.pcsc.auth.AuthenticationApplet();
-        } else {
-            authenticationApplet = new AuthenticationApplet();
-        }
+
+        // if (consoleManager.getUsePcscApplet()) {
+        // authenticationApplet = new net.link.safeonline.sc.pcsc.auth.AuthenticationApplet();
+        // } else {
+        authenticationApplet = new AuthenticationApplet();
+        // }
         authenticationApplet.setIntegrated(true);
         authenticationApplet.setParameter(AuthenticationApplet.PARAM_SESSION_ID, sessionId);
         authenticationApplet.setParameter(AuthenticationApplet.PARAM_APPLICATION_ID, consoleManager.getApplication());

@@ -19,17 +19,18 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Embeddable
 public class UsageAgreementPK implements Serializable {
 
-    public static final Long  DRAFT_USAGE_AGREEMENT_VERSION   = -1L;
+    public static final Long   DRAFT_USAGE_AGREEMENT_VERSION   = -1L;
+    public static final Long   EMPTY_USAGE_AGREEMENT_VERSION   = 0L;
+    public static final Long   INITIAL_USAGE_AGREEMENT_VERSION = 1L;
 
-    public static final Long  EMPTY_USAGE_AGREEMENT_VERSION   = 0L;
+    public static final String APPLICATION_ID_COLUMN           = "applicationId";
+    public static final String VERSION_COLUMN                  = "version";
 
-    public static final Long  INITIAL_USAGE_AGREEMENT_VERSION = 1L;
+    private static final long  serialVersionUID                = 1L;
 
-    private static final long serialVersionUID                = 1L;
+    private long               applicationId;
 
-    private String            application;
-
-    private Long              usageAgreementVersion;
+    private Long               usageAgreementVersion;
 
 
     public UsageAgreementPK() {
@@ -37,23 +38,23 @@ public class UsageAgreementPK implements Serializable {
         // empty
     }
 
-    public UsageAgreementPK(String application, Long usageAgreementVersion) {
+    public UsageAgreementPK(long applicationId, Long usageAgreementVersion) {
 
-        this.application = application;
+        this.applicationId = applicationId;
         this.usageAgreementVersion = usageAgreementVersion;
     }
 
-    public String getApplication() {
+    public long getApplicationId() {
 
-        return application;
+        return applicationId;
     }
 
-    public void setApplication(String application) {
+    public void setApplicationId(long applicationId) {
 
-        this.application = application;
+        this.applicationId = applicationId;
     }
 
-    @Column(name = "version")
+    @Column(name = VERSION_COLUMN)
     public Long getUsageAgreementVersion() {
 
         return usageAgreementVersion;
@@ -72,21 +73,21 @@ public class UsageAgreementPK implements Serializable {
         if (false == obj instanceof UsageAgreementPK)
             return false;
         UsageAgreementPK rhs = (UsageAgreementPK) obj;
-        return new EqualsBuilder().append(application, rhs.application).append(usageAgreementVersion, rhs.usageAgreementVersion)
+        return new EqualsBuilder().append(applicationId, rhs.applicationId).append(usageAgreementVersion, rhs.usageAgreementVersion)
                                   .isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(application).append(usageAgreementVersion).toHashCode();
+        return new HashCodeBuilder().append(applicationId).append(usageAgreementVersion).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", application)
-                                        .append("usageAgreementVersion", usageAgreementVersion).toString();
+        return new ToStringBuilder(this).append("applicationId", applicationId).append("usageAgreementVersion", usageAgreementVersion)
+                                        .toString();
     }
 
 }

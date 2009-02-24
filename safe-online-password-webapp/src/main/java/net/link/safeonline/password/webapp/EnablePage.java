@@ -9,7 +9,7 @@ package net.link.safeonline.password.webapp;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -95,27 +95,25 @@ public class EnablePage extends TemplatePage {
 
                     try {
                         passwordDeviceService.enable(protocolContext.getSubject(), password.getObject());
-                    } catch (SubjectNotFoundException e) {
+
+                        protocolContext.setSuccess(true);
+                        exit();
+                    }
+
+                    catch (SubjectNotFoundException e) {
                         passwordField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
                                 LogLevelType.ERROR);
-                        return;
-                    } catch (DeviceNotFoundException e) {
-                        passwordField.error(getLocalizer().getString("errorPasswordNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device not found",
-                                LogLevelType.ERROR);
-                        return;
                     } catch (PermissionDeniedException e) {
                         passwordField.error(getLocalizer().getString("errorPasswordNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: permission denied: "
                                 + e.getMessage(), LogLevelType.ERROR);
-                        return;
+                    } catch (DeviceRegistrationNotFoundException e) {
+                        passwordField.error(getLocalizer().getString("errorPasswordNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device not found",
+                                LogLevelType.ERROR);
                     }
-
-                    protocolContext.setSuccess(true);
-                    exit();
                 }
-
             });
 
             Button cancel = new Button(CANCEL_BUTTON_ID) {

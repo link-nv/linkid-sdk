@@ -4,12 +4,15 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.AuthenticationPage;
@@ -97,6 +100,8 @@ public class AuthenticationPageTest {
 
         // verify
         verify(mockPasswordDeviceService, mockSamlAuthorityService);
+        assertNotNull("No authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -135,6 +140,8 @@ public class AuthenticationPageTest {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -174,6 +181,8 @@ public class AuthenticationPageTest {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -213,6 +222,7 @@ public class AuthenticationPageTest {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 }

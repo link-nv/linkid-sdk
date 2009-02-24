@@ -56,7 +56,7 @@ public class UnsubscribeUserMessageHandler implements MessageHandler {
             try {
                 SubjectEntity subjectEntity = subjectService.getSubject(subject);
                 if (publicSubscriptionService.isSubscribed(subjectEntity, consumer.getApplication())) {
-                    String applicationUserId = userIdMappingService.getApplicationUserId(consumer.getApplication().getName(), subject);
+                    String applicationUserId = userIdMappingService.getApplicationUserId(consumer.getApplication().getId(), subject);
                     return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content, consumer.getId());
                 }
                 return null;

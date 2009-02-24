@@ -102,6 +102,15 @@ public class CinemaSeatEntity implements Serializable {
      * {@inheritDoc}
      */
     @Override
+    public int hashCode() {
+
+        return (int) (1 * x + 2 * y + 3 * room.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
 
         return String.format("{id: %d - room %d: %d, %d}", id, room.getId(), x, y);

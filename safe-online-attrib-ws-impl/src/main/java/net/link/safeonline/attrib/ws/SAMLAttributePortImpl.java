@@ -30,6 +30,7 @@ import javax.xml.ws.WebServiceContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
@@ -38,6 +39,7 @@ import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.ApplicationManager;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
@@ -132,27 +134,35 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
             }
             NameIDType nameId = (NameIDType) value;
             String subjectLogin = nameId.getValue();
-            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
-                try {
-                    return findUserId(subjectLogin);
-                } catch (ApplicationNotFoundException e) {
-                    return null;
-                }
-            }
-            return subjectLogin;
+            return findUserId(subjectLogin);
         }
         return null;
     }
 
-    private String findUserId(String applicationUserId)
-            throws ApplicationNotFoundException {
+    private String findUserId(String userId) {
 
-        ApplicationManager applicationManager = EjbUtils.getEJB(ApplicationManager.JNDI_BINDING, ApplicationManager.class);
-        ApplicationEntity application = applicationManager.getCallerApplication();
+        if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
 
-        ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
-                ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
-        return applicationIdentifierMappingService.findUserId(application.getName(), applicationUserId);
+            ApplicationManager applicationManager = EjbUtils.getEJB(ApplicationManager.JNDI_BINDING, ApplicationManager.class);
+            ApplicationEntity application = applicationManager.getCallerApplication();
+
+            ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
+                    ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
+            try {
+                return applicationIdentifierMappingService.findUserId(application.getId(), userId);
+            } catch (ApplicationNotFoundException e) {
+                return null;
+            }
+        } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+            NodeMappingService nodeMappingService = EjbUtils.getEJB(NodeMappingService.JNDI_BINDING, NodeMappingService.class);
+            try {
+                return nodeMappingService.getNodeMapping(userId).getSubject().getUserId();
+            } catch (NodeMappingNotFoundException e) {
+                LOG.error("Node mapping not found", e);
+                return null;
+            }
+        } else
+            return userId;
     }
 
     public ResponseType attributeQuery(AttributeQueryType request) {
@@ -379,7 +389,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
                  */
                 Object[] array = (Object[]) attributeValue;
                 for (Object item : array) {
-                    if (item instanceof Map) {
+                    if (item instanceof Map<?, ?>) {
                         /*
                          * Compounded attribute.
                          */

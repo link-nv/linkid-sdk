@@ -119,12 +119,12 @@ public interface IdentityService extends SafeOnlineService {
     /**
      * Checks whether confirmation is required over the usage of the identity attributes use by the given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      * @throws ApplicationIdentityNotFoundException
      */
-    boolean isConfirmationRequired(String applicationName)
+    boolean isConfirmationRequired(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException;
 
     /**
@@ -136,12 +136,12 @@ public interface IdentityService extends SafeOnlineService {
      * is changing the identity while the user is confirming it. This would make the user to confirm a more recent identity version that the
      * one he was presented.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      * @throws ApplicationIdentityNotFoundException
      */
-    void confirmIdentity(String applicationName)
+    void confirmIdentity(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException;
 
     /**
@@ -161,27 +161,27 @@ public interface IdentityService extends SafeOnlineService {
      * Gives back a list of identity attributes that need to be confirmed by this user in order to be in-line with the latest identity
      * requirement of the given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param locale
      *            the optional locale to be applied to the result.
      * @throws ApplicationNotFoundException
      * @throws ApplicationIdentityNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    List<AttributeDO> listIdentityAttributesToConfirm(String applicationName, Locale locale)
+    List<AttributeDO> listIdentityAttributesToConfirm(long applicationId, Locale locale)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, SubscriptionNotFoundException;
 
     /**
      * Checks whether the current user still needs to fill in some attribute values for being able to use the given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @return <code>true</code> if there are missing attributes, <code>false</code> otherwise.
      * @throws ApplicationNotFoundException
      * @throws ApplicationIdentityNotFoundException
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
      */
-    boolean hasMissingAttributes(String applicationName)
+    boolean hasMissingAttributes(long applicationId)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException;
 
@@ -190,7 +190,7 @@ public interface IdentityService extends SafeOnlineService {
      * objects to make life easier in the view/control. The control components will most likely afterwards call
      * {@link #saveAttribute(AttributeDO)} to save new values for the missing attributes.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param locale
      *            the optional locale for i18n of the result.
      * @throws ApplicationNotFoundException
@@ -198,7 +198,7 @@ public interface IdentityService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
      */
-    List<AttributeDO> listMissingAttributes(String applicationName, Locale locale)
+    List<AttributeDO> listMissingAttributes(long applicationId, Locale locale)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException;
 
@@ -207,7 +207,7 @@ public interface IdentityService extends SafeOnlineService {
      * objects to make life easier in the view/control. The control components will most likely afterwards call
      * {@link #saveAttribute(AttributeDO)} to save new values for the optional attributes.
      * 
-     * @param application
+     * @param applicationId
      * @param locale
      * @return
      * @throws AttributeTypeNotFoundException
@@ -215,7 +215,7 @@ public interface IdentityService extends SafeOnlineService {
      * @throws ApplicationIdentityNotFoundException
      * @throws ApplicationNotFoundException
      */
-    List<AttributeDO> listOptionalAttributes(String application, Locale local)
+    List<AttributeDO> listOptionalAttributes(long applicationId, Locale local)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException;
 

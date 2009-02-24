@@ -32,11 +32,15 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.util.CertificateMapperHandler;
+import net.link.safeonline.ws.util.CertificateValidatorHandler;
+import net.link.safeonline.ws.util.CertificateValidatorHandler.CertificateDomain;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.assertion.SubjectType;
 import oasis.names.tc.saml._2_0.protocol.ObjectFactory;
@@ -70,13 +74,14 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
     private String                         wsSecurityConfigurationServiceJndiName;
 
+    private CertificateDomain              certificateDomain;
+
 
     @PostConstruct
     public void postConstructCallback() {
 
         loadDependencies();
-        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName,
-                WSSecurityConfigurationService.class);
+        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName, WSSecurityConfigurationService.class);
     }
 
     private void loadDependencies() {
@@ -179,16 +184,20 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         if (false == element instanceof SubjectType)
             throw new RuntimeException("samlp:Subject expected");
 
+        certificateDomain = CertificateValidatorHandler.getCertificateDomain(soapContext);
+        LOG.debug("certificate domain: " + certificateDomain.toString());
+
         SubjectType subject = (SubjectType) element;
         String login = findSubjectLogin(subject);
 
-        String applicationName = CertificateMapperHandler.getId(soapContext);
         String userId = null;
         try {
-            userId = findUserId(applicationName, login);
+            userId = findUserId(CertificateMapperHandler.getId(soapContext), login);
         } catch (ApplicationNotFoundException e) {
             throw new RuntimeException("application on JAX-WS context not found");
         }
+        if (null == userId)
+            throw new RuntimeException("user ID on JAX-WS context not found");
 
         LOG.debug("TargetIdentity: " + userId);
         soapContext.put(TARGET_IDENTITY_CONTEXT_VAR, userId);
@@ -215,12 +224,25 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         return null;
     }
 
-    private String findUserId(String applicationName, String applicationUserId)
+    private String findUserId(String id, String userId)
             throws ApplicationNotFoundException {
 
-        ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
-                ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
-        return applicationIdentifierMappingService.findUserId(applicationName, applicationUserId);
+        if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+            long applicationId = Long.parseLong(id);
+            ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
+                    ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
+            return applicationIdentifierMappingService.findUserId(applicationId, userId);
+        } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+            NodeMappingService nodeMappingService = EjbUtils.getEJB(NodeMappingService.JNDI_BINDING, NodeMappingService.class);
+            try {
+                return nodeMappingService.getNodeMapping(userId).getSubject().getUserId();
+            } catch (NodeMappingNotFoundException e) {
+                LOG.error("Node mapping not found", e);
+                return null;
+            }
+        }
+
+        return null;
     }
 
     /**

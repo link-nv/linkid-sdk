@@ -12,6 +12,8 @@ import java.lang.reflect.Method;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Binding;
@@ -144,8 +146,10 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         modifyItem.setNewData(newData);
         AttributeType attribute = new AttributeType();
         attribute.setName(attributeName);
-        setAttributeValue(attributeValue, attribute, false);
+        setAttributeValue(attributeName, attributeValue, attribute, false);
         newData.setAttribute(attribute);
+
+        SafeOnlineTrustManager.configureSsl();
 
         ModifyResponseType modifyResponse;
         try {
@@ -341,9 +345,11 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         AppDataType newData = new AppDataType();
         AttributeType attribute = new AttributeType();
         attribute.setName(attributeName);
-        setAttributeValue(attributeValue, attribute, true);
+        setAttributeValue(attributeName, attributeValue, attribute, true);
         newData.setAttribute(attribute);
         createItem.setNewData(newData);
+
+        SafeOnlineTrustManager.configureSsl();
 
         try {
             CreateResponseType createResponse = port.create(create);
@@ -367,17 +373,18 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
      * 
      * The input attribute value can be an Integer, Boolean or array of these in case of a multivalued attribute.
      * 
+     * @param attributeName
      * @param attributeValue
      * @param targetAttribute
      * @param newAttribute
      */
-    private void setAttributeValue(Object attributeValue, AttributeType targetAttribute, boolean isNewAttribute) {
+    private void setAttributeValue(String attributeName, Object attributeValue, AttributeType targetAttribute, boolean isNewAttribute) {
 
         if (null == attributeValue)
             return;
         List<Object> attributeValues = targetAttribute.getAttributeValue();
         if (CompoundUtil.isCompound(attributeValue)) {
-            AttributeType compoundAttribute = createCompoundAttribute(attributeValue, isNewAttribute);
+            AttributeType compoundAttribute = createCompoundAttribute(attributeName, attributeValue, isNewAttribute);
             attributeValues.add(compoundAttribute);
             return;
         }
@@ -394,38 +401,58 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
     }
 
     @SuppressWarnings("unchecked")
-    private AttributeType createCompoundAttribute(Object attributeValue, boolean isNewAttribute) {
+    private AttributeType createCompoundAttribute(String attributeName, Object attributeValue, boolean isNewAttribute) {
 
-        Class attributeClass = attributeValue.getClass();
-        Method[] methods = attributeClass.getMethods();
         AttributeType compoundAttribute = new AttributeType();
-        Compound compoundAnnotation = (Compound) attributeClass.getAnnotation(Compound.class);
-        String compoundName = compoundAnnotation.value();
-        compoundAttribute.setName(compoundName);
-        List<Object> attributeValues = compoundAttribute.getAttributeValue();
-        LOG.debug("creating compound attribute: " + compoundName);
         String id = null;
-        for (Method method : methods) {
-            CompoundMember compoundMemberAnnotation = method.getAnnotation(CompoundMember.class);
-            if (null != compoundMemberAnnotation) {
-                String memberName = compoundMemberAnnotation.value();
-                Object value;
-                try {
-                    value = method.invoke(attributeValue, new Object[] {});
-                } catch (Exception e) {
-                    throw new RuntimeException("could not get property: " + method.getName().substring(3));
+
+        if (attributeValue instanceof Map<?, ?>) {
+            Map<String, Object> attributeValueMap = (Map<String, Object>) attributeValue;
+
+            compoundAttribute.setName(attributeName);
+            LOG.debug("creating compound attribute: " + attributeName);
+            List<Object> attributeValues = compoundAttribute.getAttributeValue();
+            for (Entry<String, Object> attributeValueMapEntry : attributeValueMap.entrySet()) {
+                if (attributeValueMapEntry.getKey().equals(CompoundBuilder.ATTRIBUTE_ID_KEY)) {
+                    id = (String) attributeValueMapEntry.getValue();
+                } else {
+                    AttributeType memberAttribute = new AttributeType();
+                    memberAttribute.setName(attributeValueMapEntry.getKey());
+                    memberAttribute.getAttributeValue().add(attributeValueMapEntry.getValue());
+                    attributeValues.add(memberAttribute);
                 }
-                AttributeType memberAttribute = new AttributeType();
-                memberAttribute.setName(memberName);
-                memberAttribute.getAttributeValue().add(value);
-                attributeValues.add(memberAttribute);
             }
-            CompoundId compoundIdAnnotation = method.getAnnotation(CompoundId.class);
-            if (null != compoundIdAnnotation) {
-                try {
-                    id = (String) method.invoke(attributeValue, new Object[] {});
-                } catch (Exception e) {
-                    throw new RuntimeException("@Id property not of type string");
+
+        } else {
+            Class attributeClass = attributeValue.getClass();
+            Method[] methods = attributeClass.getMethods();
+            Compound compoundAnnotation = (Compound) attributeClass.getAnnotation(Compound.class);
+            String compoundName = compoundAnnotation.value();
+            compoundAttribute.setName(compoundName);
+            List<Object> attributeValues = compoundAttribute.getAttributeValue();
+            LOG.debug("creating compound attribute: " + compoundName);
+            for (Method method : methods) {
+                CompoundMember compoundMemberAnnotation = method.getAnnotation(CompoundMember.class);
+                if (null != compoundMemberAnnotation) {
+                    String memberName = compoundMemberAnnotation.value();
+                    Object value;
+                    try {
+                        value = method.invoke(attributeValue, new Object[] {});
+                    } catch (Exception e) {
+                        throw new RuntimeException("could not get property: " + method.getName().substring(3));
+                    }
+                    AttributeType memberAttribute = new AttributeType();
+                    memberAttribute.setName(memberName);
+                    memberAttribute.getAttributeValue().add(value);
+                    attributeValues.add(memberAttribute);
+                }
+                CompoundId compoundIdAnnotation = method.getAnnotation(CompoundId.class);
+                if (null != compoundIdAnnotation) {
+                    try {
+                        id = (String) method.invoke(attributeValue, new Object[] {});
+                    } catch (Exception e) {
+                        throw new RuntimeException("@Id property not of type string");
+                    }
                 }
             }
         }
@@ -460,6 +487,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         if (null != attributeId) {
             select.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, attributeId);
         }
+
+        SafeOnlineTrustManager.configureSsl();
 
         DeleteResponseType deleteResponse;
         try {

@@ -10,6 +10,7 @@ package net.link.safeonline.config.model.bean;
 import static net.link.safeonline.common.Configurable.defaultGroup;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -62,6 +63,15 @@ public class ConfigurationManagerBean implements ConfigurationManager {
         }
         String stringValue = value.toString();
         LOG.debug("add item value: " + stringValue);
+
+        List<ConfigItemValueEntity> configItemValues = configItemValueDAO.listConfigItemValues(configItem);
+        if (null != configItemValues) {
+            for (ConfigItemValueEntity configItemValue : configItemValues) {
+                if (configItemValue.getValue().equals(value))
+                    return;
+            }
+        }
+
         configItemValueDAO.addConfigItemValue(configItem, stringValue);
 
     }

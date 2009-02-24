@@ -19,7 +19,6 @@ import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJBException;
@@ -205,19 +204,9 @@ public class AttributeEntity implements Serializable {
         return stringValue;
     }
 
-    public void setStringValue(String stringValue) {
-
-        this.stringValue = stringValue;
-    }
-
     public Boolean getBooleanValue() {
 
         return booleanValue;
-    }
-
-    public void setBooleanValue(Boolean booleanValue) {
-
-        this.booleanValue = booleanValue;
     }
 
     @Temporal(TemporalType.DATE)
@@ -226,52 +215,14 @@ public class AttributeEntity implements Serializable {
         return dateValue;
     }
 
-    public void setDateValue(Date dateValue) {
-
-        this.dateValue = dateValue;
-    }
-
     public Double getDoubleValue() {
 
         return doubleValue;
     }
 
-    public void setDoubleValue(Double doubleValue) {
-
-        this.doubleValue = doubleValue;
-    }
-
     public Integer getIntegerValue() {
 
         return integerValue;
-    }
-
-    public void setIntegerValue(Integer integerValue) {
-
-        this.integerValue = integerValue;
-    }
-
-
-    private transient List<AttributeEntity> members;
-
-
-    /**
-     * We don't manage the member attributes of a compounded attribute directly via the database because the relationship is to complex to
-     * express. This field is filled in by the DAO layer upon request.
-     * 
-     */
-    @Transient
-    public List<AttributeEntity> getMembers() {
-
-        if (null == members) {
-            members = new LinkedList<AttributeEntity>();
-        }
-        return members;
-    }
-
-    public void setMembers(List<AttributeEntity> members) {
-
-        this.members = members;
     }
 
     /**
@@ -284,6 +235,7 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
+            case COMPOUNDED:
                 return getStringValue();
             case BOOLEAN:
                 return getBooleanValue();
@@ -293,9 +245,9 @@ public class AttributeEntity implements Serializable {
                 return getDoubleValue();
             case DATE:
                 return getDateValue();
-            default:
-                throw new EJBException("datatype not supported: " + datatype);
         }
+
+        throw new EJBException("datatype not supported: " + datatype);
     }
 
     @Transient
@@ -304,6 +256,7 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
+            case COMPOUNDED:
                 setStringValue((String) value);
             break;
             case BOOLEAN:
@@ -318,8 +271,6 @@ public class AttributeEntity implements Serializable {
             case DATE:
                 setDateValue((Date) value);
             break;
-            default:
-                throw new EJBException("datatype not supported: " + datatype);
         }
     }
 
@@ -329,6 +280,7 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
+            case COMPOUNDED:
                 String value = getStringValue();
                 if (null == value)
                     return true;
@@ -341,9 +293,8 @@ public class AttributeEntity implements Serializable {
                 return null == getDoubleValue();
             case DATE:
                 return null == getDateValue();
-            default:
-                throw new EJBException("datatype not supported: " + datatype);
         }
+        throw new EJBException("datatype not supported: " + datatype);
     }
 
     @Transient
@@ -354,6 +305,51 @@ public class AttributeEntity implements Serializable {
         doubleValue = null;
         integerValue = null;
         stringValue = null;
+    }
+
+    /**
+     * @param booleanValue
+     *            The booleanValue of this {@link AttributeEntity}.
+     */
+    private void setBooleanValue(Boolean booleanValue) {
+
+        this.booleanValue = booleanValue;
+    }
+
+    /**
+     * @param dateValue
+     *            The dateValue of this {@link AttributeEntity}.
+     */
+    private void setDateValue(Date dateValue) {
+
+        this.dateValue = dateValue;
+    }
+
+    /**
+     * @param doubleValue
+     *            The doubleValue of this {@link AttributeEntity}.
+     */
+    private void setDoubleValue(Double doubleValue) {
+
+        this.doubleValue = doubleValue;
+    }
+
+    /**
+     * @param integerValue
+     *            The integerValue of this {@link AttributeEntity}.
+     */
+    private void setIntegerValue(Integer integerValue) {
+
+        this.integerValue = integerValue;
+    }
+
+    /**
+     * @param stringValue
+     *            The stringValue of this {@link AttributeEntity}.
+     */
+    private void setStringValue(String stringValue) {
+
+        this.stringValue = stringValue;
     }
 
     @Override

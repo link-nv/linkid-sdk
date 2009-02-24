@@ -31,17 +31,4 @@ public class MetroWebServiceTest {
         assertNotNull(attribute);
         LOG.debug("returned attribute: " + attribute);
     }
-
-    @Test
-    public void testSiemensWSAuthenticationService()
-            throws Exception {
-
-        // setup
-        MetroWSAuthenticationClient client = new MetroWSAuthenticationClientImpl("http://localhost:8080");
-
-        // operate
-        String attribute = client.getAttribute();
-        assertNotNull(attribute);
-        LOG.debug("returned attribute: " + attribute);
-    }
 }

@@ -79,7 +79,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         ValidateTargetType validateTarget = null;
         List<Object> content = request.getAny();
         for (Object contentObject : content) {
-            if (contentObject instanceof JAXBElement) {
+            if (contentObject instanceof JAXBElement<?>) {
                 JAXBElement<?> contentElement = (JAXBElement<?>) contentObject;
                 Object value = contentElement.getValue();
                 if (value instanceof String) {

@@ -115,7 +115,7 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
         StatusType status = null;
         List<Object> results = response.getAny();
         for (Object result : results)
-            if (result instanceof JAXBElement) {
+            if (result instanceof JAXBElement<?>) {
                 JAXBElement<?> resultElement = (JAXBElement<?>) result;
                 Object value = resultElement.getValue();
                 if (value instanceof StatusType) {

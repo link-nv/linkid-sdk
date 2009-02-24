@@ -75,12 +75,14 @@ public class RegistrationPageTest extends TestCase {
 
         // setup
         String userId = UUID.randomUUID().toString();
+        String nodeName = "test-node-name";
         String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
         protocolContext.setSubject(userId);
+        protocolContext.setNodeName(nodeName);
 
         // Registration Page: Verify.
         RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
@@ -91,7 +93,7 @@ public class RegistrationPageTest extends TestCase {
         EJBTestUtils.inject(registrationPage, mockSamlAuthorityService);
 
         // stubs
-        mockPasswordDeviceService.register(userId, password);
+        mockPasswordDeviceService.register(nodeName, userId, password);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

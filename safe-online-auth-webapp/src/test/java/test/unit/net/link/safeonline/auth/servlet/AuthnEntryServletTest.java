@@ -171,6 +171,7 @@ public class AuthnEntryServletTest {
         PostMethod postMethod = new PostMethod(servletLocation);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        long applicationId = 1234567890;
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
@@ -184,7 +185,7 @@ public class AuthnEntryServletTest {
         expect(
                 mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
                         (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
-                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null, null, null));
+                new ProtocolContext(applicationId, applicationName, applicationName, assertionConsumerService, null, null, null, null));
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
 
         // prepare
@@ -201,8 +202,8 @@ public class AuthnEntryServletTest {
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
         assertTrue(location.endsWith(firstTimeUrl));
-        String resultApplicationId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
-        assertEquals(applicationName, resultApplicationId);
+        long resultApplicationId = (Long) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
+        assertEquals(applicationId, resultApplicationId);
         String resultApplicationName = (String) authnEntryServletTestManager
                                                                             .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationName);
@@ -220,6 +221,7 @@ public class AuthnEntryServletTest {
         PostMethod postMethod = new PostMethod(servletLocation);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        long applicationId = 1234567890;
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
@@ -241,7 +243,7 @@ public class AuthnEntryServletTest {
         expect(
                 mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
                         (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
-                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null, null, null));
+                new ProtocolContext(applicationId, applicationName, applicationName, assertionConsumerService, null, null, null, null));
         expect(mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
         expect(mockAuthenticationService.getSsoCookie()).andStubReturn(
                 new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName, "value"));
@@ -263,8 +265,8 @@ public class AuthnEntryServletTest {
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
         assertTrue(location.endsWith(loginUrl));
-        String resultApplicationId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
-        assertEquals(applicationName, resultApplicationId);
+        long resultApplicationId = (Long) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
+        assertEquals(applicationId, resultApplicationId);
         String resultApplicationName = (String) authnEntryServletTestManager
                                                                             .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationName);

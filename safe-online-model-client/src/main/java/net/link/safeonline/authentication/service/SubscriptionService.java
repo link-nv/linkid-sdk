@@ -53,43 +53,43 @@ public interface SubscriptionService extends SafeOnlineService {
     /**
      * Subscribe the caller user to the given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws AlreadySubscribedException
      * @throws PermissionDeniedException
      */
-    void subscribe(String applicationName)
+    void subscribe(long applicationId)
             throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException;
 
     /**
      * Unsubscribe the caller user from the given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      * @throws PermissionDeniedException
      *             in case the user is not the owner of the subscription.
      * @throws MessageHandlerNotFoundException
      */
-    void unsubscribe(String applicationName)
+    void unsubscribe(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException, MessageHandlerNotFoundException;
 
     /**
      * Gives back the number of subscriptions for a given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    long getNumberOfSubscriptions(String applicationName)
+    long getNumberOfSubscriptions(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Returns <code>true</code> if the caller user has a subscription for the given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      */
-    boolean isSubscribed(String applicationName)
+    boolean isSubscribed(long applicationId)
             throws ApplicationNotFoundException;
 }

@@ -97,7 +97,8 @@ public class LoginPanel extends JPanel implements Observer {
         try {
             if (arg instanceof AuthenticationError) {
                 AuthenticationError error = (AuthenticationError) arg;
-                infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+                infoLabel.setText("<html><font color=red>Authentication failed</font><br><br><b>Error code:</b> "
+                        + error.getCode().getErrorCode() + "<br><br><b>Message:</b> " + error.getMessage() + "</html>");
             } else if (arg instanceof AuthenticationStep) {
                 AuthenticationStep authenticationStep = (AuthenticationStep) arg;
                 if (authenticationStep.equals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT)) {

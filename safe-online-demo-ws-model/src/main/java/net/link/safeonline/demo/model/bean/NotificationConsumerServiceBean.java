@@ -40,10 +40,10 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
     private static final Log    LOG                           = LogFactory.getLog(NotificationConsumerServiceBean.class);
 
-    private static final String DEMO_BANK_APPLICATION_NAME    = "demo-bank";
+    private static final String DEMO_BANK_APPLICATION_NAME    = "ebank";
     private static final String DEMO_CINEMA_APPLICATION_NAME  = "cinema";
-    private static final String DEMO_TICKET_APPLICATION_NAME  = "demo-ticket";
-    private static final String DEMO_PAYMENT_APPLICATION_NAME = "ebank";
+    private static final String DEMO_TICKET_APPLICATION_NAME  = "eticket";
+    private static final String DEMO_PAYMENT_APPLICATION_NAME = "epayment";
 
     private EntityManager       demoBankEntityManager;
     private EntityManager       demoCinemaEntityManager;

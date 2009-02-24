@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -19,11 +20,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Embeddable
 public class AttributeProviderPK implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID           = 1L;
 
-    private String            applicationName;
+    public static final String APPLICATION_ID_COLUMN      = "applicationId";
+    public static final String ATTRIBUTE_TYPE_NAME_COLUMN = "attributeTypeName";
 
-    private String            attributeTypeName;
+    private long               applicationId;
+
+    private String             attributeTypeName;
 
 
     public AttributeProviderPK() {
@@ -31,28 +35,30 @@ public class AttributeProviderPK implements Serializable {
         // empty
     }
 
-    public AttributeProviderPK(String applicationName, String attributeTypeName) {
+    public AttributeProviderPK(long applicationId, String attributeTypeName) {
 
-        this.applicationName = applicationName;
+        this.applicationId = applicationId;
         this.attributeTypeName = attributeTypeName;
     }
 
     public AttributeProviderPK(ApplicationEntity application, AttributeTypeEntity attributeType) {
 
-        applicationName = application.getName();
+        applicationId = application.getId();
         attributeTypeName = attributeType.getName();
     }
 
-    public String getApplicationName() {
+    @Column(name = APPLICATION_ID_COLUMN)
+    public long getApplicationId() {
 
-        return applicationName;
+        return applicationId;
     }
 
-    public void setApplicationName(String applicationName) {
+    public void setApplicationId(long applicationId) {
 
-        this.applicationName = applicationName;
+        this.applicationId = applicationId;
     }
 
+    @Column(name = ATTRIBUTE_TYPE_NAME_COLUMN)
     public String getAttributeTypeName() {
 
         return attributeTypeName;
@@ -73,20 +79,18 @@ public class AttributeProviderPK implements Serializable {
         if (false == obj instanceof AttributeProviderPK)
             return false;
         AttributeProviderPK rhs = (AttributeProviderPK) obj;
-        return new EqualsBuilder().append(applicationName, rhs.applicationName).append(attributeTypeName, rhs.attributeTypeName)
-                                  .isEquals();
+        return new EqualsBuilder().append(applicationId, rhs.applicationId).append(attributeTypeName, rhs.attributeTypeName).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(applicationName).append(attributeTypeName).toHashCode();
+        return new HashCodeBuilder().append(applicationId).append(attributeTypeName).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", applicationName).append("attribute type", attributeTypeName)
-                                        .toString();
+        return new ToStringBuilder(this).append("applicationId", applicationId).append("attribute type", attributeTypeName).toString();
     }
 }

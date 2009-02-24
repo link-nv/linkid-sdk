@@ -135,8 +135,8 @@ public class ApplicationServiceBeanTest {
         // operate
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-        Set<ApplicationIdentityAttributeEntity> result = applicationService
-                                                                           .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        ApplicationEntity application = applicationService.getApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        Set<ApplicationIdentityAttributeEntity> result = applicationService.getCurrentApplicationIdentity(application.getId());
 
         // verify
         assertTrue(result.isEmpty());
@@ -150,9 +150,8 @@ public class ApplicationServiceBeanTest {
         IdentityAttributeTypeDO[] applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
                 NAME_ATTRIBUTE, false, false) };
         LOG.debug("---------- UPDATING APPLICATION IDENTITY ----------");
-        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                Arrays.asList(applicationIdentityAttributes));
-        result = applicationService.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        applicationService.updateApplicationIdentity(application.getId(), Arrays.asList(applicationIdentityAttributes));
+        result = applicationService.getCurrentApplicationIdentity(application.getId());
 
         // verify
         assertEquals(1, result.size());
@@ -163,11 +162,10 @@ public class ApplicationServiceBeanTest {
         applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(NAME_ATTRIBUTE, true, false) };
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                Arrays.asList(applicationIdentityAttributes));
+        applicationService.updateApplicationIdentity(application.getId(), Arrays.asList(applicationIdentityAttributes));
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        result = applicationService.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        result = applicationService.getCurrentApplicationIdentity(application.getId());
 
         // verify
         assertEquals(1, result.size());
@@ -217,7 +215,7 @@ public class ApplicationServiceBeanTest {
         entityTransaction.commit();
         entityTransaction.begin();
 
-        applicationService.removeApplication(testApplicationName);
+        applicationService.removeApplication(application.getId());
 
         entityManager.getTransaction().commit();
     }
@@ -298,20 +296,20 @@ public class ApplicationServiceBeanTest {
 
         applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false, IdScopeType.USER, null, null,
                 null, initialIdentity, false, false, false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
         ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(testApplicationOwnerName);
         List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
-        applications.add(application);
+        applications.add(testApplication);
         applicationOwner.setApplications(applications);
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
         entityTransaction.begin();
 
-        applicationService.removeApplication(testApplicationName);
+        applicationService.removeApplication(testApplication.getId());
 
         applicationService.removeApplicationOwner(testApplicationOwnerName, testAdminLogin);
     }

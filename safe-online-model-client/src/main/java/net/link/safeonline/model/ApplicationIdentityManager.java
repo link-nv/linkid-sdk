@@ -40,7 +40,7 @@ public interface ApplicationIdentityManager extends SafeOnlineService {
      * @throws ApplicationIdentityNotFoundException
      * @throws AttributeTypeNotFoundException
      */
-    void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
+    void updateApplicationIdentity(long applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
 
 }

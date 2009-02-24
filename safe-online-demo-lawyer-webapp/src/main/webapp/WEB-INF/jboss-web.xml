@@ -5,5 +5,5 @@
 <jboss-web>
 	<security-domain flushOnSessionInvalidation="true">
 		java:/jaas/demo-lawyer </security-domain>
-	<context-root> /${safe-online.demo.laywer.webapp.name}</context-root>
+	<context-root> /${safe-online.demo.laywer.webapp.url}</context-root>
 </jboss-web>

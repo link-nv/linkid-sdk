@@ -8,7 +8,7 @@ package net.link.safeonline.model.password;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.SubjectEntity;
 
@@ -19,30 +19,15 @@ public interface PasswordManager extends PasswordService {
     public static final String JNDI_BINDING = PasswordService.JNDI_PREFIX + "PasswordManagerBean/local";
 
 
-    void setPassword(SubjectEntity subject, String password)
-            throws PermissionDeniedException;
+    void registerPassword(SubjectEntity subject, String password);
 
-    void changePassword(SubjectEntity subject, String oldPassword, String newPassword)
-            throws PermissionDeniedException, DeviceNotFoundException;
+    void updatePassword(SubjectEntity subject, String oldPassword, String newPassword)
+            throws DeviceRegistrationNotFoundException, PermissionDeniedException;
 
     boolean validatePassword(SubjectEntity subject, String password)
-            throws DeviceNotFoundException;
+            throws DeviceRegistrationNotFoundException;
+
+    void removePassword(SubjectEntity subject);
 
     boolean isPasswordConfigured(SubjectEntity subject);
-
-    void removePassword(SubjectEntity subject)
-            throws DeviceNotFoundException;
-
-    boolean isDisabled(SubjectEntity subject)
-            throws DeviceNotFoundException;
-
-    /**
-     * @param subject
-     * @param disable
-     * 
-     * @throws DeviceNotFoundException
-     */
-    void disablePassword(SubjectEntity subject, boolean disable)
-            throws DeviceNotFoundException;
-
 }

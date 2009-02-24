@@ -35,7 +35,6 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -106,8 +105,8 @@ public class SubscriptionEntity implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = "application")),
-            @AttributeOverride(name = "subject", column = @Column(name = "subject")) })
+    @AttributeOverrides( { @AttributeOverride(name = SubscriptionPK.APPLICATION_ID_COLUMN, column = @Column(name = "application")),
+            @AttributeOverride(name = SubscriptionPK.SUBJECT_COLUMN, column = @Column(name = "subject")) })
     public SubscriptionPK getPk() {
 
         return pk;
@@ -202,15 +201,24 @@ public class SubscriptionEntity implements Serializable {
             return true;
         if (false == obj instanceof SubscriptionEntity)
             return false;
+
         SubscriptionEntity rhs = (SubscriptionEntity) obj;
-        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
+        return pk.equals(rhs.pk);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return pk.hashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", pk).append("ownerType", subscriptionOwnerType)
-                                                                    .toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", pk).append("ownerType", subscriptionOwnerType).toString();
     }
 
 

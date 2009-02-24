@@ -1,12 +1,17 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.lang.reflect.Array;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -17,6 +22,7 @@ import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
+import net.link.safeonline.authentication.exception.DatatypeMismatchException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
@@ -26,6 +32,7 @@ import net.link.safeonline.authentication.service.ProxyAttributeServiceRemote;
 import net.link.safeonline.dao.AttributeCacheDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.AttributeCacheEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -37,14 +44,18 @@ import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.osgi.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.CompoundBuilder;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.NodeMappingService;
@@ -61,45 +72,68 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @RemoteBinding(jndiBinding = ProxyAttributeServiceRemote.JNDI_BINDING)
 public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAttributeServiceRemote {
 
-    private static final Log     LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
-
-    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
-    private AttributeTypeService attributeTypeService;
+    private static final Log       LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO     attributeTypeDAO;
+    private AttributeTypeDAO       attributeTypeDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO         attributeDAO;
+    private AttributeDAO           attributeDAO;
 
     @EJB(mappedName = AttributeCacheDAO.JNDI_BINDING)
-    private AttributeCacheDAO    attributeCacheDAO;
+    private AttributeCacheDAO      attributeCacheDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService       subjectService;
+    private SubjectService         subjectService;
 
     @EJB(mappedName = OSGIStartable.JNDI_BINDING)
-    private OSGIStartable        osgiStartable;
+    private OSGIStartable          osgiStartable;
 
     @EJB(mappedName = ResourceAuditLogger.JNDI_BINDING)
-    private ResourceAuditLogger  resourceAuditLogger;
+    private ResourceAuditLogger    resourceAuditLogger;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger  securityAuditLogger;
+    private SecurityAuditLogger    securityAuditLogger;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService   nodeMappingService;
+    private NodeMappingService     nodeMappingService;
+
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
+    private AttributeTypeService   attributeTypeService;
+
+    private AttributeManagerLWBean attributeManager;
 
 
+    @PostConstruct
+    public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        LOG.debug("postConstruct");
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object findAttributeValue(String userId, String attributeName)
             throws PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException, SubjectNotFoundException {
 
-        LOG.debug("find attribute " + attributeName + " for " + userId);
-
         AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
-
         SubjectEntity subject = subjectService.getSubject(userId);
+
+        return findAttributeValue(subject, attributeType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Object findAttributeValue(SubjectEntity subject, AttributeTypeEntity attributeType)
+            throws PermissionDeniedException, AttributeUnavailableException, SubjectNotFoundException, AttributeTypeNotFoundException {
 
         if (attributeTypeService.isLocal(attributeType))
             return findLocalAttribute(subject, attributeType);
@@ -120,9 +154,371 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             cacheAttributeValue(value, subject, attributeType);
             return value;
         } catch (NodeNotFoundException e) {
-            String message = "node " + attributeType.getName() + " not found attribute " + attributeName;
+            String message = "node " + attributeType.getName() + " not found attribute " + attributeType.getName();
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, message);
             throw new PermissionDeniedException(message);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void createAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Object attributeValue)
+            throws DatatypeMismatchException, PermissionDeniedException, SubjectNotFoundException, NodeNotFoundException {
+
+        LOG.debug("create attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        if (attributeTypeService.isLocal(attributeType)) {
+            createLocalAttribute(subject, attributeType, attributeValue);
+        } else if (attributeType.isExternal())
+            throw new PermissionDeniedException("External attribute creation not supported");
+        else {
+            createRemoteAttribute(subject, attributeType, attributeValue);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Object attributeValue)
+            throws DatatypeMismatchException, net.link.safeonline.authentication.exception.AttributeNotFoundException,
+            PermissionDeniedException, SubjectNotFoundException, NodeNotFoundException {
+
+        LOG.debug("set attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        if (attributeTypeService.isLocal(attributeType)) {
+            setLocalAttribute(subject, attributeType, attributeValue);
+        } else if (attributeType.isExternal())
+            throw new PermissionDeniedException("External attribute modification not supported");
+        else {
+            setRemoteAttribute(subject, attributeType, attributeValue);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId,
+                                     Map<String, Object> memberValues)
+            throws net.link.safeonline.authentication.exception.AttributeNotFoundException, AttributeTypeNotFoundException,
+            DatatypeMismatchException, PermissionDeniedException, SubjectNotFoundException, NodeNotFoundException {
+
+        LOG.debug("set compound attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        if (attributeTypeService.isLocal(attributeType)) {
+            setLocalCompoundAttribute(subject, attributeType, attributeId, memberValues);
+        } else if (attributeType.isExternal())
+            throw new PermissionDeniedException("External attribute modification not supported");
+        else {
+            setRemoteCompoundAttribute(subject, attributeType, attributeId, memberValues);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeAttribute(SubjectEntity subject, AttributeTypeEntity attributeType)
+            throws net.link.safeonline.authentication.exception.AttributeNotFoundException, PermissionDeniedException,
+            SubjectNotFoundException, NodeNotFoundException {
+
+        LOG.debug("remove attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        if (attributeTypeService.isLocal(attributeType)) {
+            attributeManager.removeAttribute(attributeType, subject);
+        } else if (attributeType.isExternal())
+            throw new PermissionDeniedException("External attribute removal not supported");
+        else {
+            removeRemoteAttribute(subject, attributeType);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId)
+            throws PermissionDeniedException, net.link.safeonline.authentication.exception.AttributeNotFoundException,
+            SubjectNotFoundException, NodeNotFoundException {
+
+        LOG.debug("remove compound attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        if (attributeTypeService.isLocal(attributeType)) {
+            attributeManager.removeCompoundAttribute(attributeType, subject, attributeId);
+        } else if (attributeType.isExternal())
+            throw new PermissionDeniedException("External compound attribute removal not supported");
+        else {
+            removeRemoteCompoundAttribute(subject, attributeType, attributeId);
+        }
+    }
+
+    /**
+     * Removes a remote compound attribute for the specified subject.
+     */
+    private void removeRemoteCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId)
+            throws SubjectNotFoundException, NodeNotFoundException, PermissionDeniedException {
+
+        NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
+
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
+        try {
+            dataClient.removeAttribute(nodeMapping.getId(), attributeType.getName(), attributeId);
+        } catch (WSClientTransportException e) {
+            resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Failed to modify attribute of type " + attributeType.getName() + " for subject " + subject.getUserId());
+            throw new PermissionDeniedException(e.getMessage());
+        }
+    }
+
+    /**
+     * Removes a remote attribute for the specified subject.
+     */
+    private void removeRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType)
+            throws PermissionDeniedException, SubjectNotFoundException, NodeNotFoundException {
+
+        NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
+
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
+        try {
+            dataClient.removeAttribute(nodeMapping.getId(), attributeType.getName(), null);
+        } catch (WSClientTransportException e) {
+            resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Failed to modify attribute of type " + attributeType.getName() + " for subject " + subject.getUserId());
+            throw new PermissionDeniedException(e.getMessage());
+        }
+    }
+
+    /**
+     * Sets a local compound attribute for the specified subject and attribute type with the specified member values.
+     */
+    private void setLocalCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId,
+                                           Map<String, Object> memberValues)
+            throws net.link.safeonline.authentication.exception.AttributeNotFoundException, AttributeTypeNotFoundException,
+            DatatypeMismatchException {
+
+        // attributeId is the global UUID of the record, while AttributeIndex is the local database Id of the attribute record.
+        AttributeEntity compoundAttribute = getCompoundAttribute(subject, attributeType, attributeId);
+
+        long attributeIdx = compoundAttribute.getAttributeIndex();
+        LOG.debug("attribute idx: " + attributeIdx);
+
+        for (Map.Entry<String, Object> memberValue : memberValues.entrySet()) {
+            AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberValue.getKey());
+            AttributeEntity memberAttribute = attributeDAO.getAttribute(memberAttributeType, subject, attributeIdx);
+            setAttributeValue(memberAttribute, memberValue.getValue());
+        }
+    }
+
+    private AttributeEntity getCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId)
+            throws net.link.safeonline.authentication.exception.AttributeNotFoundException {
+
+        return attributeManager.getCompoundWhere(subject, attributeType, null, attributeId);
+    }
+
+    private void setRemoteCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId,
+                                            Map<String, Object> memberValues)
+            throws SubjectNotFoundException, NodeNotFoundException, PermissionDeniedException,
+            net.link.safeonline.authentication.exception.AttributeNotFoundException {
+
+        // create compound attribute map to pass to data-ws
+        CompoundBuilder compoundBuilder = new CompoundBuilder(memberValues.getClass());
+        compoundBuilder.setCompoundId(attributeId);
+        for (Entry<String, Object> memberValueEntry : memberValues.entrySet()) {
+            compoundBuilder.setCompoundProperty(memberValueEntry.getKey(), memberValueEntry.getValue());
+        }
+
+        NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
+
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
+        try {
+            dataClient.setAttributeValue(nodeMapping.getId(), attributeType.getName(), compoundBuilder.getCompound());
+        } catch (WSClientTransportException e) {
+            resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Failed to modify attribute of type " + attributeType.getName() + " for subject " + subject.getUserId());
+            throw new PermissionDeniedException(e.getMessage());
+        } catch (net.link.safeonline.sdk.exception.AttributeNotFoundException e) {
+            throw new net.link.safeonline.authentication.exception.AttributeNotFoundException();
+        }
+
+    }
+
+    /**
+     * Sets a local attribute for the specified subject and attribute type with the specified value.
+     */
+    private void setLocalAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Object attributeValue)
+            throws DatatypeMismatchException, net.link.safeonline.authentication.exception.AttributeNotFoundException {
+
+        if (attributeType.isMultivalued()) {
+            setMultivaluedAttribute(attributeValue, attributeType, subject);
+        } else {
+            setSinglevaluedAttribute(attributeValue, attributeType, subject);
+        }
+    }
+
+    private void setSinglevaluedAttribute(Object attributeValue, AttributeTypeEntity attributeType, SubjectEntity subject)
+            throws DatatypeMismatchException, net.link.safeonline.authentication.exception.AttributeNotFoundException {
+
+        AttributeEntity attribute = attributeDAO.getAttribute(attributeType, subject);
+
+        if (null == attributeValue) {
+            // In case the attribute value is null we cannot extract the reflection class type. But actually we don't care. Just clear all.
+            attribute.clearValues();
+            return;
+        }
+
+        setAttributeValue(attribute, attributeValue);
+    }
+
+    private void setMultivaluedAttribute(Object attributeValue, AttributeTypeEntity attributeType, SubjectEntity subject)
+            throws DatatypeMismatchException, net.link.safeonline.authentication.exception.AttributeNotFoundException {
+
+        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
+        if (attributes.isEmpty())
+            // can only update existing multivalued attributes, not create them.
+            throw new net.link.safeonline.authentication.exception.AttributeNotFoundException();
+
+        if (null == attributeValue) {
+            /*
+             * In this case we remove all but one, which we set with a null value.
+             */
+            Iterator<AttributeEntity> iterator = attributes.iterator();
+            AttributeEntity attribute = iterator.next();
+            attribute.clearValues();
+            while (iterator.hasNext()) {
+                attribute = iterator.next();
+                attributeDAO.removeAttribute(attribute);
+            }
+        } else {
+            if (false == attributeValue.getClass().isArray())
+                throw new DatatypeMismatchException();
+
+            int newSize = Array.getLength(attributeValue);
+            Iterator<AttributeEntity> iterator = attributes.iterator();
+            for (int idx = 0; idx < newSize; idx++) {
+                Object value = Array.get(attributeValue, idx);
+                AttributeEntity attribute;
+                if (iterator.hasNext()) {
+                    attribute = iterator.next();
+                } else {
+                    attribute = attributeDAO.addAttribute(attributeType, subject);
+                }
+                setAttributeValue(attribute, value);
+            }
+            while (iterator.hasNext()) {
+                AttributeEntity attribute = iterator.next();
+                attributeDAO.removeAttribute(attribute);
+            }
+        }
+    }
+
+    /**
+     * Sets a remote attribute, using the data-ws.
+     */
+    private void setRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Object attributeValue)
+            throws SubjectNotFoundException, NodeNotFoundException, PermissionDeniedException,
+            net.link.safeonline.authentication.exception.AttributeNotFoundException {
+
+        NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
+
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
+        try {
+            dataClient.setAttributeValue(nodeMapping.getId(), attributeType.getName(), attributeValue);
+        } catch (WSClientTransportException e) {
+            resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Failed to create attribute of type " + attributeType.getName() + " for subject " + subject.getUserId());
+            throw new PermissionDeniedException(e.getMessage());
+        } catch (net.link.safeonline.sdk.exception.AttributeNotFoundException e) {
+            throw new net.link.safeonline.authentication.exception.AttributeNotFoundException();
+        }
+
+    }
+
+    /**
+     * Creates a local attribute for the specified subject and attribute type with the specified value.
+     */
+    @SuppressWarnings("unchecked")
+    private void createLocalAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Object attributeValue)
+            throws DatatypeMismatchException {
+
+        if (null == attributeValue) {
+            attributeDAO.addAttribute(attributeType, subject);
+            return;
+        }
+
+        if (attributeValue instanceof Map) {
+            Map<String, Object> memberValues = (Map<String, Object>) attributeValue;
+            createCompoundAttribute(subject, attributeType, memberValues);
+            return;
+        }
+
+        Class attributeValueClass = attributeValue.getClass();
+        if (attributeType.isMultivalued()) {
+            if (false == attributeValueClass.isArray())
+                throw new DatatypeMismatchException();
+
+            int size = Array.getLength(attributeValue);
+            for (int idx = 0; idx < size; idx++) {
+                Object value = Array.get(attributeValue, idx);
+                AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
+                setAttributeValue(attribute, value);
+            }
+        } else {
+            /*
+             * Single-valued attribute.
+             */
+            AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
+            setAttributeValue(attribute, attributeValue);
+        }
+
+        return;
+    }
+
+    /**
+     * Creates a remote attribute, using the data-ws
+     */
+    private void createRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Object attributeValue)
+            throws SubjectNotFoundException, NodeNotFoundException, PermissionDeniedException {
+
+        NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
+
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
+        try {
+            dataClient.createAttribute(nodeMapping.getId(), attributeType.getName(), attributeValue);
+        } catch (WSClientTransportException e) {
+            resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Failed to create attribute of type " + attributeType.getName() + " for subject " + subject.getUserId());
+            throw new PermissionDeniedException(e.getMessage());
+        }
+
+    }
+
+    private void createCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Map<String, Object> memberValues) {
+
+        CompoundAttributeDO compoundAttribute = attributeManager.newCompound(attributeType, subject);
+        List<CompoundedAttributeTypeMemberEntity> memberTypes = attributeType.getMembers();
+        for (CompoundedAttributeTypeMemberEntity memberType : memberTypes) {
+            AttributeTypeEntity memberAttributeType = memberType.getMember();
+            Object attributeValue = memberValues.get(memberAttributeType.getName());
+
+            compoundAttribute.addAttribute(memberAttributeType, attributeValue);
+        }
+    }
+
+    private void setAttributeValue(AttributeEntity attribute, Object value)
+            throws DatatypeMismatchException {
+
+        try {
+            attribute.setValue(value);
+        } catch (ClassCastException e) {
+            throw new DatatypeMismatchException();
         }
     }
 
@@ -273,6 +669,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             throw new AttributeUnavailableException();
         } catch (net.link.safeonline.osgi.exception.SubjectNotFoundException e) {
             throw new SubjectNotFoundException();
+        } catch (Exception e) {
+            LOG.debug("unexpected exception: " + e.getClass().getName());
+            throw new AttributeUnavailableException();
         }
     }
 
@@ -503,15 +902,22 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 }
                 case COMPOUNDED: {
                     Map[] values = new Map[attributes.size()];
+                    // add parent entry in maps
+                    for (int idx = 0; idx < attributes.size(); idx++) {
+                        AttributeEntity parentAttribute = attributeDAO.findAttribute(subject, attributeType, idx);
+                        Map<String, Object> memberMap = values[idx];
+                        if (null == memberMap) {
+                            memberMap = new HashMap<String, Object>();
+                            values[idx] = memberMap;
+                        }
+                        memberMap.put(attributeType.getName(), parentAttribute.getStringValue());
+                    }
+                    // now add member entries in maps
                     for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                         AttributeTypeEntity memberAttributeType = member.getMember();
                         for (int idx = 0; idx < attributes.size(); idx++) {
                             AttributeEntity attribute = attributeDAO.findAttribute(subject, memberAttributeType, idx);
                             Map<String, Object> memberMap = values[idx];
-                            if (null == memberMap) {
-                                memberMap = new HashMap<String, Object>();
-                                values[idx] = memberMap;
-                            }
                             Object memberValue;
                             if (null != attribute) {
                                 memberValue = attribute.getValue();

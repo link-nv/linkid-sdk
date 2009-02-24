@@ -52,8 +52,13 @@ public class NodeMappingDAOBean implements NodeMappingDAO {
     public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node) {
 
         String uuid = idGenerator.generateId();
-        LOG.debug("add node mapping: subject=" + subject.getUserId() + " uuid=" + uuid + " node=" + node.getName());
-        NodeMappingEntity registeredNode = new NodeMappingEntity(subject, uuid, node);
+        return addNodeMapping(subject, node, uuid);
+    }
+
+    public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node, String id) {
+
+        LOG.debug("add node mapping: subject=" + subject.getUserId() + " uuid=" + id + " node=" + node.getName());
+        NodeMappingEntity registeredNode = new NodeMappingEntity(subject, id, node);
         entityManager.persist(registeredNode);
         return registeredNode;
     }

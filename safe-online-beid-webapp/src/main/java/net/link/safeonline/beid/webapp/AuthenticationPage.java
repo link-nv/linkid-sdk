@@ -74,7 +74,7 @@ public class AuthenticationPage extends AppletPage {
     @Override
     protected String getPageTitle() {
 
-        return localize("authenticateBeId");
+        return localize("beidAuthentication");
     }
 
     static Class<? extends Applet> getAppletClass(PageParameters parameters) {

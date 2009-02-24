@@ -205,17 +205,15 @@ public class MissingAttributesPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            // TODO: why the f#$k do I need to log the value to workaround some issue that it being null else ??
-            //
             List<Attribute> missingAttributes = ((AttributesTableModel) missingAttributesTable.getModel()).getAttributes();
-            // for (Attribute attribute : missingAttributes) {
-            // LOG.debug("missing attribute: " + attribute.getName());
-            // if (attribute.isCompounded()) {
-            // for (Attribute memberAttribute : attribute.getMembers()) {
-            // LOG.debug("missing attribute: member : " + memberAttribute.getName() + " value=" + memberAttribute.getValue());
-            // }
-            // }
-            // }
+            for (Attribute attribute : missingAttributes) {
+                LOG.debug("missing attribute: " + attribute.getName());
+                if (attribute.isCompounded()) {
+                    for (Attribute memberAttribute : attribute.getMembers()) {
+                        LOG.debug("missing attribute: member : " + memberAttribute.getName() + " value=" + memberAttribute.getValue());
+                    }
+                }
+            }
 
             parent.saveMissingAttributes(missingAttributes);
             cleanup();

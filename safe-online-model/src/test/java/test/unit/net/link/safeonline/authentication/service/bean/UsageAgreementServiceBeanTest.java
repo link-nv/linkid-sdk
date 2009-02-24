@@ -24,9 +24,12 @@ import javax.persistence.EntityManager;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.UsageAgreementServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementPK;
@@ -110,12 +113,15 @@ public class UsageAgreementServiceBeanTest {
                 entityManager);
         String ownerId = subjectService.findSubjectFromUserName("owner").getUserId();
 
+        ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, ownerId, SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
+        ApplicationEntity application = applicationService.getApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+
         UsageAgreementService usageAgreementService = EJBTestUtils.newInstance(UsageAgreementServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, ownerId, SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
 
         // operate
-        UsageAgreementEntity usageAgreement = usageAgreementService
-                                                                   .getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        UsageAgreementEntity usageAgreement = usageAgreementService.getCurrentUsageAgreement(application.getId());
 
         // verify
         assertNull(usageAgreement);
@@ -124,13 +130,11 @@ public class UsageAgreementServiceBeanTest {
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
 
-        usageAgreementService.createDraftUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION);
-        usageAgreementService.createDraftUsageAgreementText(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                Locale.ENGLISH.getLanguage(), "test-usage-agreement");
-        usageAgreementService.updateUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        usageAgreementService.createDraftUsageAgreement(application.getId(), UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION);
+        usageAgreementService.createDraftUsageAgreementText(application.getId(), Locale.ENGLISH.getLanguage(), "test-usage-agreement");
+        usageAgreementService.updateUsageAgreement(application.getId());
         entityManager.getTransaction().commit();
-        usageAgreement = usageAgreementService.getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        usageAgreement = usageAgreementService.getCurrentUsageAgreement(application.getId());
 
         // verify
         assertEquals(new Long(UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION + 1), usageAgreement.getUsageAgreementVersion());

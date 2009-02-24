@@ -12,6 +12,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import javax.jws.HandlerChain;
 import javax.jws.WebService;
 
 import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
 import net.link.safeonline.device.sdk.auth.servlet.LandingServlet;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
@@ -193,15 +195,14 @@ public class LandingServletTest {
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
         assertTrue(resultLocation.endsWith(authenticationUrl));
-        String resultApplicationId = (String) servletTestManager.getSessionAttribute("applicationId");
+        String resultApplicationId = (String) servletTestManager.getSessionAttribute(DeviceManager.APPLICATION_ID_SESSION_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationId);
-        String resultApplicationName = (String) servletTestManager.getSessionAttribute("applicationName");
-        assertEquals(applicationName, resultApplicationName);
+        assertNull(servletTestManager.getSessionAttribute(DeviceManager.APPLICATION_NAME_SESSION_ATTRIBUTE));
         AuthenticationContext authenticationContext = (AuthenticationContext) servletTestManager
                                                                                                 .getSessionAttribute(AuthenticationContext.AUTHENTICATION_CONTEXT);
         assertNotNull(authenticationContext);
         assertEquals(applicationName, authenticationContext.getApplication());
-        assertEquals(applicationName, authenticationContext.getApplicationFriendlyName());
+        assertNull(authenticationContext.getApplicationFriendlyName());
         assertEquals(wantedDevices, authenticationContext.getWantedDevices());
     }
 }

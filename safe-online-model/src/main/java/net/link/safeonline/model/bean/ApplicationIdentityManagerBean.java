@@ -50,15 +50,14 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
     private AttributeTypeDAO       attributeTypeDAO;
 
 
-    public void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> newApplicationIdentityAttributes)
+    public void updateApplicationIdentity(long applicationId, List<IdentityAttributeTypeDO> newApplicationIdentityAttributes)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException {
 
         LOG.debug("update application identity for application: " + applicationId);
 
         ApplicationEntity application = applicationDAO.getApplication(applicationId);
         long currentIdentityVersion = application.getCurrentApplicationIdentity();
-        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application,
-                currentIdentityVersion);
+        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application, currentIdentityVersion);
         List<AttributeTypeEntity> currentAttributeTypes = applicationIdentity.getAttributeTypes();
         if (null == currentAttributeTypes) {
             currentAttributeTypes = new LinkedList<AttributeTypeEntity>();
@@ -71,8 +70,13 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
             newAttributeTypes.add(newAttributeType);
         }
 
-        boolean requireNewIdentity = CollectionUtils.isProperSubCollection(currentAttributeTypes, newAttributeTypes)
-                || CollectionUtils.intersection(currentAttributeTypes, newAttributeTypes).size() == 0;
+        boolean requireNewIdentity = false;
+        if (currentAttributeTypes.isEmpty() && newAttributeTypes.isEmpty()) {
+            requireNewIdentity = false;
+        } else {
+            requireNewIdentity = CollectionUtils.isProperSubCollection(currentAttributeTypes, newAttributeTypes)
+                    || CollectionUtils.intersection(currentAttributeTypes, newAttributeTypes).size() == 0;
+        }
 
         LOG.debug("require new identity: " + requireNewIdentity);
         if (true == requireNewIdentity) {

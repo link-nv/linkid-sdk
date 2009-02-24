@@ -407,6 +407,20 @@ public abstract class AbstractInitBean implements Startable {
         }
     }
 
+    protected static class AttributeProvider {
+
+        final String applicationName;
+
+        final String attributeTypeName;
+
+
+        public AttributeProvider(String applicationName, String attributeTypeName) {
+
+            this.applicationName = applicationName;
+            this.attributeTypeName = attributeTypeName;
+        }
+    }
+
 
     protected List<Subscription>                   subscriptions;
 
@@ -420,7 +434,7 @@ public abstract class AbstractInitBean implements Startable {
 
     protected Map<X509Certificate, String>         trustedCertificates;
 
-    protected List<AttributeProviderEntity>        attributeProviders;
+    protected List<AttributeProvider>              attributeProviders;
 
     protected Map<String, List<String>>            allowedDevices;
 
@@ -465,7 +479,7 @@ public abstract class AbstractInitBean implements Startable {
         usageAgreements = new LinkedList<UsageAgreement>();
         attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
         trustedCertificates = new HashMap<X509Certificate, String>();
-        attributeProviders = new LinkedList<AttributeProviderEntity>();
+        attributeProviders = new LinkedList<AttributeProvider>();
         attributes = new LinkedList<AttributeEntity>();
         deviceClasses = new LinkedList<DeviceClass>();
         deviceClassDescriptions = new LinkedList<DeviceClassDescription>();
@@ -531,8 +545,10 @@ public abstract class AbstractInitBean implements Startable {
             initAttributes();
             initNotificationTopics();
             initNotifications();
-        } catch (SafeOnlineException e) {
-            LOG.fatal("safeonline exception", e);
+        }
+
+        catch (SafeOnlineException e) {
+            LOG.fatal("exception during abstract init:", e);
             throw new EJBException(e);
         }
     }
@@ -620,18 +636,18 @@ public abstract class AbstractInitBean implements Startable {
 
             String stringValue = attribute.getStringValue();
             AttributeEntity persistentAttribute = attributeDAO.addAttribute(attributeType, subject, stringValue);
-            persistentAttribute.setBooleanValue(attribute.getBooleanValue());
+            persistentAttribute.setValue(attribute.getBooleanValue());
         }
     }
 
     private void initAttributeProviders() {
 
-        for (AttributeProviderEntity attributeProvider : attributeProviders) {
-            String applicationName = attributeProvider.getApplicationName();
-            String attributeName = attributeProvider.getAttributeTypeName();
-            ApplicationEntity application = applicationDAO.findApplication(applicationName);
+        for (AttributeProvider attributeProvider : attributeProviders) {
+
+            ApplicationEntity application = applicationDAO.findApplication(attributeProvider.applicationName);
             if (null == application)
-                throw new EJBException("application not found: " + applicationName);
+                throw new EJBException("application not found: " + attributeProvider.applicationName);
+            String attributeName = attributeProvider.attributeTypeName;
             AttributeTypeEntity attributeType = attributeTypeDAO.findAttributeType(attributeName);
             if (null == attributeType)
                 throw new EJBException("attribute type not found: " + attributeName);
@@ -821,7 +837,8 @@ public abstract class AbstractInitBean implements Startable {
 
         for (Identity identity : identities) {
             try {
-                applicationIdentityService.updateApplicationIdentity(identity.application, Arrays.asList(identity.identityAttributes));
+                ApplicationEntity application = applicationDAO.getApplication(identity.application);
+                applicationIdentityService.updateApplicationIdentity(application.getId(), Arrays.asList(identity.identityAttributes));
             } catch (Exception e) {
                 LOG.debug("Could not update application identity");
                 throw new RuntimeException("could not update the application identity: " + e.getMessage(), e);

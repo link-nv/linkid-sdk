@@ -238,7 +238,7 @@ public class BeIdAuthenticationPortImplTest {
 
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -288,7 +288,7 @@ public class BeIdAuthenticationPortImplTest {
                 mockBeIdDeviceService.authenticate((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
                         (AuthenticationStatement) EasyMock.anyObject())).andReturn(testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -323,7 +323,7 @@ public class BeIdAuthenticationPortImplTest {
 
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -363,7 +363,7 @@ public class BeIdAuthenticationPortImplTest {
 
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -400,7 +400,7 @@ public class BeIdAuthenticationPortImplTest {
 
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -450,7 +450,7 @@ public class BeIdAuthenticationPortImplTest {
                 mockBeIdDeviceService.authenticate((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
                         (AuthenticationStatement) EasyMock.anyObject())).andThrow(new DeviceDisabledException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(testCertificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(testCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);

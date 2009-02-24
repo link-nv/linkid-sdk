@@ -8,6 +8,8 @@
 package net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client;
 
 import java.net.ConnectException;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 
 import javax.xml.ws.BindingProvider;
 
@@ -15,26 +17,22 @@ import net.lin_k.siemens.jaxws.Request;
 import net.lin_k.siemens.jaxws.Response;
 import net.lin_k.siemens.jaxws.SiemensAuthWsAcceptancePort;
 import net.lin_k.siemens.jaxws.SiemensAuthWsAcceptanceService;
+import net.link.safeonline.sdk.ws.LoggingHandler;
 import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.SiemensAuthWsAcceptanceServiceFactory;
 import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.handler.SamlTokenClientHandler;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
 
 public class SiemensAuthWsAcceptanceClientImpl implements SiemensAuthWsAcceptanceClient {
 
-    private static final Log                  LOG = LogFactory.getLog(SiemensAuthWsAcceptanceClientImpl.class);
-
     private final SiemensAuthWsAcceptancePort port;
 
     private final String                      location;
 
 
-    public SiemensAuthWsAcceptanceClientImpl(String location, AssertionType assertion) {
+    public SiemensAuthWsAcceptanceClientImpl(String location, AssertionType assertion, X509Certificate certificate, PrivateKey privateKey) {
 
         SiemensAuthWsAcceptanceService service = SiemensAuthWsAcceptanceServiceFactory.newInstance();
         port = service.getSiemensAuthWsAcceptancePort();
@@ -42,7 +40,10 @@ public class SiemensAuthWsAcceptanceClientImpl implements SiemensAuthWsAcceptanc
 
         setEndpointAddress();
 
-        SamlTokenClientHandler.addNewHandler(port, assertion);
+        SamlTokenClientHandler.addNewHandler(port, assertion, certificate, privateKey);
+
+        // TODO: disable logging when finished
+        LoggingHandler.addNewHandler(port);
 
     }
 

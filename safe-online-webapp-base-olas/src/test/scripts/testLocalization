@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+cd "${0%/*}"
+resources=(../../main/resources/messages/webapp*.properties)
+
+keys=()
+
+for i in ${!resources[@]}; do
+    resource=${resources[i]}
+
+    resourceKeys=$(cut -d= -f1 "$resource" | sort)
+    allKeys=$(sort -u <(echo "$allKeys") <(echo "$resourceKeys"))
+
+    keys+=("$resourceKeys")
+done
+
+for i in ${!resources[@]}; do
+    resource=${resources[i]}
+    resourceKeys=${keys[i]}
+
+    echo; echo
+    echo "Missing from ${resource##*/}:"
+    comm -3 <(echo "$allKeys") <(echo "$resourceKeys")
+
+done

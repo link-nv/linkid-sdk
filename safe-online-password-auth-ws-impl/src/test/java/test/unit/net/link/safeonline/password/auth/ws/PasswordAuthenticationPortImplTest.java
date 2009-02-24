@@ -240,7 +240,7 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andReturn(
                 PasswordTestNameIdentifierMappingClientImpl.testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -279,7 +279,7 @@ public class PasswordAuthenticationPortImplTest {
         // expectations
         expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andReturn(null);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -319,7 +319,7 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andThrow(
                 new DeviceDisabledException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);

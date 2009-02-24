@@ -28,13 +28,13 @@ public class ApplicationFactory {
      * Gives back the domain model object corresponding with the given application name.
      * 
      * @param applicationContext
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      */
-    public static Application getApplication(ApplicationContext applicationContext, String applicationName)
+    public static Application getApplication(ApplicationContext applicationContext, long applicationId)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity applicationEntity = applicationContext.getApplicationDAO().getApplication(applicationName);
+        ApplicationEntity applicationEntity = applicationContext.getApplicationDAO().getApplication(applicationId);
         Application application = new Application(applicationEntity);
         return application;
     }

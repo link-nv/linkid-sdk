@@ -37,8 +37,6 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-
 
 @Entity
 @Table(name = "hist")
@@ -150,8 +148,18 @@ public class HistoryEntity implements Serializable {
             return true;
         if (false == obj instanceof HistoryEntity)
             return false;
+
         HistoryEntity rhs = (HistoryEntity) obj;
-        return new EqualsBuilder().append(id, rhs.id).isEquals();
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return (int) id;
     }
 
 

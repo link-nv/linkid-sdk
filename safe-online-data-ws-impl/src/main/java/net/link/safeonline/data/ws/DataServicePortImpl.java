@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -43,13 +44,17 @@ import liberty.util._2006_08.ResponseType;
 import liberty.util._2006_08.StatusType;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.DatatypeMismatchException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.ws.common.WebServiceConstants;
+import net.link.safeonline.ws.util.CertificateDomainException;
+import net.link.safeonline.ws.util.CertificateValidatorHandler;
+import net.link.safeonline.ws.util.CertificateValidatorHandler.CertificateDomain;
 import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
@@ -78,12 +83,23 @@ public class DataServicePortImpl implements DataServicePort {
     @EJB(mappedName = AttributeProviderService.JNDI_BINDING)
     private AttributeProviderService attributeProviderService;
 
+    @EJB(mappedName = NodeAttributeService.JNDI_BINDING)
+    private NodeAttributeService     nodeAttributeService;
+
     @Resource
     private WebServiceContext        context;
+
+    private CertificateDomain        certificateDomain;
 
 
     @PostConstruct
     public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        LOG.debug("postConstruct");
 
         LOG.debug("ready");
     }
@@ -91,86 +107,92 @@ public class DataServicePortImpl implements DataServicePort {
     public CreateResponseType create(CreateType request) {
 
         LOG.debug("create");
-        List<CreateItemType> createItems = request.getCreateItem();
-        if (createItems.size() > 1) {
-            CreateResponseType failedResponseType = createFailedCreateResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
-            return failedResponseType;
+
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedCreateResponse(SecondLevelStatusCode.INVALID_DATA);
         }
+
+        List<CreateItemType> createItems = request.getCreateItem();
+        if (createItems.size() > 1)
+            return createFailedCreateResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
         CreateItemType createItem = createItems.get(0);
 
         String objectType = createItem.getObjectType();
-        if (null == objectType) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
-            return failedResponse;
-        }
+        if (null == objectType)
+            return createFailedCreateResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
+
         if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE.equals(objectType)) {
             LOG.debug("unsupported object type: " + objectType);
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
-            return failedResponse;
+            return createFailedCreateResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
         }
 
-        String userId;
         try {
-            userId = TargetIdentityHandler.getTargetIdentity(context);
-        } catch (TargetIdentityException e) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
-            return failedResponse;
+            String userId = TargetIdentityHandler.getTargetIdentity(context);
+            AppDataType appData = createItem.getNewData();
+            AttributeType attribute = appData.getAttribute();
+            String attributeName = attribute.getName();
+
+            Object attributeValue;
+            if (isCompoundAttribute(attribute)) {
+                attributeValue = getCompoundMemberValues(attribute);
+            } else {
+                attributeValue = getValueObjectFromAttribute(attribute);
+            }
+
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                attributeProviderService.createAttribute(userId, attributeName, attributeValue);
+            } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                nodeAttributeService.createAttribute(userId, attributeName, attributeValue);
+            } else
+                return createFailedCreateResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+
+            StatusType status = new StatusType();
+            status.setCode(TopLevelStatusCode.OK.getCode());
+            CreateResponseType createResponse = new CreateResponseType();
+            createResponse.setStatus(status);
+
+            return createResponse;
         }
 
-        AppDataType appData = createItem.getNewData();
-        AttributeType attribute = appData.getAttribute();
-        String attributeName = attribute.getName();
-
-        Object attributeValue;
-        if (isCompoundAttribute(attribute)) {
-            attributeValue = getCompoundMemberValues(attribute);
-
-        } else {
-            attributeValue = getValueObjectFromAttribute(attribute);
-        }
-        try {
-            attributeProviderService.createAttribute(userId, attributeName, attributeValue);
+        catch (TargetIdentityException e) {
+            return createFailedCreateResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
         } catch (SubjectNotFoundException e) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
-            return failedResponse;
+            return createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
         } catch (AttributeTypeNotFoundException e) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
-            return failedResponse;
+            return createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
         } catch (PermissionDeniedException e) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
-            return failedResponse;
+            return createFailedCreateResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
         } catch (DatatypeMismatchException e) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.INVALID_DATA);
-            return failedResponse;
+            return createFailedCreateResponse(SecondLevelStatusCode.INVALID_DATA);
+        } catch (NodeNotFoundException e) {
+            return createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "NodeNotFound");
         }
-
-        CreateResponseType createResponse = new CreateResponseType();
-        StatusType status = new StatusType();
-        status.setCode(TopLevelStatusCode.OK.getCode());
-        createResponse.setStatus(status);
-        return createResponse;
     }
 
     public DeleteResponseType delete(DeleteType request) {
 
         LOG.debug("delete");
 
-        List<DeleteItemType> deleteItems = request.getDeleteItem();
-        if (deleteItems.size() > 1) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
-            return failedResponse;
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedDeleteResponse(SecondLevelStatusCode.INVALID_DATA);
         }
+
+        List<DeleteItemType> deleteItems = request.getDeleteItem();
+        if (deleteItems.size() > 1)
+            return createFailedDeleteResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
         DeleteItemType deleteItem = deleteItems.get(0);
 
         String objectType = deleteItem.getObjectType();
-        if (null == objectType) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
-            return failedResponse;
-        }
+        if (null == objectType)
+            return createFailedDeleteResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
+
         if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE.equals(objectType)) {
             LOG.debug("unsupported object type: " + objectType);
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
-            return failedResponse;
+            return createFailedDeleteResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
         }
 
         SelectType select = deleteItem.getSelect();
@@ -180,185 +202,171 @@ public class DataServicePortImpl implements DataServicePort {
         }
         String attributeName = select.getValue();
 
-        String userId;
         try {
-            userId = TargetIdentityHandler.getTargetIdentity(context);
-        } catch (TargetIdentityException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
-            return failedResponse;
+            String userId = TargetIdentityHandler.getTargetIdentity(context);
+            String attributeId = select.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
+
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                if (null == attributeId) {
+                    attributeProviderService.removeAttribute(userId, attributeName);
+                } else {
+                    attributeProviderService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
+                }
+            } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                if (null == attributeId) {
+                    nodeAttributeService.removeAttribute(userId, attributeName);
+                } else {
+                    nodeAttributeService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
+                }
+            } else
+                return createFailedDeleteResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+
+            StatusType status = new StatusType();
+            status.setCode(TopLevelStatusCode.OK.getCode());
+            DeleteResponseType deleteResponse = new DeleteResponseType();
+            deleteResponse.setStatus(status);
+
+            return deleteResponse;
         }
 
-        String attributeId = select.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
-        try {
-            if (null == attributeId) {
-                attributeProviderService.removeAttribute(userId, attributeName);
-            } else {
-                attributeProviderService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
-            }
+        catch (TargetIdentityException e) {
+            return createFailedDeleteResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
         } catch (SubjectNotFoundException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
-            return failedResponse;
+            return createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
         } catch (AttributeTypeNotFoundException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
-            return failedResponse;
+            return createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
         } catch (PermissionDeniedException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
-            return failedResponse;
+            return createFailedDeleteResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
         } catch (AttributeNotFoundException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
-            return failedResponse;
+            return createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
+        } catch (NodeNotFoundException e) {
+            return createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "NodeNotFound");
         }
-
-        DeleteResponseType deleteResponse = new DeleteResponseType();
-        StatusType status = new StatusType();
-        status.setCode(TopLevelStatusCode.OK.getCode());
-        deleteResponse.setStatus(status);
-        return deleteResponse;
     }
 
     public ModifyResponseType modify(ModifyType request) {
 
         LOG.debug("modify");
+
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA);
+        }
+
         List<ModifyItemType> modifyItems = request.getModifyItem();
-        if (modifyItems.size() > 1) {
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
-            return failedResponse;
-        }
-        if (0 == modifyItems.size()) {
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.EMPTY_REQUEST, "missing ModifyItem");
-            return failedResponse;
-        }
+        if (modifyItems.size() > 1)
+            return createFailedModifyResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
+
+        if (0 == modifyItems.size())
+            return createFailedModifyResponse(SecondLevelStatusCode.EMPTY_REQUEST, "missing ModifyItem");
         ModifyItemType modifyItem = modifyItems.get(0);
 
         String objectType = modifyItem.getObjectType();
-        if (null == objectType) {
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
-            return failedResponse;
-        }
-
-        SelectType select = modifyItem.getSelect();
-        if (null == select) {
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_SELECT);
-            return failedResponse;
-        }
-        String attributeName = select.getValue();
-        String userId;
-        try {
-            userId = TargetIdentityHandler.getTargetIdentity(context);
-        } catch (TargetIdentityException e) {
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
-            return failedResponse;
-        }
-        AppDataType newData = modifyItem.getNewData();
-        if (null == newData) {
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_NEW_DATA_ELEMENT);
-            return failedResponse;
-        }
-        AttributeType attribute = newData.getAttribute();
-
-        if (false == attributeName.equals(attribute.getName())) {
-            /*
-             * Maybe we should drop the usage of Select all together.
-             */
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA,
-                    "Select and AttributeName do not correspond");
-            return failedResponse;
-        }
+        if (null == objectType)
+            return createFailedModifyResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
 
         if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE.equals(objectType)) {
             LOG.debug("unsupported object type: " + objectType);
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE, objectType);
-            return failedResponse;
+            return createFailedModifyResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE, objectType);
         }
 
-        /*
-         * Different strategies are possible to go from the SAML attribute to the AttributeProviderService attribute data object. Here we
-         * have chosen not to multiplex the SAML attribute to a generic attribute data object when invoking the setAttribute. Let's just
-         * call a setAttribute method dedicated for compounded attribute records.
-         */
-        if (isCompoundAttribute(attribute)) {
-            String attributeId = findAttributeId(attribute);
-            if (null == attributeId) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "AttributeId required");
-                return failedResponse;
-            }
-            Map<String, Object> memberValues = getCompoundMemberValues(attribute);
-            try {
-                attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
-            } catch (SubjectNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
-                return failedResponse;
-            } catch (AttributeTypeNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                        "AttributeTypeNotFound");
-                return failedResponse;
-            } catch (PermissionDeniedException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
-                return failedResponse;
-            } catch (DatatypeMismatchException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
-                return failedResponse;
-            } catch (AttributeNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
-                return failedResponse;
-            }
-        } else {
-            Object attributeValue = getValueObjectFromAttribute(attribute);
+        SelectType select = modifyItem.getSelect();
+        if (null == select)
+            return createFailedModifyResponse(SecondLevelStatusCode.MISSING_SELECT);
 
-            try {
-                attributeProviderService.setAttribute(userId, attributeName, attributeValue);
-            } catch (SubjectNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
-                return failedResponse;
-            } catch (AttributeTypeNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                        "AttributeTypeNotFound");
-                return failedResponse;
-            } catch (PermissionDeniedException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
-                return failedResponse;
-            } catch (AttributeNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
-                return failedResponse;
-            } catch (DatatypeMismatchException e) {
-                LOG.error("datatype mismatch. received data of type: " + attributeValue.getClass().getName());
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
-                return failedResponse;
+        AppDataType newData = modifyItem.getNewData();
+        if (null == newData)
+            return createFailedModifyResponse(SecondLevelStatusCode.MISSING_NEW_DATA_ELEMENT);
+
+        String attributeName = select.getValue();
+        AttributeType attribute = newData.getAttribute();
+        if (false == attributeName.equals(attribute.getName()))
+            /* TODO: Maybe we should drop the usage of Select all together. */
+            return createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "Select and AttributeName do not correspond");
+
+        try {
+            String userId = TargetIdentityHandler.getTargetIdentity(context);
+
+            /*
+             * Different strategies are possible to go from the SAML attribute to the AttributeProviderService attribute data object. Here
+             * we have chosen not to multiplex the SAML attribute to a generic attribute data object when invoking the setAttribute. Let's
+             * just call a setAttribute method dedicated for compounded attribute records.
+             */
+            if (isCompoundAttribute(attribute)) {
+                String attributeId = findAttributeId(attribute);
+                if (null == attributeId)
+                    return createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "AttributeId required");
+
+                Map<String, Object> memberValues = getCompoundMemberValues(attribute);
+
+                if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                    attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
+                } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                    nodeAttributeService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
+                } else
+                    return createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
             }
+
+            else {
+                Object attributeValue = getValueObjectFromAttribute(attribute);
+
+                if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                    attributeProviderService.setAttribute(userId, attributeName, attributeValue);
+                } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                    nodeAttributeService.setAttribute(userId, attributeName, attributeValue);
+                } else
+                    return createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+            }
+
+            StatusType status = new StatusType();
+            status.setCode(TopLevelStatusCode.OK.getCode());
+            ModifyResponseType modifyResponse = new ModifyResponseType();
+            modifyResponse.setStatus(status);
+
+            return modifyResponse;
         }
 
-        ModifyResponseType modifyResponse = new ModifyResponseType();
-        StatusType status = new StatusType();
-        status.setCode(TopLevelStatusCode.OK.getCode());
-        modifyResponse.setStatus(status);
-        return modifyResponse;
+        catch (TargetIdentityException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
+        } catch (SubjectNotFoundException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
+        } catch (AttributeTypeNotFoundException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
+        } catch (PermissionDeniedException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+        } catch (DatatypeMismatchException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
+        } catch (AttributeNotFoundException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
+        } catch (NodeNotFoundException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "NodeNotFound");
+        }
     }
 
     private Map<String, Object> getCompoundMemberValues(AttributeType attribute) {
 
-        Map<String, Object> compoundMemberValues = new HashMap<String, Object>();
         AttributeType compoundAttribute = (AttributeType) attribute.getAttributeValue().get(0);
-        List<Object> attributeValues = compoundAttribute.getAttributeValue();
-        for (Object attributeValue : attributeValues) {
+        Map<String, Object> compoundMemberValues = new HashMap<String, Object>();
+
+        for (Object attributeValue : compoundAttribute.getAttributeValue()) {
             AttributeType memberAttribute = (AttributeType) attributeValue;
-            String memberName = memberAttribute.getName();
+
             List<Object> memberValues = memberAttribute.getAttributeValue();
-            Object memberValue;
-            if (memberValues.isEmpty()) {
-                memberValue = null;
-            } else {
-                memberValue = memberValues.get(0);
-            }
+            String memberName = memberAttribute.getName();
+            Object memberValue = memberValues.isEmpty()? null: memberValues.get(0);
+
             compoundMemberValues.put(memberName, convertXMLDatatypeToServiceDatatype(memberValue));
         }
+
         return compoundMemberValues;
     }
 
     private String findAttributeId(AttributeType attribute) {
 
-        AttributeType compAttribute = (AttributeType) attribute.getAttributeValue().get(0);
-        String attributeId = compAttribute.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
-        return attributeId;
+        AttributeType compoundAttribute = (AttributeType) attribute.getAttributeValue().get(0);
+
+        return compoundAttribute.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
     }
 
     private boolean isCompoundAttribute(AttributeType attribute) {
@@ -366,60 +374,127 @@ public class DataServicePortImpl implements DataServicePort {
         List<Object> attributeValues = attribute.getAttributeValue();
         if (attributeValues.isEmpty())
             return false;
+
         Object attributeValue = attributeValues.get(0);
         if (attributeValue instanceof AttributeType)
             return true;
+
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public QueryResponseType query(QueryType request) {
 
         LOG.debug("query");
 
-        List<QueryItemType> queryItems = request.getQueryItem();
-        if (queryItems.size() > 1) {
-            LOG.debug("query items > 1");
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
-            return failedResponse;
-        }
-        if (0 == queryItems.size()) {
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.EMPTY_REQUEST, "No Query Items");
-            return failedResponse;
-        }
-        QueryItemType queryItem = queryItems.get(0);
-        if (null != queryItem.getCount()) {
-            LOG.debug("pagination not supported");
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.PAGINATION_NOT_SUPPORTED);
-            return failedResponse;
-        }
-        String objectType = queryItem.getObjectType();
-        if (null == objectType) {
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
-            return failedResponse;
-        }
-        if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE.equals(objectType)) {
-            LOG.debug("unsupported object type: " + objectType);
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
-            return failedResponse;
-        }
-        SelectType select = queryItem.getSelect();
-        if (null == select) {
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.MISSING_SELECT);
-            return failedResponse;
-        }
-        String userId;
         try {
-            userId = TargetIdentityHandler.getTargetIdentity(context);
-        } catch (TargetIdentityException e) {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
+        }
+
+        List<QueryItemType> queryItems = request.getQueryItem();
+        if (queryItems.size() > 1)
+            return createFailedQueryResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
+
+        if (0 == queryItems.size())
+            return createFailedQueryResponse(SecondLevelStatusCode.EMPTY_REQUEST, "No Query Items");
+
+        QueryItemType queryItem = queryItems.get(0);
+        if (null != queryItem.getCount())
+            return createFailedQueryResponse(SecondLevelStatusCode.PAGINATION_NOT_SUPPORTED);
+
+        String objectType = queryItem.getObjectType();
+        if (null == objectType)
+            return createFailedQueryResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
+
+        if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE.equals(objectType))
+            return createFailedQueryResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
+
+        SelectType select = queryItem.getSelect();
+        if (null == select)
+            return createFailedQueryResponse(SecondLevelStatusCode.MISSING_SELECT);
+
+        try {
+            String userId = TargetIdentityHandler.getTargetIdentity(context);
+            String attributeName = select.getValue();
+            LOG.debug("query user \"" + userId + "\" for attribute " + attributeName);
+
+            Object attributeValues = null;
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                attributeValues = attributeProviderService.getAttributes(userId, attributeName);
+            } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                attributeValues = nodeAttributeService.getAttributes(userId, attributeName);
+            } else
+                return createFailedQueryResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+
+            StatusType status = new StatusType();
+            status.setCode(TopLevelStatusCode.OK.getCode());
+            QueryResponseType queryResponse = new QueryResponseType();
+            queryResponse.setStatus(status);
+
+            List<DataType> dataList = queryResponse.getData();
+            DataType data = new DataType();
+            dataList.add(data);
+
+            /*
+             * Notice that value can be null. In that case we send an empty Data element. No Data element means that the attribute provider
+             * still needs to create the attribute entity itself.
+             */
+            if (null != attributeValues) {
+                AttributeType attribute = new AttributeType();
+                data.setAttribute(attribute);
+                attribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
+                attribute.setName(attributeName);
+
+                /*
+                 * Communicate the 'type' meta-data via some XML attributes on the Attribute XML SAML element.
+                 */
+                if (attributeValues.getClass().isArray()) {
+                    Map<QName, String> otherAttributes = attribute.getOtherAttributes();
+                    otherAttributes.put(WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.TRUE.toString());
+
+                    for (Object attributeValue : (Object[]) attributeValues) {
+                        if (attributeValue instanceof Map) {
+                            // compound
+                            Map<String, Object> attributeMap = (Map<String, Object>) attributeValue;
+
+                            AttributeType compoundAttribute = new AttributeType();
+                            compoundAttribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
+                            compoundAttribute.setName(attributeName);
+                            // add compound parent id
+                            compoundAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID,
+                                    (String) attributeMap.get(attributeName));
+                            // add compound members
+                            List<Object> memberAttributeValues = compoundAttribute.getAttributeValue();
+                            for (Entry<String, Object> attributeMapEntry : attributeMap.entrySet()) {
+                                AttributeType memberAttribute = new AttributeType();
+                                memberAttribute.setNameFormat(WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE);
+                                memberAttribute.setName(attributeMapEntry.getKey());
+
+                                memberAttribute.getAttributeValue().add(attributeMapEntry.getValue());
+                                memberAttributeValues.add(memberAttribute);
+                            }
+
+                            attribute.getAttributeValue().add(compoundAttribute);
+                        } else {
+                            // non-compound multivalued
+                            attribute.getAttributeValue().add(attributeValue);
+                        }
+                    }
+
+                } else {
+                    // single-valued
+                    attribute.getAttributeValue().add(attributeValues);
+                }
+            }
+            return queryResponse;
+        }
+
+        catch (TargetIdentityException e) {
             QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.MISSING_CREDENTIALS,
                     "no TargetIdentity found");
             return failedResponse;
-        }
-        String attributeName = select.getValue();
-        LOG.debug("query user \"" + userId + "\" for attribute " + attributeName);
-        List<AttributeEntity> attributeList;
-        try {
-            attributeList = attributeProviderService.getAttributes(userId, attributeName);
         } catch (AttributeTypeNotFoundException e) {
             QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
             return failedResponse;
@@ -429,83 +504,24 @@ public class DataServicePortImpl implements DataServicePort {
         } catch (SubjectNotFoundException e) {
             QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
             return failedResponse;
+        } catch (EJBException e) {
+            return createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
+        } catch (AttributeUnavailableException e) {
+            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeUnavailable");
+            return failedResponse;
         }
-        QueryResponseType queryResponse = new QueryResponseType();
-        StatusType status = new StatusType();
-        status.setCode(TopLevelStatusCode.OK.getCode());
-        queryResponse.setStatus(status);
-        List<DataType> dataList = queryResponse.getData();
-        DataType data = new DataType();
-        dataList.add(data);
-        /*
-         * Notice that value can be null. In that case we send an empty Data element. No Data element means that the attribute provider
-         * still needs to create the attribute entity itself.
-         */
-        if (false == attributeList.isEmpty()) {
-            AttributeType attribute = new AttributeType();
-            data.setAttribute(attribute);
-            attribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
-            attribute.setName(attributeName);
-
-            /*
-             * Communicate the 'type' meta-data via some XML attributes on the Attribute XML SAML element.
-             */
-            AttributeTypeEntity attributeType = attributeList.get(0).getAttributeType();
-            if (attributeType.isMultivalued()) {
-                Map<QName, String> otherAttributes = attribute.getOtherAttributes();
-                otherAttributes.put(WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.TRUE.toString());
-            }
-
-            for (AttributeEntity attributeEntity : attributeList) {
-                if (attributeEntity.getAttributeType().isCompounded()) {
-                    AttributeType compoundAttribute = new AttributeType();
-                    compoundAttribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
-                    compoundAttribute.setName(attributeName);
-                    compoundAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID,
-                            attributeEntity.getStringValue());
-                    List<Object> memberAttributeValues = compoundAttribute.getAttributeValue();
-                    for (AttributeEntity memberAttributeEntity : attributeEntity.getMembers()) {
-                        AttributeType memberAttribute = new AttributeType();
-                        AttributeTypeEntity memberAttributeType = memberAttributeEntity.getAttributeType();
-                        memberAttribute.setNameFormat(WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE);
-                        memberAttribute.setName(memberAttributeType.getName());
-                        setSamlAttributeValue(memberAttributeEntity, memberAttribute);
-                        memberAttributeValues.add(memberAttribute);
-                    }
-
-                    attribute.getAttributeValue().add(compoundAttribute);
-                } else {
-                    Object encodedValue;
-                    try {
-                        encodedValue = attributeEntity.getValue();
-                        attribute.getAttributeValue().add(encodedValue);
-                    } catch (EJBException e) {
-                        QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
-                        return failedResponse;
-                    }
-                }
-            }
-        }
-        return queryResponse;
-    }
-
-    private void setSamlAttributeValue(AttributeEntity attribute, AttributeType targetAttribute) {
-
-        List<Object> attributeValues = targetAttribute.getAttributeValue();
-        Object value = attribute.getValue();
-        attributeValues.add(value);
     }
 
     private QueryResponseType createFailedQueryResponse(SecondLevelStatusCode secondLevelStatusCode) {
 
-        QueryResponseType failedQueryResponse = createFailedQueryResponse(secondLevelStatusCode, null);
-        return failedQueryResponse;
+        return createFailedQueryResponse(secondLevelStatusCode, null);
     }
 
     private CreateResponseType createFailedCreateResponse(SecondLevelStatusCode secondLevelStatusCode, String comment) {
 
         CreateResponseType createResponse = new CreateResponseType();
         setResponseStatus(createResponse, secondLevelStatusCode, comment);
+
         return createResponse;
     }
 
@@ -513,38 +529,38 @@ public class DataServicePortImpl implements DataServicePort {
 
         DeleteResponseType deleteResponse = new DeleteResponseType();
         setResponseStatus(deleteResponse, secondLevelStatusCode, comment);
+
         return deleteResponse;
     }
 
     private DeleteResponseType createFailedDeleteResponse(SecondLevelStatusCode secondLevelStatusCode) {
 
-        DeleteResponseType deleteResponse = createFailedDeleteResponse(secondLevelStatusCode, null);
-        return deleteResponse;
+        return createFailedDeleteResponse(secondLevelStatusCode, null);
     }
 
     private ModifyResponseType createFailedModifyResponse(SecondLevelStatusCode secondLevelStatusCode, String comment) {
 
         ModifyResponseType modifyResponse = new ModifyResponseType();
         setResponseStatus(modifyResponse, secondLevelStatusCode, comment);
+
         return modifyResponse;
     }
 
     private ModifyResponseType createFailedModifyResponse(SecondLevelStatusCode secondLevelStatusCode) {
 
-        ModifyResponseType modifyResponse = createFailedModifyResponse(secondLevelStatusCode, null);
-        return modifyResponse;
+        return createFailedModifyResponse(secondLevelStatusCode, null);
     }
 
     private CreateResponseType createFailedCreateResponse(SecondLevelStatusCode secondLevelStatusCode) {
 
-        CreateResponseType createResponse = createFailedCreateResponse(secondLevelStatusCode, null);
-        return createResponse;
+        return createFailedCreateResponse(secondLevelStatusCode, null);
     }
 
     private QueryResponseType createFailedQueryResponse(SecondLevelStatusCode secondLevelStatusCode, String comment) {
 
         QueryResponseType failedQueryResponse = new QueryResponseType();
         setResponseStatus(failedQueryResponse, secondLevelStatusCode, comment);
+
         return failedQueryResponse;
     }
 
@@ -553,8 +569,10 @@ public class DataServicePortImpl implements DataServicePort {
         StatusType status = new StatusType();
         status.setCode(TopLevelStatusCode.FAILED.getCode());
         response.setStatus(status);
+
         if (null != secondLevelStatusCode) {
             List<StatusType> secondLevelStatuses = status.getStatus();
+
             StatusType secondLevelStatus = new StatusType();
             secondLevelStatus.setCode(secondLevelStatusCode.getCode());
             secondLevelStatus.setComment(comment);
@@ -567,35 +585,28 @@ public class DataServicePortImpl implements DataServicePort {
         List<Object> attributeValues = attribute.getAttributeValue();
         if (attributeValues.isEmpty())
             return null;
-        if (false == Boolean.TRUE.toString().equals(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
-            /*
-             * Single-valued attribute;
-             */
-            Object value = attributeValues.get(0);
-            return convertXMLDatatypeToServiceDatatype(value);
-        }
-        /*
-         * Multivalued attribute.
-         */
-        int size = attributeValues.size();
-        /*
-         * We retrieve the component type for the array from the first attribute value element.
-         */
+
+        if (false == Boolean.parseBoolean(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE)))
+            // Single-valued attribute
+            return convertXMLDatatypeToServiceDatatype(attributeValues.get(0));
+
+        // Multivalued attribute.
+        // We retrieve the component type for the array from the first attribute value element.
         Object firstAttributeValue = convertXMLDatatypeToServiceDatatype(attributeValues.get(0));
-        /*
-         * We're depending on xsi:type here to pass the type information from client to server.
-         */
+        int size = attributeValues.size();
+
+        // We're depending on xsi:type here to pass the type information from client to server.
         Class<?> componentType = firstAttributeValue.getClass();
-        Object result = Array.newInstance(componentType, size);
-        for (int idx = 0; idx < size; idx++) {
-            Object value = convertXMLDatatypeToServiceDatatype(attributeValues.get(idx));
-            Array.set(result, idx, value);
+        Object valuesArray = Array.newInstance(componentType, size);
+        for (int i = 0; i < size; ++i) {
+            Array.set(valuesArray, i, convertXMLDatatypeToServiceDatatype(attributeValues.get(i)));
         }
-        return result;
+
+        return valuesArray;
     }
 
     /**
-     * Convertor to go from XML datatypes to Service datatypes. The Service layer doesn't eat XMLGregorianCalendars.
+     * Converter to go from XML datatypes to Service datatypes. The Service layer doesn't eat XMLGregorianCalendars.
      * 
      * @param value
      */
@@ -603,10 +614,12 @@ public class DataServicePortImpl implements DataServicePort {
 
         if (null == value)
             return null;
+
         if (value instanceof XMLGregorianCalendar) {
             XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
             return calendar.toGregorianCalendar().getTime();
         }
+
         return value;
     }
 }

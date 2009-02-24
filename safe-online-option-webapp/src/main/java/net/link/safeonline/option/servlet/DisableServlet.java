@@ -1,10 +1,3 @@
-/*
- * SafeOnline project.
- *
- * Copyright 2006 Lin.k N.V. All rights reserved.
- * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
- */
-
 package net.link.safeonline.option.servlet;
 
 import java.io.IOException;
@@ -15,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -68,32 +60,31 @@ public class DisableServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        String attribute = DeviceOperationManager.getAttribute(request.getSession());
+        String imei = DeviceOperationManager.getAttribute(request.getSession());
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        LOG.debug("disable option device: " + attribute + " for user " + userId);
+        LOG.debug("disable option device: " + imei + " for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
 
         try {
-            optionDeviceService.disable(userId, attribute);
+            optionDeviceService.disable(userId, imei);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.
             protocolContext.setSuccess(true);
-        } catch (DeviceNotFoundException e) {
-            LOG.error("device not found", e);
-        } catch (SubjectNotFoundException e) {
+        }
+
+        catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
-            String message = "device registration \"" + attribute + "\" not found";
+            String message = "device registration \"" + imei + "\" not found";
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         }
 
         response.sendRedirect(deviceExitPath);
-
     }
 }

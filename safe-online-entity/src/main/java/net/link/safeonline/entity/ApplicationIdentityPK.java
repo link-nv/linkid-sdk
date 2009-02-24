@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -19,13 +20,16 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Embeddable
 public class ApplicationIdentityPK implements Serializable {
 
-    public static final long  INITIAL_IDENTITY_VERSION = 1;
+    private static final long  serialVersionUID         = 1L;
 
-    private static final long serialVersionUID         = 1L;
+    public static final long   INITIAL_IDENTITY_VERSION = 1;
 
-    private String            application;
+    public static final String APPLICATION_ID_COLUMN    = "applicationId";
+    public static final String IDENTITY_VERSION_COLUMN  = "identityVersion";
 
-    private long              identityVersion;
+    private long               applicationId;
+
+    private long               identityVersion;
 
 
     public ApplicationIdentityPK() {
@@ -33,28 +37,30 @@ public class ApplicationIdentityPK implements Serializable {
         // empty
     }
 
-    public ApplicationIdentityPK(String application, long identityVersion) {
+    public ApplicationIdentityPK(long applicationId, long identityVersion) {
 
-        this.application = application;
+        this.applicationId = applicationId;
         this.identityVersion = identityVersion;
     }
 
     public ApplicationIdentityPK(ApplicationEntity application) {
 
-        this.application = application.getName();
+        applicationId = application.getId();
         identityVersion = INITIAL_IDENTITY_VERSION;
     }
 
-    public String getApplication() {
+    @Column(name = APPLICATION_ID_COLUMN)
+    public long getApplicationId() {
 
-        return application;
+        return applicationId;
     }
 
-    public void setApplication(String application) {
+    public void setApplicationId(long applicationId) {
 
-        this.application = application;
+        this.applicationId = applicationId;
     }
 
+    @Column(name = IDENTITY_VERSION_COLUMN)
     public long getIdentityVersion() {
 
         return identityVersion;
@@ -73,18 +79,18 @@ public class ApplicationIdentityPK implements Serializable {
         if (false == obj instanceof ApplicationIdentityPK)
             return false;
         ApplicationIdentityPK rhs = (ApplicationIdentityPK) obj;
-        return new EqualsBuilder().append(application, rhs.application).append(identityVersion, rhs.identityVersion).isEquals();
+        return new EqualsBuilder().append(applicationId, rhs.applicationId).append(identityVersion, rhs.identityVersion).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(application).append(identityVersion).toHashCode();
+        return new HashCodeBuilder().append(applicationId).append(identityVersion).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", application).append("identityVersion", identityVersion).toString();
+        return new ToStringBuilder(this).append("applicationId", applicationId).append("identityVersion", identityVersion).toString();
     }
 }

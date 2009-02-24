@@ -26,7 +26,6 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -112,16 +111,25 @@ public class ApplicationScopeIdEntity implements Serializable {
             return true;
         if (false == obj instanceof ApplicationScopeIdEntity)
             return false;
+
         ApplicationScopeIdEntity rhs = (ApplicationScopeIdEntity) obj;
-        return new EqualsBuilder().append(id, rhs.id).isEquals();
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("subject", subject)
-                                                                    .append("application", application).append("id", id)
-                                                                    .toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("subject", subject).append("application", application).append(
+                "id", id).toString();
     }
 
 

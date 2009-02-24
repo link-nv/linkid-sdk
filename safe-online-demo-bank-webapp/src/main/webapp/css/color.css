@@ -9,46 +9,63 @@
  *
  */
 
+/* Schema:
+ *
+ * A=515699 // Link Fore
+ * B=989FB0 // Link Hover Back
+ * C=A6A6A6 // Border
+ * D=CFD9F0 // Header + Table Back
+ * E=000099 // Main Fore
+ *
+ */
+
 
 
 /* ==================================================================
  * Section: Basic HTML
  */
 
+body {
+    color:              #000099; /* E */
+    background:         white;
+}
 h1, h2 {
-	color:              #000099;
+    color:              #000099; /* E */
 }
 a, a:link, a:visited, input[type=submit] {
-    color:              #3a3aba;
+    color:              #515699; /* A */
 }
-a:active {
-    color:              #ea8a8a;
+a:active, a:hover {
+    color:              #989FB0; /* B */
 }
 table {
-    background:         #f3f3ff;
-    border-color:       #eaeaea;
-}
-table th {
-    background:         #e3e3ff;
+    background:         #CFD9F0; /* D */
+    border-color:       #CFD9F0; /* D */
 }
 table caption {
-    border-color:       #eaeaea;
+    background:         white;
+    border-color:       #CFD9F0; /* D */
+    color:              black;
 }
-table a:hover, input[type=submit]:hover {
-    color:              #2a2aea;
+table a, input[type=submit] {
+    background:         #CFD9F0; /* D */
 }
-table th a:hover, table th input[type=submit]:hover,
-table td a:hover, table td input[type=submit]:hover {
-    background:         #c0d0f0;
+table td a:hover, input[type=submit]:hover {
+    background:         #989FB0; /* B */
+    color:              #515699; /* A */
+}
+table th a:hover, table th input[type=submit]:hover {
+    background:         #989FB0; /* B */
+    color:              #000099; /* E */
 }
 table tfoot tr {
-    border-top-color:   #a6a6a6;
+    border-top-color:   #A6A6A6; /* C */
 }
 .header {
-    border-bottom-color:#a6a6a6;
+    border-bottom-color:#A6A6A6; /* C */
 }
 input[type=text], textarea, select {
-    border-color:       #2a2a2a;
+    border-color:       #A6A6A6; /* C */
 }
 
 
@@ -82,12 +99,13 @@ input[type=text], textarea, select {
  */
 
 #header {
-    background:         #cfd9f0;
-    border-bottom-color:#a6a6a6;
+    background:         #CFD9F0; /* D */
+    border-bottom-color:#A6A6A6; /* C */
 }
-
+#logo {
+    border-color:       #A6A6A6; /* C */
+}
 #footer {
-	border-top-color:   #eaeaea;
-	color:              #ccc;
+    border-top-color:   #A6A6A6; /* C */
+    color:              #A6A6A6; /* C */
 }
-

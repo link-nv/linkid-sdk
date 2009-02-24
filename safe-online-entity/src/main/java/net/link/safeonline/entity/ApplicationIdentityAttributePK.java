@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -20,15 +21,19 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @Embeddable
 public class ApplicationIdentityAttributePK implements Serializable {
 
-    public static final long  INITIAL_IDENTITY_VERSION = 1;
+    public static final long   INITIAL_IDENTITY_VERSION   = 1;
 
-    private static final long serialVersionUID         = 1L;
+    private static final long  serialVersionUID           = 1L;
 
-    private String            application;
+    public static final String APPLICATION_ID_COLUMN      = "applicationId";
+    public static final String IDENTITY_VERSION_COLUMN    = "identityVersion";
+    public static final String ATTRIBUTE_TYPE_NAME_COLUMN = "attributeTypeName";
 
-    private long              identityVersion;
+    private long               applicationId;
 
-    private String            attributeTypeName;
+    private long               identityVersion;
+
+    private String             attributeTypeName;
 
 
     public ApplicationIdentityAttributePK() {
@@ -36,23 +41,25 @@ public class ApplicationIdentityAttributePK implements Serializable {
         // empty
     }
 
-    public ApplicationIdentityAttributePK(String application, long identityVersion, String attributeTypeName) {
+    public ApplicationIdentityAttributePK(long applicationId, long identityVersion, String attributeTypeName) {
 
-        this.application = application;
+        this.applicationId = applicationId;
         this.identityVersion = identityVersion;
         this.attributeTypeName = attributeTypeName;
     }
 
-    public String getApplication() {
+    @Column(name = APPLICATION_ID_COLUMN)
+    public long getApplicationId() {
 
-        return application;
+        return applicationId;
     }
 
-    public void setApplication(String application) {
+    public void setApplicationId(long applicationId) {
 
-        this.application = application;
+        this.applicationId = applicationId;
     }
 
+    @Column(name = IDENTITY_VERSION_COLUMN)
     public long getIdentityVersion() {
 
         return identityVersion;
@@ -63,6 +70,7 @@ public class ApplicationIdentityAttributePK implements Serializable {
         this.identityVersion = identityVersion;
     }
 
+    @Column(name = ATTRIBUTE_TYPE_NAME_COLUMN)
     public String getAttributeTypeName() {
 
         return attributeTypeName;
@@ -81,20 +89,20 @@ public class ApplicationIdentityAttributePK implements Serializable {
         if (false == obj instanceof ApplicationIdentityAttributePK)
             return false;
         ApplicationIdentityAttributePK rhs = (ApplicationIdentityAttributePK) obj;
-        return new EqualsBuilder().append(application, rhs.application).append(identityVersion, rhs.identityVersion).append(
+        return new EqualsBuilder().append(applicationId, rhs.applicationId).append(identityVersion, rhs.identityVersion).append(
                 attributeTypeName, rhs.attributeTypeName).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(application).append(identityVersion).append(attributeTypeName).toHashCode();
+        return new HashCodeBuilder().append(applicationId).append(identityVersion).append(attributeTypeName).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("application", application).append(
-                "identityVersion", identityVersion).append("attributeType", attributeTypeName).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("applicationId", applicationId).append("identityVersion",
+                identityVersion).append("attributeType", attributeTypeName).toString();
     }
 }

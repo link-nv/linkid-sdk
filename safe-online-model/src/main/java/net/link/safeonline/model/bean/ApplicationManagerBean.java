@@ -47,11 +47,11 @@ public class ApplicationManagerBean implements ApplicationManager {
     public ApplicationEntity getCallerApplication() {
 
         Principal callerPrincipal = context.getCallerPrincipal();
-        String applicationName = callerPrincipal.getName();
-        LOG.debug("get caller application: " + applicationName);
+        long applicationId = Long.parseLong(callerPrincipal.getName());
+        LOG.debug("get caller application: " + applicationId);
         ApplicationEntity callerApplication;
         try {
-            callerApplication = applicationDAO.getApplication(applicationName);
+            callerApplication = applicationDAO.getApplication(applicationId);
         } catch (ApplicationNotFoundException e) {
             throw new EJBException("application not found: " + e.getMessage(), e);
         }

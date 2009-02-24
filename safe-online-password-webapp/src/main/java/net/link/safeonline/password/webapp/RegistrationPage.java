@@ -9,7 +9,7 @@ package net.link.safeonline.password.webapp;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -61,15 +61,11 @@ public class RegistrationPage extends TemplatePage {
 
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        if (null == passwordDeviceService) {
-            alreadyRegistered = false;
-        } else {
-            try {
-                alreadyRegistered = passwordDeviceService.isPasswordConfigured(protocolContext.getSubject());
-            } catch (SubjectNotFoundException e) {
-                error(getLocalizer().getString("errorSubjectNotFound", this));
-                return;
-            }
+        try {
+            alreadyRegistered = passwordDeviceService.isPasswordConfigured(protocolContext.getSubject());
+        } catch (SubjectNotFoundException e) {
+            error(getLocalizer().getString("errorSubjectNotFound", this));
+            return;
         }
 
         getHeader();
@@ -148,23 +144,14 @@ public class RegistrationPage extends TemplatePage {
                     LOG.debug("register password for " + protocolContext.getSubject());
 
                     try {
-                        passwordDeviceService.register(protocolContext.getSubject(), password1.getObject());
-                    } catch (SubjectNotFoundException e) {
-                        password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: subject not found",
-                                LogLevelType.ERROR);
-                        return;
-                    } catch (DeviceNotFoundException e) {
-                        password1Field.error(getLocalizer().getString("errorDeviceNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: device not found",
+                        passwordDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), password1.getObject());
+                    } catch (NodeNotFoundException e) {
+                        password1Field.error(getLocalizer().getString("errorNodeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: node not found",
                                 LogLevelType.ERROR);
                         return;
                     }
-
-                    protocolContext.setSuccess(true);
-                    exit();
                 }
-
             });
 
             Button cancel = new Button(CANCEL_BUTTON_ID) {

@@ -107,6 +107,19 @@
 			<artifactId>safe-online-container-test</artifactId>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-jpa-util</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<scope>test</scope>
+            <type>ejb</type>
+		</dependency>
 
 	</dependencies>
 

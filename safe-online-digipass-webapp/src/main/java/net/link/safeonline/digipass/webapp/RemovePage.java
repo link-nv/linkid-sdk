@@ -5,9 +5,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
@@ -127,10 +124,6 @@ public class RemovePage extends TemplatePage {
                         LOG.debug("permission denied: " + e.getMessage());
                         GetForm.this.error(getLocalizer().getString("errorPermissionDenied", this));
                         return;
-                    } catch (DeviceNotFoundException e) {
-                        LOG.debug("device not found: " + e.getMessage());
-                        GetForm.this.error(getLocalizer().getString("errorDeviceNotFound", this));
-                        return;
                     }
 
                     if (digipassAttributes.isEmpty()) {
@@ -232,14 +225,6 @@ public class RemovePage extends TemplatePage {
                             } catch (DigipassException e) {
                                 LOG.debug("device not found: " + e.getMessage());
                                 ListForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                                return;
-                            } catch (AttributeTypeNotFoundException e) {
-                                LOG.debug("device not found: " + e.getMessage());
-                                ListForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
-                                return;
-                            } catch (AttributeNotFoundException e) {
-                                LOG.debug("attribute not found: " + e.getMessage());
-                                ListForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
                                 return;
                             }
 

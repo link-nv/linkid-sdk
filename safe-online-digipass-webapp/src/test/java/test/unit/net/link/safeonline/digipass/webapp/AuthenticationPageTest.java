@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.digipass.webapp.AuthenticationPage;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.keystore.SafeOnlineKeyStore;
@@ -130,6 +131,8 @@ public class AuthenticationPageTest extends TestCase {
 
         // verify
         verify(mockDigipassDeviceService, mockSamlAuthorityService);
+        assertNotNull("No authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -167,7 +170,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "digipassNotRegistered" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -205,7 +209,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "digipassDisabled" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -243,6 +248,7 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 }

@@ -8,9 +8,10 @@
 package net.link.safeonline.password.webapp;
 
 import javax.ejb.EJB;
+import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -133,36 +134,35 @@ public class AuthenticationPage extends TemplatePage {
 
                     try {
                         String userId = passwordDeviceService.authenticate(getUserId(), password.getObject());
-                        if (null == userId) {
-                            AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: " + login,
-                                    LogLevelType.ERROR);
-                            return;
-                        }
+                        if (null == userId)
+                            throw new AuthenticationFailedException();
+
                         login(userId);
-                    } catch (SubjectNotFoundException e) {
+
+                        HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
+                    }
+
+                    catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login: subject not found for " + login,
                                 LogLevelType.ERROR);
-                        return;
                     } catch (PermissionDeniedException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
                                 "Failed to contact OLAS to retrieve device mapping for " + login, LogLevelType.ERROR);
-                        return;
-                    } catch (DeviceNotFoundException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Password Device not found",
-                                LogLevelType.ERROR);
-                        return;
                     } catch (DeviceDisabledException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Password Device is disabled",
                                 LogLevelType.ERROR);
-                        return;
+                    } catch (DeviceRegistrationNotFoundException e) {
+                        AuthenticationForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Password Device not found",
+                                LogLevelType.ERROR);
+                    } catch (AuthenticationFailedException e) {
+                        AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: " + login,
+                                LogLevelType.ERROR);
                     }
-                    HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
-                    return;
                 }
 
             });
@@ -190,7 +190,9 @@ public class AuthenticationPage extends TemplatePage {
 
             try {
                 return idMappingClient.getUserId(login.getObject());
-            } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
+            }
+            
+            catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
             } catch (RequestDeniedException e) {

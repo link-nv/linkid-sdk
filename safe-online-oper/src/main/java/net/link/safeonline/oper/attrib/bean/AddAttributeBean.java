@@ -202,8 +202,8 @@ public class AddAttributeBean implements AddAttribute {
             if (false == currentType.isPrimitive()) {
                 continue;
             }
-            datatypes.add(new SelectItem(currentType.name(), currentType.getFriendlyName()));
 
+            datatypes.add(new SelectItem(currentType.name(), currentType.getFriendlyName()));
         }
         return datatypes;
     }

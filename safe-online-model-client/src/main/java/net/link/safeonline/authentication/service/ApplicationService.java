@@ -50,9 +50,18 @@ public interface ApplicationService extends SafeOnlineService {
     List<ApplicationEntity> listApplications();
 
     /**
+     * Gives back the application entity for a given application id.
+     * 
+     * @param applicationId
+     * @throws ApplicationNotFoundException
+     */
+    ApplicationEntity getApplication(long applicationId)
+            throws ApplicationNotFoundException;
+
+    /**
      * Gives back the application entity for a given application name.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      */
     ApplicationEntity getApplication(String applicationName)
@@ -99,21 +108,21 @@ public interface ApplicationService extends SafeOnlineService {
     /**
      * Removes an application an all its subscriptions.
      * 
-     * @param name
+     * @param applicationId
      */
-    void removeApplication(String name)
+    void removeApplication(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Sets the application description.
      * 
-     * @param name
+     * @param applicationId
      *            the name of the application.
      * @param description
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void setApplicationDescription(String name, String description)
+    void setApplicationDescription(long applicationId, String description)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
@@ -154,12 +163,12 @@ public interface ApplicationService extends SafeOnlineService {
     /**
      * Gives back a list of attribute types that make up the current application identity for the given application.
      * 
-     * @param applicationName
-     *            the name of the application.
+     * @param applicationId
+     *            the id of the application.
      * @throws ApplicationIdentityNotFoundException
      * @throws PermissionDeniedException
      */
-    Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(String applicationName)
+    Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(long applicationId)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException;
 
     /**
@@ -173,7 +182,7 @@ public interface ApplicationService extends SafeOnlineService {
      * @throws ApplicationIdentityNotFoundException
      * @throws AttributeTypeNotFoundException
      */
-    void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
+    void updateApplicationIdentity(long applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
 
     /**
@@ -183,7 +192,7 @@ public interface ApplicationService extends SafeOnlineService {
      * @param applicationUrl
      * @throws ApplicationNotFoundException
      */
-    void updateApplicationUrl(String applicationId, URL applicationUrl)
+    void updateApplicationUrl(long applicationId, URL applicationUrl)
             throws ApplicationNotFoundException;
 
     /**
@@ -193,74 +202,97 @@ public interface ApplicationService extends SafeOnlineService {
      * @param newApplicationLogo
      * @throws ApplicationNotFoundException
      */
-    void updateApplicationLogo(String applicationId, byte[] newApplicationLogo)
+    void updateApplicationLogo(long applicationId, byte[] newApplicationLogo)
             throws ApplicationNotFoundException;
 
     /**
      * Updates the X509 certificate of the given application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param certificateData
      * @throws CertificateEncodingException
      * @throws ApplicationNotFoundException
      */
-    void updateApplicationCertificate(String applicationName, byte[] certificateData)
+    void updateApplicationCertificate(long applicationId, byte[] certificateData)
             throws CertificateEncodingException, ApplicationNotFoundException;
 
     /**
      * Sets the application description.
      * 
-     * @param name
-     *            the name of the application.
+     * @param applicationId
      * @param deviceRestriction
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void setApplicationDeviceRestriction(String applicationName, boolean deviceRestriction)
+    void setApplicationDeviceRestriction(long applicationId, boolean deviceRestriction)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Set the application's permission to use the id mapping ws.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param access
      * @throws ApplicationNotFoundException
      */
-    void setIdentifierMappingServiceAccess(String applicationName, boolean access)
+    void setIdentifierMappingServiceAccess(long applicationId, boolean access)
             throws ApplicationNotFoundException;
 
     /**
      * Set the application's id generation scope
      * 
-     * @param applicationName
+     * @param applicationId
      * @param idScope
      * @throws ApplicationNotFoundException
      */
-    void setIdScope(String applicationName, IdScopeType idScope)
+    void setIdScope(long applicationId, IdScopeType idScope)
             throws ApplicationNotFoundException;
 
     /**
      * Sets the message integrity check requirement for the given application.
      * 
+     * @param applicationId
      * @param skipMessageIntegrityCheck
      * @throws ApplicationNotFoundException
      */
-    void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck)
+    void setSkipMessageIntegrityCheck(long applicationId, boolean skipMessageIntegrityCheck)
             throws ApplicationNotFoundException;
 
     /**
      * Sets if the application is Single Sign-On enabled or not.
      * 
+     * @param applicationId
+     * @param ssoEnabled
+     * 
      * @throws ApplicationNotFoundException
      */
-    void setSsoEnabled(String applicationId, boolean ssoEnabled)
+    void setSsoEnabled(long applicationId, boolean ssoEnabled)
             throws ApplicationNotFoundException;
 
     /**
      * Updates the application URL for the given application.
      * 
+     * @param applicationId
+     * @param ssoLogoutUrl
+     * 
      * @throws ApplicationNotFoundException
      */
-    void updateSsoLogoutUrl(String applicationId, URL ssoLogoutUrl)
+    void updateSsoLogoutUrl(long applicationId, URL ssoLogoutUrl)
+            throws ApplicationNotFoundException;
+
+    /**
+     * Updates the application name for the given application
+     * 
+     * @throws ApplicationNotFoundException
+     * @throws ExistingApplicationException
+     */
+    void updateApplicationName(long applicationId, String applicationName)
+            throws ApplicationNotFoundException, ExistingApplicationException;
+
+    /**
+     * Updates the application friendly name for the given application
+     * 
+     * @throws ApplicationNotFoundException
+     */
+    void updateApplicationFriendlyName(long applicationId, String applicationFriendlyName)
             throws ApplicationNotFoundException;
 }

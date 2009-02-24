@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.otpoversms.webapp;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
@@ -20,18 +21,19 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.otpoversms.webapp.AuthenticationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,12 +100,11 @@ public class AuthenticationPageTest extends TestCase {
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(convertedMobile);
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), convertedMobile);
+        mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
 
         // prepare
         replay(mockOtpOverSmsDeviceService);
@@ -125,8 +126,7 @@ public class AuthenticationPageTest extends TestCase {
         EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), convertedMobile, otp)).andStubReturn(true);
-        expect(mockOtpOverSmsDeviceService.authenticate(convertedMobile, pin)).andStubReturn(userId);
+        expect(mockOtpOverSmsDeviceService.authenticate(pin, otp)).andStubReturn(userId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -140,6 +140,8 @@ public class AuthenticationPageTest extends TestCase {
 
         // verify
         verify(mockOtpOverSmsDeviceService, mockSamlAuthorityService);
+        assertNotNull("No authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -151,17 +153,17 @@ public class AuthenticationPageTest extends TestCase {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
+        wicket.startPage(AuthenticationPage.class);
         wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID, Form.class);
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(convertedMobile);
-        org.easymock.EasyMock.expectLastCall().andThrow(new SubjectNotFoundException());
+        mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
+        expectLastCall().andThrow(new SubjectNotFoundException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -176,7 +178,9 @@ public class AuthenticationPageTest extends TestCase {
         verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
         wicket.assertRenderedPage(AuthenticationPage.class);
-        wicket.assertErrorMessages(new String[] { "mobileNotRegistered" });
+        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -189,17 +193,17 @@ public class AuthenticationPageTest extends TestCase {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
+        wicket.startPage(AuthenticationPage.class);
         wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID, Form.class);
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(convertedMobile);
-        org.easymock.EasyMock.expectLastCall().andThrow(new DeviceDisabledException());
+        mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
+        EasyMock.expectLastCall().andThrow(new DeviceDisabledException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -214,7 +218,9 @@ public class AuthenticationPageTest extends TestCase {
         verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
         wicket.assertRenderedPage(AuthenticationPage.class);
-        wicket.assertErrorMessages(new String[] { "mobileDisabled" });
+        wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -227,19 +233,18 @@ public class AuthenticationPageTest extends TestCase {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
+        wicket.startPage(AuthenticationPage.class);
         wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID, Form.class);
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
         jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(convertedMobile);
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), convertedMobile);
-        org.easymock.EasyMock.expectLastCall().andThrow(new ConnectException());
+        mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
+        expectLastCall().andThrow(new ConnectException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -255,70 +260,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "errorServiceConnection" });
-
-    }
-
-    @Test
-    public void testAuthenticateVerifyFailed()
-            throws Exception {
-
-        // setup
-        String mobile = "+32 494 575 697";
-        String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
-        String otp = UUID.randomUUID().toString();
-        String pin = "0000";
-
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID, Form.class);
-        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
-
-        // setup
-        EJBTestUtils.inject(authenticationPage, mockOtpOverSmsDeviceService);
-        EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
-
-        // stubs
-        mockOtpOverSmsDeviceService.checkMobile(convertedMobile);
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), convertedMobile);
-
-        // prepare
-        replay(mockOtpOverSmsDeviceService);
-
-        // operate
-        FormTester requestOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID);
-        requestOtpForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, mobile);
-        requestOtpForm.submit(AuthenticationPage.REQUEST_OTP_BUTTON_ID);
-
-        // verify
-        verify(mockOtpOverSmsDeviceService);
-
-        // verify
-        authenticationPage = (AuthenticationPage) wicket.getLastRenderedPage();
-        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID, Form.class);
-
-        // setup
-        EasyMock.reset(mockOtpOverSmsDeviceService);
-        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
-
-        // stubs
-        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), convertedMobile, otp)).andStubReturn(false);
-        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(mockOtpOverSmsDeviceService, mockHelpdeskManager);
-
-        // operate
-        FormTester verifyOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
-        verifyOtpForm.setValue(AuthenticationPage.OTP_FIELD_ID, otp);
-        verifyOtpForm.setValue(AuthenticationPage.PIN_FIELD_ID, pin);
-        verifyOtpForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
-
-        // verify
-        verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
-
-        wicket.assertRenderedPage(AuthenticationPage.class);
-        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -338,12 +281,11 @@ public class AuthenticationPageTest extends TestCase {
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(convertedMobile);
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), convertedMobile);
+        mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
 
         // prepare
         replay(mockOtpOverSmsDeviceService);
@@ -366,8 +308,7 @@ public class AuthenticationPageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), convertedMobile, otp)).andStubReturn(true);
-        expect(mockOtpOverSmsDeviceService.authenticate(convertedMobile, pin)).andStubReturn(null);
+        expect(mockOtpOverSmsDeviceService.authenticate(pin, otp)).andStubReturn(null);
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -384,7 +325,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
 }

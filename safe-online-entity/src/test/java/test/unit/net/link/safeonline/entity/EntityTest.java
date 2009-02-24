@@ -181,7 +181,7 @@ public class EntityTest {
 
         // verify: locate the added application
         entityManager = entityTestManager.refreshEntityManager();
-        ApplicationEntity resultApplication = entityManager.find(ApplicationEntity.class, "test-application");
+        ApplicationEntity resultApplication = entityManager.find(ApplicationEntity.class, application.getId());
         assertNotNull(resultApplication);
         assertEquals(application, resultApplication);
         LOG.debug("result application:" + resultApplication);
@@ -190,7 +190,7 @@ public class EntityTest {
         entityManager.remove(resultApplication);
 
         // verify
-        assertNull(entityManager.find(ApplicationEntity.class, "test-application"));
+        assertNull(entityManager.find(ApplicationEntity.class, application.getId()));
     }
 
     @Test
@@ -247,13 +247,18 @@ public class EntityTest {
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
         ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
-        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, userApplicationId, application);
 
-        // operate: add subscription
+        // operate: add application
         EntityManager entityManager = entityTestManager.getEntityManager();
         entityManager.persist(subject);
         entityManager.persist(applicationOwner);
         entityManager.persist(application);
+        entityManager = entityTestManager.refreshEntityManager();
+
+        // setup
+        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, userApplicationId, application);
+
+        // operate: add subscription
         entityManager.persist(subscription);
 
         // verify
@@ -279,7 +284,7 @@ public class EntityTest {
         // verify
         assertNull(entityManager.find(SubscriptionEntity.class, new SubscriptionPK(subject, application)));
         assertNotNull(entityManager.find(SubjectEntity.class, "test-login"));
-        assertNotNull(entityManager.find(ApplicationEntity.class, "test-application"));
+        assertNotNull(entityManager.find(ApplicationEntity.class, application.getId()));
     }
 
     @Test
@@ -327,6 +332,15 @@ public class EntityTest {
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
         ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
+
+        // operate
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        entityManager.persist(subject);
+        entityManager.persist(applicationOwner);
+        entityManager.persist(application);
+        entityManager = entityTestManager.refreshEntityManager();
+
+        // setup
         UsageAgreementEntity usageAgreementv1 = new UsageAgreementEntity(application, 1L);
         UsageAgreementEntity usageAgreementv2 = new UsageAgreementEntity(application, 2L);
         UsageAgreementTextEntity usageAgreementTextv1En = new UsageAgreementTextEntity(usageAgreementv1, "This is a usage agreement.",
@@ -335,10 +349,6 @@ public class EntityTest {
                 "Dit is een gebruikers overeenkomst.", "nl");
 
         // operate
-        EntityManager entityManager = entityTestManager.getEntityManager();
-        entityManager.persist(subject);
-        entityManager.persist(applicationOwner);
-        entityManager.persist(application);
         entityManager.persist(usageAgreementv1);
         entityManager.persist(usageAgreementv2);
         entityManager.persist(usageAgreementTextv1En);
@@ -346,19 +356,19 @@ public class EntityTest {
 
         // verify
         entityManager = entityTestManager.refreshEntityManager();
-        UsageAgreementEntity resultAgreementv1 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(application.getName(),
+        UsageAgreementEntity resultAgreementv1 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(application.getId(),
                 1L));
         assertNotNull(resultAgreementv1);
-        UsageAgreementEntity resultAgreementv2 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(application.getName(),
+        UsageAgreementEntity resultAgreementv2 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(application.getId(),
                 2L));
         assertNotNull(resultAgreementv2);
         assertFalse(resultAgreementv1.equals(resultAgreementv2));
 
         UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(UsageAgreementTextEntity.class, new UsageAgreementTextPK(
-                usageAgreementv1.getApplication().getName(), usageAgreementv1.getUsageAgreementVersion(), Locale.ENGLISH.getLanguage()));
+                usageAgreementv1.getApplication().getId(), usageAgreementv1.getUsageAgreementVersion(), Locale.ENGLISH.getLanguage()));
         assertNotNull(resultAgreementTextv1En);
         UsageAgreementTextEntity resultAgreementTextv1Nl = entityManager.find(UsageAgreementTextEntity.class, new UsageAgreementTextPK(
-                usageAgreementv1.getApplication().getName(), usageAgreementv1.getUsageAgreementVersion(), "nl"));
+                usageAgreementv1.getApplication().getId(), usageAgreementv1.getUsageAgreementVersion(), "nl"));
         assertNotNull(resultAgreementTextv1Nl);
     }
 
@@ -434,7 +444,7 @@ public class EntityTest {
         AttributeTypeEntity attributeType = new AttributeTypeEntity(attributeName, DatatypeType.STRING, false, false);
         AttributeEntity attribute1 = new AttributeEntity(attributeType, subject, "value1");
         AttributeEntity attribute2 = new AttributeEntity(attributeType, subject, 1);
-        attribute2.setStringValue("value2");
+        attribute2.setValue("value2");
 
         AttributePK pk1 = new AttributePK(attributeName, login, 0);
         AttributePK pk2 = new AttributePK(attributeName, login, 0);
@@ -852,6 +862,15 @@ public class EntityTest {
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
         ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
+
+        // operate
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        entityManager.persist(admin);
+        entityManager.persist(applicationOwner);
+        entityManager.persist(application);
+        entityManager = entityTestManager.refreshEntityManager();
+
+        // setup
         AttributeTypeEntity attributeType1 = new AttributeTypeEntity("test-attribute-type-1", DatatypeType.STRING, true, true);
         AttributeTypeEntity attributeType2 = new AttributeTypeEntity("test-attribute-type-2", DatatypeType.STRING, true, true);
         long identityVersion = 10;
@@ -862,10 +881,6 @@ public class EntityTest {
                 attributeType2, true, false);
 
         // operate: add entities
-        EntityManager entityManager = entityTestManager.getEntityManager();
-        entityManager.persist(admin);
-        entityManager.persist(applicationOwner);
-        entityManager.persist(application);
         entityManager.persist(attributeType1);
         entityManager.persist(attributeType2);
         entityManager.persist(applicationIdentity);
@@ -875,7 +890,7 @@ public class EntityTest {
         // verify
         entityManager = entityTestManager.refreshEntityManager();
         ApplicationIdentityEntity resultApplicationIdentity = entityManager.find(ApplicationIdentityEntity.class,
-                new ApplicationIdentityPK(application.getName(), identityVersion));
+                new ApplicationIdentityPK(application.getId(), identityVersion));
         assertNotNull(resultApplicationIdentity);
         Set<ApplicationIdentityAttributeEntity> resultIdentityAttributes = resultApplicationIdentity.getAttributes();
         assertNotNull(resultIdentityAttributes);
@@ -890,7 +905,7 @@ public class EntityTest {
             } else if (attributeType2.equals(resultAttributeType)) {
                 hasType2 = true;
             }
-            assertEquals(application.getName(), resultIdentityAttribute.getApplicationName());
+            assertEquals(application.getId(), resultIdentityAttribute.getApplicationId());
         }
 
         assertTrue(hasType1);
@@ -901,18 +916,24 @@ public class EntityTest {
     public void testMultipleApplicationIdentities()
             throws Exception {
 
+        // setup
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
         ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
-        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, true, true);
-        ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(application, 1);
-        ApplicationIdentityEntity applicationIdentity2 = new ApplicationIdentityEntity(application, 2);
 
         // operate: add entities
         EntityManager entityManager = entityTestManager.getEntityManager();
         entityManager.persist(admin);
         entityManager.persist(applicationOwner);
         entityManager.persist(application);
+
+        // setup
+        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, true, true);
+        ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(application, 1);
+        ApplicationIdentityEntity applicationIdentity2 = new ApplicationIdentityEntity(application, 2);
+
+        // operate: add entities
+        entityManager = entityTestManager.refreshEntityManager();
         entityManager.persist(attributeType);
         entityManager.persist(applicationIdentity1);
         entityManager.persist(applicationIdentity2);
@@ -994,14 +1015,19 @@ public class EntityTest {
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
         ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
-        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false, false);
-        AttributeProviderEntity attributeProvider = new AttributeProviderEntity(application, attributeType);
 
         // operate
         EntityManager entityManager = entityTestManager.getEntityManager();
         entityManager.persist(admin);
         entityManager.persist(applicationOwner);
         entityManager.persist(application);
+
+        // setup
+        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false, false);
+        AttributeProviderEntity attributeProvider = new AttributeProviderEntity(application, attributeType);
+
+        // operate
+        entityManager = entityTestManager.refreshEntityManager();
         entityManager.persist(attributeType);
         entityManager.persist(attributeProvider);
 

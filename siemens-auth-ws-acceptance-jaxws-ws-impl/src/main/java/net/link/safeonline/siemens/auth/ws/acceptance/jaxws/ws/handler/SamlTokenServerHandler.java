@@ -6,8 +6,10 @@
  */
 package net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.handler;
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
@@ -17,8 +19,21 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import net.link.safeonline.sdk.ws.ServerCrypto;
+import net.link.safeonline.sdk.ws.WSSecurityUtil;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.security.WSSecurityEngine;
+import org.apache.ws.security.WSSecurityEngineResult;
+import org.apache.ws.security.WSSecurityException;
+import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.ws.security.message.token.Timestamp;
+import org.apache.ws.security.saml2.SAML2Constants;
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.SubjectConfirmation;
 
 
 /**
@@ -75,12 +90,87 @@ public class SamlTokenServerHandler implements SOAPHandler<SOAPMessageContext> {
         return true;
     }
 
-    /**
-     * TODO
-     */
-    private void handleInboundDocument(SOAPPart soapPart, SOAPMessageContext soapMessageContext) {
+    @SuppressWarnings("unchecked")
+    private void handleInboundDocument(SOAPPart soapPart, @SuppressWarnings("unused") SOAPMessageContext soapMessageContext) {
 
         LOG.debug("WS-Security header validation");
+        WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
+        Crypto crypto = new ServerCrypto();
+
+        Vector<WSSecurityEngineResult> wsSecurityEngineResults;
+        try {
+            wsSecurityEngineResults = securityEngine.processSecurityHeader(soapPart, null, null, crypto);
+        } catch (WSSecurityException e) {
+            LOG.debug("WS-Security error: " + e.getMessage(), e);
+            throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
+        }
+        LOG.debug("results: " + wsSecurityEngineResults);
+        if (null == wsSecurityEngineResults)
+            throw WSSecurityUtil.createSOAPFaultException("An error was discovered processing the <wsse:Security> header.",
+                    "InvalidSecurity");
+        Timestamp timestamp = null;
+        Assertion assertion = null;
+        Set<String> signedElements = null;
+        for (WSSecurityEngineResult result : wsSecurityEngineResults) {
+            Set<String> resultSignedElements = (Set<String>) result.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
+            if (null != resultSignedElements) {
+                signedElements = resultSignedElements;
+            }
+
+            Assertion resultAssertion = (Assertion) result.get(WSSecurityEngineResult.TAG_SAML2_ASSERTION);
+            if (null != resultAssertion) {
+                assertion = resultAssertion;
+            }
+
+            Timestamp resultTimestamp = (Timestamp) result.get(WSSecurityEngineResult.TAG_TIMESTAMP);
+            if (null != resultTimestamp) {
+                timestamp = resultTimestamp;
+            }
+        }
+
+        if (null == assertion)
+            throw WSSecurityUtil.createSOAPFaultException("No SAML 2 assertion was found", "FailedCheck");
+        LOG.debug("assertion: " + assertion.toString());
+        String subject = null;
+        boolean senderVouches = false;
+        SubjectConfirmation subjectConfirmation = assertion.getSubject().getSubjectConfirmations().get(0);
+        if (subjectConfirmation.getMethod().equals(SAML2Constants.CONF_METHOD_SENDER_VOUCHES)) {
+            senderVouches = true;
+        }
+        subject = assertion.getSubject().getNameID().getValue();
+
+        if (null == subject)
+            throw WSSecurityUtil.createSOAPFaultException("Assertion does not contain a subject", "FailedCheck");
+        LOG.debug("subject: " + subject);
+
+        // in case of sender-vouches, assertion must be signed by trusting party, if holder-of-key: timestamp MUST be signed
+        if (null == signedElements)
+            throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
+        LOG.debug("signed elements: " + signedElements);
+        if (senderVouches) {
+            if (false == signedElements.contains(assertion.getID()))
+                throw WSSecurityUtil.createSOAPFaultException("Assertion not signed", "FailedCheck");
+        }
+
+        /*
+         * Check timestamp.
+         */
+        if (null == timestamp)
+            throw WSSecurityUtil.createSOAPFaultException("missing Timestamp in WS-Security header", "InvalidSecurity");
+        String timestampId = timestamp.getID();
+        if (false == signedElements.contains(timestampId))
+            throw WSSecurityUtil.createSOAPFaultException("Timestamp not signed", "FailedCheck");
+        Calendar created = timestamp.getCreated();
+        long maxOffset = 1000 * 60 * 5;
+        DateTime createdDateTime = new DateTime(created);
+        Instant createdInstant = createdDateTime.toInstant();
+        Instant nowInstant = new DateTime().toInstant();
+        long offset = Math.abs(createdInstant.getMillis() - nowInstant.getMillis());
+        if (offset > maxOffset) {
+            LOG.debug("timestamp offset: " + offset);
+            LOG.debug("maximum allowed offset: " + maxOffset);
+            throw WSSecurityUtil.createSOAPFaultException("WS-Security Created Timestamp offset exceeded", "FailedCheck");
+        }
 
     }
 

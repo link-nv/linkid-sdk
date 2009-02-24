@@ -38,9 +38,9 @@ import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundExc
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
 import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -100,9 +100,9 @@ public class ErrorMessageInterceptor {
             new ErrorHandle(GenericJDBCException.class, "errorDataType"), new ErrorHandle(IOException.class, "errorIO"),
             new ErrorHandle(HelpdeskContextNotFoundException.class, "errorHelpdeskLogNotFound"),
             new ErrorHandle(MessageHandlerNotFoundException.class, "errorMessage"),
-            new ErrorHandle(MobileAuthenticationException.class, "mobileAuthenticationFailed"),
+            new ErrorHandle(DeviceAuthenticationException.class, "mobileAuthenticationFailed"),
             new ErrorHandle(MobileException.class, "mobileCommunicationFailed"),
-            new ErrorHandle(MobileRegistrationException.class, "mobileRegistrationFailed"),
+            new ErrorHandle(DeviceRegistrationException.class, "mobileRegistrationFailed"),
             new ErrorHandle(NodeNotFoundException.class, "errorNodeNotFound"),
             new ErrorHandle(PermissionDeniedException.class, "errorPermissionDenied"),
             new ErrorHandle(RoleNotFoundException.class, "errorRoleNotFound"),

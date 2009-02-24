@@ -165,14 +165,14 @@ public class NoTablesRadioButtonRenderer extends Renderer {
                     for (SelectItem item : items) {
                         list.add(item);
                     }
-                } else if (value instanceof Collection) {
+                } else if (value instanceof Collection<?>) {
                     for (Object element : (Collection<?>) value)
                         if (SelectItem.class.isInstance(element)) {
                             list.add((SelectItem) element);
                         } else {
                             // empty
                         }
-                } else if (value instanceof Map) {
+                } else if (value instanceof Map<?, ?>) {
                     Map<?, ?> optionMap = (Map<?, ?>) value;
                     for (Object o : optionMap.entrySet()) {
                         Entry<?, ?> entry = (Entry<?, ?>) o;

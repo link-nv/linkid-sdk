@@ -29,7 +29,7 @@
         #if($BreakFrame)
             <form action="${action}" method="post" target="_top">
         #else
-            <form action="${action}" method="post">
+            <form action="${action}" method="post" target="_self">
         #end
 
             #if($RelayState)

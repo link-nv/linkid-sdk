@@ -75,8 +75,8 @@ public class AttributeDAOBean implements AttributeDAO {
     public AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject, long index) {
 
         LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId() + " index = " + index);
-        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
-                index));
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class,
+                new AttributePK(attributeTypeName, subject.getUserId(), index));
         return attribute;
     }
 
@@ -90,8 +90,8 @@ public class AttributeDAOBean implements AttributeDAO {
     public AttributeEntity findAttribute(SubjectEntity subject, String attributeTypeName, long index) {
 
         LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId());
-        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
-                index));
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class,
+                new AttributePK(attributeTypeName, subject.getUserId(), index));
         return attribute;
     }
 
@@ -117,7 +117,7 @@ public class AttributeDAOBean implements AttributeDAO {
         if (null == attribute) {
             attribute = addAttribute(attributeType, subject, index);
         }
-        attribute.setStringValue(stringValue);
+        attribute.setValue(stringValue);
     }
 
     public void addOrUpdateAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index, Boolean booleanValue) {
@@ -126,7 +126,7 @@ public class AttributeDAOBean implements AttributeDAO {
         if (null == attribute) {
             attribute = addAttribute(attributeType, subject, index);
         }
-        attribute.setBooleanValue(booleanValue);
+        attribute.setValue(booleanValue);
     }
 
     public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject)

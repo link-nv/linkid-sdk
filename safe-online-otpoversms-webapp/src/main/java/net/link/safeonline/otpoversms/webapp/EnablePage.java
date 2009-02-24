@@ -7,13 +7,11 @@
 
 package net.link.safeonline.otpoversms.webapp;
 
-import java.net.ConnectException;
-
 import javax.ejb.EJB;
+import javax.mail.AuthenticationFailedException;
 
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -21,7 +19,9 @@ import net.link.safeonline.custom.converter.PhoneNumber;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -38,28 +38,27 @@ import org.apache.wicket.model.Model;
 
 public class EnablePage extends TemplatePage {
 
-    private static final long         serialVersionUID         = 1L;
+    private static final long      serialVersionUID         = 1L;
 
-    public static final String        REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String        MOBILE_FIELD_ID          = "mobile";
-    public static final String        REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String        REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String     MOBILE_FIELD_ID          = "mobile";
+    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
 
-    public static final String        ENABLE_FORM_ID           = "enable_form";
-    public static final String        OTP_FIELD_ID             = "otp";
-    public static final String        PIN_FIELD_ID             = "pin";
-    public static final String        ENABLE_BUTTON_ID         = "enable";
-    public static final String        CANCEL_BUTTON_ID         = "cancel";
-
-    @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
-    transient OtpOverSmsDeviceService otpOverSmsDeviceService;
+    public static final String     ENABLE_FORM_ID           = "enable_form";
+    public static final String     OTP_FIELD_ID             = "otp";
+    public static final String     PIN_FIELD_ID             = "pin";
+    public static final String     ENABLE_BUTTON_ID         = "enable";
+    public static final String     CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService    samlAuthorityService;
+    transient SamlAuthorityService samlAuthorityService;
 
-    ProtocolContext                   protocolContext;
+    ProtocolContext                protocolContext;
 
-    boolean                           requested                = false;
+    private RequestOtpForm         requestForm;
+
+    private EnableForm             enableForm;
 
 
     public EnablePage() {
@@ -74,8 +73,21 @@ public class EnablePage extends TemplatePage {
         String title = localize("%l %s", "mobile", protocolContext.getAttribute());
         getContent().add(new Label("title", title));
 
-        getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
-        getContent().add(new EnableForm(ENABLE_FORM_ID));
+        getContent().add(requestForm = new RequestOtpForm(REQUEST_OTP_FORM_ID));
+        getContent().add(enableForm = new EnableForm(ENABLE_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        boolean challenged = OtpOverSmsSession.get().isChallenged();
+        requestForm.setVisible(!challenged);
+        enableForm.setVisible(challenged);
+
+        super.onBeforeRender();
     }
 
     /**
@@ -115,22 +127,31 @@ public class EnablePage extends TemplatePage {
 
                     LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
-                        otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()), protocolContext.getAttribute());
-                    } catch (ConnectException e) {
+                        OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
+                                OtpOverSmsDeviceService.class);
+
+                        otpOverSmsDeviceService.requestOtp(protocolContext.getAttribute());
+                        OtpOverSmsSession.get().setDeviceBean(otpOverSmsDeviceService);
+                    }
+
+                    catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
-                        return;
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
-                        return;
+                    } catch (SubjectNotFoundException e) {
+                        RequestOtpForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: mobile has no registered subject: "
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
+                    } catch (DeviceRegistrationNotFoundException e) {
+                        RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: mobile isn't registered: "
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                     }
-                    requested = true;
-
                 }
-
             });
 
             Button cancel = new Button(REQUEST_CANCEL_BUTTON_ID) {
@@ -160,15 +181,6 @@ public class EnablePage extends TemplatePage {
             focus(mobileField);
 
             super.onBeforeRender();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isVisible() {
-
-            return !requested;
         }
     }
 
@@ -205,51 +217,32 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    boolean verified = otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()), otp.getObject());
-                    if (!verified) {
-                        otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                "mobile otp: verification failed for mobile " + protocolContext.getAttribute(), LogLevelType.ERROR);
-                        return;
-                    }
-
                     LOG.debug("enable mobile " + protocolContext.getAttribute() + " for " + protocolContext.getSubject());
 
-                    boolean result;
+                    OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
+
                     try {
-                        result = otpOverSmsDeviceService.enable(protocolContext.getSubject(), protocolContext.getAttribute(),
-                                pin.getObject());
-                    } catch (SubjectNotFoundException e) {
-                        pinField.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
-                                LogLevelType.ERROR);
-                        return;
-                    } catch (DeviceNotFoundException e) {
-                        pinField.error(getLocalizer().getString("errorDeviceNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device not found",
-                                LogLevelType.ERROR);
-                        return;
-                    } catch (AttributeTypeNotFoundException e) {
-                        pinField.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: attribute type not found",
-                                LogLevelType.ERROR);
-                        return;
-                    } catch (DeviceRegistrationNotFoundException e) {
-                        pinField.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device registration not found",
-                                LogLevelType.ERROR);
-                        return;
+                        otpOverSmsDeviceService.enable(protocolContext.getSubject(), pin.getObject(), otp.getObject());
+
+                        protocolContext.setSuccess(true);
+                        exit();
                     }
 
-                    if (false == result) {
+                    catch (AuthenticationFailedException e) {
+                        otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
+                        HelpdeskLogger.add("mobile otp: verification failed for mobile " + protocolContext.getAttribute(),
+                                LogLevelType.ERROR);
+                    } catch (SubjectNotFoundException e) {
+                        pinField.error(getLocalizer().getString("errorSubjectNotFound", this));
+                        HelpdeskLogger.add("enable: subject not found", LogLevelType.ERROR);
+                    } catch (DeviceRegistrationNotFoundException e) {
+                        pinField.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
+                        HelpdeskLogger.add("enable: device registration not found", LogLevelType.ERROR);
+                    } catch (PermissionDeniedException e) {
                         pinField.error(getLocalizer().getString("errorPinNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: pin not correct",
                                 LogLevelType.ERROR);
-                        return;
                     }
-
-                    protocolContext.setSuccess(true);
-                    exit();
                 }
             });
 
@@ -281,15 +274,6 @@ public class EnablePage extends TemplatePage {
             focus(otpField);
 
             super.onBeforeRender();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isVisible() {
-
-            return requested;
         }
     }
 

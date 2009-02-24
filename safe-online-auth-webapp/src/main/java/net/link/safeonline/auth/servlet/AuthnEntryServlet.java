@@ -154,7 +154,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         /*
          * We save the result of the protocol handler into the HTTP session.
          */
-        LoginManager.setApplication(session, protocolContext.getApplicationId());
+        LoginManager.setApplicationId(session, protocolContext.getApplicationId());
         LoginManager.setApplicationFriendlyName(session, protocolContext.getApplicationFriendlyName());
         LoginManager.setTarget(session, protocolContext.getTarget());
         LoginManager.setRequiredDevices(session, protocolContext.getRequiredDevices());
