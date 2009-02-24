@@ -75,8 +75,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         AttributeTypeEntity disableAttributeType = attributeTypeDAO.findAttributeType(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
         List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, disableAttributeType);
 
-        if (disableAttributes.isEmpty())
-            throw new DeviceRegistrationNotFoundException(e);
+        if (disableAttributes.isEmpty()) {
+            throw new DeviceRegistrationNotFoundException();
+        }
 
         return disableAttributes.get(0);
     }
@@ -90,8 +91,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         LOG.debug("authenticate \"" + userId + "\"");
 
         SubjectEntity subject = subjectService.getSubject(userId);
-        if (true == getDisableAttribute(subject).getBooleanValue())
+        if (true == getDisableAttribute(subject).getBooleanValue()) {
             throw new DeviceDisabledException();
+        }
 
         if (false == passwordManager.validatePassword(subject, password)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect password");
@@ -140,11 +142,13 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         LOG.debug("update password for \"" + userId + "\"");
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (true == getDisableAttribute(subject).getBooleanValue())
+        if (true == getDisableAttribute(subject).getBooleanValue()) {
             throw new DeviceDisabledException();
+        }
 
-        if (false == passwordManager.validatePassword(subject, oldPassword))
+        if (false == passwordManager.validatePassword(subject, oldPassword)) {
             throw new DeviceAuthenticationException("Invalid password");
+        }
 
         passwordManager.updatePassword(subject, oldPassword, newPassword);
 
@@ -162,8 +166,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         LOG.debug("enable password for \"" + subject.getUserId() + "\"");
 
-        if (!passwordManager.validatePassword(subject, password))
+        if (!passwordManager.validatePassword(subject, password)) {
             throw new DeviceAuthenticationException("Invalid password");
+        }
 
         getDisableAttribute(subject).setValue(false);
 
