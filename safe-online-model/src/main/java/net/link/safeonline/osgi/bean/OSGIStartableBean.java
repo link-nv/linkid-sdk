@@ -96,10 +96,14 @@ public class OSGIStartableBean implements OSGIStartable {
         // Add the javax.* packages to be exported from the class path via the system bundle.
         systemPackages += "javax; version=1.0.0, ";
         systemPackages += "javax.accessibility ; version=1.0.0, ";
+        systemPackages += "javax.activation ; version=1.0.0, ";
         systemPackages += "javax.activity ; version=1.0.0, ";
         systemPackages += "javax.crypto ; version=1.0.0, ";
         systemPackages += "javax.crypto.interfaces ; version=1.0.0, ";
         systemPackages += "javax.crypto.spec ; version=1.0.0, ";
+        systemPackages += "javax.jms ; version=1.0.0, ";
+        systemPackages += "javax.mail ; version=1.0.0, ";
+        systemPackages += "javax.mail.internet ; version=1.0.0, ";
         systemPackages += "javax.management ; version=1.0.0, ";
         systemPackages += "javax.management.loading ; version=1.0.0, ";
         systemPackages += "javax.management.modelmbean ; version=1.0.0, ";
@@ -131,6 +135,8 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "javax.security.auth.x500 ; version=1.0.0, ";
         systemPackages += "javax.security.cert ; version=1.0.0, ";
         systemPackages += "javax.security.sasl ; version=1.0.0, ";
+        systemPackages += "javax.servlet ; version=1.0.0, ";
+        systemPackages += "javax.servlet.http ; version=1.0.0, ";
         systemPackages += "javax.sql ; version=1.0.0, ";
         systemPackages += "javax.sql.rowset ; version=1.0.0, ";
         systemPackages += "javax.sql.rowset.serial ; version=1.0.0, ";
@@ -141,6 +147,7 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "javax.xml.datatype; version=1.0.0, ";
         systemPackages += "javax.xml.namespace ; version=1.0.0, ";
         systemPackages += "javax.xml.parsers ; version=1.0.0, ";
+        systemPackages += "javax.xml.soap ; version=1.0.0, ";
         systemPackages += "javax.xml.transform ; version=1.0.0, ";
         systemPackages += "javax.xml.transform.dom ; version=1.0.0, ";
         systemPackages += "javax.xml.transform.sax ; version=1.0.0, ";
@@ -163,6 +170,7 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "sun.net.www; version=1.0.0, ";
         systemPackages += "sun.net.www.protocol; version=1.0.0, ";
         systemPackages += "sun.net.www.protocol.https; version=1.0.0, ";
+        systemPackages += "sun.security.provider; version=1.0.0, ";
         systemPackages += "com; version=1.0.0, ";
         systemPackages += "com.sun; version=1.0.0, ";
         systemPackages += "com.sun.net; version=1.0.0, ";
@@ -177,6 +185,10 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "com.sun.security.cert; version=1.0.0, ";
         systemPackages += "com.sun.security.cert.internal; version=1.0.0, ";
         systemPackages += "com.sun.security.cert.internal.x509; version=1.0.0, ";
+
+        // packages from rt.jar
+        systemPackages += "org.omg.CORBA; version=1.0.0, ";
+        systemPackages += "org.omg.CosNaming; version=1.0.0, ";
 
         // Load OLAS version
         ResourceBundle properties = ResourceBundle.getBundle("config");
@@ -194,7 +206,8 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "net.link.safeonline.osgi.plugin; version=" + version + ", ";
 
         // Add the sms service package to be exported from the class path via the system bundle.
-        systemPackages += "net.link.safeonline.osgi.sms; version=" + version + "";
+        systemPackages += "net.link.safeonline.osgi.sms; version=" + version + ", ";
+        systemPackages += "net.link.safeonline.osgi.sms.exception; version=" + version + "";
 
         LOG.debug("systemPackages: " + systemPackages);
 
