@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.auth.webapp.AuthenticationProtocolErrorPage;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
@@ -35,23 +36,16 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutExitServlet extends AbstractInjectionServlet {
 
-    private static final long  serialVersionUID                 = 1L;
+    private static final long  serialVersionUID         = 1L;
 
-    private static final Log   LOG                              = LogFactory.getLog(LogoutExitServlet.class);
+    private static final Log   LOG                      = LogFactory.getLog(LogoutExitServlet.class);
 
-    public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
+    public static final String LOGOUT_PARTIAL_ATTRIBUTE = "Logout.partial";
 
-    public static final String PROTOCOL_NAME_ATTRIBUTE          = "protocolName";
-
-    public static final String LOGOUT_PARTIAL_ATTRIBUTE         = "Logout.partial";
-
-    public static final String LOGOUT_TARGET_ATTRIBUTE          = "Logout.target";
+    public static final String LOGOUT_TARGET_ATTRIBUTE  = "Logout.target";
 
     @Init(name = "ServletEndpointUrl")
     private String             servletEndpointUrl;
-
-    @Init(name = "ProtocolErrorUrl")
-    private String             protocolErrorUrl;
 
 
     @Override
@@ -77,8 +71,9 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
         try {
             loggedOutApplication = ProtocolHandlerManager.handleLogoutResponse(logoutRequestWrapper);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
-                    e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
 
@@ -115,8 +110,9 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
             try {
                 ProtocolHandlerManager.logoutResponse(partialLogout, target, request.getSession(), response);
             } catch (ProtocolException e) {
-                redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
-                        e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+                redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                        AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                        AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
                 return;
             }
 
@@ -126,8 +122,9 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
             try {
                 ProtocolHandlerManager.logoutRequest(application, request.getSession(), response);
             } catch (ProtocolException e) {
-                redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
-                        e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+                redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                        AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                        AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
                 return;
             }
 

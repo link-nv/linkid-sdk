@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<h2>
+				<wicket:message key="identityUnavailable">[Identity Unavailable]</wicket:message>
+			</h2>
+			<p>
+				<wicket:message key="identityUnavailableInfo">[Identity Unavailable
+					Message]</wicket:message>
+			</p>
+
+			<table>
+				<thead>
+					<tr>
+						<th>
+							<wicket:message key="attributeName">[Attribute Name]</wicket:message>
+						</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr wicket:id="identityUnavailableList">
+						<td wicket:id="name">[Name]</td>
+					</tr>
+				</tbody>
+
+			</table>
+
+			<p>
+				<a wicket:id="main">
+					<wicket:message key="linkToMain">[Main Page]</wicket:message>
+				</a>
+			</p>
+
+
+
+		</wicket:container>
+
+	</body>
+</html>

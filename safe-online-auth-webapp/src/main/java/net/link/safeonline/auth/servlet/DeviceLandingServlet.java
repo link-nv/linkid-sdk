@@ -29,6 +29,9 @@ import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * Device landing servlet. Landing page to finalize the authentication process between OLAS and a device provider.
@@ -39,6 +42,8 @@ import net.link.safeonline.util.servlet.annotation.Init;
 public class DeviceLandingServlet extends AbstractInjectionServlet {
 
     private static final long  serialVersionUID               = 1L;
+
+    private static final Log   LOG                            = LogFactory.getLog(DeviceLandingServlet.class);
 
     public static final String RESOURCE_BASE                  = "messages.webapp";
 
@@ -75,20 +80,20 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
         try {
             userId = authenticationService.authenticate(requestWrapper);
         } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorProtocolHandlerFinalization"));
             return;
         } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorDeviceRegistrationNotFound"));
             return;
         } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorProtocolHandlerFinalization"));
             return;
         } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorDeviceRegistrationNotFound"));
             return;
         }
         if (null == userId && authenticationService.getAuthenticationState().equals(AuthenticationState.REDIRECTED)) {
@@ -104,6 +109,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
              */
             HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed", LogLevelType.ERROR);
             String requestUrl = (String) requestWrapper.getSession().getAttribute(AuthenticationUtils.REQUEST_URL_INIT_PARAM);
+            LOG.debug("requestUrl: " + requestUrl);
             response.sendRedirect(requestUrl);
         } else {
             /*

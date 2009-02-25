@@ -15,9 +15,9 @@ public abstract class TemplatePage extends WicketPage {
     public static final String CONTENT_ID = "content_border";
     public static final String SIDEBAR_ID = "sidebar_border";
 
-    private HeaderBorder       headerBorder;
-    private ContentBorder      contentBorder;
-    private SidebarBorder      sidebarBorder;
+    protected HeaderBorder     headerBorder;
+    protected ContentBorder    contentBorder;
+    protected SidebarBorder    sidebarBorder;
 
 
     public TemplatePage() {

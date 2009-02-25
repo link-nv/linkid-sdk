@@ -45,6 +45,20 @@ public class PublicApplicationServiceBean implements PublicApplicationService {
      */
     @PermitAll
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public PublicApplication findPublicApplication(long applicationId) {
+
+        ApplicationEntity application = applicationDAO.findApplication(applicationId);
+        if (application == null)
+            return null;
+
+        return new PublicApplication(application);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @PermitAll
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public PublicApplication findPublicApplication(String applicationName) {
 
         ApplicationEntity application = applicationDAO.findApplication(applicationName);

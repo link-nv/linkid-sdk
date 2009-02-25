@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<p>
+				<wicket:message key="deviceErrorInfo">[Device Error Info]</wicket:message>
+			</p>
+
+			<p>
+				<span wicket:id="deviceErrorMessageLabel" class="error">[Device
+					Error Message]</span>
+				<h:outputLabel value="#{deviceErrorMessage}"
+					styleClass="error" />
+			</p>
+
+			<p>
+				<a wicket:id="main">
+					<wicket:message key="linkToMain">[Main Page]</wicket:message>
+				</a>
+			</p>
+
+		</wicket:container>
+
+	</body>
+</html>

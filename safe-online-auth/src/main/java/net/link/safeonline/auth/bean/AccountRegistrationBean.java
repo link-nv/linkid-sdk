@@ -19,6 +19,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationUtils;
@@ -131,7 +133,11 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
 
         String registrationURL = devicePolicyService.getRegistrationURL(device);
 
-        AuthenticationUtils.redirect(registrationURL, device, userId);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest httpRequest = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+        HttpServletResponse httpResponse = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        AuthenticationUtils.redirect(httpRequest, httpResponse, facesContext.getViewRoot().getLocale(), registrationURL, device, userId);
         return null;
     }
 

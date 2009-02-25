@@ -49,6 +49,20 @@ public class ErrorComponentFeedbackLabel extends Label {
      * @param component
      *            The {@link FormComponent} to show the FeedbackMessage for.
      */
+    public ErrorComponentFeedbackLabel(String id, FormComponent component, IModel text) {
+
+        this(id, component);
+        this.text = text;
+    }
+
+    /**
+     * Call this constructor if you just want to display the FeedbackMessage of the component
+     * 
+     * @param id
+     *            The non-null id of this component
+     * @param component
+     *            The {@link FormComponent} to show the FeedbackMessage for.
+     */
     public ErrorComponentFeedbackLabel(String id, FormComponent component) {
 
         super(id);

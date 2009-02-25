@@ -20,6 +20,8 @@ import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
@@ -78,8 +80,12 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
 
         log.debug("deviceNext: " + device);
 
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest httpRequest = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+        HttpServletResponse httpResponse = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
         String registrationURL = devicePolicyService.getRegistrationURL(device);
-        AuthenticationUtils.redirect(registrationURL, device, userId);
+        AuthenticationUtils.redirect(httpRequest, httpResponse, facesContext.getViewRoot().getLocale(), registrationURL, device, userId);
         return null;
     }
 

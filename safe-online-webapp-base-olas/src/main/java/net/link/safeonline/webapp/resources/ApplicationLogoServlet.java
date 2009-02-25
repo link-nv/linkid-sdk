@@ -64,20 +64,20 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
             throws ServletException, IOException {
 
         boolean logoWritten = false;
-        String applicationName = request.getParameter("applicationName");
-        if (null == applicationName)
-            throw new IllegalArgumentException("The application name must be provided.");
+        String applicationId = request.getParameter("applicationId");
+        if (null == applicationId)
+            throw new IllegalArgumentException("The application id must be provided.");
 
         try {
-            PublicApplication application = publicApplicationService.findPublicApplication(applicationName);
+            PublicApplication application = publicApplicationService.findPublicApplication(Long.parseLong(applicationId));
             if (application == null) {
-                LOG.debug("No application found by name of " + applicationName);
+                LOG.debug("No application found by name of " + applicationId);
                 return;
             }
 
             byte[] logo = application.getLogo();
             if (null == logo) {
-                LOG.debug("No logo found for application " + applicationName);
+                LOG.debug("No logo found for application " + applicationId);
                 return;
             }
 
@@ -89,7 +89,7 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
             String noMime = request.getParameter("nomime");
             if (!mime.startsWith("image/"))
                 if (noMime == null)
-                    throw new IllegalStateException("Application logo for " + applicationName + " is not an image (it is " + mime
+                    throw new IllegalStateException("Application logo for " + applicationId + " is not an image (it is " + mime
                             + "); refusing to show.");
 
             response.setContentType(magic.getMimeType());

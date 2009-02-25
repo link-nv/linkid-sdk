@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<table>
+				<thead>
+					<tr>
+						<th>
+							<wicket:message key="firstVisitMsg">[First Visit Message]</wicket:message>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="center">
+					<tr>
+						<td>
+							<a wicket:id="new-user-link" class="padded">
+								<wicket:message key="newUser">[New User]</wicket:message>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a wicket:id="existing-user-link" class="padded">
+								<wicket:message key="existingUser">[Existing User]</wicket:message>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</wicket:container>
+
+	</body>
+</html>

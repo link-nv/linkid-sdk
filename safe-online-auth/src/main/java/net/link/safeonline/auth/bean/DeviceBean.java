@@ -16,11 +16,11 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.Device;
@@ -96,11 +96,14 @@ public class DeviceBean implements Device {
         String authenticationPath = devicePolicyService.getAuthenticationURL(deviceSelection);
         log.debug("authenticationPath: " + authenticationPath);
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        String requestPath = ((HttpServletRequest) externalContext.getRequest()).getRequestURL().toString();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletRequest httpRequest = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+        HttpServletResponse httpResponse = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
-        return AuthenticationUtils.redirectAuthentication(requestPath, authenticationPath, deviceSelection);
+        String requestPath = httpRequest.getRequestURL().toString();
+        AuthenticationUtils.redirectAuthentication(httpRequest, httpResponse, facesContext.getViewRoot().getLocale(), requestPath,
+                authenticationPath, deviceSelection);
+        return null;
     }
 
     @Factory("applicationDevices")

@@ -17,11 +17,11 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.auth.webapp.AuthenticationProtocolErrorPage;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
-import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,16 +54,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ExitServlet extends AbstractInjectionServlet {
 
-    private static final Log   LOG                              = LogFactory.getLog(ExitServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(ExitServlet.class);
 
-    private static final long  serialVersionUID                 = 1L;
-
-    public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
-
-    public static final String PROTOCOL_NAME_ATTRIBUTE          = "protocolName";
-
-    @Init(name = "ProtocolErrorUrl")
-    private String             protocolErrorUrl;
+    private static final long serialVersionUID = 1L;
 
 
     @Override
@@ -85,8 +78,9 @@ public class ExitServlet extends AbstractInjectionServlet {
             ProtocolHandlerManager.authnResponse(session, response);
         } catch (ProtocolException e) {
             LOG.debug("protocol error: " + e.getMessage());
-            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
-                    e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
         }
     }
 }
