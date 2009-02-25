@@ -101,7 +101,6 @@ public class RegistrationPageTest {
         wicket.assertRenderedPage(RegistrationPage.class);
 
         // Inject EJBs.
-        EJBTestUtils.inject(wicket.getLastRenderedPage(), mockEncapDeviceService);
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockSamlAuthorityService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
