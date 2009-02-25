@@ -1586,10 +1586,22 @@
 			<url>http://buildserver:7070/nexus/content/groups/public
 			</url>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>nexus-snapshots</id>
+			<name>Nexus</name>
+			<url>http://buildserver:7070/nexus/content/groups/public-snapshots
+			</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
 			</releases>
 		</repository>
 	</repositories>
