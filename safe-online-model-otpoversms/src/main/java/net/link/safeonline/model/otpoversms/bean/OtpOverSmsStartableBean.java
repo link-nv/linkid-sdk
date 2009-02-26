@@ -131,9 +131,9 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         otpOverSmsDeviceAttributeType.addMember(pinHashAttributeType, 1, true);
         otpOverSmsDeviceAttributeType.addMember(pinSeedAttributeType, 2, true);
         otpOverSmsDeviceAttributeType.addMember(pinAlgorithmAttributeType, 3, true);
-        otpOverSmsDeviceAttributeType.addMember(pinNewAlgorithmAttributeType, 3, true);
-        otpOverSmsDeviceAttributeType.addMember(pinAttemptsAttributeType, 4, true);
-        otpOverSmsDeviceAttributeType.addMember(otpOverSmsDeviceDisableAttributeType, 5, true);
+        otpOverSmsDeviceAttributeType.addMember(pinNewAlgorithmAttributeType, 4, true);
+        otpOverSmsDeviceAttributeType.addMember(pinAttemptsAttributeType, 5, true);
+        otpOverSmsDeviceAttributeType.addMember(otpOverSmsDeviceDisableAttributeType, 6, true);
         attributeTypes.add(otpOverSmsDeviceAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite", null));

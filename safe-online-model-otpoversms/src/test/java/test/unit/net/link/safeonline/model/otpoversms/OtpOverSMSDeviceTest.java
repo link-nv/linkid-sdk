@@ -233,6 +233,7 @@ public class OtpOverSMSDeviceTest {
         otpOverSmsStartable.postStart();
 
         testedInstance = new OtpOverSmsDeviceServiceBean();
+        EJBTestUtils.inject(testedInstance, entityManager);
 
         AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeDAO);
@@ -296,7 +297,7 @@ public class OtpOverSMSDeviceTest {
     }
 
     @Test
-    public void testRegisterAuthenticateAndRemove()
+    public void testRegisterAuthenticateRemoveReRegisterAuthenticate()
             throws Exception {
 
         // expectations
@@ -349,6 +350,35 @@ public class OtpOverSMSDeviceTest {
             fail("Device registration was still found after removing the device.");
         } catch (DeviceRegistrationNotFoundException e) {
         }
+
+        // verify
+        verify(mockObjects);
+        reset(mockObjects);
+
+        // expectations
+        expect(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                        SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+        expect(mockOSGIStartable.getService(testOsgiServiceName, OSGIServiceType.SMS_SERVICE)).andStubReturn(mockOSGIService);
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        testedInstance.requestOtp(testMobile);
+        testedInstance.register(testNode, testUserId, testValidPIN, getValidOTP());
+
+        assertFalse(testedInstance.isChallenged());
+        testedInstance.requestOtp(testMobile);
+
+        assertTrue(testedInstance.isChallenged());
+        resultUserId = testedInstance.authenticate(testValidPIN, getValidOTP());
+        assertEquals(testUserId, resultUserId);
 
         // verify
         verify(mockObjects);
