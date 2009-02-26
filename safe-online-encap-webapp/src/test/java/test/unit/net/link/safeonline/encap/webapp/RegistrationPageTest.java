@@ -127,6 +127,7 @@ public class RegistrationPageTest {
 
         // Describe Expected Scenario.
         expect(mockEncapDeviceService.register(TEST_MOBILE)).andStubReturn(TEST_ACTIVATION);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_OTP);
@@ -201,6 +202,7 @@ public class RegistrationPageTest {
 
         // Describe Expected Scenario.
         expect(mockEncapDeviceService.register(TEST_MOBILE)).andStubReturn(TEST_ACTIVATION);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);

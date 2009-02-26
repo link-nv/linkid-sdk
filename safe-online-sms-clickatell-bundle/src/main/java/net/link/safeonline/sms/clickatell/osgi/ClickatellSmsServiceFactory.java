@@ -6,13 +6,14 @@
  */
 package net.link.safeonline.sms.clickatell.osgi;
 
-import net.link.safeonline.osgi.sms.SmsService;
 
+import net.link.safeonline.osgi.sms.SmsService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class ClickatellSmsServiceFactory implements ServiceFactory {
 

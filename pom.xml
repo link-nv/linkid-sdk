@@ -1302,6 +1302,16 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-idea-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+                    <jdkName>1.6 (Soylatte)</jdkName>
+				</configuration>
+				<inherited>true</inherited>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
 					<buildOutputDirectory> ${basedir}/eclipse 
@@ -1311,8 +1321,8 @@
 					<wtpmanifest>false</wtpmanifest>
 					<wtpapplicationxml>false</wtpapplicationxml>
 					<wtpversion>2.0</wtpversion>
-					<downloadSources>false</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
