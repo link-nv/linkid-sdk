@@ -17,8 +17,8 @@ import static org.easymock.EasyMock.verify;
 import java.util.UUID;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -354,7 +354,7 @@ public class UpdatePageTest {
         // stubs
         expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
         mockOtpOverSmsDeviceService.update(userId, oldPin, newPin, otp);
-        expectLastCall().andThrow(new PermissionDeniedException("Incorrect PIN"));
+        expectLastCall().andThrow(new DeviceAuthenticationException("Incorrect PIN"));
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
