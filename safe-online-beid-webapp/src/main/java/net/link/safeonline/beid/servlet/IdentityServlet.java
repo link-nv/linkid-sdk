@@ -72,7 +72,9 @@ public class IdentityServlet extends AbstractStatementServlet {
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that registration was successful.
             protocolContext.setSuccess(true);
-        } catch (TrustDomainNotFoundException e) {
+        }
+
+        catch (TrustDomainNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PermissionDeniedException e) {

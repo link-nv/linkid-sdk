@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
@@ -42,19 +43,20 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class PasswordManagerBean implements PasswordManager {
 
-    private static final String    defaultHashingAlgorithm = "SHA-512";
+    private static final String              defaultHashingAlgorithm = "SHA-512";
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
-    private AttributeManagerLWBean attributeManager;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a

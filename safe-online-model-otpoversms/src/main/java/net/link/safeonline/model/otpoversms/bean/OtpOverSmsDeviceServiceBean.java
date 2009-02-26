@@ -11,6 +11,7 @@ import java.util.Collections;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
@@ -65,52 +66,53 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @Configurable
 public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, OtpOverSmsDeviceServiceRemote {
 
-    private final static Log       LOG                   = LogFactory.getLog(OtpOverSmsDeviceServiceBean.class);
+    private final static Log                 LOG                   = LogFactory.getLog(OtpOverSmsDeviceServiceBean.class);
 
-    public static final String     OTP_SERVICE_ATTRIBUTE = "otpService";
+    public static final String               OTP_SERVICE_ATTRIBUTE = "otpService";
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-    private EntityManager          entityManager;
+    private EntityManager                    entityManager;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO             historyDAO;
+    private HistoryDAO                       historyDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService                   subjectService;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService     nodeMappingService;
+    private NodeMappingService               nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO   subjectIdentifierDAO;
+    private SubjectIdentifierDAO             subjectIdentifierDAO;
 
     @EJB(mappedName = OtpOverSmsManager.JNDI_BINDING)
-    private OtpOverSmsManager      otpOverSmsManager;
+    private OtpOverSmsManager                otpOverSmsManager;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger    securityAuditLogger;
+    private SecurityAuditLogger              securityAuditLogger;
 
     @Configurable(name = OSGIConstants.SMS_SERVICE_IMPL_NAME, group = OSGIConstants.SMS_SERVICE_GROUP_NAME, multipleChoice = true)
-    private String                 smsServiceName;
+    private String                           smsServiceName;
 
     @EJB(mappedName = OSGIStartable.JNDI_BINDING)
-    private OSGIStartable          osgiStartable;
+    private OSGIStartable                    osgiStartable;
 
-    private AttributeManagerLWBean attributeManager;
+    private String                           challengeMobile;
 
-    private String                 challengeMobile;
+    private String                           expectedOtp;
 
-    private String                 expectedOtp;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a

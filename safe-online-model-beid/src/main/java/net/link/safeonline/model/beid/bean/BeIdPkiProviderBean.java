@@ -13,6 +13,7 @@ import java.security.cert.X509Certificate;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.PostActivate;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
@@ -46,37 +47,38 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = BeIdPkiProviderBean.JNDI_BINDING)
 public class BeIdPkiProviderBean implements PkiProvider {
 
-    public static final String     JNDI_BINDING           = PkiProvider.JNDI_PREFIX + "beid";
+    public static final String               JNDI_BINDING           = PkiProvider.JNDI_PREFIX + "beid";
 
-    public static final String     TRUST_DOMAIN_NAME      = "beid";
+    public static final String               TRUST_DOMAIN_NAME      = "beid";
 
-    public static final String     IDENTIFIER_DOMAIN_NAME = "beid";
+    public static final String               IDENTIFIER_DOMAIN_NAME = "beid";
 
-    private static final Log       LOG                    = LogFactory.getLog(BeIdPkiProviderBean.class);
+    private static final Log                 LOG                    = LogFactory.getLog(BeIdPkiProviderBean.class);
 
     @Resource
-    private SessionContext         context;
+    private SessionContext                   context;
 
     @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
-    private TrustDomainDAO         trustDomainDAO;
+    private TrustDomainDAO                   trustDomainDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService                   subjectService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO   subjectIdentifierDAO;
+    private SubjectIdentifierDAO             subjectIdentifierDAO;
 
-    private AttributeManagerLWBean attributeManager;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a

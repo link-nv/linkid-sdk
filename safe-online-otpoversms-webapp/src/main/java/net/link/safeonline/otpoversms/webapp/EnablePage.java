@@ -103,6 +103,7 @@ public class EnablePage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
         TextField<PhoneNumber>    mobileField;
+        private Button            requestOtpButton;
 
 
         public RequestOtpForm(String id) {
@@ -112,11 +113,10 @@ public class EnablePage extends TemplatePage {
             mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(
                     new PhoneNumber(protocolContext.getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
-            mobileField.setRequired(true);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
 
-            add(new Button(REQUEST_OTP_BUTTON_ID) {
+            add(requestOtpButton = new Button(REQUEST_OTP_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -177,7 +177,7 @@ public class EnablePage extends TemplatePage {
         @Override
         protected void onBeforeRender() {
 
-            focus(mobileField);
+            focus(requestOtpButton);
 
             super.onBeforeRender();
         }

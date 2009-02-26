@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -63,40 +64,41 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = DigipassDeviceService.JNDI_BINDING)
 public class DigipassDeviceServiceBean implements DigipassDeviceService, DigipassDeviceServiceRemote {
 
-    private static final Log       LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);
+    private static final Log                 LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-    private EntityManager          entityManager;
+    private EntityManager                    entityManager;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO             historyDAO;
+    private HistoryDAO                       historyDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService                   subjectService;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService     nodeMappingService;
+    private NodeMappingService               nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO   subjectIdentifierDAO;
+    private SubjectIdentifierDAO             subjectIdentifierDAO;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO              deviceDAO;
+    private DeviceDAO                        deviceDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger    securityAuditLogger;
+    private SecurityAuditLogger              securityAuditLogger;
 
-    private AttributeManagerLWBean attributeManager;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a

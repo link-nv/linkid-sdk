@@ -35,6 +35,8 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -123,6 +125,8 @@ public class IdentityServletTest {
     @Test
     public void testDoPost()
             throws Exception {
+
+        Logger.getRootLogger().setLevel(Level.WARN);
 
         // setup
         PostMethod postMethod = new PostMethod(location);

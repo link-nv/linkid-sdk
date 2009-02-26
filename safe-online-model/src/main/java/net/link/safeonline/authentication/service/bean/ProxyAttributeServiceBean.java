@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -69,43 +70,43 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @RemoteBinding(jndiBinding = ProxyAttributeServiceRemote.JNDI_BINDING)
 public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAttributeServiceRemote {
 
-    private static final Log       LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
+    private static final Log                 LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeCacheDAO.JNDI_BINDING)
-    private AttributeCacheDAO      attributeCacheDAO;
+    private AttributeCacheDAO                attributeCacheDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService                   subjectService;
 
     @EJB(mappedName = OSGIStartable.JNDI_BINDING)
-    private OSGIStartable          osgiStartable;
+    private OSGIStartable                    osgiStartable;
 
     @EJB(mappedName = ResourceAuditLogger.JNDI_BINDING)
-    private ResourceAuditLogger    resourceAuditLogger;
+    private ResourceAuditLogger              resourceAuditLogger;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger    securityAuditLogger;
+    private SecurityAuditLogger              securityAuditLogger;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService     nodeMappingService;
+    private NodeMappingService               nodeMappingService;
 
-    private AttributeManagerLWBean attributeManager;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        LOG.debug("postConstruct");
         attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
