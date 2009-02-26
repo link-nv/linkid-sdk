@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
@@ -222,6 +221,7 @@ public class EncapDeviceTest {
         encapStartable.postStart();
 
         testedInstance = new EncapDeviceServiceBean();
+        EJBTestUtils.inject(testedInstance, entityManager);
 
         AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeDAO);
@@ -264,14 +264,10 @@ public class EncapDeviceTest {
         testChallenge = UUID.randomUUID().toString();
         testActivationCode = "activation-code";
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
-
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.commit();
-        entityTransaction.begin();
     }
 
     @Test
-    public void testRegisterAuthenticateAndRemove()
+    public void testRegisterAuthenticateRemoveAndReRegisterAuthenticate()
             throws Exception {
 
         // expectations
@@ -325,6 +321,35 @@ public class EncapDeviceTest {
         } catch (MobileException e) {
             // expected.
         }
+
+        // verify
+        verify(mockObjects);
+        reset(mockObjects);
+
+        // expectations
+        expect(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                        SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+        expect(mockMobileManager.activate(testMobile, null)).andReturn(testActivationCode);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        assertTrue(testedInstance.getMobiles(testUserId, null).isEmpty());
+        testedInstance.register(testMobile);
+        testedInstance.requestOTP(testMobile);
+        testedInstance.commitRegistration(testNode, testUserId, testValidOTP);
+
+        assertFalse(testedInstance.getMobiles(testUserId, null).isEmpty());
+        testedInstance.requestOTP(testMobile);
+        resultUserId = testedInstance.authenticate(testValidOTP);
+        assertEquals(testUserId, resultUserId);
 
         // verify
         verify(mockObjects);

@@ -211,6 +211,7 @@ public class DigipassDeviceTest {
         EJBTestUtils.newInstance(DigipassStartableBean.class, container, entityManager).postStart();
 
         testedInstance = new DigipassDeviceServiceBean();
+        EJBTestUtils.inject(testedInstance, entityManager);
 
         AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeDAO);
@@ -255,7 +256,7 @@ public class DigipassDeviceTest {
     }
 
     @Test
-    public void testRegisterAuthenticateAndRemove()
+    public void testRegisterAuthenticateRemoveAndReRegisterAuthenticate()
             throws Exception {
 
         // expectations
@@ -294,6 +295,29 @@ public class DigipassDeviceTest {
             fail("Device registration was still found after removing the device.");
         } catch (DeviceRegistrationNotFoundException e) {
         }
+
+        // verify
+        verify(mockObjects);
+        reset(mockObjects);
+
+        // expectations
+        expect(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                        SafeOnlineConstants.DEVICE_PROPERTY, DigipassConstants.DIGIPASS_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        assertTrue(testedInstance.getDigipasses(testUserId, null).isEmpty());
+        testedInstance.register(testNode, testUserId, testSerial);
+
+        assertFalse(testedInstance.getDigipasses(testUserId, null).isEmpty());
+        testedInstance.authenticate(testUserId, testValidToken);
+
+        // verify
+        verify(mockObjects);
     }
 
     @Test

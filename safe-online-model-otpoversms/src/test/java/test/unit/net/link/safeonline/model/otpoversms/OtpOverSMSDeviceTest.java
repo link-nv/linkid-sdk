@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
@@ -290,10 +289,6 @@ public class OtpOverSMSDeviceTest {
         Field smsServiceName = testedInstance.getClass().getDeclaredField("smsServiceName");
         smsServiceName.setAccessible(true);
         smsServiceName.set(testedInstance, testOsgiServiceName);
-
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.commit();
-        entityTransaction.begin();
     }
 
     @Test

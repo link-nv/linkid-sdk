@@ -236,6 +236,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
                     mobile);
             subjectIdentifierDAO.removeSubjectIdentifier(subject, EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
 
+            // flush and clear to commit and release the removed entities.
+            entityManager.flush();
+            entityManager.clear();
+
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID));
         }

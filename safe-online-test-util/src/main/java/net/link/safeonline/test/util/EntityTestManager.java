@@ -41,7 +41,7 @@ public class EntityTestManager {
 
         configuration = new Ejb3Configuration();
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-        configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.show_sql", "false");
         configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         configuration.setProperty("hibernate.connection.username", "sa");
         configuration.setProperty("hibernate.connection.password", "");

@@ -11,6 +11,8 @@ import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -54,6 +56,9 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @LocalBinding(jndiBinding = OptionDeviceService.JNDI_BINDING)
 public class OptionDeviceServiceBean implements OptionDeviceService {
+
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager          entityManager;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO             historyDAO;
@@ -193,6 +198,10 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
                     imei);
 
             subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
+
+            // flush and clear to commit and release the removed entities.
+            entityManager.flush();
+            entityManager.clear();
 
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID));

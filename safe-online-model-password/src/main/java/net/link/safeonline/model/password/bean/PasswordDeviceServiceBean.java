@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
@@ -47,6 +49,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
     private final static Log    LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);
 
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager       entityManager;
+
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
     private NodeMappingService  nodeMappingService;
 
@@ -75,9 +80,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         AttributeTypeEntity disableAttributeType = attributeTypeDAO.findAttributeType(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
         List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, disableAttributeType);
 
-        if (disableAttributes.isEmpty()) {
+        if (disableAttributes.isEmpty())
             throw new DeviceRegistrationNotFoundException();
-        }
 
         return disableAttributes.get(0);
     }
@@ -91,9 +95,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         LOG.debug("authenticate \"" + userId + "\"");
 
         SubjectEntity subject = subjectService.getSubject(userId);
-        if (true == getDisableAttribute(subject).getBooleanValue()) {
+        if (true == getDisableAttribute(subject).getBooleanValue())
             throw new DeviceDisabledException();
-        }
 
         if (false == passwordManager.validatePassword(subject, password)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect password");
@@ -127,7 +130,11 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         LOG.debug("remove password for " + userId);
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        passwordManager.removePassword(subject); // FIXME: remove subject mapping
+        passwordManager.removePassword(subject);
+
+        // flush and clear to commit and release the removed entities.
+        entityManager.flush();
+        entityManager.clear();
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 PasswordConstants.PASSWORD_DEVICE_ID));
@@ -142,13 +149,11 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         LOG.debug("update password for \"" + userId + "\"");
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (true == getDisableAttribute(subject).getBooleanValue()) {
+        if (true == getDisableAttribute(subject).getBooleanValue())
             throw new DeviceDisabledException();
-        }
 
-        if (false == passwordManager.validatePassword(subject, oldPassword)) {
+        if (false == passwordManager.validatePassword(subject, oldPassword))
             throw new DeviceAuthenticationException("Invalid password");
-        }
 
         passwordManager.updatePassword(subject, oldPassword, newPassword);
 
@@ -166,9 +171,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         LOG.debug("enable password for \"" + subject.getUserId() + "\"");
 
-        if (!passwordManager.validatePassword(subject, password)) {
+        if (!passwordManager.validatePassword(subject, password))
             throw new DeviceAuthenticationException("Invalid password");
-        }
 
         getDisableAttribute(subject).setValue(false);
 

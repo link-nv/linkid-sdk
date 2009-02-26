@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
@@ -25,7 +24,6 @@ import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
@@ -204,6 +202,7 @@ public class OptionDeviceTest {
         passwordStartable.postStart();
 
         testedInstance = new OptionDeviceServiceBean();
+        EJBTestUtils.inject(testedInstance, entityManager);
 
         AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeDAO);
@@ -234,14 +233,10 @@ public class OptionDeviceTest {
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
-
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.commit();
-        entityTransaction.begin();
     }
 
     @Test
-    public void testRegisterAuthenticateAndRemove()
+    public void testRegisterAuthenticateRemoveAndReRegisterAuthenticate()
             throws Exception {
 
         // expectations
@@ -276,9 +271,28 @@ public class OptionDeviceTest {
         try {
             testedInstance.authenticate(testImei);
             fail("Device registration was still found after removing the device.");
-        } catch (DeviceRegistrationNotFoundException e) {
+        } catch (SubjectNotFoundException e) {
             // expected.
         }
+
+        // verify
+        verify(mockObjects);
+        reset(mockObjects);
+
+        // expectations
+        expect(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                        SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        testedInstance.register(testNode, testUserId, testImei);
+
+        resultUserId = testedInstance.authenticate(testImei);
+        assertEquals(testUserId, resultUserId);
 
         // verify
         verify(mockObjects);

@@ -15,6 +15,8 @@ import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
@@ -62,6 +64,9 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class DigipassDeviceServiceBean implements DigipassDeviceService, DigipassDeviceServiceRemote {
 
     private static final Log       LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);
+
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager          entityManager;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO             historyDAO;
@@ -194,6 +199,10 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             attributeManager.removeCompoundWhere(subject, DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE,
                     DigipassConstants.DIGIPASS_SN_ATTRIBUTE, serialNumber);
             subjectIdentifierDAO.removeSubjectIdentifier(subject, DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
+
+            // flush and clear to commit and release the removed entities.
+            entityManager.flush();
+            entityManager.clear();
 
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, DigipassConstants.DIGIPASS_DEVICE_ID));

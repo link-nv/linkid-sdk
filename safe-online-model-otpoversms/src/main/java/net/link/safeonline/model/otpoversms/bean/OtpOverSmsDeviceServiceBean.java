@@ -228,6 +228,10 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         otpOverSmsManager.removeMobile(subject, mobile);
         subjectIdentifierDAO.removeSubjectIdentifier(subject, OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
 
+        // flush and clear to commit and release the removed entities.
+        entityManager.flush();
+        entityManager.clear();
+
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID));
     }
