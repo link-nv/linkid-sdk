@@ -105,7 +105,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.password.webapp.servlet.MaintLandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.password.webapp.servlet.DeviceLandingServlet</servlet-class>
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>

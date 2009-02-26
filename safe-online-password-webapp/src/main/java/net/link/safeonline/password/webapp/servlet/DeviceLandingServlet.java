@@ -6,7 +6,7 @@ import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 
 
-public class MaintLandingServlet extends LandingServlet {
+public class DeviceLandingServlet extends LandingServlet {
 
     /**
      * @{inheritDoc}
