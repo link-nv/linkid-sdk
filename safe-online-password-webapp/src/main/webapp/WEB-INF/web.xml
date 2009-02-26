@@ -67,7 +67,7 @@
 	<servlet>
 		<servlet-name>LandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
+            net.link.safeonline.password.webapp.servlet.AuthLandingServlet</servlet-class>
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>authentication</param-value>
@@ -105,7 +105,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.password.webapp.servlet.MaintLandingServlet</servlet-class>
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>

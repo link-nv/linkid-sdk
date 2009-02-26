@@ -7,13 +7,8 @@
 
 package net.link.safeonline.password.webapp;
 
-import javax.ejb.EJB;
-import javax.mail.AuthenticationFailedException;
-
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.*;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -29,7 +24,6 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.tools.WicketUtil;
-
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -38,6 +32,9 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
+
+import javax.ejb.EJB;
+import javax.mail.AuthenticationFailedException;
 
 
 public class AuthenticationPage extends TemplatePage {
@@ -55,6 +52,9 @@ public class AuthenticationPage extends TemplatePage {
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService               samlAuthorityService;
+
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
+    transient NodeAuthenticationService          nodeAuthenticationService;
 
     AuthenticationContext                        authenticationContext;
 
@@ -208,13 +208,18 @@ public class AuthenticationPage extends TemplatePage {
 
     public void login(String userId) {
 
-        authenticationContext.setUserId(userId);
-        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
-        authenticationContext.setIssuer(PasswordConstants.PASSWORD_DEVICE_ID);
-        authenticationContext.setUsedDevice(PasswordConstants.PASSWORD_DEVICE_ID);
+        try {
+            authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
+            authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+            authenticationContext.setUsedDevice(PasswordConstants.PASSWORD_DEVICE_ID);
+            authenticationContext.setUserId(userId);
 
-        exit();
+            exit();
+        }
 
+        catch (NodeNotFoundException e) {
+            throw new InternalInconsistencyException("Local node unavailable?", e);
+        }
     }
 
     public void exit() {

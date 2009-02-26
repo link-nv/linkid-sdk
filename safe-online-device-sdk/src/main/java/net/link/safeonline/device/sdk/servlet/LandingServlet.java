@@ -7,38 +7,27 @@
 
 package net.link.safeonline.device.sdk.servlet;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyPair;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
-import java.util.Locale;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.Saml2Handler;
-import net.link.safeonline.sdk.KeyStoreUtils;
+import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
-import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.Init;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Locale;
 
 
 /**
@@ -48,23 +37,11 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class LandingServlet extends AbstractInjectionServlet {
+public abstract class LandingServlet extends AbstractInjectionServlet {
 
     private static final long serialVersionUID = 1L;
 
     private static final Log  LOG              = LogFactory.getLog(LandingServlet.class);
-
-    @Context(name = "KeyStoreResource", optional = true)
-    private String            p12KeyStoreResourceName;
-
-    @Context(name = "KeyStoreFile", optional = true)
-    private String            p12KeyStoreFileName;
-
-    @Context(name = "KeyStorePassword", optional = true)
-    private String            keyStorePassword;
-
-    @Context(name = "KeyStoreType", defaultValue = "pkcs12")
-    private String            keyStoreType;
 
     @Init(name = "ServletEndpointUrl", optional = true)
     private String            servletEndpointUrl;
@@ -86,38 +63,6 @@ public class LandingServlet extends AbstractInjectionServlet {
 
     @Init(name = "ErrorPage", optional = true)
     private String            errorPage;
-
-    private KeyPair           applicationKeyPair;
-
-    private X509Certificate   applicationCertificate;
-
-
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
-
-        super.init(config);
-        InputStream keyStoreInputStream = null;
-        if (null != p12KeyStoreResourceName) {
-            Thread currentThread = Thread.currentThread();
-            ClassLoader classLoader = currentThread.getContextClassLoader();
-            keyStoreInputStream = classLoader.getResourceAsStream(p12KeyStoreResourceName);
-            if (null == keyStoreInputStream)
-                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreResourceName);
-        } else if (null != p12KeyStoreFileName) {
-            try {
-                keyStoreInputStream = new FileInputStream(p12KeyStoreFileName);
-            } catch (FileNotFoundException e) {
-                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreFileName);
-            }
-        }
-        if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
-                    keyStorePassword, keyStorePassword);
-            applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
-            applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
-        }
-    }
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
@@ -161,10 +106,11 @@ public class LandingServlet extends AbstractInjectionServlet {
         /*
          * Figure out what the request wants us to do.
          */
+        OlasKeyStore olasKeyStore = getOlasKeyStore();
         DeviceOperationType deviceOperation;
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
-            handler.init(configParams, applicationCertificate, applicationKeyPair);
+            handler.init(configParams, olasKeyStore.getCertificate(), olasKeyStore.getKeyPair());
             deviceOperation = handler.initDeviceOperation(requestWrapper);
             if (deviceOperation.equals(DeviceOperationType.REGISTER) || deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
                 if (null == registrationUrl) {
@@ -206,4 +152,6 @@ public class LandingServlet extends AbstractInjectionServlet {
             return;
         }
     }
+
+    protected abstract OlasKeyStore getOlasKeyStore();
 }
