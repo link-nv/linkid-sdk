@@ -66,13 +66,19 @@ public class IdentityServlet extends AbstractStatementServlet {
             protocolContext.setSuccess(false);
 
             String userId = protocolContext.getSubject();
-            String operation = protocolContext.getDeviceOperation().name();
             String nodeName = protocolContext.getNodeName();
+            String operation = null;
+            if (protocolContext.getDeviceOperation() != null) {
+                operation = protocolContext.getDeviceOperation().name();
+            }
+
             beIdDeviceService.register(sessionId, nodeName, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that registration was successful.
             protocolContext.setSuccess(true);
-        } catch (TrustDomainNotFoundException e) {
+        }
+
+        catch (TrustDomainNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PermissionDeniedException e) {

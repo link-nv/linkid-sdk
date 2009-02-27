@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -127,17 +128,17 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO                         deviceDAO;
 
-    private AttributeManagerLWBean            attributeManager;
+    private transient AttributeManagerLWBean  attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        LOG.debug("postConstruct");
         attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
