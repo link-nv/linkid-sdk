@@ -36,18 +36,6 @@
 		<param-value>${safe-online.beid.webapp.name}</param-value>
 	</context-param>
 	<context-param>
-		<param-name>KeyStoreResource</param-name>
-		<param-value>safe-online-beid-keystore.jks</param-value>
-	</context-param>
-	<context-param>
-		<param-name>KeyStoreType</param-name>
-		<param-value>jks</param-value>
-	</context-param>
-	<context-param>
-		<param-name>KeyStorePassword</param-name>
-		<param-value>secret</param-value>
-	</context-param>
-	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.auth.basename} </param-value>
 	</context-param>
