@@ -7,16 +7,8 @@
 
 package test.unit.net.link.safeonline.service.bean;
 
-import static org.easymock.EasyMock.checkOrder;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 
-import java.security.KeyPair;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -51,9 +43,6 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
-import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
-import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AccountMergingService;
 import net.link.safeonline.service.AttributeTypeService;
@@ -63,8 +52,6 @@ import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,10 +70,6 @@ public class AccountMergingServiceBeanTest {
 
     private AttributeTypeService attributeTypeService;
 
-    private KeyService           mockKeyService;
-
-    private JndiTestUtils        jndiTestUtils;
-
 
     @Before
     public void setup()
@@ -95,25 +78,6 @@ public class AccountMergingServiceBeanTest {
         entityTestManager = new EntityTestManager();
         entityTestManager.setUp(SafeOnlineTestContainer.entities);
         EntityManager entityManager = entityTestManager.getEntityManager();
-
-        mockKeyService = createMock(KeyService.class);
-
-        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
-
-        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
-                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
-
-        checkOrder(mockKeyService, false);
-        replay(mockKeyService);
-
-        jndiTestUtils = new JndiTestUtils();
-        jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
@@ -130,7 +94,6 @@ public class AccountMergingServiceBeanTest {
             throws Exception {
 
         entityTestManager.tearDown();
-        jndiTestUtils.tearDown();
     }
 
     @Test

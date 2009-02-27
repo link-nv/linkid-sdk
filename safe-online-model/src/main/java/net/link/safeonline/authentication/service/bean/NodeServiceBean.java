@@ -37,8 +37,8 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -75,17 +75,14 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addNode(String name, String protocol, String hostname, int port, int sslPort, byte[] encodedAuthnCertificate,
-                        byte[] encodedSigningCertificate)
+    public void addNode(String name, String protocol, String hostname, int port, int sslPort, byte[] encodedCertificate)
             throws ExistingNodeException, CertificateEncodingException {
 
         LOG.debug("add olas node: " + name);
         checkExistingNode(name);
 
-        X509Certificate authnCertificate = PkiUtils.decodeCertificate(encodedAuthnCertificate);
-        X509Certificate signingCertificate = PkiUtils.decodeCertificate(encodedSigningCertificate);
-
-        olasDAO.addNode(name, protocol, hostname, port, sslPort, authnCertificate, signingCertificate);
+        X509Certificate certificate = PkiUtils.decodeCertificate(encodedCertificate);
+        olasDAO.addNode(name, protocol, hostname, port, sslPort, certificate);
     }
 
     private void checkExistingNode(String name)
@@ -126,25 +123,14 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateAuthnCertificate(String nodeName, byte[] certificateData)
+    public void updateCertificate(String nodeName, byte[] certificateData)
             throws CertificateEncodingException, NodeNotFoundException {
 
         LOG.debug("updating olas node authentication certificate for " + nodeName);
         X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
 
         NodeEntity node = olasDAO.getNode(nodeName);
-        node.setAuthnCertificate(certificate);
-    }
-
-    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateSigningCertificate(String nodeName, byte[] certificateData)
-            throws CertificateEncodingException, NodeNotFoundException {
-
-        LOG.debug("updating olas node certificate for " + nodeName);
-        X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
-
-        NodeEntity node = olasDAO.getNode(nodeName);
-        node.setSigningCertificate(certificate);
+        node.setCertificate(certificate);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

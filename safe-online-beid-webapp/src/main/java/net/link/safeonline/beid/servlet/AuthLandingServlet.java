@@ -14,12 +14,18 @@ import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.ERROR;
 
 import java.io.IOException;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.device.sdk.auth.servlet.LandingServlet;
+import net.link.safeonline.keystore.OlasKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +51,9 @@ public class AuthLandingServlet extends LandingServlet {
 
     private static final Log  LOG              = LogFactory.getLog(AuthLandingServlet.class);
 
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
+    NodeAuthenticationService nodeAuthenticationService;
+
 
     /**
      * {@inheritDoc}
@@ -60,5 +69,29 @@ public class AuthLandingServlet extends LandingServlet {
         JavaVersionServlet.setJava16NoPkcs11Target(AUTHENTICATION.linkFor(PCSC), session);
 
         super.invokePost(request, response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getIssuer() {
+
+        try {
+            return nodeAuthenticationService.getLocalNode().getName();
+        }
+
+        catch (NodeNotFoundException e) {
+            throw new InternalInconsistencyException("Couldn't look up local node.");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected OlasKeyStore getKeyStore() {
+
+        return new SafeOnlineNodeKeyStore();
     }
 }

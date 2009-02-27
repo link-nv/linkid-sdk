@@ -80,7 +80,6 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.saml.common.Saml2Util;
@@ -1218,7 +1217,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             throws WSAuthenticationException {
 
         SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
-        PrivateKeyEntry olasKeyPair = SafeOnlineKeyStore.getPrivateKeyEntry();
+        PrivateKeyEntry olasKeyPair = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
 
         Element assertionElement = null;
         if (null != keyInfo) {

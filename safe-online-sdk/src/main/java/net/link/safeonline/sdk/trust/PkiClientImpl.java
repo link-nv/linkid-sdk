@@ -39,7 +39,7 @@ public class PkiClientImpl implements PkiClient {
         this.location = location;
     }
 
-    public X509Certificate getSigningCertificate() {
+    public X509Certificate getCertificate() {
 
         HttpClient httpClient = new HttpClient();
         String uri = getUri();

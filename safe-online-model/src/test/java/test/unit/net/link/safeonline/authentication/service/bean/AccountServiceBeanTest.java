@@ -11,6 +11,7 @@ import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -25,7 +26,6 @@ import net.link.safeonline.authentication.service.bean.AccountServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -49,7 +49,7 @@ public class AccountServiceBeanTest {
 
 
     @Before
-    protected void setUp()
+    public void setUp()
             throws Exception {
 
         entityTestManager = new EntityTestManager();
@@ -63,11 +63,8 @@ public class AccountServiceBeanTest {
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
-
-        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
-                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
@@ -83,7 +80,7 @@ public class AccountServiceBeanTest {
     }
 
     @After
-    protected void tearDown()
+    public void tearDown()
             throws Exception {
 
         entityTestManager.tearDown();
@@ -108,5 +105,7 @@ public class AccountServiceBeanTest {
         AccountService accountService = EJBTestUtils.newInstance(AccountServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, testLogin, SafeOnlineRoles.USER_ROLE);
         accountService.removeAccount(resultSubject.getUserId());
+
+        verify(mockKeyService);
     }
 }

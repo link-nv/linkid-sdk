@@ -104,11 +104,12 @@ public class Saml2Handler implements Serializable {
         return instance;
     }
 
-    public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
+    public void init(Map<String, String> configParams, String newIssuer, X509Certificate newApplicationCertificate,
+                     KeyPair newApplicationKeyPair)
             throws AuthenticationInitializationException {
 
         wsLocation = configParams.get("WsLocation");
-        issuer = configParams.get("DeviceName");
+        issuer = newIssuer;
         applicationCertificate = newApplicationCertificate;
         applicationKeyPair = newApplicationKeyPair;
         if (null == wsLocation)
@@ -197,8 +198,8 @@ public class Saml2Handler implements Serializable {
             /*
              * Authentication failed and user requested to try another device.
              */
-            samlResponseToken = AuthnResponseFactory.createAuthResponseRequestRegistration(inResponseTo, issuerName,
-                    applicationKeyPair, target);
+            samlResponseToken = AuthnResponseFactory.createAuthResponseRequestRegistration(inResponseTo, issuerName, applicationKeyPair,
+                    target);
 
         } else {
             /*

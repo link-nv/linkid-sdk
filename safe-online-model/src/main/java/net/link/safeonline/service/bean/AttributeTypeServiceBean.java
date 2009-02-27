@@ -188,8 +188,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
             return true;
 
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
-        if (nodeKeyStore.getCertificate().getSubjectX500Principal().getName().equals(
-                attributeType.getLocation().getAuthnCertificateSubject()))
+        if (nodeKeyStore.getCertificate().getSubjectX500Principal().getName().equals(attributeType.getLocation().getCertificateSubject()))
             return true;
 
         return false;

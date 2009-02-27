@@ -7,7 +7,15 @@
 
 package net.link.safeonline.password.webapp;
 
-import net.link.safeonline.authentication.exception.*;
+import javax.ejb.EJB;
+import javax.mail.AuthenticationFailedException;
+
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
@@ -24,6 +32,7 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.tools.WicketUtil;
+
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -33,30 +42,27 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
-import javax.ejb.EJB;
-import javax.mail.AuthenticationFailedException;
-
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long                    serialVersionUID       = 1L;
+    private static final long             serialVersionUID       = 1L;
 
-    public static final String                   AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String                   LOGIN_NAME_FIELD_ID    = "loginName";
-    public static final String                   PASSWORD_FIELD_ID      = "password";
-    public static final String                   LOGIN_BUTTON_ID        = "login";
-    public static final String                   CANCEL_BUTTON_ID       = "cancel";
+    public static final String            AUTHENTICATION_FORM_ID = "authentication_form";
+    public static final String            LOGIN_NAME_FIELD_ID    = "loginName";
+    public static final String            PASSWORD_FIELD_ID      = "password";
+    public static final String            LOGIN_BUTTON_ID        = "login";
+    public static final String            CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
-    transient PasswordDeviceService              passwordDeviceService;
+    transient PasswordDeviceService       passwordDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService               samlAuthorityService;
+    transient SamlAuthorityService        samlAuthorityService;
 
     @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
-    transient NodeAuthenticationService          nodeAuthenticationService;
+    transient NodeAuthenticationService   nodeAuthenticationService;
 
-    AuthenticationContext                        authenticationContext;
+    AuthenticationContext                 authenticationContext;
 
     @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
     transient NameIdentifierMappingClient idMappingClient;
@@ -191,7 +197,7 @@ public class AuthenticationPage extends TemplatePage {
             try {
                 return idMappingClient.getUserId(login.getObject());
             }
-            
+
             catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();

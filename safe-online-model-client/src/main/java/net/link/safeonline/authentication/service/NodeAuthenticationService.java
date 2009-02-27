@@ -48,7 +48,7 @@ public interface NodeAuthenticationService extends SafeOnlineService {
      * @return the signing X509 node certificates.
      * @throws NodeNotFoundException
      */
-    List<X509Certificate> getSigningCertificates(String nodeName)
+    List<X509Certificate> getCertificates(String nodeName)
             throws NodeNotFoundException;
 
     /**

@@ -7,6 +7,15 @@
 
 package net.link.safeonline.device.sdk.servlet;
 
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
@@ -18,16 +27,9 @@ import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Locale;
 
 
 /**
@@ -63,6 +65,7 @@ public abstract class LandingServlet extends AbstractInjectionServlet {
 
     @Init(name = "ErrorPage", optional = true)
     private String            errorPage;
+
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
@@ -106,11 +109,11 @@ public abstract class LandingServlet extends AbstractInjectionServlet {
         /*
          * Figure out what the request wants us to do.
          */
-        OlasKeyStore olasKeyStore = getOlasKeyStore();
+        OlasKeyStore nodeKeyStore = getKeyStore();
         DeviceOperationType deviceOperation;
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
-            handler.init(configParams, olasKeyStore.getCertificate(), olasKeyStore.getKeyPair());
+            handler.init(configParams, getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
             deviceOperation = handler.initDeviceOperation(requestWrapper);
             if (deviceOperation.equals(DeviceOperationType.REGISTER) || deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
                 if (null == registrationUrl) {
@@ -153,5 +156,13 @@ public abstract class LandingServlet extends AbstractInjectionServlet {
         }
     }
 
-    protected abstract OlasKeyStore getOlasKeyStore();
+    /**
+     * @return The issuer of the signing keys. For OLAS nodes, this is the node name.
+     */
+    protected abstract String getIssuer();
+
+    /**
+     * @return The signing keystore. For OLAS nodes, this is the node keystore.
+     */
+    protected abstract OlasKeyStore getKeyStore();
 }

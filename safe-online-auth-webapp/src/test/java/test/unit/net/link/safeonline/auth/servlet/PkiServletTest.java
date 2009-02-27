@@ -23,7 +23,7 @@ import java.security.cert.X509Certificate;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.servlet.PkiServlet;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.MBeanActionHandler;
@@ -50,7 +50,7 @@ public class PkiServletTest {
 
     private JndiTestUtils      jndiTestUtils;
 
-    private X509Certificate    olasCertificate;
+    private X509Certificate    nodeCertificate;
 
 
     @Before
@@ -59,10 +59,10 @@ public class PkiServletTest {
 
         mockKeyService = createMock(KeyService.class);
 
-        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
-                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
@@ -121,6 +121,6 @@ public class PkiServletTest {
         LOG.debug("obj class: " + obj.getClass().getName());
         assertTrue(obj instanceof X509Certificate);
         X509Certificate resultCertificate = (X509Certificate) obj;
-        assertEquals(olasCertificate, resultCertificate);
+        assertEquals(nodeCertificate, resultCertificate);
     }
 }

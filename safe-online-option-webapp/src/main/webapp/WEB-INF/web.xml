@@ -37,10 +37,6 @@
 		<param-value>${safe-online.option.webapp.name}</param-value>
 	</context-param>
 	<context-param>
-		<param-name>DeviceName</param-name>
-		<param-value>option</param-value>
-	</context-param>
-	<context-param>
 		<param-name>KeyStoreResource</param-name>
 		<param-value>safe-online-option-keystore.jks</param-value>
 	</context-param>
@@ -69,9 +65,9 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<servlet>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
+			net.link.safeonline.option.servlet.AuthLandingServlet</servlet-class>
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>authentication</param-value>
@@ -91,7 +87,7 @@
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<url-pattern>/auth</url-pattern>
 	</servlet-mapping>
 	<servlet>
@@ -109,7 +105,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.option.servlet.DeviceLandingServlet</servlet-class>
         <init-param>
             <param-name>RegistrationUrl</param-name>
             <param-value>registration</param-value>

@@ -138,10 +138,10 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                 NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING,
                         NodeAuthenticationService.class);
                 try {
-                    List<X509Certificate> nodeSigningCertificates = nodeAuthenticationService.getSigningCertificates(issuerName);
+                    List<X509Certificate> nodeCertificates = nodeAuthenticationService.getCertificates(issuerName);
                     result = false;
-                    for (X509Certificate nodeSigningCertificate : nodeSigningCertificates) {
-                        result = xmlSignature.checkSignatureValue(nodeSigningCertificate);
+                    for (X509Certificate nodeCertificate : nodeCertificates) {
+                        result = xmlSignature.checkSignatureValue(nodeCertificate);
                         if (result == true) {
                             break;
                         }

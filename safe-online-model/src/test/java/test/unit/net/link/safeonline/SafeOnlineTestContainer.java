@@ -109,6 +109,7 @@ import net.link.safeonline.pkix.model.bean.CachedOcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.pkix.model.bean.PkiValidatorBean;
+import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.service.bean.NodeMappingServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
@@ -146,7 +147,8 @@ public class SafeOnlineTestContainer {
             NodeMappingDAOBean.class, ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class, NotificationConsumerServiceBean.class,
             EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class, OSGIStartableBean.class, AttributeCacheDAOBean.class,
-            ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class, NodeAuthenticationServiceBean.class };
+            ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class, NodeAuthenticationServiceBean.class,
+            AttributeTypeServiceBean.class     };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class,
             AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class, TrustDomainEntity.class,

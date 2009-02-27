@@ -33,7 +33,6 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseFactory;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.WSSecurityConfiguration;
@@ -97,9 +96,9 @@ public class SecurityTokenServicePortImplTest {
 
     private KeyService                       mockKeyService;
 
-    private KeyPair                          olasKeyPair;
+    private KeyPair                          nodeKeyPair;
 
-    private X509Certificate                  olasCertificate;
+    private X509Certificate                  nodeCertificate;
 
 
     @Before
@@ -117,15 +116,10 @@ public class SecurityTokenServicePortImplTest {
         mockPkiValidator = createMock(PkiValidator.class);
         mockKeyService = createMock(KeyService.class);
 
-        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        nodeKeyPair = PkiTestUtils.generateKeyPair();
+        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
-
-        olasKeyPair = PkiTestUtils.generateKeyPair();
-        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
-                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
@@ -146,18 +140,18 @@ public class SecurityTokenServicePortImplTest {
 
         String testNodeName = "test-node-name";
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, olasCertificate))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, nodeCertificate))
                                                                                                                                 .andStubReturn(
                                                                                                                                         PkiResult.INVALID);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, olasCertificate)).andStubReturn(
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, nodeCertificate)).andStubReturn(
                 PkiResult.INVALID);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, olasCertificate)).andStubReturn(
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, nodeCertificate)).andStubReturn(
                 PkiResult.VALID);
-        expect(mockNodeAuthenticationService.authenticate(olasCertificate)).andStubReturn(testNodeName);
-        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(olasCertificate)).andReturn(false);
-        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(olasCertificate)).andReturn(false);
-        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
+        expect(mockNodeAuthenticationService.authenticate(nodeCertificate)).andStubReturn(testNodeName);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(nodeCertificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(nodeCertificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
     }
@@ -198,13 +192,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
+        handlers.add(new WSSecurityClientHandler(nodeCertificate, nodeKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
+        expect(mockNodeAuthenticationService.getCertificates(testIssuer)).andStubReturn(Collections.singletonList(nodeCertificate));
 
         // prepare
         replay(mockObjects);
@@ -257,13 +251,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
+        handlers.add(new WSSecurityClientHandler(nodeCertificate, nodeKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
+        expect(mockNodeAuthenticationService.getCertificates(testIssuer)).andStubReturn(Collections.singletonList(nodeCertificate));
 
         // prepare
         replay(mockObjects);
@@ -315,13 +309,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
+        handlers.add(new WSSecurityClientHandler(nodeCertificate, nodeKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
+        expect(mockNodeAuthenticationService.getCertificates(testIssuer)).andStubReturn(Collections.singletonList(nodeCertificate));
 
         // prepare
         replay(mockObjects);
@@ -373,13 +367,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
+        handlers.add(new WSSecurityClientHandler(nodeCertificate, nodeKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
+        expect(mockNodeAuthenticationService.getCertificates(testIssuer)).andStubReturn(Collections.singletonList(nodeCertificate));
 
         // prepare
         replay(mockObjects);
@@ -431,13 +425,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
+        handlers.add(new WSSecurityClientHandler(nodeCertificate, nodeKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
+        expect(mockNodeAuthenticationService.getCertificates(testIssuer)).andStubReturn(Collections.singletonList(nodeCertificate));
 
         // prepare
         replay(mockObjects);
@@ -490,13 +484,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
+        handlers.add(new WSSecurityClientHandler(nodeCertificate, nodeKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
+        expect(mockNodeAuthenticationService.getCertificates(testIssuer)).andStubReturn(Collections.singletonList(nodeCertificate));
 
         // prepare
         replay(mockObjects);
@@ -540,7 +534,7 @@ public class SecurityTokenServicePortImplTest {
             throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, olasKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, nodeKeyPair,
                 assertionConsumerServiceURL, destinationURL, challenge, Collections.singleton("test-device-name"), false);
         Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         return doc.getDocumentElement();
@@ -550,7 +544,7 @@ public class SecurityTokenServicePortImplTest {
             throws Exception {
 
         String encodedAuthnResponse = AuthnResponseFactory.createAuthResponse(inResponseTo, issuerName, issuerName, subjectName,
-                SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, olasKeyPair, validity, target);
+                SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, nodeKeyPair, validity, target);
         Document doc = DomUtils.parseDocument(encodedAuthnResponse);
         return doc.getDocumentElement();
     }
@@ -559,7 +553,7 @@ public class SecurityTokenServicePortImplTest {
             throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
-        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, olasKeyPair, destinationURL,
+        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, nodeKeyPair, destinationURL,
                 challenge);
         Document doc = DomUtils.parseDocument(encodedLogoutRequest);
         return doc.getDocumentElement();
@@ -568,7 +562,7 @@ public class SecurityTokenServicePortImplTest {
     private Element createLogoutResponse(String inResponseTo, String issuerName, String target)
             throws Exception {
 
-        String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName, olasKeyPair, target);
+        String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName, nodeKeyPair, target);
         Document doc = DomUtils.parseDocument(encodedLogoutResponse);
         return doc.getDocumentElement();
     }
@@ -579,7 +573,7 @@ public class SecurityTokenServicePortImplTest {
         Challenge<String> challenge = new Challenge<String>();
         String device = "test-device";
         String authenticatedDevice = "test-authenticated-device";
-        String encodedRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(issuerName, subjectName, olasKeyPair,
+        String encodedRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(issuerName, subjectName, nodeKeyPair,
                 serviceURL, destinationURL, DeviceOperationType.REGISTER, challenge, device, authenticatedDevice, null);
         Document doc = DomUtils.parseDocument(encodedRequest);
         return doc.getDocumentElement();
@@ -590,7 +584,7 @@ public class SecurityTokenServicePortImplTest {
 
         String device = "test-device";
         String encodedResponse = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo, DeviceOperationType.REGISTER,
-                issuerName, subjectName, device, olasKeyPair, validity, target);
+                issuerName, subjectName, device, nodeKeyPair, validity, target);
         Document doc = DomUtils.parseDocument(encodedResponse);
         return doc.getDocumentElement();
     }

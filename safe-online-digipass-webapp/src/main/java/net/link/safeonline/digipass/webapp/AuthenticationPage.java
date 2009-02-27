@@ -11,8 +11,11 @@ import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -60,6 +63,9 @@ public class AuthenticationPage extends TemplatePage {
 
     @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
     transient NameIdentifierMappingClient idMappingClient;
+
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
+    transient NodeAuthenticationService   nodeAuthenticationService;
 
     AuthenticationContext                 authenticationContext;
 
@@ -211,10 +217,16 @@ public class AuthenticationPage extends TemplatePage {
 
     public void login(String userId) {
 
-        authenticationContext.setUserId(userId);
-        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
-        authenticationContext.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
-        authenticationContext.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+        try {
+            authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
+            authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+            authenticationContext.setUsedDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+            authenticationContext.setUserId(userId);
+        }
+
+        catch (NodeNotFoundException e) {
+            throw new InternalInconsistencyException("Couldn't look up local node.");
+        }
 
         exit();
     }

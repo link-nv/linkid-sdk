@@ -33,10 +33,6 @@
 		<param-value>${safe-online.password.webapp.name}</param-value>
 	</context-param>
 	<context-param>
-		<param-name>DeviceName</param-name>
-		<param-value>password</param-value>
-	</context-param>
-	<context-param>
 		<param-name>KeyStoreResource</param-name>
 		<param-value>safe-online-node-keystore.jks</param-value>
 	</context-param>
@@ -65,7 +61,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<servlet>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>
             net.link.safeonline.password.webapp.servlet.AuthLandingServlet</servlet-class>
 		<init-param>
@@ -87,7 +83,7 @@
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<url-pattern>/auth</url-pattern>
 	</servlet-mapping>
 	<servlet>

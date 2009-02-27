@@ -105,7 +105,6 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -165,7 +164,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private static final Log                    LOG                                  = LogFactory.getLog(AuthenticationServiceBean.class);
 
-    private static final SafeOnlineKeyStore     olasKeyStore                         = new SafeOnlineKeyStore();
     private static final SafeOnlineNodeKeyStore nodeKeyStore                         = new SafeOnlineNodeKeyStore();
 
     public static final String                  SECURITY_MESSAGE_INVALID_COOKIE      = "Attempt to use an invalid SSO Cookie";
@@ -393,7 +391,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         Challenge<String> challenge = new Challenge<String>();
 
         String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node.getName(), expectedApplicationName,
-                expectedApplicationFriendlyName, olasKeyStore.getKeyPair(), authenticationServiceUrl, targetUrl, challenge, devices, false);
+                expectedApplicationFriendlyName, nodeKeyStore.getKeyPair(), authenticationServiceUrl, targetUrl, challenge, devices, false);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -438,7 +436,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(), nodeUserId,
-                olasKeyStore.getKeyPair(), registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge,
+                nodeKeyStore.getKeyPair(), registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge,
                 deviceName, authenticatedDevice, null);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
@@ -526,7 +524,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        createSsoCookie(SafeOnlineKeyStore.getSSOKey());
+        createSsoCookie(SafeOnlineNodeKeyStore.getSSOKey());
 
         return subjectEntity.getUserId();
     }
@@ -638,7 +636,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Add application to cookie
          */
         sso.addSsoApplication(application);
-        createSsoCookie(application, SafeOnlineKeyStore.getSSOKey(), sso);
+        createSsoCookie(application, SafeOnlineNodeKeyStore.getSSOKey(), sso);
 
         /*
          * Safe the state in this stateful session bean.
@@ -767,7 +765,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String decryptedValue;
         try {
             Cipher decryptCipher = Cipher.getInstance("AES", bcp);
-            decryptCipher.init(Cipher.DECRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
+            decryptCipher.init(Cipher.DECRYPT_MODE, SafeOnlineNodeKeyStore.getSSOKey());
             byte[] decryptedBytes = decryptCipher.doFinal(Base64.decode(cookie.getValue().getBytes("UTF-8")));
             decryptedValue = new String(decryptedBytes);
         } catch (InvalidKeyException e) {
@@ -903,7 +901,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        createSsoCookie(SafeOnlineKeyStore.getSSOKey());
+        createSsoCookie(SafeOnlineNodeKeyStore.getSSOKey());
 
         /*
          * Communicate that the authentication process can continue.
@@ -995,7 +993,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        createSsoCookie(SafeOnlineKeyStore.getSSOKey());
+        createSsoCookie(SafeOnlineNodeKeyStore.getSSOKey());
 
         addHistoryEntry(authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
 
@@ -1017,7 +1015,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String userId = userIdMappingService.getApplicationUserId(expectedApplicationId, getUserId());
 
         String samlResponseToken = AuthnResponseFactory.createAuthResponse(expectedChallengeId, expectedApplicationName, node.getName(),
-                userId, authenticationDevice.getAuthenticationContextClass(), olasKeyStore.getKeyPair(), validity, expectedTarget,
+                userId, authenticationDevice.getAuthenticationContextClass(), nodeKeyStore.getKeyPair(), validity, expectedTarget,
                 authenticationDate);
         LOG.debug("saml response token: " + samlResponseToken);
 
@@ -1284,7 +1282,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         expectedLogoutChallenge = new Challenge<String>();
 
-        String samlLogoutRequestToken = LogoutRequestFactory.createLogoutRequest(userId, node.getName(), olasKeyStore.getKeyPair(),
+        String samlLogoutRequestToken = LogoutRequestFactory.createLogoutRequest(userId, node.getName(), nodeKeyStore.getKeyPair(),
                 application.getSsoLogoutUrl().toString(), expectedLogoutChallenge);
 
         String encodedSamlLogoutRequestToken = Base64.encode(samlLogoutRequestToken.getBytes());
@@ -1345,7 +1343,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         String samlLogoutResponseToken = LogoutResponseFactory.createLogoutResponse(partialLogout, expectedChallengeId, node.getName(),
-                olasKeyStore.getKeyPair(), expectedTarget);
+                nodeKeyStore.getKeyPair(), expectedTarget);
         String encodedSamlLogoutResponseToken = Base64.encode(samlLogoutResponseToken.getBytes());
         return encodedSamlLogoutResponseToken;
     }

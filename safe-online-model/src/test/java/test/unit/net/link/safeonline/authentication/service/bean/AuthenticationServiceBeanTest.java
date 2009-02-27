@@ -7,7 +7,6 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
-import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -21,8 +20,6 @@ import static org.junit.Assert.fail;
 import java.net.URL;
 import java.security.KeyPair;
 import java.security.Security;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.HashSet;
@@ -61,8 +58,7 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
-import net.link.safeonline.keystore.service.KeyService;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.DomUtils;
@@ -70,12 +66,10 @@ import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -118,10 +112,6 @@ public class AuthenticationServiceBeanTest {
     private SecurityAuditLogger              mockSecurityAuditLogger;
 
     private UserIdMappingService             mockUserIdMappingService;
-
-    private KeyService                       mockKeyService;
-
-    private JndiTestUtils                    jndiTestUtils;
 
 
     @BeforeClass
@@ -178,32 +168,11 @@ public class AuthenticationServiceBeanTest {
         mockUserIdMappingService = createMock(UserIdMappingService.class);
         EJBTestUtils.inject(testedInstance, mockUserIdMappingService);
 
-        mockKeyService = createMock(KeyService.class);
-
-        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
-                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
-
-        checkOrder(mockKeyService, false);
-        replay(mockKeyService);
-
-        jndiTestUtils = new JndiTestUtils();
-        jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
-
         EJBTestUtils.init(testedInstance);
 
         mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockSubscriptionDAO, mockHistoryDAO, mockStatisticDAO,
                 mockStatisticDataPointDAO, mockDeviceDAO, mockApplicationAuthenticationService, mockPkiValidator, mockDevicePolicyService,
                 mockApplicationPoolDAO, mockSecurityAuditLogger, mockUserIdMappingService };
-    }
-
-    @After
-    public void tearDown()
-            throws Exception {
-
-        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -1083,7 +1052,7 @@ public class AuthenticationServiceBeanTest {
 
         BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
         Cipher encryptCipher = Cipher.getInstance("AES", bcp);
-        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
+        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineNodeKeyStore.getSSOKey());
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
         Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(), encryptedValue);
@@ -1102,7 +1071,7 @@ public class AuthenticationServiceBeanTest {
 
         BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
         Cipher encryptCipher = Cipher.getInstance("AES", bcp);
-        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
+        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineNodeKeyStore.getSSOKey());
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
         Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(), encryptedValue);
@@ -1118,7 +1087,7 @@ public class AuthenticationServiceBeanTest {
 
         BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
         Cipher encryptCipher = Cipher.getInstance("AES", bcp);
-        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
+        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineNodeKeyStore.getSSOKey());
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
         Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationId, encryptedValue);

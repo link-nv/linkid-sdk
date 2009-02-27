@@ -1,4 +1,4 @@
-package net.link.safeonline.password.webapp.servlet;
+package net.link.safeonline.beid.servlet;
 
 import javax.ejb.EJB;
 

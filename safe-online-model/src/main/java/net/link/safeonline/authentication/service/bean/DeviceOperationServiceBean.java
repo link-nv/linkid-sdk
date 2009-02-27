@@ -44,7 +44,6 @@ import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -84,7 +83,6 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
     private static final Log                    LOG          = LogFactory.getLog(DeviceOperationServiceBean.class);
 
-    private static final SafeOnlineKeyStore     olasKeyStore = new SafeOnlineKeyStore();
     private static final SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
     @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
@@ -154,7 +152,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         Challenge<String> challenge = new Challenge<String>();
 
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(), nodeUserId,
-                olasKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName,
+                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName,
                 attributeValue);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());

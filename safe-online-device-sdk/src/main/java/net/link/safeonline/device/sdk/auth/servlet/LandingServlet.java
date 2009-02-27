@@ -7,6 +7,14 @@
 
 package net.link.safeonline.device.sdk.auth.servlet;
 
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
@@ -17,16 +25,9 @@ import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Locale;
 
 
 public abstract class LandingServlet extends AbstractInjectionServlet {
@@ -43,6 +44,7 @@ public abstract class LandingServlet extends AbstractInjectionServlet {
 
     @Init(name = "ErrorPage", optional = true)
     protected String          errorPage;
+
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
@@ -86,10 +88,10 @@ public abstract class LandingServlet extends AbstractInjectionServlet {
         /*
          * Start the authentication using this device.
          */
-        OlasKeyStore olasKeyStore = getOlasKeyStore();
+        OlasKeyStore nodeKeyStore = getKeyStore();
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
-            handler.init(configParams, olasKeyStore.getCertificate(), olasKeyStore.getKeyPair());
+            handler.init(configParams, getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
             handler.initAuthentication(requestWrapper);
         } catch (AuthenticationInitializationException e) {
             redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(e.getMessage()));
@@ -98,5 +100,13 @@ public abstract class LandingServlet extends AbstractInjectionServlet {
         response.sendRedirect(authenticationUrl);
     }
 
-    protected abstract OlasKeyStore getOlasKeyStore();
+    /**
+     * @return The issuer of the signing keys. For OLAS nodes, this is the node name.
+     */
+    protected abstract String getIssuer();
+
+    /**
+     * @return The signing keystore. For OLAS nodes, this is the node keystore.
+     */
+    protected abstract OlasKeyStore getKeyStore();
 }

@@ -1,16 +1,16 @@
-package net.link.safeonline.password.webapp.servlet;
+package net.link.safeonline.encap.servlet;
 
 import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.device.sdk.servlet.LandingServlet;
+import net.link.safeonline.device.sdk.auth.servlet.LandingServlet;
 import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 
 
-public class DeviceLandingServlet extends LandingServlet {
+public class AuthLandingServlet extends LandingServlet {
 
     private static final long serialVersionUID = 1L;
 

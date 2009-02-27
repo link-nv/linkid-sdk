@@ -16,7 +16,7 @@ import java.security.cert.X509Certificate;
 
 import javax.persistence.EntityManager;
 
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.entity.Type;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.keystore.service.bean.KeyServiceBean;
@@ -94,9 +94,9 @@ public class KeyConfigTest {
 
         // operate
         KeyConfig keyConfig = new KeyConfig();
-        keyConfig.configure(SafeOnlineKeyStore.class.getCanonicalName(), Type.JKS, String.format("%s:%s:%s", password, password,
+        keyConfig.configure(SafeOnlineNodeKeyStore.class.getCanonicalName(), Type.JKS, String.format("%s:%s:%s", password, password,
                 resourceName));
-        PrivateKey resultPrivateKey = keyConfig.getPrivateKeyEntry(SafeOnlineKeyStore.class.getCanonicalName()).getPrivateKey();
+        PrivateKey resultPrivateKey = keyConfig.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class.getCanonicalName()).getPrivateKey();
 
         // verify
         assertEquals(privateKey, resultPrivateKey);

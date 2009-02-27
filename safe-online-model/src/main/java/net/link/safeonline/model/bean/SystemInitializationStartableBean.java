@@ -25,7 +25,6 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStore;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.oper.keystore.OperKeyStore;
 import net.link.safeonline.owner.keystore.OwnerKeyStore;
@@ -138,13 +137,10 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate(),
-                olasKeyStore.getCertificate());
+        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-        trustedCertificates.put(olasKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureAttributeTypes() {

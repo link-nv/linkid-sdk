@@ -38,7 +38,6 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.beid.BeIdConstants;
@@ -92,7 +91,7 @@ public class ExitServletTest {
 
     private KeyService            mockKeyService;
 
-    private KeyPair               olasKeyPair;
+    private KeyPair               nodeKeyPair;
 
 
     @Before
@@ -107,15 +106,10 @@ public class ExitServletTest {
 
         mockKeyService = createMock(KeyService.class);
 
-        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        nodeKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
-
-        olasKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
-                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
@@ -143,7 +137,7 @@ public class ExitServletTest {
         exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 
         String samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, applicationId, userid,
-                device.getAuthenticationContextClass(), olasKeyPair, validity, target);
+                device.getAuthenticationContextClass(), nodeKeyPair, validity, target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
         expect(mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
 
@@ -197,7 +191,7 @@ public class ExitServletTest {
         String xmlFilename = tmpFile.getAbsolutePath();
         String pubFilename = FilenameUtils.getFullPath(xmlFilename) + FilenameUtils.getBaseName(xmlFilename) + ".pem";
         PEMWriter writer = new PEMWriter(new FileWriter(pubFilename));
-        writer.writeObject(olasKeyPair.getPublic());
+        writer.writeObject(nodeKeyPair.getPublic());
         writer.close();
 
         Document samlResponseDocument = DomTestUtils.parseDocument(samlResponse);

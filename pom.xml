@@ -1032,7 +1032,6 @@
 		<module>safe-online-common</module>
 		<module>safe-online-shared</module>
 		<module>safe-online-keystore-util</module>
-		<module>safe-online-keystore</module>
 		<module>safe-online-app-console</module>
 		<module>safe-online-jpa-util</module>
 		<module>safe-online-saml-authn-context

@@ -16,7 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.io.IOUtils;
@@ -52,7 +52,7 @@ public class PkiServlet extends AbstractInjectionServlet {
             throws ServletException, IOException {
 
         LOG.debug("doGet");
-        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
+        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
         String pemCertificate = toPem(olasKeyStore.getCertificate());
 
         response.setContentType("text/plain");

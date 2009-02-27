@@ -21,7 +21,6 @@ import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.beid.bean.BeIdPkiProviderBean;
@@ -65,19 +64,12 @@ public class BeIdStartableBeanTest extends TestCase {
         EJBTestUtils.inject(testedInstance, mockTrustPointDAO);
 
         mockKeyService = createMock(KeyService.class);
+        checkOrder(mockKeyService, false);
 
         final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
-
-        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
-                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
-
-        checkOrder(mockKeyService, false);
-        replay(mockKeyService);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
@@ -85,7 +77,7 @@ public class BeIdStartableBeanTest extends TestCase {
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockTrustDomainDAO, mockTrustPointDAO };
+        mockObjects = new Object[] { mockTrustDomainDAO, mockTrustPointDAO, mockKeyService };
     }
 
     public void testInitTrustDomain()
