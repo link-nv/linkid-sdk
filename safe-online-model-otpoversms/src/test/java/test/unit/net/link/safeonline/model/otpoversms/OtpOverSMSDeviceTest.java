@@ -29,7 +29,7 @@ import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
@@ -343,7 +343,7 @@ public class OtpOverSMSDeviceTest {
         try {
             testedInstance.authenticate(testValidPIN, getValidOTP());
             fail("Device registration was still found after removing the device.");
-        } catch (DeviceRegistrationNotFoundException e) {
+        } catch (SubjectNotFoundException e) {
         }
 
         // verify
