@@ -485,6 +485,36 @@
 			</modules>
 		</profile>
 
+		<!-- Profile that enables the OTP over SMS artifacts -->
+		<profile>
+			<id>dep:otpoversms</id>
+			<properties>
+				<safe-online.otpoversms.webapp.name>olas-otp-over-sms
+				</safe-online.otpoversms.webapp.name>
+				<safe-online.otpoversms.auth.ws.webapp.name>
+					olas-otp-over-sms-auth-ws
+				</safe-online.otpoversms.auth.ws.webapp.name>
+			</properties>
+			<modules>
+				<module>safe-online-model-otpoversms-client
+				</module>
+				<module>safe-online-model-otpoversms
+				</module>
+				<module>safe-online-otpoversms-keystore
+				</module>
+				<module>safe-online-otpoversms-startup-runtime
+				</module>
+				<module>safe-online-otpoversms-webapp
+				</module>
+				<module>safe-online-otpoversms-deploy
+				</module>
+				<module>safe-online-otpoversms-auth-ws-impl
+				</module>
+				<module>safe-online-otpoversms-auth-ws-runtime
+				</module>
+			</modules>
+		</profile>
+
 		<!-- Profile that creates an SDK package -->
 		<profile>
 			<id>dep:sdk</id>
@@ -785,10 +815,6 @@
 		</safe-online.password.webapp.name>
 		<safe-online.password.auth.ws.webapp.name>olas-password-auth-ws
 		</safe-online.password.auth.ws.webapp.name>
-		<safe-online.otpoversms.webapp.name>olas-otp-over-sms
-		</safe-online.otpoversms.webapp.name>
-		<safe-online.otpoversms.auth.ws.webapp.name>olas-otp-over-sms-auth-ws
-		</safe-online.otpoversms.auth.ws.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
 		<safe-online.version>${pom.version}
@@ -1175,22 +1201,6 @@
 		</module>
 		<module>safe-online-password-auth-ws-runtime
 		</module>
-		<module>safe-online-model-otpoversms-client
-		</module>
-		<module>safe-online-model-otpoversms
-		</module>
-		<module>safe-online-otpoversms-keystore
-		</module>
-		<module>safe-online-otpoversms-startup-runtime
-		</module>
-		<module>safe-online-otpoversms-webapp
-		</module>
-		<module>safe-online-otpoversms-deploy
-		</module>
-		<module>safe-online-otpoversms-auth-ws-impl
-		</module>
-		<module>safe-online-otpoversms-auth-ws-runtime
-		</module>
 
 		<module>siemens-attrplugin-acceptance-bundle
 		</module>
@@ -1296,7 +1306,7 @@
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
-					<jdkName>1.6 (Soylatte)</jdkName>
+                    <jdkName>1.6 (Soylatte)</jdkName>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
