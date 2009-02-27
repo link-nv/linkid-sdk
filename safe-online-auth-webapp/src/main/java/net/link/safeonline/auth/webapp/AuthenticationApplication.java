@@ -40,6 +40,7 @@ public class AuthenticationApplication extends OlasApplication {
         mountBookmarkablePage(SubscriptionPage.PATH, SubscriptionPage.class);
         mountBookmarkablePage(IdentityConfirmationPage.PATH, IdentityConfirmationPage.class);
         mountBookmarkablePage(IdentityUnavailablePage.PATH, IdentityUnavailablePage.class);
+        mountBookmarkablePage(MissingAttributesPage.PATH, MissingAttributesPage.class);
 
     }
 
@@ -49,7 +50,7 @@ public class AuthenticationApplication extends OlasApplication {
     @Override
     public Class<? extends Page> getHomePage() {
 
-        return null;
+        return IndexPage.class;
     }
 
     /**

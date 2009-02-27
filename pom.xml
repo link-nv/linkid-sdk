@@ -475,8 +475,10 @@
 				</safe-online.option.webapp.name>
 			</properties>
 			<modules>
-				<module>safe-online-option-startup-runtime</module>
-				<module>safe-online-option-keystore</module>
+				<module>safe-online-option-startup-runtime
+				</module>
+				<module>safe-online-option-keystore
+				</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>
 				<module>safe-online-model-option-client
@@ -684,7 +686,8 @@
 		<profile>
 			<id>host:sebeco-dev-22</id>
 			<properties>
-				<safe-online.host.name>sebeco-dev-22</safe-online.host.name>
+				<safe-online.host.name>sebeco-dev-22
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -692,7 +695,8 @@
 		<profile>
 			<id>host:wim</id>
 			<properties>
-				<safe-online.host.name>192.168.5.11</safe-online.host.name>
+				<safe-online.host.name>192.168.5.11
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -950,6 +954,8 @@
 		</wicket-javaee.version>
 		<wicketstuff-annotation.version>1.1
 		</wicketstuff-annotation.version>
+		<wicket-datetime.version>1.4-SNAPSHOT
+		</wicket-datetime.version>
 		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
@@ -2634,6 +2640,13 @@
 				<artifactId>wicketstuff-annotation
 				</artifactId>
 				<version>${wicketstuff-annotation.version}
+				</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-datetime
+				</artifactId>
+				<version>${wicket-datetime.version}
 				</version>
 			</dependency>
 			<dependency>

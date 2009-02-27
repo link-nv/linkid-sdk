@@ -21,6 +21,7 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.webapp.GlobalConfirmationPage;
 import net.link.safeonline.auth.webapp.IdentityConfirmationPage;
 import net.link.safeonline.auth.webapp.IdentityUnavailablePage;
+import net.link.safeonline.auth.webapp.MissingAttributesPage;
 import net.link.safeonline.auth.webapp.RegisterDevicePage;
 import net.link.safeonline.auth.webapp.SubscriptionPage;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -245,8 +246,7 @@ public class LoginServlet extends AbstractInjectionServlet {
             }
         }
 
-        String redirectUrl = "./missing-attributes.seam";
-        response.sendRedirect(redirectUrl);
+        response.sendRedirect(MissingAttributesPage.PATH);
     }
 
     private void redirectToIdentityConfirmation(HttpServletResponse response)
