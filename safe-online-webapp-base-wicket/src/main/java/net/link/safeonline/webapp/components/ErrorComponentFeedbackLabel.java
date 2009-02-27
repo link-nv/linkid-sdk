@@ -7,13 +7,9 @@
 package net.link.safeonline.webapp.components;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
-import org.apache.wicket.feedback.FeedbackMessages;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.IModel;
@@ -38,8 +34,6 @@ import org.apache.wicket.model.Model;
 public class ErrorComponentFeedbackLabel extends Label {
 
     private static final long serialVersionUID = 1L;
-
-    private static final Log  LOG              = LogFactory.getLog(ErrorComponentFeedbackLabel.class);
 
     /** Field component holds a reference to the {@link Component} this FeedbackLabel belongs to */
     private FormComponent     component;
@@ -73,9 +67,6 @@ public class ErrorComponentFeedbackLabel extends Label {
 
         super(id);
         this.component = component;
-
-        LOG.debug("formcomponent: " + component.hashCode());
-        LOG.debug("this.component: " + this.component.hashCode());
     }
 
     /**
@@ -86,13 +77,8 @@ public class ErrorComponentFeedbackLabel extends Label {
     @Override
     protected void onBeforeRender() {
 
-        super.onBeforeRender();
-
-        LOG.debug("onBeforeRender");
-
         setDefaultModel(null);
         if (component.getFeedbackMessage() != null) {
-            LOG.debug("onBeforeRender: feedbackmsg = " + component.getFeedbackMessage());
             if (text != null) {
                 setDefaultModel(text);
             } else {
@@ -101,28 +87,15 @@ public class ErrorComponentFeedbackLabel extends Label {
         } else {
             setDefaultModel(null);
         }
+
+        super.onBeforeRender();
     }
 
     @Override
     public boolean isVisible() {
 
-        LOG.debug("isVisible");
-
-        FeedbackMessages msgs = org.apache.wicket.Session.get().getFeedbackMessages();
-        Iterator<FeedbackMessage> it = msgs.iterator();
-        while (it.hasNext()) {
-            FeedbackMessage msg = it.next();
-            LOG.debug("feedback message: " + msg.getMessage() + " reporter: " + msg.getReporter().getId() + " level: "
-                    + msg.getLevelAsString() + " reporter: " + msg.getReporter().hashCode() + " this.component: " + component.hashCode()
-                    + " this.component.id: " + component.getId());
-            if (component == msg.getReporter()) {
-                LOG.debug("moehoehoehoeeeeeeeeeeee");
-            }
-        }
-
         if (component.getFeedbackMessage() != null && component.getFeedbackMessage().getLevel() == FeedbackMessage.ERROR)
             return true;
-        LOG.debug("isVisible: false");
         return false;
     }
 }

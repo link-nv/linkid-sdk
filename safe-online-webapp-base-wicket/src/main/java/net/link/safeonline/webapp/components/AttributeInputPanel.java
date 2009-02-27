@@ -10,8 +10,6 @@ import java.util.Date;
 
 import net.link.safeonline.data.AttributeDO;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.basic.Label;
@@ -38,8 +36,6 @@ import org.apache.wicket.model.Model;
 public class AttributeInputPanel extends Panel {
 
     private static final long  serialVersionUID    = 1L;
-
-    private static final Log   LOG                 = LogFactory.getLog(AttributeInputPanel.class);
 
     public static final String NAME_LABEL_ID       = "name";
 
@@ -80,7 +76,6 @@ public class AttributeInputPanel extends Panel {
         add(stringField);
         add(new ErrorComponentFeedbackLabel(STRING_FEEDBACK_ID, stringField, new Model<String>(
                 getLocalizer().getString("enterAValue", this))));
-        LOG.debug("added stringField: " + stringField.hashCode());
 
         DoubleTextField doubleField = new DoubleTextField(DOUBLE_ID, getDoubleModel());
         doubleField.setVisible(false);

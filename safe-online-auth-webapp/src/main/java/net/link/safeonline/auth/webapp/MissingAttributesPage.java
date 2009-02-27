@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth.webapp;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -120,6 +121,14 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
                 error(localize("errorAttributeTypeNotFound"));
                 return;
             }
+            final List<AttributeInputPanel> missingAttributePanels = new LinkedList<AttributeInputPanel>();
+            for (AttributeDO attribute : missingAttributeList) {
+                missingAttributePanels.add(new AttributeInputPanel(MISSING_ATTRIBUTE_ID, attribute, true));
+            }
+            final List<AttributeInputPanel> optionalAttributePanels = new LinkedList<AttributeInputPanel>();
+            for (AttributeDO attribute : optionalAttributeList) {
+                optionalAttributePanels.add(new AttributeInputPanel(MISSING_ATTRIBUTE_ID, attribute, true));
+            }
 
             add(new ListView<AttributeDO>(MISSING_ATTRIBUTES_LIST_ID, missingAttributeList) {
 
@@ -129,7 +138,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
                 @Override
                 protected void populateItem(final ListItem<AttributeDO> attributeItem) {
 
-                    attributeItem.add(new AttributeInputPanel(MISSING_ATTRIBUTE_ID, attributeItem.getModelObject(), true));
+                    attributeItem.add(missingAttributePanels.get(attributeItem.getIndex()));
                 }
 
             });
@@ -141,7 +150,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
                 @Override
                 protected void populateItem(final ListItem<AttributeDO> attributeItem) {
 
-                    attributeItem.add(new AttributeInputPanel(OPTIONAL_ATTRIBUTE_ID, attributeItem.getModelObject(), false));
+                    attributeItem.add(optionalAttributePanels.get(attributeItem.getIndex()));
                 }
 
             });
