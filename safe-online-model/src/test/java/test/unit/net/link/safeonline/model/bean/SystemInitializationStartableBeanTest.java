@@ -11,6 +11,7 @@ import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -53,7 +54,7 @@ public class SystemInitializationStartableBeanTest {
         final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(4);
 
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
@@ -69,10 +70,13 @@ public class SystemInitializationStartableBeanTest {
         testedInstance.postStart();
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
+
         /*
          * We run postStart twice since the system must be capable of rebooting using an persistent database.
          */
         testedInstance.postStart();
+
+        verify(mockKeyService);
         entityTestManager.tearDown();
         jndiTestUtils.tearDown();
     }
