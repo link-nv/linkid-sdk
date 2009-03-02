@@ -40,10 +40,9 @@ public class NodeDAOBean implements NodeDAO {
         queryObject = QueryObjectFactory.createQueryObject(entityManager, NodeEntity.QueryInterface.class);
     }
 
-    public NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
-                              X509Certificate signingCertificate) {
+    public NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate certificate) {
 
-        NodeEntity node = new NodeEntity(name, protocol, hostname, port, sslPort, authnCertificate, signingCertificate);
+        NodeEntity node = new NodeEntity(name, protocol, hostname, port, sslPort, certificate);
         entityManager.persist(node);
         return node;
     }
@@ -69,46 +68,19 @@ public class NodeDAOBean implements NodeDAO {
         return node;
     }
 
-    public NodeEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate)
+    public NodeEntity getNodeFromCertificate(X509Certificate certificate)
             throws NodeNotFoundException {
 
-        List<NodeEntity> nodes = queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
-                                                                                                               .getName());
-        if (nodes.isEmpty())
+        NodeEntity node = findNodeFromCertificate(certificate);
+        if (node == null)
             throw new NodeNotFoundException();
-        NodeEntity node = nodes.get(0);
+
         return node;
     }
 
-    public NodeEntity findNodeFromAuthnCertificate(X509Certificate authnCertificate) {
+    public NodeEntity findNodeFromCertificate(X509Certificate certificate) {
 
-        List<NodeEntity> nodes = queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
-                                                                                                               .getName());
-        if (nodes.isEmpty())
-            return null;
-        NodeEntity node = nodes.get(0);
-        return node;
-    }
-
-    public NodeEntity getNodeFromSigningCertificate(X509Certificate signingCertificate)
-            throws NodeNotFoundException {
-
-        List<NodeEntity> nodes = queryObject
-                                                 .listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
-                                                                                                                   .getSubjectX500Principal()
-                                                                                                                   .getName());
-        if (nodes.isEmpty())
-            throw new NodeNotFoundException();
-        NodeEntity node = nodes.get(0);
-        return node;
-    }
-
-    public NodeEntity findNodeFromSigningCertificate(X509Certificate signingCertificate) {
-
-        List<NodeEntity> nodes = queryObject
-                                                 .listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
-                                                                                                                   .getSubjectX500Principal()
-                                                                                                                   .getName());
+        List<NodeEntity> nodes = queryObject.listNodeEntitiesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
         if (nodes.isEmpty())
             return null;
         NodeEntity node = nodes.get(0);

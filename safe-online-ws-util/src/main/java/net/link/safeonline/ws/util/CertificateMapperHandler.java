@@ -17,10 +17,8 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
 import net.link.safeonline.sdk.ws.WSSecurityUtil;
@@ -32,8 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Certificate JAX-WS Login Handler. This JAX-WS SOAP handler maps a trusted certificate to or an application Id, or a device name, or an
- * olas node name. For this it uses the {@link ApplicationAuthenticationService}, {@link DeviceAuthenticationService} and
- * {@link NodeAuthenticationService} service.
+ * olas node name. For this it uses the {@link ApplicationAuthenticationService} and {@link NodeAuthenticationService} service.
  * 
  * @author fcorneli
  * 
@@ -46,8 +43,6 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
 
     private ApplicationAuthenticationService applicationAuthenticationService;
 
-    private DeviceAuthenticationService      deviceAuthenticationService;
-
     private NodeAuthenticationService        nodeAuthenticationService;
 
 
@@ -57,7 +52,6 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
         System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
         applicationAuthenticationService = EjbUtils.getEJB(ApplicationAuthenticationService.JNDI_BINDING,
                 ApplicationAuthenticationService.class);
-        deviceAuthenticationService = EjbUtils.getEJB(DeviceAuthenticationService.JNDI_BINDING, DeviceAuthenticationService.class);
         nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING, NodeAuthenticationService.class);
     }
 
@@ -95,17 +89,6 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(context);
         if (null == certificate)
             throw new RuntimeException("no client certificate found on JAX-WS context");
-
-        if (CertificateValidatorHandler.isDeviceCertificate(context)) {
-            String deviceName;
-            try {
-                deviceName = deviceAuthenticationService.authenticate(certificate);
-            } catch (DeviceNotFoundException e) {
-                throw WSSecurityUtil.createSOAPFaultException("unknown device", "FailedAuthentication");
-            }
-            setId(deviceName, context);
-            return;
-        }
 
         if (CertificateValidatorHandler.isApplicationCertificate(context)) {
             long applicationId;

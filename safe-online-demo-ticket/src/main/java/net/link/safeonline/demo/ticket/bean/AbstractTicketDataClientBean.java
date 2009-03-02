@@ -20,7 +20,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.ticket.AbstractTicketDataClient;
-import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
+import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStore;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
@@ -75,7 +75,7 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
         demoHostName = externalContext.getInitParameter("DemoHostName");
         demoHostPort = externalContext.getInitParameter("DemoHostPort");
         wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStore.getPrivateKeyEntry();
         certificate = (X509Certificate) privateKeyEntry.getCertificate();
         privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();

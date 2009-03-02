@@ -76,16 +76,11 @@ if (( binFix )); then
 		for d in */eclipse; do
 			cd "$d" && {
 				echo +"$d" > "$spinPipe"
-
-                jks=(../target/classes/*.jks)
-				if [[ -e $jks ]]; then
-					ln -sf "${jks[@]}" || break
-				fi
 				
-				find . -name '*.properties' -exec ln -sf ../target/classes/{} \; || break
-			} \
-			&& cd - > /dev/null \
-			|| break
+				find ../target/classes \( -name '*.properties' -o -name '*.jks' \) \
+                    -exec ln -sf {} \;
+			}
+			cd - > /dev/null
 		done
 	emit -$?
 fi
@@ -152,6 +147,24 @@ emit "Setting up project-specific configurations" --
 				cp "$f" "$p/${f#*'ws~'}" || { result=$?; break 2; }
 			done
 		}
+
+        # Fix explicit compiler version.
+        (
+            cd "${p%%/*}"
+            [[ -f .classpath ]] || exit 0
+
+            explicitVersion=$(sed -n '/kind="con"/ s/.*JVM \([^"]*\).*/\1/p' .classpath)
+            #if [[ $explicitVersion ]]; then
+            #    ed org.eclipse.jdt.core.prefs <<< "
+			#	H
+			#	v/org.eclipse.jdt.core.compiler.codegen.targetPlatform/\
+			#	s/=.*/=$explicitVersion/
+            #    +org.eclipse.jdt.core.compiler.compliance=1.6
+            #    -org.eclipse.jdt.core.compiler.source=1.5
+			#	wq
+            #    "
+            #fi
+        )
 	done
 
 emit -$result

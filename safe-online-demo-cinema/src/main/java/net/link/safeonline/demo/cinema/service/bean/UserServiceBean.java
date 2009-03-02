@@ -11,16 +11,16 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
-import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
+import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStore;
 import net.link.safeonline.demo.cinema.service.UserService;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -46,8 +46,7 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
 
         CinemaUserEntity user;
         try {
-            user = (CinemaUserEntity) em.createNamedQuery(CinemaUserEntity.getByOlasId).setParameter("olasId", olasId)
-                                             .getSingleResult();
+            user = (CinemaUserEntity) em.createNamedQuery(CinemaUserEntity.getByOlasId).setParameter("olasId", olasId).getSingleResult();
         }
 
         catch (NoResultException e) {
@@ -61,12 +60,11 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     /**
      * {@inheritDoc}
      */
-    public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest loginRequest) {
+    public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest request) {
 
         try {
-            AttributeClient attributeClient = WicketUtil
-                                                        .getOLASAttributeService(loginRequest, DemoCinemaKeyStoreUtils.getPrivateKeyEntry());
             CinemaUserEntity userEntity = attach(user);
+            AttributeClient attributeClient = OlasServiceFactory.getAttributeService(request, DemoCinemaKeyStore.getPrivateKeyEntry());
 
             // National registry number of user.
             String nrns[] = attributeClient.getAttributeValue(userEntity.getOlasId(), BeIdConstants.BEID_NRN_ATTRIBUTE, String[].class);

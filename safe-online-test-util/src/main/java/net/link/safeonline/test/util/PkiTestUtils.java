@@ -204,6 +204,32 @@ public class PkiTestUtils {
     }
 
     /**
+     * Persist the given private key and corresponding certificate to a JKS keystore file.
+     * 
+     * @param pkcs12keyStore
+     *            the file of the JKS keystore to write the key material to.
+     * @param privateKey
+     *            the private key to persist.
+     * @param certificate
+     *            the X509 certificate corresponding with the private key.
+     * @param keyStorePassword
+     *            the keystore password.
+     * @param keyEntryPassword
+     *            the keyentry password.
+     * @return
+     * @throws KeyStoreException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws IOException
+     */
+    public static KeyStore persistInJKSKeyStore(File pkcs12keyStore, PrivateKey privateKey, Certificate certificate,
+                                                String keyStorePassword, String keyEntryPassword)
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+
+        return persistInKeyStore(pkcs12keyStore, "jks", privateKey, certificate, keyStorePassword, keyEntryPassword);
+    }
+
+    /**
      * Persist the given private key and corresponding certificate to a PKCS12 keystore file.
      * 
      * @param pkcs12keyStore
@@ -216,23 +242,53 @@ public class PkiTestUtils {
      *            the keystore password.
      * @param keyEntryPassword
      *            the keyentry password.
+     * @return
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      * @throws CertificateException
      * @throws IOException
      */
-    public static void persistKey(File pkcs12keyStore, PrivateKey privateKey, X509Certificate certificate, String keyStorePassword,
-                                  String keyEntryPassword)
+    public static KeyStore persistInPKCS12KeyStore(File pkcs12keyStore, PrivateKey privateKey, Certificate certificate,
+                                                   String keyStorePassword, String keyEntryPassword)
             throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 
-        KeyStore keyStore;
-        keyStore = KeyStore.getInstance("pkcs12");
+        return persistInKeyStore(pkcs12keyStore, "pkcs12", privateKey, certificate, keyStorePassword, keyEntryPassword);
+    }
+
+    /**
+     * Persist the given private key and corresponding certificate to a keystore file.
+     * 
+     * @param pkcs12keyStore
+     *            The file of the keystore to write the key material to.
+     * @param keyStoreType
+     *            The type of the key store format to use.
+     * @param privateKey
+     *            The private key to persist.
+     * @param certificate
+     *            The X509 certificate corresponding with the private key.
+     * @param keyStorePassword
+     *            The keystore password.
+     * @param keyEntryPassword
+     *            The keyentry password.
+     * @return
+     * @throws KeyStoreException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws IOException
+     */
+    public static KeyStore persistInKeyStore(File pkcs12keyStore, String keyStoreType, PrivateKey privateKey, Certificate certificate,
+                                             String keyStorePassword, String keyEntryPassword)
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+
+        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
         keyStore.load(null, keyStorePassword.toCharArray());
         keyStore.setKeyEntry("default", privateKey, keyEntryPassword.toCharArray(), new Certificate[] { certificate });
         FileOutputStream keyStoreOut;
         keyStoreOut = new FileOutputStream(pkcs12keyStore);
         keyStore.store(keyStoreOut, keyStorePassword.toCharArray());
         keyStoreOut.close();
+
+        return keyStore;
     }
 
     private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey)

@@ -21,7 +21,7 @@ import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.lawyer.AbstractLawyerDataClient;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
+import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStore;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
@@ -77,7 +77,7 @@ public abstract class AbstractLawyerDataClientBean implements AbstractLawyerData
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStore.getPrivateKeyEntry();
         certificate = (X509Certificate) privateKeyEntry.getCertificate();
         privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();

@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.password.auth.ws;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -18,8 +19,9 @@ import static org.junit.Assert.assertNull;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
@@ -45,12 +47,13 @@ import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.device.auth.ws.DeviceAuthenticationServiceFactory;
 import net.link.safeonline.device.auth.ws.GetDeviceAuthenticationServiceFactory;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordDeviceService;
@@ -62,12 +65,9 @@ import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.auth.AuthenticationUtil;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 
 import org.apache.commons.logging.Log;
@@ -95,8 +95,6 @@ public class PasswordAuthenticationPortImplTest {
 
     private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
-    private DeviceAuthenticationService      mockDeviceAuthenticationService;
-
     private NodeAuthenticationService        mockNodeAuthenticationService;
 
     private SamlAuthorityService             mockSamlAuthorityService;
@@ -104,6 +102,7 @@ public class PasswordAuthenticationPortImplTest {
     private WSAuthenticationService          mockWSAuthenticationService;
 
     private PasswordDeviceService            mockPasswordDeviceServce;
+    private KeyService                       mockKeyService;
 
     private Object[]                         mockObjects;
 
@@ -111,9 +110,9 @@ public class PasswordAuthenticationPortImplTest {
 
     private X509Certificate                  certificate;
 
-    private X509Certificate                  olasCertificate;
+    private X509Certificate                  nodeCertificate;
 
-    private PrivateKey                       olasPrivateKey;
+    private KeyPair                          nodeKeyPair;
 
     private String                           testLanguage      = Locale.ENGLISH.getLanguage();
 
@@ -129,21 +128,6 @@ public class PasswordAuthenticationPortImplTest {
 
         LOG.debug("setup");
 
-        // setup JMX
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", WSSecurityConfiguration.JNDI_BINDING);
@@ -153,19 +137,27 @@ public class PasswordAuthenticationPortImplTest {
         mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         mockPkiValidator = createMock(PkiValidator.class);
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         mockPasswordDeviceServce = createMock(PasswordDeviceService.class);
+        mockKeyService = createMock(KeyService.class);
+
+        nodeKeyPair = PkiTestUtils.generateKeyPair();
+        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
+
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockApplicationAuthenticationService,
                 mockSamlAuthorityService, mockPasswordDeviceServce };
 
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
         jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
-        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
         jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
         jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, mockSamlAuthorityService);
         jndiTestUtils.bindComponent(WSAuthenticationService.JNDI_BINDING, mockWSAuthenticationService);
@@ -204,10 +196,6 @@ public class PasswordAuthenticationPortImplTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
-        olasPrivateKey = olasKeyPair.getPrivate();
-
         BindingProvider bindingProvider = (BindingProvider) clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
@@ -245,8 +233,8 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
-        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -285,8 +273,8 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
-        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -325,8 +313,8 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
-        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);

@@ -79,7 +79,7 @@ public final class EJBTestUtils {
     }
 
     /**
-     * Injects a value into a given object.
+     * Injects a value into a given object's field of the given name.
      * 
      * @param fieldName
      *            the name of the field to set.
@@ -104,7 +104,7 @@ public final class EJBTestUtils {
     }
 
     /**
-     * Injects a resource value into an object.
+     * Injects a resource value into an object's field which has the given resource name in a {@link Resource} annotation.
      * 
      * @param bean
      *            the bean object on which to inject a value.
@@ -140,7 +140,7 @@ public final class EJBTestUtils {
     }
 
     /**
-     * Injects a value object into a given bean object.
+     * Injects the value into the object's field with a field type that matches the value.
      * 
      * @param object
      *            the bean object in which to inject.
@@ -171,7 +171,7 @@ public final class EJBTestUtils {
     }
 
     /**
-     * Initializes a bean.
+     * Initializes a bean by invoking the {@link PostConstruct} annotated methods in it.
      * 
      * @param bean
      *            the bean to initialize.
@@ -187,6 +187,9 @@ public final class EJBTestUtils {
         init(clazz, bean);
     }
 
+    /**
+     * Initializes a bean by invoking the {@link PostConstruct} annotated methods in it.
+     */
     public static void init(Class<?> clazz, Object bean)
             throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
@@ -213,11 +216,19 @@ public final class EJBTestUtils {
         SecurityAssociation.setSubject(subject);
     }
 
+    /**
+     * Instantiate a bean for the given type using a bean class from the given container; injecting the given entity manager and performing
+     * {@link EJB} injections in it for the other beans provided by the container.
+     */
     public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager) {
 
         return newInstance(clazz, container, entityManager, (String) null);
     }
 
+    /**
+     * Instantiate a bean for the given type using a bean class from the given container; injecting the given entity manager and performing
+     * {@link EJB} injections in it for the other beans provided by the container.
+     */
     public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager, String callerPrincipalName,
                                           String... roles) {
 
@@ -225,12 +236,20 @@ public final class EJBTestUtils {
         return newInstance(clazz, container, entityManager, testSessionContext);
     }
 
+    /**
+     * Instantiate a bean for the given type using a bean class from the given container; injecting the given entity manager and performing
+     * {@link EJB} injections in it for the other beans provided by the container.
+     */
     public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager, String callerPrincipalName) {
 
         TestSessionContext testSessionContext = new TestSessionContext(callerPrincipalName, (String[]) null);
         return newInstance(clazz, container, entityManager, testSessionContext);
     }
 
+    /**
+     * Instantiate a bean for the given type using a bean class from the given container; injecting the given entity manager and performing
+     * {@link EJB} injections in it for the other beans provided by the container.
+     */
     @SuppressWarnings("unchecked")
     public static <Type> Type newInstance(Class<Type> type, Class<?>[] container, EntityManager entityManager, SessionContext sessionContext) {
 

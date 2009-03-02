@@ -44,7 +44,7 @@ public class PkiClientTest {
         // operate
         PkiClient pkiClient = new PkiClientImpl(OLAS_LOCATION);
 
-        X509Certificate certificate = pkiClient.getSigningCertificate();
+        X509Certificate certificate = pkiClient.getCertificate();
 
         // verify
         assertNotNull(certificate);

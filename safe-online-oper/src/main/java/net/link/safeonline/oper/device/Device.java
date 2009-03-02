@@ -22,9 +22,6 @@ import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.oper.OperatorConstants;
-import net.link.safeonline.pkix.exception.CertificateEncodingException;
-
-import org.apache.myfaces.custom.fileupload.UploadedFile;
 
 
 @Local
@@ -39,8 +36,8 @@ public interface Device {
     String view();
 
     String add()
-            throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException, AttributeTypeNotFoundException,
-            NodeNotFoundException, IOException, PermissionDeniedException;
+            throws ExistingDeviceException, DeviceClassNotFoundException, AttributeTypeNotFoundException, NodeNotFoundException,
+            IOException, PermissionDeniedException;
 
     String remove()
             throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException;
@@ -48,8 +45,7 @@ public interface Device {
     String edit();
 
     String save()
-            throws DeviceNotFoundException, CertificateEncodingException, IOException, AttributeTypeNotFoundException,
-            PermissionDeniedException;
+            throws DeviceNotFoundException, IOException, AttributeTypeNotFoundException, PermissionDeniedException;
 
     /*
      * Accessors
@@ -93,10 +89,6 @@ public interface Device {
     String getEnablePath();
 
     void setEnablePath(String enablePath);
-
-    UploadedFile getCertificate();
-
-    void setCertificate(UploadedFile certificate);
 
     String getAttributeType();
 

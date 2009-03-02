@@ -11,6 +11,12 @@
 /*/.classpath
 /*/eclipse
 
+# IntelliJ
+/*/*.iml
+/*.iml
+/*.ipr
+/*.iws
+
 # Compiled
 /target
 /*/target

@@ -19,7 +19,21 @@ import javax.naming.InitialContext;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
-import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
+import net.link.safeonline.performance.entity.DriverProfileEntity;
+import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.MeasurementEntity;
+import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
+import net.link.safeonline.performance.keystore.PerformanceKeyStore;
+import net.link.safeonline.performance.service.DriverExceptionService;
+import net.link.safeonline.performance.service.ExecutionService;
+import net.link.safeonline.performance.service.ProfileDataService;
+import net.link.safeonline.performance.service.bean.AbstractProfilingServiceBean;
+import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
+import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
+import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
+import net.link.safeonline.performance.service.bean.ScenarioTimingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
@@ -59,7 +73,7 @@ public class PerformanceDriverTest {
             testApplicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (Exception e) {
             LOG.error("application keys unavailable; will try local keystore.", e);
-            testApplicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+            testApplicationKey = PerformanceKeyStore.getPrivateKeyEntry();
         }
     }
 
@@ -81,8 +95,8 @@ public class PerformanceDriverTest {
         entityTestManager = new EntityTestManager();
 
         try {
-            entityTestManager.setUp(DriverExceptionEntity.class, DriverProfileEntity.class, ExecutionEntity.class,
-                    MeasurementEntity.class, ProfileDataEntity.class, ScenarioTimingEntity.class);
+            entityTestManager.setUp(DriverExceptionEntity.class, DriverProfileEntity.class, ExecutionEntity.class, MeasurementEntity.class,
+                    ProfileDataEntity.class, ScenarioTimingEntity.class);
 
             AbstractProfilingServiceBean.setDefaultEntityManager(entityTestManager.getEntityManager());
 

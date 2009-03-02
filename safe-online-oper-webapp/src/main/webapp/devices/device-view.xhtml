@@ -241,15 +241,6 @@
 					</table>
 				</rich:simpleTogglePanel>
 
-				<rich:simpleTogglePanel switchType="client"
-					styleClass="fullwidth" opened="false" id="certificate-tab"
-					label="#{msgs.certificateSubject}">
-					<h:outputText value="#{selectedDevice.certificateSubject}"
-						styleClass="text block" rendered="#{!empty selectedDevice.certificateSubject}" />
-					<h:outputText value="#{msgs.noCertificate}"
-						rendered="#{empty selectedDevice.certificateSubject}" />
-				</rich:simpleTogglePanel>
-
 				<h:form id="actionform">
 					<h:commandButton value="#{msgs.backaction}" id="back"
 						action="back" styleClass="submit" />

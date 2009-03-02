@@ -32,6 +32,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.AttributeTypeServiceRemote;
 import net.link.safeonline.util.Filter;
@@ -176,6 +177,21 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
         List<AttributeTypeEntity> availableMemberAttributeTypes = FilterUtil.filter(attributeTypes,
                 new AvailableMemberAttributeTypeFilter());
         return availableMemberAttributeTypes;
+    }
+
+    public boolean isLocal(AttributeTypeEntity attributeType) {
+
+        if (attributeType.isExternal())
+            return false;
+
+        if (null == attributeType.getLocation())
+            return true;
+
+        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
+        if (olasKeyStore.getCertificate().getSubjectX500Principal().getName().equals(attributeType.getLocation().getCertificateSubject()))
+            return true;
+
+        return false;
     }
 
 

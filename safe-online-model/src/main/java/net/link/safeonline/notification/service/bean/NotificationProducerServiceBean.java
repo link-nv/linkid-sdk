@@ -97,7 +97,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         if (null != application) {
             subscribe(topic, address, application);
         } else {
-            NodeEntity node = nodeDAO.findNodeFromAuthnCertificate(certificate);
+            NodeEntity node = nodeDAO.findNodeFromCertificate(certificate);
             if (null != node) {
                 subscribe(topic, address, node);
             } else
@@ -143,7 +143,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         if (null != application) {
             unsubscribe(topic, address, application);
         } else {
-            NodeEntity node = nodeDAO.findNodeFromAuthnCertificate(certificate);
+            NodeEntity node = nodeDAO.findNodeFromCertificate(certificate);
             if (null != node) {
                 unsubscribe(topic, address, node);
             } else

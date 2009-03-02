@@ -6,10 +6,6 @@
  */
 package net.link.safeonline.entity;
 
-import static net.link.safeonline.entity.NodeEntity.QUERY_LIST_ALL;
-import static net.link.safeonline.entity.NodeEntity.QUERY_WHERE_AUTHN_CERT_SUBJECT;
-import static net.link.safeonline.entity.NodeEntity.QUERY_WHERE_SIGNING_CERT_SUBJECT;
-
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -45,20 +41,16 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Entity
 @Table(name = "node_entity")
 @NamedQueries( {
-        @NamedQuery(name = QUERY_LIST_ALL, query = "FROM NodeEntity o"),
-        @NamedQuery(name = QUERY_WHERE_AUTHN_CERT_SUBJECT, query = "SELECT olas " + "FROM NodeEntity AS olas "
-                + "WHERE olas.authnCertificateSubject = :certificateSubject"),
-        @NamedQuery(name = QUERY_WHERE_SIGNING_CERT_SUBJECT, query = "SELECT olas " + "FROM NodeEntity AS olas "
-                + "WHERE olas.signingCertificateSubject = :certificateSubject") })
+        @NamedQuery(name = NodeEntity.QUERY_LIST_ALL, query = "FROM NodeEntity o"),
+        @NamedQuery(name = NodeEntity.QUERY_WHERE_CERT_SUBJECT, query = "SELECT olas " + "FROM NodeEntity AS olas "
+                + "WHERE olas.certificateSubject = :certificateSubject") })
 public class NodeEntity implements Serializable {
 
-    private static final long  serialVersionUID                 = 1L;
+    private static final long  serialVersionUID         = 1L;
 
-    public static final String QUERY_LIST_ALL                   = "node.all";
+    public static final String QUERY_LIST_ALL           = "node.all";
 
-    public static final String QUERY_WHERE_AUTHN_CERT_SUBJECT   = "node.authn.cert.sub";
-
-    public static final String QUERY_WHERE_SIGNING_CERT_SUBJECT = "node.signing.cert.sub";
+    public static final String QUERY_WHERE_CERT_SUBJECT = "node.cert.sub";
 
     private String             name;
 
@@ -70,9 +62,7 @@ public class NodeEntity implements Serializable {
 
     private int                sslPort;
 
-    private String             authnCertificateSubject;
-
-    private String             signingCertificateSubject;
+    private String             certificateSubject;
 
 
     public NodeEntity() {
@@ -80,19 +70,15 @@ public class NodeEntity implements Serializable {
         // empty
     }
 
-    public NodeEntity(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
-                      X509Certificate signingCertificate) {
+    public NodeEntity(String name, String protocol, String hostname, int port, int sslPort, X509Certificate certificate) {
 
         this.name = name;
         this.protocol = protocol;
         this.hostname = hostname;
         this.port = port;
         this.sslPort = sslPort;
-        if (null != authnCertificate) {
-            authnCertificateSubject = authnCertificate.getSubjectX500Principal().getName();
-        }
-        if (null != signingCertificate) {
-            signingCertificateSubject = signingCertificate.getSubjectX500Principal().getName();
+        if (null != certificate) {
+            certificateSubject = certificate.getSubjectX500Principal().getName();
         }
     }
 
@@ -175,63 +161,26 @@ public class NodeEntity implements Serializable {
     }
 
     @Column(unique = true)
-    public String getAuthnCertificateSubject() {
+    public String getCertificateSubject() {
 
-        return authnCertificateSubject;
+        return certificateSubject;
+    }
+
+    private void setCertificateSubject(String certificateSubject) {
+
+        this.certificateSubject = certificateSubject;
     }
 
     /**
-     * Sets the authentication certificate subject. Do not use this method directly. Use {@link #setAuthnCertificate(X509Certificate)
-     * setCertificate} instead. JPA requires this setter.
+     * Sets the X509 certificate of the node. Use this method to update the application certificate since this method keeps the certificate
+     * identifier in sync with the certificate.
      * 
-     * @param authnCertificateSubject
-     * @see #setAuthnCertificate(X509Certificate)
-     */
-    public void setAuthnCertificateSubject(String authnCertificateSubject) {
-
-        this.authnCertificateSubject = authnCertificateSubject;
-    }
-
-    /**
-     * Sets the X509 certificate of the application. Use this method to update the application certificate since this method keeps the
-     * certificate identifier in sync with the certificate.
-     * 
-     * @param authnCertificate
+     * @param certificate
      */
     @Transient
-    public void setAuthnCertificate(X509Certificate authnCertificate) {
+    public void setCertificate(X509Certificate certificate) {
 
-        setAuthnCertificateSubject(authnCertificate.getSubjectX500Principal().getName());
-    }
-
-    @Column(unique = true)
-    public String getSigningCertificateSubject() {
-
-        return signingCertificateSubject;
-    }
-
-    /**
-     * Sets the signing certificate subject. Do not use this method directly. Use {@link #setAuthnCertificate(X509Certificate)
-     * setCertificate} instead. JPA requires this setter.
-     * 
-     * @param signingCertificateSubject
-     * @see #setSigningCertificate(X509Certificate)
-     */
-    public void setSigningCertificateSubject(String signingCertificateSubject) {
-
-        this.signingCertificateSubject = signingCertificateSubject;
-    }
-
-    /**
-     * Sets the X509 certificate of the application. Use this method to update the application certificate since this method keeps the
-     * certificate identifier in sync with the certificate.
-     * 
-     * @param signingCertificate
-     */
-    @Transient
-    public void setSigningCertificate(X509Certificate signingCertificate) {
-
-        setSigningCertificateSubject(signingCertificate.getSubjectX500Principal().getName());
+        setCertificateSubject(certificate.getSubjectX500Principal().getName());
     }
 
     @Override
@@ -265,10 +214,7 @@ public class NodeEntity implements Serializable {
         @QueryMethod(QUERY_LIST_ALL)
         List<NodeEntity> listNodeEntities();
 
-        @QueryMethod(QUERY_WHERE_AUTHN_CERT_SUBJECT)
-        List<NodeEntity> listNodeEntitiesWhereAuthnCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
-
-        @QueryMethod(QUERY_WHERE_SIGNING_CERT_SUBJECT)
-        List<NodeEntity> listNodeEntitiesWhereSigningCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
+        @QueryMethod(QUERY_WHERE_CERT_SUBJECT)
+        List<NodeEntity> listNodeEntitiesWhereCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
     }
 }

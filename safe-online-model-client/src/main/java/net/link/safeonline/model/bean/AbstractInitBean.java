@@ -107,21 +107,17 @@ public abstract class AbstractInitBean implements Startable {
 
         final int             sslPort;
 
-        final X509Certificate authnCertificate;
-
-        final X509Certificate signingCertificate;
+        final X509Certificate certificate;
 
 
-        public Node(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
-                    X509Certificate signingCertificate) {
+        public Node(String name, String protocol, String hostname, int port, int sslPort, X509Certificate certificate) {
 
             this.name = name;
             this.protocol = protocol;
             this.hostname = hostname;
             this.port = port;
             this.sslPort = sslPort;
-            this.authnCertificate = authnCertificate;
-            this.signingCertificate = signingCertificate;
+            this.certificate = certificate;
         }
     }
 
@@ -311,8 +307,6 @@ public abstract class AbstractInitBean implements Startable {
 
         final String              nodeName;
 
-        final X509Certificate     certificate;
-
         final String              authenticationPath;
 
         final String              authenticationWSPath;
@@ -336,7 +330,7 @@ public abstract class AbstractInitBean implements Startable {
 
         public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
                       String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
-                      X509Certificate certificate, AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
+                      AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
                       AttributeTypeEntity deviceDisableAttribute) {
 
             this.deviceName = deviceName;
@@ -349,7 +343,6 @@ public abstract class AbstractInitBean implements Startable {
             this.updatePath = updatePath;
             this.disablePath = disablePath;
             this.enablePath = enablePath;
-            this.certificate = certificate;
             this.deviceAttribute = deviceAttribute;
             this.deviceUserAttribute = deviceUserAttribute;
             this.deviceDisableAttribute = deviceDisableAttribute;
@@ -913,10 +906,10 @@ public abstract class AbstractInitBean implements Startable {
                 if (null != device.nodeName) {
                     olasNode = olasDAO.getNode(device.nodeName);
                 }
+
                 deviceEntity = deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode, device.authenticationPath,
                         device.authenticationWSPath, device.registrationPath, device.removalPath, device.updatePath, device.disablePath,
-                        device.enablePath, device.certificate, device.deviceAttribute, device.deviceUserAttribute,
-                        device.deviceDisableAttribute);
+                        device.enablePath, device.deviceAttribute, device.deviceUserAttribute, device.deviceDisableAttribute);
             }
         }
     }
@@ -1018,8 +1011,7 @@ public abstract class AbstractInitBean implements Startable {
             throw new EJBException("No Olas node specified");
         NodeEntity olasNode = olasDAO.findNode(node.name);
         if (null == olasNode) {
-            olasDAO.addNode(node.name, node.protocol, node.hostname, node.port, node.sslPort, node.authnCertificate,
-                    node.signingCertificate);
+            olasDAO.addNode(node.name, node.protocol, node.hostname, node.port, node.sslPort, node.certificate);
         }
     }
 }

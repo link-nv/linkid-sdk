@@ -12,15 +12,15 @@ import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
+import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStore;
 import net.link.safeonline.demo.payment.service.UserService;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -65,15 +65,13 @@ public class UserServiceBean extends AbstractPaymentServiceBean implements UserS
     /**
      * {@inheritDoc}
      */
-    public PaymentUserEntity updateUser(PaymentUserEntity user, HttpServletRequest loginRequest) {
+    public PaymentUserEntity updateUser(PaymentUserEntity user, HttpServletRequest request) {
 
         try {
-            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(loginRequest,
-                    DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
-
             PaymentUserEntity userEntity = attach(user);
 
             // OLAS username of the user.
+            AttributeClient attributeClient = OlasServiceFactory.getAttributeService(request, DemoPaymentKeyStore.getPrivateKeyEntry());
             String name = attributeClient.getAttributeValue(userEntity.getOlasId(), DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setOlasName(name);
 

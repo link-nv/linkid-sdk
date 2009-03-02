@@ -40,11 +40,9 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -107,9 +105,6 @@ public class AuthnEntryServletTest {
 
         mockAuthenticationService = createMock(AuthenticationService.class);
         jndiTestUtils.bindComponent(AuthenticationService.JNDI_BINDING, mockAuthenticationService);
-
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         authnEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
@@ -226,8 +221,7 @@ public class AuthnEntryServletTest {
         String userId = UUID.randomUUID().toString();
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PKI_DEVICE_CLASS,
                 SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
-        DeviceEntity device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null, null,
-                null);
+        DeviceEntity device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null, null);
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
         postMethod.setRequestBody(data);

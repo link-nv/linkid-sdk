@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.model.performance.PerformanceServiceRemote;
-import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.keystore.PerformanceKeyStore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,7 +49,7 @@ public class PerformanceServiceBean implements PerformanceServiceRemote {
     public void postConstructCallback() {
 
         LOG.debug("post construct callback");
-        PrivateKeyEntry perfPrivateKeyEntry = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry perfPrivateKeyEntry = PerformanceKeyStore.getPrivateKeyEntry();
         privateKey = perfPrivateKeyEntry.getPrivateKey();
         certificate = (X509Certificate) perfPrivateKeyEntry.getCertificate();
     }

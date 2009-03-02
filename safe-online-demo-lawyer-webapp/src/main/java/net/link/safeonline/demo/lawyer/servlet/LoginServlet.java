@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.demo.lawyer.LawyerConstants;
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
+import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStore;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -60,7 +60,7 @@ public class LoginServlet extends HttpServlet {
 
         String wsLocation = config.getInitParameter("WsLocation");
 
-        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStore.getPrivateKeyEntry();
 
         X509Certificate clientCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();

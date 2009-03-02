@@ -50,12 +50,11 @@ public interface NodeService extends SafeOnlineService {
      * @param name
      * @param location
      * @param encodedAuthnCertificate
-     * @param encodedSigningCertificate
+     * @param encodedCertificate
      * @throws ExistingNodeException
      * @throws CertificateEncodingException
      */
-    void addNode(String name, String protocol, String hostname, int port, int sslPort, byte[] encodedAuthnCertificate,
-                 byte[] encodedSigningCertificate)
+    void addNode(String name, String protocol, String hostname, int port, int sslPort, byte[] encodedCertificate)
             throws ExistingNodeException, CertificateEncodingException;
 
     /**
@@ -86,17 +85,6 @@ public interface NodeService extends SafeOnlineService {
      * @throws CertificateEncodingException
      * @throws NodeNotFoundException
      */
-    void updateAuthnCertificate(String nodeName, byte[] certificateData)
-            throws CertificateEncodingException, NodeNotFoundException;
-
-    /**
-     * Updates the OLAS node's signing certificate.
-     * 
-     * @param nodeName
-     * @param certificateData
-     * @throws CertificateEncodingException
-     * @throws NodeNotFoundException
-     */
-    void updateSigningCertificate(String nodeName, byte[] certificateData)
+    void updateCertificate(String nodeName, byte[] certificateData)
             throws CertificateEncodingException, NodeNotFoundException;
 }
