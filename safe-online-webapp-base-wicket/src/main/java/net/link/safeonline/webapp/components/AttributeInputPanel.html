@@ -15,29 +15,29 @@
 			<label wicket:id="name">[Name]</label>
 
 			<wicket:enclosure child="string">
-				<input wicket:id="string" type="text" />
+				<input wicket:id="string" type="text" class="label" />
 				<div wicket:id="string_feedback" class="error"></div>
 			</wicket:enclosure>
 
 			<wicket:enclosure child="double">
-				<input wicket:id="double" type="text" />
+				<input wicket:id="double" type="text" class="label" />
+				<div wicket:id="double_feedback" class="error"></div>
 			</wicket:enclosure>
-			<div wicket:id="double_feedback" class="error"></div>
 
 			<wicket:enclosure child="integer">
-				<input wicket:id="integer" type="text" />
+				<input wicket:id="integer" type="text" class="label" />
+				<div wicket:id="integer_feedback" class="error"></div>
 			</wicket:enclosure>
-			<div wicket:id="integer_feedback" class="error"></div>
 
 			<wicket:enclosure child="boolean">
-				<input wicket:id="boolean" type="checkbox" />
+				<input wicket:id="boolean" type="checkbox" class="label" />
+				<div wicket:id="boolean_feedback" class="error"></div>
 			</wicket:enclosure>
-			<div wicket:id="boolean_feedback" class="error"></div>
 
 			<wicket:enclosure child="date">
-				<input wicket:id="date" type="text"></input>
+				<input wicket:id="date" type="text" class="label"></input>
+				<div wicket:id="date_feedback" class="error"></div>
 			</wicket:enclosure>
-			<div wicket:id="date_feedback" class="error"></div>
 
 
 		</wicket:panel>

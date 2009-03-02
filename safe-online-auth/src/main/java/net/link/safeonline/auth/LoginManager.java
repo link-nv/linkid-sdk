@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.auth.bean.AbstractLoginBean;
 import net.link.safeonline.entity.DeviceEntity;
 
 import org.apache.commons.logging.Log;
@@ -20,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * The login manager makes sure that both the 'userId' and the 'authenticationDevice' are set at the same time to have a consistent login
- * approach. For Seam login components you can use {@link AbstractLoginBean}.
+ * approach.
  * 
  * @author fcorneli
  * 

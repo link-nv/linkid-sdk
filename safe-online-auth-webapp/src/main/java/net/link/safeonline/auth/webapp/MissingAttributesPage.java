@@ -71,15 +71,6 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
      * {@inheritDoc}
      */
     @Override
-    protected void onBeforeRender() {
-
-        super.onBeforeRender();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected String getPageTitle() {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
