@@ -294,11 +294,13 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                  * This situation is possible when filling in a compounded attribute record during the missing attributes phase of the
                  * authentication process.
                  */
-                compoundedAttribute = attributeDAO.addAttribute(compoundedAttributeType, subject, index);
-                String compoundedAttributeId = UUID.randomUUID().toString();
-                LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName + " with ID "
-                        + compoundedAttributeId);
-                compoundedAttribute.setValue(compoundedAttributeId);
+                attributeManager.newCompound(compoundedAttributeType, subject);
+
+                // compoundedAttribute = attributeDAO.addAttribute(compoundedAttributeType, subject, index);
+                // String compoundedAttributeId = UUID.randomUUID().toString();
+                // LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName + " with ID "
+                // + compoundedAttributeId);
+                // compoundedAttribute.setValue(compoundedAttributeId);
             }
             /*
              * Notice that, if there is already a compounded attribute for the given record index, then we don't overwrite it with a new ID.
@@ -440,13 +442,23 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         LOG.debug("add template attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued() && !attributeType.isCompounded()) {
             // single or multi-valued but NOT compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable));
+            AttributeDO attributeView = getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable);
+            if (!attributesView.contains(attributeView)) {
+                attributesView.add(attributeView);
+            }
         } else {
             // compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable)); // parent
+            AttributeDO attributeParentView = getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable);
+            if (!attributesView.contains(attributeParentView)) {
+                attributesView.add(attributeParentView);
+            }
             for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
-                LOG.debug("add compounded member attribute template: " + memberAttributeType.getMember().getName());
-                attributesView.add(getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute, unavailable));
+                AttributeDO attributeView = getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute,
+                        unavailable);
+                if (!attributesView.contains(attributeView)) {
+                    LOG.debug("add compounded member attribute template: " + memberAttributeType.getMember().getName());
+                    attributesView.add(attributeView);
+                }
             }
         }
     }
@@ -697,7 +709,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                      * If the attribute is already present it's because of a non-compounded attribute type which has precedence over the
                      * member attribute types of a compounded attribute type.
                      */
-                    continue;
+                    // continue;
                 }
                 if (required == false) {
                     attributeRequirements.put(parentAttributeType, required == identityAttribute.isRequired()

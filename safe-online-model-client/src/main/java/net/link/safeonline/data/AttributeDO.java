@@ -438,6 +438,19 @@ public class AttributeDO implements Serializable, Cloneable {
                 "index", index).append("string-value", stringValue).append("integer-value", integerValue).toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (false == obj instanceof AttributeDO)
+            return false;
+
+        AttributeDO rhs = (AttributeDO) obj;
+
+        return name.equals(rhs.getName());
+    }
+
     /**
      * Copies the value of this attribute data object to the (attached) target attribute entity according to the datatype constraints by the
      * given attribute type.

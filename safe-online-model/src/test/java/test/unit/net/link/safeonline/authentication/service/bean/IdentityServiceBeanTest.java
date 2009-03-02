@@ -71,6 +71,7 @@ import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -89,6 +90,7 @@ public class IdentityServiceBeanTest {
     EntityTestManager     entityTestManager;
     private KeyService    mockKeyService;
     private JndiTestUtils jndiTestUtils;
+    private JmxTestUtils  jmxTestUtils;
 
 
     @Before
@@ -98,6 +100,9 @@ public class IdentityServiceBeanTest {
         entityTestManager = new EntityTestManager();
         entityTestManager.setUp(SafeOnlineTestContainer.entities);
         EntityManager entityManager = entityTestManager.getEntityManager();
+
+        jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
         mockKeyService = createMock(KeyService.class);
 
@@ -634,6 +639,55 @@ public class IdentityServiceBeanTest {
         }
     }
 
+    static class RequiredCompoundedAndMembersMissingAttributesScenario implements MissingAttributesScenario {
+
+        private final String COMP_ATT_NAME  = "test-compounded-attribute-type";
+        private final String REQ_ATT_NAME_1 = "test-required-attribute-type-1";
+        private final String REQ_ATT_NAME_2 = "test-required-attribute-type-2";
+
+
+        public void init(AttributeTypeDAO attributeTypeDAO, ApplicationIdentityDAO applicationIdentityDAO,
+                         ApplicationIdentityEntity applicationIdentity, AttributeDAO attributeDAO, SubjectEntity subject) {
+
+            AttributeTypeEntity requiredAttributeType1 = new AttributeTypeEntity(REQ_ATT_NAME_1, DatatypeType.STRING, true, true);
+            attributeTypeDAO.addAttributeType(requiredAttributeType1);
+
+            AttributeTypeEntity requiredAttributeType2 = new AttributeTypeEntity(REQ_ATT_NAME_2, DatatypeType.STRING, true, false);
+            attributeTypeDAO.addAttributeType(requiredAttributeType2);
+
+            AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
+            compoundedAttributeType.addMember(requiredAttributeType1, 0, true);
+            compoundedAttributeType.addMember(requiredAttributeType2, 1, false);
+            attributeTypeDAO.addAttributeType(compoundedAttributeType);
+
+            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, compoundedAttributeType, true, false);
+            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, requiredAttributeType1, true, false);
+            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, requiredAttributeType2, true, false);
+        }
+
+        public void verify(List<AttributeDO> result) {
+
+            assertNotNull(result);
+            LOG.debug("result attribute: " + result);
+            assertEquals(3, result.size());
+
+            for (AttributeDO attribute : result) {
+                if (attribute.getName().equals(COMP_ATT_NAME)) {
+                    assertTrue(attribute.isCompounded());
+                    assertTrue(attribute.isEditable());
+                } else if (attribute.getName().equals(REQ_ATT_NAME_1)) {
+                    assertTrue(attribute.isMember());
+                    assertTrue(attribute.isEditable());
+                } else if (attribute.getName().equals(REQ_ATT_NAME_2)) {
+                    assertTrue(attribute.isMember());
+                    assertFalse(attribute.isEditable());
+                } else {
+                    junit.framework.Assert.fail();
+                }
+            }
+        }
+    }
+
     static class OptionalCompoundedMissingAttributesScenario implements MissingAttributesScenario {
 
         private final String COMP_ATT_NAME = "test-compounded-attribute-type";
@@ -684,6 +738,15 @@ public class IdentityServiceBeanTest {
             throws Exception {
 
         RequiredCompoundedMissingAttributesScenario scenario = new RequiredCompoundedMissingAttributesScenario();
+        MissingAttributesScenarioRunner runner = new MissingAttributesScenarioRunner();
+        runner.run(scenario);
+    }
+
+    @Test
+    public void requiredCompoundedAndMembersMissingAttribute()
+            throws Exception {
+
+        RequiredCompoundedAndMembersMissingAttributesScenario scenario = new RequiredCompoundedAndMembersMissingAttributesScenario();
         MissingAttributesScenarioRunner runner = new MissingAttributesScenarioRunner();
         runner.run(scenario);
     }

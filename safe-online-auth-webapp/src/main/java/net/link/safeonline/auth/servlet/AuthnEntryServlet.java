@@ -20,9 +20,9 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.auth.webapp.AuthenticationProtocolErrorPage;
 import net.link.safeonline.auth.webapp.FirstTimePage;
 import net.link.safeonline.auth.webapp.MainPage;
-import net.link.safeonline.auth.webapp.AuthenticationProtocolErrorPage;
 import net.link.safeonline.auth.webapp.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -67,18 +67,20 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AuthnEntryServlet extends AbstractInjectionServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-    private static final Log  LOG              = LogFactory.getLog(AuthnEntryServlet.class);
+    private static final Log   LOG              = LogFactory.getLog(AuthnEntryServlet.class);
+
+    public static final String SERVLET_PATH     = "entry";
 
     @Init(name = "LoginUrl")
-    private String            loginUrl;
+    private String             loginUrl;
 
     @Init(name = "ServletEndpointUrl")
-    private String            servletEndpointUrl;
+    private String             servletEndpointUrl;
 
     @Init(name = "CookiePath")
-    private String            cookiePath;
+    private String             cookiePath;
 
 
     @Override
