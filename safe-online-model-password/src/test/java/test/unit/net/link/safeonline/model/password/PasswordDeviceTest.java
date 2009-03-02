@@ -1,5 +1,6 @@
 package test.unit.net.link.safeonline.model.password;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -9,6 +10,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -86,6 +91,8 @@ import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
@@ -109,8 +116,12 @@ import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -140,6 +151,8 @@ public class PasswordDeviceTest {
 
     private SubjectEntity             testSubject;
 
+    private KeyService                mockKeyService;
+
     private static Class<?>[]         container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class, SubscriptionDAOBean.class,
             AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
             ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class, ConfigItemDAOBean.class, TaskDAOBean.class,
@@ -152,6 +165,14 @@ public class PasswordDeviceTest {
             EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class, AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class,
             NotificationMessageDAOBean.class, PasswordManagerBean.class };
 
+    private static JndiTestUtils      jndiTestUtils;
+
+
+    @BeforeClass
+    public static void init() {
+
+        jndiTestUtils = new JndiTestUtils();
+    }
 
     @Before
     public void setUp()
@@ -171,11 +192,27 @@ public class PasswordDeviceTest {
 
         EntityManager entityManager = entityTestManager.getEntityManager();
 
+        mockKeyService = createMock(KeyService.class);
+        checkOrder(mockKeyService, false);
+
+        KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
+
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(8);
+        replay(mockKeyService);
+
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
         systemStartable.postStart();
 
         Startable passwordStartable = EJBTestUtils.newInstance(PasswordStartableBean.class, container, entityManager);
         passwordStartable.postStart();
+
+        verify(mockKeyService);
+        reset(mockKeyService);
 
         testedInstance = new PasswordDeviceServiceBean();
         EJBTestUtils.inject(testedInstance, entityManager);
@@ -203,7 +240,7 @@ public class PasswordDeviceTest {
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger };
+        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger, mockKeyService };
 
         // setup
         testUserId = UUID.randomUUID().toString();
@@ -212,6 +249,13 @@ public class PasswordDeviceTest {
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+    }
+
+    @After
+    public void tearDown()
+            throws Exception {
+
+        jndiTestUtils.tearDown();
     }
 
     @Test
