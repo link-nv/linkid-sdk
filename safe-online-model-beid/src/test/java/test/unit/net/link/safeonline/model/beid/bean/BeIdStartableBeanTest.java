@@ -19,7 +19,6 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
-import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
@@ -32,9 +31,11 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class BeIdStartableBeanTest extends TestCase {
+public class BeIdStartableBeanTest {
 
     private BeIdStartableBean testedInstance;
 
@@ -49,11 +50,9 @@ public class BeIdStartableBeanTest extends TestCase {
     private JndiTestUtils     jndiTestUtils;
 
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
             throws Exception {
-
-        super.setUp();
 
         testedInstance = new BeIdStartableBean();
 
@@ -80,6 +79,7 @@ public class BeIdStartableBeanTest extends TestCase {
         mockObjects = new Object[] { mockTrustDomainDAO, mockTrustPointDAO, mockKeyService };
     }
 
+    @Test
     public void testInitTrustDomain()
             throws Exception {
 

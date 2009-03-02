@@ -16,7 +16,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +32,8 @@ import javax.jws.WebService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
 import net.link.safeonline.device.sdk.auth.servlet.LandingServlet;
+import net.link.safeonline.keystore.KeyStoreUtils;
+import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
@@ -36,7 +41,6 @@ import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.test.util.TestClassLoader;
 import net.link.safeonline.test.util.WebServiceTestUtils;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -49,6 +53,7 @@ import org.apache.xml.security.utils.Base64;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.ObjectFactory;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenResponseType;
@@ -67,10 +72,6 @@ public class LandingServletTest {
 
     private JndiTestUtils                  jndiTestUtils;
 
-    private ClassLoader                    originalContextClassLoader;
-
-    private TestClassLoader                testClassLoader;
-
     private HttpClient                     httpClient;
 
     private String                         location;
@@ -85,18 +86,24 @@ public class LandingServletTest {
 
     private Set<String>                    wantedDevices;
 
-    private KeyPair                        keyPair;
-
     private WSSecurityConfigurationService mockWSSecurityConfigurationService;
 
+    static KeyPair                         nodeKeyPair;
+
+    static X509Certificate                 nodeCertificate;
+
+
+    @BeforeClass
+    public static void init()
+            throws Exception {
+
+        nodeKeyPair = PkiTestUtils.generateKeyPair();
+        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+    }
 
     @Before
     public void setUp()
             throws Exception {
-
-        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        testClassLoader = new TestClassLoader();
-        Thread.currentThread().setContextClassLoader(testClassLoader);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
@@ -113,25 +120,13 @@ public class LandingServletTest {
         SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
         webServiceTestUtils.setUp(port, "/safe-online-ws/sts");
 
-        keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
-        File tmpP12File = File.createTempFile("application-", ".p12");
-        tmpP12File.deleteOnExit();
-        PkiTestUtils.persistInPKCS12KeyStore(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
-
-        String p12ResourceName = "p12-resource-name.p12";
-        testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
-
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
         initParams.put("AuthenticationUrl", authenticationUrl);
-        initParams.put("KeyStoreResource", p12ResourceName);
-        initParams.put("KeyStorePassword", "secret");
-        initParams.put("DeviceName", deviceName);
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
         initParams.put("WsLocation", webServiceTestUtils.getLocation());
 
-        servletTestManager.setUp(LandingServlet.class, initParams, null, null, null);
+        servletTestManager.setUp(TestLandingServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
     }
@@ -141,7 +136,6 @@ public class LandingServletTest {
             throws Exception {
 
         servletTestManager.tearDown();
-        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
     }
 
 
@@ -178,7 +172,7 @@ public class LandingServletTest {
 
         // setup
         wantedDevices = Collections.singleton(deviceName);
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, keyPair,
+        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, nodeKeyPair,
                 "http://test.authn.service", servletEndpointUrl, new Challenge<String>(), wantedDevices, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
@@ -204,5 +198,63 @@ public class LandingServletTest {
         assertEquals(applicationName, authenticationContext.getApplication());
         assertNull(authenticationContext.getApplicationFriendlyName());
         assertEquals(wantedDevices, authenticationContext.getWantedDevices());
+    }
+
+
+    public static class TestLandingServlet extends LandingServlet {
+
+        private static final long   serialVersionUID  = 1L;
+        private static final String KEYSTORE_PASSWORD = "test-password";
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected String getIssuer() {
+
+            return "safe-online";
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected OlasKeyStore getKeyStore() {
+
+            return new OlasKeyStore() {
+
+                public PrivateKey getPrivateKey() {
+
+                    return getKeyPair().getPrivate();
+                }
+
+                public KeyPair getKeyPair() {
+
+                    return nodeKeyPair;
+                }
+
+                public X509Certificate getCertificate() {
+
+                    return nodeCertificate;
+                }
+
+                public PrivateKeyEntry _getPrivateKeyEntry() {
+
+                    try {
+                        File tempFile = File.createTempFile("test-keystore", "jks");
+                        KeyStoreUtils.persistKey(tempFile, getPrivateKey(), getCertificate(), KEYSTORE_PASSWORD.toCharArray(),
+                                KEYSTORE_PASSWORD.toCharArray());
+
+                        return KeyStoreUtils.loadPrivateKeyEntry("pkcs12", new FileInputStream(tempFile), KEYSTORE_PASSWORD,
+                                KEYSTORE_PASSWORD);
+                    }
+
+                    catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+        }
     }
 }

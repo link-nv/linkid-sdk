@@ -68,7 +68,6 @@ public class DigipassStartableBean extends AbstractInitBean {
                 "Digipass", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceAttributeType, "nl", "Digipass", null));
 
-        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
         ResourceBundle properties = ResourceBundle.getBundle("digipass_config");
         String nodeName = properties.getString("olas.node.name");
         String digipassWebappName = properties.getString("digipass.webapp.name");
@@ -79,7 +78,6 @@ public class DigipassStartableBean extends AbstractInitBean {
                 + "/device", digipassDeviceAttributeType, digipassSNAttributeType, digipassDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
         deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(), "EBank Digipass"));
-        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
     private void configureNode() {

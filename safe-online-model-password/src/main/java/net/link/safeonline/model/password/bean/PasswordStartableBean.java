@@ -171,16 +171,12 @@ public class PasswordStartableBean extends AbstractInitBean {
                 "Password", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl", "Wachtwoord", null));
 
-        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
-
         devices.add(new Device(PasswordConstants.PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, nodeName, "/"
                 + passwordWebappName + "/auth", "/" + passwordAuthWSPath, "/" + passwordWebappName + "/device", "/" + passwordWebappName
                 + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName
                 + "/device", passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, "nl", "Paswoord"));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Password"));
-        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
-
     }
 
     private void configureDeviceRegistrations() {

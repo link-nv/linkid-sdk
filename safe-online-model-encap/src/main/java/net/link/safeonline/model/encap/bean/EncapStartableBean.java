@@ -68,8 +68,6 @@ public class EncapStartableBean extends AbstractInitBean {
                 null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap", null));
 
-        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
-
         ResourceBundle properties = ResourceBundle.getBundle("encap_config");
         String nodeName = properties.getString("olas.node.name");
         String encapWebappName = properties.getString("encap.webapp.name");
@@ -81,7 +79,6 @@ public class EncapStartableBean extends AbstractInitBean {
                 encapDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
         deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile"));
-        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
     private void configureNode() {

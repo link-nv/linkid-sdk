@@ -143,8 +143,6 @@ public class SecurityTokenServicePortImplTest {
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, nodeCertificate))
                                                                                                                                 .andStubReturn(
                                                                                                                                         PkiResult.INVALID);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, nodeCertificate)).andStubReturn(
-                PkiResult.INVALID);
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, nodeCertificate)).andStubReturn(
                 PkiResult.VALID);
         expect(mockNodeAuthenticationService.authenticate(nodeCertificate)).andStubReturn(testNodeName);
