@@ -10,6 +10,8 @@ package net.link.safeonline.authentication;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
 import net.link.safeonline.entity.DeviceEntity;
 
 
@@ -21,6 +23,8 @@ import net.link.safeonline.entity.DeviceEntity;
  * 
  */
 public class ProtocolContext {
+
+    public static final String      PROTOCOL_CONTEXT = "ProtocolContext";
 
     private final String            target;
     private final long              applicationId;
@@ -60,6 +64,17 @@ public class ProtocolContext {
         this.color = color;
         this.minimal = minimal;
         this.requiredDevices = requiredDevices;
+    }
+
+    public static void setProtocolContext(ProtocolContext protocolContext, HttpSession httpSession) {
+
+        httpSession.setAttribute(PROTOCOL_CONTEXT, protocolContext);
+
+    }
+
+    public static ProtocolContext getProtocolContext(HttpSession httpSession) {
+
+        return (ProtocolContext) httpSession.getAttribute(PROTOCOL_CONTEXT);
     }
 
     public String getApplicationName() {

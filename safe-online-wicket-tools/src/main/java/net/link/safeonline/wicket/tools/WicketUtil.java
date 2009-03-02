@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -32,11 +33,13 @@ import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Request;
+import org.apache.wicket.Response;
 import org.apache.wicket.injection.ComponentInjector;
 import org.apache.wicket.injection.ConfigurableInjector;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.wicketstuff.javaee.injection.AnnotJavaEEInjector;
 
 
@@ -138,6 +141,14 @@ public abstract class WicketUtil {
     public static HttpServletRequest toServletRequest(Request request) {
 
         return ((WebRequest) request).getHttpServletRequest();
+    }
+
+    /**
+     * Get the {@link HttpServletResponse} contained in the given Wicket {@link Response}.
+     */
+    public static HttpServletResponse toServletResponse(Response response) {
+
+        return ((WebResponse) response).getHttpServletResponse();
     }
 
     /**

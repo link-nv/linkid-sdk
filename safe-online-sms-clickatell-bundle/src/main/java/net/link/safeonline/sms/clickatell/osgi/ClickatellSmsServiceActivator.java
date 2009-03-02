@@ -13,61 +13,62 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.log.LogService;
-
+import org.slf4j.impl.LogServiceLoggerFactory;
 
 public class ClickatellSmsServiceActivator implements BundleActivator {
 
-    ServiceRegistration             clickatellSmsServiceRegistration;
+	ServiceRegistration clickatellSmsServiceRegistration;
 
-    static LogService               LOG;
-    static ServiceReference         logServiceReference;
+	static OlasConfigurationService configuration;
+	static ServiceReference configurationServiceReference;
 
-    static OlasConfigurationService configuration;
-    static ServiceReference         configurationServiceReference;
+	public static final String CONFIG_GROUP_NAME = "Clickatell";
+	public static final String CONFIG_USERNAME = "Username";
+	public static final String CONFIG_PASSWORD = "Password";
+	public static final String CONFIG_API_ID = "API Id";
+	public static final String CONFIG_URL = "URL";
+	public static final String CONFIG_DEFAULT_USERNAME = "test";
+	public static final String CONFIG_DEFAULT_PASSWORD = "test";
+	public static final String CONFIG_DEFAULT_API_ID = "1234";
+	public static final String CONFIG_DEFAULT_URL = "http://api.clickatell.com/soap/webservice.php";
 
-    public static final String      CONFIG_GROUP_NAME       = "Clickatell";
-    public static final String      CONFIG_USERNAME         = "Username";
-    public static final String      CONFIG_PASSWORD         = "Password";
-    public static final String      CONFIG_API_ID           = "API Id";
-    public static final String      CONFIG_URL              = "URL";
-    public static final String      CONFIG_DEFAULT_USERNAME = "test";
-    public static final String      CONFIG_DEFAULT_PASSWORD = "test";
-    public static final String      CONFIG_DEFAULT_API_ID   = "1234";
-    public static final String      CONFIG_DEFAULT_URL      = "http://api.clickatell.com/soap/webservice.php";
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
+	 * )
+	 */
+	public void start(BundleContext context) throws Exception {
 
+		LogServiceLoggerFactory.open(context);
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-     */
-    public void start(BundleContext context)
-            throws Exception {
+		configurationServiceReference = context
+				.getServiceReference(OlasConfigurationService.class.getName());
+		configuration = (OlasConfigurationService) context
+				.getService(configurationServiceReference);
+		configuration.initConfigurationValue(CONFIG_GROUP_NAME,
+				CONFIG_USERNAME, CONFIG_DEFAULT_USERNAME);
+		configuration.initConfigurationValue(CONFIG_GROUP_NAME,
+				CONFIG_PASSWORD, CONFIG_DEFAULT_PASSWORD);
+		configuration.initConfigurationValue(CONFIG_GROUP_NAME, CONFIG_API_ID,
+				CONFIG_DEFAULT_API_ID);
 
-        logServiceReference = context.getServiceReference(LogService.class.getName());
-        LOG = (LogService) context.getService(logServiceReference);
+		ClickatellSmsServiceFactory smsServiceFactory = new ClickatellSmsServiceFactory();
+		clickatellSmsServiceRegistration = context.registerService(
+				SmsService.class.getName(), smsServiceFactory, null);
 
-        configurationServiceReference = context.getServiceReference(OlasConfigurationService.class.getName());
-        configuration = (OlasConfigurationService) context.getService(configurationServiceReference);
-        configuration.initConfigurationValue(CONFIG_GROUP_NAME, CONFIG_USERNAME, CONFIG_DEFAULT_USERNAME);
-        configuration.initConfigurationValue(CONFIG_GROUP_NAME, CONFIG_PASSWORD, CONFIG_DEFAULT_PASSWORD);
-        configuration.initConfigurationValue(CONFIG_GROUP_NAME, CONFIG_API_ID, CONFIG_DEFAULT_API_ID);
+	}
 
-        ClickatellSmsServiceFactory smsServiceFactory = new ClickatellSmsServiceFactory();
-        clickatellSmsServiceRegistration = context.registerService(SmsService.class.getName(), smsServiceFactory, null);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-     */
-    public void stop(BundleContext context)
-            throws Exception {
-
-        context.ungetService(logServiceReference);
-        context.ungetService(configurationServiceReference);
-        clickatellSmsServiceRegistration.unregister();
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		context.ungetService(configurationServiceReference);
+		clickatellSmsServiceRegistration.unregister();
+		LogServiceLoggerFactory.close();
+	}
 }

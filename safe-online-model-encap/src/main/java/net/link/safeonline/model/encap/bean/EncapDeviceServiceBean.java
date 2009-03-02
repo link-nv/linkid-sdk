@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -63,46 +64,47 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = EncapDeviceService.JNDI_BINDING)
 public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceServiceRemote {
 
-    private static final Log       LOG = LogFactory.getLog(EncapDeviceServiceBean.class);
+    private static final Log                 LOG = LogFactory.getLog(EncapDeviceServiceBean.class);
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-    private EntityManager          entityManager;
+    private EntityManager                    entityManager;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO             historyDAO;
+    private HistoryDAO                       historyDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService                   subjectService;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService     nodeMappingService;
+    private NodeMappingService               nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO   subjectIdentifierDAO;
+    private SubjectIdentifierDAO             subjectIdentifierDAO;
 
     @EJB(mappedName = MobileManager.JNDI_BINDING)
-    private MobileManager          mobileManager;
+    private MobileManager                    mobileManager;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO              deviceDAO;
+    private DeviceDAO                        deviceDAO;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger    securityAuditLogger;
+    private SecurityAuditLogger              securityAuditLogger;
 
-    private AttributeManagerLWBean attributeManager;
+    private String                           challengeMobile;
+    private String                           challengeCode;
 
-    private String                 challengeMobile;
-    private String                 challengeCode;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
@@ -126,7 +128,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Encap device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -151,6 +153,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect mobile token");
             throw new DeviceAuthenticationException();
         }
+
+        // Success, reset the challenge data.
+        challengeMobile = null;
+        challengeCode = null;
 
         return subject.getUserId();
     }
@@ -204,6 +210,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID));
+            // Success, reset the challenge data.
+            challengeMobile = null;
+            challengeCode = null;
+
         }
 
         catch (AttributeTypeNotFoundException e) {
@@ -221,12 +231,16 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
         SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
         if (null == subject)
-            throw new DeviceRegistrationNotFoundException();
+            throw new SubjectNotFoundException();
 
         try {
             attributeManager.removeCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
                     mobile);
             subjectIdentifierDAO.removeSubjectIdentifier(subject, EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
+
+            // flush and clear to commit and release the removed entities.
+            entityManager.flush();
+            entityManager.clear();
 
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID));
@@ -235,7 +249,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Encap device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -312,6 +326,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 EncapConstants.ENCAP_DEVICE_ID));
+
+        // Success, reset the challenge data.
+        challengeMobile = null;
+        challengeCode = null;
     }
 
     /**

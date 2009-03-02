@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:panel>
+
+			<label wicket:id="name">[Name]</label>
+
+			<wicket:enclosure child="string">
+				<input wicket:id="string" type="text" class="label" />
+				<div wicket:id="string_feedback" class="error"></div>
+			</wicket:enclosure>
+
+			<wicket:enclosure child="double">
+				<input wicket:id="double" type="text" class="label" />
+				<div wicket:id="double_feedback" class="error"></div>
+			</wicket:enclosure>
+
+			<wicket:enclosure child="integer">
+				<input wicket:id="integer" type="text" class="label" />
+				<div wicket:id="integer_feedback" class="error"></div>
+			</wicket:enclosure>
+
+			<wicket:enclosure child="boolean">
+				<input wicket:id="boolean" type="checkbox" class="label" />
+				<div wicket:id="boolean_feedback" class="error"></div>
+			</wicket:enclosure>
+
+			<wicket:enclosure child="date">
+				<input wicket:id="date" type="text" class="label"></input>
+				<div wicket:id="date_feedback" class="error"></div>
+			</wicket:enclosure>
+
+
+		</wicket:panel>
+
+	</body>
+
+</html>

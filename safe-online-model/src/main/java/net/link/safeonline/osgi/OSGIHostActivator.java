@@ -112,6 +112,8 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
      */
     public void serviceChanged(ServiceEvent event) {
 
+        // TODO: handle modified events, so configuration does not change necessarily
+
         if (event.getType() == ServiceEvent.REGISTERED) {
             Object service = event.getServiceReference().getBundle().getBundleContext().getService(event.getServiceReference());
             if (service instanceof SmsService) {

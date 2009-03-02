@@ -9,7 +9,6 @@ package net.link.safeonline.model.otpoversms;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.SubjectEntity;
 
 
@@ -19,8 +18,7 @@ public interface OtpOverSmsManager extends OtpOverSmsService {
     public static final String JNDI_BINDING = OtpOverSmsService.JNDI_PREFIX + "OtpOverSmsManagerBean/local";
 
 
-    void registerMobile(SubjectEntity subject, String mobile, String pin)
-            throws PermissionDeniedException;
+    void registerMobile(SubjectEntity subject, String mobile, String pin);
 
     void updatePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
             throws DeviceRegistrationNotFoundException;

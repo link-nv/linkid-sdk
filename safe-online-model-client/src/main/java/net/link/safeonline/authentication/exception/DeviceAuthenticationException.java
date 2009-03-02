@@ -14,4 +14,23 @@ public class DeviceAuthenticationException extends SafeOnlineException {
 
     private static final long serialVersionUID = 1L;
 
+
+    public DeviceAuthenticationException() {
+
+    }
+
+    public DeviceAuthenticationException(Throwable cause) {
+
+        super(cause);
+    }
+
+    public DeviceAuthenticationException(String message) {
+
+        super(message);
+    }
+
+    public DeviceAuthenticationException(String message, Throwable cause) {
+
+        super(message, cause);
+    }
 }

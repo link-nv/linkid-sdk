@@ -9,6 +9,7 @@ package net.link.safeonline.digipass.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -96,30 +97,27 @@ public class EnablePage extends TemplatePage {
                     LOG.debug("enable digipass " + protocolContext.getAttribute());
 
                     try {
-                        String userId = digipassDeviceService.enable(protocolContext.getSubject(), protocolContext.getAttribute(),
-                                token.getObject());
-                        if (null == userId) {
-                            EnableForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: authentication failed: "
-                                    + protocolContext.getSubject(), LogLevelType.ERROR);
-                            return;
-                        }
+                        String userId = protocolContext.getSubject();
+                        digipassDeviceService.enable(userId, protocolContext.getAttribute(), token.getObject());
+
+                        protocolContext.setSuccess(true);
+                        exit();
+                    }
+
+                    catch (DeviceAuthenticationException e) {
+                        EnableForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: authentication failed: "
+                                + protocolContext.getSubject(), LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found for "
                                 + protocolContext.getSubject(), LogLevelType.ERROR);
-                        return;
                     } catch (DeviceRegistrationNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device registration not found",
                                 LogLevelType.ERROR);
-                        return;
                     }
-
-                    protocolContext.setSuccess(true);
-                    exit();
                 }
-
             });
 
             Button cancel = new Button(CANCEL_BUTTON_ID) {

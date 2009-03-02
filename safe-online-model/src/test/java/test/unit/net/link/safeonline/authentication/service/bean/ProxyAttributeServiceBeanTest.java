@@ -88,7 +88,7 @@ public class ProxyAttributeServiceBeanTest {
         mockOSGIStartable = createMock(OSGIStartable.class);
         EJBTestUtils.inject(testedInstance, mockOSGIStartable);
 
-        mockOSGIService = EasyMock.createMock(OSGIService.class);
+        mockOSGIService = createMock(OSGIService.class);
 
         mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
         EJBTestUtils.inject(testedInstance, mockAttributeTypeDAO);

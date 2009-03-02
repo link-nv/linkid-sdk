@@ -18,6 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.webapp.GlobalConfirmationPage;
+import net.link.safeonline.auth.webapp.IdentityConfirmationPage;
+import net.link.safeonline.auth.webapp.IdentityUnavailablePage;
+import net.link.safeonline.auth.webapp.MissingAttributesPage;
+import net.link.safeonline.auth.webapp.RegisterDevicePage;
+import net.link.safeonline.auth.webapp.SubscriptionPage;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -28,6 +34,7 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -51,6 +58,8 @@ public class LoginServlet extends AbstractInjectionServlet {
     private static final long     serialVersionUID = 1L;
 
     private static final Log      LOG              = LogFactory.getLog(LoginServlet.class);
+
+    public static final String    SERVLET_PATH     = "login";
 
     @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService       identityService;
@@ -123,7 +132,7 @@ public class LoginServlet extends AbstractInjectionServlet {
     private void redirectToRegisterDevice(HttpServletResponse response)
             throws IOException {
 
-        response.sendRedirect("./register-device.seam");
+        response.sendRedirect(RegisterDevicePage.PATH);
     }
 
     private boolean performGlobalUsageAgreementCheck(String language) {
@@ -213,32 +222,48 @@ public class LoginServlet extends AbstractInjectionServlet {
     }
 
     private void redirectToMissingAttributes(HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
 
-        String redirectUrl = "./missing-attributes.seam";
-        response.sendRedirect(redirectUrl);
+        List<AttributeDO> missingAttributes;
+        try {
+            missingAttributes = identityService.listMissingAttributes(applicationId, response.getLocale());
+        } catch (ApplicationNotFoundException e) {
+            throw new ServletException("application not found: " + applicationId);
+        } catch (ApplicationIdentityNotFoundException e) {
+            throw new ServletException("application identity not found: " + applicationId);
+        } catch (PermissionDeniedException e) {
+            throw new ServletException("permission denied: " + e.getMessage());
+        } catch (AttributeTypeNotFoundException e) {
+            throw new ServletException("attribute type not found: " + e.getMessage());
+        }
+
+        if (false == missingAttributes.isEmpty()) {
+            for (AttributeDO missingAttribute : missingAttributes) {
+                if (!missingAttribute.isEditable()) {
+                    response.sendRedirect(IdentityUnavailablePage.PATH);
+                    return;
+                }
+            }
+        }
+
+        response.sendRedirect(MissingAttributesPage.PATH);
     }
 
     private void redirectToIdentityConfirmation(HttpServletResponse response)
             throws IOException {
 
-        String redirectUrl = "./identity-confirmation.seam";
-
-        LOG.debug("redirecting to: " + redirectUrl);
-        response.sendRedirect(redirectUrl);
+        response.sendRedirect(IdentityConfirmationPage.PATH);
     }
 
     private void redirectToSubscription(HttpServletResponse response)
             throws IOException {
 
-        String redirectUrl = "./subscription.seam";
-        response.sendRedirect(redirectUrl);
+        response.sendRedirect(SubscriptionPage.PATH);
     }
 
     private void redirectToGlobalConfirmation(HttpServletResponse response)
             throws IOException {
 
-        String redirectUrl = "./global-confirmation.seam";
-        response.sendRedirect(redirectUrl);
+        response.sendRedirect(GlobalConfirmationPage.PATH);
     }
 }

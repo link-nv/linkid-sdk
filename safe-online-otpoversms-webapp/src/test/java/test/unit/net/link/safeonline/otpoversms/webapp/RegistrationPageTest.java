@@ -6,18 +6,16 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.net.ConnectException;
 import java.util.UUID;
 
-import javax.mail.AuthenticationFailedException;
-
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.otpoversms.webapp.RegistrationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -163,7 +161,7 @@ public class RegistrationPageTest {
 
         // stubs
         mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
-        org.easymock.EasyMock.expectLastCall().andThrow(new ConnectException());
+        org.easymock.EasyMock.expectLastCall().andThrow(new SmsServiceException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -232,7 +230,7 @@ public class RegistrationPageTest {
 
         // stubs
         mockOtpOverSmsDeviceService.register(nodeName, userId, pin, otp);
-        expectLastCall().andThrow(new AuthenticationFailedException());
+        expectLastCall().andThrow(new DeviceAuthenticationException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -304,7 +302,7 @@ public class RegistrationPageTest {
 
         // stubs
         mockOtpOverSmsDeviceService.register(nodeName, userId, pin, otp);
-        org.easymock.EasyMock.expectLastCall().andThrow(new PermissionDeniedException(""));
+        org.easymock.EasyMock.expectLastCall().andThrow(new DeviceAuthenticationException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -321,6 +319,6 @@ public class RegistrationPageTest {
         verify(mockOtpOverSmsDeviceService, mockHelpdeskManager, mockSecurityAuditLogger);
 
         wicket.assertRenderedPage(RegistrationPage.class);
-        wicket.assertErrorMessages(new String[] { "errorPinNotCorrect" });
+        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
     }
 }

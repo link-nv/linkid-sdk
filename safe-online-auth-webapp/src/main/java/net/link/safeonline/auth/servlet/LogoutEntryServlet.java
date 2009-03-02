@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.auth.webapp.AuthenticationProtocolErrorPage;
+import net.link.safeonline.auth.webapp.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
@@ -55,28 +57,18 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutEntryServlet extends AbstractInjectionServlet {
 
-    private static final long  serialVersionUID                 = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private static final Log   LOG                              = LogFactory.getLog(LogoutEntryServlet.class);
-
-    public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
-
-    public static final String PROTOCOL_NAME_ATTRIBUTE          = "protocolName";
+    private static final Log  LOG              = LogFactory.getLog(LogoutEntryServlet.class);
 
     @Init(name = "ServletEndpointUrl")
-    private String             servletEndpointUrl;
+    private String            servletEndpointUrl;
 
     @Init(name = "LogoutExitUrl")
-    private String             logoutExitUrl;
-
-    @Init(name = "UnsupportedProtocolUrl")
-    private String             unsupportedProtocolUrl;
-
-    @Init(name = "ProtocolErrorUrl")
-    private String             protocolErrorUrl;
+    private String            logoutExitUrl;
 
     @Init(name = "CookiePath")
-    private String             cookiePath;
+    private String            cookiePath;
 
 
     @Override
@@ -106,13 +98,14 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
         try {
             logoutProtocolContext = ProtocolHandlerManager.handleLogoutRequest(logoutRequestWrapper);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
-                    e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
 
         if (null == logoutProtocolContext) {
-            response.sendRedirect(unsupportedProtocolUrl);
+            response.sendRedirect(UnsupportedProtocolPage.PATH);
             return;
         }
 

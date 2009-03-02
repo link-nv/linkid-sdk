@@ -6,35 +6,40 @@
  */
 package net.link.safeonline.sms.clickatell.osgi;
 
-import net.link.safeonline.osgi.sms.SmsService;
 
+import net.link.safeonline.osgi.sms.SmsService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ClickatellSmsServiceFactory implements ServiceFactory {
 
-    private int        usageCounter = 0;
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ClickatellSmsServiceFactory.class);
 
-    private LogService LOG          = ClickatellSmsServiceActivator.LOG;
+	private int usageCounter = 0;
 
+	public Object getService(Bundle bundle, ServiceRegistration registration) {
 
-    public Object getService(Bundle bundle, ServiceRegistration registration) {
+		LOG
+				.debug("Create object of SmsService for "
+						+ bundle.getSymbolicName());
+		usageCounter++;
+		LOG.debug("Number of bundles using service " + usageCounter);
+		SmsService templateSmsService = new ClickatellSmsService();
+		return templateSmsService;
+	}
 
-        LOG.log(LogService.LOG_DEBUG, "Create object of SmsService for " + bundle.getSymbolicName());
-        usageCounter++;
-        LOG.log(LogService.LOG_DEBUG, "Number of bundles using service " + usageCounter);
-        SmsService templateSmsService = new ClickatellSmsService();
-        return templateSmsService;
-    }
+	public void ungetService(Bundle bundle, ServiceRegistration registration,
+			Object service) {
 
-    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
-
-        LOG.log(LogService.LOG_DEBUG, "Release object of SmsService for " + bundle.getSymbolicName());
-        usageCounter--;
-        LOG.log(LogService.LOG_DEBUG, "Number of bundles using service " + usageCounter);
-    }
+		LOG.debug("Release object of SmsService for "
+				+ bundle.getSymbolicName());
+		usageCounter--;
+		LOG.debug("Number of bundles using service " + usageCounter);
+	}
 
 }

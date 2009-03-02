@@ -10,7 +10,10 @@ import java.util.Collections;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -55,29 +58,33 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = OptionDeviceService.JNDI_BINDING)
 public class OptionDeviceServiceBean implements OptionDeviceService {
 
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                    entityManager;
+
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO             historyDAO;
+    private HistoryDAO                       historyDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService                   subjectService;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService     nodeMappingService;
+    private NodeMappingService               nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO   subjectIdentifierDAO;
+    private SubjectIdentifierDAO             subjectIdentifierDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
-    private AttributeManagerLWBean attributeManager;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
@@ -142,7 +149,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -194,6 +201,10 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
 
             subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
 
+            // flush and clear to commit and release the removed entities.
+            entityManager.flush();
+            entityManager.clear();
+
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID));
         }
@@ -201,7 +212,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 }

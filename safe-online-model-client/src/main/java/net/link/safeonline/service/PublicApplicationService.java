@@ -27,6 +27,13 @@ public interface PublicApplicationService {
     /**
      * Gives back a stub for an application that contains the application's data that's available to the public.
      * 
+     * @param applicationId
+     */
+    public PublicApplication findPublicApplication(long applicationId);
+
+    /**
+     * Gives back a stub for an application that contains the application's data that's available to the public.
+     * 
      * @param applicationName
      */
     public PublicApplication findPublicApplication(String applicationName);

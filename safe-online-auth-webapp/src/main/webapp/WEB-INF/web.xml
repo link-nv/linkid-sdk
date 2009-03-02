@@ -3,43 +3,32 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 	<display-name>Olas Authentication Web Application</display-name>
-	<security-constraint>
-		<display-name>Restrict Viewing XHTML Documents</display-name>
-		<web-resource-collection>
-			<web-resource-name>XHTML</web-resource-name>
-			<url-pattern>*.xhtml</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-		</auth-constraint>
-	</security-constraint>
+	<servlet>
+		<servlet-name>authapp</servlet-name>
+		<servlet-class>org.apache.wicket.protocol.http.WicketServlet</servlet-class>
+		<init-param>
+			<param-name>applicationClassName</param-name>
+			<param-value>
+				net.link.safeonline.auth.webapp.AuthenticationApplication 
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configuration</param-name>
+			<param-value>${wicket.configuration}</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>authapp</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
+		<listener-class>
+			net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
 	</listener>
 	<listener>
 		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
 	</listener>
-	<context-param>
-		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-		<param-value>client</param-value>
-	</context-param>
-	<context-param>
-		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-		<param-value>.xhtml</param-value>
-	</context-param>
-	<context-param>
-		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.jboss.seam.core.init.debug</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
@@ -73,7 +62,7 @@
 		<filter-class>net.link.safeonline.auth.filter.TimeoutFilter</filter-class>
 		<init-param>
 			<param-name>TimeoutPath</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.auth.webapp.name}/timeout.seam</param-value>
+			<param-value>${safe-online.host.basename}/${safe-online.auth.webapp.name}/timeout</param-value>
 		</init-param>
 		<init-param>
 			<param-name>CookiePath</param-name>
@@ -88,14 +77,6 @@
 			<param-value>client-login</param-value>
 		</init-param>
 	</filter>
-	<filter>
-		<filter-name>Seam Filter</filter-name>
-		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
-	</filter>
 
 	<!-- ${safe-online.profiling.filter} -->
 	<filter-mapping>
@@ -103,38 +84,9 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
-	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<servlet-name>LoginServlet</servlet-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<servlet-name>ExitServlet</servlet-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Seam Filter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.seam</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.LoginServlet</servlet-class>
@@ -146,14 +98,6 @@
 	<servlet>
 		<servlet-name>AuthnEntryServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.AuthnEntryServlet</servlet-class>
-		<init-param>
-			<param-name>StartUrl</param-name>
-			<param-value>main.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>FirstTimeUrl</param-name>
-			<param-value>first-time.seam</param-value>
-		</init-param>
 		<init-param>
 			<param-name>LoginUrl</param-name>
 			<param-value>login</param-value>
@@ -168,14 +112,6 @@
 			</param-value>
 		</init-param>
 		<init-param>
-			<param-name>UnsupportedProtocolUrl</param-name>
-			<param-value>unsupported-protocol.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ProtocolErrorUrl</param-name>
-			<param-value>protocol-error.seam</param-value>
-		</init-param>
-		<init-param>
 			<param-name>CookiePath</param-name>
 			<param-value>/${safe-online.auth.webapp.name}</param-value>
 		</init-param>
@@ -187,10 +123,6 @@
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.ExitServlet</servlet-class>
-		<init-param>
-			<param-name>ProtocolErrorUrl</param-name>
-			<param-value>protocol-error.seam</param-value>
-		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExitServlet</servlet-name>
@@ -213,14 +145,6 @@
 			</param-value>
 		</init-param>
 		<init-param>
-			<param-name>UnsupportedProtocolUrl</param-name>
-			<param-value>unsupported-protocol.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ProtocolErrorUrl</param-name>
-			<param-value>protocol-error.seam</param-value>
-		</init-param>
-		<init-param>
 			<param-name>CookiePath</param-name>
 			<param-value>/${safe-online.auth.webapp.name}</param-value>
 		</init-param>
@@ -240,10 +164,6 @@
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit 
 			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ProtocolErrorUrl</param-name>
-			<param-value>protocol-error.seam</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -267,7 +187,7 @@
 		</init-param>
 		<init-param>
 			<param-name>TryAnotherDeviceUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/all-devices.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/all-devices</param-value>
 		</init-param>
 		<init-param>
 			<description>Used to wrap the servlet request's request URL for
@@ -280,7 +200,7 @@
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -293,11 +213,11 @@
 			net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet</servlet-class>
 		<init-param>
 			<param-name>RegisterDeviceUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/register-device.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/register-device</param-value>
 		</init-param>
 		<init-param>
 			<param-name>NewUserDeviceUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/new-user-device.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/new-user-device</param-value>
 		</init-param>
 		<init-param>
 			<param-name>LoginUrl</param-name>
@@ -314,7 +234,7 @@
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

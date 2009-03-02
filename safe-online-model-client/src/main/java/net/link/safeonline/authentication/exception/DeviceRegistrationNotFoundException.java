@@ -14,4 +14,24 @@ import javax.ejb.ApplicationException;
 public class DeviceRegistrationNotFoundException extends SafeOnlineException {
 
     private static final long serialVersionUID = 1L;
+
+
+    public DeviceRegistrationNotFoundException() {
+
+    }
+
+    public DeviceRegistrationNotFoundException(Throwable cause) {
+
+        super(cause);
+    }
+
+    public DeviceRegistrationNotFoundException(String message) {
+
+        super(message);
+    }
+
+    public DeviceRegistrationNotFoundException(String message, Throwable cause) {
+
+        super(message, cause);
+    }
 }

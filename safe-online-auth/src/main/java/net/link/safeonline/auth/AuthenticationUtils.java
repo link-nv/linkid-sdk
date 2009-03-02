@@ -80,26 +80,21 @@ public class AuthenticationUtils {
      * @param landingUrl
      * @param device
      */
-    public static String redirectAuthentication(String requestUrl, String landingUrl, String device) {
+    public static void redirectAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale language,
+                                              String requestUrl, String landingUrl, String device) {
 
         LOG.debug("redirecting to: " + landingUrl);
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
 
-        String authenticationServiceUrl = getInitParameter(externalContext, DEVICE_AUTH_SERVICE_URL_INIT_PARAM);
+        String authenticationServiceUrl = getInitParameter(httpRequest, DEVICE_AUTH_SERVICE_URL_INIT_PARAM);
 
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
-        if (externalContext.getInitParameter(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
-            templateResourceName = externalContext.getInitParameter(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        if (findInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
+            templateResourceName = getInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
         }
-
-        HttpServletRequest httpRequest = (HttpServletRequest) externalContext.getRequest();
-        HttpServletResponse httpResponse = (HttpServletResponse) externalContext.getResponse();
 
         // Required for the servlet handling the returned saml response to know where to redirect to if the
         // authentication is canceled.
         httpRequest.getSession().setAttribute(REQUEST_URL_INIT_PARAM, requestUrl);
-        Locale language = context.getViewRoot().getLocale();
         Integer color = (Integer) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE);
         Boolean minimal = (Boolean) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE);
 
@@ -126,13 +121,6 @@ public class AuthenticationUtils {
         } catch (IOException e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);
         }
-
-        /*
-         * Signal the JavaServer Faces implementation that the HTTP response for this request has already been generated (such as an HTTP
-         * redirect), and that the request processing lifecycle should be terminated as soon as the current phase is completed.
-         */
-        context.responseComplete();
-        return null;
     }
 
     /**
@@ -153,21 +141,17 @@ public class AuthenticationUtils {
      * @param device
      * @param userId
      */
-    public static String redirect(String landingUrl, String device, String userId) {
+    public static void redirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale language, String landingUrl,
+                                String device, String userId) {
 
         LOG.debug("redirecting to: " + landingUrl);
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
 
-        String registrationServiceUrl = getInitParameter(externalContext, DEVICE_REG_SERVICE_URL_INIT_PARAM);
+        String registrationServiceUrl = getInitParameter(httpRequest, DEVICE_REG_SERVICE_URL_INIT_PARAM);
 
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
-        if (externalContext.getInitParameter(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
-            templateResourceName = externalContext.getInitParameter(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        if (findInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
+            templateResourceName = getInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
         }
-
-        HttpServletRequest httpRequest = (HttpServletRequest) externalContext.getRequest();
-        HttpServletResponse httpResponse = (HttpServletResponse) externalContext.getResponse();
 
         /*
          * Next is required to preserve the session if the browser does not support cookies.
@@ -176,7 +160,6 @@ public class AuthenticationUtils {
         LOG.debug("landing url: " + encodedLandingUrl);
 
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(httpRequest.getSession());
-        Locale language = context.getViewRoot().getLocale();
         Integer color = (Integer) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE);
         Boolean minimal = (Boolean) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE);
 
@@ -195,21 +178,20 @@ public class AuthenticationUtils {
         } catch (IOException e) {
             throw new RuntimeException("could not initiate device registration: " + e.getMessage(), e);
         }
-
-        /*
-         * Signal the JavaServer Faces implementation that the HTTP response for this request has already been generated (such as an HTTP
-         * redirect), and that the request processing lifecycle should be terminated as soon as the current phase is completed.
-         */
-        context.responseComplete();
-        return null;
     }
 
-    private static String getInitParameter(ExternalContext context, String parameterName) {
+    private static String findInitParameter(HttpServletRequest request, String parameterName) {
 
-        String initParameter = context.getInitParameter(parameterName);
+        return request.getSession().getServletContext().getInitParameter(parameterName);
+
+    }
+
+    private static String getInitParameter(HttpServletRequest request, String parameterName) {
+
+        String initParameter = findInitParameter(request, parameterName);
         if (null == initParameter)
             throw new RuntimeException("missing context-param in web.xml: " + parameterName);
         return initParameter;
-    }
 
+    }
 }

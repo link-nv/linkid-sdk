@@ -8,10 +8,9 @@
 package net.link.safeonline.otpoversms.webapp;
 
 import javax.ejb.EJB;
-import javax.mail.AuthenticationFailedException;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -238,11 +237,7 @@ public class RegistrationPage extends TemplatePage {
                         exit();
                     }
 
-                    catch (PermissionDeniedException e) {
-                        pin2Field.error(getLocalizer().getString("errorPinNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: pin not correct",
-                                LogLevelType.ERROR);
-                    } catch (AuthenticationFailedException e) {
+                    catch (DeviceAuthenticationException e) {
                         otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
                                 "mobile otp: verification failed for mobile " + mobile, LogLevelType.ERROR);

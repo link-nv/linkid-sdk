@@ -20,6 +20,10 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.auth.webapp.FirstTimePage;
+import net.link.safeonline.auth.webapp.MainPage;
+import net.link.safeonline.auth.webapp.AuthenticationProtocolErrorPage;
+import net.link.safeonline.auth.webapp.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
@@ -63,34 +67,18 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AuthnEntryServlet extends AbstractInjectionServlet {
 
-    private static final long  serialVersionUID                 = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private static final Log   LOG                              = LogFactory.getLog(AuthnEntryServlet.class);
-
-    public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
-
-    public static final String PROTOCOL_NAME_ATTRIBUTE          = "protocolName";
-
-    @Init(name = "StartUrl")
-    private String             startUrl;
-
-    @Init(name = "FirstTimeUrl")
-    private String             firstTimeUrl;
+    private static final Log  LOG              = LogFactory.getLog(AuthnEntryServlet.class);
 
     @Init(name = "LoginUrl")
-    private String             loginUrl;
+    private String            loginUrl;
 
     @Init(name = "ServletEndpointUrl")
-    private String             servletEndpointUrl;
-
-    @Init(name = "UnsupportedProtocolUrl")
-    private String             unsupportedProtocolUrl;
-
-    @Init(name = "ProtocolErrorUrl")
-    private String             protocolErrorUrl;
+    private String            servletEndpointUrl;
 
     @Init(name = "CookiePath")
-    private String             cookiePath;
+    private String            cookiePath;
 
 
     @Override
@@ -123,13 +111,14 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         try {
             protocolContext = ProtocolHandlerManager.handleRequest(wrappedRequest);
         } catch (ProtocolException e) {
-            redirectToErrorPage(wrappedRequest, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
-                    e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+            redirectToErrorPage(wrappedRequest, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
 
         if (null == protocolContext) {
-            response.sendRedirect(unsupportedProtocolUrl);
+            response.sendRedirect(UnsupportedProtocolPage.PATH);
             return;
         }
 
@@ -159,13 +148,15 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         LoginManager.setTarget(session, protocolContext.getTarget());
         LoginManager.setRequiredDevices(session, protocolContext.getRequiredDevices());
 
+        ProtocolContext.setProtocolContext(protocolContext, session);
+
         /*
          * create new helpdesk volatile context
          */
         HelpdeskLogger.clear(session);
 
         if (isFirstTime(wrappedRequest, response)) {
-            response.sendRedirect(firstTimeUrl);
+            response.sendRedirect(FirstTimePage.PATH);
             return;
         }
 
@@ -210,7 +201,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             return;
         }
 
-        response.sendRedirect(startUrl);
+        response.sendRedirect(MainPage.PATH);
 
     }
 

@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<wicket:container wicket:id="progress">[Progress
+				Panel]</wicket:container>
+
+			<h2>
+				<wicket:message key="missingAttributes">[Missing Attributes]</wicket:message>
+			</h2>
+			<p>
+				<wicket:message key="missingAttributesMsg">[Missing Attributes
+					Message]</wicket:message>
+			</p>
+
+			<form wicket:id="missing_attributes_form">
+
+				<span wicket:id="missing_attributes">
+					<span wicket:id="missing_attribute" /><br/>
+				</span>
+
+				<span wicket:id="optional_attributes">
+					<span wicket:id="optional_attribute" /><br/>
+				</span>
+
+				<label>&nbsp;</label>
+				<input wicket:id="save" type="submit" value="[Save]"
+					wicket:message="value:saveaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+
+		</wicket:container>
+
+	</body>
+</html>

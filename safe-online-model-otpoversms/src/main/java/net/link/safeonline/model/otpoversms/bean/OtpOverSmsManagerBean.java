@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
@@ -22,7 +23,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.dao.AttributeDAO;
@@ -47,24 +47,25 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Configurable
 public class OtpOverSmsManagerBean implements OtpOverSmsManager {
 
-    private static final Log       LOG                     = LogFactory.getLog(OtpOverSmsManagerBean.class);
+    private static final Log                 LOG                     = LogFactory.getLog(OtpOverSmsManagerBean.class);
 
-    private static final String    defaultHashingAlgorithm = "SHA-512";
+    private static final String              defaultHashingAlgorithm = "SHA-512";
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @Configurable(name = "Maximum Pin Attempts", group = "OTP over SMS")
-    private Integer                configAttempts          = 3;
+    private Integer                          configAttempts          = 3;
 
-    private AttributeManagerLWBean attributeManager;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
@@ -113,12 +114,11 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         } catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
-    public void registerMobile(SubjectEntity subject, String mobile, String pin)
-            throws PermissionDeniedException {
+    public void registerMobile(SubjectEntity subject, String mobile, String pin) {
 
         try {
             String seed = subject.getUserId();
@@ -178,7 +178,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         } catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -206,7 +206,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -221,7 +221,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
