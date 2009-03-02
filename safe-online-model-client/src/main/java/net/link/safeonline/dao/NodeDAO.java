@@ -23,8 +23,7 @@ public interface NodeDAO extends SafeOnlineService {
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeDAOBean/local";
 
 
-    NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
-                       X509Certificate signingCertificate);
+    NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate);
 
     List<NodeEntity> listNodes();
 
@@ -33,15 +32,10 @@ public interface NodeDAO extends SafeOnlineService {
     NodeEntity getNode(String name)
             throws NodeNotFoundException;
 
-    NodeEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate)
+    NodeEntity getNodeFromCertificate(X509Certificate certificate)
             throws NodeNotFoundException;
 
-    NodeEntity getNodeFromSigningCertificate(X509Certificate signingCertificate)
-            throws NodeNotFoundException;
-
-    NodeEntity findNodeFromAuthnCertificate(X509Certificate authnCertificate);
-
-    NodeEntity findNodeFromSigningCertificate(X509Certificate signingCertificate);
+    NodeEntity findNodeFromCertificate(X509Certificate certificate);
 
     void removeNode(NodeEntity node);
 }

@@ -9,6 +9,7 @@ package net.link.safeonline.auth.ws;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -79,6 +80,7 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.saml.common.Saml2Util;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -87,9 +89,7 @@ import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.ri.Injection;
@@ -865,10 +865,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         }
         GetDeviceAuthenticationClient getDeviceAuthenticationClient = new GetDeviceAuthenticationClientImpl(deviceAuthenticationWSURL);
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
         deviceAuthenticationClient = new DeviceAuthenticationClientImpl(getDeviceAuthenticationClient.getInstance(),
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
+                nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey());
     }
 
     /**
@@ -1218,7 +1217,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             throws WSAuthenticationException {
 
         SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        PrivateKeyEntry olasKeyPair = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
 
         Element assertionElement = null;
         if (null != keyInfo) {
@@ -1227,7 +1226,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),
                     authenticatedDevice.getName(), samlAuthorityService.getAuthnAssertionValidity(), null, new DateTime(),
                     Saml2SubjectConfirmationMethod.HOLDER_OF_KEY, null);
-            assertionElement = Saml2Util.sign(assertion, identityServiceClient.getPublicKey(), identityServiceClient.getPrivateKey());
+            assertionElement = Saml2Util.sign(assertion, olasKeyPair.getCertificate().getPublicKey(), olasKeyPair.getPrivateKey());
 
         } else {
             Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),

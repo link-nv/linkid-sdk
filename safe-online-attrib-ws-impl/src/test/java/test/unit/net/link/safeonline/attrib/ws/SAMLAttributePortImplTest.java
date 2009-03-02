@@ -37,7 +37,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.AttributeService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -97,8 +96,6 @@ public class SAMLAttributePortImplTest {
 
     private ApplicationAuthenticationService    mockApplicationAuthenticationService;
 
-    private DeviceAuthenticationService         mockDeviceAuthenticationService;
-
     private NodeAuthenticationService           mockNodeAuthenticationService;
 
     private SamlAuthorityService                mockSamlAuthorityService;
@@ -143,7 +140,6 @@ public class SAMLAttributePortImplTest {
         mockNodeAttributeService = createMock(NodeAttributeService.class);
         mockPkiValidator = createMock(PkiValidator.class);
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockApplicationManager = createMock(ApplicationManager.class);
@@ -158,7 +154,6 @@ public class SAMLAttributePortImplTest {
         jndiTestUtils.bindComponent(NodeAttributeService.JNDI_BINDING, mockNodeAttributeService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
         jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
-        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
         jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
         jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, mockSamlAuthorityService);
         jndiTestUtils.bindComponent(ApplicationManager.JNDI_BINDING, mockApplicationManager);

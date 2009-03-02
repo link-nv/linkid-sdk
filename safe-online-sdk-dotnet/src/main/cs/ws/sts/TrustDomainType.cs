@@ -14,7 +14,5 @@ namespace safe_online_sdk_dotnet
 		NODE,
 	
 		APPLICATION,
-		
-		DEVICE,
 	}
 }

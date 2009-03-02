@@ -7,9 +7,7 @@
 
 package net.link.safeonline.oper.device.bean;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -32,8 +30,6 @@ import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
-import net.link.safeonline.ctrl.error.annotation.Error;
-import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceClassEntity;
@@ -41,14 +37,11 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.device.Device;
-import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.DeviceService;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -112,8 +105,6 @@ public class DeviceBean implements Device {
     private String               disablePath;
 
     private String               enablePath;
-
-    private UploadedFile         certificate;
 
     private String               attributeType;
 
@@ -236,34 +227,18 @@ public class DeviceBean implements Device {
     }
 
 
-    private byte[] getUpFileContent(UploadedFile file)
-            throws IOException {
-
-        InputStream inputStream = file.getInputStream();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        IOUtils.copy(inputStream, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
-    }
-
     /*
      * Actions
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    @ErrorHandling( { @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
-            @Error(exceptionClass = IOException.class, messageId = "errorUploadCertificate") })
     public String add()
-            throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException, AttributeTypeNotFoundException,
-            NodeNotFoundException, IOException, PermissionDeniedException {
+            throws ExistingDeviceException, DeviceClassNotFoundException, AttributeTypeNotFoundException, NodeNotFoundException,
+            IOException, PermissionDeniedException {
 
         LOG.debug("add device: " + name);
 
-        byte[] encodedCertificate = null;
-        if (null != certificate) {
-            encodedCertificate = getUpFileContent(certificate);
-        }
-
         deviceService.addDevice(name, deviceClass, node, authenticationPath, authenticationWSPath, registrationPath, removalPath,
-                updatePath, disablePath, enablePath, encodedCertificate, attributeType, userAttributeType, disableAttributeType);
+                updatePath, disablePath, enablePath, attributeType, userAttributeType, disableAttributeType);
         return "success";
     }
 
@@ -309,8 +284,7 @@ public class DeviceBean implements Device {
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save()
-            throws DeviceNotFoundException, CertificateEncodingException, IOException, AttributeTypeNotFoundException,
-            PermissionDeniedException {
+            throws DeviceNotFoundException, IOException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         LOG.debug("save device: " + selectedDevice.getName());
         String deviceName = selectedDevice.getName();
@@ -333,11 +307,6 @@ public class DeviceBean implements Device {
         }
         if (null != enablePath) {
             deviceService.updateEnablePath(deviceName, enablePath);
-        }
-
-        if (null != certificate) {
-            LOG.debug("updating device certificate");
-            deviceService.updateDeviceCertificate(deviceName, getUpFileContent(certificate));
         }
 
         if (null != attributeType) {
@@ -489,18 +458,6 @@ public class DeviceBean implements Device {
     public void setEnablePath(String enablePath) {
 
         this.enablePath = enablePath;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public UploadedFile getCertificate() {
-
-        return certificate;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void setCertificate(UploadedFile certificate) {
-
-        this.certificate = certificate;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

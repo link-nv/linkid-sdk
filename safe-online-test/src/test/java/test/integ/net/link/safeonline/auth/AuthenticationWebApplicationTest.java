@@ -32,7 +32,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
-import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.DriverException;
+import net.link.safeonline.performance.keystore.PerformanceKeyStore;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.DomTestUtils;
 
@@ -67,7 +68,7 @@ public class AuthenticationWebApplicationTest {
     public void testLogin()
             throws Exception {
 
-        PrivateKeyEntry privateKeyEntry = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = PerformanceKeyStore.getPrivateKeyEntry();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
         PublicKey publicKey = privateKeyEntry.getCertificate().getPublicKey();
 

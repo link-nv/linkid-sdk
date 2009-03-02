@@ -7,7 +7,6 @@
 
 package net.link.safeonline.dao.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -53,18 +52,17 @@ public class DeviceDAOBean implements DeviceDAO {
     public void postConstructCallback() {
 
         queryObject = QueryObjectFactory.createQueryObject(entityManager, DeviceEntity.QueryInterface.class);
-        descriptionQueryObject = QueryObjectFactory
-                                                        .createQueryObject(entityManager, DeviceDescriptionEntity.QueryInterface.class);
+        descriptionQueryObject = QueryObjectFactory.createQueryObject(entityManager, DeviceDescriptionEntity.QueryInterface.class);
         propertyQueryObject = QueryObjectFactory.createQueryObject(entityManager, DevicePropertyEntity.QueryInterface.class);
     }
 
     public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath,
                                   String authenticationWSPath, String registrationPath, String removalPath, String updatePath,
-                                  String disablePath, String enablePath, X509Certificate certificate, AttributeTypeEntity attributeType,
+                                  String disablePath, String enablePath, AttributeTypeEntity attributeType,
                                   AttributeTypeEntity userAttributeType, AttributeTypeEntity disableAttributeType) {
 
         DeviceEntity device = new DeviceEntity(name, deviceClass, node, authenticationPath, authenticationWSPath, registrationPath,
-                removalPath, updatePath, disablePath, enablePath, certificate);
+                removalPath, updatePath, disablePath, enablePath);
         device.setAttributeType(attributeType);
         device.setUserAttributeType(userAttributeType);
         device.setDisableAttributeType(disableAttributeType);
@@ -211,24 +209,4 @@ public class DeviceDAOBean implements DeviceDAO {
 
         return queryObject.listDevices(authenticationContextClass);
     }
-
-    public DeviceEntity getDevice(X509Certificate certificate)
-            throws DeviceNotFoundException {
-
-        List<DeviceEntity> devices = queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
-        if (devices.isEmpty())
-            throw new DeviceNotFoundException();
-        DeviceEntity device = devices.get(0);
-        return device;
-    }
-
-    public DeviceEntity findDevice(X509Certificate certificate) {
-
-        List<DeviceEntity> devices = queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
-        if (devices.isEmpty())
-            return null;
-        DeviceEntity device = devices.get(0);
-        return device;
-    }
-
 }

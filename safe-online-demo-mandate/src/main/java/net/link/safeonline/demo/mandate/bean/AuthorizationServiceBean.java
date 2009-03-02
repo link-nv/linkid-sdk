@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
 import net.link.safeonline.demo.mandate.AuthorizationService;
 import net.link.safeonline.demo.mandate.MandateConstants;
 import net.link.safeonline.demo.mandate.entity.UserEntity;
-import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStoreUtils;
+import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStore;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
@@ -77,7 +77,7 @@ public class AuthorizationServiceBean implements AuthorizationService {
 
         LOG.debug("Webservice: " + wsLocation);
 
-        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStore.getPrivateKeyEntry();
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 

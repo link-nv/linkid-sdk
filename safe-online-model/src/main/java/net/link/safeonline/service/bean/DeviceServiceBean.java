@@ -7,7 +7,6 @@
 
 package net.link.safeonline.service.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -60,8 +59,6 @@ import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.Devices;
-import net.link.safeonline.pkix.PkiUtils;
-import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.ApplicationOwnerAccessControlInterceptor;
 import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.service.DeviceServiceRemote;
@@ -182,14 +179,12 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
                           String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
-                          byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
-            throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
-            NodeNotFoundException, PermissionDeniedException {
+                          String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
+            throws DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException, NodeNotFoundException,
+            PermissionDeniedException {
 
         checkExistingDevice(name);
         LOG.debug("add device: " + name);
-
-        X509Certificate certificate = PkiUtils.decodeCertificate(encodedCertificate);
 
         DeviceClassEntity deviceClass = deviceClassDAO.getDeviceClass(deviceClassName);
         AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
@@ -216,7 +211,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         NodeEntity node = olasDAO.getNode(nodeName);
 
         deviceDAO.addDevice(name, deviceClass, node, authenticationPath, authenticationWSPath, registrationPath, removalPath, updatePath,
-                disablePath, enablePath, certificate, attributeType, userAttributeType, disableAttributeType);
+                disablePath, enablePath, attributeType, userAttributeType, disableAttributeType);
     }
 
     /**
@@ -407,16 +402,6 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         DeviceEntity device = deviceDAO.getDevice(deviceName);
         device.setEnablePath(enablePath);
-    }
-
-    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateDeviceCertificate(String deviceName, byte[] encodedCertificate)
-            throws DeviceNotFoundException, CertificateEncodingException {
-
-        X509Certificate certificate = PkiUtils.decodeCertificate(encodedCertificate);
-
-        DeviceEntity device = deviceDAO.getDevice(deviceName);
-        device.setCertificate(certificate);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

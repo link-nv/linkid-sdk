@@ -42,7 +42,6 @@ import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -306,23 +305,6 @@ public class AttributeTypeEntity implements Serializable {
     public void setLocation(NodeEntity location) {
 
         this.location = location;
-    }
-
-    @Transient
-    public boolean isLocal() {
-
-        if (isExternal())
-            return false;
-
-        if (null == getLocation())
-            return true;
-
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        if (authIdentityServiceClient.getCertificate().getSubjectX500Principal().getName().equals(
-                getLocation().getAuthnCertificateSubject()))
-            return true;
-
-        return false;
     }
 
     public String getPluginConfiguration() {

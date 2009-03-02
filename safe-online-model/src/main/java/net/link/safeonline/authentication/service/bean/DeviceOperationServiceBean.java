@@ -7,9 +7,6 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,12 +44,11 @@ import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
@@ -85,31 +81,33 @@ import org.opensaml.saml2.core.Subject;
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class DeviceOperationServiceBean implements DeviceOperationService, DeviceOperationServiceRemote {
 
-    private static final Log          LOG = LogFactory.getLog(DeviceOperationServiceBean.class);
+    private static final Log                    LOG          = LogFactory.getLog(DeviceOperationServiceBean.class);
+
+    private static final SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
     @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
-    private NodeAuthenticationService nodeAuthenticationService;
+    private NodeAuthenticationService           nodeAuthenticationService;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService        nodeMappingService;
+    private NodeMappingService                  nodeMappingService;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO                 deviceDAO;
+    private DeviceDAO                           deviceDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService            subjectService;
+    private SubjectService                      subjectService;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger       securityAuditLogger;
+    private SecurityAuditLogger                 securityAuditLogger;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO                historyDAO;
+    private HistoryDAO                          historyDAO;
 
-    private String                    expectedChallengeId;
+    private String                              expectedChallengeId;
 
-    private DeviceOperationType       expectedDeviceOperation;
+    private DeviceOperationType                 expectedDeviceOperation;
 
-    private String                    expectedDevice;
+    private String                              expectedDevice;
 
 
     @PostConstruct
@@ -133,11 +131,6 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
                            @NonEmptyString String userId, AttributeDO attribute)
             throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        PrivateKey privateKey = identityServiceClient.getPrivateKey();
-        PublicKey publicKey = identityServiceClient.getPublicKey();
-        KeyPair keyPair = new KeyPair(publicKey, privateKey);
-
         NodeEntity localNode = nodeAuthenticationService.getLocalNode();
         /*
          * If local node just pass on the userId, else go to node mapping
@@ -158,8 +151,9 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
         Challenge<String> challenge = new Challenge<String>();
 
-        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(), nodeUserId, keyPair,
-                serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName, attributeValue);
+        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(), nodeUserId,
+                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName,
+                attributeValue);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -181,12 +175,11 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
         DateTime now = new DateTime();
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, expectedChallengeId,
-                expectedDeviceOperation, node.getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
+                expectedDeviceOperation, node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(),
+                TrustDomainType.NODE);
         if (null == response)
             return null;
 
@@ -200,8 +193,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             /*
              * Registration not supported by this device, reset the state
              */
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Unsupported device operation "
-                    + expectedDeviceOperation + " attempted for device " + expectedDevice);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Unsupported device operation " + expectedDeviceOperation
+                    + " attempted for device " + expectedDevice);
             expectedChallengeId = null;
             return null;
         }
@@ -210,8 +203,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         DeviceEntity device = deviceDAO.getDevice(response.getDevice());
         if (!device.getName().equals(expectedDevice)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device " + device.getName()
-                    + " returned after device operation " + expectedDeviceOperation + " not matching expected device "
-                    + expectedDevice);
+                    + " returned after device operation " + expectedDeviceOperation + " not matching expected device " + expectedDevice);
             throw new DeviceNotFoundException();
         }
 
@@ -230,9 +222,10 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             LOG.debug("used device: " + authenticatedDeviceName);
             DeviceEntity authenticatedDevice = deviceDAO.getDevice(authenticatedDeviceName);
             if (!authenticatedDevice.getName().equals(expectedDevice)) {
-                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device " + authenticatedDevice.getName()
-                        + " returned after device operation " + expectedDeviceOperation + " not matching expected device "
-                        + expectedDevice);
+                securityAuditLogger
+                                   .addSecurityAudit(SecurityThreatType.DECEPTION, "Device " + authenticatedDevice.getName()
+                                           + " returned after device operation " + expectedDeviceOperation
+                                           + " not matching expected device " + expectedDevice);
                 throw new DeviceNotFoundException();
             }
 

@@ -9,8 +9,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -111,11 +109,6 @@ import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.test.util.JmxTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
-import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -177,31 +170,6 @@ public class PasswordDeviceTest {
                 ApplicationPoolEntity.class);
 
         EntityManager entityManager = entityTestManager.getEntityManager();
-
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
         systemStartable.postStart();

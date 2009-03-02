@@ -10,14 +10,13 @@ package net.link.safeonline.auth.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.security.cert.X509Certificate;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.util.ee.IdentityServiceClient;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.io.IOUtils;
@@ -35,11 +34,9 @@ import org.bouncycastle.openssl.PEMWriter;
  */
 public class PkiServlet extends AbstractInjectionServlet {
 
-    private static final long     serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private static final Log      LOG              = LogFactory.getLog(PkiServlet.class);
-
-    private IdentityServiceClient client;
+    private static final Log  LOG              = LogFactory.getLog(PkiServlet.class);
 
 
     @Override
@@ -48,7 +45,6 @@ public class PkiServlet extends AbstractInjectionServlet {
 
         super.init(config);
         LOG.debug("init");
-        client = new IdentityServiceClient();
     }
 
     @Override
@@ -56,8 +52,8 @@ public class PkiServlet extends AbstractInjectionServlet {
             throws ServletException, IOException {
 
         LOG.debug("doGet");
-        X509Certificate certificate = client.getCertificate();
-        String pemCertificate = toPem(certificate);
+        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
+        String pemCertificate = toPem(olasKeyStore.getCertificate());
 
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();

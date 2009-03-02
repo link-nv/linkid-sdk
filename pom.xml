@@ -407,7 +407,6 @@
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-sql-ddl</module>
 				<module>safe-online-demo-deploy</module>
-				<module>safe-online-demo-util</module>
 				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
 				<module>safe-online-demo-startup-runtime
@@ -475,10 +474,7 @@
 				</safe-online.option.webapp.name>
 			</properties>
 			<modules>
-				<module>safe-online-option-startup-runtime
-				</module>
-				<module>safe-online-option-keystore
-				</module>
+				<module>safe-online-option-startup-runtime</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>
 				<module>safe-online-model-option-client
@@ -945,26 +941,25 @@
 		<velocity.version>1.5</velocity.version>
 		<xercesImpl.version>2.9.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
-		<maven-eclipse-plugin.version> 2.5.1 </maven-eclipse-plugin.version>
+		<maven-eclipse-plugin.version>2.5.1</maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
-		<netbeans-freeform-maven-plugin.version> 2.1-SNAPSHOT
-		</netbeans-freeform-maven-plugin.version>
+		<netbeans-freeform-maven-plugin.version>2.1-SNAPSHOT</netbeans-freeform-maven-plugin.version>
 		<javafxrt.version>1531</javafxrt.version>
 		<swing-layout.version>1.0.2</swing-layout.version>
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
 		<kaptcha.version>2.3</kaptcha.version>
-		<mysql-connector-java.version> 5.1.5 </mysql-connector-java.version>
+		<mysql-connector-java.version>5.1.5</mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
-		<maven-jdocbook-plugin.version> 2.1.1 </maven-jdocbook-plugin.version>
+		<maven-jdocbook-plugin.version>2.1.1</maven-jdocbook-plugin.version>
 		<maven-javadoc-plugin.version>2.4</maven-javadoc-plugin.version>
 		<maven-sources-plugin.version>2.0.4
 		</maven-sources-plugin.version>
 		<axis.version>1.4</axis.version>
 		<axis-jaxrpc.version>1.3</axis-jaxrpc.version>
-		<axistools-maven-plugin.version> 1.1 </axistools-maven-plugin.version>
+		<axistools-maven-plugin.version>1.1</axistools-maven-plugin.version>
 		<jgoodies-forms.version>1.1.0</jgoodies-forms.version>
 		<jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 		<jtidy.version>r8-20060801</jtidy.version>
@@ -1016,7 +1011,7 @@
 		<module>safe-online-sql-ddl</module>
 		<module>safe-online-common</module>
 		<module>safe-online-shared</module>
-		<module>safe-online-keystore</module>
+		<module>safe-online-keystore-util</module>
 		<module>safe-online-app-console</module>
 		<module>safe-online-jpa-util</module>
 		<module>safe-online-saml-authn-context
@@ -1108,9 +1103,7 @@
 		<module>safe-online-encap-ws</module>
 		<module>safe-online-encap-ws-impl</module>
 		<module>safe-online-encap-sdk</module>
-		<module>safe-online-encap-ws-runtime
-		</module>
-		<module>safe-online-encap-keystore</module>
+		<module>safe-online-encap-ws-runtime</module>
 		<module>safe-online-encap-webapp</module>
 		<module>safe-online-encap-startup-runtime
 		</module>
@@ -1119,14 +1112,9 @@
 		<module>safe-online-encap-auth-ws-runtime
 		</module>
 		<module>safe-online-encap-deploy</module>
-		<module>safe-online-digipass-startup-runtime
-		</module>
-		<module>safe-online-digipass-deploy
-		</module>
-		<module>safe-online-digipass-keystore
-		</module>
-		<module>safe-online-digipass-webapp
-		</module>
+		<module>safe-online-digipass-startup-runtime</module>
+		<module>safe-online-digipass-deploy</module>
+		<module>safe-online-digipass-webapp</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet
 		</module>
@@ -1148,7 +1136,6 @@
 		<module>safe-online-beid-auth-ws-runtime
 		</module>
 		<module>safe-online-beid-deploy</module>
-		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
@@ -1166,14 +1153,9 @@
 		<module>safe-online-model-password-client
 		</module>
 		<module>safe-online-model-password</module>
-		<module>safe-online-password-keystore
-		</module>
-		<module>safe-online-password-startup-runtime
-		</module>
-		<module>safe-online-password-webapp
-		</module>
-		<module>safe-online-password-deploy
-		</module>
+		<module>safe-online-password-startup-runtime</module>
+		<module>safe-online-password-webapp</module>
+		<module>safe-online-password-deploy</module>
 		<module>safe-online-device-auth-ws</module>
 		<module>safe-online-device-auth-ws-util
 		</module>

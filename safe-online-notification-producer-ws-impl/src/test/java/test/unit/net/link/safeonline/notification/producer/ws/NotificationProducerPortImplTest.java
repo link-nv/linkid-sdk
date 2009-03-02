@@ -32,7 +32,6 @@ import net.lin_k.safe_online.notification.producer.SubscribeRequest;
 import net.lin_k.safe_online.notification.producer.SubscribeResponse;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.notification.producer.ws.NotificationProducerPortImpl;
@@ -80,8 +79,6 @@ public class NotificationProducerPortImplTest {
 
     private ApplicationAuthenticationService                                     mockApplicationAuthenticationService;
 
-    private DeviceAuthenticationService                                          mockDeviceAuthenticationService;
-
     private NodeAuthenticationService                                            mockNodeAuthenticationService;
 
     private net.link.safeonline.notification.service.NotificationProducerService mockNotificationProducerService;
@@ -105,17 +102,15 @@ public class NotificationProducerPortImplTest {
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockPkiValidator = createMock(PkiValidator.class);
         mockNotificationProducerService = createMock(net.link.safeonline.notification.service.NotificationProducerService.class);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService,
-                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator, mockNotificationProducerService };
+                mockNodeAuthenticationService, mockPkiValidator, mockNotificationProducerService };
 
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
-        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
         jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
         jndiTestUtils.bindComponent(net.link.safeonline.notification.service.NotificationProducerService.JNDI_BINDING,

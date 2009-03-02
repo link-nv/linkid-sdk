@@ -99,7 +99,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
         DeviceClassEntity deviceClass = deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
         DeviceEntity device = deviceDAO.addDevice("testDevice", deviceClass, null, null, null, null, null, null, null, null, null, null,
-                null, null);
+                null);
         AllowedDeviceEntity allowedDevice = testedInstance.addAllowedDevice(application, device, 0);
         List<AllowedDeviceEntity> allowedDevices = testedInstance.listAllowedDevices(application);
         assertEquals(allowedDevice, allowedDevices.get(0));
@@ -110,7 +110,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
         DeviceClassEntity deviceClass = deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
         DeviceEntity device = deviceDAO.addDevice("testDevice", deviceClass, null, null, null, null, null, null, null, null, null, null,
-                null, null);
+                null);
         try {
             testedInstance.addAllowedDevice(null, device, 0);
             entityTestManager.getEntityManager().flush();
@@ -150,7 +150,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
         DeviceClassEntity deviceClass = deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
         DeviceEntity device = deviceDAO.addDevice("testDevice", deviceClass, null, null, null, null, null, null, null, null, null, null,
-                null, null);
+                null);
         testedInstance.addAllowedDevice(application, device, 0);
         testedInstance.deleteAllowedDevices(application);
         List<AllowedDeviceEntity> allowedDevices = testedInstance.listAllowedDevices(application);

@@ -14,15 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
-import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
+import net.link.safeonline.demo.bank.keystore.DemoBankKeyStore;
 import net.link.safeonline.demo.bank.service.UserService;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -163,13 +163,13 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest httpRequest) {
 
         try {
-            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(httpRequest, DemoBankKeyStoreUtils.getPrivateKeyEntry());
-
             BankUserEntity userEntity = attach(user);
             if (userEntity.getOlasId() == null)
                 return userEntity;
 
             // OLAS username of the user.
+            AttributeClient attributeClient = OlasServiceFactory
+                                                                .getAttributeService(httpRequest, DemoBankKeyStore.getPrivateKeyEntry());
             String name = attributeClient.getAttributeValue(userEntity.getOlasId(), DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setName(name);
 

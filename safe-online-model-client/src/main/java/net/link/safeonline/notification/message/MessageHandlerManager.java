@@ -12,13 +12,13 @@ import java.util.Map;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.message.handler.RemoveUserMessageHandler;
 import net.link.safeonline.notification.message.handler.UnsubscribeUserMessageHandler;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClient;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 
 /**
@@ -71,9 +71,9 @@ public class MessageHandlerManager {
         if (null == messageHandler)
             throw new MessageHandlerNotFoundException(message.getTopic());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
         NotificationConsumerClient consumerClient = new NotificationConsumerClientImpl(consumer.getAddress(),
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
+                nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey());
         consumerClient.sendNotification(message.getTopic(), message.getDestination(), message.getSubject(), message.getContent());
     }
 

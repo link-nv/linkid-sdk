@@ -13,7 +13,7 @@ import java.security.cert.X509Certificate;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.demo.model.WSSecurityConfiguration;
-import net.link.safeonline.util.ee.IdentityServiceClient;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -43,7 +43,8 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
      */
     public X509Certificate getCertificate() {
 
-        return new IdentityServiceClient().getCertificate();
+        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
+        return olasKeyStore.getCertificate();
     }
 
     /**
@@ -51,7 +52,8 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
      */
     public PrivateKey getPrivateKey() {
 
-        return new IdentityServiceClient().getPrivateKey();
+        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
+        return olasKeyStore.getPrivateKey();
     }
 
 }

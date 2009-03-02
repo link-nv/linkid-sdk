@@ -115,7 +115,7 @@ public class LogoutServletTest {
         X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
         File tmpP12File = File.createTempFile("application-", ".p12");
         tmpP12File.deleteOnExit();
-        PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
+        PkiTestUtils.persistInPKCS12KeyStore(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
 
         String p12ResourceName = "p12-resource-name.p12";
         testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());

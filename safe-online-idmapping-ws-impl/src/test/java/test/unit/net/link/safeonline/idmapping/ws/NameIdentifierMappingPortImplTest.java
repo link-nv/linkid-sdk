@@ -26,7 +26,6 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.NodeIdentifierMappingService;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingConstants;
@@ -68,8 +67,6 @@ public class NameIdentifierMappingPortImplTest {
 
     private ApplicationAuthenticationService    mockApplicationAuthenticationService;
 
-    private DeviceAuthenticationService         mockDeviceAuthenticationService;
-
     private NodeAuthenticationService           mockNodeAuthenticationService;
 
     private PkiValidator                        mockPkiValidator;
@@ -101,19 +98,16 @@ public class NameIdentifierMappingPortImplTest {
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockPkiValidator = createMock(PkiValidator.class);
         mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
         mockNodeIdentifierMappingService = createMock(NodeIdentifierMappingService.class);
 
-        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService,
-                mockDeviceAuthenticationService, mockPkiValidator, mockApplicationIdentifierMappingService,
-                mockNodeIdentifierMappingService };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService, mockPkiValidator,
+                mockApplicationIdentifierMappingService, mockNodeIdentifierMappingService };
 
         jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
-        jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
         jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local", mockApplicationIdentifierMappingService);

@@ -1,6 +1,8 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.lang.reflect.Array;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,6 +44,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
@@ -55,9 +58,9 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -96,6 +99,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
     private NodeMappingService               nodeMappingService;
 
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
+    private AttributeTypeService   attributeTypeService;
+
     private transient AttributeManagerLWBean attributeManager;
 
 
@@ -121,7 +127,6 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         SubjectEntity subject = subjectService.getSubject(userId);
 
         return findAttributeValue(subject, attributeType);
-
     }
 
     /**
@@ -131,9 +136,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     public Object findAttributeValue(SubjectEntity subject, AttributeTypeEntity attributeType)
             throws PermissionDeniedException, AttributeUnavailableException, SubjectNotFoundException, AttributeTypeNotFoundException {
 
-        LOG.debug("find attribute " + attributeType.getName() + " for " + subject.getUserId());
-
-        if (attributeType.isLocal())
+        if (attributeTypeService.isLocal(attributeType))
             return findLocalAttribute(subject, attributeType);
 
         // Not local, check the attribute cache.
@@ -166,7 +169,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("create attribute " + attributeType.getName() + " for " + subject.getUserId());
 
-        if (attributeType.isLocal()) {
+        if (attributeTypeService.isLocal(attributeType)) {
             createLocalAttribute(subject, attributeType, attributeValue);
         } else if (attributeType.isExternal())
             throw new PermissionDeniedException("External attribute creation not supported");
@@ -184,7 +187,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("set attribute " + attributeType.getName() + " for " + subject.getUserId());
 
-        if (attributeType.isLocal()) {
+        if (attributeTypeService.isLocal(attributeType)) {
             setLocalAttribute(subject, attributeType, attributeValue);
         } else if (attributeType.isExternal())
             throw new PermissionDeniedException("External attribute modification not supported");
@@ -203,7 +206,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("set compound attribute " + attributeType.getName() + " for " + subject.getUserId());
 
-        if (attributeType.isLocal()) {
+        if (attributeTypeService.isLocal(attributeType)) {
             setLocalCompoundAttribute(subject, attributeType, attributeId, memberValues);
         } else if (attributeType.isExternal())
             throw new PermissionDeniedException("External attribute modification not supported");
@@ -221,7 +224,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("remove attribute " + attributeType.getName() + " for " + subject.getUserId());
 
-        if (attributeType.isLocal()) {
+        if (attributeTypeService.isLocal(attributeType)) {
             attributeManager.removeAttribute(attributeType, subject);
         } else if (attributeType.isExternal())
             throw new PermissionDeniedException("External attribute removal not supported");
@@ -239,7 +242,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("remove compound attribute " + attributeType.getName() + " for " + subject.getUserId());
 
-        if (attributeType.isLocal()) {
+        if (attributeTypeService.isLocal(attributeType)) {
             attributeManager.removeCompoundAttribute(attributeType, subject, attributeId);
         } else if (attributeType.isExternal())
             throw new PermissionDeniedException("External compound attribute removal not supported");
@@ -256,9 +259,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey());
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
         try {
             dataClient.removeAttribute(nodeMapping.getId(), attributeType.getName(), attributeId);
         } catch (WSClientTransportException e) {
@@ -276,9 +279,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey());
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
         try {
             dataClient.removeAttribute(nodeMapping.getId(), attributeType.getName(), null);
         } catch (WSClientTransportException e) {
@@ -329,9 +332,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey());
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
         try {
             dataClient.setAttributeValue(nodeMapping.getId(), attributeType.getName(), compoundBuilder.getCompound());
         } catch (WSClientTransportException e) {
@@ -422,9 +425,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey());
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
         try {
             dataClient.setAttributeValue(nodeMapping.getId(), attributeType.getName(), attributeValue);
         } catch (WSClientTransportException e) {
@@ -485,9 +488,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey());
+        PrivateKeyEntry nodeKeyEntry = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
+        DataClient dataClient = new DataClientImpl(attributeType.getLocation().getLocation(),
+                (X509Certificate) nodeKeyEntry.getCertificate(), nodeKeyEntry.getPrivateKey());
         try {
             dataClient.createAttribute(nodeMapping.getId(), attributeType.getName(), attributeValue);
         } catch (WSClientTransportException e) {
@@ -782,9 +785,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(),
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+        AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(), nodeKeyStore.getCertificate(),
+                nodeKeyStore.getPrivateKey());
 
         DatatypeType datatype = attributeType.getType();
         Class<?> attributeClass;

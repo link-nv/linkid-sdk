@@ -9,8 +9,6 @@ package test.unit.net.link.safeonline.service.bean;
 
 import static org.junit.Assert.assertEquals;
 
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -54,11 +52,6 @@ import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.test.util.JmxTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
-import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -84,33 +77,7 @@ public class AccountMergingServiceBeanTest {
 
         entityTestManager = new EntityTestManager();
         entityTestManager.setUp(SafeOnlineTestContainer.entities);
-
         EntityManager entityManager = entityTestManager.getEntityManager();
-
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
