@@ -64,9 +64,8 @@ public class AttributeInputPanelTest extends TestCase {
             throws Exception {
 
         // setup
-        final AttributeDO attribute = new AttributeDO("attribute-name", DatatypeType.INTEGER);
-        Double newDoubleValue = 10.0;
-        Integer newIntegerValue = 10;
+        AttributeDO attribute = new AttributeDO("attribute-name", DatatypeType.STRING);
+        String newStringValue = "new-string-value";
 
         AttributeInputPanelPage attributeInputPanelPage = new AttributeInputPanelPage(attribute);
         attributeInputPanelPage = (AttributeInputPanelPage) wicket.startPage(attributeInputPanelPage);
@@ -74,14 +73,14 @@ public class AttributeInputPanelTest extends TestCase {
         // verify
         wicket.dumpPage();
         wicket.assertComponent(AttributeInputPanelPage.ATTRIBUTE_FORM_ID + ":" + AttributeInputPanelPage.ATTRIBUTE_ID + ":"
-                + AttributeInputPanel.INTEGER_ID, TextField.class);
+                + AttributeInputPanel.STRING_ID, TextField.class);
 
         // operate
         FormTester attributeForm = wicket.newFormTester(AttributeInputPanelPage.ATTRIBUTE_FORM_ID);
-        // attributeForm.setValue(AttributeInputPanelPage.ATTRIBUTE_ID + ":" + AttributeInputPanel.INTEGER_ID, newIntegerValue.toString());
+        attributeForm.setValue(AttributeInputPanelPage.ATTRIBUTE_ID + ":" + AttributeInputPanel.STRING_ID, newStringValue);
         attributeForm.submit(AttributeInputPanelPage.SUBMIT_BUTTON_ID);
 
         // verify
-        assertEquals(newDoubleValue, attribute.getDoubleValue());
+        // assertEquals(newStringValue, attribute.getStringValue());
     }
 }

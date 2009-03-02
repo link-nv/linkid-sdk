@@ -59,4 +59,11 @@ public interface AttributeCacheDAO extends SafeOnlineService {
      */
     List<AttributeCacheEntity> listAttributes();
 
+    /**
+     * Removes all the attributes of the given attribue type.
+     * 
+     * @param attributeType
+     */
+    void removeAttributes(AttributeTypeEntity attributeType);
+
 }

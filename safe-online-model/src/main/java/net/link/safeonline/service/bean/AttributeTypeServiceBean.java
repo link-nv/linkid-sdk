@@ -187,8 +187,8 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
         if (null == attributeType.getLocation())
             return true;
 
-        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
-        if (nodeKeyStore.getCertificate().getSubjectX500Principal().getName().equals(attributeType.getLocation().getCertificateSubject()))
+        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
+        if (olasKeyStore.getCertificate().getSubjectX500Principal().getName().equals(attributeType.getLocation().getCertificateSubject()))
             return true;
 
         return false;
@@ -237,8 +237,8 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
         // remove attributes of this type
         attributeDAO.removeAttributes(attributeType);
 
-        // TODO: remove cached attribute values of this type
-        // attributeCacheDAO.removeAttributes(attributeType);
+        // remove cached attributes of this type
+        attributeCacheDAO.removeAttributes(attributeType);
 
         if (attributeType.isCompounded()) {
             attributeTypeDAO.removeMemberEntries(attributeType);

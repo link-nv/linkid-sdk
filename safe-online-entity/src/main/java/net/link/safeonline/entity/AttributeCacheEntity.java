@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.AttributeCacheEntity.ATTRIBUTE_TYPE_PARAM;
+import static net.link.safeonline.entity.AttributeCacheEntity.DELETE_WHERE_ATTRIBUTE_TYPE;
 import static net.link.safeonline.entity.AttributeCacheEntity.QUERY_ALL;
 import static net.link.safeonline.entity.AttributeCacheEntity.QUERY_DELETE_WHERE_OLDER;
 import static net.link.safeonline.entity.AttributeCacheEntity.QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
@@ -58,7 +59,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
         @NamedQuery(name = QUERY_ALL, query = "SELECT a FROM AttributeCacheEntity AS a"),
         @NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT a " + "FROM AttributeCacheEntity AS a "
                 + "WHERE a.subject = :" + SUBJECT_PARAM + " AND a.attributeType = :" + ATTRIBUTE_TYPE_PARAM + " ORDER BY a.attributeIndex"),
-        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE FROM AttributeCacheEntity AS a " + "WHERE a.entryDate < :ageLimit") })
+        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE FROM AttributeCacheEntity AS a " + "WHERE a.entryDate < :ageLimit"),
+        @NamedQuery(name = DELETE_WHERE_ATTRIBUTE_TYPE, query = "DELETE FROM AttributeCacheEntity AS a " + "WHERE a.attributeType = :"
+                + ATTRIBUTE_TYPE_PARAM) })
 public class AttributeCacheEntity implements Serializable {
 
     private static final long   serialVersionUID                       = 1L;
@@ -72,6 +75,8 @@ public class AttributeCacheEntity implements Serializable {
     public static final String  QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "attr.cache.subject.at";
 
     public static final String  QUERY_DELETE_WHERE_OLDER               = "attr.cache.delete.old";
+
+    public static final String  DELETE_WHERE_ATTRIBUTE_TYPE            = "attr.cache.del.at";
 
     public static final String  ATTRIBUTE_INDEX_COLUMN_NAME            = "attribute_index";
 
@@ -370,5 +375,8 @@ public class AttributeCacheEntity implements Serializable {
 
         @QueryMethod(QUERY_ALL)
         List<AttributeCacheEntity> listAttributes();
+
+        @UpdateMethod(DELETE_WHERE_ATTRIBUTE_TYPE)
+        int deleteAttributes(@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
     }
 }

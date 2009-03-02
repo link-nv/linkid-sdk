@@ -124,4 +124,14 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
         }
         entityManager.remove(attribute);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeAttributes(AttributeTypeEntity attributeType) {
+
+        int count = queryObject.deleteAttributes(attributeType);
+        LOG.debug("number of removed attributes: " + count);
+    }
+
 }

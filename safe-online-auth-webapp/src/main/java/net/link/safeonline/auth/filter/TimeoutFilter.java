@@ -64,7 +64,6 @@ public class TimeoutFilter extends AbstractInjectionFilter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        LOG.debug("auth.doFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestedSessionId = httpRequest.getRequestedSessionId();
@@ -115,6 +114,7 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          * infinite timeout redirect loop, and remove the entry cookie.
          */
         if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
+
             LOG.debug("forwarding to timeout path: " + timeoutPath);
             addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", cookiePath, httpRequest, httpResponse);
             removeCookie(SafeOnlineCookies.ENTRY_COOKIE, cookiePath, httpRequest, httpResponse);
