@@ -28,7 +28,7 @@
 	</listener>
 	<listener>
 		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
-	</listener>
+	</listener>7
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
@@ -70,10 +70,6 @@
 		</init-param>
 	</filter>
 	<filter>
-		<filter-name>EntryFilter</filter-name>
-		<filter-class>net.link.safeonline.auth.filter.EntryFilter</filter-class>
-	</filter>
-	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
 		<init-param>
@@ -83,10 +79,6 @@
 	</filter>
 
 	<!-- ${safe-online.profiling.filter} -->
-	<filter-mapping>
-		<filter-name>EntryFilter</filter-name>
-		<url-pattern>/entry</url-pattern>
-	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
 		<url-pattern>/*</url-pattern>
