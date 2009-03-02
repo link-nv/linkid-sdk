@@ -26,6 +26,8 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
+import net.link.safeonline.auth.webapp.FirstTimePage;
+import net.link.safeonline.auth.webapp.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -61,23 +63,15 @@ import org.opensaml.saml2.core.AuthnRequest;
 
 public class AuthnEntryServletTest {
 
-    private static final Log                 LOG                    = LogFactory.getLog(AuthnEntryServletTest.class);
+    private static final Log                 LOG                = LogFactory.getLog(AuthnEntryServletTest.class);
 
     private ServletTestManager               authnEntryServletTestManager;
 
-    private String                           firstTimeUrl           = "first-time";
+    private String                           loginUrl           = "login";
 
-    private String                           startUrl               = "start";
+    private String                           servletEndpointUrl = "http://test.auth/servlet";
 
-    private String                           loginUrl               = "login";
-
-    private String                           servletEndpointUrl     = "http://test.auth/servlet";
-
-    private String                           unsupportedProtocolUrl = "unsupported-protocol";
-
-    private String                           protocolErrorUrl       = "protocol-error";
-
-    private String                           cookiePath             = "/test-path/";
+    private String                           cookiePath         = "/test-path/";
 
     private JndiTestUtils                    jndiTestUtils;
 
@@ -119,12 +113,8 @@ public class AuthnEntryServletTest {
 
         authnEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("StartUrl", startUrl);
-        initParams.put("FirstTimeUrl", firstTimeUrl);
         initParams.put("LoginUrl", loginUrl);
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("UnsupportedProtocolUrl", unsupportedProtocolUrl);
-        initParams.put("ProtocolErrorUrl", protocolErrorUrl);
         initParams.put("CookiePath", cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
@@ -163,7 +153,7 @@ public class AuthnEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = getMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(unsupportedProtocolUrl));
+        assertTrue(location.endsWith(UnsupportedProtocolPage.PATH));
     }
 
     @Test
@@ -206,7 +196,7 @@ public class AuthnEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(firstTimeUrl));
+        assertTrue(location.endsWith(FirstTimePage.PATH));
         long resultApplicationId = (Long) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
         assertEquals(applicationId, resultApplicationId);
         String resultApplicationName = (String) authnEntryServletTestManager

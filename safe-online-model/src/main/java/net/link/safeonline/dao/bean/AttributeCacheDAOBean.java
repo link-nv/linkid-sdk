@@ -62,8 +62,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
 
         LOG.debug("find cached attribute for type  " + attributeType.getName() + " and subject " + subject.getUserId() + " (index=" + index
                 + ")");
-        AttributeCacheEntity attribute = entityManager
-                                                           .find(AttributeCacheEntity.class, new AttributePK(attributeType, subject, index));
+        AttributeCacheEntity attribute = entityManager.find(AttributeCacheEntity.class, new AttributePK(attributeType, subject, index));
         return attribute;
     }
 
@@ -125,4 +124,14 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
         }
         entityManager.remove(attribute);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeAttributes(AttributeTypeEntity attributeType) {
+
+        int count = queryObject.deleteAttributes(attributeType);
+        LOG.debug("number of removed attributes: " + count);
+    }
+
 }

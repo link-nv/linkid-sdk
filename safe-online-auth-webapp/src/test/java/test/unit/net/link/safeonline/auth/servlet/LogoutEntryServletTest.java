@@ -23,6 +23,7 @@ import javax.servlet.http.Cookie;
 
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.LogoutEntryServlet;
+import net.link.safeonline.auth.webapp.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
@@ -51,19 +52,15 @@ import org.opensaml.saml2.core.LogoutRequest;
 
 public class LogoutEntryServletTest {
 
-    private static final Log      LOG                    = LogFactory.getLog(LogoutEntryServletTest.class);
+    private static final Log      LOG                = LogFactory.getLog(LogoutEntryServletTest.class);
 
     private ServletTestManager    logoutEntryServletTestManager;
 
-    private String                logoutExitUrl          = "logout-exit";
+    private String                logoutExitUrl      = "logout-exit";
 
-    private String                servletEndpointUrl     = "http://test.auth/servlet";
+    private String                servletEndpointUrl = "http://test.auth/servlet";
 
-    private String                unsupportedProtocolUrl = "unsupported-protocol";
-
-    private String                protocolErrorUrl       = "protocol-error";
-
-    private String                cookiePath             = "/test-path/";
+    private String                cookiePath         = "/test-path/";
 
     private JndiTestUtils         jndiTestUtils;
 
@@ -88,8 +85,6 @@ public class LogoutEntryServletTest {
         Map<String, String> initParams = new HashMap<String, String>();
         initParams.put("LogoutExitUrl", logoutExitUrl);
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("UnsupportedProtocolUrl", unsupportedProtocolUrl);
-        initParams.put("ProtocolErrorUrl", protocolErrorUrl);
         initParams.put("CookiePath", cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
@@ -127,7 +122,7 @@ public class LogoutEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = getMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(unsupportedProtocolUrl));
+        assertTrue(location.endsWith(UnsupportedProtocolPage.PATH));
     }
 
     @Test
