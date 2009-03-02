@@ -13,8 +13,10 @@ import java.util.UUID;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.AuthenticationPage;
@@ -34,15 +36,17 @@ import org.junit.Test;
 
 public class AuthenticationPageTest {
 
-    private PasswordDeviceService mockPasswordDeviceService;
+    private PasswordDeviceService     mockPasswordDeviceService;
 
-    private SamlAuthorityService  mockSamlAuthorityService;
+    private SamlAuthorityService      mockSamlAuthorityService;
 
-    private HelpdeskManager       mockHelpdeskManager;
+    private HelpdeskManager           mockHelpdeskManager;
 
-    private WicketTester          wicket;
+    private WicketTester              wicket;
 
-    private JndiTestUtils         jndiTestUtils;
+    private JndiTestUtils             jndiTestUtils;
+
+    private NodeAuthenticationService mockNodeAuthenticationService;
 
 
     @Before
@@ -54,6 +58,7 @@ public class AuthenticationPageTest {
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
 
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockPasswordDeviceService = createMock(PasswordDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
@@ -85,14 +90,16 @@ public class AuthenticationPageTest {
 
         // setup
         EJBTestUtils.inject(authenticationPage, mockPasswordDeviceService);
+        EJBTestUtils.inject(authenticationPage, mockNodeAuthenticationService);
         EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
 
         // stubs
         mockPasswordDeviceService.authenticate(userId, password);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(new NodeEntity("Test", null, null, 0, 0, null));
 
         // prepare
-        replay(mockPasswordDeviceService, mockSamlAuthorityService);
+        replay(mockPasswordDeviceService, mockSamlAuthorityService, mockNodeAuthenticationService);
 
         // operate
         FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);

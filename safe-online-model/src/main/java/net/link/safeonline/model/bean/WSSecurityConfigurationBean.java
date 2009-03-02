@@ -83,15 +83,6 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
         }
         if (PkiResult.VALID != result) {
             try {
-                result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate);
-                if (PkiResult.VALID == result)
-                    return false;
-            } catch (TrustDomainNotFoundException e) {
-                throw WSSecurityUtil.createSOAPFaultException("devices trust domain not found", "FailedAuthentication");
-            }
-        }
-        if (PkiResult.VALID != result) {
-            try {
                 result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate);
                 if (PkiResult.VALID == result)
                     return false;

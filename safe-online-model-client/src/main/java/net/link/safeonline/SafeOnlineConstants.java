@@ -56,11 +56,6 @@ public interface SafeOnlineConstants {
     public static final String SAFE_ONLINE_APPLICATION_POOL_NAME       = "olas";
 
     /**
-     * The PKI trust domain name for the SafeOnline devices.
-     */
-    public static final String SAFE_ONLINE_DEVICES_TRUST_DOMAIN        = "devices";
-
-    /**
      * The PKI trust domain for the Olas Nodes.
      */
     public static final String SAFE_ONLINE_OLAS_TRUST_DOMAIN           = "olas";

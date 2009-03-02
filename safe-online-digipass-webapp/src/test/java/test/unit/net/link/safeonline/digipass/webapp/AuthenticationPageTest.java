@@ -17,9 +17,11 @@ import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.digipass.webapp.AuthenticationPage;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
@@ -41,17 +43,19 @@ import org.junit.Test;
 
 public class AuthenticationPageTest extends TestCase {
 
-    private DigipassDeviceService mockDigipassDeviceService;
+    private DigipassDeviceService     mockDigipassDeviceService;
 
-    private SamlAuthorityService  mockSamlAuthorityService;
+    private SamlAuthorityService      mockSamlAuthorityService;
 
-    private HelpdeskManager       mockHelpdeskManager;
+    private HelpdeskManager           mockHelpdeskManager;
 
-    private WicketTester          wicket;
+    private WicketTester              wicket;
 
-    private JndiTestUtils         jndiTestUtils;
+    private JndiTestUtils             jndiTestUtils;
 
-    private KeyService            mockKeyService;
+    private KeyService                mockKeyService;
+
+    private NodeAuthenticationService mockNodeAuthenticationService;
 
 
     @Override
@@ -66,6 +70,7 @@ public class AuthenticationPageTest extends TestCase {
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
 
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockDigipassDeviceService = createMock(DigipassDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
@@ -84,7 +89,6 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket = new WicketTester(new DigipassTestApplication());
         wicket.processRequestCycle();
-
     }
 
     @Override
@@ -111,13 +115,15 @@ public class AuthenticationPageTest extends TestCase {
         // setup
         EJBTestUtils.inject(authenticationPage, mockDigipassDeviceService);
         EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
+        EJBTestUtils.inject(authenticationPage, mockNodeAuthenticationService);
 
         // stubs
         mockDigipassDeviceService.authenticate(userId, token);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(new NodeEntity("Test", null, null, 0, 0, null));
 
         // prepare
-        replay(mockDigipassDeviceService, mockSamlAuthorityService);
+        replay(mockDigipassDeviceService, mockSamlAuthorityService, mockNodeAuthenticationService);
 
         // RegisterPage: Register digipass for user
         FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);

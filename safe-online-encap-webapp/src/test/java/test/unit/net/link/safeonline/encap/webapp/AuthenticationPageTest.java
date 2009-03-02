@@ -13,12 +13,14 @@ import java.util.UUID;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.webapp.AuthenticationPage;
 import net.link.safeonline.encap.webapp.EncapApplication;
 import net.link.safeonline.encap.webapp.AuthenticationPage.Goal;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -37,16 +39,17 @@ import org.junit.Test;
 
 public class AuthenticationPageTest {
 
-    private JndiTestUtils        jndiTestUtils;
-    private SamlAuthorityService mockSamlAuthorityService;
-    private HelpdeskManager      mockHelpdeskManager;
-    private WicketTester         wicket;
-    private EncapDeviceService   mockEncapDeviceService;
+    private JndiTestUtils             jndiTestUtils;
+    private SamlAuthorityService      mockSamlAuthorityService;
+    private HelpdeskManager           mockHelpdeskManager;
+    private WicketTester              wicket;
+    private EncapDeviceService        mockEncapDeviceService;
+    private NodeAuthenticationService mockNodeAuthenticationService;
 
-    private static final String  TEST_APPLICATION = "test-application";
-    private static final String  TEST_USERID      = UUID.randomUUID().toString();
-    private static final String  TEST_MOBILE      = "0523012295";
-    private static final String  TEST_OTP         = "000000";
+    private static final String       TEST_APPLICATION = "test-application";
+    private static final String       TEST_USERID      = UUID.randomUUID().toString();
+    private static final String       TEST_MOBILE      = "0523012295";
+    private static final String       TEST_OTP         = "000000";
 
 
     @Before
@@ -55,6 +58,9 @@ public class AuthenticationPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
+
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
 
         mockEncapDeviceService = createMock(EncapDeviceService.class);
         jndiTestUtils.bindComponent(EncapDeviceService.JNDI_BINDING, mockEncapDeviceService);
@@ -108,6 +114,7 @@ public class AuthenticationPageTest {
 
         // Inject EJBs.
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockSamlAuthorityService);
+        EJBTestUtils.inject(wicket.getLastRenderedPage(), mockNodeAuthenticationService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // Setup mocks.
@@ -135,7 +142,8 @@ public class AuthenticationPageTest {
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.authenticate(TEST_OTP)).andStubReturn(TEST_USERID);
-        replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(new NodeEntity("Test", null, null, 0, 0, null));
+        replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager, mockNodeAuthenticationService);
 
         // Request OTP for our mobile.
         form.setValue(AuthenticationPage.MOBILE_FIELD_ID, TEST_MOBILE);
