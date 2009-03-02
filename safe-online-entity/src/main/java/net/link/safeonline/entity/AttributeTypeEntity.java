@@ -42,6 +42,7 @@ import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -146,6 +147,27 @@ public class AttributeTypeEntity implements Serializable {
         this.userEditable = userEditable;
         descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
         members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
+    }
+
+    /**
+     * FIXME: SOS-416
+     * 
+     * @return <code>true</code> when this attribute has its value stored locally and is not a plugin.
+     */
+    @Transient
+    public boolean isLocal() {
+
+        if (isExternal())
+            return false;
+
+        if (null == getLocation())
+            return true;
+
+        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
+        if (olasKeyStore.getCertificate().getSubjectX500Principal().getName().equals(getLocation().getCertificateSubject()))
+            return true;
+
+        return false;
     }
 
     @Id

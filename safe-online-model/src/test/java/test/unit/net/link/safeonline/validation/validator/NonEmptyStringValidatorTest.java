@@ -12,15 +12,16 @@ package test.unit.net.link.safeonline.validation.validator;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import junit.framework.TestCase;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.validator.NonEmptyStringValidator;
 import net.link.safeonline.validation.validator.ValidatorResult;
 
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class NonEmptyStringValidatorTest extends TestCase {
+public class NonEmptyStringValidatorTest {
 
     private NonEmptyStringValidator testedInstance;
 
@@ -30,25 +31,24 @@ public class NonEmptyStringValidatorTest extends TestCase {
 
 
     @SuppressWarnings("unused")
-    private void sampleFunc(@NonEmptyString("sample") String parameter) {
+    public void sampleFunc(@NonEmptyString("sample") String parameter) {
 
         // empty
     }
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
             throws Exception {
-
-        super.setUp();
 
         testedInstance = new NonEmptyStringValidator();
 
         mockValidatorResult = createMock(ValidatorResult.class);
 
-        nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class.getDeclaredMethod("sampleFunc",
-                String.class).getParameterAnnotations()[0][0];
+        nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class.getDeclaredMethod("sampleFunc", String.class)
+                                                                                           .getParameterAnnotations()[0][0];
     }
 
+    @Test
     public void testNullStringIsInvalid()
             throws Exception {
 
@@ -68,6 +68,7 @@ public class NonEmptyStringValidatorTest extends TestCase {
         verify(mockValidatorResult);
     }
 
+    @Test
     public void testEmptyStringIsInvalid()
             throws Exception {
 

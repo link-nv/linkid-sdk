@@ -12,6 +12,7 @@ import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -87,11 +88,13 @@ public class TaskSchedulerBeanTest {
         final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
 
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
 
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
@@ -99,12 +102,11 @@ public class TaskSchedulerBeanTest {
 
         systemStartable.postStart();
 
+        verify(mockKeyService);
+
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
         entityTransaction.begin();
-
-        jndiTestUtils = new JndiTestUtils();
-        jndiTestUtils.setUp();
     }
 
     @After

@@ -11,6 +11,7 @@ import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.security.KeyPair;
@@ -56,7 +57,7 @@ public class UserRegistrationServiceBeanTest {
 
 
     @Before
-    protected void setUp()
+    public void setUp()
             throws Exception {
 
         entityTestManager = new EntityTestManager();
@@ -69,7 +70,7 @@ public class UserRegistrationServiceBeanTest {
         final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
 
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
@@ -82,13 +83,15 @@ public class UserRegistrationServiceBeanTest {
                 SafeOnlineTestContainer.sessionBeans, entityManager);
         systemInit.postStart();
 
+        verify(mockKeyService);
+
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
         entityTransaction.begin();
     }
 
     @After
-    protected void tearDown()
+    public void tearDown()
             throws Exception {
 
         entityTestManager.tearDown();
