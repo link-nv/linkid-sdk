@@ -80,18 +80,11 @@
 
 					<tbody>
 						<tr>
-							<th><h:outputText value="#{msgs.authenticationCertificate}" /></th>
+							<th><h:outputText value="#{msgs.certificate}" /></th>
 							<td><s:decorate>
-								<t:inputFileUpload id="authnCertificate" styleClass="label"
-									value="#{operNode.authnUpFile}" />
-							</s:decorate> <h:message for="authnCertificate" styleClass="error" /></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.signingCertificate}" /></th>
-							<td><s:decorate>
-								<t:inputFileUpload id="signingCertificate" styleClass="label"
-									value="#{operNode.signingUpFile}" />
-							</s:decorate> <h:message for="signingCertificate" styleClass="error" /></td>
+								<t:inputFileUpload id="certificate" styleClass="label"
+									value="#{operNode.certificateFile}" />
+							</s:decorate> <h:message for="certificate" styleClass="error" /></td>
 						</tr>
 					</tbody>
 				</table>

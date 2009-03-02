@@ -13,8 +13,8 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
@@ -61,13 +61,9 @@ public interface Node {
 
     void setSslPort(int sslPort);
 
-    void setAuthnUpFile(UploadedFile uploadedFile);
+    void setCertificateFile(UploadedFile uploadedFile);
 
-    UploadedFile getAuthnUpFile();
-
-    void setSigningUpFile(UploadedFile uploadedFile);
-
-    UploadedFile getSigningUpFile();
+    UploadedFile getCertificateFile();
 
     /*
      * Actions.

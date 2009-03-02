@@ -19,8 +19,8 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,21 +46,21 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
     private TrustPointDAO    trustPointDAO;
 
 
-    public String authenticate(X509Certificate authnCertificate)
+    public String authenticate(X509Certificate certificate)
             throws NodeNotFoundException {
 
-        NodeEntity node = olasDAO.getNodeFromAuthnCertificate(authnCertificate);
+        NodeEntity node = olasDAO.getNodeFromCertificate(certificate);
         String nodeName = node.getName();
         LOG.debug("authenticated node: " + nodeName);
         return nodeName;
     }
 
-    public List<X509Certificate> getSigningCertificates(String nodeName)
+    public List<X509Certificate> getCertificates(String nodeName)
             throws NodeNotFoundException {
 
         LOG.debug("get signing certificate for node: " + nodeName);
         NodeEntity node = olasDAO.getNode(nodeName);
-        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(node.getSigningCertificateSubject());
+        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(node.getCertificateSubject());
         List<X509Certificate> certificates = new LinkedList<X509Certificate>();
         for (TrustPointEntity trustPoint : trustPoints) {
             certificates.add(trustPoint.getCertificate());
@@ -78,7 +78,7 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
     public NodeEntity getLocalNode()
             throws NodeNotFoundException {
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        return getNode(authenticate(authIdentityServiceClient.getCertificate()));
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+        return getNode(authenticate(nodeKeyStore.getCertificate()));
     }
 }

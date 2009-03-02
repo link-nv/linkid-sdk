@@ -7,21 +7,28 @@
 
 package test.unit.net.link.safeonline.auth.servlet;
 
+import static org.easymock.EasyMock.checkOrder;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.servlet.PkiServlet;
-import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -39,23 +46,30 @@ public class PkiServletTest {
 
     private ServletTestManager servletTestManager;
 
-    private JmxTestUtils       jmxTestUtils;
+    private KeyService         mockKeyService;
 
-    private X509Certificate    certificate;
+    private JndiTestUtils      jndiTestUtils;
+
+    private X509Certificate    nodeCertificate;
 
 
     @Before
     public void setUp()
             throws Exception {
 
-        jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        mockKeyService = createMock(KeyService.class);
 
-        KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
-        GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(certificate);
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", actionHandler);
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
+
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(PkiServlet.class);
@@ -66,7 +80,7 @@ public class PkiServletTest {
             throws Exception {
 
         servletTestManager.tearDown();
-        jmxTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
 
@@ -107,6 +121,6 @@ public class PkiServletTest {
         LOG.debug("obj class: " + obj.getClass().getName());
         assertTrue(obj instanceof X509Certificate);
         X509Certificate resultCertificate = (X509Certificate) obj;
-        assertEquals(certificate, resultCertificate);
+        assertEquals(nodeCertificate, resultCertificate);
     }
 }

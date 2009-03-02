@@ -74,9 +74,7 @@ public class NodeBean implements Node {
 
     private int                 sslPort;
 
-    private UploadedFile        authnUpFile;
-
-    private UploadedFile        signingUpFile;
+    private UploadedFile        certificateFile;
 
     @EJB(mappedName = NodeService.JNDI_BINDING)
     private NodeService         nodeService;
@@ -101,8 +99,7 @@ public class NodeBean implements Node {
         name = null;
         protocol = null;
         hostname = null;
-        authnUpFile = null;
-        signingUpFile = null;
+        certificateFile = null;
     }
 
     @Factory(OPER_NODE_LIST_NAME)
@@ -131,20 +128,13 @@ public class NodeBean implements Node {
         LOG.debug("add olas node: " + name);
 
         try {
-            byte[] encodedAuthnCertificate;
-            if (null != authnUpFile) {
-                encodedAuthnCertificate = getUpFileContent(authnUpFile);
+            byte[] encodedCertificate;
+            if (null != certificateFile) {
+                encodedCertificate = getUpFileContent(certificateFile);
             } else {
-                encodedAuthnCertificate = null;
+                encodedCertificate = null;
             }
-            byte[] encodedSigningCertificate;
-            if (null != signingUpFile) {
-                encodedSigningCertificate = getUpFileContent(signingUpFile);
-            } else {
-                encodedSigningCertificate = null;
-            }
-            nodeService.addNode(name, protocol, hostname, port, sslPort, encodedAuthnCertificate,
-                    encodedSigningCertificate);
+            nodeService.addNode(name, protocol, hostname, port, sslPort, encodedCertificate);
         } catch (ExistingNodeException e) {
             LOG.debug("node already exists: " + name);
             facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorNodeAlreadyExists", name);
@@ -155,27 +145,15 @@ public class NodeBean implements Node {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public UploadedFile getAuthnUpFile() {
+    public UploadedFile getCertificateFile() {
 
-        return authnUpFile;
+        return certificateFile;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void setAuthnUpFile(UploadedFile uploadedFile) {
+    public void setCertificateFile(UploadedFile uploadedFile) {
 
-        authnUpFile = uploadedFile;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public UploadedFile getSigningUpFile() {
-
-        return signingUpFile;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void setSigningUpFile(UploadedFile uploadedFile) {
-
-        signingUpFile = uploadedFile;
+        certificateFile = uploadedFile;
     }
 
     public String getName() {
@@ -261,15 +239,11 @@ public class NodeBean implements Node {
         String nodeName = selectedNode.getName();
         LOG.debug("save node: " + nodeName);
 
-        if (null != authnUpFile) {
-            LOG.debug("updating node authentication certificate");
-            nodeService.updateAuthnCertificate(nodeName, getUpFileContent(authnUpFile));
+        if (null != certificateFile) {
+            LOG.debug("updating node certificate");
+            nodeService.updateCertificate(nodeName, getUpFileContent(certificateFile));
         }
 
-        if (null != signingUpFile) {
-            LOG.debug("updating node signing certificate");
-            nodeService.updateSigningCertificate(nodeName, getUpFileContent(signingUpFile));
-        }
         nodeService.updateLocation(nodeName, protocol, hostname, port, sslPort);
 
         /*

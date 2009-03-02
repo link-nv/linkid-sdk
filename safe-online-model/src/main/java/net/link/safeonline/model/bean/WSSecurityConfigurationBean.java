@@ -20,12 +20,12 @@ import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.ws.WSSecurityUtil;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -107,7 +107,8 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
      */
     public X509Certificate getCertificate() {
 
-        return new IdentityServiceClient().getCertificate();
+        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
+        return olasKeyStore.getCertificate();
     }
 
     /**
@@ -115,7 +116,8 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
      */
     public PrivateKey getPrivateKey() {
 
-        return new IdentityServiceClient().getPrivateKey();
+        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
+        return olasKeyStore.getPrivateKey();
     }
 
 }

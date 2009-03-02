@@ -33,22 +33,6 @@
 		<param-value>${safe-online.password.webapp.name}</param-value>
 	</context-param>
 	<context-param>
-		<param-name>DeviceName</param-name>
-		<param-value>password</param-value>
-	</context-param>
-	<context-param>
-		<param-name>KeyStoreResource</param-name>
-		<param-value>safe-online-password-keystore.jks</param-value>
-	</context-param>
-	<context-param>
-		<param-name>KeyStoreType</param-name>
-		<param-value>jks</param-value>
-	</context-param>
-	<context-param>
-		<param-name>KeyStorePassword</param-name>
-		<param-value>secret</param-value>
-	</context-param>
-	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.auth.basename} </param-value>
 	</context-param>
@@ -65,9 +49,9 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<servlet>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
+            net.link.safeonline.password.webapp.servlet.AuthLandingServlet</servlet-class>
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>authentication</param-value>
@@ -87,7 +71,7 @@
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<url-pattern>/auth</url-pattern>
 	</servlet-mapping>
 	<servlet>
@@ -105,7 +89,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.password.webapp.servlet.DeviceLandingServlet</servlet-class>
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>

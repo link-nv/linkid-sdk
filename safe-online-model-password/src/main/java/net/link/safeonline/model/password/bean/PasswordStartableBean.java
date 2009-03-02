@@ -7,7 +7,6 @@
 
 package net.link.safeonline.model.password.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -25,13 +24,11 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordManager;
-import net.link.safeonline.password.keystore.PasswordKeyStoreUtils;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -112,17 +109,13 @@ public class PasswordStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
-                identityServiceClient.getCertificate());
-        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureDevice() {
-
-        X509Certificate certificate = (X509Certificate) PasswordKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("password_config");
         String nodeName = properties.getString("olas.node.name");
@@ -178,13 +171,15 @@ public class PasswordStartableBean extends AbstractInitBean {
                 "Password", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl", "Wachtwoord", null));
 
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+
         devices.add(new Device(PasswordConstants.PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, nodeName, "/"
                 + passwordWebappName + "/auth", "/" + passwordAuthWSPath, "/" + passwordWebappName + "/device", "/" + passwordWebappName
                 + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName
-                + "/device", certificate, passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
+                + "/device", passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, "nl", "Paswoord"));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Password"));
-        trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
     }
 

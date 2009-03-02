@@ -101,4 +101,9 @@ public interface AttributeTypeService extends SafeOnlineService {
 
     void saveCacheTimeout(String attributeTypeName, Long cacheTimeout)
             throws AttributeTypeNotFoundException;
+
+    /**
+     * @return <code>true</code> when this attribute has its value stored locally and is not a plugin.
+     */
+    boolean isLocal(AttributeTypeEntity attributeType);
 }

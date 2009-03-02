@@ -24,12 +24,11 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
-import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStoreUtils;
-import net.link.safeonline.oper.keystore.OperKeyStoreUtils;
-import net.link.safeonline.owner.keystore.OwnerKeyStoreUtils;
-import net.link.safeonline.user.keystore.UserKeyStoreUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
+import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.oper.keystore.OperKeyStore;
+import net.link.safeonline.owner.keystore.OwnerKeyStore;
+import net.link.safeonline.user.keystore.UserKeyStore;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -51,7 +50,8 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
     public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "SystemInitializationStartableBean";
 
 
-    public SystemInitializationStartableBean() {
+    @Override
+    public void postStart() {
 
         // Load OLAS configuration.
         ResourceBundle properties = ResourceBundle.getBundle("config");
@@ -76,10 +76,10 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         applicationOwnersAndLogin.put(SafeOnlineConstants.OWNER_LOGIN, SafeOnlineConstants.OWNER_LOGIN);
 
         // Add the core applications.
-        X509Certificate userCert = (X509Certificate) UserKeyStoreUtils.getPrivateKeyEntry().getCertificate();
-        X509Certificate operCert = (X509Certificate) OperKeyStoreUtils.getPrivateKeyEntry().getCertificate();
-        X509Certificate ownerCert = (X509Certificate) OwnerKeyStoreUtils.getPrivateKeyEntry().getCertificate();
-        X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate userCert = (X509Certificate) UserKeyStore.getPrivateKeyEntry().getCertificate();
+        X509Certificate operCert = (X509Certificate) OperKeyStore.getPrivateKeyEntry().getCertificate();
+        X509Certificate ownerCert = (X509Certificate) OwnerKeyStore.getPrivateKeyEntry().getCertificate();
+        X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStore.getPrivateKeyEntry().getCertificate();
 
         try {
             registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
@@ -123,6 +123,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
         notificationTopics.add(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER);
 
+        // now initialize
+        super.postStart();
+
     }
 
     private void configureNode() {
@@ -134,13 +137,10 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
-                identityServiceClient.getCertificate());
-        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-        trustedCertificates.put(identityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureAttributeTypes() {
@@ -148,20 +148,19 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
                 false);
         attributeTypes.add(loginAttributeType);
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH.getLanguage(),
-                "Login name", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH.getLanguage(), "Login name",
+                null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam", null));
     }
 
     private void configureDevices() {
 
-        deviceClasses.add(new DeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
-        deviceClasses.add(new DeviceClass(SafeOnlineConstants.MOBILE_DEVICE_CLASS,
-                SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
+        deviceClasses
+                     .add(new DeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
+        deviceClasses.add(new DeviceClass(SafeOnlineConstants.MOBILE_DEVICE_CLASS, SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
         deviceClasses.add(new DeviceClass(SafeOnlineConstants.PKI_DEVICE_CLASS, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
-        deviceClasses.add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS,
-                SafeOnlineConstants.DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS));
+        deviceClasses
+                     .add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, SafeOnlineConstants.DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS));
     }
 
     @Override

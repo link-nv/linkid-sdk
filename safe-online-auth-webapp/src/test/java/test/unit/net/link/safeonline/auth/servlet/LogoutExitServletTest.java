@@ -35,11 +35,9 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
 import net.link.safeonline.test.util.DomTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -91,9 +89,6 @@ public class LogoutExitServletTest {
 
         mockAuthenticationService = createMock(AuthenticationService.class);
 
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
         logoutExitServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
@@ -133,8 +128,7 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair,
-                target);
+        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair, target);
         String encodedSamlLogoutResponse = Base64.encode(samlLogoutResponse.getBytes());
 
         String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair,
@@ -146,8 +140,7 @@ public class LogoutExitServletTest {
 
         // expectations
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.LOGGING_OUT);
-        expect(mockAuthenticationService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
-                applicationName);
+        expect(mockAuthenticationService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject())).andStubReturn(applicationName);
         expect(mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application2);
         expect(mockAuthenticationService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
 

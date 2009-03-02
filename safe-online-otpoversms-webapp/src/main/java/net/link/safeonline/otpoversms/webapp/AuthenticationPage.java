@@ -12,8 +12,11 @@ import javax.ejb.EJB;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.custom.converter.PhoneNumber;
 import net.link.safeonline.device.sdk.AuthenticationContext;
@@ -41,25 +44,28 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long      serialVersionUID         = 1L;
+    private static final long           serialVersionUID         = 1L;
 
-    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String     MOBILE_FIELD_ID          = "mobile";
-    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    public static final String          REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String          MOBILE_FIELD_ID          = "mobile";
+    public static final String          REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String          REQUEST_CANCEL_BUTTON_ID = "request_cancel";
 
-    public static final String     VERIFY_OTP_FORM_ID       = "verify_otp_form";
-    public static final String     OTP_FIELD_ID             = "otp";
-    public static final String     PIN_FIELD_ID             = "pin";
-    public static final String     LOGIN_BUTTON_ID          = "login";
-    public static final String     CANCEL_BUTTON_ID         = "cancel";
+    public static final String          VERIFY_OTP_FORM_ID       = "verify_otp_form";
+    public static final String          OTP_FIELD_ID             = "otp";
+    public static final String          PIN_FIELD_ID             = "pin";
+    public static final String          LOGIN_BUTTON_ID          = "login";
+    public static final String          CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
+    transient SamlAuthorityService      samlAuthorityService;
 
-    AuthenticationContext          authenticationContext;
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
+    transient NodeAuthenticationService nodeAuthenticationService;
 
-    Model<PhoneNumber>             mobile;
+    AuthenticationContext               authenticationContext;
+
+    Model<PhoneNumber>                  mobile;
 
 
     public AuthenticationPage() {
@@ -290,10 +296,16 @@ public class AuthenticationPage extends TemplatePage {
 
     public void login(String userId) {
 
-        authenticationContext.setUserId(userId);
-        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
-        authenticationContext.setIssuer(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
-        authenticationContext.setUsedDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
+        try {
+            authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
+            authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+            authenticationContext.setUsedDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
+            authenticationContext.setUserId(userId);
+        }
+
+        catch (NodeNotFoundException e) {
+            throw new InternalInconsistencyException("Couldn't look up local node.");
+        }
 
         exit();
 

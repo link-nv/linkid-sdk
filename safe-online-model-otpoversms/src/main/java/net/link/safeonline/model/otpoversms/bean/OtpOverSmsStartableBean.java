@@ -7,7 +7,6 @@
 
 package net.link.safeonline.model.otpoversms.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -19,11 +18,9 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
-import net.link.safeonline.otpoversms.keystore.OtpOverSmsKeyStoreUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -52,17 +49,13 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
-                identityServiceClient.getCertificate());
-        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureDevice() {
-
-        X509Certificate certificate = (X509Certificate) OtpOverSmsKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("otpoversms_config");
         String nodeName = properties.getString("olas.node.name");
@@ -139,15 +132,17 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
                 "Mobile Lite", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, "nl", "GSM Lite", null));
 
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+
         devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
                 + otpOverSmsWebappName + "/auth", "/" + otpOverSmsAuthWSPath, "/" + otpOverSmsWebappName + "/device", "/"
                 + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
-                + otpOverSmsWebappName + "/device", certificate, otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType,
+                + otpOverSmsWebappName + "/device", otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType,
                 otpOverSmsDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, "nl", "GSM Lite"));
         deviceDescriptions
                           .add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile Lite"));
-        trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
     }
 

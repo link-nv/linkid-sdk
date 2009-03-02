@@ -1,13 +1,12 @@
 /*
  * SafeOnline project.
  *
- * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.model.option.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -19,23 +18,35 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.option.OptionConstants;
-import net.link.safeonline.option.keystore.OptionKeyStoreUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
+/**
+ * <h2>{@link OptionStartableBean}<br>
+ * <sub>[in short] (TODO).</sub></h2>
+ * 
+ * <p>
+ * [description / usage].
+ * </p>
+ * 
+ * <p>
+ * <i>Sep 8, 2008</i>
+ * </p>
+ * 
+ * @author dhouthoo
+ */
 @Stateless
 @Local(Startable.class)
 @LocalBinding(jndiBinding = OptionStartableBean.JNDI_BINDING)
 public class OptionStartableBean extends AbstractInitBean {
 
-    public static final String JNDI_BINDING = OptionConstants.OPTION_STARTABLE_JNDI_PREFIX + "OptionStartableBean";
+    public static final String JNDI_BINDING = OptionConstants.OPTION_STARTABLE_JNDI_PREFIX + "SafeOnlineNodeKeyStoreStartableBean";
 
     private static final Log   LOG          = LogFactory.getLog(OptionStartableBean.class);
 
@@ -70,7 +81,7 @@ public class OptionStartableBean extends AbstractInitBean {
                 null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl", "Option", null));
 
-        X509Certificate certificate = (X509Certificate) OptionKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
         ResourceBundle properties = ResourceBundle.getBundle("option_config");
         String nodeName = properties.getString("olas.node.name");
@@ -79,11 +90,11 @@ public class OptionStartableBean extends AbstractInitBean {
 
         devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-option/auth",
                 "/" + optionAuthWSPath, "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName
-                        + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", certificate,
-                optionDeviceAttributeType, optionImeiAttributeType, optionDeviceDisableAttributeType));
+                        + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", optionDeviceAttributeType,
+                optionImeiAttributeType, optionDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Option Data Card"));
-        trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
     private void configureNode() {
@@ -95,12 +106,10 @@ public class OptionStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
-                identityServiceClient.getCertificate());
-        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

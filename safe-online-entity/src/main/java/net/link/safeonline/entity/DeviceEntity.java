@@ -7,17 +7,14 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_ALL;
-import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CERT_SUBJECT;
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS;
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS_AUTH_CTX;
 
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -42,9 +39,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
         @NamedQuery(name = QUERY_LIST_ALL, query = "FROM DeviceEntity d"),
         @NamedQuery(name = QUERY_LIST_WHERE_CLASS, query = "SELECT d FROM DeviceEntity d " + "WHERE d.deviceClass = :deviceClass"),
         @NamedQuery(name = QUERY_LIST_WHERE_CLASS_AUTH_CTX, query = "SELECT d FROM DeviceEntity d "
-                + "WHERE d.deviceClass.authenticationContextClass = :authenticationContextClass"),
-        @NamedQuery(name = QUERY_LIST_WHERE_CERT_SUBJECT, query = "SELECT device " + "FROM DeviceEntity AS device "
-                + "WHERE device.certificateSubject = :certificateSubject") })
+                + "WHERE d.deviceClass.authenticationContextClass = :authenticationContextClass") })
 public class DeviceEntity implements Serializable {
 
     private static final long                    serialVersionUID                = 1L;
@@ -54,8 +49,6 @@ public class DeviceEntity implements Serializable {
     public static final String                   QUERY_LIST_WHERE_CLASS          = "dev.class";
 
     public static final String                   QUERY_LIST_WHERE_CLASS_AUTH_CTX = "dev.cl.actx";
-
-    public static final String                   QUERY_LIST_WHERE_CERT_SUBJECT   = "dev.cert.sub";
 
     private String                               name;
 
@@ -77,8 +70,6 @@ public class DeviceEntity implements Serializable {
 
     private String                               enablePath;
 
-    private String                               certificateSubject;
-
     private AttributeTypeEntity                  attributeType;
 
     private AttributeTypeEntity                  userAttributeType;
@@ -97,7 +88,7 @@ public class DeviceEntity implements Serializable {
 
     public DeviceEntity(String name, DeviceClassEntity deviceClass, NodeEntity location, String authenticationPath,
                         String authenticationWSPath, String registrationPath, String removalPath, String updatePath, String disablePath,
-                        String enablePath, X509Certificate certificate) {
+                        String enablePath) {
 
         this.name = name;
         this.deviceClass = deviceClass;
@@ -111,9 +102,6 @@ public class DeviceEntity implements Serializable {
         this.enablePath = enablePath;
         properties = new HashMap<String, DevicePropertyEntity>();
         descriptions = new HashMap<String, DeviceDescriptionEntity>();
-        if (null != certificate) {
-            certificateSubject = certificate.getSubjectX500Principal().getName();
-        }
     }
 
     @Id
@@ -440,40 +428,6 @@ public class DeviceEntity implements Serializable {
     }
 
     /**
-     * The certificate subject is used during application authentication phase to associate a given certificate with it's corresponding
-     * application.
-     * 
-     */
-    @Column(unique = true)
-    public String getCertificateSubject() {
-
-        return certificateSubject;
-    }
-
-    /**
-     * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate) setCertificate} instead.
-     * JPA requires this setter.
-     * 
-     * @param certificateSubject
-     * @see #setCertificate(X509Certificate)
-     */
-    public void setCertificateSubject(String certificateSubject) {
-
-        this.certificateSubject = certificateSubject;
-    }
-
-    /**
-     * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this application.
-     * 
-     * @param certificate
-     */
-    @Transient
-    public void setCertificate(X509Certificate certificate) {
-
-        setCertificateSubject(certificate.getSubjectX500Principal().getName());
-    }
-
-    /**
      * Returns map of device properties.
      * 
      */
@@ -541,8 +495,5 @@ public class DeviceEntity implements Serializable {
 
         @QueryMethod(QUERY_LIST_WHERE_CLASS_AUTH_CTX)
         List<DeviceEntity> listDevices(@QueryParam("authenticationContextClass") String authenticationContextClass);
-
-        @QueryMethod(QUERY_LIST_WHERE_CERT_SUBJECT)
-        List<DeviceEntity> listDevicesWhereCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
     }
 }

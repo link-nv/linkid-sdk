@@ -19,10 +19,7 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticNam
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
@@ -108,6 +105,7 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
@@ -120,8 +118,6 @@ import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
@@ -166,47 +162,51 @@ import org.opensaml.xml.validation.ValidationException;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 
-    private static final Log        LOG                                  = LogFactory.getLog(AuthenticationServiceBean.class);
+    private static final Log                    LOG                                  = LogFactory.getLog(AuthenticationServiceBean.class);
 
-    public static final String      SECURITY_MESSAGE_INVALID_COOKIE      = "Attempt to use an invalid SSO Cookie";
+    private static final SafeOnlineNodeKeyStore nodeKeyStore                         = new SafeOnlineNodeKeyStore();
 
-    public static final String      SECURITY_MESSAGE_INVALID_APPLICATION = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid application: ";
+    public static final String                  SECURITY_MESSAGE_INVALID_COOKIE      = "Attempt to use an invalid SSO Cookie";
 
-    public static final String      SECURITY_MESSAGE_INVALID_DEVICE      = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid device: ";
+    public static final String                  SECURITY_MESSAGE_INVALID_APPLICATION = SECURITY_MESSAGE_INVALID_COOKIE
+                                                                                             + ": Invalid application: ";
 
-    public static final String      SECURITY_MESSAGE_INVALID_USER        = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid user: ";
+    public static final String                  SECURITY_MESSAGE_INVALID_DEVICE      = SECURITY_MESSAGE_INVALID_COOKIE
+                                                                                             + ": Invalid device: ";
 
-    private SubjectEntity           authenticatedSubject;
+    public static final String                  SECURITY_MESSAGE_INVALID_USER        = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid user: ";
 
-    private DeviceEntity            authenticationDevice;
+    private SubjectEntity                       authenticatedSubject;
 
-    private DateTime                authenticationDate;
+    private DeviceEntity                        authenticationDevice;
 
-    private long                    expectedApplicationId                = -1;
+    private DateTime                            authenticationDate;
 
-    private String                  expectedApplicationName;
+    private long                                expectedApplicationId                = -1;
 
-    private String                  expectedApplicationFriendlyName;
+    private String                              expectedApplicationName;
 
-    private String                  expectedChallengeId;
+    private String                              expectedApplicationFriendlyName;
 
-    private String                  expectedDeviceChallengeId;
+    private String                              expectedChallengeId;
 
-    private String                  expectedTarget;
+    private String                              expectedDeviceChallengeId;
 
-    private Set<DeviceEntity>       requiredDevicePolicy;
+    private String                              expectedTarget;
 
-    private AuthenticationState     authenticationState;
+    private Set<DeviceEntity>                   requiredDevicePolicy;
 
-    private boolean                 ssoEnabled;
+    private AuthenticationState                 authenticationState;
 
-    private Cookie                  ssoCookie;
+    private boolean                             ssoEnabled;
 
-    private String                  cookiePath;
+    private Cookie                              ssoCookie;
 
-    private List<ApplicationEntity> ssoApplicationsToLogOut;
+    private String                              cookiePath;
 
-    private Challenge<String>       expectedLogoutChallenge;
+    private List<ApplicationEntity>             ssoApplicationsToLogOut;
+
+    private Challenge<String>                   expectedLogoutChallenge;
 
 
     @PostConstruct
@@ -384,11 +384,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         if (authenticationState != INITIALIZED && authenticationState != REDIRECTED && authenticationState != USER_AUTHENTICATED)
             throw new IllegalStateException("call initialize first");
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        PrivateKey privateKey = identityServiceClient.getPrivateKey();
-        PublicKey publicKey = identityServiceClient.getPublicKey();
-        KeyPair keyPair = new KeyPair(publicKey, privateKey);
-
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         Set<String> devices = Collections.singleton(device);
@@ -396,7 +391,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         Challenge<String> challenge = new Challenge<String>();
 
         String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node.getName(), expectedApplicationName,
-                expectedApplicationFriendlyName, keyPair, authenticationServiceUrl, targetUrl, challenge, devices, false);
+                expectedApplicationFriendlyName, nodeKeyStore.getKeyPair(), authenticationServiceUrl, targetUrl, challenge, devices, false);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -419,11 +414,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         if (authenticationState != INITIALIZED && authenticationState != USER_AUTHENTICATED && authenticationState != REDIRECTED)
             throw new IllegalStateException("call initialize or authenticate first");
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        PrivateKey privateKey = identityServiceClient.getPrivateKey();
-        PublicKey publicKey = identityServiceClient.getPublicKey();
-        KeyPair keyPair = new KeyPair(publicKey, privateKey);
-
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         /*
@@ -445,9 +435,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             authenticatedDevice = authenticationDevice.getName();
         }
 
-        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(), nodeUserId, keyPair,
-                registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge, deviceName, authenticatedDevice,
-                null);
+        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(), nodeUserId,
+                nodeKeyStore.getKeyPair(), registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge,
+                deviceName, authenticatedDevice, null);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -469,12 +459,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         DateTime now = new DateTime();
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         Response samlResponse = ResponseUtil.validateResponse(now, request, expectedDeviceChallengeId, expectedApplicationName,
-                node.getLocation(), authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey(),
-                TrustDomainType.DEVICE);
+                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.NODE);
         if (null == samlResponse)
             return null;
 
@@ -536,8 +524,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        createSsoCookie(identityServiceClient.getSsoKey());
+        createSsoCookie(SafeOnlineNodeKeyStore.getSSOKey());
 
         return subjectEntity.getUserId();
     }
@@ -648,11 +635,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Add application to cookie
          */
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        SecretKey ssoKey = identityServiceClient.getSsoKey();
-
         sso.addSsoApplication(application);
-        createSsoCookie(application, ssoKey, sso);
+        createSsoCookie(application, SafeOnlineNodeKeyStore.getSSOKey(), sso);
 
         /*
          * Safe the state in this stateful session bean.
@@ -774,9 +758,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private SingleSignOn parseCookie(Cookie cookie)
             throws InvalidCookieException {
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        SecretKey ssoKey = identityServiceClient.getSsoKey();
-
         /*
          * Decrypt SSO Cookie value
          */
@@ -784,7 +765,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String decryptedValue;
         try {
             Cipher decryptCipher = Cipher.getInstance("AES", bcp);
-            decryptCipher.init(Cipher.DECRYPT_MODE, ssoKey);
+            decryptCipher.init(Cipher.DECRYPT_MODE, SafeOnlineNodeKeyStore.getSSOKey());
             byte[] decryptedBytes = decryptCipher.doFinal(Base64.decode(cookie.getValue().getBytes("UTF-8")));
             decryptedValue = new String(decryptedBytes);
         } catch (InvalidKeyException e) {
@@ -920,8 +901,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        createSsoCookie(identityServiceClient.getSsoKey());
+        createSsoCookie(SafeOnlineNodeKeyStore.getSSOKey());
 
         /*
          * Communicate that the authentication process can continue.
@@ -938,12 +918,11 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         DateTime now = new DateTime();
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, expectedDeviceChallengeId,
-                DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
+                DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(),
+                TrustDomainType.NODE);
         if (null == response)
             return null;
 
@@ -1014,8 +993,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        createSsoCookie(identityServiceClient.getSsoKey());
+        createSsoCookie(SafeOnlineNodeKeyStore.getSSOKey());
 
         addHistoryEntry(authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
 
@@ -1032,19 +1010,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        PrivateKey privateKey = identityServiceClient.getPrivateKey();
-        PublicKey publicKey = identityServiceClient.getPublicKey();
-        KeyPair keyPair = new KeyPair(publicKey, privateKey);
-
         int validity = samlAuthorityService.getAuthnAssertionValidity();
 
         String userId = userIdMappingService.getApplicationUserId(expectedApplicationId, getUserId());
 
-        ApplicationEntity application = applicationDAO.getApplication(expectedApplicationId);
-
-        String samlResponseToken = AuthnResponseFactory.createAuthResponse(expectedChallengeId, application.getName(), node.getName(),
-                userId, authenticationDevice.getAuthenticationContextClass(), keyPair, validity, expectedTarget, authenticationDate);
+        String samlResponseToken = AuthnResponseFactory.createAuthResponse(expectedChallengeId, expectedApplicationName, node.getName(),
+                userId, authenticationDevice.getAuthenticationContextClass(), nodeKeyStore.getKeyPair(), validity, expectedTarget,
+                authenticationDate);
         LOG.debug("saml response token: " + samlResponseToken);
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
@@ -1163,7 +1135,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         checkRequiredUsageAgreement(language);
 
         if (null == application) {
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, authenticatedSubject.getUserId(), "unknown application");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, authenticatedSubject.getUserId(), "unknown application "
+                    + expectedApplicationId);
             throw new ApplicationNotFoundException();
         }
 
@@ -1174,7 +1147,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new SubscriptionNotFoundException();
         }
 
-        addHistoryEntry(authenticatedSubject, HistoryEventType.LOGIN_SUCCESS, application.getName(), authenticationDevice.getName());
+        addHistoryEntry(authenticatedSubject, HistoryEventType.LOGIN_SUCCESS, expectedApplicationName, authenticationDevice.getName());
 
         subscriptionDAO.loggedIn(subscription);
         addLoginTick(application);
@@ -1305,16 +1278,11 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        PrivateKey privateKey = identityServiceClient.getPrivateKey();
-        PublicKey publicKey = identityServiceClient.getPublicKey();
-        KeyPair keyPair = new KeyPair(publicKey, privateKey);
-
         String userId = userIdMappingService.getApplicationUserId(application.getId(), authenticatedSubject.getUserId());
 
         expectedLogoutChallenge = new Challenge<String>();
 
-        String samlLogoutRequestToken = LogoutRequestFactory.createLogoutRequest(userId, node.getName(), keyPair,
+        String samlLogoutRequestToken = LogoutRequestFactory.createLogoutRequest(userId, node.getName(), nodeKeyStore.getKeyPair(),
                 application.getSsoLogoutUrl().toString(), expectedLogoutChallenge);
 
         String encodedSamlLogoutRequestToken = Base64.encode(samlLogoutRequestToken.getBytes());
@@ -1337,12 +1305,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         if (authenticationState != LOGGING_OUT)
             throw new IllegalStateException("call getLogoutRequest first");
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         LogoutResponse logoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, expectedLogoutChallenge.getValue(),
-                node.getLocation(), authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey(),
-                TrustDomainType.APPLICATION);
+                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.APPLICATION);
         if (null == logoutResponse)
             return null;
 
@@ -1376,13 +1342,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        PrivateKey privateKey = identityServiceClient.getPrivateKey();
-        PublicKey publicKey = identityServiceClient.getPublicKey();
-        KeyPair keyPair = new KeyPair(publicKey, privateKey);
-
         String samlLogoutResponseToken = LogoutResponseFactory.createLogoutResponse(partialLogout, expectedChallengeId, node.getName(),
-                keyPair, expectedTarget);
+                nodeKeyStore.getKeyPair(), expectedTarget);
         String encodedSamlLogoutResponseToken = Base64.encode(samlLogoutResponseToken.getBytes());
         return encodedSamlLogoutResponseToken;
     }

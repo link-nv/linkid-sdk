@@ -7,18 +7,10 @@
 
 package net.link.safeonline.device.sdk.auth.servlet;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyPair;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
 import java.util.Locale;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,18 +20,17 @@ import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
-import net.link.safeonline.sdk.KeyStoreUtils;
+import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
-import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-public class LandingServlet extends AbstractInjectionServlet {
+public abstract class LandingServlet extends AbstractInjectionServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,53 +42,9 @@ public class LandingServlet extends AbstractInjectionServlet {
     @Init(name = "ServletEndpointUrl", optional = true)
     protected String          servletEndpointUrl;
 
-    @Context(name = "KeyStoreResource", optional = true)
-    protected String          p12KeyStoreResourceName;
-
-    @Context(name = "KeyStoreFile", optional = true)
-    protected String          p12KeyStoreFileName;
-
-    @Context(name = "KeyStorePassword", optional = true)
-    protected String          keyStorePassword;
-
-    @Context(name = "KeyStoreType", defaultValue = "pkcs12")
-    protected String          keyStoreType;
-
     @Init(name = "ErrorPage", optional = true)
     protected String          errorPage;
 
-    protected KeyPair         applicationKeyPair;
-
-    protected X509Certificate applicationCertificate;
-
-
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
-
-        super.init(config);
-
-        InputStream keyStoreInputStream = null;
-        if (null != p12KeyStoreResourceName) {
-            Thread currentThread = Thread.currentThread();
-            ClassLoader classLoader = currentThread.getContextClassLoader();
-            keyStoreInputStream = classLoader.getResourceAsStream(p12KeyStoreResourceName);
-            if (null == keyStoreInputStream)
-                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreResourceName);
-        } else if (null != p12KeyStoreFileName) {
-            try {
-                keyStoreInputStream = new FileInputStream(p12KeyStoreFileName);
-            } catch (FileNotFoundException e) {
-                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreFileName);
-            }
-        }
-        if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream, keyStorePassword,
-                    keyStorePassword);
-            applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
-            applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
-        }
-    }
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
@@ -141,9 +88,10 @@ public class LandingServlet extends AbstractInjectionServlet {
         /*
          * Start the authentication using this device.
          */
+        OlasKeyStore nodeKeyStore = getKeyStore();
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
-            handler.init(configParams, applicationCertificate, applicationKeyPair);
+            handler.init(configParams, getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
             handler.initAuthentication(requestWrapper);
         } catch (AuthenticationInitializationException e) {
             redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(e.getMessage()));
@@ -151,4 +99,14 @@ public class LandingServlet extends AbstractInjectionServlet {
         }
         response.sendRedirect(authenticationUrl);
     }
+
+    /**
+     * @return The issuer of the signing keys. For OLAS nodes, this is the node name.
+     */
+    protected abstract String getIssuer();
+
+    /**
+     * @return The signing keystore. For OLAS nodes, this is the node keystore.
+     */
+    protected abstract OlasKeyStore getKeyStore();
 }

@@ -1219,7 +1219,7 @@ public class EntityTest {
         String topic = "test-topic";
         String subject = UUID.randomUUID().toString();
         String content = null;
-        NodeEntity node = new NodeEntity("test-node", "http", "test", 8080, 8443, null, null);
+        NodeEntity node = new NodeEntity("test-node", "http", "test", 8080, 8443, null);
         EndpointReferenceEntity consumer = new EndpointReferenceEntity("dummy.address", node);
         NotificationMessageEntity message = new NotificationMessageEntity(topic, consumer, subject, content);
 

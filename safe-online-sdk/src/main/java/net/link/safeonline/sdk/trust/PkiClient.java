@@ -19,7 +19,7 @@ import java.security.cert.X509Certificate;
 public interface PkiClient {
 
     /**
-     * Gives back the OLAS signing certificate that is used to sign the SAML authentication tokens.
+     * Gives back the OLAS certificate that is used to sign the SAML authentication tokens.
      */
-    X509Certificate getSigningCertificate();
+    X509Certificate getCertificate();
 }

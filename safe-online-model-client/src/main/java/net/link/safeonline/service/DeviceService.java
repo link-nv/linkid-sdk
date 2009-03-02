@@ -29,7 +29,6 @@ import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 
 @Local
@@ -66,9 +65,9 @@ public interface DeviceService extends SafeOnlineService {
 
     void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
                    String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
-                   byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
-            throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
-            NodeNotFoundException, PermissionDeniedException;
+                   String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
+            throws DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException, NodeNotFoundException,
+            PermissionDeniedException;
 
     void removeDevice(String name)
             throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException, PermissionDeniedException;
@@ -108,9 +107,6 @@ public interface DeviceService extends SafeOnlineService {
 
     void updateEnablePath(String deviceName, String enablePath)
             throws DeviceNotFoundException;
-
-    void updateDeviceCertificate(String deviceName, byte[] encodedCertificate)
-            throws DeviceNotFoundException, CertificateEncodingException;
 
     void saveDeviceDescription(DeviceDescriptionEntity description);
 

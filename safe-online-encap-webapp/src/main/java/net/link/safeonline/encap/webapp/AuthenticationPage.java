@@ -12,9 +12,11 @@ import javax.ejb.EJB;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -41,23 +43,26 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long      serialVersionUID       = 1L;
+    private static final long           serialVersionUID       = 1L;
 
-    public static final String     AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String     MOBILE_FIELD_ID        = "mobile";
-    public static final String     OTP_FIELD_ID           = "otp";
-    public static final String     CHALLENGE_BUTTON_ID    = "challenge";
-    public static final String     LOGIN_BUTTON_ID        = "login";
-    public static final String     CANCEL_BUTTON_ID       = "cancel";
+    public static final String          AUTHENTICATION_FORM_ID = "authentication_form";
+    public static final String          MOBILE_FIELD_ID        = "mobile";
+    public static final String          OTP_FIELD_ID           = "otp";
+    public static final String          CHALLENGE_BUTTON_ID    = "challenge";
+    public static final String          LOGIN_BUTTON_ID        = "login";
+    public static final String          CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
+    transient SamlAuthorityService      samlAuthorityService;
 
-    Goal                           goal;
-    ProtocolContext                protocolContext;
-    AuthenticationContext          authenticationContext;
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
+    transient NodeAuthenticationService nodeAuthenticationService;
 
-    private String                 pageTitle;
+    Goal                                goal;
+    ProtocolContext                     protocolContext;
+    AuthenticationContext               authenticationContext;
+
+    private String                      pageTitle;
 
 
     public enum Goal {
@@ -219,10 +224,16 @@ public class AuthenticationPage extends TemplatePage {
                                     throw new DeviceAuthenticationException();
 
                                 // Authentication passed, log the user in.
-                                authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
-                                authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
-                                authenticationContext.setIssuer(EncapConstants.ENCAP_DEVICE_ID);
-                                authenticationContext.setUserId(userId);
+                                try {
+                                    authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
+                                    authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+                                    authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
+                                    authenticationContext.setUserId(userId);
+                                }
+
+                                catch (NodeNotFoundException e) {
+                                    throw new InternalInconsistencyException("Couldn't look up local node.");
+                                }
 
                                 exit(true);
                             break;

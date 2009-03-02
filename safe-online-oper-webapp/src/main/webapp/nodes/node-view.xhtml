@@ -51,28 +51,7 @@
 		</rich:simpleTogglePanel>
 
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" label="#{msgs.authenticationCertificate}">
-
-			<table class="inner">
-				<thead>
-					<tr>
-						<th><h:outputText value="#{msgs.certificateSubject}" /></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><h:outputText styleClass="text block"
-							value="#{selectedNode.authnCertificateSubject}"
-							rendered="#{!empty selectedNode.authnCertificateSubject}" /> <h:outputText
-							value="#{msgs.noCertificate}"
-							rendered="#{empty selectedNode.authnCertificateSubject}" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</rich:simpleTogglePanel>
-
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" label="#{msgs.signingCertificate}">
+			opened="false" label="#{msgs.certificate}">
 
 			<table class="inner">
 				<colgroup />
@@ -85,10 +64,10 @@
 				<tbody>
 					<tr>
 						<td><h:outputText styleClass="text block"
-							value="#{selectedNode.signingCertificateSubject}"
-							rendered="#{!empty selectedNode.signingCertificateSubject}" /> <h:outputText
+							value="#{selectedNode.certificateSubject}"
+							rendered="#{!empty selectedNode.certificateSubject}" /> <h:outputText
 							value="#{msgs.noCertificate}"
-							rendered="#{empty selectedNode.signingCertificateSubject}" /></td>
+							rendered="#{empty selectedNode.certificateSubject}" /></td>
 					</tr>
 				</tbody>
 			</table>

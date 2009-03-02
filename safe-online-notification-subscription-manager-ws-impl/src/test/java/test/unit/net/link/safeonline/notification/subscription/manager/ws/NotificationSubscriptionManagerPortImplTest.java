@@ -33,7 +33,6 @@ import net.lin_k.safe_online.notification.subscription.manager.UnsubscribeReques
 import net.lin_k.safe_online.notification.subscription.manager.UnsubscribeResponse;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.notification.service.NotificationProducerService;
@@ -80,8 +79,6 @@ public class NotificationSubscriptionManagerPortImplTest {
 
     private ApplicationAuthenticationService    mockApplicationAuthenticationService;
 
-    private DeviceAuthenticationService         mockDeviceAuthenticationService;
-
     private NodeAuthenticationService           mockNodeAuthenticationService;
 
     private PkiValidator                        mockPkiValidator;
@@ -105,17 +102,15 @@ public class NotificationSubscriptionManagerPortImplTest {
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockPkiValidator = createMock(PkiValidator.class);
         mockNotificationProducerService = createMock(NotificationProducerService.class);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService,
-                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator, mockNotificationProducerService };
+                mockNodeAuthenticationService, mockPkiValidator, mockNotificationProducerService };
 
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
-        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
         jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
         jndiTestUtils.bindComponent(NotificationProducerService.JNDI_BINDING, mockNotificationProducerService);

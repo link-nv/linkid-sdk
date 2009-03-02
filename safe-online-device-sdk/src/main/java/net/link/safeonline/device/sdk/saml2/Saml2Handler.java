@@ -95,11 +95,12 @@ public class Saml2Handler implements Serializable {
         return instance;
     }
 
-    public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
+    public void init(Map<String, String> configParams, String newIssuer, X509Certificate newApplicationCertificate,
+                     KeyPair newApplicationKeyPair)
             throws DeviceInitializationException {
 
         wsLocation = configParams.get("WsLocation");
-        issuer = configParams.get("DeviceName");
+        issuer = newIssuer;
         applicationCertificate = newApplicationCertificate;
         applicationKeyPair = newApplicationKeyPair;
         if (null == wsLocation)

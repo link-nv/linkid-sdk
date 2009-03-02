@@ -5,8 +5,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -15,12 +13,7 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.RegistrationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
-import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
@@ -55,32 +48,6 @@ public class RegistrationPageTest {
 
         mockPasswordDeviceService = createMock(PasswordDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-
-        // Initialize MBean's
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
 
         wicket = new WicketTester(new PasswordTestApplication());
 

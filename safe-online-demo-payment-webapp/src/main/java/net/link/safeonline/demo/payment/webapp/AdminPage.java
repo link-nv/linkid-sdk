@@ -1,7 +1,7 @@
 package net.link.safeonline.demo.payment.webapp;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
+import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStore;
 import net.link.safeonline.demo.payment.webapp.AccountPage.AccountForm;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
@@ -11,7 +11,7 @@ import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
-import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.web.ForceLogout;
 
 import org.apache.wicket.RedirectToUrlException;
@@ -47,7 +47,13 @@ import org.apache.wicket.model.Model;
 @ForceLogout
 public class AdminPage extends LayoutPage {
 
-    private static final long serialVersionUID = 1L;
+    private static final long             serialVersionUID = 1L;
+
+    @OlasService(keyStore = DemoPaymentKeyStore.class)
+    transient DataClient                  dataClient;
+
+    @OlasService(keyStore = DemoPaymentKeyStore.class)
+    transient NameIdentifierMappingClient nameIdentifierMappingClient;
 
 
     /**
@@ -178,10 +184,6 @@ public class AdminPage extends LayoutPage {
 
                 // Submit was a search query.
                 try {
-                    DataClient dataClient = WicketUtil.getOLASDataService(WicketUtil.toServletRequest(getRequest()),
-                            DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
-                    NameIdentifierMappingClient nameIdentifierMappingClient = WicketUtil.getOLASIdMappingService(
-                            WicketUtil.toServletRequest(getRequest()), DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
                     String userId = nameIdentifierMappingClient.getUserId(name.getObject());
 
                     Attribute<Boolean> attributeValue = dataClient.getAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
@@ -212,10 +214,6 @@ public class AdminPage extends LayoutPage {
 
                 if (juniorField.isVisible()) {
                     try {
-                        DataClient dataClient = WicketUtil.getOLASDataService(WicketUtil.toServletRequest(getRequest()),
-                                DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
-                        NameIdentifierMappingClient nameIdentifierMappingClient = WicketUtil.getOLASIdMappingService(
-                                WicketUtil.toServletRequest(getRequest()), DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
                         String userId = nameIdentifierMappingClient.getUserId(name.getObject());
 
                         if (createJunior) {

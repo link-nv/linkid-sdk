@@ -23,7 +23,7 @@ import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
-import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.keystore.PerformanceKeyStore;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.AbstractChart;
 import net.link.safeonline.performance.scenario.charts.Chart;
@@ -91,7 +91,7 @@ public class BasicScenario implements Scenario {
             LOG.error("OLAS couldn't provide performance keys.", e);
         }
         if (applicationKey == null) {
-            applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+            applicationKey = PerformanceKeyStore.getPrivateKeyEntry();
         }
 
         LOG.debug("building drivers..");

@@ -35,10 +35,8 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -135,38 +133,22 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         Boolean result;
         try {
             XMLSignature xmlSignature = new XMLSignature(tokenSignatureElement, null);
-            LOG.debug("checking token signature");
+            LOG.debug("checking token signature with trust domain: " + trustDomain);
             if (trustDomain == TrustDomainType.NODE) {
                 NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING,
                         NodeAuthenticationService.class);
                 try {
-                    List<X509Certificate> nodeSigningCertificates = nodeAuthenticationService.getSigningCertificates(issuerName);
+                    List<X509Certificate> nodeCertificates = nodeAuthenticationService.getCertificates(issuerName);
                     result = false;
-                    for (X509Certificate nodeSigningCertificate : nodeSigningCertificates) {
-                        result = xmlSignature.checkSignatureValue(nodeSigningCertificate);
+                    for (X509Certificate nodeCertificate : nodeCertificates) {
+                        result = xmlSignature.checkSignatureValue(nodeCertificate);
                         if (result == true) {
                             break;
                         }
                     }
                 } catch (NodeNotFoundException e) {
-                    LOG.debug("unknown token issuer: " + issuerName);
-                    throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
-                }
-            } else if (trustDomain == TrustDomainType.DEVICE) {
-                DeviceAuthenticationService deviceAuthenticationService = EjbUtils.getEJB(DeviceAuthenticationService.JNDI_BINDING,
-                        DeviceAuthenticationService.class);
-                try {
-                    List<X509Certificate> deviceCertificates = deviceAuthenticationService.getCertificates(issuerName);
-                    result = false;
-                    for (X509Certificate deviceCertificate : deviceCertificates) {
-                        result = xmlSignature.checkSignatureValue(deviceCertificate);
-                        if (result == true) {
-                            break;
-                        }
-                    }
-                } catch (DeviceNotFoundException e) {
-                    LOG.debug("unknown token issuer: " + issuerName);
-                    throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
+                    LOG.debug("token issuer (node) not found: " + issuerName);
+                    throw createSOAPFaultException("token issuer (node) not found: " + issuerName, "InvalidSecurityToken");
                 }
             } else if (trustDomain == TrustDomainType.APPLICATION) {
                 ApplicationAuthenticationService applicationAuthenticationService = EjbUtils.getEJB(
@@ -181,12 +163,13 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                         }
                     }
                 } catch (ApplicationNotFoundException e) {
-                    LOG.debug("unknown token issuer: " + issuerName);
-                    throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
+                    LOG.debug("token issuer (application) not found: " + issuerName);
+                    throw createSOAPFaultException("token issuer (application) not found: " + issuerName, "InvalidSecurityToken");
                 }
             } else {
-                LOG.debug("unknown token issuer: " + issuerName);
-                throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
+                LOG.debug("token domain unknown; trustDomain: " + trustDomain + "; issuer: " + issuerName);
+                throw createSOAPFaultException("token domain unknown; trustDomain: " + trustDomain + "; issuer: " + issuerName,
+                        "InvalidSecurityToken");
             }
         } catch (XMLSecurityException e) {
             LOG.error("XML signature error: " + e.getMessage(), e);

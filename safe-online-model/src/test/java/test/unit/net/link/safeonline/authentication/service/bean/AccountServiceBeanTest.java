@@ -7,69 +7,71 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import static org.easymock.EasyMock.checkOrder;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
 import javax.persistence.EntityManager;
 
-import junit.framework.TestCase;
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.AccountServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.test.util.JmxTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 
-public class AccountServiceBeanTest extends TestCase {
+public class AccountServiceBeanTest {
 
     private EntityTestManager entityTestManager;
+    private KeyService        mockKeyService;
+    private JndiTestUtils     jndiTestUtils;
 
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
             throws Exception {
-
-        super.setUp();
 
         entityTestManager = new EntityTestManager();
         entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
         EntityManager entityManager = entityTestManager.getEntityManager();
 
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        mockKeyService = createMock(KeyService.class);
 
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
 
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -77,14 +79,15 @@ public class AccountServiceBeanTest extends TestCase {
         entityTestManager.refreshEntityManager();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
             throws Exception {
 
         entityTestManager.tearDown();
-        super.tearDown();
+        jndiTestUtils.tearDown();
     }
 
+    @Test
     public void testRemoveAccount()
             throws Exception {
 
@@ -102,5 +105,7 @@ public class AccountServiceBeanTest extends TestCase {
         AccountService accountService = EJBTestUtils.newInstance(AccountServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, testLogin, SafeOnlineRoles.USER_ROLE);
         accountService.removeAccount(resultSubject.getUserId());
+
+        verify(mockKeyService);
     }
 }
