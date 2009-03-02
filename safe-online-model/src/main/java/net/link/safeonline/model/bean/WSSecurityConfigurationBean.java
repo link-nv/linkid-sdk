@@ -107,8 +107,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
      */
     public X509Certificate getCertificate() {
 
-        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
-        return olasKeyStore.getCertificate();
+        return new SafeOnlineNodeKeyStore().getCertificate();
     }
 
     /**
@@ -116,8 +115,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
      */
     public PrivateKey getPrivateKey() {
 
-        SafeOnlineNodeKeyStore olasKeyStore = new SafeOnlineNodeKeyStore();
-        return olasKeyStore.getPrivateKey();
+        return new SafeOnlineNodeKeyStore().getPrivateKey();
     }
 
 }
