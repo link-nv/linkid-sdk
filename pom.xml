@@ -1167,8 +1167,6 @@
 		</module>
 		<module>safe-online-model-otpoversms
 		</module>
-		<module>safe-online-otpoversms-keystore
-		</module>
 		<module>safe-online-otpoversms-startup-runtime
 		</module>
 		<module>safe-online-otpoversms-webapp

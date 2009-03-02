@@ -1,5 +1,6 @@
 package test.unit.net.link.safeonline.model.option;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -9,6 +10,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.UUID;
@@ -85,6 +88,8 @@ import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
@@ -107,13 +112,12 @@ import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.test.util.JmxTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -139,6 +143,8 @@ public class OptionDeviceTest {
 
     private String                  testWrongImei;
 
+    private KeyService              mockKeyService;
+
     private static Class<?>[]       container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class, SubscriptionDAOBean.class,
             AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
             ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class, ConfigItemDAOBean.class, TaskDAOBean.class,
@@ -151,6 +157,14 @@ public class OptionDeviceTest {
             EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class, AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class,
             NotificationMessageDAOBean.class };
 
+    private static JndiTestUtils    jndiTestUtils;
+
+
+    @BeforeClass
+    public static void init() {
+
+        jndiTestUtils = new JndiTestUtils();
+    }
 
     @Before
     public void setUp()
@@ -170,36 +184,27 @@ public class OptionDeviceTest {
 
         EntityManager entityManager = entityTestManager.getEntityManager();
 
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        mockKeyService = createMock(KeyService.class);
+        checkOrder(mockKeyService, false);
 
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
+        KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
 
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(8);
+        replay(mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
         systemStartable.postStart();
 
         Startable passwordStartable = EJBTestUtils.newInstance(OptionStartableBean.class, container, entityManager);
         passwordStartable.postStart();
+
+        verify(mockKeyService);
+        reset(mockKeyService);
 
         testedInstance = new OptionDeviceServiceBean();
         EJBTestUtils.inject(testedInstance, entityManager);
@@ -224,7 +229,7 @@ public class OptionDeviceTest {
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO };
+        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockKeyService };
 
         // setup
         testUserId = UUID.randomUUID().toString();
@@ -233,6 +238,13 @@ public class OptionDeviceTest {
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+    }
+
+    @After
+    public void tearDown()
+            throws Exception {
+
+        jndiTestUtils.tearDown();
     }
 
     @Test
