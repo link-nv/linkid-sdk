@@ -98,6 +98,7 @@ import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
+import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
@@ -172,6 +173,9 @@ public class AuthenticationPortImplTest {
             throws Exception {
 
         LOG.debug("setup");
+
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
