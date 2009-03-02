@@ -171,7 +171,8 @@ public class PasswordStartableBean extends AbstractInitBean {
         passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0, true);
         passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1, true);
         passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType, 2, true);
-        passwordDeviceAttributeType.addMember(passwordDeviceDisableAttributeType, 3, true);
+        passwordDeviceAttributeType.addMember(passwordNewAlgorithmAttributeType, 3, true);
+        passwordDeviceAttributeType.addMember(passwordDeviceDisableAttributeType, 4, true);
         attributeTypes.add(passwordDeviceAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, Locale.ENGLISH.getLanguage(),
                 "Password", null));

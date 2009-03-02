@@ -54,19 +54,14 @@ public class RegistrationPage extends TemplatePage {
 
     ProtocolContext                 protocolContext;
 
-    boolean                         alreadyRegistered    = false;
+    private Link<String>            alreadyRegistered;
+
+    private RegistrationForm        registrationForm;
 
 
     public RegistrationPage() {
 
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-
-        try {
-            alreadyRegistered = passwordDeviceService.isPasswordConfigured(protocolContext.getSubject());
-        } catch (SubjectNotFoundException e) {
-            error(getLocalizer().getString("errorSubjectNotFound", this));
-            return;
-        }
 
         getHeader();
         getSidebar(localize("helpRegisterPassword"));
@@ -75,16 +70,10 @@ public class RegistrationPage extends TemplatePage {
         progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
 
-        getContent().add(new Link<String>("already_registered") {
+        getContent().add(alreadyRegistered = new Link<String>("already_registered") {
 
             private static final long serialVersionUID = 1L;
 
-
-            @Override
-            public boolean isVisible() {
-
-                return alreadyRegistered;
-            }
 
             @Override
             public void onClick() {
@@ -93,7 +82,30 @@ public class RegistrationPage extends TemplatePage {
             }
         });
 
-        getContent().add(new RegistrationForm(REGISTRATION_FORM_ID));
+        getContent().add(registrationForm = new RegistrationForm(REGISTRATION_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        try {
+            boolean passwordExists = passwordDeviceService.isPasswordConfigured(protocolContext.getSubject());
+
+            alreadyRegistered.setVisible(passwordExists);
+            registrationForm.setVisible(!passwordExists);
+        }
+
+        catch (SubjectNotFoundException e) {
+            error(getLocalizer().getString("errorSubjectNotFound", this));
+
+            alreadyRegistered.setVisible(false);
+            registrationForm.setVisible(false);
+        }
+
+        super.onBeforeRender();
     }
 
     /**
@@ -171,15 +183,6 @@ public class RegistrationPage extends TemplatePage {
             add(cancel);
 
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isVisible() {
-
-            return !alreadyRegistered;
         }
     }
 

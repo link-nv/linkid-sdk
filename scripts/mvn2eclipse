@@ -46,7 +46,7 @@ for arg in $(getArgs bmjosh "$@"); do
 			'lhunath' \
 			\
 			''      "Without options: Run as if -b, -m and -j were given." \
-			'-b'    "Symlink JKS and .properties files from the Maven target/ directory into the Eclipse's build directory." \
+			'-b'    "Symlink JKS and .properties files from the Maven target/ directory into the Eclipse build directory." \
 			'-m'    "Run Maven's eclipse:eclipse goal to create eclipse project configurations from Maven's pom.xml files." \
 			'-j'    "Apply eclipse classpath fixes on existing eclipse configuration." \
 			'-o'    "Run Maven in offline mode; preventing it from checking for remote artifacts or javadoc/sources." \

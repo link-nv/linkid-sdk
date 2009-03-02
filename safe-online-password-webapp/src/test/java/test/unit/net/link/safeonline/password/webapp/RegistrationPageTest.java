@@ -9,11 +9,9 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.RegistrationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -35,25 +33,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class RegistrationPageTest extends TestCase {
+public class RegistrationPageTest {
 
     private PasswordDeviceService mockPasswordDeviceService;
 
     private SamlAuthorityService  mockSamlAuthorityService;
-
-    private HelpdeskManager       mockHelpdeskManager;
 
     private WicketTester          wicket;
 
     private JndiTestUtils         jndiTestUtils;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         WicketUtil.setUnitTesting(true);
 
@@ -62,7 +55,6 @@ public class RegistrationPageTest extends TestCase {
 
         mockPasswordDeviceService = createMock(PasswordDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        mockHelpdeskManager = createMock(HelpdeskManager.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -94,7 +86,6 @@ public class RegistrationPageTest extends TestCase {
 
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {
@@ -117,20 +108,23 @@ public class RegistrationPageTest extends TestCase {
         protocolContext.setSubject(userId);
         protocolContext.setNodeName(nodeName);
 
-        // Registration Page: Verify.
-        RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
-
         // setup
+        RegistrationPage registrationPage = new RegistrationPage();
         EJBTestUtils.inject(registrationPage, mockPasswordDeviceService);
         EJBTestUtils.inject(registrationPage, mockSamlAuthorityService);
 
         // stubs
+        expect(mockPasswordDeviceService.isPasswordConfigured(userId)).andReturn(false);
         mockPasswordDeviceService.register(nodeName, userId, password);
+        expect(mockPasswordDeviceService.isPasswordConfigured(userId)).andReturn(true);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
         replay(mockPasswordDeviceService, mockSamlAuthorityService);
+
+        // Registration Page: Verify.
+        wicket.startPage(registrationPage);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
         // operate
         FormTester registrationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
@@ -155,19 +149,22 @@ public class RegistrationPageTest extends TestCase {
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
         protocolContext.setSubject(userId);
 
-        // Registration Page: Verify.
-        RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
-
         // setup
+        RegistrationPage registrationPage = new RegistrationPage();
         EJBTestUtils.inject(registrationPage, mockPasswordDeviceService);
-        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
+        EJBTestUtils.inject(registrationPage, mockSamlAuthorityService);
 
         // stubs
-        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockPasswordDeviceService.isPasswordConfigured(userId)).andReturn(false);
+        expect(mockPasswordDeviceService.isPasswordConfigured(userId)).andReturn(false);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(mockPasswordDeviceService, mockHelpdeskManager);
+        replay(mockPasswordDeviceService, mockSamlAuthorityService);
+
+        // Registration Page: Verify.
+        wicket.startPage(registrationPage);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
         // operate
         FormTester registrationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
@@ -176,7 +173,7 @@ public class RegistrationPageTest extends TestCase {
         registrationForm.submit(RegistrationPage.SAVE_BUTTON_ID);
 
         // verify
-        verify(mockPasswordDeviceService, mockHelpdeskManager);
+        verify(mockPasswordDeviceService, mockSamlAuthorityService);
 
         wicket.assertRenderedPage(RegistrationPage.class);
         wicket.assertErrorMessages(new String[] { RegistrationPage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });

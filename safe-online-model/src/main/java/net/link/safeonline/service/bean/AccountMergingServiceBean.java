@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.DenyAll;
 import javax.ejb.EJB;
+import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -65,43 +66,43 @@ import org.jboss.annotation.security.SecurityDomain;
 @LocalBinding(jndiBinding = AccountMergingService.JNDI_BINDING)
 public class AccountMergingServiceBean implements AccountMergingService {
 
-    private static final Log       LOG = LogFactory.getLog(AccountMergingServiceBean.class);
+    private static final Log                 LOG = LogFactory.getLog(AccountMergingServiceBean.class);
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService                   subjectService;
 
     @EJB(mappedName = SubjectManager.JNDI_BINDING)
-    private SubjectManager         subjectManager;
+    private SubjectManager                   subjectManager;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO   subjectIdentifierDAO;
+    private SubjectIdentifierDAO             subjectIdentifierDAO;
 
     @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
-    private SubscriptionDAO        subscriptionDAO;
+    private SubscriptionDAO                  subscriptionDAO;
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
-    private DevicePolicyService    devicePolicyService;
+    private DevicePolicyService              devicePolicyService;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeDAO                     attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
+    private AttributeTypeDAO                 attributeTypeDAO;
 
     @EJB(mappedName = AccountService.JNDI_BINDING)
-    private AccountService         accountService;
+    private AccountService                   accountService;
 
-    private AttributeManagerLWBean attributeManager;
+    private transient AttributeManagerLWBean attributeManager;
 
 
+    @PostActivate
     @PostConstruct
-    public void postConstructCallback() {
+    public void activateCallback() {
 
         /*
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        LOG.debug("postConstruct");
         attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 

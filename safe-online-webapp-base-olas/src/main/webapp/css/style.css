@@ -243,9 +243,6 @@ a:hover {
 }
 
 /****************************************************** SIDE MENU **/
-#sidebox img {
-    border:             1px solid black;
-}
 #sidebox ul {
     display:            block;
     float:              left;

@@ -12,18 +12,20 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import java.net.ConnectException;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.otpoversms.webapp.AuthenticationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -39,7 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class AuthenticationPageTest extends TestCase {
+public class AuthenticationPageTest {
 
     private OtpOverSmsDeviceService mockOtpOverSmsDeviceService;
 
@@ -54,12 +56,9 @@ public class AuthenticationPageTest extends TestCase {
     private JndiTestUtils           jndiTestUtils;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         WicketUtil.setUnitTesting(true);
 
@@ -71,11 +70,12 @@ public class AuthenticationPageTest extends TestCase {
         mockHelpdeskManager = createMock(HelpdeskManager.class);
         mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
 
+        jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
+
         wicket = new WicketTester(new OtpOverSmsTestApplication());
 
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {
@@ -191,6 +191,8 @@ public class AuthenticationPageTest extends TestCase {
         // setup
         String mobile = "+32 494 575 697";
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
+        String otp = UUID.randomUUID().toString();
+        String pin = "0000";
 
         // Authentication Page: Verify.
         wicket.startPage(AuthenticationPage.class);
@@ -203,16 +205,40 @@ public class AuthenticationPageTest extends TestCase {
 
         // stubs
         mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
-        EasyMock.expectLastCall().andThrow(new DeviceDisabledException());
-        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(mockOtpOverSmsDeviceService, mockHelpdeskManager);
+        replay(mockOtpOverSmsDeviceService);
 
         // operate
         FormTester requestOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID);
         requestOtpForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, mobile);
         requestOtpForm.submit(AuthenticationPage.REQUEST_OTP_BUTTON_ID);
+
+        // verify
+        verify(mockOtpOverSmsDeviceService);
+
+        // verify
+        wicket.getLastRenderedPage();
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID, Form.class);
+
+        // setup
+        EasyMock.reset(mockOtpOverSmsDeviceService);
+
+        // stubs
+        mockOtpOverSmsDeviceService.authenticate(pin, otp);
+        EasyMock.expectLastCall().andThrow(new DeviceDisabledException());
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+
+        // prepare
+        replay(mockOtpOverSmsDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+
+        // operate
+        FormTester verifyOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
+        verifyOtpForm.setValue(AuthenticationPage.OTP_FIELD_ID, otp);
+        verifyOtpForm.setValue(AuthenticationPage.PIN_FIELD_ID, pin);
+        verifyOtpForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
         verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
@@ -244,7 +270,7 @@ public class AuthenticationPageTest extends TestCase {
 
         // stubs
         mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
-        expectLastCall().andThrow(new ConnectException());
+        expectLastCall().andThrow(new SmsServiceException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -308,7 +334,7 @@ public class AuthenticationPageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.authenticate(pin, otp)).andStubReturn(null);
+        expect(mockOtpOverSmsDeviceService.authenticate(pin, otp)).andThrow(new DeviceAuthenticationException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

@@ -8,6 +8,7 @@ package net.link.safeonline.sms.clickatell;
 
 import net.link.safeonline.sms.clickatell.exception.ClickatellException;
 
+
 /**
  * <h2>{@link ClickatellChannel}<br>
  * <sub>Abstracts the different channels that are supported by Clickatell</sub></h2>
@@ -24,6 +25,14 @@ import net.link.safeonline.sms.clickatell.exception.ClickatellException;
  */
 public interface ClickatellChannel {
 
+    /**
+     * This methods sends the given regular text as an sms to the specified number.
+     * 
+     * @param mobile
+     *            The mobile number to which an sms needs to be sent
+     * @param message
+     *            The regular text content of the message
+     */
     public void send(String mobile, String message)
             throws ClickatellException;
 

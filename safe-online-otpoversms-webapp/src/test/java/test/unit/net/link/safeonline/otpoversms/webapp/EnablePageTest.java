@@ -7,15 +7,15 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 
-import java.net.ConnectException;
 import java.util.UUID;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.otpoversms.webapp.EnablePage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -159,7 +159,7 @@ public class EnablePageTest {
 
         // stubs
         mockOtpOverSmsDeviceService.requestOtp(mobile);
-        expectLastCall().andThrow(new ConnectException());
+        expectLastCall().andThrow(new SmsServiceException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -228,7 +228,7 @@ public class EnablePageTest {
         // stubs
         expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
         mockOtpOverSmsDeviceService.enable(userId, pin, otp);
-        expectLastCall().andThrow(new PermissionDeniedException("Incorrect PIN"));
+        expectLastCall().andThrow(new DeviceAuthenticationException("Incorrect PIN"));
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -243,6 +243,6 @@ public class EnablePageTest {
         verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
         wicket.assertRenderedPage(EnablePage.class);
-        wicket.assertErrorMessages(new String[] { "errorPinNotCorrect" });
+        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
     }
 }

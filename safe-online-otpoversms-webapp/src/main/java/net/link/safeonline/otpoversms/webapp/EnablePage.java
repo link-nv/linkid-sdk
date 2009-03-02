@@ -8,10 +8,9 @@
 package net.link.safeonline.otpoversms.webapp;
 
 import javax.ejb.EJB;
-import javax.mail.AuthenticationFailedException;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -104,6 +103,7 @@ public class EnablePage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
         TextField<PhoneNumber>    mobileField;
+        private Button            requestOtpButton;
 
 
         public RequestOtpForm(String id) {
@@ -113,11 +113,10 @@ public class EnablePage extends TemplatePage {
             mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(
                     new PhoneNumber(protocolContext.getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
-            mobileField.setRequired(true);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
 
-            add(new Button(REQUEST_OTP_BUTTON_ID) {
+            add(requestOtpButton = new Button(REQUEST_OTP_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -178,7 +177,7 @@ public class EnablePage extends TemplatePage {
         @Override
         protected void onBeforeRender() {
 
-            focus(mobileField);
+            focus(requestOtpButton);
 
             super.onBeforeRender();
         }
@@ -228,7 +227,7 @@ public class EnablePage extends TemplatePage {
                         exit();
                     }
 
-                    catch (AuthenticationFailedException e) {
+                    catch (DeviceAuthenticationException e) {
                         otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add("mobile otp: verification failed for mobile " + protocolContext.getAttribute(),
                                 LogLevelType.ERROR);
@@ -238,10 +237,6 @@ public class EnablePage extends TemplatePage {
                     } catch (DeviceRegistrationNotFoundException e) {
                         pinField.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add("enable: device registration not found", LogLevelType.ERROR);
-                    } catch (PermissionDeniedException e) {
-                        pinField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: pin not correct",
-                                LogLevelType.ERROR);
                     }
                 }
             });

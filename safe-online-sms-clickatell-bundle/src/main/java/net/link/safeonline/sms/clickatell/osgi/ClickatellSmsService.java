@@ -26,8 +26,8 @@ import net.link.safeonline.sms.clickatell.ClickatellChannel;
 import net.link.safeonline.sms.clickatell.exception.ClickatellException;
 import net.link.safeonline.sms.clickatell.impl.ClickatellSoapChannel;
 
-import org.osgi.service.log.LogService;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <sub>Clickatell sms service.</sub></h2>
@@ -44,33 +44,49 @@ import org.osgi.service.log.LogService;
  */
 public class ClickatellSmsService implements SmsService {
 
-    public ClickatellSmsService() {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ClickatellSmsService.class);
 
-    }
+	public ClickatellSmsService() {
 
-    /**
-     * {@inheritDoc}
-     */
-    public void sendSms(String mobile, String message)
-            throws SmsServiceException {
+	}
 
-        LogService LOG = ClickatellSmsServiceActivator.LOG;
-        OlasConfigurationService configuration = ClickatellSmsServiceActivator.configuration;
+	/**
+	 * {@inheritDoc}
+	 */
+	public void sendSms(String mobile, String message)
+			throws SmsServiceException {
+		OlasConfigurationService configuration = ClickatellSmsServiceActivator.configuration;
 
-        String username = (String) configuration.getConfigurationValue(CONFIG_GROUP_NAME, CONFIG_USERNAME, CONFIG_DEFAULT_USERNAME);
-        String password = (String) configuration.getConfigurationValue(CONFIG_GROUP_NAME, CONFIG_PASSWORD, CONFIG_DEFAULT_PASSWORD);
-        String apiId = (String) configuration.getConfigurationValue(CONFIG_GROUP_NAME, CONFIG_API_ID, CONFIG_DEFAULT_API_ID);
-        String urlString = (String) configuration.getConfigurationValue(CONFIG_GROUP_NAME, CONFIG_URL, CONFIG_DEFAULT_URL);
+		String username = (String) configuration.getConfigurationValue(
+				CONFIG_GROUP_NAME, CONFIG_USERNAME, CONFIG_DEFAULT_USERNAME);
+		String password = (String) configuration.getConfigurationValue(
+				CONFIG_GROUP_NAME, CONFIG_PASSWORD, CONFIG_DEFAULT_PASSWORD);
+		String apiId = (String) configuration.getConfigurationValue(
+				CONFIG_GROUP_NAME, CONFIG_API_ID, CONFIG_DEFAULT_API_ID);
+		String urlString = (String) configuration.getConfigurationValue(
+				CONFIG_GROUP_NAME, CONFIG_URL, CONFIG_DEFAULT_URL);
 
-        LOG.log(LogService.LOG_DEBUG, "send sms to mobile " + mobile + " with message " + message);
+		LOG.debug("send sms to mobile " + mobile + " with message " + message);
 
-        try {
-            ClickatellChannel channel = new ClickatellSoapChannel(new URL(urlString), Integer.parseInt(apiId), username, password);
-            channel.send(mobile, message);
-        } catch (MalformedURLException e) {
-            throw new SmsServiceException("Invalid URL", e);
-        } catch (ClickatellException e) {
-            throw new SmsServiceException("Error while sending SMS via Clickatell", e);
-        }
-    }
+		// Need to switch classloaders: the current thread classloaders is the
+		// jboss one we need the osgi one to play nice with axis.
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		try {
+			Thread.currentThread().setContextClassLoader(
+					this.getClass().getClassLoader());
+			ClickatellChannel channel = new ClickatellSoapChannel(new URL(
+					urlString), Integer.parseInt(apiId), username, password);
+			channel.send(mobile, message);
+		} catch (MalformedURLException e) {
+			LOG.debug("Malformed URL", e);
+			throw new SmsServiceException("Invalid URL", e);
+		} catch (ClickatellException e) {
+			LOG.debug("Got an exception from the Clickatell implementation", e);
+			throw new SmsServiceException(
+					"Error while sending SMS via Clickatell", e);
+		} finally {
+			Thread.currentThread().setContextClassLoader(cl);
+		}
+	}
 }

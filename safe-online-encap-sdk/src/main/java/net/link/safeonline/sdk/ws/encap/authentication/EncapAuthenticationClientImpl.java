@@ -57,7 +57,8 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
         LOG.debug("response challenge ID: " + response.getChallengeId());
         LOG.debug("response status: " + response.getStatus());
         if (response.getStatus() == EncapConstants.ENCAP_FAILURE)
-            return null;
+            throw new RemoteException(response.getAdditionalInfo());
+
         return response.getChallengeId();
     }
 

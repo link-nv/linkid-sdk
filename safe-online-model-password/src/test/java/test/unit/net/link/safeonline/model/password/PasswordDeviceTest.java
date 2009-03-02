@@ -5,9 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -17,7 +15,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
@@ -28,6 +25,7 @@ import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
@@ -212,6 +210,7 @@ public class PasswordDeviceTest {
         passwordStartable.postStart();
 
         testedInstance = new PasswordDeviceServiceBean();
+        EJBTestUtils.inject(testedInstance, entityManager);
 
         AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeDAO);
@@ -245,14 +244,10 @@ public class PasswordDeviceTest {
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
-
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.commit();
-        entityTransaction.begin();
     }
 
     @Test
-    public void testRegisterAuthenticateAndRemove()
+    public void testRegisterAuthenticateRemoveAndReRegisterAuthenticate()
             throws Exception {
 
         // expectations
@@ -268,8 +263,7 @@ public class PasswordDeviceTest {
         testedInstance.register(testNode, testUserId, testPassword);
 
         assertTrue(testedInstance.isPasswordConfigured(testUserId));
-        String resultUserId = testedInstance.authenticate(testUserId, testPassword);
-        assertEquals(testUserId, resultUserId);
+        testedInstance.authenticate(testUserId, testPassword);
 
         // verify
         verify(mockObjects);
@@ -280,6 +274,9 @@ public class PasswordDeviceTest {
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID))).andReturn(new HistoryEntity());
 
+        // prepare
+        replay(mockObjects);
+
         // operate
         testedInstance.remove(testUserId);
 
@@ -289,6 +286,29 @@ public class PasswordDeviceTest {
             fail("Device registration was still found after removing the device.");
         } catch (DeviceRegistrationNotFoundException e) {
         }
+
+        // verify
+        verify(mockObjects);
+        reset(mockObjects);
+
+        // expectations
+        expect(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                        SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        assertFalse(testedInstance.isPasswordConfigured(testUserId));
+        testedInstance.register(testNode, testUserId, testPassword);
+
+        assertTrue(testedInstance.isPasswordConfigured(testUserId));
+        testedInstance.authenticate(testUserId, testPassword);
+
+        // verify
+        verify(mockObjects);
     }
 
     @Test
@@ -307,8 +327,12 @@ public class PasswordDeviceTest {
         // operate
         testedInstance.register(testNode, testUserId, testPassword);
 
-        String resultUserId = testedInstance.authenticate(testUserId, testWrongPassword);
-        assertNull(resultUserId);
+        try {
+            testedInstance.authenticate(testUserId, testWrongPassword);
+            fail("Authentication didn't fail, even though the password was incorrect.");
+        } catch (DeviceAuthenticationException e) {
+            // expected.
+        }
 
         // verify
         verify(mockObjects);
@@ -336,8 +360,7 @@ public class PasswordDeviceTest {
         testedInstance.register(testNode, testUserId, testPassword);
         testedInstance.update(testUserId, testPassword, testNewPassword);
 
-        String resultUserId = testedInstance.authenticate(testUserId, testNewPassword);
-        assertEquals(testUserId, resultUserId);
+        testedInstance.authenticate(testUserId, testNewPassword);
 
         // verify
         verify(mockObjects);
@@ -352,7 +375,7 @@ public class PasswordDeviceTest {
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID))).andReturn(new HistoryEntity());
         expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID))).andReturn(new HistoryEntity());
 
         // prepare
@@ -383,8 +406,7 @@ public class PasswordDeviceTest {
         // operate
         testedInstance.enable(testUserId, testPassword);
 
-        String resultUserId = testedInstance.authenticate(testUserId, testPassword);
-        assertEquals(testUserId, resultUserId);
+        testedInstance.authenticate(testUserId, testPassword);
 
         // verify
         verify(mockObjects);

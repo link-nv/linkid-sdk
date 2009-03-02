@@ -44,6 +44,7 @@ import net.lin_k.safe_online.auth.GetDeviceAuthenticationPort;
 import net.lin_k.safe_online.auth.GetDeviceAuthenticationService;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
@@ -356,7 +357,7 @@ public class OtpOverSmsAuthenticationPortImplTest {
 
         // expectations
         expect(mockOtpOverSmsDeviceServce.isChallenged()).andReturn(true);
-        expect(mockOtpOverSmsDeviceServce.authenticate(testPin, testOtp)).andReturn(null);
+        expect(mockOtpOverSmsDeviceServce.authenticate(testPin, testOtp)).andThrow(new DeviceAuthenticationException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
