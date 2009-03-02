@@ -21,8 +21,10 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.osgi.sms.exception.SmsServiceException;
@@ -43,17 +45,19 @@ import org.junit.Test;
 
 public class AuthenticationPageTest {
 
-    private OtpOverSmsDeviceService mockOtpOverSmsDeviceService;
+    private OtpOverSmsDeviceService   mockOtpOverSmsDeviceService;
 
-    private SamlAuthorityService    mockSamlAuthorityService;
+    private SamlAuthorityService      mockSamlAuthorityService;
 
-    private HelpdeskManager         mockHelpdeskManager;
+    private HelpdeskManager           mockHelpdeskManager;
 
-    private SecurityAuditLogger     mockSecurityAuditLogger;
+    private SecurityAuditLogger       mockSecurityAuditLogger;
 
-    private WicketTester            wicket;
+    private WicketTester              wicket;
 
-    private JndiTestUtils           jndiTestUtils;
+    private JndiTestUtils             jndiTestUtils;
+
+    private NodeAuthenticationService mockNodeAuthenticationService;
 
 
     @Before
@@ -65,6 +69,7 @@ public class AuthenticationPageTest {
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
 
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockOtpOverSmsDeviceService = createMock(OtpOverSmsDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
@@ -102,6 +107,7 @@ public class AuthenticationPageTest {
         // setup
         jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
+        EJBTestUtils.inject(authenticationPage, mockNodeAuthenticationService);
 
         // stubs
         mockOtpOverSmsDeviceService.requestOtp(convertedMobile);
@@ -128,9 +134,10 @@ public class AuthenticationPageTest {
         // stubs
         expect(mockOtpOverSmsDeviceService.authenticate(pin, otp)).andStubReturn(userId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(new NodeEntity("Test", null, null, 0, 0, null));
 
         // prepare
-        replay(mockOtpOverSmsDeviceService, mockSamlAuthorityService);
+        replay(mockOtpOverSmsDeviceService, mockSamlAuthorityService, mockNodeAuthenticationService);
 
         // operate
         FormTester verifyOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);

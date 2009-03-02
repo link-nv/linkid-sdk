@@ -14,9 +14,11 @@ import javax.servlet.http.Cookie;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.option.OptionDeviceService;
 import net.link.safeonline.option.webapp.AuthenticationPage;
@@ -39,16 +41,17 @@ import org.junit.Test;
 
 public class AuthenticationPageTest {
 
-    private JndiTestUtils        jndiTestUtils;
-    private OptionDeviceService  mockOptionDeviceService;
-    private SamlAuthorityService mockSamlAuthorityService;
-    private HelpdeskManager      mockHelpdeskManager;
-    private WicketTester         wicket;
+    private JndiTestUtils             jndiTestUtils;
+    private OptionDeviceService       mockOptionDeviceService;
+    private SamlAuthorityService      mockSamlAuthorityService;
+    private HelpdeskManager           mockHelpdeskManager;
+    private WicketTester              wicket;
+    private NodeAuthenticationService mockNodeAuthenticationService;
 
-    private static final String  TEST_APPLICATION = "test-application";
-    private static final String  TEST_USERID      = UUID.randomUUID().toString();
-    private static final String  TEST_IMEI        = "012345678912345";
-    private static final String  TEST_PIN         = "0000";
+    private static final String       TEST_APPLICATION = "test-application";
+    private static final String       TEST_USERID      = UUID.randomUUID().toString();
+    private static final String       TEST_IMEI        = "012345678912345";
+    private static final String       TEST_PIN         = "0000";
 
 
     @Before
@@ -58,6 +61,7 @@ public class AuthenticationPageTest {
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
 
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockOptionDeviceService = createMock(OptionDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
@@ -93,6 +97,7 @@ public class AuthenticationPageTest {
         // Inject EJBs.
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockOptionDeviceService);
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockSamlAuthorityService);
+        EJBTestUtils.inject(wicket.getLastRenderedPage(), mockNodeAuthenticationService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // Setup mocks.
@@ -125,7 +130,8 @@ public class AuthenticationPageTest {
 
         // Describe Expected Scenario.
         expect(mockOptionDeviceService.authenticate(TEST_IMEI)).andStubReturn(TEST_USERID);
-        replay(mockOptionDeviceService);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(new NodeEntity("Test", null, null, 0, 0, null));
+        replay(mockOptionDeviceService, mockNodeAuthenticationService);
 
         // Pass the PIN for our device.
         form.setValue(AuthenticationPage.PIN_FIELD_ID, TEST_PIN);
