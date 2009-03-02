@@ -124,9 +124,6 @@ public class BeIdStartableBean extends AbstractInitBean {
                 null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, "nl", "BeID", null));
 
-        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
-        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
-
         ResourceBundle properties = ResourceBundle.getBundle("beid_config");
         String nodeName = properties.getString("olas.node.name");
         String beidWebappName = properties.getString("beid.webapp.name");
