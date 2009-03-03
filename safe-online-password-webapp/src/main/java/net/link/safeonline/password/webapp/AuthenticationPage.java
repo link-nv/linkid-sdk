@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -45,13 +46,15 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long             serialVersionUID       = 1L;
+    private static final long             serialVersionUID             = 1L;
 
-    public static final String            AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String            LOGIN_NAME_FIELD_ID    = "loginName";
-    public static final String            PASSWORD_FIELD_ID      = "password";
-    public static final String            LOGIN_BUTTON_ID        = "login";
-    public static final String            CANCEL_BUTTON_ID       = "cancel";
+    public static final String            AUTHENTICATION_FORM_ID       = "authentication_form";
+    public static final String            LOGIN_NAME_FIELD_ID          = "loginName";
+    public static final String            LOGIN_NAME_FEEDBACK_FIELD_ID = "loginName_feedback";
+    public static final String            PASSWORD_FIELD_ID            = "password";
+    public static final String            PASSWORD_FEEDBACK_FIELD_ID   = "password_feedback";
+    public static final String            LOGIN_BUTTON_ID              = "login";
+    public static final String            CANCEL_BUTTON_ID             = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
     transient PasswordDeviceService       passwordDeviceService;
@@ -123,10 +126,11 @@ public class AuthenticationPage extends TemplatePage {
             loginField.setRequired(true);
             add(loginField);
             focus(loginField);
+            add(new ErrorComponentFeedbackLabel(LOGIN_NAME_FEEDBACK_FIELD_ID, loginField));
 
             final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
-
             add(passwordField);
+            add(new ErrorComponentFeedbackLabel(PASSWORD_FEEDBACK_FIELD_ID, passwordField));
 
             add(new Button(LOGIN_BUTTON_ID) {
 
