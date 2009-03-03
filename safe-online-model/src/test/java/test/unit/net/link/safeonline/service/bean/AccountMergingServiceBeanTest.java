@@ -44,6 +44,7 @@ import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.data.AccountMergingDO;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
@@ -167,13 +168,13 @@ public class AccountMergingServiceBeanTest {
         attributeTypeCompounded.addMember(attributeTypeCompoundMember2, 1, true);
 
         // create applications
-        Application application1 = new Application(0, "test-application-1", Arrays.asList(new AttributeTypeEntity[] { attributeType1,
+        Application application1 = new Application("test-application-1", Arrays.asList(new AttributeTypeEntity[] { attributeType1,
                 attributeType2 }), entityManager);
-        Application application2 = new Application(1, "test-application-2",
+        Application application2 = new Application("test-application-2",
                 Arrays.asList(new AttributeTypeEntity[] { attributeTypeMultivalued }), entityManager);
-        Application application3 = new Application(2, "test-application-3",
+        Application application3 = new Application("test-application-3",
                 Arrays.asList(new AttributeTypeEntity[] { attributeTypeCompounded }), entityManager);
-        Application application4 = new Application(3, "test-application-4", Arrays.asList(new AttributeTypeEntity[] { attributeType1 }),
+        Application application4 = new Application("test-application-4", Arrays.asList(new AttributeTypeEntity[] { attributeType1 }),
                 entityManager);
 
         // subscribe
@@ -283,6 +284,7 @@ public class AccountMergingServiceBeanTest {
             AttributeDO attribute = new AttributeDO(attributeType.getName(), attributeType.getType(), attributeType.isMultivalued(), 0,
                     attributeType.getName(), null, attributeType.isUserEditable(), false, null, null);
             attribute.setMember(attributeType.isCompoundMember());
+            attribute.setStringValue(UUID.randomUUID().toString());
             if (DatatypeType.COMPOUNDED == attributeType.getType()) {
                 attribute.setCompounded(true);
                 identityService.saveAttribute(attribute);
@@ -295,7 +297,6 @@ public class AccountMergingServiceBeanTest {
                     addAttributeValue(member.getMember(), identityService);
                 }
             } else {
-                attribute.setStringValue(UUID.randomUUID().toString());
                 identityService.saveAttribute(attribute);
                 if (attributeType.isMultivalued()) {
                     AttributeDO attribute2 = new AttributeDO(attributeType.getName(), attributeType.getType(),
@@ -320,10 +321,8 @@ public class AccountMergingServiceBeanTest {
         private EntityManager     entityManager;
 
 
-        public Application(long applicationId, String applicationName, List<AttributeTypeEntity> attributeTypes, EntityManager entityManager)
-                                                                                                                                             throws Exception {
+        public Application(String applicationName, List<AttributeTypeEntity> attributeTypes, EntityManager entityManager) throws Exception {
 
-            this.applicationId = applicationId;
             this.applicationName = applicationName;
             this.attributeTypes = attributeTypes;
             this.entityManager = entityManager;
@@ -333,8 +332,9 @@ public class AccountMergingServiceBeanTest {
             for (AttributeTypeEntity attributeType : this.attributeTypes) {
                 applicationIdentityAttributes.add(new IdentityAttributeTypeDO(attributeType.getName(), true, false));
             }
-            applicationService.addApplication(this.applicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
-                    applicationIdentityAttributes, false, false, false, null);
+            ApplicationEntity applicationEntity = applicationService.addApplication(this.applicationName, null, "owner", null, false,
+                    IdScopeType.USER, null, null, null, applicationIdentityAttributes, false, false, false, null);
+            applicationId = applicationEntity.getId();
         }
     }
 

@@ -14,10 +14,10 @@ import net.link.safeonline.demo.payment.service.bean.UserServiceBean;
 import net.link.safeonline.demo.payment.servlet.LogoutServlet;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.wicket.javaee.DummyJndi;
+import net.link.safeonline.sdk.test.DummyAttributeClient;
+import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyAttributeClient;
 import net.link.safeonline.wicket.web.OlasAuthRedirectPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
@@ -38,8 +38,10 @@ public class PaymentWebTest extends AbstractWicketTests {
 
         super.setUp();
 
+        DummyServiceFactory.install();
+
         // Perform the Payment Initialization code that normally runs after webapp deployment.
-        DummyJndi.lookup(InitializationService.class).buildEntities();
+        jndiTestUtils.lookup(InitializationService.class).buildEntities();
     }
 
     /**

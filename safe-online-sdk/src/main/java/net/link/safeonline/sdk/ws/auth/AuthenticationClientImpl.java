@@ -107,7 +107,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
      * {@inheritDoc}
      */
     public String authenticate(String applicationId, String deviceName, String language, Object deviceCredentials, PublicKey publicKey)
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
+            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException, WSClientTransportException {
 
         LOG.debug("authentication for application " + applicationId + " using device " + deviceName);
 
@@ -410,7 +410,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.authenticate(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -444,7 +444,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.requestGlobalUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -459,7 +459,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.confirmGlobalUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -474,7 +474,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.requestUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -488,7 +488,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.confirmUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -502,7 +502,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.requestIdentity(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -516,7 +516,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.confirmIdentity(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -531,7 +531,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.requestMissingAttributes(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -545,7 +545,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         try {
             return port.saveMissingAttributes(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {

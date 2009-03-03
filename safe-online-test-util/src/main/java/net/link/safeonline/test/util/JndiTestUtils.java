@@ -10,14 +10,19 @@ package net.link.safeonline.test.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ejb.Local;
+import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
+import net.link.safeonline.common.NamingStrategy;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 /**
@@ -28,14 +33,33 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JndiTestUtils {
 
-    private static final Log    LOG = LogFactory.getLog(JndiTestUtils.class);
+    private static final Log    LOG        = LogFactory.getLog(JndiTestUtils.class);
 
-    private Map<String, Object> components;
+    private Map<String, Object> components = new HashMap<String, Object>();
+
+    private NamingStrategy      namingStrategy;
 
 
-    public JndiTestUtils() {
+    public void setNamingStrategy(NamingStrategy namingStrategy) {
 
-        components = new HashMap<String, Object>();
+        this.namingStrategy = namingStrategy;
+    }
+
+    /**
+     * Bind a bean on JNDI using either its {@link LocalBinding} for the JNDI binding or the naming strategy to resolve it.
+     * 
+     * @param beanClass
+     *            The class that defines the binding to use for the bean. If the class has a {@link LocalBinding} annotation, that will
+     *            determine the JNDI binding. Otherwise, if the class is a {@link Local} interface, the preset {@link NamingStrategy} will
+     *            determine the binding to use.
+     * 
+     * @param bean
+     *            The bean object to register.
+     */
+    public void bindComponent(Class<?> beanClass, Object bean)
+            throws NamingException {
+
+        bindComponent(resolveJndiBinding(beanClass), bean);
     }
 
     public void bindComponent(String jndiName, Object component)
@@ -43,29 +67,73 @@ public class JndiTestUtils {
 
         LOG.debug("bind component: " + jndiName);
         components.put(jndiName, component);
+
         InitialContext initialContext = new InitialContext();
         String[] names = jndiName.split("/");
+
+        // Recursively create sub contexts.
         Context context = initialContext;
         for (int idx = 0; idx < names.length - 1; idx++) {
             String name = names[idx];
             LOG.debug("name: " + name);
-            NamingEnumeration<NameClassPair> listContent = context.list("");
+            NamingEnumeration<NameClassPair> contextContent = context.list("");
+
             boolean subContextPresent = false;
-            while (listContent.hasMore()) {
-                NameClassPair nameClassPair = listContent.next();
-                if (false == name.equals(nameClassPair.getName())) {
-                    continue;
+            while (contextContent.hasMore()) {
+                NameClassPair nameClassPair = contextContent.next();
+
+                if (name.equals(nameClassPair.getName())) {
+                    subContextPresent = true;
+                    break;
                 }
-                subContextPresent = true;
             }
-            if (false == subContextPresent) {
-                context = context.createSubcontext(name);
-            } else {
+
+            if (subContextPresent) {
                 context = (Context) context.lookup(name);
+            } else {
+                context = context.createSubcontext(name);
             }
         }
+
+        // Bind the component.
         String name = names[names.length - 1];
         context.rebind(name, component);
+    }
+
+    public void dump()
+            throws NamingException {
+
+        dump(new InitialContext(), 0);
+    }
+
+    public void dump(Context context, int indent)
+            throws NamingException {
+
+        String indentString = String.format("%" + (indent > 0? indent * 4: "") + "s", "");
+
+        System.err.format("%s + (%s)\n", indentString, context.getNameInNamespace());
+        NamingEnumeration<Binding> contextContent = context.listBindings("");
+
+        while (contextContent.hasMore()) {
+            Binding binding = contextContent.next();
+
+            System.err.format("%s - %s: (%s) %s\n", indentString, binding.getName(), binding.getClassName(), binding.getObject());
+            if (binding.getObject() instanceof Context) {
+                dump((Context) binding.getObject(), indent + 1);
+            }
+        }
+        System.err.println();
+    }
+
+    /**
+     * Look up a bean from JNDI by determining its JNDI binding using the set {@link NamingStrategy}.
+     */
+    public <S> S lookup(Class<S> serviceClass)
+            throws NamingException {
+
+        String jndiBinding = resolveJndiBinding(serviceClass);
+        Object service = new InitialContext().lookup(jndiBinding);
+        return serviceClass.cast(service);
     }
 
     public void setUp() {
@@ -86,5 +154,16 @@ public class JndiTestUtils {
             LOG.debug("unbinding: " + name);
             initialContext.unbind(name);
         }
+    }
+
+    private String resolveJndiBinding(Class<?> beanClass) {
+
+        if (beanClass.isAnnotationPresent(LocalBinding.class))
+            return beanClass.getAnnotation(LocalBinding.class).jndiBinding();
+        else if (beanClass.isAnnotationPresent(Local.class) && namingStrategy != null)
+            return namingStrategy.calculateName(beanClass);
+
+        throw new IllegalArgumentException("Could not determine the JNDI binding for:" + beanClass
+                + " (has no LocalBinding or Local annotation?)");
     }
 }

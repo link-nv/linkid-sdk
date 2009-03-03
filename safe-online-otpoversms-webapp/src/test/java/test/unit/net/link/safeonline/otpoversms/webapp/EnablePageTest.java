@@ -20,7 +20,6 @@ import net.link.safeonline.otpoversms.webapp.EnablePage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -49,8 +48,6 @@ public class EnablePageTest {
     @Before
     public void setUp()
             throws Exception {
-
-        WicketUtil.setUnitTesting(true);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
@@ -82,7 +79,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttributeId(mobile);
+        protocolContext.setAttribute(mobile);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
@@ -144,7 +141,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttributeId(mobile);
+        protocolContext.setAttribute(mobile);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
@@ -190,7 +187,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttributeId(mobile);
+        protocolContext.setAttribute(mobile);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);

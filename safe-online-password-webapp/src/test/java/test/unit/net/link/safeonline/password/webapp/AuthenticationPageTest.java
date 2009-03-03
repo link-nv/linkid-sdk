@@ -20,11 +20,10 @@ import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.AuthenticationPage;
+import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -52,8 +51,6 @@ public class AuthenticationPageTest {
     @Before
     public void setUp()
             throws Exception {
-
-        WicketUtil.setUnitTesting(true);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();

@@ -19,7 +19,7 @@ import net.link.safeonline.demo.bank.service.bean.TransactionServiceBean;
 import net.link.safeonline.demo.bank.service.bean.UserServiceBean;
 import net.link.safeonline.demo.bank.webapp.servlet.LogoutServlet;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.wicket.javaee.DummyJndi;
+import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
@@ -43,8 +43,10 @@ public class BankWebTest extends AbstractWicketTests {
 
         super.setUp();
 
+        DummyServiceFactory.install();
+
         // Perform the Bank Initialization code that normally runs after webapp deployment.
-        DummyJndi.lookup(InitializationService.class).buildEntities();
+        jndiTestUtils.lookup(InitializationService.class).buildEntities();
     }
 
     /**
@@ -393,6 +395,9 @@ public class BankWebTest extends AbstractWicketTests {
         // - Test sample data against our original test data.
         assertTrue(String.format("accounts not found: test: %s - sample: %s", testAccountCodes, sampleAccountCodes), //
                 testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
+
+        // AccountPage: Click to log out.
+        wicket.clickLink("user:logout");
 
         // Login using OLAS.
         testOlasLogin();

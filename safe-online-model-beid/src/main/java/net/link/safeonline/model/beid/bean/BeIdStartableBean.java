@@ -139,7 +139,9 @@ public class BeIdStartableBean extends AbstractInitBean {
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Belgian eID"));
 
+        // now initialize
         super.postStart();
+
         initTrustDomain();
     }
 

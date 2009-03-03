@@ -78,8 +78,8 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
     public void sendNotification(String topic, String destination, String subject, String content)
             throws WSClientTransportException {
 
-        LOG.debug("send notification to " + location + " for topic: " + topic + ", destination:" + destination + ", subject:"
-                + subject + ", content:" + content);
+        LOG.debug("send notification to " + location + " for topic: " + topic + ", destination:" + destination + ", subject:" + subject
+                + ", content:" + content);
 
         TopicExpressionType topicExpression = new TopicExpressionType();
         topicExpression.setDialect(TOPIC_DIALECT_SIMPLE);
@@ -101,7 +101,7 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
             port.notify(notifications);
         } catch (ClientTransportException e) {
             LOG.debug("Failed to send notification");
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         }
     }
 }

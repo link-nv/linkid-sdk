@@ -9,6 +9,7 @@ package net.link.safeonline.auth.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
@@ -179,8 +180,8 @@ public class NewUserPage extends AuthenticationTemplatePage {
                         return;
                     }
 
-                    AuthenticationSession.get().setUserId(subject.getUserId());
-                    AuthenticationSession.get().setLoginName(login.getObject());
+                    LoginManager.setUserId(WicketUtil.getHttpSession(getRequest()), subject.getUserId());
+                    LoginManager.setLogin(WicketUtil.getHttpSession(getRequest()), login.getObject());
 
                     throw new RestartResponseException(new NewUserDevicePage());
 
