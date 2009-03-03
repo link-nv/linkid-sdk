@@ -46,12 +46,13 @@ public interface AuthenticationClient extends MessageAccessor {
      * @param publicKey
      * 
      * @throws RequestDeniedException
-     * @throws WSClientTransportException
      *             in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      * @throws DatatypeConfigurationException
+     * @throws WSClientTransportException
+     * @throws WSClientTransportException
      */
     String authenticate(String applicationId, String deviceName, String language, Object deviceCredentials, PublicKey publicKey)
-            throws RequestDeniedException, WSClientTransportException, DatatypeConfigurationException, WSAuthenticationException;
+            throws RequestDeniedException, DatatypeConfigurationException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Returns the global usage agreement to be confirmed or null if not needed.
@@ -61,7 +62,7 @@ public interface AuthenticationClient extends MessageAccessor {
      * If none, check {@link #getAssertion()}.
      */
     String getGlobalUsageAgreement()
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Confirms or rejects the global usage agreement.
@@ -71,9 +72,11 @@ public interface AuthenticationClient extends MessageAccessor {
      * information.
      * 
      * Returns user ID if complete. The SAML v2.0 assertion is returned by {@link #getAssertion()}.
+     * 
+     * @throws WSClientTransportException
      */
     String confirmGlobalUsageAgreement(Confirmation confirmation)
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Returns the application usage agreement to be confirmed or null if not needed. Or an empty string if no usage agreement exists but
@@ -82,9 +85,11 @@ public interface AuthenticationClient extends MessageAccessor {
      * If null, check {@link #getAuthenticationStep()} for authentication steps to be performed.
      * 
      * If none, check {@link #getAssertion()}.
+     * 
+     * @throws WSClientTransportException
      */
     String getUsageAgreement()
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Confirms or rejects the application usage agreement / subscribes to the application.
@@ -94,9 +99,11 @@ public interface AuthenticationClient extends MessageAccessor {
      * information.
      * 
      * Returns user ID if complete. The SAML v2.0 assertion is returned by {@link #getAssertion()}.
+     * 
+     * @throws WSClientTransportException
      */
     String confirmUsageAgreement(Confirmation confirmation)
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Returns the application identity to be confirmed.
@@ -104,9 +111,11 @@ public interface AuthenticationClient extends MessageAccessor {
      * If null, check {@link #getAuthenticationStep()} for authentication steps to be performed.
      * 
      * If none, check {@link #getAssertion()}.
+     * 
+     * @throws WSClientTransportException
      */
     List<Attribute> getIdentity()
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Confirms or rejects the application's identity.
@@ -116,9 +125,11 @@ public interface AuthenticationClient extends MessageAccessor {
      * information.
      * 
      * Returns user ID if complete. The SAML v2.0 assertion is returned by {@link #getAssertion()}.
+     * 
+     * @throws WSClientTransportException
      */
     String confirmIdentity(Confirmation confirmation)
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Returns the application's misssing attributes.
@@ -128,11 +139,11 @@ public interface AuthenticationClient extends MessageAccessor {
      * If none, check {@link #getAssertion()}.
      * 
      * @throws WSAuthenticationException
-     * @throws WSClientTransportException
      * @throws RequestDeniedException
+     * @throws WSClientTransportException
      */
     List<Attribute> getMissingAttributes()
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Saves the missing attributes to be provided. * Returns null if authentication is not complete. Check {@link #getAuthenticationStep()}
@@ -142,11 +153,11 @@ public interface AuthenticationClient extends MessageAccessor {
      * Returns user ID if complete. The SAML v2.0 assertion is returned by {@link #getAssertion()}.
      * 
      * @throws WSAuthenticationException
-     * @throws WSClientTransportException
      * @throws RequestDeniedException
+     * @throws WSClientTransportException
      */
     String saveMissingAttributes(List<Attribute> missingAttributes)
-            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+            throws RequestDeniedException, WSAuthenticationException, WSClientTransportException;
 
     /**
      * Returns the SAML v2.0 assertion or null if authentication is not yet complete.

@@ -37,7 +37,8 @@ public class DigipassStartableBean extends AbstractInitBean {
     private static final Log   LOG          = LogFactory.getLog(DigipassStartableBean.class);
 
 
-    public DigipassStartableBean() {
+    @Override
+    public void postStart() {
 
         configureNode();
 
@@ -78,6 +79,9 @@ public class DigipassStartableBean extends AbstractInitBean {
                 + "/device", digipassDeviceAttributeType, digipassSNAttributeType, digipassDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
         deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(), "EBank Digipass"));
+
+        // now initialize
+        super.postStart();
     }
 
     private void configureNode() {

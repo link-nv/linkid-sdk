@@ -22,7 +22,6 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.test.UrlPageSource;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.ExternalLink;
@@ -61,7 +60,6 @@ public class RegistrationPageTest {
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
 
-        WicketUtil.setUnitTesting(true);
         wicket = new WicketTester(new EncapTestApplication());
         wicket.processRequestCycle();
     }

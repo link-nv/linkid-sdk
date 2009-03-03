@@ -109,7 +109,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
         try {
             response = port.subscribe(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         }
 
         checkStatus(response);

@@ -24,12 +24,11 @@ import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
+import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -54,8 +53,6 @@ public class RemovePageTest {
     @Before
     public void setUp()
             throws Exception {
-
-        WicketUtil.setUnitTesting(true);
 
         mockDigipassDeviceService = createMock(DigipassDeviceService.class);
         mockKeyService = createMock(KeyService.class);

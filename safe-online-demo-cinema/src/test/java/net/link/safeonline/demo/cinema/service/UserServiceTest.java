@@ -13,8 +13,8 @@ import javax.ejb.EJB;
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
-import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyAttributeClient;
+import net.link.safeonline.sdk.test.DummyAttributeClient;
+import net.link.safeonline.sdk.test.DummyServiceFactory;
 
 import org.apache.ws.security.util.UUIDGenerator;
 import org.junit.Test;
@@ -52,11 +52,14 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
 
         super.setup();
 
+        DummyServiceFactory.install();
+
         initializationService.buildEntities();
     }
 
     @Test
-    public void testCreateUser() {
+    public void testCreateUser()
+            throws Exception {
 
         // Test data.
         String testUserOlasId = UUIDGenerator.getUUID(), testUserName = "testCinemaUser", testUserNrn = "0123456789";
@@ -70,7 +73,6 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
                 testUserOlasId, sampleUserOlasId);
 
         // Set up the dummy OLAS attribute service and update our cinema user with the attributes.
-        WicketUtil.setUnitTesting(true);
         DummyAttributeClient.setAttribute(testUserOlasId, BeIdConstants.BEID_NRN_ATTRIBUTE, new String[] { testUserNrn });
         DummyAttributeClient.setAttribute(testUserOlasId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, testUserName);
         userService.updateUser(sampleUser, null);

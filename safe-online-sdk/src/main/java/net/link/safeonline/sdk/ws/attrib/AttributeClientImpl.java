@@ -187,7 +187,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         try {
             return port.attributeQuery(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
