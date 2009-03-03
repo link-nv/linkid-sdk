@@ -156,10 +156,12 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addApplication(String name, String friendlyName, String applicationOwnerName, String description,
-                               boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] applicationLogo,
-                               byte[] encodedCertificate, List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
-                               boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
+    public ApplicationEntity addApplication(String name, String friendlyName, String applicationOwnerName, String description,
+                                            boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl,
+                                            byte[] applicationLogo, byte[] encodedCertificate,
+                                            List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
+                                            boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled,
+                                            URL ssoLogoutUrl)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException {
 
@@ -186,6 +188,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         application.setSsoLogoutUrl(ssoLogoutUrl);
 
         setInitialApplicationIdentity(initialApplicationIdentityAttributes, application);
+
+        return application;
     }
 
     private void setInitialApplicationIdentity(List<IdentityAttributeTypeDO> initialApplicationIdentityAttributeTypes,

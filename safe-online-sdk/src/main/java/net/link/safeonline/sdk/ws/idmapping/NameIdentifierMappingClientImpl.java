@@ -99,7 +99,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
         try {
             response = port.nameIdentifierMappingQuery(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
