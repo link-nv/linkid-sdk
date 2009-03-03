@@ -4,11 +4,14 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.wicket.service;
+package net.link.safeonline.util.ee;
+
+import net.link.safeonline.common.NamingStrategy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wicketstuff.javaee.naming.IJndiNamingStrategy;
+import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 
 
 /**
@@ -26,15 +29,20 @@ import org.wicketstuff.javaee.naming.IJndiNamingStrategy;
  * 
  * @author lhunath
  */
-public class OlasNamingStrategy implements IJndiNamingStrategy {
+public class OlasNamingStrategy implements NamingStrategy {
 
     private static final long serialVersionUID = 1L;
 
 
-    @SuppressWarnings("unchecked")
-    public String calculateName(String ejbName, Class ejbType) {
+    public String calculateName(Class<?> ejbType) {
 
         try {
+            if (ejbType.isAnnotationPresent(LocalBinding.class))
+                return ejbType.getAnnotation(LocalBinding.class).jndiBinding();
+
+            if (ejbType.isAnnotationPresent(RemoteBinding.class))
+                return ejbType.getAnnotation(RemoteBinding.class).jndiBinding();
+
             return ejbType.getDeclaredField("JNDI_BINDING").get(null).toString();
         }
 

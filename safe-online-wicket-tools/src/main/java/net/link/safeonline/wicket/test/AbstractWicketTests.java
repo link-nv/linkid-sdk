@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServlet;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.sdk.test.DummyAttributeClient;
+import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.wicket.javaee.DummyJndi;
-import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyAttributeClient;
-import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
+import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.util.ee.OlasNamingStrategy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,9 +52,10 @@ import org.junit.BeforeClass;
  */
 public abstract class AbstractWicketTests {
 
-    protected final Log         LOG = LogFactory.getLog(getClass());
-    protected EntityTestManager entityTestManager;
-    protected WicketTester      wicket;
+    protected final Log            LOG = LogFactory.getLog(getClass());
+    protected EntityTestManager    entityTestManager;
+    protected WicketTester         wicket;
+    protected static JndiTestUtils jndiTestUtils;
 
 
     @BeforeClass
@@ -64,7 +65,9 @@ public abstract class AbstractWicketTests {
             AuthenticationProtocolManager.registerProtocolHandler(TestAuthenticationProtocolHandler.class);
         }
 
-        WicketUtil.setUnitTesting(true);
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
     }
 
     @Before
@@ -90,7 +93,7 @@ public abstract class AbstractWicketTests {
         // Perform injections on our service beans.
         EntityManager entityManager = entityTestManager.getEntityManager();
         for (Class<?> beanClass : serviceBeans) {
-            DummyJndi.register(beanClass, EJBTestUtils.newInstance(beanClass, serviceBeans, entityManager));
+            jndiTestUtils.bindComponent(beanClass, EJBTestUtils.newInstance(beanClass, serviceBeans, entityManager));
         }
 
         // Initialize our dummy web container and set our dummy authentication protocol as the one to use.
@@ -111,6 +114,7 @@ public abstract class AbstractWicketTests {
             throws Exception {
 
         entityTestManager.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     /**

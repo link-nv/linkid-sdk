@@ -6,6 +6,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -13,7 +15,6 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -26,12 +27,11 @@ import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
+import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -41,7 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class AuthenticationPageTest extends TestCase {
+public class AuthenticationPageTest {
 
     private DigipassDeviceService     mockDigipassDeviceService;
 
@@ -58,14 +58,9 @@ public class AuthenticationPageTest extends TestCase {
     private NodeAuthenticationService mockNodeAuthenticationService;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
-
-        WicketUtil.setUnitTesting(true);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
@@ -91,7 +86,6 @@ public class AuthenticationPageTest extends TestCase {
         wicket.processRequestCycle();
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {

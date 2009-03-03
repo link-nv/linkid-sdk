@@ -17,10 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.wicket.javaee.DummyAnnotJavaEEInjector;
+import net.link.safeonline.util.ee.OlasNamingStrategy;
 import net.link.safeonline.wicket.service.AnnotSDKInjector;
-import net.link.safeonline.wicket.service.OlasNamingStrategy;
-import net.link.safeonline.wicket.tools.olas.DummyAnnotSDKInjector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,8 +52,6 @@ public abstract class WicketUtil {
     static final Log            LOG = LogFactory.getLog(WicketUtil.class);
     static ConfigurableInjector eeInjector;
     static AnnotSDKInjector     sdkInjector;
-
-    private static boolean      isUnitTest;
 
 
     /**
@@ -113,19 +109,10 @@ public abstract class WicketUtil {
     public static void inject(Object injectee) {
 
         if (eeInjector == null) {
-            if (!isUnitTest) {
-                eeInjector = new AnnotJavaEEInjector(new OlasNamingStrategy());
-            } else {
-                // Inside Unit Test
-                eeInjector = new DummyAnnotJavaEEInjector();
-            }
+            eeInjector = new AnnotJavaEEInjector(new OlasNamingStrategy());
         }
         if (sdkInjector == null) {
-            if (!isUnitTest) {
-                sdkInjector = new AnnotSDKInjector();
-            } else {
-                sdkInjector = new DummyAnnotSDKInjector();
-            }
+            sdkInjector = new AnnotSDKInjector();
         }
 
         eeInjector.inject(injectee);
@@ -171,14 +158,5 @@ public abstract class WicketUtil {
     public static String findOlasId(Request request) {
 
         return LoginManager.findUserId(toServletRequest(request));
-    }
-
-    /**
-     * Telling {@link WicketUtil} that we're unit testing will make it generate dummy services to emulate OLAS services that are not
-     * available in the unit testing framework.
-     */
-    public static void setUnitTesting(boolean unitTesting) {
-
-        isUnitTest = unitTesting;
     }
 }
