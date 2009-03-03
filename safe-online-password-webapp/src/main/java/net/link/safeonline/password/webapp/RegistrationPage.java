@@ -34,17 +34,19 @@ import org.apache.wicket.model.Model;
 
 public class RegistrationPage extends TemplatePage {
 
-    private static final long       serialVersionUID     = 1L;
+    private static final long       serialVersionUID           = 1L;
 
-    public static final String      REGISTRATION_FORM_ID = "registration_form";
+    public static final String      ALREADY_REGISTERED_LINK_ID = "already_registered";
 
-    public static final String      PASSWORD1_FIELD_ID   = "password1";
+    public static final String      REGISTRATION_FORM_ID       = "registration_form";
 
-    public static final String      PASSWORD2_FIELD_ID   = "password2";
+    public static final String      PASSWORD1_FIELD_ID         = "password1";
 
-    public static final String      SAVE_BUTTON_ID       = "save";
+    public static final String      PASSWORD2_FIELD_ID         = "password2";
 
-    public static final String      CANCEL_BUTTON_ID     = "cancel";
+    public static final String      SAVE_BUTTON_ID             = "save";
+
+    public static final String      CANCEL_BUTTON_ID           = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
     transient PasswordDeviceService passwordDeviceService;
@@ -70,7 +72,7 @@ public class RegistrationPage extends TemplatePage {
         progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
 
-        getContent().add(alreadyRegistered = new Link<String>("already_registered") {
+        getContent().add(alreadyRegistered = new Link<String>(ALREADY_REGISTERED_LINK_ID) {
 
             private static final long serialVersionUID = 1L;
 
@@ -163,6 +165,9 @@ public class RegistrationPage extends TemplatePage {
                                 LogLevelType.ERROR);
                         return;
                     }
+
+                    protocolContext.setSuccess(true);
+                    exit();
                 }
             });
 

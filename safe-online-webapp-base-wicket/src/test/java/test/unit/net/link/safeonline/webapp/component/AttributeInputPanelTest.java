@@ -46,8 +46,6 @@ public class AttributeInputPanelTest extends TestCase {
 
         super.setUp();
 
-        WicketUtil.setUnitTesting(true);
-
         wicket = new WicketTester(new PanelTestApplication());
 
     }
