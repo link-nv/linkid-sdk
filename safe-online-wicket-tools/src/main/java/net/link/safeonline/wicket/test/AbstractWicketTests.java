@@ -12,6 +12,7 @@ import java.util.Locale;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServlet;
 
+import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -20,7 +21,6 @@ import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.util.ee.OlasNamingStrategy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

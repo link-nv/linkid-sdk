@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.util.ee.OlasNamingStrategy;
 import net.link.safeonline.wicket.service.AnnotSDKInjector;
 
 import org.apache.commons.logging.Log;
