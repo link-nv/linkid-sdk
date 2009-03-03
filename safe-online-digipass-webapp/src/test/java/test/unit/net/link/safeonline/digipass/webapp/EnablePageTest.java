@@ -77,7 +77,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(serialNumber);
+        protocolContext.setAttributeId(serialNumber);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
@@ -114,7 +114,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(serialNumber);
+        protocolContext.setAttributeId(serialNumber);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
@@ -156,7 +156,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(serialNumber);
+        protocolContext.setAttributeId(serialNumber);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);

@@ -38,7 +38,7 @@ public class DeviceOperationManager {
 
     public static final String AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE = "authenticatedDevice";
 
-    public static final String DEVICE_ATTRIBUTE_SESSION_ATTRIBUTE     = "attribute";
+    public static final String DEVICE_ATTRIBUTE_ID_SESSION_ATTRIBUTE  = "attributeId";
 
 
     private DeviceOperationManager() {
@@ -140,44 +140,44 @@ public class DeviceOperationManager {
     }
 
     /**
-     * Sets the device attribute.
+     * Sets the device attribute id.
      * 
-     * @param attribute
+     * @param attributeId
      * @param httpRequest
      */
-    public static void setAttribute(String attribute, HttpServletRequest httpRequest) {
+    public static void setAttributeId(String attributeId, HttpServletRequest httpRequest) {
 
-        LOG.debug("setting device attribute: " + attribute);
+        LOG.debug("setting device attribute id: " + attributeId);
         HttpSession session = httpRequest.getSession();
-        session.setAttribute(DEVICE_ATTRIBUTE_SESSION_ATTRIBUTE, attribute);
+        session.setAttribute(DEVICE_ATTRIBUTE_ID_SESSION_ATTRIBUTE, attributeId);
 
     }
 
     /**
-     * Gets the device attribute
+     * Gets the device attribute id.
      * 
      * @param session
      * @throws ServletException
      */
-    public static String getAttribute(HttpSession session)
+    public static String getAttributeId(HttpSession session)
             throws ServletException {
 
-        String attribute = findAttribute(session);
+        String attribute = findAttributeId(session);
         if (null == attribute)
-            throw new ServletException("device attribute attribute not found");
+            throw new ServletException("device attribute " + DEVICE_ATTRIBUTE_ID_SESSION_ATTRIBUTE + " not found");
 
         return attribute;
 
     }
 
     /**
-     * Finds the device attribute. If not present returns null.
+     * Finds the device attribute id. If not present returns null.
      * 
      * @param session
      */
-    public static String findAttribute(HttpSession session) {
+    public static String findAttributeId(HttpSession session) {
 
-        return (String) session.getAttribute(DEVICE_ATTRIBUTE_SESSION_ATTRIBUTE);
+        return (String) session.getAttribute(DEVICE_ATTRIBUTE_ID_SESSION_ATTRIBUTE);
     }
 
 }

@@ -51,8 +51,11 @@ public interface DeviceOperationRequest extends RequestAbstractType {
     /** Authenticated device attribute name. */
     public static final String AUTHENTICATED_DEVICE_ATTRIB_NAME = "AuthenticatedDevice";
 
-    /** User attribute of device registration attribute name. */
+    /** Device user attribute */
     public static final String ATTRIBUTE_ATTRIB_NAME            = "Attribute";
+
+    /** Compound device attribute UUID */
+    public static final String ATTRIBUTE_ID_ATTRIB_NAME         = "AttributeId";
 
 
     /**
@@ -146,19 +149,32 @@ public interface DeviceOperationRequest extends RequestAbstractType {
     public void setSubject(Subject subject);
 
     /**
-     * Gets the optional attribute of this request. This attribute represents the OLAS user attribute that can be used to specify a specific
-     * device registration.
+     * Gets the optional device user attribute of this request.
      * 
-     * @return the attribute of the request
+     * @return the device user attribute of the request
      */
     public String getAttribute();
 
     /**
-     * Sets the optional attribute of the request
+     * Sets the optional device user attribute of the request
      * 
      * @param attribute
-     *            the new value of the optional attribute of the request. This attribute represents the OLAS user attribute specifying a
-     *            specific device registration.
+     *            the new value of the optional device user attribute of the request.
      */
     public void setAttribute(String attribute);
+
+    /**
+     * Gets the optional compound device attribute id of this request.
+     * 
+     * @return the attribute id of the request
+     */
+    public String getAttributeId();
+
+    /**
+     * Sets the optional attribute id of the request
+     * 
+     * @param attributeId
+     *            the new value of the optional attribute id of the request.
+     */
+    public void setAttributeId(String attributeId);
 }

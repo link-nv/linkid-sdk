@@ -68,14 +68,14 @@ public class DisableServlet extends AbstractInjectionServlet {
             throws IOException, ServletException {
 
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        String attribute = DeviceOperationManager.getAttribute(request.getSession());
-        LOG.debug("disable mobile " + attribute + " for user " + userId);
+        String attributeId = DeviceOperationManager.getAttributeId(request.getSession());
+        LOG.debug("disable mobile " + attributeId + " for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
 
         try {
-            otpOverSmsDeviceService.disable(userId, attribute);
+            otpOverSmsDeviceService.disable(userId, attributeId);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.
@@ -85,7 +85,7 @@ public class DisableServlet extends AbstractInjectionServlet {
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
-            String message = "device registration \"" + attribute + "\" not found";
+            String message = "device registration \"" + attributeId + "\" not found";
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         }

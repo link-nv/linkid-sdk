@@ -127,6 +127,8 @@ public class NewUserPage extends AuthenticationTemplatePage {
                 @Override
                 public void onClick(AjaxRequestTarget target) {
 
+                    captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
+                            + "/captcha.jpg?cacheid=" + Math.random() * 1000000));
                     target.addComponent(captchaImage);
                 }
             });

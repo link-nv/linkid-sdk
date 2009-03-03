@@ -98,6 +98,7 @@ import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -151,6 +152,8 @@ public class EncapDeviceTest {
     private String                 testInvalidOTP;
 
     private NodeMappingService     mockNodeMappingService;
+
+    private AttributeManagerLWBean attributeManager;
 
     private String                 testNode;
 
@@ -213,7 +216,7 @@ public class EncapDeviceTest {
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(8);
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(6);
         replay(mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
@@ -242,6 +245,8 @@ public class EncapDeviceTest {
 
         SubjectService subjectService = EJBTestUtils.newInstance(SubjectService.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, subjectService);
+
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
 
         mockMobileManager = createMock(MobileManager.class);
         EJBTestUtils.inject(testedInstance, mockMobileManager);
@@ -301,6 +306,10 @@ public class EncapDeviceTest {
         testedInstance.requestOTP(testMobile);
         testedInstance.commitRegistration(testNode, testUserId, testValidOTP);
 
+        // get compound device attribute id for later on
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(testSubject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE,
+                EncapConstants.ENCAP_MOBILE_ATTRIBUTE, testMobile);
+
         assertFalse(testedInstance.getMobiles(testUserId, null).isEmpty());
         testedInstance.requestOTP(testMobile);
         String resultUserId = testedInstance.authenticate(testValidOTP);
@@ -321,7 +330,7 @@ public class EncapDeviceTest {
         replay(mockObjects);
 
         // operate
-        testedInstance.remove(testUserId, testMobile);
+        testedInstance.remove(testUserId, parentAttribute.getStringValue());
 
         assertTrue(testedInstance.getMobiles(testUserId, null).isEmpty());
         try {
@@ -425,7 +434,13 @@ public class EncapDeviceTest {
         testedInstance.register(testMobile);
         testedInstance.requestOTP(testMobile);
         testedInstance.commitRegistration(testNode, testUserId, testValidOTP);
-        testedInstance.disable(testUserId, testMobile);
+
+        // get compound device attribute id for later on
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(testSubject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE,
+                EncapConstants.ENCAP_MOBILE_ATTRIBUTE, testMobile);
+
+        // operate
+        testedInstance.disable(testUserId, parentAttribute.getStringValue());
 
         testedInstance.requestOTP(testMobile);
         try {

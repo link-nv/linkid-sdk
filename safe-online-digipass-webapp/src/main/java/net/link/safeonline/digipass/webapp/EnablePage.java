@@ -98,7 +98,7 @@ public class EnablePage extends TemplatePage {
 
                     try {
                         String userId = protocolContext.getSubject();
-                        digipassDeviceService.enable(userId, protocolContext.getAttribute(), token.getObject());
+                        digipassDeviceService.enable(userId, protocolContext.getAttributeId(), token.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();

@@ -32,6 +32,7 @@ import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
@@ -97,6 +98,7 @@ import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -144,6 +146,10 @@ public class DigipassDeviceTest {
     private String                    testSerial;
 
     private NodeMappingService        mockNodeMappingService;
+
+    private NodeAuthenticationService mockNodeAuthenticationService;
+
+    private AttributeManagerLWBean    attributeManager;
 
     private String                    testNode;
 
@@ -208,7 +214,7 @@ public class DigipassDeviceTest {
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(8);
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(6);
         replay(mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
@@ -237,8 +243,13 @@ public class DigipassDeviceTest {
         SubjectIdentifierDAO subjectIdentifierDAO = EJBTestUtils.newInstance(SubjectIdentifierDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, subjectIdentifierDAO);
 
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
+
         mockNodeMappingService = createMock(NodeMappingService.class);
         EJBTestUtils.inject(testedInstance, mockNodeMappingService);
+
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        EJBTestUtils.inject(testedInstance, mockNodeAuthenticationService);
 
         mockHistoryDAO = createMock(HistoryDAO.class);
         EJBTestUtils.inject(testedInstance, mockHistoryDAO);
@@ -248,7 +259,8 @@ public class DigipassDeviceTest {
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger, mockKeyService };
+        mockObjects = new Object[] { mockNodeMappingService, mockNodeAuthenticationService, mockHistoryDAO, mockSecurityAuditLogger,
+                mockKeyService };
 
         // setup
         testUserId = UUID.randomUUID().toString();
@@ -258,6 +270,7 @@ public class DigipassDeviceTest {
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(new NodeEntity(testNode, null, null, 0, 0, null));
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
@@ -285,7 +298,7 @@ public class DigipassDeviceTest {
 
         // operate
         assertTrue(testedInstance.getDigipasses(testUserId, null).isEmpty());
-        testedInstance.register(testNode, testUserId, testSerial);
+        testedInstance.register(testUserId, testSerial);
 
         assertFalse(testedInstance.getDigipasses(testUserId, null).isEmpty());
         testedInstance.authenticate(testUserId, testValidToken);
@@ -321,13 +334,14 @@ public class DigipassDeviceTest {
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, DigipassConstants.DIGIPASS_DEVICE_ID))).andReturn(new HistoryEntity());
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(new NodeEntity(testNode, null, null, 0, 0, null));
 
         // prepare
         replay(mockObjects);
 
         // operate
         assertTrue(testedInstance.getDigipasses(testUserId, null).isEmpty());
-        testedInstance.register(testNode, testUserId, testSerial);
+        testedInstance.register(testUserId, testSerial);
 
         assertFalse(testedInstance.getDigipasses(testUserId, null).isEmpty());
         testedInstance.authenticate(testUserId, testValidToken);
@@ -350,7 +364,7 @@ public class DigipassDeviceTest {
         replay(mockObjects);
 
         // operate
-        testedInstance.register(testNode, testUserId, testSerial);
+        testedInstance.register(testUserId, testSerial);
 
         try {
             testedInstance.authenticate(testUserId, testInvalidToken);
@@ -380,8 +394,14 @@ public class DigipassDeviceTest {
         replay(mockObjects);
 
         // operate
-        testedInstance.register(testNode, testUserId, testSerial);
-        testedInstance.disable(testUserId, testSerial);
+        testedInstance.register(testUserId, testSerial);
+
+        // get compound device attribute id
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(testSubject, DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE,
+                DigipassConstants.DIGIPASS_SN_ATTRIBUTE, testSerial);
+
+        // operate
+        testedInstance.disable(testUserId, parentAttribute.getStringValue());
 
         try {
             testedInstance.authenticate(testUserId, testValidToken);
@@ -402,7 +422,7 @@ public class DigipassDeviceTest {
         replay(mockObjects);
 
         // operate
-        testedInstance.enable(testUserId, testSerial, testValidToken);
+        testedInstance.enable(testUserId, parentAttribute.getStringValue(), testValidToken);
         testedInstance.authenticate(testUserId, testValidToken);
 
         // verify

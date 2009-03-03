@@ -62,7 +62,7 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 public class LandingServletTest {
 
-    private static final Log               LOG                         = LogFactory.getLog(LandingServletTest.class);
+    private static final Log               LOG                           = LogFactory.getLog(LandingServletTest.class);
 
     private ServletTestManager             servletTestManager;
 
@@ -74,23 +74,25 @@ public class LandingServletTest {
 
     private String                         location;
 
-    private String                         registrationUrl             = "registration";
+    private String                         registrationUrl               = "registration";
 
-    private String                         removalUrl                  = "removal";
+    private String                         removalUrl                    = "removal";
 
-    private String                         updateUrl                   = "update";
+    private String                         updateUrl                     = "update";
 
-    private String                         deviceName                  = "test-device";
+    private String                         deviceName                    = "test-device";
 
-    private String                         authenticatedDeviceName     = "test-authenticated-device";
+    private String                         authenticatedDeviceName       = "test-authenticated-device";
 
-    private String                         deviceRegistrationAttribute = "test-attribute";
+    private String                         deviceRegistrationAttributeId = UUID.randomUUID().toString();
 
-    private String                         applicationName             = "test-application";
+    private String                         deviceRegistrationAttribute   = "test-attribute";
 
-    private String                         servletEndpointUrl          = "http://test.device/servlet";
+    private String                         applicationName               = "test-application";
 
-    String                                 userId                      = UUID.randomUUID().toString();
+    private String                         servletEndpointUrl            = "http://test.device/servlet";
+
+    String                                 userId                        = UUID.randomUUID().toString();
 
     private WSSecurityConfigurationService mockWSSecurityConfigurationService;
 
@@ -181,7 +183,7 @@ public class LandingServletTest {
         // setup
         String deviceOperationRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
                 "http://test.authn.service", servletEndpointUrl, DeviceOperationType.REGISTER, new Challenge<String>(), deviceName,
-                authenticatedDeviceName, null);
+                authenticatedDeviceName, null, null);
         String encodedSamlAuthnRequest = Base64.encode(deviceOperationRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -216,7 +218,7 @@ public class LandingServletTest {
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
                 "http://test.authn.service", servletEndpointUrl, DeviceOperationType.REMOVE, new Challenge<String>(), deviceName,
-                authenticatedDeviceName, deviceRegistrationAttribute);
+                authenticatedDeviceName, deviceRegistrationAttributeId, deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -243,6 +245,7 @@ public class LandingServletTest {
         assertEquals(authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
         assertEquals(userId, protocolContext.getSubject());
         assertEquals(deviceRegistrationAttribute, protocolContext.getAttribute());
+        assertEquals(deviceRegistrationAttributeId, protocolContext.getAttributeId());
     }
 
     @Test
@@ -252,7 +255,7 @@ public class LandingServletTest {
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
                 "http://test.authn.service", servletEndpointUrl, DeviceOperationType.UPDATE, new Challenge<String>(), deviceName,
-                authenticatedDeviceName, deviceRegistrationAttribute);
+                authenticatedDeviceName, deviceRegistrationAttributeId, deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -279,6 +282,7 @@ public class LandingServletTest {
         assertEquals(authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
         assertEquals(userId, protocolContext.getSubject());
         assertEquals(deviceRegistrationAttribute, protocolContext.getAttribute());
+        assertEquals(deviceRegistrationAttributeId, protocolContext.getAttributeId());
     }
 
 

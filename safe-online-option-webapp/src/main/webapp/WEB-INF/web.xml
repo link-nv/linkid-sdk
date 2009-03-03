@@ -156,6 +156,18 @@
 		<servlet-name>DisableServlet</servlet-name>
 		<url-pattern>/disable</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>EnableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.option.servlet.EnableServlet</servlet-class>
+		<init-param>
+			<param-name>DeviceExitPath</param-name>
+			<param-value>deviceexit</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EnableServlet</servlet-name>
+		<url-pattern>/enable</url-pattern>
+	</servlet-mapping>
     <servlet>
         <servlet-name>RemoveServlet</servlet-name>
         <servlet-class>net.link.safeonline.option.servlet.RemoveServlet</servlet-class>

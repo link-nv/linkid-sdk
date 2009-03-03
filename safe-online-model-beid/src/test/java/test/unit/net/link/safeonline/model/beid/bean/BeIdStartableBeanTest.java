@@ -14,13 +14,9 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.security.KeyPair;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
-import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.beid.bean.BeIdPkiProviderBean;
 import net.link.safeonline.model.beid.bean.BeIdStartableBean;
@@ -28,7 +24,6 @@ import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -64,11 +59,6 @@ public class BeIdStartableBeanTest {
 
         mockKeyService = createMock(KeyService.class);
         checkOrder(mockKeyService, false);
-
-        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();

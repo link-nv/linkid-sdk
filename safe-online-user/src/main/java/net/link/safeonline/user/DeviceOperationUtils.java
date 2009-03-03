@@ -61,10 +61,11 @@ public class DeviceOperationUtils {
      * @param device
      * @param userId
      *            the OLAS user ID.
-     * @param attribute
+     * @param id
+     *            the device compound attribute UUID
      */
     public static String redirect(String landingUrl, DeviceOperationType deviceOperation, String device, String authenticatedDevice,
-                                  String userId, AttributeDO attribute) {
+                                  String userId, String id, AttributeDO attribute) {
 
         LOG.debug("redirecting to: " + landingUrl);
         FacesContext context = FacesContext.getCurrentInstance();
@@ -98,7 +99,7 @@ public class DeviceOperationUtils {
         String encodedSamlRequestToken;
         try {
             encodedSamlRequestToken = deviceOperationService.redirect(serviceUrl, encodedLandingUrl, deviceOperation, device,
-                    authenticatedDevice, userId, attribute);
+                    authenticatedDevice, userId, id, attribute);
         } catch (SafeOnlineException e) {
             throw new RuntimeException("could not initiate device operation: " + e.getMessage(), e);
         }

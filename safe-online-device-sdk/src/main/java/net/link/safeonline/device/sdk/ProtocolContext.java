@@ -24,6 +24,8 @@ public class ProtocolContext implements Serializable {
 
     private String              subject;
 
+    private String              attributeId;
+
     private String              attribute;
 
     private DeviceOperationType deviceOperation;
@@ -155,6 +157,16 @@ public class ProtocolContext implements Serializable {
     public void setValidity(int validity) {
 
         this.validity = validity;
+    }
+
+    public String getAttributeId() {
+
+        return attributeId;
+    }
+
+    public void setAttributeId(String attributeId) {
+
+        this.attributeId = attributeId;
     }
 
     public String getAttribute() {

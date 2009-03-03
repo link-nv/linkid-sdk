@@ -56,7 +56,10 @@ public class BeIdStartableBean extends AbstractInitBean {
     private TrustPointDAO      trustPointDAO;
 
 
-    public BeIdStartableBean() {
+    @Override
+    public void postStart() {
+
+        LOG.debug("post start");
 
         configureNode();
 
@@ -135,12 +138,7 @@ public class BeIdStartableBean extends AbstractInitBean {
                 beidDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Belgian eID"));
-    }
 
-    @Override
-    public void postStart() {
-
-        LOG.debug("post start");
         super.postStart();
         initTrustDomain();
     }

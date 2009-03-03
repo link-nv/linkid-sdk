@@ -70,7 +70,13 @@ public interface EncapDeviceService extends EncapService {
     void commitRegistration(String nodeName, String userId, String otp)
             throws MobileException, DeviceAuthenticationException, NodeNotFoundException;
 
-    void remove(String userId, String mobile)
+    /**
+     * @param userId
+     * @param id
+     *            The device attribute id.
+     * 
+     */
+    void remove(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException;
 
     /**
@@ -95,11 +101,12 @@ public interface EncapDeviceService extends EncapService {
      * Disables the encap device registration.
      * 
      * @param userId
-     * @param mobile
+     * @param id
+     *            The id of the device attribute.
      * @throws DeviceRegistrationNotFoundException
      * @throws SubjectNotFoundException
      */
-    void disable(String userId, String mobile)
+    void disable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     /**
