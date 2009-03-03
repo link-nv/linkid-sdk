@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.servlet.AuthnEntryServlet;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
@@ -114,6 +115,14 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          * infinite timeout redirect loop, and remove the entry cookie.
          */
         if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
+
+            if (httpRequest.getServletPath().endsWith("/" + AuthnEntryServlet.SERVLET_PATH)) {
+                // if entry servlet, dont timeout ...
+                httpRequest.getSession(true);
+                removeCookie(SafeOnlineCookies.ENTRY_COOKIE, cookiePath, httpRequest, httpResponse);
+                chain.doFilter(request, response);
+                return;
+            }
 
             LOG.debug("forwarding to timeout path: " + timeoutPath);
             addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", cookiePath, httpRequest, httpResponse);

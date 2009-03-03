@@ -97,7 +97,7 @@ public class DeviceAuthenticationClientImpl extends AbstractMessageAccessor impl
         try {
             return port.authenticate(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString(), e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {

@@ -79,7 +79,7 @@ public class GetAuthenticationClientImpl extends AbstractMessageAccessor impleme
         try {
             response = port.getInstance(new AuthenticationGetInstanceRequestType());
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {

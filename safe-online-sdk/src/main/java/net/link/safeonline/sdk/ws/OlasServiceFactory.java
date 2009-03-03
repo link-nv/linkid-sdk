@@ -42,10 +42,24 @@ import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
  * 
  * @author lhunath
  */
-public class OlasServiceFactory {
+public class OlasServiceFactory extends ServiceFactory {
 
-    private static final String WS_LOCATION = "WsLocation";
+    private static final String   WS_LOCATION = "WsLocation";
+    private static ServiceFactory instance;
 
+
+    protected OlasServiceFactory() {
+
+    }
+
+    private static ServiceFactory getInstance() {
+
+        if (instance == null) {
+            instance = new OlasServiceFactory();
+        }
+
+        return instance;
+    }
 
     /**
      * Retrieve a proxy to the OLAS attribute web service.
@@ -56,15 +70,18 @@ public class OlasServiceFactory {
      */
     public static AttributeClient getAttributeService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
-        // Find the location of the OLAS web services to use.
-        String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+        return getInstance()._getAttributeService(httpRequest, privateKeyEntry);
+    }
+
+    @Override
+    protected AttributeClient _getAttributeService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new AttributeClientImpl(wsLocation, certificate, privateKey);
+        return new AttributeClientImpl(getWSLocation(httpRequest), certificate, privateKey);
     }
 
     /**
@@ -76,15 +93,18 @@ public class OlasServiceFactory {
      */
     public static DataClient getDataService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
-        // Find the location of the OLAS web services to use.
-        String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+        return getInstance()._getDataService(httpRequest, privateKeyEntry);
+    }
+
+    @Override
+    protected DataClient _getDataService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new DataClientImpl(wsLocation, certificate, privateKey);
+        return new DataClientImpl(getWSLocation(httpRequest), certificate, privateKey);
     }
 
     /**
@@ -96,15 +116,18 @@ public class OlasServiceFactory {
      */
     public static NameIdentifierMappingClient getIdMappingService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
-        // Find the location of the OLAS web services to use.
-        String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+        return getInstance()._getIdMappingService(httpRequest, privateKeyEntry);
+    }
+
+    @Override
+    protected NameIdentifierMappingClient _getIdMappingService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NameIdentifierMappingClientImpl(wsLocation, certificate, privateKey);
+        return new NameIdentifierMappingClientImpl(getWSLocation(httpRequest), certificate, privateKey);
     }
 
     /**
@@ -116,15 +139,18 @@ public class OlasServiceFactory {
      */
     public static SecurityTokenServiceClient getStsService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
-        // Find the location of the OLAS web services to use.
-        String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+        return getInstance()._getStsService(httpRequest, privateKeyEntry);
+    }
+
+    @Override
+    protected SecurityTokenServiceClient _getStsService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new SecurityTokenServiceClientImpl(wsLocation, certificate, privateKey);
+        return new SecurityTokenServiceClientImpl(getWSLocation(httpRequest), certificate, privateKey);
     }
 
     /**
@@ -136,15 +162,18 @@ public class OlasServiceFactory {
      */
     public static NotificationConsumerClient getNotificationConsumerService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
-        // Find the location of the OLAS web services to use.
-        String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+        return getInstance()._getNotificationConsumerService(httpRequest, privateKeyEntry);
+    }
+
+    @Override
+    protected NotificationConsumerClient _getNotificationConsumerService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NotificationConsumerClientImpl(wsLocation, certificate, privateKey);
+        return new NotificationConsumerClientImpl(getWSLocation(httpRequest), certificate, privateKey);
     }
 
     /**
@@ -156,15 +185,18 @@ public class OlasServiceFactory {
      */
     public static NotificationProducerClient getNotificationProducerService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
-        // Find the location of the OLAS web services to use.
-        String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+        return getInstance()._getNotificationProducerService(httpRequest, privateKeyEntry);
+    }
+
+    @Override
+    protected NotificationProducerClient _getNotificationProducerService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NotificationProducerClientImpl(wsLocation, certificate, privateKey);
+        return new NotificationProducerClientImpl(getWSLocation(httpRequest), certificate, privateKey);
     }
 
     /**
@@ -177,14 +209,23 @@ public class OlasServiceFactory {
     public static NotificationSubscriptionManagerClient getNotificationSubscriptionService(HttpServletRequest httpRequest,
                                                                                            PrivateKeyEntry privateKeyEntry) {
 
-        // Find the location of the OLAS web services to use.
-        String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+        return getInstance()._getNotificationSubscriptionService(httpRequest, privateKeyEntry);
+    }
+
+    @Override
+    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(HttpServletRequest httpRequest,
+                                                                                        PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NotificationSubscriptionManagerClientImpl(wsLocation, certificate, privateKey);
+        return new NotificationSubscriptionManagerClientImpl(getWSLocation(httpRequest), certificate, privateKey);
+    }
+
+    private static String getWSLocation(HttpServletRequest httpRequest) {
+
+        return httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
     }
 }

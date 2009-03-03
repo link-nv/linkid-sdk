@@ -43,6 +43,8 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
 
     private Subject subject;
 
+    private String  attributeId;
+
     private String  attribute;
 
 
@@ -156,6 +158,19 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
     public void setServiceURL(String serviceURL) {
 
         this.serviceURL = prepareForAssignment(this.serviceURL, serviceURL);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getAttributeId() {
+
+        return attributeId;
+    }
+
+    public void setAttributeId(String attributeId) {
+
+        this.attributeId = prepareForAssignment(this.attributeId, attributeId);
     }
 
     /**

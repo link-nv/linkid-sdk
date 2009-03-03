@@ -132,6 +132,24 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         }
     }
 
+    private AttributeEntity getDisableAttributeFromId(SubjectEntity subject, String id)
+            throws DeviceRegistrationNotFoundException {
+
+        try {
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, id);
+            AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    EncapConstants.ENCAP_DEVICE_DISABLE_ATTRIBUTE);
+
+            return disableAttribute;
+        }
+
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for Encap device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException(e);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -224,18 +242,22 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     /**
      * {@inheritDoc}
      */
-    public void remove(String userId, String mobile)
+    public void remove(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException {
 
-        mobileManager.remove(mobile);
-
-        SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-        if (null == subject)
-            throw new SubjectNotFoundException();
-
         try {
-            attributeManager.removeCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
-                    mobile);
+
+            SubjectEntity subject = subjectService.getSubject(userId);
+            AttributeEntity parentAttribute = attributeManager.getCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, id);
+            String mobile = attributeManager.getCompoundMember(parentAttribute, EncapConstants.ENCAP_MOBILE_ATTRIBUTE).getStringValue();
+
+            mobileManager.remove(mobile);
+
+            subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
+            if (null == subject)
+                throw new SubjectNotFoundException();
+
+            attributeManager.removeCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, id);
             subjectIdentifierDAO.removeSubjectIdentifier(subject, EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
 
             // flush and clear to commit and release the removed entities.
@@ -335,11 +357,11 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String mobile)
+    public void disable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
-        AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
+        AttributeEntity disableAttribute = getDisableAttributeFromId(subject, id);
         disableAttribute.setValue(true);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,

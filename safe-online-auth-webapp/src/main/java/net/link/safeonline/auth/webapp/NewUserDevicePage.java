@@ -13,6 +13,7 @@ import java.util.List;
 import javax.ejb.EJB;
 
 import net.link.safeonline.auth.AuthenticationUtils;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.entity.DeviceEntity;
@@ -69,7 +70,7 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
 
         getContent().add(new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.initial));
 
-        String loginLabel = localize("%l: %s", "login", AuthenticationSession.get().getLoginName());
+        String loginLabel = localize("%l: %s", "login", LoginManager.getLogin(WicketUtil.getHttpSession(getRequest())));
         getContent().add(new Label(LOGIN_LABEL_ID, loginLabel));
 
         getContent().add(new NewUserDeviceForm(NEW_USER_DEVICE_FORM_ID));
@@ -144,7 +145,7 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
                     }
 
                     AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()), WicketUtil.toServletResponse(getResponse()),
-                            getLocale(), registrationURL, deviceName, AuthenticationSession.get().getUserId());
+                            getLocale(), registrationURL, deviceName, LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
                     setRedirect(false);
                     return;
 

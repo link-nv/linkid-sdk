@@ -294,11 +294,13 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                  * This situation is possible when filling in a compounded attribute record during the missing attributes phase of the
                  * authentication process.
                  */
-                compoundedAttribute = attributeDAO.addAttribute(compoundedAttributeType, subject, index);
-                String compoundedAttributeId = UUID.randomUUID().toString();
-                LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName + " with ID "
-                        + compoundedAttributeId);
-                compoundedAttribute.setValue(compoundedAttributeId);
+                attributeManager.newCompound(compoundedAttributeType, subject);
+
+                // compoundedAttribute = attributeDAO.addAttribute(compoundedAttributeType, subject, index);
+                // String compoundedAttributeId = UUID.randomUUID().toString();
+                // LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName + " with ID "
+                // + compoundedAttributeId);
+                // compoundedAttribute.setValue(compoundedAttributeId);
             }
             /*
              * Notice that, if there is already a compounded attribute for the given record index, then we don't overwrite it with a new ID.
@@ -345,7 +347,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         LOG.debug("get attributes for " + subject.getUserId());
 
         List<AttributeTypeEntity> attributeTypes = attributeTypeDAO.listAttributeTypes();
-        return listAttributes(subject, attributeTypes, locale, true);
+        return listAttributes(subject, attributeTypes, locale, true, false);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -367,42 +369,51 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 for (ApplicationIdentityAttributeEntity identityAttribute : applicationIdentity.getAttributes()) {
                     if (identityAttribute.getAttributeType().isUserVisible()) {
                         if (!attributeTypes.contains(identityAttribute.getAttributeType())) {
-                            attributeTypes.add(identityAttribute.getAttributeType());
+                            if (!attributeTypes.contains(identityAttribute.getAttributeType())) {
+                                attributeTypes.add(identityAttribute.getAttributeType());
+                            }
                         }
                     }
                 }
             }
         }
-        attributes.addAll(listAttributes(subject, attributeTypes, locale, true));
+        attributes.addAll(listAttributes(subject, attributeTypes, locale, true, true));
 
         attributeTypes.clear();
         List<DeviceEntity> devices = deviceDAO.listDevices();
         for (DeviceEntity device : devices) {
             if (null != device.getAttributeType() && device.getAttributeType().isUserVisible()) {
-                LOG.debug("add device attribute type: " + device.getAttributeType());
-                attributeTypes.add(device.getAttributeType());
-            }
-            if (null != device.getUserAttributeType() && device.getUserAttributeType().isUserVisible()
-                    && !device.getAttributeType().equals(device.getUserAttributeType())) {
-                LOG.debug("add device user attribute type: " + device.getUserAttributeType());
-                attributeTypes.add(device.getUserAttributeType());
+                if (!attributeTypes.contains(device.getAttributeType())) {
+                    LOG.debug("add device attribute type: " + device.getAttributeType().getName());
+                    attributeTypes.add(device.getAttributeType());
+                }
+            } else if (null != device.getUserAttributeType() && device.getUserAttributeType().isUserVisible()) {
+                if (!attributeTypes.contains(device.getUserAttributeType())) {
+                    LOG.debug("add device user attribute type: " + device.getUserAttributeType().getName());
+                    attributeTypes.add(device.getUserAttributeType());
+                }
             }
         }
-        attributes.addAll(listAttributes(subject, attributeTypes, locale, false));
+        attributes.addAll(listAttributes(subject, attributeTypes, locale, false, true));
         return attributes;
     }
 
     /**
      * Returns list of attribute data objects given the subject and the list of attribute types.
+     * 
+     * @param addTemplate
+     *            if true, will add a template {@link AttributeDO}
+     * @param addMember
+     *            if true, will add compound members
      */
     private List<AttributeDO> listAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes, Locale locale,
-                                             boolean addTemplate)
+                                             boolean addTemplate, boolean addMember)
             throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
         for (AttributeTypeEntity attributeType : attributeTypes) {
             // get these with their parent, skip
-            if (attributeType.isCompoundMember()) {
+            if (attributeType.isCompoundMember() && !addMember) {
                 continue;
             }
             LOG.debug("find attribute value for type: " + attributeType.getName());
@@ -440,13 +451,23 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         LOG.debug("add template attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued() && !attributeType.isCompounded()) {
             // single or multi-valued but NOT compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable));
+            AttributeDO attributeView = getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable);
+            if (!attributesView.contains(attributeView)) {
+                attributesView.add(attributeView);
+            }
         } else {
             // compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable)); // parent
+            AttributeDO attributeParentView = getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable);
+            if (!attributesView.contains(attributeParentView)) {
+                attributesView.add(attributeParentView);
+            }
             for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
-                LOG.debug("add compounded member attribute template: " + memberAttributeType.getMember().getName());
-                attributesView.add(getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute, unavailable));
+                AttributeDO attributeView = getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute,
+                        unavailable);
+                if (!attributesView.contains(attributeView)) {
+                    LOG.debug("add compounded member attribute template: " + memberAttributeType.getMember().getName());
+                    attributesView.add(attributeView);
+                }
             }
         }
     }
@@ -473,7 +494,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 // first add an attribute view for the parent attribute
                 // type
                 LOG.debug("add compounded attribute: " + attributeType.getName());
-                attributesView.add(getAttributeView(attributeType, null, idx, locale, false, false));
+                attributesView.add(getAttributeView(attributeType, memberMap.get(attributeType.getName()), idx, locale, false, false));
                 for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                     LOG.debug("add compounded member attribute: " + memberAttributeType.getMember().getName());
                     attributesView.add(getAttributeView(memberAttributeType.getMember(), memberMap.get(memberAttributeType.getMember()
@@ -697,7 +718,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                      * If the attribute is already present it's because of a non-compounded attribute type which has precedence over the
                      * member attribute types of a compounded attribute type.
                      */
-                    continue;
+                    // continue;
                 }
                 if (required == false) {
                     attributeRequirements.put(parentAttributeType, required == identityAttribute.isRequired()

@@ -40,7 +40,7 @@ import net.link.safeonline.demo.cinema.webapp.LayoutPage.SelectedTime;
 import net.link.safeonline.demo.cinema.webapp.TicketPage.TicketForm;
 import net.link.safeonline.demo.cinema.webapp.servlet.LogoutServlet;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.wicket.javaee.DummyJndi;
+import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasAuthLink;
@@ -63,8 +63,10 @@ public class CinemaWebTest extends AbstractWicketTests {
 
         super.setUp();
 
+        DummyServiceFactory.install();
+
         // Perform the Bank Initialization code that normally runs after webapp deployment.
-        DummyJndi.lookup(InitializationService.class).buildEntities();
+        jndiTestUtils.lookup(InitializationService.class).buildEntities();
     }
 
     /**

@@ -41,7 +41,6 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
-import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
@@ -710,11 +709,9 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, sslProtocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate(),
-                olasKeyStore.getCertificate());
+        node = new Node(nodeName, sslProtocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 

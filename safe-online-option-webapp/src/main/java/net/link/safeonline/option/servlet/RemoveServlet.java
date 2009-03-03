@@ -61,20 +61,22 @@ public class RemoveServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        String imei = DeviceOperationManager.findAttribute(request.getSession());
+        String attributeId = DeviceOperationManager.findAttributeId(request.getSession());
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        LOG.debug("remove option device: " + imei + " for user " + userId);
+        LOG.debug("remove option device: " + attributeId + " for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
 
         try {
+            String imei = optionDeviceService.getImei(userId, attributeId);
+
             if (!OptionDevice.unregister(imei, request, response)) {
-                LOG.error("Option device with IMEI " + imei + " not registered.");
+                LOG.error("Option device with IMEI " + attributeId + " not registered.");
             }
 
             else {
-                optionDeviceService.remove(imei);
+                optionDeviceService.remove(userId, attributeId);
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 // notify that disable operation was successful.

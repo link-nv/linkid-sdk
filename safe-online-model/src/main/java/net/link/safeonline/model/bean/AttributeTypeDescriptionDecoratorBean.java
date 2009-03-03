@@ -51,9 +51,8 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
             String humanReadableName = null;
             String description = null;
             if (null != language) {
-                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
-                                                                                               .findDescription(new AttributeTypeDescriptionPK(
-                                                                                                       name, language));
+                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO.findDescription(new AttributeTypeDescriptionPK(
+                        name, language));
                 if (null != attributeTypeDescription) {
                     humanReadableName = attributeTypeDescription.getName();
                     description = attributeTypeDescription.getDescription();
@@ -62,7 +61,9 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
             AttributeDO attribute = new AttributeDO(name, datatype, false, 0, humanReadableName, description,
                     identityAttribute.getAttributeType().isUserEditable(), identityAttribute.isDataMining(), null, null);
             attribute.setCompounded(attributeType.isCompounded());
-            attributes.add(attribute);
+            if (!attributes.contains(attribute)) {
+                attributes.add(attribute);
+            }
             if (attributeType.isCompounded()) {
                 for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                     AttributeTypeEntity memberType = member.getMember();
@@ -70,9 +71,8 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
                     description = null;
                     if (null != language) {
                         AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
-                                                                                                       .findDescription(new AttributeTypeDescriptionPK(
-                                                                                                               memberType.getName(),
-                                                                                                               language));
+                                                                                                  .findDescription(new AttributeTypeDescriptionPK(
+                                                                                                          memberType.getName(), language));
                         if (null != attributeTypeDescription) {
                             humanReadableName = attributeTypeDescription.getName();
                             description = attributeTypeDescription.getDescription();
@@ -81,7 +81,9 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
                     AttributeDO memberAttribute = new AttributeDO(memberType.getName(), memberType.getType(), false, 0, humanReadableName,
                             description, memberType.isUserEditable(), identityAttribute.isDataMining(), null, null);
                     memberAttribute.setMember(true);
-                    attributes.add(memberAttribute);
+                    if (!attributes.contains(memberAttribute)) {
+                        attributes.add(memberAttribute);
+                    }
                 }
             }
 

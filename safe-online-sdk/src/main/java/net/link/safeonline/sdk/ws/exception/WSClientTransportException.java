@@ -22,18 +22,20 @@ public class WSClientTransportException extends Exception {
 
     public WSClientTransportException(String location) {
 
-        super();
+        super("Failed to contact webservice: " + location);
+
+        this.location = location;
+    }
+
+    public WSClientTransportException(String location, Throwable cause) {
+
+        super("Failed to contact webservice: " + location, cause);
+
         this.location = location;
     }
 
     public String getLocation() {
 
         return location;
-    }
-
-    @Override
-    public String getMessage() {
-
-        return "Failed to contact webservice: " + location;
     }
 }

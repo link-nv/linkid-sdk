@@ -145,7 +145,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                     AttributeType compoundAttribute = (AttributeType) attributeValue;
                     CompoundBuilder compoundBuilder = new CompoundBuilder(componentType);
 
-                    // XXX: don't we need to add the compound it attribute ? see data-ws
+                    String attributeId = compoundAttribute.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
+                    compoundBuilder.setCompoundId(attributeId);
 
                     List<Object> memberAttributes = compoundAttribute.getAttributeValue();
                     for (Object memberAttributeObject : memberAttributes) {
@@ -186,7 +187,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         try {
             return port.attributeQuery(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {

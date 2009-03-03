@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -68,14 +70,14 @@ public class RemovalServlet extends AbstractInjectionServlet {
             throws IOException, ServletException {
 
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        String mobile = DeviceOperationManager.getAttribute(request.getSession());
-        LOG.debug("remove mobile " + mobile + " for user " + userId);
+        String attributeId = DeviceOperationManager.getAttributeId(request.getSession());
+        LOG.debug("remove mobile " + attributeId + " for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
 
         try {
-            otpOverSmsDeviceService.remove(userId, mobile);
+            otpOverSmsDeviceService.remove(userId, attributeId);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that remove operation was successful.
@@ -86,6 +88,10 @@ public class RemovalServlet extends AbstractInjectionServlet {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
             LOG.error("Tried to remove a device that wasn't registered.", e);
+        } catch (AttributeNotFoundException e) {
+            LOG.error("Attribute not found", e);
+        } catch (AttributeTypeNotFoundException e) {
+            LOG.error("Attribute type not found", e);
         }
 
         response.sendRedirect(deviceExitPath);

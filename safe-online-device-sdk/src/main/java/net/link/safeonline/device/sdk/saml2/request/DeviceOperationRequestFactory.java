@@ -82,12 +82,13 @@ public class DeviceOperationRequestFactory {
      * @param challenge
      *            the challenge (output variable).
      * @param device
-     * @param attribute
+     * @param attributeId
+     *            the UUID of the compound device attribute.
      */
     public static String createDeviceOperationRequest(String issuerName, String subjectName, KeyPair signerKeyPair, String serviceURL,
                                                       String destinationURL, DeviceOperationType deviceOperation,
                                                       Challenge<String> challenge, String device, String authenticatedDevice,
-                                                      String attribute) {
+                                                      String attributeId, String attribute) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -135,6 +136,7 @@ public class DeviceOperationRequestFactory {
         request.setDeviceOperation(deviceOperation.name());
         request.setDevice(device);
         request.setAuthenticatedDevice(authenticatedDevice);
+        request.setAttributeId(attributeId);
         request.setAttribute(attribute);
 
         return Saml2Util.sign(request, signerKeyPair);

@@ -557,6 +557,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         AttributeDO disableAttribute = null;
         ListIterator<AttributeDO> iter = attributes.listIterator();
         AttributeDO attribute = iter.next();
+        // parent attribute
+        String id = attribute.getStringValue();
         while (iter.hasNext()) {
             attribute = iter.next();
             if (null != device.getUserAttributeType() && attribute.getName().equals(device.getUserAttributeType().getName())) {
@@ -568,13 +570,14 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
                 if (null != disableAttribute) {
                     disabled = disableAttribute.getBooleanValue();
                 }
-                registrations.add(new DeviceRegistrationDO(device, deviceDescription, userAttribute, disabled));
+                registrations.add(new DeviceRegistrationDO(device, deviceDescription, id, userAttribute, disabled));
+                id = attribute.getStringValue();
             }
         }
         boolean disabled = false;
         if (null != disableAttribute && null != disableAttribute.getBooleanValue()) {
             disabled = disableAttribute.getBooleanValue();
         }
-        registrations.add(new DeviceRegistrationDO(device, deviceDescription, userAttribute, disabled));
+        registrations.add(new DeviceRegistrationDO(device, deviceDescription, id, userAttribute, disabled));
     }
 }

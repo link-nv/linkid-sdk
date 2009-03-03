@@ -102,7 +102,7 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
             response = port.requestSecurityToken(request);
         } catch (ClientTransportException e) {
             LOG.error("ClientTransportException: " + e.getMessage(), e);
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             LOG.error("Exception: " + e.getMessage(), e);
             throw retrieveHeadersFromException(e);

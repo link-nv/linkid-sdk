@@ -27,7 +27,6 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.test.UrlPageSource;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -68,7 +67,6 @@ public class AuthenticationPageTest {
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
 
-        WicketUtil.setUnitTesting(true);
         wicket = new WicketTester(new EncapTestApplication());
         wicket.processRequestCycle();
     }
@@ -94,7 +92,7 @@ public class AuthenticationPageTest {
         authenticationContext.setApplicationFriendlyName(TEST_APPLICATION);
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(TEST_USERID);
-        protocolContext.setAttribute(TEST_MOBILE);
+        protocolContext.setAttributeId(TEST_MOBILE);
 
         // Check whether our mount point sends us to the authentication page.
         switch (goal) {

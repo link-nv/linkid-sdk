@@ -109,7 +109,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
         try {
             response = port.unsubscribe(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         }
 
         checkStatus(response);

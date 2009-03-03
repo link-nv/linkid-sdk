@@ -170,7 +170,7 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
                 try {
                     authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
                     authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
-                    authenticationContext.setIssuer(OptionConstants.OPTION_DEVICE_ID);
+                    authenticationContext.setUsedDevice(OptionConstants.OPTION_DEVICE_ID);
                     authenticationContext.setUserId(userId);
                 }
 

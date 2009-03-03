@@ -93,15 +93,16 @@ public interface ApplicationService extends SafeOnlineService {
      *            whether or not this application allows Single Sign-On
      * @param ssoLogoutUrl
      *            single sign-on logout URL, where logout requests will be sent to
+     * @return The newly added application entity.
      * @throws ExistingApplicationException
      * @throws ApplicationOwnerNotFoundException
      * @throws CertificateEncodingException
      * @throws AttributeTypeNotFoundException
      */
-    void addApplication(String name, String friendlyName, String applicationOwnerName, String description, boolean idMappingServiceAccess,
-                        IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo, byte[] encodedCertificate,
-                        List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
-                        boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
+    ApplicationEntity addApplication(String name, String friendlyName, String applicationOwnerName, String description,
+                                     boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo,
+                                     byte[] encodedCertificate, List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
+                                     boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException;
 

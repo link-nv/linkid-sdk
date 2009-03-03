@@ -6,23 +6,31 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.webapp.AuthenticationPage;
 import net.link.safeonline.encap.webapp.EncapApplication;
 import net.link.safeonline.encap.webapp.MainPage;
 import net.link.safeonline.encap.webapp.RegistrationPage;
 import net.link.safeonline.helpdesk.HelpdeskManager;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.encap.EncapDeviceService;
+import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.test.UrlPageSource;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.ExternalLink;
@@ -40,6 +48,7 @@ public class RegistrationPageTest {
     private SamlAuthorityService mockSamlAuthorityService;
     private HelpdeskManager      mockHelpdeskManager;
     private WicketTester         wicket;
+    private KeyService           mockKeyService;
 
     private static final String  TEST_USERID     = UUID.randomUUID().toString();
     private static final String  TEST_NODE_NAME  = "test-node-name";
@@ -54,14 +63,23 @@ public class RegistrationPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
+        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
 
         mockEncapDeviceService = createMock(EncapDeviceService.class);
         jndiTestUtils.bindComponent(EncapDeviceService.JNDI_BINDING, mockEncapDeviceService);
-
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockKeyService = createMock(KeyService.class);
+        jndiTestUtils.bindComponent(KeyService.class, mockKeyService);
 
-        WicketUtil.setUnitTesting(true);
+        KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).anyTimes();
+        replay(mockKeyService);
+
+        DummyServiceFactory.install();
+
         wicket = new WicketTester(new EncapTestApplication());
         wicket.processRequestCycle();
     }
@@ -85,7 +103,7 @@ public class RegistrationPageTest {
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(TEST_USERID);
         protocolContext.setNodeName(TEST_NODE_NAME);
-        protocolContext.setAttribute(TEST_MOBILE);
+        protocolContext.setAttributeId(TEST_MOBILE);
 
         // Load Authentication Page.
         wicket.assertRenderedPage(MainPage.class);

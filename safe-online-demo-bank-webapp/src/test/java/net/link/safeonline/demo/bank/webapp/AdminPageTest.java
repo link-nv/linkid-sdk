@@ -21,7 +21,6 @@ import net.link.safeonline.demo.bank.service.bean.InitializationServiceBean;
 import net.link.safeonline.demo.bank.service.bean.TransactionServiceBean;
 import net.link.safeonline.demo.bank.service.bean.UserServiceBean;
 import net.link.safeonline.demo.bank.webapp.servlet.LogoutServlet;
-import net.link.safeonline.wicket.javaee.DummyJndi;
 import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.test.UrlPageSource;
 
@@ -48,7 +47,8 @@ import org.junit.Test;
 public class AdminPageTest extends AbstractWicketTests {
 
     @Test
-    public void testToggleLinkedState() {
+    public void testToggleLinkedState()
+            throws Exception {
 
         // Test data.
         String testBankId = "TestBankId";
@@ -117,7 +117,7 @@ public class AdminPageTest extends AbstractWicketTests {
         wicket.assertInvisible("adminForm:linked");
 
         // Link our new user to an olas account.
-        DummyJndi.lookup(UserService.class).getBankUser(testBankId).setOlasId(testOlasId);
+        jndiTestUtils.lookup(UserService.class).getBankUser(testBankId).setOlasId(testOlasId);
 
         // AdminPage: Look up our new user.
         adminForm = wicket.newFormTester("adminForm");
@@ -146,7 +146,7 @@ public class AdminPageTest extends AbstractWicketTests {
         wicket.assertInvisible("adminForm:linked");
 
         // Verify that the user is no longer linked.
-        assertNull(DummyJndi.lookup(UserService.class).getBankUser(testBankId).getOlasId());
+        assertNull(jndiTestUtils.lookup(UserService.class).getBankUser(testBankId).getOlasId());
     }
 
     /**

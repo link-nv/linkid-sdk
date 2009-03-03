@@ -12,13 +12,13 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.RegistrationPage;
+import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.After;
@@ -40,8 +40,6 @@ public class RegistrationPageTest {
     @Before
     public void setUp()
             throws Exception {
-
-        WicketUtil.setUnitTesting(true);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
@@ -146,4 +144,47 @@ public class RegistrationPageTest {
         wicket.assertErrorMessages(new String[] { RegistrationPage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
 
     }
+
+    @Test
+    public void testRegisterPasswordAlreadyRegistered()
+            throws Exception {
+
+        // setup
+        String userId = UUID.randomUUID().toString();
+        String password = "test-password";
+        DummyNameIdentifierMappingClient.setUserId(userId);
+
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
+        protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
+        protocolContext.setSubject(userId);
+
+        // setup
+        RegistrationPage registrationPage = new RegistrationPage();
+        EJBTestUtils.inject(registrationPage, mockPasswordDeviceService);
+        EJBTestUtils.inject(registrationPage, mockSamlAuthorityService);
+
+        // stubs
+        expect(mockPasswordDeviceService.isPasswordConfigured(userId)).andReturn(true);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+
+        // prepare
+        replay(mockPasswordDeviceService, mockSamlAuthorityService);
+
+        // Registration Page: Verify.
+        wicket.startPage(registrationPage);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
+
+        // operate
+        FormTester registrationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
+        registrationForm.setValue(RegistrationPage.PASSWORD1_FIELD_ID, password);
+        registrationForm.setValue(RegistrationPage.PASSWORD2_FIELD_ID, "foobar-password");
+        registrationForm.submit(RegistrationPage.SAVE_BUTTON_ID);
+
+        // verify
+        verify(mockPasswordDeviceService, mockSamlAuthorityService);
+
+        wicket.assertRenderedPage(RegistrationPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.ALREADY_REGISTERED_LINK_ID, Link.class);
+    }
+
 }

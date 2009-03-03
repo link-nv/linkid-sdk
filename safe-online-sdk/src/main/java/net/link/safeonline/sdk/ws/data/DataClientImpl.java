@@ -155,7 +155,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         try {
             modifyResponse = port.modify(modify);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -209,7 +209,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         try {
             queryResponse = port.query(query);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -360,7 +360,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
             if (TopLevelStatusCode.OK != topLevelStatusCode)
                 throw new RuntimeException("error occurred while creating attribute");
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
@@ -502,7 +502,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
                 throw new RuntimeException("error occurred while removing attribute: " + comment);
             }
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(location);
+            throw new WSClientTransportException(location, e);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {

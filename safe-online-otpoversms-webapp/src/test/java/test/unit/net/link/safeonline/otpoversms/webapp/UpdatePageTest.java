@@ -29,7 +29,6 @@ import net.link.safeonline.otpoversms.webapp.UpdatePage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -58,8 +57,6 @@ public class UpdatePageTest {
     @Before
     public void setUp()
             throws Exception {
-
-        WicketUtil.setUnitTesting(true);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();

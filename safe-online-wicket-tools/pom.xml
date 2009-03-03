@@ -63,10 +63,6 @@
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-ioc</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-contrib-javaee</artifactId>
-		</dependency>
 
         <!-- Test Dependencies -->
         <dependency>

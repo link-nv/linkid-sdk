@@ -75,18 +75,18 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
         credentialManager.enable(sessionId, userId, operation, identityStatementData);
     }
 
-    public void disable(String userId, String attribute)
+    public void disable(String userId, String attributeId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        LOG.debug("disable: userId=" + userId + " attribute=" + attribute);
-        beIdPkiProvider.disable(userId, attribute);
+        LOG.debug("disable: userId=" + userId + " attributeId=" + attributeId);
+        beIdPkiProvider.disable(userId, attributeId);
     }
 
-    public void remove(String userId, String attribute)
+    public void remove(String userId, String attributeId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        LOG.debug("remove: userId=" + userId + " attribute=" + attribute);
-        beIdPkiProvider.remove(userId, attribute);
+        LOG.debug("remove: userId=" + userId + " attributeId=" + attributeId);
+        beIdPkiProvider.remove(userId, attributeId);
 
     }
 
