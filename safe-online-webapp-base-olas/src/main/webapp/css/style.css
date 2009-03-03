@@ -480,6 +480,7 @@ table .text.block {
 
 label {
     float:              left;
+    clear:              left;
 
     width:              150px;
     padding:            0 25px 0 0;
