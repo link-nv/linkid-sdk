@@ -83,7 +83,7 @@ public class RegistrationPageTest {
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(TEST_USERID);
         protocolContext.setNodeName(TEST_NODE_NAME);
-        protocolContext.setAttribute(TEST_MOBILE);
+        protocolContext.setAttributeId(TEST_MOBILE);
 
         // Load Authentication Page.
         wicket.assertRenderedPage(MainPage.class);

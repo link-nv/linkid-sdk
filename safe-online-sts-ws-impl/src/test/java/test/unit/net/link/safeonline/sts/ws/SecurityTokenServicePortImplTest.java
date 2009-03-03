@@ -572,7 +572,7 @@ public class SecurityTokenServicePortImplTest {
         String device = "test-device";
         String authenticatedDevice = "test-authenticated-device";
         String encodedRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(issuerName, subjectName, nodeKeyPair,
-                serviceURL, destinationURL, DeviceOperationType.REGISTER, challenge, device, authenticatedDevice, null);
+                serviceURL, destinationURL, DeviceOperationType.REGISTER, challenge, device, authenticatedDevice, null, null);
         Document doc = DomUtils.parseDocument(encodedRequest);
         return doc.getDocumentElement();
     }

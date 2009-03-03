@@ -113,11 +113,11 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
     /**
      * {@inheritDoc}
      */
-    public void enable(String userId, String imei)
+    public void enable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
-        getDisableAttribute(subject, imei).setValue(false);
+        getDisableAttributeFromId(subject, id).setValue(false);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 OptionConstants.OPTION_DEVICE_ID));
@@ -126,11 +126,11 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String imei)
+    public void disable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
-        getDisableAttribute(subject, imei).setValue(true);
+        getDisableAttributeFromId(subject, id).setValue(true);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 OptionConstants.OPTION_DEVICE_ID));
@@ -143,6 +143,21 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
             AttributeEntity device = attributeManager.getCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE,
                     OptionConstants.OPTION_IMEI_ATTRIBUTE, imei);
 
+            return attributeManager.getCompoundMember(device, OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
+        }
+
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException(e);
+        }
+    }
+
+    private AttributeEntity getDisableAttributeFromId(SubjectEntity subject, String id)
+            throws DeviceRegistrationNotFoundException {
+
+        try {
+            AttributeEntity device = attributeManager.getCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE, id);
             return attributeManager.getCompoundMember(device, OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
         }
 
@@ -187,18 +202,20 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
     /**
      * {@inheritDoc}
      */
-    public void remove(String imei)
+    public void remove(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        // check registration exists
-        SubjectEntity subject = subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
-        if (null == subject)
-            throw new SubjectNotFoundException();
-
         try {
-            attributeManager.removeCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE, OptionConstants.OPTION_IMEI_ATTRIBUTE,
-                    imei);
+            SubjectEntity subject = subjectService.getSubject(userId);
+            AttributeEntity parentAttribute = attributeManager.getCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE, id);
+            String imei = attributeManager.getCompoundMember(parentAttribute, OptionConstants.OPTION_IMEI_ATTRIBUTE).getStringValue();
 
+            // check registration exists
+            subject = subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
+            if (null == subject)
+                throw new SubjectNotFoundException();
+
+            attributeManager.removeCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE, id);
             subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
 
             // flush and clear to commit and release the removed entities.
@@ -215,4 +232,25 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
             throw new DeviceRegistrationNotFoundException(e);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getImei(String userId, String id)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
+
+        try {
+            SubjectEntity subject = subjectService.getSubject(userId);
+            AttributeEntity parentAttribute = attributeManager.getCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE, id);
+            return attributeManager.getCompoundMember(parentAttribute, OptionConstants.OPTION_IMEI_ATTRIBUTE).getStringValue();
+        }
+
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException(e);
+        }
+
+    }
+
 }

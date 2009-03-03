@@ -128,7 +128,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public String redirect(@NonEmptyString String serviceUrl, @NonEmptyString String targetUrl,
                            @NotNull DeviceOperationType deviceOperation, @NonEmptyString String deviceName, String authenticatedDeviceName,
-                           @NonEmptyString String userId, AttributeDO attribute)
+                           @NonEmptyString String userId, String id, AttributeDO attribute)
             throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
 
         NodeEntity localNode = nodeAuthenticationService.getLocalNode();
@@ -144,15 +144,15 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             nodeUserId = nodeMapping.getId();
         }
 
-        String attributeValue = null;
-        if (null != attribute) {
-            attributeValue = attribute.getValueAsString();
-        }
-
         Challenge<String> challenge = new Challenge<String>();
 
+        String attributeValue = null;
+        if (attribute != null) {
+            attributeValue = attribute.getStringValue();
+        }
+
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(), nodeUserId,
-                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName,
+                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName, id,
                 attributeValue);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());

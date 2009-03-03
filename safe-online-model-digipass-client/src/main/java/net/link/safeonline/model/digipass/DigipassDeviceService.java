@@ -31,7 +31,7 @@ public interface DigipassDeviceService extends DigipassService {
             throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException, DeviceRegistrationNotFoundException,
             DeviceAuthenticationException;
 
-    String register(String nodeName, String userId, String serialNumber)
+    String register(String userId, String serialNumber)
             throws ArgumentIntegrityException, NodeNotFoundException;
 
     void remove(String serialNumber)
@@ -40,7 +40,7 @@ public interface DigipassDeviceService extends DigipassService {
     List<AttributeDO> getDigipasses(String userId, Locale locale)
             throws SubjectNotFoundException;
 
-    void disable(String userId, String serialNumber)
+    void disable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     void enable(String userId, String serialNumber, String token)

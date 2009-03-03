@@ -30,6 +30,8 @@ public class LoginManager {
 
     public static final String USERID_ATTRIBUTE                    = "userId";
 
+    public static final String LOGIN_ATTRIBUTE                     = "LoginManager.loginName";
+
     public static final String AUTHENTICATION_DEVICE_ATTRIBUTE     = "LoginManager.authenticationDevice";
 
     public static final String REQUIRED_DEVICES_ATTRIBUTE          = "LoginManager.requiredDevices";
@@ -87,6 +89,20 @@ public class LoginManager {
         if (null == userId)
             throw new IllegalStateException("userId session attribute is not present");
         return userId;
+    }
+
+    public static void setLogin(HttpSession session, String loginName) {
+
+        LOG.debug("set loginName: " + loginName);
+        session.setAttribute(LOGIN_ATTRIBUTE, loginName);
+    }
+
+    public static String getLogin(HttpSession session) {
+
+        String loginName = (String) session.getAttribute(LOGIN_ATTRIBUTE);
+        if (null == loginName)
+            throw new IllegalStateException("loginName session attribute is not present");
+        return loginName;
     }
 
     public static DeviceEntity getAuthenticationDevice(HttpSession session) {

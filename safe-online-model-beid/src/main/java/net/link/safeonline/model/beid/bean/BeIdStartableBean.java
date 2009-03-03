@@ -59,6 +59,8 @@ public class BeIdStartableBean extends AbstractInitBean {
     @Override
     public void postStart() {
 
+        LOG.debug("post start");
+
         configureNode();
 
         AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_GIVENNAME_ATTRIBUTE, DatatypeType.STRING,

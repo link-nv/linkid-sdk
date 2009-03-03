@@ -45,6 +45,8 @@ public class DeviceOperationRequestUnmarshaller extends RequestAbstractTypeUnmar
             req.setDevice(attribute.getValue());
         } else if (attribute.getLocalName().equals(DeviceOperationRequest.AUTHENTICATED_DEVICE_ATTRIB_NAME)) {
             req.setAuthenticatedDevice(attribute.getValue());
+        } else if (attribute.getLocalName().equals(DeviceOperationRequest.ATTRIBUTE_ID_ATTRIB_NAME)) {
+            req.setAttributeId(attribute.getValue());
         } else if (attribute.getLocalName().equals(DeviceOperationRequest.ATTRIBUTE_ATTRIB_NAME)) {
             req.setAttribute(attribute.getValue());
         } else {

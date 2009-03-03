@@ -41,7 +41,7 @@ public interface DeviceOperationService extends SafeOnlineService {
     void abort();
 
     String redirect(String serviceUrl, String targetUrl, DeviceOperationType deviceOperation, String device, String authenticatedDevice,
-                    String userId, AttributeDO attribute)
+                    String userId, String id, AttributeDO attribute)
             throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException;
 
     String finalize(HttpServletRequest request)

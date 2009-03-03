@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.digipass.webapp.MainPage;
 import net.link.safeonline.digipass.webapp.RegisterPage;
 import net.link.safeonline.digipass.webapp.RemovePage;
@@ -83,13 +82,12 @@ public class RegisterPageTest {
         // setup
         String userId = UUID.randomUUID().toString();
         String serialNumber = "12345678";
-        String nodeName = "test-node-name";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
-        protocolContext.setSubject(userId);
-        protocolContext.setNodeName(nodeName);
-
+        // ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
+        // protocolContext.setSubject(userId);
+        // protocolContext.setNodeName(nodeName);
+        //
         // MainPage: Verify.
         wicket.assertRenderedPage(MainPage.class);
 
@@ -108,7 +106,7 @@ public class RegisterPageTest {
         EJBTestUtils.inject(registerPage, mockDigipassDeviceService);
 
         // stubs
-        expect(mockDigipassDeviceService.register(nodeName, userId, serialNumber)).andStubReturn(userId);
+        expect(mockDigipassDeviceService.register(userId, serialNumber)).andStubReturn(userId);
 
         // prepare
         replay(mockDigipassDeviceService);
@@ -132,11 +130,11 @@ public class RegisterPageTest {
         // setup
         String userId = UUID.randomUUID().toString();
         String serialNumber = "12345678";
-        String nodeName = "test-node-name";
         DummyNameIdentifierMappingClient.setUserId(userId);
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
-        protocolContext.setSubject(userId);
-        protocolContext.setNodeName(nodeName);
+
+        // ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
+        // protocolContext.setSubject(userId);
+        // protocolContext.setNodeName(nodeName);
 
         // MainPage: Verify.
         wicket.assertRenderedPage(MainPage.class);
@@ -156,7 +154,7 @@ public class RegisterPageTest {
         EJBTestUtils.inject(registerPage, mockDigipassDeviceService);
 
         // Stubs
-        expect(mockDigipassDeviceService.register(nodeName, userId, serialNumber)).andThrow(new NodeNotFoundException());
+        expect(mockDigipassDeviceService.register(userId, serialNumber)).andThrow(new NodeNotFoundException());
 
         // Prepare
         replay(mockDigipassDeviceService);
@@ -181,11 +179,10 @@ public class RegisterPageTest {
         // setup
         String userId = UUID.randomUUID().toString();
         String serialNumber = "12345678";
-        String nodeName = "test-node-name";
         DummyNameIdentifierMappingClient.setUserId(userId);
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
-        protocolContext.setSubject(userId);
-        protocolContext.setNodeName(nodeName);
+        // ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
+        // protocolContext.setSubject(userId);
+        // protocolContext.setNodeName(nodeName);
 
         // MainPage: Verify.
         wicket.assertRenderedPage(MainPage.class);
@@ -205,7 +202,7 @@ public class RegisterPageTest {
         EJBTestUtils.inject(registerPage, mockDigipassDeviceService);
 
         // Stubs
-        expect(mockDigipassDeviceService.register(nodeName, userId, serialNumber)).andThrow(new ArgumentIntegrityException());
+        expect(mockDigipassDeviceService.register(userId, serialNumber)).andThrow(new ArgumentIntegrityException());
 
         // Prepare
         replay(mockDigipassDeviceService);

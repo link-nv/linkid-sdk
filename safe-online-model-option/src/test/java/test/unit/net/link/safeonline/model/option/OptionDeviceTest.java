@@ -91,6 +91,7 @@ import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -136,6 +137,8 @@ public class OptionDeviceTest {
     private String                  testImei;
 
     private NodeMappingService      mockNodeMappingService;
+
+    private AttributeManagerLWBean  attributeManager;
 
     private String                  testNode;
 
@@ -194,7 +197,7 @@ public class OptionDeviceTest {
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(8);
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(6);
         replay(mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
@@ -214,6 +217,8 @@ public class OptionDeviceTest {
 
         AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeTypeDAO);
+
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
 
         SubjectIdentifierDAO subjectIdentifierDAO = EJBTestUtils.newInstance(SubjectIdentifierDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, subjectIdentifierDAO);
@@ -262,6 +267,10 @@ public class OptionDeviceTest {
         // operate
         testedInstance.register(testNode, testUserId, testImei);
 
+        // get compound device id for later on
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(testSubject, OptionConstants.OPTION_DEVICE_ATTRIBUTE,
+                OptionConstants.OPTION_IMEI_ATTRIBUTE, testImei);
+
         String resultUserId = testedInstance.authenticate(testImei);
         assertEquals(testUserId, resultUserId);
 
@@ -278,7 +287,7 @@ public class OptionDeviceTest {
         replay(mockObjects);
 
         // operate
-        testedInstance.remove(testImei);
+        testedInstance.remove(testUserId, parentAttribute.getStringValue());
 
         try {
             testedInstance.authenticate(testImei);
@@ -353,7 +362,13 @@ public class OptionDeviceTest {
 
         // operate
         testedInstance.register(testNode, testUserId, testImei);
-        testedInstance.disable(testUserId, testImei);
+
+        // get compound device id for later on
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(testSubject, OptionConstants.OPTION_DEVICE_ATTRIBUTE,
+                OptionConstants.OPTION_IMEI_ATTRIBUTE, testImei);
+
+        // operate
+        testedInstance.disable(testUserId, parentAttribute.getStringValue());
 
         try {
             testedInstance.authenticate(testImei);
@@ -375,7 +390,7 @@ public class OptionDeviceTest {
         replay(mockObjects);
 
         // operate
-        testedInstance.enable(testUserId, testImei);
+        testedInstance.enable(testUserId, parentAttribute.getStringValue());
 
         String resultUserId = testedInstance.authenticate(testImei);
         assertEquals(testUserId, resultUserId);

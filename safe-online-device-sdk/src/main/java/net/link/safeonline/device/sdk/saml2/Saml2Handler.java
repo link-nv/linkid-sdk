@@ -137,6 +137,9 @@ public class Saml2Handler implements Serializable {
         DeviceOperationType deviceOperation = DeviceOperationType.valueOf(deviceOperationRequest.getDeviceOperation());
         LOG.debug("device operation: " + deviceOperation);
 
+        String attributeId = deviceOperationRequest.getAttributeId();
+        LOG.debug("attributeId: " + attributeId);
+
         String attribute = deviceOperationRequest.getAttribute();
         LOG.debug("attribute: " + attribute);
 
@@ -156,12 +159,13 @@ public class Saml2Handler implements Serializable {
         protocolContext.setSubject(userId);
         protocolContext.setNodeName(nodeName);
         protocolContext.setDeviceOperation(deviceOperation);
+        protocolContext.setAttributeId(attributeId);
         protocolContext.setAttribute(attribute);
 
         DeviceOperationManager.setUserId(userId, request);
         DeviceOperationManager.setOperation(deviceOperation.name(), request);
         DeviceOperationManager.setAuthenticatedDevice(authenticatedDevice, request);
-        DeviceOperationManager.setAttribute(attribute, request);
+        DeviceOperationManager.setAttributeId(attributeId, request);
 
         return deviceOperation;
     }

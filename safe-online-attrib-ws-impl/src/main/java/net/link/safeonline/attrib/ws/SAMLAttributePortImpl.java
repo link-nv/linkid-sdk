@@ -400,6 +400,10 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
                         compoundedAttribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
                         compoundedAttribute.setName(attributeName);
+                        // add compound parent id
+                        compoundedAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID,
+                                (String) compoundedAttributeValues.get(attributeName));
+                        // add members
                         for (Map.Entry<String, Object> compoundedAttributeValue : compoundedAttributeValues.entrySet()) {
                             AttributeType memberAttribute = new AttributeType();
                             memberAttribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);

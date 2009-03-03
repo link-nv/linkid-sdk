@@ -485,7 +485,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 // first add an attribute view for the parent attribute
                 // type
                 LOG.debug("add compounded attribute: " + attributeType.getName());
-                attributesView.add(getAttributeView(attributeType, null, idx, locale, false, false));
+                attributesView.add(getAttributeView(attributeType, memberMap.get(attributeType.getName()), idx, locale, false, false));
                 for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                     LOG.debug("add compounded member attribute: " + memberAttributeType.getMember().getName());
                     attributesView.add(getAttributeView(memberAttributeType.getMember(), memberMap.get(memberAttributeType.getMember()
