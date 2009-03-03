@@ -79,7 +79,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttributeId(mobile);
+        protocolContext.setAttribute(mobile);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
@@ -141,7 +141,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttributeId(mobile);
+        protocolContext.setAttribute(mobile);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
@@ -187,7 +187,7 @@ public class EnablePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttributeId(mobile);
+        protocolContext.setAttribute(mobile);
 
         // verify
         EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);

@@ -347,7 +347,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         LOG.debug("get attributes for " + subject.getUserId());
 
         List<AttributeTypeEntity> attributeTypes = attributeTypeDAO.listAttributeTypes();
-        return listAttributes(subject, attributeTypes, locale, true);
+        return listAttributes(subject, attributeTypes, locale, true, false);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -369,42 +369,51 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 for (ApplicationIdentityAttributeEntity identityAttribute : applicationIdentity.getAttributes()) {
                     if (identityAttribute.getAttributeType().isUserVisible()) {
                         if (!attributeTypes.contains(identityAttribute.getAttributeType())) {
-                            attributeTypes.add(identityAttribute.getAttributeType());
+                            if (!attributeTypes.contains(identityAttribute.getAttributeType())) {
+                                attributeTypes.add(identityAttribute.getAttributeType());
+                            }
                         }
                     }
                 }
             }
         }
-        attributes.addAll(listAttributes(subject, attributeTypes, locale, true));
+        attributes.addAll(listAttributes(subject, attributeTypes, locale, true, true));
 
         attributeTypes.clear();
         List<DeviceEntity> devices = deviceDAO.listDevices();
         for (DeviceEntity device : devices) {
             if (null != device.getAttributeType() && device.getAttributeType().isUserVisible()) {
-                LOG.debug("add device attribute type: " + device.getAttributeType());
-                attributeTypes.add(device.getAttributeType());
-            }
-            if (null != device.getUserAttributeType() && device.getUserAttributeType().isUserVisible()
-                    && !device.getAttributeType().equals(device.getUserAttributeType())) {
-                LOG.debug("add device user attribute type: " + device.getUserAttributeType());
-                attributeTypes.add(device.getUserAttributeType());
+                if (!attributeTypes.contains(device.getAttributeType())) {
+                    LOG.debug("add device attribute type: " + device.getAttributeType().getName());
+                    attributeTypes.add(device.getAttributeType());
+                }
+            } else if (null != device.getUserAttributeType() && device.getUserAttributeType().isUserVisible()) {
+                if (!attributeTypes.contains(device.getUserAttributeType())) {
+                    LOG.debug("add device user attribute type: " + device.getUserAttributeType().getName());
+                    attributeTypes.add(device.getUserAttributeType());
+                }
             }
         }
-        attributes.addAll(listAttributes(subject, attributeTypes, locale, false));
+        attributes.addAll(listAttributes(subject, attributeTypes, locale, false, true));
         return attributes;
     }
 
     /**
      * Returns list of attribute data objects given the subject and the list of attribute types.
+     * 
+     * @param addTemplate
+     *            if true, will add a template {@link AttributeDO}
+     * @param addMember
+     *            if true, will add compound members
      */
     private List<AttributeDO> listAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes, Locale locale,
-                                             boolean addTemplate)
+                                             boolean addTemplate, boolean addMember)
             throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
         for (AttributeTypeEntity attributeType : attributeTypes) {
             // get these with their parent, skip
-            if (attributeType.isCompoundMember()) {
+            if (attributeType.isCompoundMember() && !addMember) {
                 continue;
             }
             LOG.debug("find attribute value for type: " + attributeType.getName());
