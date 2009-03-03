@@ -452,6 +452,15 @@ public class AttributeDO implements Serializable, Cloneable {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return name.hashCode();
+    }
+
+    /**
      * Copies the value of this attribute data object to the (attached) target attribute entity according to the datatype constraints by the
      * given attribute type.
      * 
