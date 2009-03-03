@@ -92,7 +92,7 @@ public class AuthenticationPageTest {
         authenticationContext.setApplicationFriendlyName(TEST_APPLICATION);
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(TEST_USERID);
-        protocolContext.setAttribute(TEST_IMEI);
+        protocolContext.setAttributeId(TEST_IMEI);
 
         // Inject EJBs.
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockOptionDeviceService);

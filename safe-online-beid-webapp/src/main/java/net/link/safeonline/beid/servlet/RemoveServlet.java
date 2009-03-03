@@ -67,15 +67,15 @@ public class RemoveServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        String attribute = DeviceOperationManager.getAttribute(request.getSession());
+        String attributeId = DeviceOperationManager.getAttributeId(request.getSession());
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        LOG.debug("remove beid device: " + attribute + " for user " + userId);
+        LOG.debug("remove beid device: " + attributeId + " for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
 
         try {
-            beIdDeviceService.remove(userId, attribute);
+            beIdDeviceService.remove(userId, attributeId);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.
@@ -85,7 +85,7 @@ public class RemoveServlet extends AbstractInjectionServlet {
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
-            String message = "device registration \"" + attribute + "\" not found";
+            String message = "device registration \"" + attributeId + "\" not found";
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         }

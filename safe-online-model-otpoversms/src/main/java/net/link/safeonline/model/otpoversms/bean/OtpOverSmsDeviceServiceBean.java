@@ -140,6 +140,25 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         }
     }
 
+    private AttributeEntity getDisableAttributeFromId(SubjectEntity subject, String id)
+            throws DeviceRegistrationNotFoundException {
+
+        try {
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
+                    id);
+            AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE);
+
+            return disableAttribute;
+        }
+
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException(e);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -221,11 +240,16 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public void remove(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
+    public void remove(String userId, String id)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeNotFoundException,
+            AttributeTypeNotFoundException {
 
-        LOG.debug("remove otp over sms device for " + userId + " mobile=" + mobile);
+        LOG.debug("remove otp over sms device for " + userId + " id=" + id);
+
         SubjectEntity subject = subjectService.getSubject(userId);
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(subject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE, id);
+        String mobile = attributeManager.getCompoundMember(parentAttribute, OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE)
+                                        .getStringValue();
 
         otpOverSmsManager.removeMobile(subject, mobile);
         subjectIdentifierDAO.removeSubjectIdentifier(subject, OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
@@ -317,14 +341,11 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String mobile)
+    public void disable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        SubjectEntity subject = subjectIdentifierDAO.findSubject(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
-        if (null == subject)
-            throw new SubjectNotFoundException();
-
-        AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
+        SubjectEntity subject = subjectService.getSubject(userId);
+        AttributeEntity disableAttribute = getDisableAttributeFromId(subject, id);
         disableAttribute.setValue(true);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,

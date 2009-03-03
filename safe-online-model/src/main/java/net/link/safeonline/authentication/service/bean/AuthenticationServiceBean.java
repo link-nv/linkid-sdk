@@ -437,7 +437,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(), nodeUserId,
                 nodeKeyStore.getKeyPair(), registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge,
-                deviceName, authenticatedDevice, null);
+                deviceName, authenticatedDevice, null, null);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

@@ -94,7 +94,7 @@ public class UpdatePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(mobile);
+        protocolContext.setAttributeId(mobile);
 
         // verify
         UpdatePage updatePage = (UpdatePage) wicket.startPage(UpdatePage.class);
@@ -158,7 +158,7 @@ public class UpdatePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(mobile);
+        protocolContext.setAttributeId(mobile);
 
         // verify
         wicket.startPage(UpdatePage.class);
@@ -203,7 +203,7 @@ public class UpdatePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(mobile);
+        protocolContext.setAttributeId(mobile);
 
         // verify
         wicket.startPage(UpdatePage.class);
@@ -272,7 +272,7 @@ public class UpdatePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(mobile);
+        protocolContext.setAttributeId(mobile);
 
         // verify
         wicket.startPage(UpdatePage.class);
@@ -317,7 +317,7 @@ public class UpdatePageTest {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
-        protocolContext.setAttribute(mobile);
+        protocolContext.setAttributeId(mobile);
 
         // verify
         wicket.startPage(UpdatePage.class);

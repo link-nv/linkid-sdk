@@ -9,6 +9,8 @@ public class DeviceRegistrationDO {
 
     private String       friendlyName;
 
+    private String       id;
+
     private AttributeDO  attribute;
 
     private boolean      disabled;
@@ -16,20 +18,13 @@ public class DeviceRegistrationDO {
     private long         attributeIndex;
 
 
-    public DeviceRegistrationDO(DeviceEntity device, String friendlyName, AttributeDO attribute, boolean disabled) {
+    public DeviceRegistrationDO(DeviceEntity device, String friendlyName, String id, AttributeDO attribute, boolean disabled) {
 
         this.device = device;
         this.friendlyName = friendlyName;
+        this.id = id;
         this.attribute = attribute;
         this.disabled = disabled;
-    }
-
-    public DeviceRegistrationDO(DeviceEntity device, AttributeDO attribute, boolean disabled, long attributeIndex) {
-
-        this.device = device;
-        this.attribute = attribute;
-        this.disabled = disabled;
-        this.attributeIndex = attributeIndex;
     }
 
     public DeviceEntity getDevice() {
@@ -40,6 +35,11 @@ public class DeviceRegistrationDO {
     public String getFriendlyName() {
 
         return friendlyName;
+    }
+
+    public String getId() {
+
+        return id;
     }
 
     public AttributeDO getAttribute() {

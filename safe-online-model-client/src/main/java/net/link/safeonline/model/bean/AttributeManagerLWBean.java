@@ -343,6 +343,37 @@ public class AttributeManagerLWBean {
     }
 
     /**
+     * @see #removeCompoundWhere(SubjectEntity, AttributeTypeEntity, String)
+     */
+    public void removeCompoundWhere(SubjectEntity subject, String parentAttributeTypeName, String id)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException {
+
+        AttributeTypeEntity parentAttributeType = attributeTypeDAO.getAttributeType(parentAttributeTypeName);
+
+        removeCompoundWhere(subject, parentAttributeType, id);
+    }
+
+    /**
+     * Remove the compound attribute and its members where the given member attribute has the given value.
+     * 
+     * @param parentAttributeType
+     *            The attribute type of the parent (compound) attribute to find and remove.
+     * @param id
+     *            The compound attribute id
+     */
+    public void removeCompoundWhere(SubjectEntity subject, AttributeTypeEntity parentAttributeType, String id)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException {
+
+        List<AttributeEntity> parentAttributes = attributeDAO.listAttributes(subject, parentAttributeType);
+        for (AttributeEntity parentAttribute : parentAttributes) {
+            if (parentAttribute.getStringValue().equals(id)) {
+                removeAttribute(parentAttributeType, parentAttribute.getAttributeIndex(), subject);
+                break;
+            }
+        }
+    }
+
+    /**
      * @param parentAttribute
      *            The parent compound attribute.
      * 
@@ -467,6 +498,63 @@ public class AttributeManagerLWBean {
             }
         }
 
+        return null;
+    }
+
+    /**
+     * @see #getCompoundWhere(SubjectEntity, AttributeTypeEntity, String)
+     */
+    public AttributeEntity getCompoundWhere(SubjectEntity subject, String parentAttributeTypeName, String id)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException {
+
+        AttributeTypeEntity parentAttributeType = attributeTypeDAO.getAttributeType(parentAttributeTypeName);
+
+        return getCompoundWhere(subject, parentAttributeType, id);
+    }
+
+    /**
+     * @param parentAttributeType
+     *            The attribute type of the parent (compound) attribute to search through & return.
+     * @param id
+     *            The id of the parent attribute
+     * 
+     * @return The compound attribute whose member contains a certain value.
+     */
+    public AttributeEntity getCompoundWhere(SubjectEntity subject, AttributeTypeEntity parentAttributeType, String id)
+            throws AttributeNotFoundException {
+
+        AttributeEntity compoundAttribute = findCompoundWhere(subject, parentAttributeType, id);
+        if (compoundAttribute == null)
+            throw new AttributeNotFoundException();
+
+        return compoundAttribute;
+    }
+
+    /**
+     * @see #findCompoundWhere(SubjectEntity, AttributeTypeEntity, String)
+     */
+    public AttributeEntity findCompoundWhere(SubjectEntity subject, String parentAttributeTypeName, String id)
+            throws AttributeTypeNotFoundException {
+
+        AttributeTypeEntity parentAttributeType = attributeTypeDAO.getAttributeType(parentAttributeTypeName);
+
+        return findCompoundWhere(subject, parentAttributeType, id);
+    }
+
+    /**
+     * @param subject
+     * @param parentAttributeType
+     *            The attribute type of the parent (compound) attribute to search through & return.
+     * @param id
+     *            the id of the parent attribute
+     */
+    public AttributeEntity findCompoundWhere(SubjectEntity subject, AttributeTypeEntity parentAttributeType, String id) {
+
+        List<AttributeEntity> parentAttributes = attributeDAO.listAttributes(subject, parentAttributeType);
+        for (AttributeEntity parentAttribute : parentAttributes) {
+            if (parentAttribute.getStringValue().equals(id))
+                return parentAttribute;
+        }
         return null;
     }
 }

@@ -23,7 +23,7 @@ public interface OptionDeviceService extends OptionService {
     public void register(String nodeName, String userId, String imei)
             throws NodeNotFoundException;
 
-    public void remove(String imei)
+    public void remove(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     /**
@@ -32,9 +32,12 @@ public interface OptionDeviceService extends OptionService {
     public String authenticate(String imei)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
 
-    public void enable(String userId, String imei)
+    public void enable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    public void disable(String userId, String imei)
+    public void disable(String userId, String id)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
+
+    public String getImei(String userId, String attributeId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

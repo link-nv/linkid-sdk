@@ -46,9 +46,9 @@ public interface BeIdDeviceService extends BeIdService {
             PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
             DeviceRegistrationNotFoundException;
 
-    void disable(String userId, String attribute)
+    void disable(String userId, String attributeId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    void remove(String userId, String attribute)
+    void remove(String userId, String attributeId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

@@ -199,15 +199,14 @@ public class BeIdPkiProviderBean implements PkiProvider {
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String attribute)
+    public void disable(String userId, String attributeId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
         // Find the device to enable based on the user attribute (surname, givenName).
         try {
-            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE,
-                    BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, attribute);
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE, attributeId);
             AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
                     BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE);
 
@@ -249,15 +248,14 @@ public class BeIdPkiProviderBean implements PkiProvider {
     /**
      * {@inheritDoc}
      */
-    public void remove(String userId, String attribute)
+    public void remove(String userId, String attributeId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
         // Find the device to remove.
         try {
-            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE,
-                    BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, attribute);
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE, attributeId);
 
             // Find the device's certificate identifier which we need to remove the subject.
             AttributeEntity identifierAttribute = attributeManager.getCompoundMember(deviceAttribute,

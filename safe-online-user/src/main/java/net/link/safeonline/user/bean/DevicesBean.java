@@ -187,7 +187,7 @@ public class DevicesBean implements Devices {
 
         String registrationURL = devicePolicyService.getRegistrationURL(selectedDevice.getDevice().getName());
         DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, selectedDevice.getDevice().getName(),
-                authenticatedDevice, userId, null);
+                authenticatedDevice, userId, null, null);
         return null;
     }
 
@@ -204,7 +204,7 @@ public class DevicesBean implements Devices {
         String removalURL = selectedDeviceRegistration.getDevice().getRemovalURL();
 
         DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, selectedDeviceRegistration.getDevice().getName(),
-                authenticatedDevice, userId, selectedDeviceRegistration.getAttribute());
+                authenticatedDevice, userId, selectedDeviceRegistration.getId(), selectedDeviceRegistration.getAttribute());
         return null;
     }
 
@@ -230,7 +230,7 @@ public class DevicesBean implements Devices {
         String updateURL = selectedDeviceRegistration.getDevice().getUpdateURL();
 
         DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, selectedDeviceRegistration.getDevice().getName(),
-                authenticatedDevice, userId, selectedDeviceRegistration.getAttribute());
+                authenticatedDevice, userId, selectedDeviceRegistration.getId(), selectedDeviceRegistration.getAttribute());
         return null;
     }
 
@@ -248,7 +248,7 @@ public class DevicesBean implements Devices {
         String userId = subjectManager.getCallerSubject().getUserId();
 
         DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
-                selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId,
+                selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId, selectedDeviceRegistration.getId(),
                 selectedDeviceRegistration.getAttribute());
         return null;
     }
@@ -261,7 +261,7 @@ public class DevicesBean implements Devices {
         String userId = subjectManager.getCallerSubject().getUserId();
 
         DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getEnableURL(), DeviceOperationType.ENABLE,
-                selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId,
+                selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId, selectedDeviceRegistration.getId(),
                 selectedDeviceRegistration.getAttribute());
         return null;
     }

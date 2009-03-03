@@ -8,6 +8,8 @@ package net.link.safeonline.model.otpoversms;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
@@ -31,13 +33,14 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
     void update(String userId, String oldPin, String newPin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException;
 
-    void remove(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
+    void remove(String userId, String id)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeNotFoundException,
+            AttributeTypeNotFoundException;
 
     void enable(String userId, String pin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException;
 
-    void disable(String userId, String mobile)
+    void disable(String userId, String id)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     void requestOtp(String mobile)
