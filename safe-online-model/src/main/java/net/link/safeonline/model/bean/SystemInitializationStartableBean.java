@@ -84,19 +84,19 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         try {
             registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
                     "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/" + userWebappName),
-                    getLogo("/logo.jpg"), false, false, userCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
+                    getLogo("/logo.png"), false, false, userCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + userWebappName + "/logout")));
             registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, "owner",
                     "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/" + operWebappName),
-                    getLogo("/logo.jpg"), false, false, operCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
+                    getLogo("/logo.png"), false, false, operCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + operWebappName + "/logout")));
             registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, "owner",
                     "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname, hostport, "/" + ownerWebappName),
-                    getLogo("/logo.jpg"), false, false, ownerCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
+                    getLogo("/logo.png"), false, false, ownerCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + ownerWebappName + "/logout")));
             registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, "owner",
                     "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/" + helpdeskWebappName),
-                    getLogo("/logo.jpg"), false, false, helpdeskCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
+                    getLogo("/logo.png"), false, false, helpdeskCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + helpdeskWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed Application URL exception: " + e.getMessage());
