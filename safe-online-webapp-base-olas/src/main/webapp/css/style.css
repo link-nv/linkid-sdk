@@ -529,7 +529,7 @@ input[disabled]:hover, select[disabled]:hover, textarea[disabled]:hover {
     vertical-align:     bottom;
 }
 .date_label {
-	display: 			inline;
+	display: 			inline !important;
 }
 .af_inputFile, .label, .so-output {
     width:              300px;
@@ -706,6 +706,8 @@ table.rich-shuttle-body table {
 .af_inputFile, .label, .so-output, .tinylabel {
     margin-left:       150px;
 }
+.date_label {
+    display: inline;
 }
 
 
