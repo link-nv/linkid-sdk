@@ -33,11 +33,17 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
     public static final String JNDI_BINDING = OtpOverSmsConstants.OTPOVERSMS_STARTABLE_JNDI_PREFIX + "OtpOverSmsStartableBean";
 
 
-    public OtpOverSmsStartableBean() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void postStart() {
 
         configureNode();
 
         configureDevice();
+
+        super.postStart();
     }
 
     private void configureNode() {

@@ -92,12 +92,13 @@ public class PkiTestUtils {
     }
 
     public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn, DateTime notBefore, DateTime notAfter,
-                                                                String signatureAlgorithm, boolean caCert, boolean timeStampingPurpose)
+                                                                String signatureAlgorithm, boolean includeAuthorityKeyIdentifier,
+                                                                boolean caCert, boolean timeStampingPurpose)
             throws InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException, IOException,
             CertificateException {
 
         X509Certificate certificate = generateCertificate(keyPair.getPublic(), dn, keyPair.getPrivate(), null, notBefore, notAfter,
-                signatureAlgorithm, caCert, timeStampingPurpose, null);
+                signatureAlgorithm, includeAuthorityKeyIdentifier, caCert, timeStampingPurpose, null);
         return certificate;
     }
 
@@ -107,13 +108,14 @@ public class PkiTestUtils {
 
         DateTime now = new DateTime();
         DateTime future = now.plusYears(10);
-        X509Certificate certificate = generateSelfSignedCertificate(keyPair, dn, now, future, null, true, false);
+        X509Certificate certificate = generateSelfSignedCertificate(keyPair, dn, now, future, null, true, true, false);
         return certificate;
     }
 
     public static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, PrivateKey issuerPrivateKey,
                                                       X509Certificate issuerCert, DateTime notBefore, DateTime notAfter,
-                                                      String signatureAlgorithm, boolean caCert, boolean timeStampingPurpose, URI ocspUri)
+                                                      String signatureAlgorithm, boolean includeAuthorityKeyIdentifier, boolean caCert,
+                                                      boolean timeStampingPurpose, URI ocspUri)
             throws IOException, InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException,
             CertificateException {
 
@@ -144,7 +146,9 @@ public class PkiTestUtils {
         } else {
             issuerPublicKey = subjectPublicKey;
         }
-        certificateGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier, false, createAuthorityKeyId(issuerPublicKey));
+        if (true == includeAuthorityKeyIdentifier) {
+            certificateGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier, false, createAuthorityKeyId(issuerPublicKey));
+        }
 
         certificateGenerator.addExtension(X509Extensions.BasicConstraints, false, new BasicConstraints(caCert));
 
@@ -179,7 +183,7 @@ public class PkiTestUtils {
         DateTime notBefore = now.minusDays(1);
         DateTime notAfter = now.plusDays(1);
         X509Certificate certificate = generateCertificate(keyPair.getPublic(), "CN=Test", keyPair.getPrivate(), null, notBefore, notAfter,
-                null, true, false, ocspUri);
+                null, true, true, false, ocspUri);
         return certificate;
     }
 

@@ -15,12 +15,15 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.AuthenticationPage;
 import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
+import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -47,6 +50,8 @@ public class AuthenticationPageTest {
 
     private NodeAuthenticationService mockNodeAuthenticationService;
 
+    private KeyService                mockKeyService;
+
 
     @Before
     public void setUp()
@@ -54,11 +59,16 @@ public class AuthenticationPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
+        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
 
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockPasswordDeviceService = createMock(PasswordDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockKeyService = createMock(KeyService.class);
+        jndiTestUtils.bindComponent(KeyService.class, mockKeyService);
+
+        DummyServiceFactory.install();
 
         wicket = new WicketTester(new PasswordTestApplication());
 

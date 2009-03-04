@@ -47,19 +47,25 @@
 				</div>
 				<div wicket:id="captcha_feedback" class="error"></div>
 
-				<img src="" wicket:id="captchaImage" />
 				<label>&nbsp;</label>
+				<div>
+				<img src="" wicket:id="captchaImage" />
+				</div>
+				<label>&nbsp;</label>
+				<div>
 				<sup>
 					<a wicket:id="captchaRefresh">
 						<wicket:message key="refreshCaptcha">[Refresh Captcha]</wicket:message>
 					</a>
 				</sup>
+				</div>
 
 
 				<label>&nbsp;</label>
-				<input wicket:id="register" type="submit" value="[Register]"
+				<div>
+					<input wicket:id="register" type="submit" value="[Register]"
 					wicket:message="value:register" class="submit" />
-
+				</div>
 				<div wicket:id="feedback" class="error"></div>
 			</form>
 

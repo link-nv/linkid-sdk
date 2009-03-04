@@ -51,7 +51,11 @@ public class OptionStartableBean extends AbstractInitBean {
     private static final Log   LOG          = LogFactory.getLog(OptionStartableBean.class);
 
 
-    public OptionStartableBean() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void postStart() {
 
         configureNode();
 
@@ -92,6 +96,8 @@ public class OptionStartableBean extends AbstractInitBean {
                 optionImeiAttributeType, optionDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Option Data Card"));
+
+        super.postStart();
     }
 
     private void configureNode() {

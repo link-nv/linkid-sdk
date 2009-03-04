@@ -88,8 +88,8 @@ public class OcspValidatorBeanTest extends TestCase {
         KeyPair ocspResponderKeyPair = PkiTestUtils.generateKeyPair();
 
         TestOcspResponderServlet.certificate = PkiTestUtils.generateCertificate(ocspResponderKeyPair.getPublic(), "CN=TestOCSPResponder",
-                caKeyPair.getPrivate(), caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(
-                        caCertificate.getNotAfter()), null, false, false, null);
+                caKeyPair.getPrivate(), caCertificate, new DateTime(caCertificate.getNotBefore()),
+                new DateTime(caCertificate.getNotAfter()), null, true, false, false, null);
         TestOcspResponderServlet.privateKey = ocspResponderKeyPair.getPrivate();
 
         TestOcspResponderServlet.called = false;
@@ -177,8 +177,8 @@ public class OcspValidatorBeanTest extends TestCase {
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", caKeyPair.getPrivate(),
-                caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(caCertificate.getNotAfter()), null,
-                false, false, ocspUri);
+                caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(caCertificate.getNotAfter()), null, true, false,
+                false, ocspUri);
 
         // operate
         boolean result = testedInstance.performOcspCheck(certificate, caCertificate);

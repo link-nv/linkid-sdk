@@ -1,6 +1,5 @@
 package test.unit.net.link.safeonline.digipass.webapp;
 
-import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.digipass.webapp.MainPage;
 import net.link.safeonline.digipass.webapp.RegisterPage;
@@ -25,6 +25,7 @@ import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
+import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -54,20 +55,21 @@ public class RemovePageTest {
     public void setUp()
             throws Exception {
 
-        mockDigipassDeviceService = createMock(DigipassDeviceService.class);
-        mockKeyService = createMock(KeyService.class);
-
-        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
-        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
-
-        checkOrder(mockKeyService, false);
-        replay(mockKeyService);
-
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
+        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+
+        mockDigipassDeviceService = createMock(DigipassDeviceService.class);
+        mockKeyService = createMock(KeyService.class);
+        jndiTestUtils.bindComponent(KeyService.class, mockKeyService);
+
+        KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).anyTimes();
+        replay(mockKeyService);
+
+        DummyServiceFactory.install();
 
         wicket = new WicketTester(new DigipassTestApplication());
         wicket.processRequestCycle();

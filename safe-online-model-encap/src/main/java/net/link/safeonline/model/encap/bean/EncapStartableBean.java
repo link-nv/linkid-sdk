@@ -37,7 +37,11 @@ public class EncapStartableBean extends AbstractInitBean {
     private static final Log   LOG          = LogFactory.getLog(EncapStartableBean.class);
 
 
-    public EncapStartableBean() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void postStart() {
 
         configureNode();
 
@@ -79,6 +83,8 @@ public class EncapStartableBean extends AbstractInitBean {
                 encapDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
         deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile"));
+
+        super.postStart();
     }
 
     private void configureNode() {
