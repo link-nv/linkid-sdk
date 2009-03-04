@@ -198,10 +198,11 @@ public class AccountMergingServiceBeanTest {
         // keep in mind olas-user subscription and 3 password attributes ...
         assertEquals(4, accountMergingDO.getPreservedSubscriptions().size());
         assertEquals(1, accountMergingDO.getImportedSubscriptions().size());
-        assertEquals(4, accountMergingDO.getPreservedAttributes().size());
+        assertEquals(1, accountMergingDO.getPreservedAttributes().size());
         assertEquals(2, accountMergingDO.getChoosableAttributes().size());
+        assertEquals(8, accountMergingDO.getMergedAttributesToAdd().size());
         assertEquals(0, accountMergingDO.getImportedAttributes().size());
-        assertEquals(15, accountMergingDO.getMergedAttributesToAdd().size());
+        assertEquals(8, accountMergingDO.getMergedAttributesToAdd().size());
 
         // operate
         accountMergingService.mergeAccount(accountMergingDO, new HashSet<DeviceEntity>());
