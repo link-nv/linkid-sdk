@@ -117,7 +117,7 @@ public class AuthenticationPage extends TemplatePage {
             mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
             add(mobileField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
 
             add(new Button(REQUEST_OTP_BUTTON_ID) {
 
@@ -216,11 +216,11 @@ public class AuthenticationPage extends TemplatePage {
             otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
 
             final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
             add(pinField);
-            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField));
+            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField, new Model<String>(localize("errorMissingMobilePIN"))));
 
             add(new Button(LOGIN_BUTTON_ID) {
 

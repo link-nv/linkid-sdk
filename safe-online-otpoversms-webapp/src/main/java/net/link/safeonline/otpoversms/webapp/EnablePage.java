@@ -27,7 +27,6 @@ import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -68,9 +67,6 @@ public class EnablePage extends TemplatePage {
 
         getHeader();
         getSidebar(localize("helpOtpOverSmsEnable"));
-
-        String title = localize("%l %s", "mobile", protocolContext.getAttribute());
-        getContent().add(new Label("title", title));
 
         getContent().add(requestForm = new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(enableForm = new EnableForm(ENABLE_FORM_ID));
@@ -114,7 +110,7 @@ public class EnablePage extends TemplatePage {
                     new PhoneNumber(protocolContext.getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             add(mobileField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
 
             add(requestOtpButton = new Button(REQUEST_OTP_BUTTON_ID) {
 
@@ -202,11 +198,11 @@ public class EnablePage extends TemplatePage {
             otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
 
             final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
             add(pinField);
-            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField));
+            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField, new Model<String>(localize("errorMissingMobilePIN"))));
 
             add(new Button(ENABLE_BUTTON_ID) {
 

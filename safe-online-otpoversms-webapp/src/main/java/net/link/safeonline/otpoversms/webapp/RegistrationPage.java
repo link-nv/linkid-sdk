@@ -83,7 +83,7 @@ public class RegistrationPage extends TemplatePage {
     @Override
     protected String getPageTitle() {
 
-        return localize("registerANewDevice");
+        return localize("registerNewOTPOverSMS");
     }
 
 
@@ -100,7 +100,7 @@ public class RegistrationPage extends TemplatePage {
             mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
             add(mobileField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
 
             add(new Button(REQUEST_OTP_BUTTON_ID) {
 
@@ -205,15 +205,16 @@ public class RegistrationPage extends TemplatePage {
             otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
 
             final PasswordTextField pin1Field = new PasswordTextField(PIN1_FIELD_ID, pin1 = new Model<String>());
             add(pin1Field);
-            add(new ErrorComponentFeedbackLabel("pin1_feedback", pin1Field));
+            add(new ErrorComponentFeedbackLabel("pin1_feedback", pin1Field, new Model<String>(localize("errorMissingChooseMobilePIN"))));
 
             final PasswordTextField pin2Field = new PasswordTextField(PIN2_FIELD_ID, pin2 = new Model<String>());
             add(pin2Field);
-            add(new ErrorComponentFeedbackLabel("pin2_feedback", pin2Field));
+            add(new ErrorComponentFeedbackLabel("pin2_feedback", pin2Field,
+                    new Model<String>(localize("errorMissingRepeatChooseMobilePIN"))));
 
             add(new EqualPasswordInputValidator(pin1Field, pin2Field));
 
