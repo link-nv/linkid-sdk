@@ -126,11 +126,13 @@ public class AuthenticationPage extends TemplatePage {
             loginField.setRequired(true);
             add(loginField);
             focus(loginField);
-            add(new ErrorComponentFeedbackLabel(LOGIN_NAME_FEEDBACK_FIELD_ID, loginField));
+            add(new ErrorComponentFeedbackLabel(LOGIN_NAME_FEEDBACK_FIELD_ID, loginField, new Model<String>(
+                    localize("errorMissingLoginName"))));
 
             final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
             add(passwordField);
-            add(new ErrorComponentFeedbackLabel(PASSWORD_FEEDBACK_FIELD_ID, passwordField));
+            add(new ErrorComponentFeedbackLabel(PASSWORD_FEEDBACK_FIELD_ID, passwordField, new Model<String>(
+                    localize("errorMissingPassword"))));
 
             add(new Button(LOGIN_BUTTON_ID) {
 

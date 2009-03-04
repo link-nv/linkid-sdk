@@ -116,7 +116,7 @@ public class RegistrationPage extends TemplatePage {
     @Override
     protected String getPageTitle() {
 
-        return localize("usernamePassword");
+        return localize("registerUsernamePassword");
     }
 
 
@@ -138,12 +138,14 @@ public class RegistrationPage extends TemplatePage {
 
             add(password1Field);
             focus(password1Field);
-            add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
+            add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field, new Model<String>(
+                    localize("errorMissingChoosePassword"))));
 
             final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, password2 = new Model<String>());
 
             add(password2Field);
-            add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field));
+            add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field, new Model<String>(
+                    localize("errorMissingRepeatChosenPassword"))));
 
             add(new EqualPasswordInputValidator(password1Field, password2Field));
 

@@ -62,7 +62,7 @@ public class EnablePage extends TemplatePage {
     @Override
     protected String getPageTitle() {
 
-        return localize("usernamePassword");
+        return localize("enableUsernamePassword");
     }
 
 
@@ -80,7 +80,7 @@ public class EnablePage extends TemplatePage {
 
             final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
             add(passwordField);
-            add(new ErrorComponentFeedbackLabel("password_feedback", passwordField));
+            add(new ErrorComponentFeedbackLabel("password_feedback", passwordField, new Model<String>(localize("errorMissingPassword"))));
             focus(passwordField);
 
             add(new Button(ENABLE_BUTTON_ID) {
