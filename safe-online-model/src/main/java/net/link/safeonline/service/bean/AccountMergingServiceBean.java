@@ -313,6 +313,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
                 if (sourceAttributeType.getType().equals(DatatypeType.COMPOUNDED)) {
                     List<AttributeEntity> mergedCompoundedAttributesToAdd = mergeCompoundedAttribute(targetAttribute, sourceAttribute);
                     for (AttributeEntity mergedCompoundedAttributeToAdd : mergedCompoundedAttributesToAdd) {
+                        LOG.debug("add compound attribute " + mergedCompoundedAttributeToAdd.getAttributeType().getName() + " index="
+                                + mergedCompoundedAttributeToAdd.getAttributeIndex());
                         mergedAttributeToAddList.add(mergedCompoundedAttributeToAdd);
                         List<AttributeEntity> mergedCompoundedMembers = attributeManager.getCompoundMembers(mergedCompoundedAttributeToAdd);
                         for (AttributeEntity mergedCompoundedMember : mergedCompoundedMembers) {
@@ -386,9 +388,10 @@ public class AccountMergingServiceBean implements AccountMergingService {
                 }
             }
             if (!found) {
-                sourceAttribute.setAttributeIndex(targetAttributes.getValue().size() + mergedAttributesToAdd.size());
+                sourceAttribute = attributeManager.newAttribute(sourceAttribute.getAttributeType(), sourceAttribute.getStringValue(),
+                        sourceAttribute.getSubject());
                 for (AttributeEntity sourceMember : sourceMembers) {
-                    sourceMember.setAttributeIndex(sourceAttribute.getAttributeIndex());
+                    attributeManager.newAttribute(sourceMember.getAttributeType(), sourceMember.getValue(), sourceMember.getSubject());
                 }
                 mergedAttributesToAdd.add(sourceAttribute);
             }
@@ -435,6 +438,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
     private boolean getAttributeValue(List<AttributeEntity> attributeValues, AttributeEntity searchAttributeValue) {
 
         for (AttributeEntity attributeValue : attributeValues) {
+            LOG.debug("getattributevalue: searchAttribute: " + searchAttributeValue.getAttributeType().getName() + " (index="
+                    + searchAttributeValue.getAttributeIndex() + ") attribute: " + attributeValue.getAttributeType().getName() + " (index="
+                    + attributeValue.getAttributeIndex() + ")");
             if (attributeValue.getValue().equals(searchAttributeValue.getValue()))
                 return true;
         }

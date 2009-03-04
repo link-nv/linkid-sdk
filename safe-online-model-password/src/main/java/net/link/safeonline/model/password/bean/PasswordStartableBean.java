@@ -65,7 +65,8 @@ public class PasswordStartableBean extends AbstractInitBean {
     private List<PasswordRegistration> passwordRegistrations;
 
 
-    public PasswordStartableBean() {
+    @Override
+    public void postStart() {
 
         passwordRegistrations = new LinkedList<PasswordRegistration>();
 
@@ -74,11 +75,6 @@ public class PasswordStartableBean extends AbstractInitBean {
         configureDevice();
 
         configureDeviceRegistrations();
-
-    }
-
-    @Override
-    public void postStart() {
 
         super.postStart();
 

@@ -97,6 +97,7 @@ import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -146,6 +147,8 @@ public class OtpOverSMSDeviceTest {
     private HistoryDAO                  mockHistoryDAO;
 
     private SecurityAuditLogger         mockSecurityAuditLogger;
+
+    private AttributeManagerLWBean      attributeManager;
 
     private EntityTestManager           entityTestManager;
 
@@ -224,7 +227,7 @@ public class OtpOverSMSDeviceTest {
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(8);
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(4);
         replay(mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
@@ -255,6 +258,8 @@ public class OtpOverSMSDeviceTest {
         EJBTestUtils.inject(testedInstance, mockOSGIStartable);
 
         mockOSGIService = createMock(OSGIService.class);
+
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
 
         otpOverSmsManager = EJBTestUtils.newInstance(OtpOverSmsManagerBean.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, otpOverSmsManager);
@@ -324,6 +329,10 @@ public class OtpOverSMSDeviceTest {
         testedInstance.requestOtp(testMobile);
         testedInstance.register(testNode, testUserId, testValidPIN, getValidOTP());
 
+        // get compound device attribute id for later on
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(testSubject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
+                OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE, testMobile);
+
         assertFalse(testedInstance.isChallenged());
         testedInstance.requestOtp(testMobile);
 
@@ -347,7 +356,7 @@ public class OtpOverSMSDeviceTest {
         replay(mockObjects);
 
         // operate
-        testedInstance.remove(testUserId, testMobile);
+        testedInstance.remove(testUserId, parentAttribute.getStringValue());
 
         assertFalse(testedInstance.isChallenged());
         testedInstance.requestOtp(testMobile);
@@ -519,7 +528,13 @@ public class OtpOverSMSDeviceTest {
         // operate
         testedInstance.requestOtp(testMobile);
         testedInstance.register(testNode, testUserId, testValidPIN, getValidOTP());
-        testedInstance.disable(testUserId, testMobile);
+
+        // get compound device attribute id for later on
+        AttributeEntity parentAttribute = attributeManager.getCompoundWhere(testSubject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
+                OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE, testMobile);
+
+        // operate
+        testedInstance.disable(testUserId, parentAttribute.getStringValue());
 
         testedInstance.requestOtp(testMobile);
         try {

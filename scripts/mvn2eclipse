@@ -77,8 +77,12 @@ if (( binFix )); then
 			cd "$d" && {
 				echo +"$d" > "$spinPipe"
 				
-				find ../target/classes \( -name '*.properties' -o -name '*.jks' \) \
-                    -exec ln -sf {} \;
+                if [[ -d ../target/classes ]]; then
+                    find ../target/classes \( -name '*.properties' -o -name '*.jks' \) \
+                        -exec ln -sf {} \;
+                else
+                    emit -y "No classes directory for artifact: ${d%/*}"
+                fi
 			}
 			cd - > /dev/null
 		done

@@ -12,8 +12,8 @@ import net.link.safeonline.data.AttributeDO;
 
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -35,24 +35,29 @@ import org.apache.wicket.model.Model;
  */
 public class AttributeInputPanel extends Panel {
 
-    private static final long  serialVersionUID    = 1L;
+    private static final long  serialVersionUID      = 1L;
 
-    public static final String NAME_LABEL_ID       = "name";
+    public static final String NAME_LABEL_ID         = "name";
 
-    public static final String STRING_ID           = "string";
-    public static final String STRING_FEEDBACK_ID  = "string_feedback";
+    public static final String STRING_ID             = "string";
+    public static final String STRING_NAME_LABEL_ID  = "string_name";
+    public static final String STRING_FEEDBACK_ID    = "string_feedback";
 
-    public static final String DOUBLE_ID           = "double";
-    public static final String DOUBLE_FEEDBACK_ID  = "double_feedback";
+    public static final String DOUBLE_ID             = "double";
+    public static final String DOUBLE_NAME_LABEL_ID  = "double_name";
+    public static final String DOUBLE_FEEDBACK_ID    = "double_feedback";
 
-    public static final String INTEGER_ID          = "integer";
-    public static final String INTEGER_FEEDBACK_ID = "integer_feedback";
+    public static final String INTEGER_ID            = "integer";
+    public static final String INTEGER_NAME_LABEL_ID = "integer_name";
+    public static final String INTEGER_FEEDBACK_ID   = "integer_feedback";
 
-    public static final String DATE_ID             = "date";
-    public static final String DATE_FEEDBACK_ID    = "date_feedback";
+    public static final String DATE_ID               = "date";
+    public static final String DATE_NAME_LABEL_ID    = "date_name";
+    public static final String DATE_FEEDBACK_ID      = "date_feedback";
 
-    public static final String BOOLEAN_ID          = "boolean";
-    public static final String BOOLEAN_FEEDBACK_ID = "boolean_feedback";
+    public static final String BOOLEAN_ID            = "boolean";
+    public static final String BOOLEAN_NAME_LABEL_ID = "boolean_name";
+    public static final String BOOLEAN_FEEDBACK_ID   = "boolean_feedback";
 
     AttributeDO                attribute;
 
@@ -67,12 +72,14 @@ public class AttributeInputPanel extends Panel {
         if (null == name) {
             name = attribute.getName();
         }
-        add(new Label(NAME_LABEL_ID, name));
+        // add(new Label(NAME_LABEL_ID, name));
 
         TextField<String> stringField = new TextField<String>(STRING_ID, getStringModel());
         stringField.setVisible(false);
         stringField.setRequired(required);
         stringField.setEnabled(attribute.isEditable());
+        stringField.setLabel(new Model<String>(name));
+        add(new SimpleFormComponentLabel(STRING_NAME_LABEL_ID, stringField));
         add(stringField);
         add(new ErrorComponentFeedbackLabel(STRING_FEEDBACK_ID, stringField, new Model<String>(
                 getLocalizer().getString("enterAValue", this))));
@@ -81,6 +88,8 @@ public class AttributeInputPanel extends Panel {
         doubleField.setVisible(false);
         doubleField.setRequired(required);
         doubleField.setEnabled(attribute.isEditable());
+        doubleField.setLabel(new Model<String>(name));
+        add(new SimpleFormComponentLabel(DOUBLE_NAME_LABEL_ID, doubleField));
         add(doubleField);
         add(new ErrorComponentFeedbackLabel(DOUBLE_FEEDBACK_ID, doubleField, new Model<String>(
                 getLocalizer().getString("enterAValue", this))));
@@ -89,6 +98,8 @@ public class AttributeInputPanel extends Panel {
         integerField.setVisible(false);
         integerField.setRequired(required);
         integerField.setEnabled(attribute.isEditable());
+        integerField.setLabel(new Model<String>(name));
+        add(new SimpleFormComponentLabel(INTEGER_NAME_LABEL_ID, integerField));
         add(integerField);
         add(new ErrorComponentFeedbackLabel(INTEGER_FEEDBACK_ID, integerField, new Model<String>(getLocalizer().getString("enterAValue",
                 this))));
@@ -98,6 +109,8 @@ public class AttributeInputPanel extends Panel {
         dateField.setVisible(false);
         dateField.setRequired(required);
         dateField.setEnabled(attribute.isEditable());
+        dateField.setLabel(new Model<String>(name));
+        add(new SimpleFormComponentLabel(DATE_NAME_LABEL_ID, dateField));
         add(dateField);
         add(new ErrorComponentFeedbackLabel(DATE_FEEDBACK_ID, dateField, new Model<String>(getLocalizer().getString("enterAValue", this))));
 
@@ -105,6 +118,8 @@ public class AttributeInputPanel extends Panel {
         booleanField.setVisible(false);
         booleanField.setRequired(required);
         booleanField.setEnabled(attribute.isEditable());
+        booleanField.setLabel(new Model<String>(name));
+        add(new SimpleFormComponentLabel(BOOLEAN_NAME_LABEL_ID, booleanField));
         add(booleanField);
         add(new ErrorComponentFeedbackLabel(BOOLEAN_FEEDBACK_ID, booleanField, new Model<String>(getLocalizer().getString("enterAValue",
                 this))));

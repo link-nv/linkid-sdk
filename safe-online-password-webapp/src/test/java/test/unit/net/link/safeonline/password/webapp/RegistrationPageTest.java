@@ -172,6 +172,8 @@ public class RegistrationPageTest {
 
         // Registration Page: Verify.
         wicket.startPage(registrationPage);
+        System.err.println(wicket.getLastRenderedPage());
+        wicket.dumpPage();
         wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
         // operate
