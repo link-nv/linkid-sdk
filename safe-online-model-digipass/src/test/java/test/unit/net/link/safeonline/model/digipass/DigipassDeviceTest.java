@@ -214,7 +214,7 @@ public class DigipassDeviceTest {
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
-                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(6);
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
         replay(mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);

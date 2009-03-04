@@ -527,6 +527,9 @@ input[disabled]:hover, select[disabled]:hover, textarea[disabled]:hover {
 
     vertical-align:     bottom;
 }
+.date_label {
+	display: 			inline;
+}
 .af_inputFile, .label, .so-output {
     width:              300px;
 }
