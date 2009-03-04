@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.webapp.components.AttributeInputPanel;
-import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.util.tester.FormTester;
@@ -34,25 +33,19 @@ import org.junit.Test;
  * 
  * @author wvdhaute
  */
-public class AttributeInputPanelTest extends TestCase {
+public class AttributeInputPanelTest {
 
     private WicketTester wicket;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
-
-        WicketUtil.setUnitTesting(true);
 
         wicket = new WicketTester(new PanelTestApplication());
 
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {
