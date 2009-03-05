@@ -15,6 +15,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.option.OptionDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
@@ -119,6 +120,9 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
 
             // Add em to the page.
             add(pinField, pinConfirmField, registerButton, cancelButton);
+            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField, new Model<String>(localize("errorMissingChoosePIN"))));
+            add(new ErrorComponentFeedbackLabel("pinConfirm_feedback", pinConfirmField, new Model<String>(
+                    localize("errorMissingRepeatChoosePIN"))));
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
             focus(pinField);
         }
