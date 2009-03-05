@@ -28,7 +28,8 @@
 	</listener>
 	<listener>
 		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
-	</listener>7
+	</listener>
+	7
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>

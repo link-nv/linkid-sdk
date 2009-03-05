@@ -91,7 +91,7 @@ public class AuthenticationPageTest {
         authenticationContext.setApplicationFriendlyName(TEST_APPLICATION);
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(TEST_USERID);
-        protocolContext.setAttributeId(TEST_MOBILE);
+        protocolContext.setAttribute(TEST_MOBILE);
 
         // Check whether our mount point sends us to the authentication page.
         switch (goal) {
