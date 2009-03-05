@@ -121,7 +121,8 @@ public class DemoStartableBean extends AbstractInitBean {
     private SubjectService             subjectService;
 
 
-    public DemoStartableBean() {
+    @Override
+    public void postStart() {
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         nodeName = properties.getString("olas.node.name");
@@ -177,11 +178,6 @@ public class DemoStartableBean extends AbstractInitBean {
         configPrescriptionDemo();
 
         configMandateDemo();
-
-    }
-
-    @Override
-    public void postStart() {
 
         super.postStart();
 
