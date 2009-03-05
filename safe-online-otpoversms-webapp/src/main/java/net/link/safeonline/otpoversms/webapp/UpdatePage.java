@@ -93,7 +93,7 @@ public class UpdatePage extends TemplatePage {
     @Override
     protected String getPageTitle() {
 
-        return localize("deviceUpdate");
+        return localize("mobileUpdate");
     }
 
 
@@ -112,7 +112,7 @@ public class UpdatePage extends TemplatePage {
             mobileField.setEnabled(false);
             mobileField.setRequired(true);
             add(mobileField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
 
             add(new Button(REQUEST_OTP_BUTTON_ID) {
 
@@ -204,19 +204,20 @@ public class UpdatePage extends TemplatePage {
             otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
 
             final PasswordTextField oldpinField = new PasswordTextField(OLDPIN_FIELD_ID, oldPin = new Model<String>());
             add(oldpinField);
-            add(new ErrorComponentFeedbackLabel("oldpin_feedback", oldpinField));
+            add(new ErrorComponentFeedbackLabel("oldpin_feedback", oldpinField, new Model<String>(localize("errorMissingOldMobilePIN"))));
 
             final PasswordTextField password1Field = new PasswordTextField(PIN1_FIELD_ID, pin1 = new Model<String>());
             add(password1Field);
-            add(new ErrorComponentFeedbackLabel("pin1_feedback", password1Field));
+            add(new ErrorComponentFeedbackLabel("pin1_feedback", password1Field, new Model<String>(localize("errorMissingNewMobilePIN"))));
 
             final PasswordTextField password2Field = new PasswordTextField(PIN2_FIELD_ID, pin2 = new Model<String>());
             add(password2Field);
-            add(new ErrorComponentFeedbackLabel("pin2_feedback", password2Field));
+            add(new ErrorComponentFeedbackLabel("pin2_feedback", password2Field, new Model<String>(
+                    localize("errorMissingRepeatNewMobilePIN"))));
 
             add(new EqualPasswordInputValidator(password1Field, password2Field));
 

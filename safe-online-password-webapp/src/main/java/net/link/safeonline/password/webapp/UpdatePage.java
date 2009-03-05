@@ -72,7 +72,7 @@ public class UpdatePage extends TemplatePage {
     @Override
     protected String getPageTitle() {
 
-        return localize("usernamePassword");
+        return localize("updateUsernamePassword");
     }
 
 
@@ -94,16 +94,19 @@ public class UpdatePage extends TemplatePage {
 
             final PasswordTextField oldpasswordField = new PasswordTextField(OLDPASSWORD_FIELD_ID, oldpassword = new Model<String>());
             add(oldpasswordField);
-            add(new ErrorComponentFeedbackLabel("oldpassword_feedback", oldpasswordField));
+            add(new ErrorComponentFeedbackLabel("oldpassword_feedback", oldpasswordField, new Model<String>(
+                    localize("errorMissingOldPassword"))));
             focus(oldpasswordField);
 
             final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, password1 = new Model<String>());
             add(password1Field);
-            add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
+            add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field,
+                    new Model<String>(localize("errorMissingNewPassword"))));
 
             final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, password2 = new Model<String>());
             add(password2Field);
-            add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field));
+            add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field, new Model<String>(
+                    localize("errorMissingNewRepeatPassword"))));
 
             add(new EqualPasswordInputValidator(password1Field, password2Field));
 

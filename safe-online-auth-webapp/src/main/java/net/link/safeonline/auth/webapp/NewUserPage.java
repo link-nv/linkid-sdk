@@ -106,12 +106,12 @@ public class NewUserPage extends AuthenticationTemplatePage {
             loginField.setRequired(true);
             add(loginField);
             focus(loginField);
-            add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
+            add(new ErrorComponentFeedbackLabel("login_feedback", loginField, new Model<String>(localize("errorMissingLoginName"))));
 
             final TextField<String> captchaField = new TextField<String>(CAPTCHA_FIELD_ID, captcha = new Model<String>());
             captchaField.setRequired(true);
             add(captchaField);
-            add(new ErrorComponentFeedbackLabel("captcha_feedback", captchaField));
+            add(new ErrorComponentFeedbackLabel("captcha_feedback", captchaField, new Model<String>(localize("errorMissingCaptcha"))));
 
             final Image captchaImage = new Image(CAPTCHA_IMAGE_ID, "override");
             captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
