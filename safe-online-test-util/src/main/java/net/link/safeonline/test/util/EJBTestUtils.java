@@ -193,7 +193,7 @@ public final class EJBTestUtils {
     public static void init(Class<?> clazz, Object bean)
             throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
-        LOG.debug("Initializing: " + bean);
+        // LOG.debug("Initializing: " + bean);
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             PostConstruct postConstruct = method.getAnnotation(PostConstruct.class);
@@ -477,7 +477,7 @@ public final class EJBTestUtils {
                 }
 
                 Class fieldType = field.getType();
-                LOG.debug("injecting: " + fieldType + " into field: " + field + " of " + clazz);
+                // LOG.debug("injecting: " + fieldType + " into field: " + field + " of " + clazz);
 
                 if (false == fieldType.isInterface())
                     throw new EJBException("field is not an interface type");

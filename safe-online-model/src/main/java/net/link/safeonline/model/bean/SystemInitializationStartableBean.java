@@ -23,7 +23,6 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
-import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.oper.keystore.OperKeyStore;
@@ -71,33 +70,37 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         configureDevices();
 
         // Add some initial users.
-        users.add(SafeOnlineConstants.ADMIN_LOGIN);
-        users.add(SafeOnlineConstants.OWNER_LOGIN);
+        adminUsers.add(SafeOnlineConstants.ADMIN_LOGIN);
         applicationOwnersAndLogin.put(SafeOnlineConstants.OWNER_LOGIN, SafeOnlineConstants.OWNER_LOGIN);
 
         // Add the core applications.
+        operatorApplicationName = SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME;
+        userApplicationName = SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME;
+        ownerApplicationName = SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME;
+        helpdeskApplicationName = SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME;
+
         X509Certificate userCert = (X509Certificate) UserKeyStore.getPrivateKeyEntry().getCertificate();
         X509Certificate operCert = (X509Certificate) OperKeyStore.getPrivateKeyEntry().getCertificate();
         X509Certificate ownerCert = (X509Certificate) OwnerKeyStore.getPrivateKeyEntry().getCertificate();
         X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStore.getPrivateKeyEntry().getCertificate();
 
         try {
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-                    "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/" + userWebappName),
-                    getLogo("/logo.png"), false, false, userCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + userWebappName + "/logout")));
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, "owner",
-                    "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/" + operWebappName),
-                    getLogo("/logo.png"), false, false, operCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + operWebappName + "/logout")));
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, "owner",
-                    "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname, hostport, "/" + ownerWebappName),
-                    getLogo("/logo.png"), false, false, ownerCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + ownerWebappName + "/logout")));
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, "owner",
-                    "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/" + helpdeskWebappName),
-                    getLogo("/logo.png"), false, false, helpdeskCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + helpdeskWebappName + "/logout")));
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/"
+                            + userWebappName), getLogo("/logo.png"), false, false, userCert, false, IdScopeType.USER, true, new URL(
+                            protocolssl, hostname, hostportssl, "/" + userWebappName + "/logout")));
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/"
+                            + operWebappName), getLogo("/logo.png"), false, false, operCert, false, IdScopeType.USER, true, new URL(
+                            protocolssl, hostname, hostportssl, "/" + operWebappName + "/logout")));
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname,
+                            hostport, "/" + ownerWebappName), getLogo("/logo.png"), false, false, ownerCert, false, IdScopeType.USER, true,
+                    new URL(protocolssl, hostname, hostportssl, "/" + ownerWebappName + "/logout")));
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/"
+                            + helpdeskWebappName), getLogo("/logo.png"), false, false, helpdeskCert, false, IdScopeType.USER, true,
+                    new URL(protocolssl, hostname, hostportssl, "/" + helpdeskWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed Application URL exception: " + e.getMessage());
         }
@@ -106,18 +109,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         trustedCertificates.put(operCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         trustedCertificates.put(ownerCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         trustedCertificates.put(helpdeskCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
-                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
-                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME));
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
-                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME));
-
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
-                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
-                SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
 
         // add available notification topics
         notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
