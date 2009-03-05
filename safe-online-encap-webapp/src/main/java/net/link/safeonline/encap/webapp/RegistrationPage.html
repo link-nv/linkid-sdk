@@ -19,15 +19,16 @@
 
 			<form wicket:id="register_form">
 
-                <wicket:enclosure>
+				<wicket:enclosure child="mobile">
 					<label>
 						<wicket:message key="mobile">[Mobile]</wicket:message>
 					</label>
 					<input wicket:id="mobile" type="text" class="label" />
+					<div wicket:id="mobile_feedback" class="error"></div>
 				</wicket:enclosure>
 
-				<wicket:enclosure>
-	                <label>
+				<wicket:enclosure child="activation">
+					<label>
 						<wicket:message key="activationCode">[Activation Code]</wicket:message>
 					</label>
 					<input wicket:id="activation" type="text" class="label" />
@@ -35,8 +36,8 @@
 
 				<label>&nbsp;</label>
 				<input wicket:id="activate" type="submit" value="[Register]"
-                    wicket:message="value:register" class="submit" />
-                <input wicket:id="register" type="submit" value="[Confirm]"
+					wicket:message="value:register" class="submit" />
+				<input wicket:id="register" type="submit" value="[Confirm]"
 					wicket:message="value:confirm" class="submit" />
 				<input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />

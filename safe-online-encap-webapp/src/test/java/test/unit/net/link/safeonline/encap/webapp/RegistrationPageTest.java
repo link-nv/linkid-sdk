@@ -19,7 +19,6 @@ import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.webapp.AuthenticationPage;
 import net.link.safeonline.encap.webapp.EncapApplication;
-import net.link.safeonline.encap.webapp.MainPage;
 import net.link.safeonline.encap.webapp.RegistrationPage;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
@@ -33,7 +32,6 @@ import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.test.UrlPageSource;
 
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.After;
@@ -81,7 +79,6 @@ public class RegistrationPageTest {
         DummyServiceFactory.install();
 
         wicket = new WicketTester(new EncapTestApplication());
-        wicket.processRequestCycle();
     }
 
     @After
@@ -105,13 +102,8 @@ public class RegistrationPageTest {
         protocolContext.setNodeName(TEST_NODE_NAME);
         protocolContext.setAttributeId(TEST_MOBILE);
 
-        // Load Authentication Page.
-        wicket.assertRenderedPage(MainPage.class);
-        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegistrationPage.class);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, ExternalLink.class);
-
-        // MainPage: Click to register encap
-        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
+        // Load Registration Page.
+        wicket.startPage(RegistrationPage.class);
         wicket.assertRenderedPage(RegistrationPage.class);
 
         // Check whether our mount point also sends us to the registration page.

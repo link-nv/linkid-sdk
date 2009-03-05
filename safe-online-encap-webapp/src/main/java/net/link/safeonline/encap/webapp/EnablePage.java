@@ -6,7 +6,9 @@
  */
 package net.link.safeonline.encap.webapp;
 
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.webapp.AuthenticationPage.Goal;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebPage;
@@ -30,6 +32,8 @@ public class EnablePage extends WebPage {
 
     public EnablePage() {
 
-        throw new RestartResponseException(new AuthenticationPage(Goal.ENABLE_DEVICE));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+
+        throw new RestartResponseException(new AuthenticationPage(Goal.ENABLE_DEVICE, protocolContext.getAttribute()));
     }
 }

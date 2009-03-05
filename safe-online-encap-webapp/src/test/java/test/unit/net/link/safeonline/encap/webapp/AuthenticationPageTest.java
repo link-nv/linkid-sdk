@@ -68,7 +68,6 @@ public class AuthenticationPageTest {
         mockHelpdeskManager = createMock(HelpdeskManager.class);
 
         wicket = new WicketTester(new EncapTestApplication());
-        wicket.processRequestCycle();
     }
 
     @After
