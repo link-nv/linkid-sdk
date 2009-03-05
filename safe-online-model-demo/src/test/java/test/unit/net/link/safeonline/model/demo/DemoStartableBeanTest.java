@@ -17,6 +17,7 @@ import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 
 import java.security.KeyPair;
@@ -129,6 +130,10 @@ public class DemoStartableBeanTest {
 
     private JndiTestUtils     jndiTestUtils;
 
+    private KeyPair           nodeKeyPair;
+
+    private X509Certificate   nodeCertificate;
+
     private static Class<?>[] container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class, SubscriptionDAOBean.class,
             AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
             ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class, ConfigItemDAOBean.class, TaskDAOBean.class,
@@ -161,13 +166,12 @@ public class DemoStartableBeanTest {
         EntityManager entityManager = entityTestManager.getEntityManager();
 
         mockKeyService = createMock(KeyService.class);
+        checkOrder(mockKeyService, false);
 
-        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        nodeKeyPair = PkiTestUtils.generateKeyPair();
+        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
-
-        checkOrder(mockKeyService, false);
         replay(mockKeyService);
 
         jndiTestUtils = new JndiTestUtils();
@@ -179,6 +183,7 @@ public class DemoStartableBeanTest {
         systemStartable.postStart();
 
         verify(mockKeyService);
+        reset(mockKeyService);
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
@@ -207,11 +212,20 @@ public class DemoStartableBeanTest {
 
         EJBTestUtils.setJBossPrincipal("test-operator", "operator");
 
+        // expectations
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2 * 5);
+        replay(mockKeyService);
+
         // operate
         beIdStartableBean.postStart();
         digipassStartableBean.postStart();
         encapStartableBean.postStart();
         passwordStartableBean.postStart();
         demoStartableBean.postStart();
+
+        // verify
+        verify(mockKeyService);
+        reset(mockKeyService);
     }
 }
