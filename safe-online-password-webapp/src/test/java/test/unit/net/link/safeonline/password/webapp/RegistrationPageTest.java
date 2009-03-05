@@ -18,7 +18,6 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
 
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.After;
@@ -172,21 +171,12 @@ public class RegistrationPageTest {
 
         // Registration Page: Verify.
         wicket.startPage(registrationPage);
-        System.err.println(wicket.getLastRenderedPage());
-        wicket.dumpPage();
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
-
-        // operate
-        FormTester registrationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
-        registrationForm.setValue(RegistrationPage.PASSWORD1_FIELD_ID, password);
-        registrationForm.setValue(RegistrationPage.PASSWORD2_FIELD_ID, "foobar-password");
-        registrationForm.submit(RegistrationPage.SAVE_BUTTON_ID);
+        wicket.assertRenderedPage(RegistrationPage.class);
+        wicket.assertVisible(TemplatePage.CONTENT_ID + ":" + RegistrationPage.ALREADY_REGISTERED_LINK_ID);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
 
         // verify
         verify(mockPasswordDeviceService, mockSamlAuthorityService);
-
-        wicket.assertRenderedPage(RegistrationPage.class);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.ALREADY_REGISTERED_LINK_ID, Link.class);
     }
 
 }

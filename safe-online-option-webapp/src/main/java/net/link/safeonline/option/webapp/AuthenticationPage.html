@@ -22,30 +22,35 @@
 				</li>
 			</wicket:container>
 
-			<wicket:container wicket:id="progress">[Progress Panel]</wicket:container>
+			<wicket:container wicket:id="progress">[Progress
+				Panel]</wicket:container>
 
 			<h2 wicket:id="title">[Authenticating for Application]</h2>
 
 			<form wicket:id="authentication_form">
 
-                <wicket:enclosure>
+				<wicket:enclosure child="pin">
 					<label>
 						<wicket:message key="pin">[PIN]</wicket:message>
 					</label>
 					<input wicket:id="pin" type="password" class="label" />
+					<div wicket:id="pin_feedback" class="error"></div>
 				</wicket:enclosure>
 
-                <div style="display: none; background: url('images/progress_m.gif') repeat-x; width: 300px; height: 18px; margin-bottom: 1em; text-align: center" class="bar">
-                    <img src="images/progress_r.gif" style="float: right; margin-right: -1px" />
-                    <img src="images/progress_l.gif" style="float: left; margin-left: -2px" />
+				<div
+					style="display: none; background: url('images/progress_m.gif') repeat-x; width: 300px; height: 18px; margin-bottom: 1em; text-align: center"
+					class="bar">
+					<img src="images/progress_r.gif" style="float: right; margin-right: -1px" />
+					<img src="images/progress_l.gif" style="float: left; margin-left: -2px" />
 
-                    <wicket:message key="optionCommunicating">[Communicating with the Option Data Card]</wicket:message>
-                </div>
+					<wicket:message key="optionCommunicating">[Communicating
+						with the Option Data Card]</wicket:message>
+				</div>
 
 				<label>&nbsp;</label>
-                <input wicket:id="login" type="submit" value="[Login]" onclick="return false;"
-					wicket:message="value:loginaction" class="submit" />
-                <input wicket:id="cancel" type="submit" value="[Cancel]"
+				<input wicket:id="login" type="submit" value="[Login]"
+					onclick="return false;" wicket:message="value:loginaction" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />
 
 				<div wicket:id="feedback" class="error"></div>

@@ -580,7 +580,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             return;
         }
 
-        ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(), encryptedValue);
+        String encodedApplicationName = Base64.encode(application.getName().getBytes());
+
+        ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + encodedApplicationName, encryptedValue);
         ssoCookie.setMaxAge(-1);
         ssoCookie.setPath(cookiePath);
     }

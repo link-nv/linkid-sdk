@@ -116,8 +116,10 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          */
         if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
 
-            if (httpRequest.getServletPath().endsWith("/" + AuthnEntryServlet.SERVLET_PATH)) {
-                // if entry servlet, dont timeout ...
+            // in case we are the authentication entry servlet or logout entry servlet, no timeout is needed, if session is invalid just
+            // create a new one and carry on
+            if (httpRequest.getServletPath().endsWith("/" + AuthnEntryServlet.SERVLET_PATH)
+                    || httpRequest.getServletPath().endsWith("/" + AuthnEntryServlet.SERVLET_PATH)) {
                 httpRequest.getSession(true);
                 removeCookie(SafeOnlineCookies.ENTRY_COOKIE, cookiePath, httpRequest, httpResponse);
                 chain.doFilter(request, response);
