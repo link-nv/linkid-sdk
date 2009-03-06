@@ -126,6 +126,8 @@ public class TaskSchedulerBeanTest {
             throws Exception {
 
         // setup
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
         SchedulingEntity scheduling = new SchedulingEntity("test", "0 0/5 * * * ?", null);
 
         expect(mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(mockTimer);
