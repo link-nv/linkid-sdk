@@ -83,7 +83,6 @@ public class ConfigurationServiceBeanTest extends TestCase {
         ConfigGroupEntity detachedGroup = new ConfigGroupEntity("group 1");
         ConfigItemEntity detachedItem = new ConfigItemEntity("item 1", String.class.getName(), false, detachedGroup);
         ConfigItemValueEntity detachedItemValue = new ConfigItemValueEntity(detachedItem, "value 2");
-        detachedGroup.getConfigItems().add(detachedItem);
         detachedItem.getValues().add(detachedItemValue);
         List<ConfigGroupEntity> groupList = new ArrayList<ConfigGroupEntity>();
         groupList.add(detachedGroup);
@@ -93,7 +92,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
 
         // verify
         groupList = testedInstance.listConfigGroups();
-        Iterator<ConfigItemEntity> it = groupList.get(0).getConfigItems().iterator();
+        Iterator<ConfigItemEntity> it = configItemDAO.getConfigItems(groupList.get(0)).iterator();
         assertTrue(it.hasNext());
         ConfigItemEntity resultItem = it.next();
         String result = resultItem.getValue();
@@ -117,7 +116,6 @@ public class ConfigurationServiceBeanTest extends TestCase {
         ConfigItemValueEntity detachedItemValue2 = new ConfigItemValueEntity(detachedItem, "value 2");
         ConfigItemValueEntity detachedItemValue3 = new ConfigItemValueEntity(detachedItem, "value 3");
         detachedItemValue3.setId(itemValue3.getId());
-        detachedGroup.getConfigItems().add(detachedItem);
         detachedItem.getValues().add(detachedItemValue1);
         detachedItem.getValues().add(detachedItemValue2);
         detachedItem.getValues().add(detachedItemValue3);
@@ -130,7 +128,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
 
         // verify
         groupList = testedInstance.listConfigGroups();
-        Iterator<ConfigItemEntity> it = groupList.get(0).getConfigItems().iterator();
+        Iterator<ConfigItemEntity> it = configItemDAO.getConfigItems(groupList.get(0)).iterator();
         assertTrue(it.hasNext());
         ConfigItemEntity resultItem = it.next();
 

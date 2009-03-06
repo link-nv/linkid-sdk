@@ -666,7 +666,7 @@ public abstract class AbstractInitBean implements Startable {
                 /*
                  * In this case we still update the certificate.
                  */
-                demoTrustPoint.setEncodedCert(certificate.getEncoded());
+                trustPointDAO.setEncodedCert(demoTrustPoint, certificate.getEncoded());
             } catch (CertificateEncodingException e) {
                 LOG.error("cert encoding error");
             }

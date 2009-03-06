@@ -66,7 +66,7 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
 
         for (ConfigGroupEntity configGroup : configGroupList) {
             LOG.debug("save group: " + configGroup.getName());
-            for (ConfigItemEntity configItem : configGroup.getConfigItems()) {
+            for (ConfigItemEntity configItem : configItemDAO.getConfigItems(configGroup)) {
                 LOG.debug("save item: " + configItem.getName());
                 List<ConfigItemValueEntity> configItemValues = configItemValueDAO.listConfigItemValues(configItem);
                 if (configItem.isMultipleChoice()) {
