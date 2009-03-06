@@ -19,18 +19,20 @@
 
 			<form wicket:id="register_form">
 
-                <wicket:enclosure>
+                <wicket:enclosure child="pin">
 					<label>
 						<wicket:message key="pin">[PIN]</wicket:message>
 					</label>
 					<input wicket:id="pin" type="password" class="label" />
+					<div wicket:id="pin_feedback" class="error"></div>
 				</wicket:enclosure>
 
-				<wicket:enclosure>
+				<wicket:enclosure child="pinConfirm">
 	                <label>
 						<wicket:message key="pinConfirm">[PIN Confirmation]</wicket:message>
 					</label>
 					<input wicket:id="pinConfirm" type="password" class="label" />
+					<div wicket:id="pinConfirm_feedback" class="error"></div>
 				</wicket:enclosure>
 
                 <div style="display: none; background: url('images/progress_m.gif') repeat-x; width: 300px; height: 18px; margin-bottom: 1em; text-align: center" class="bar">

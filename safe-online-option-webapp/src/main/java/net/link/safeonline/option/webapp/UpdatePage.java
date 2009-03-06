@@ -15,6 +15,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.option.OptionDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
@@ -124,6 +125,10 @@ public class UpdatePage extends TemplatePage implements IHeaderContributor {
 
             // Add em to the page.
             add(oldPinField, newPinField, newPinConfirmField, updateButton, cancelButton);
+            add(new ErrorComponentFeedbackLabel("oldPin_feedback", oldPinField, new Model<String>(localize("errorMissingOldPIN"))));
+            add(new ErrorComponentFeedbackLabel("newPin_feedback", newPinField, new Model<String>(localize("errorMissingNewPIN"))));
+            add(new ErrorComponentFeedbackLabel("newPinConfirm_feedback", newPinConfirmField, new Model<String>(
+                    localize("errorMissingRepeatNewPIN"))));
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
             focus(oldPinField);
         }

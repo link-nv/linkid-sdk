@@ -76,7 +76,7 @@ public class OptionStartableBean extends AbstractInitBean {
                 "Option Disable Attribuut", null));
 
         AttributeTypeEntity optionDeviceAttributeType = new AttributeTypeEntity(OptionConstants.OPTION_DEVICE_ATTRIBUTE,
-                DatatypeType.COMPOUNDED, true, false);
+                DatatypeType.COMPOUNDED, false, false);
         optionDeviceAttributeType.setMultivalued(true);
         optionDeviceAttributeType.addMember(optionImeiAttributeType, 0, true);
         optionDeviceAttributeType.addMember(optionDeviceDisableAttributeType, 1, true);

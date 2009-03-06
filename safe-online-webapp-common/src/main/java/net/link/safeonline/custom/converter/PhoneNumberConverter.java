@@ -36,15 +36,20 @@ public class PhoneNumberConverter {
         if (null == phoneNumber)
             return null;
 
-        String convertedNumber;
+        String convertedNumber = "";
 
-        // strip illegal characters: space . / -
-        convertedNumber = phoneNumber.replace(" ", "");
-        convertedNumber = convertedNumber.replace(".", "");
-        convertedNumber = convertedNumber.replace("/", "");
-        convertedNumber = convertedNumber.replace("-", "");
+        // strip illegal characters:
+        String good = "+0123456789";
+        for (int i = 0; i < phoneNumber.length(); i++) {
+            if (good.indexOf(phoneNumber.charAt(i)) >= 0) {
+                convertedNumber += phoneNumber.charAt(i);
+            }
+        }
 
-        Pattern pattern = Pattern.compile("[+]?[0-9]*");
+        if (convertedNumber.equals(""))
+            return null;
+
+        Pattern pattern = Pattern.compile("[+]?[0-9][0-9]*");
         Matcher m = pattern.matcher(convertedNumber);
         if (m.matches())
             return convertedNumber;

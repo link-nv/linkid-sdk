@@ -57,18 +57,20 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutEntryServlet extends AbstractInjectionServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-    private static final Log  LOG              = LogFactory.getLog(LogoutEntryServlet.class);
+    private static final Log   LOG              = LogFactory.getLog(LogoutEntryServlet.class);
+
+    public static final String SERVLET_PATH     = "logoutentry";
 
     @Init(name = "ServletEndpointUrl")
-    private String            servletEndpointUrl;
+    private String             servletEndpointUrl;
 
     @Init(name = "LogoutExitUrl")
-    private String            logoutExitUrl;
+    private String             logoutExitUrl;
 
     @Init(name = "CookiePath")
-    private String            cookiePath;
+    private String             cookiePath;
 
 
     @Override

@@ -149,11 +149,11 @@ public class IdentityServiceBeanTest {
         SubjectEntity subject = userRegistrationService.registerUser(login);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         userRegistrationService.registerUser(applicationOwnerLogin);
         applicationService.registerApplicationOwner("test-application-owner-name", applicationOwnerLogin);
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-global-operator", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-global-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         attributeTypeService.add(new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false, false));
         attributeTypeService.add(new AttributeTypeEntity("test-attribute-type-2", DatatypeType.STRING, false, false));
         attributeTypeService.add(new AttributeTypeEntity("test-attribute-type-3", DatatypeType.STRING, false, false));
@@ -165,7 +165,7 @@ public class IdentityServiceBeanTest {
                 null, identity, false, false, false, null);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
         subscriptionService.subscribe(testApplication.getId());
 
         EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");

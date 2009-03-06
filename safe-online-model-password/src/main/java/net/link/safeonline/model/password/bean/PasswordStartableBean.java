@@ -13,13 +13,11 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -81,17 +79,11 @@ public class PasswordStartableBean extends AbstractInitBean {
         for (PasswordRegistration passwordRegistration : passwordRegistrations) {
 
             SubjectEntity subject = subjectService.findSubjectFromUserName(passwordRegistration.login);
-            if (null == subject) {
-                try {
-                    subject = subjectService.addSubject(passwordRegistration.login);
-                } catch (AttributeTypeNotFoundException e) {
-                    LOG.fatal("safeonline exception", e);
-                    throw new EJBException(e);
-                }
-            }
 
-            if (!passwordManager.isPasswordConfigured(subject)) {
-                passwordManager.registerPassword(subject, passwordRegistration.password);
+            if (null != subject) {
+                if (!passwordManager.isPasswordConfigured(subject)) {
+                    passwordManager.registerPassword(subject, passwordRegistration.password);
+                }
             }
         }
     }

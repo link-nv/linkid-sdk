@@ -22,32 +22,35 @@
 				</li>
 			</wicket:container>
 
-			<wicket:container wicket:id="progress">[Progress Panel]</wicket:container>
+			<wicket:container wicket:id="progress">[Progress
+				Panel]</wicket:container>
 
 			<h2 wicket:id="title">[Authenticating for Application]</h2>
 
 			<form wicket:id="authentication_form">
 
-                <wicket:enclosure>
+				<wicket:enclosure child="mobile">
 					<label>
-						<wicket:message key="mobile">[Mobile]</wicket:message>
+						<wicket:message key="mobileNumber">[Mobile]</wicket:message>
 					</label>
 					<input wicket:id="mobile" type="text" class="label" />
+					<div wicket:id="mobile_feedback" class="error"></div>
 				</wicket:enclosure>
 
-                <wicket:enclosure>
+				<wicket:enclosure child="otp">
 					<label>
 						<wicket:message key="mobileOTP">[Mobile OTP]</wicket:message>
 					</label>
 					<input wicket:id="otp" type="text" class="label" />
+					<div wicket:id="otp_feedback" class="error"></div>
 				</wicket:enclosure>
 
 				<label>&nbsp;</label>
 				<input wicket:id="challenge" type="submit" value="[Challenge]"
-                    wicket:message="value:mobileRequestOTP" class="submit" />
-                <input wicket:id="login" type="submit" value="[Login]"
+					wicket:message="value:mobileRequestOTP" class="submit" />
+				<input wicket:id="login" type="submit" value="[Login]"
 					wicket:message="value:mobileVerifyOTP" class="submit" />
-                <input wicket:id="cancel" type="submit" value="[Cancel]"
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />
 
 				<div wicket:id="feedback" class="error"></div>

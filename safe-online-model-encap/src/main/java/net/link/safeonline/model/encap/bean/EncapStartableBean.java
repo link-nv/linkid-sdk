@@ -63,7 +63,7 @@ public class EncapStartableBean extends AbstractInitBean {
                 null));
 
         AttributeTypeEntity encapDeviceAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_DEVICE_ATTRIBUTE,
-                DatatypeType.COMPOUNDED, true, false);
+                DatatypeType.COMPOUNDED, false, false);
         encapDeviceAttributeType.setMultivalued(true);
         encapDeviceAttributeType.addMember(encapMobileAttributeType, 0, true);
         encapDeviceAttributeType.addMember(encapDeviceDisableAttributeType, 1, true);

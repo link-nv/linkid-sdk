@@ -14,6 +14,7 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.custom.converter.PhoneNumber;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.webapp.AuthenticationPage.Goal;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -24,6 +25,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.service.OlasService;
@@ -81,10 +83,10 @@ public class RegistrationPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        Model<String>             mobile;
+        Model<PhoneNumber>        mobile;
         Model<String>             activation;
 
-        TextField<String>         mobileField;
+        TextField<PhoneNumber>    mobileField;
         TextField<String>         activationField;
 
         private Button            activateButton;
@@ -97,7 +99,7 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            mobileField = new TextField<String>(MOBILE_FIELD_ID, mobile = new Model<String>());
+            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
 
             activationField = new TextField(ACTIVATION_FIELD_ID, activation = new Model<String>());
@@ -111,12 +113,12 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("register mobile: " + mobile.getObject());
+                    LOG.debug("register mobile: " + mobile.getObject().getNumber());
 
                     try {
                         EncapDeviceService encapDeviceService = EjbUtils.getEJB(EncapDeviceService.JNDI_BINDING, EncapDeviceService.class);
 
-                        activation.setObject(encapDeviceService.register(mobile.getObject()));
+                        activation.setObject(encapDeviceService.register(mobile.getObject().getNumber()));
                         EncapSession.get().setDeviceBean(encapDeviceService);
                     }
 
@@ -145,7 +147,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    throw new RestartResponseException(new AuthenticationPage(Goal.REGISTER_DEVICE));
+                    throw new RestartResponseException(new AuthenticationPage(Goal.REGISTER_DEVICE, mobile.getObject().getNumber()));
                 }
             };
 
@@ -168,6 +170,7 @@ public class RegistrationPage extends TemplatePage {
 
             // Add em to the page.
             add(mobileField, activationField);
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
             add(activateButton, registerButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
             focus(mobileField);
@@ -192,7 +195,7 @@ public class RegistrationPage extends TemplatePage {
                 throws SubjectNotFoundException, PermissionDeniedException {
 
             try {
-                return idMappingClient.getUserId(mobile.getObject());
+                return idMappingClient.getUserId(mobile.getObject().getNumber());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + mobile);
                 throw new SubjectNotFoundException();

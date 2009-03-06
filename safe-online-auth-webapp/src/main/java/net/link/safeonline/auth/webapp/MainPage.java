@@ -188,7 +188,8 @@ public class MainPage extends AuthenticationTemplatePage {
                     AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(getRequest()),
                             WicketUtil.toServletResponse(getResponse()), getLocale(), requestPath, authenticationPath, deviceName);
                     setRedirect(false);
-                    return;
+
+                    throw new RestartResponseException(MainPage.class);
 
                 }
             });
