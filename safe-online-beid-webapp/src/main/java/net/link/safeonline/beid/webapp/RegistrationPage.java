@@ -12,6 +12,7 @@ import java.applet.Applet;
 import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 
 import org.apache.wicket.PageParameters;
@@ -51,6 +52,7 @@ public class RegistrationPage extends AppletPage {
 
         // Our content.
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
+        progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
     }
 
