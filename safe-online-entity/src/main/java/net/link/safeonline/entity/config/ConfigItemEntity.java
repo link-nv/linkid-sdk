@@ -96,8 +96,8 @@ public class ConfigItemEntity implements Serializable {
     }
 
     @ManyToOne
-    @IndexColumn(name = "configGroupIndex")
     @JoinColumn(name = "configGroup")
+    @IndexColumn(name = "configGroupIndex")
     public ConfigGroupEntity getConfigGroup() {
 
         return configGroup;
