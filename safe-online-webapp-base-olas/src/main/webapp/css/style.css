@@ -708,6 +708,7 @@ table.rich-shuttle-body table {
 }
 .date_label {
     display: inline;
+    margin-left: 0px;
 }
 }
 
