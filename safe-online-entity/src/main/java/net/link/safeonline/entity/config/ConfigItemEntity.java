@@ -34,14 +34,17 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "config_item", uniqueConstraints = @UniqueConstraint(columnNames = { "configGroup", "name" }))
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c"),
-        @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEMS, query = "FROM ConfigItemEntity c WHERE c.configGroup = :group") })
+@NamedQueries( {
+        @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c"),
+        @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEMS, query = "FROM ConfigItemEntity c WHERE c.configGroup = :group"),
+        @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEM, query = "FROM ConfigItemEntity c WHERE c.configGroup.name = :groupName AND c.name = :name") })
 public class ConfigItemEntity implements Serializable {
 
     private static final long           serialVersionUID = 1L;
 
     public static final String          QUERY_LIST_ALL   = "cie.list";
     public static final String          QUERY_GET_ITEMS  = "cie.items";
+    public static final String          QUERY_GET_ITEM   = "cie.item";
 
     private int                         id;
 
@@ -203,5 +206,8 @@ public class ConfigItemEntity implements Serializable {
 
         @QueryMethod(QUERY_GET_ITEMS)
         List<ConfigItemEntity> getConfigItems(ConfigGroupEntity group);
+
+        @QueryMethod(QUERY_GET_ITEM)
+        ConfigItemEntity getConfigItem(String groupName, String name);
     }
 }

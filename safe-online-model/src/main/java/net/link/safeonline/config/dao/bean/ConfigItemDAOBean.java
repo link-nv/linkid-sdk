@@ -18,7 +18,6 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
-import net.link.safeonline.entity.config.ConfigItemPK;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -65,7 +64,7 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
 
     public ConfigItemEntity findConfigItem(String groupName, String name) {
 
-        return entityManager.find(ConfigItemEntity.class, new ConfigItemPK(groupName, name));
+        return queryObject.getConfigItem(groupName, name);
     }
 
     public List<ConfigItemEntity> listConfigItems() {
