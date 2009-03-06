@@ -54,7 +54,7 @@ public class AuditContextEntity implements Serializable {
 
     public static final String QUERY_LIST_OLD      = "ac.old";
 
-    private Long               id;
+    private long               id;
 
     private Date               creationTime;
 
@@ -66,7 +66,7 @@ public class AuditContextEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
+    public long getId() {
 
         return id;
     }

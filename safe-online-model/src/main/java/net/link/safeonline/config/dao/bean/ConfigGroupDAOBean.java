@@ -57,7 +57,7 @@ public class ConfigGroupDAOBean implements ConfigGroupDAO {
 
     public ConfigGroupEntity findConfigGroup(String name) {
 
-        return entityManager.find(ConfigGroupEntity.class, name);
+        return queryObject.getConfigGroup(name);
     }
 
     public List<ConfigGroupEntity> listConfigGroups() {
