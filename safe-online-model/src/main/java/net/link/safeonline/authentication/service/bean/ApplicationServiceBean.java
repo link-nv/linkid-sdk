@@ -320,7 +320,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         /*
          * Subscribe the new application owner to the SafeOnline owner web application so he can do it's job.
          */
-        subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, adminSubject, ownerApplication);
+        if (null == subscriptionDAO.findSubscription(adminSubject, ownerApplication)) {
+            subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, adminSubject, ownerApplication);
+        }
 
         /*
          * We have to flush the credential cache for the login here. Else it's possible that the login cannot logon because JAAS is caching
@@ -546,6 +548,19 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
             throws ApplicationNotFoundException {
 
         getApplication(applicationId).setFriendlyName(applicationFriendlyName);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateApplicationOwner(long applicationId, String applicationOwnerName)
+            throws ApplicationNotFoundException, ApplicationOwnerNotFoundException {
+
+        ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(applicationOwnerName);
+
+        getApplication(applicationId).setApplicationOwner(applicationOwner);
 
     }
 }
