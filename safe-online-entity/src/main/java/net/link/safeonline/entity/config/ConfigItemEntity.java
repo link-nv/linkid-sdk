@@ -27,6 +27,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -205,9 +206,9 @@ public class ConfigItemEntity implements Serializable {
         List<ConfigItemEntity> listConfigItems();
 
         @QueryMethod(QUERY_GET_ITEMS)
-        List<ConfigItemEntity> getConfigItems(ConfigGroupEntity group);
+        List<ConfigItemEntity> getConfigItems(@QueryParam("group") ConfigGroupEntity group);
 
         @QueryMethod(QUERY_GET_ITEM)
-        ConfigItemEntity getConfigItem(String groupName, String name);
+        ConfigItemEntity getConfigItem(@QueryParam("groupName") String groupName, @QueryParam("name") String name);
     }
 }
