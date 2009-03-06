@@ -52,7 +52,11 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<ConfigGroupEntity> listConfigGroups() {
 
-        return configGroupDAO.listConfigGroups();
+        List<ConfigGroupEntity> configGroups = configGroupDAO.listConfigGroups();
+        for (ConfigGroupEntity configGroup : configGroups) {
+            configGroup.setConfigItems(configItemDAO.getConfigItems(configGroup));
+        }
+        return configGroups;
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

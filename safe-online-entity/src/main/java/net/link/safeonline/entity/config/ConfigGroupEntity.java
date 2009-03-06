@@ -21,6 +21,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
@@ -34,12 +35,15 @@ import org.apache.commons.lang.builder.ToStringBuilder;
         @NamedQuery(name = QUERY_GET_GROUP, query = "FROM ConfigGroupEntity c WHERE c.name = :name") })
 public class ConfigGroupEntity implements Serializable {
 
-    private static final long  serialVersionUID = 1L;
+    private static final long      serialVersionUID = 1L;
 
-    public static final String QUERY_LIST_ALL   = "cge.list";
-    public static final String QUERY_GET_GROUP  = "cge.get";
+    public static final String     QUERY_LIST_ALL   = "cge.list";
+    public static final String     QUERY_GET_GROUP  = "cge.get";
 
-    private String             name;
+    private String                 name;
+
+    @Transient
+    private List<ConfigItemEntity> configItems;
 
     private int                id;
 
@@ -74,6 +78,19 @@ public class ConfigGroupEntity implements Serializable {
     public void setName(String name) {
 
         this.name = name;
+    }
+
+    // TODO: quickfix, better push out transient methods and put login the service bean ...
+    @Transient
+    public List<ConfigItemEntity> getConfigItems() {
+
+        return configItems;
+    }
+
+    @Transient
+    public void setConfigItems(List<ConfigItemEntity> configItems) {
+
+        this.configItems = configItems;
     }
 
     @Override
