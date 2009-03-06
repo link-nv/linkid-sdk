@@ -230,12 +230,17 @@ a:hover {
 .minimal #c-sidebox {
     margin-top:         -2em;
 }
+#c-sidebox img {
+    display: block;
+}
+#c-sidebox #sidebox img {
+    display: inline;
+}
 
 /******************************************************* SIDE BOX **/
 #sidebox {
-    width:              100%;                       /* IE needs margin included in the width. */
-    margin:             0 10%;
-    margin-top:         -11px;
+    width:              80%;                       /* TODO: IE 7? needs margin included in the width. */
+    margin:             -11px 10% 0;
     padding:            0;
 }
 #sidebox[id] {
@@ -478,6 +483,9 @@ table .text.block {
  * Section: Forms
  */
 
+img {
+    border:             none;                       /* Internet Explorer shows ugly fat blue borders around linked images without this. */
+}
 label {
     float:              left;
     clear:              left;
@@ -708,7 +716,6 @@ table.rich-shuttle-body table {
 }
 .date_label {
     display: inline;
-    margin-left: 0px;
 }
 }
 
