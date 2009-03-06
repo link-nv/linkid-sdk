@@ -27,6 +27,7 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Index;
 
 
 @Entity
@@ -69,6 +70,7 @@ public class ConfigItemValueEntity implements Serializable {
     }
 
     @ManyToOne
+    @Index(name = "configItemIndex")
     public ConfigItemEntity getConfigItem() {
 
         return configItem;
