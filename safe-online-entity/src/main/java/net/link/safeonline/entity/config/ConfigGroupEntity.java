@@ -7,34 +7,41 @@
 
 package net.link.safeonline.entity.config;
 
+import static net.link.safeonline.entity.config.ConfigGroupEntity.QUERY_GET_GROUP;
 import static net.link.safeonline.entity.config.ConfigGroupEntity.QUERY_LIST_ALL;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 
 @Entity
-@Table(name = "config_group")
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigGroupEntity c") })
+@Table(name = "config_group", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigGroupEntity c"),
+        @NamedQuery(name = QUERY_GET_GROUP, query = "FROM ConfigGroupEntity c WHERE c.name = :name") })
 public class ConfigGroupEntity implements Serializable {
 
     private static final long  serialVersionUID = 1L;
 
     public static final String QUERY_LIST_ALL   = "cge.list";
+    public static final String QUERY_GET_GROUP  = "cge.get";
 
     private String             name;
+
+    private int                id;
 
 
     public ConfigGroupEntity() {
@@ -48,6 +55,17 @@ public class ConfigGroupEntity implements Serializable {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public int getId() {
+
+        return id;
+    }
+
+    public void setId(int id) {
+
+        this.id = id;
+    }
+
     public String getName() {
 
         return name;
@@ -74,13 +92,13 @@ public class ConfigGroupEntity implements Serializable {
         if (false == obj instanceof ConfigGroupEntity)
             return false;
         ConfigGroupEntity rhs = (ConfigGroupEntity) obj;
-        return new EqualsBuilder().append(name, rhs.name).isEquals();
+        return id == rhs.id;
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(name).toHashCode();
+        return id;
     }
 
 
@@ -88,5 +106,8 @@ public class ConfigGroupEntity implements Serializable {
 
         @QueryMethod(QUERY_LIST_ALL)
         List<ConfigGroupEntity> listConfigGroups();
+
+        @QueryMethod(value = QUERY_GET_GROUP, nullable = true)
+        ConfigGroupEntity getConfigGroup(@QueryParam("name") String name);
     }
 }

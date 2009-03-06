@@ -32,6 +32,8 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+import org.hibernate.annotations.Index;
+
 
 /**
  * Audit entity about audit system itself.
@@ -103,6 +105,7 @@ public class AuditAuditEntity implements Serializable {
     }
 
     @ManyToOne
+    @Index(name = "auditAuditIndex")
     public AuditContextEntity getAuditContext() {
 
         return auditContext;

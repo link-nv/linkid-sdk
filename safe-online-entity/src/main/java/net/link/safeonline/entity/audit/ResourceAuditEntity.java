@@ -34,6 +34,8 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+import org.hibernate.annotations.Index;
+
 
 @Entity
 @Table(name = "resource_audit")
@@ -148,6 +150,7 @@ public class ResourceAuditEntity implements Serializable {
     }
 
     @ManyToOne
+    @Index(name = "resourceAuditIndex")
     public AuditContextEntity getAuditContext() {
 
         return auditContext;
