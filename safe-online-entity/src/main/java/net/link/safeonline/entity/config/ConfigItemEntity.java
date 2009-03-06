@@ -208,7 +208,7 @@ public class ConfigItemEntity implements Serializable {
         @QueryMethod(QUERY_GET_ITEMS)
         List<ConfigItemEntity> getConfigItems(@QueryParam("group") ConfigGroupEntity group);
 
-        @QueryMethod(QUERY_GET_ITEM)
+        @QueryMethod(value = QUERY_GET_ITEM, nullable = true)
         ConfigItemEntity getConfigItem(@QueryParam("groupName") String groupName, @QueryParam("name") String name);
     }
 }

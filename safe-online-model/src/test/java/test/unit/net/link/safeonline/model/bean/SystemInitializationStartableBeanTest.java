@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
@@ -200,6 +201,10 @@ public class SystemInitializationStartableBeanTest {
         subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
         SubjectEntity newAdminSubject = subjectService.findSubjectFromUserName(newAdminLogin);
         assertNotNull(newAdminSubject);
+
+        // verify default admin not re-added
+        adminSubject = subjectService.findSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN);
+        assertNull(adminSubject);
 
         // verify core applications
         ApplicationServiceBean applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
