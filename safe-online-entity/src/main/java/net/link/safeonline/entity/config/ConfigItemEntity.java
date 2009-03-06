@@ -31,6 +31,7 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.IndexColumn;
 
 
 @Entity
@@ -92,6 +93,7 @@ public class ConfigItemEntity implements Serializable {
     }
 
     @ManyToOne
+    @IndexColumn(name = "configGroupIndex")
     @JoinColumn(name = "configGroup")
     public ConfigGroupEntity getConfigGroup() {
 
@@ -208,7 +210,7 @@ public class ConfigItemEntity implements Serializable {
         @QueryMethod(QUERY_GET_ITEMS)
         List<ConfigItemEntity> getConfigItems(@QueryParam("group") ConfigGroupEntity group);
 
-        @QueryMethod(QUERY_GET_ITEM)
+        @QueryMethod(value = QUERY_GET_ITEM, nullable = true)
         ConfigItemEntity getConfigItem(@QueryParam("groupName") String groupName, @QueryParam("name") String name);
     }
 }
