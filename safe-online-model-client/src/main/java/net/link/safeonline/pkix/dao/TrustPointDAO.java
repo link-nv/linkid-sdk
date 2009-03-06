@@ -37,4 +37,6 @@ public interface TrustPointDAO extends SafeOnlineService {
     void removeTrustPoint(TrustPointEntity trustPoint);
 
     List<TrustPointEntity> listTrustPoints(String certificateSubject);
+
+    void setEncodedCert(TrustPointEntity demoTrustPoint, byte[] encodedCert);
 }

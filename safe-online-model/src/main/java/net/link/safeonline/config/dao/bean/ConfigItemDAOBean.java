@@ -40,12 +40,15 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
         queryObject = QueryObjectFactory.createQueryObject(entityManager, ConfigItemEntity.QueryInterface.class);
     }
 
+    public List<ConfigItemEntity> getConfigItems(ConfigGroupEntity group) {
+
+        return queryObject.getConfigItems(group);
+    }
+
     public ConfigItemEntity addConfigItem(String name, String valueType, boolean multipleChoice, ConfigGroupEntity configGroup) {
 
         ConfigItemEntity configItem = new ConfigItemEntity(name, valueType, multipleChoice, configGroup);
-        if (configGroup != null) {
-            configGroup.getConfigItems().add(configItem);
-        }
+
         entityManager.persist(configItem);
         return configItem;
     }

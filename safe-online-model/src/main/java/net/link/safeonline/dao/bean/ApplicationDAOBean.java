@@ -68,6 +68,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
         ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
                 applicationUrl, applicationLogo, certificate);
         entityManager.persist(application);
+        entityManager.flush(); // https://jira.jboss.org/jira/browse/JBPORTAL-983?focusedCommentId=12352050#action_12352050
+
         return application;
     }
 
@@ -111,6 +113,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
                 applicationUrl, applicationLogo, allowUserSubscription, removable, certificate, initialIdentityVersion,
                 usageAgreementVersion);
         entityManager.persist(application);
+        entityManager.flush(); // https://jira.jboss.org/jira/browse/JBPORTAL-983?focusedCommentId=12352050#action_12352050
+
         return application;
     }
 

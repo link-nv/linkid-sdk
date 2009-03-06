@@ -22,6 +22,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
@@ -140,6 +142,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
     @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager             subjectManager;
+
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager              entityManager;
 
     @Resource
     private SessionContext             sessionContext;
@@ -444,6 +449,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
             throws ApplicationNotFoundException {
 
         getApplication(applicationId).setApplicationLogo(applicationLogo);
+        entityManager.flush(); // https://jira.jboss.org/jira/browse/JBPORTAL-983?focusedCommentId=12352050#action_12352050
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

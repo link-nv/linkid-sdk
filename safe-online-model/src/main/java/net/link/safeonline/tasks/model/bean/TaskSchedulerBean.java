@@ -23,7 +23,10 @@ import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
 import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
@@ -55,6 +58,9 @@ public class TaskSchedulerBean implements TaskScheduler {
 
     @EJB(mappedName = TaskHistoryDAO.JNDI_BINDING)
     private TaskHistoryDAO   taskHistoryDAO;
+
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager    entityManager;
 
     @Resource
     private TimerService     timerService;
@@ -201,7 +207,7 @@ public class TaskSchedulerBean implements TaskScheduler {
         try {
             cronTrigger = new CronTrigger("name", "group", scheduling.getCronExpression());
         } catch (Exception e) {
-            throw new InvalidCronExpressionException();
+            throw new InvalidCronExpressionException(e);
         }
         try {
             Date fireDate = cronTrigger.computeFirstFireTime(null);
@@ -212,6 +218,7 @@ public class TaskSchedulerBean implements TaskScheduler {
             LOG.debug("Setting timer at: " + fireDate);
             Timer timer = createTimer(fireDate, scheduling.getName());
             scheduling.setTimerHandle(timer.getHandle());
+            entityManager.flush(); // https://jira.jboss.org/jira/browse/JBPORTAL-983?focusedCommentId=12352050#action_12352050
             scheduling.setFireDate(fireDate);
         } catch (Exception e) {
             throw new EJBException(e);
