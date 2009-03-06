@@ -54,6 +54,24 @@
 									</td>
 								</tr>
 								<tr>
+
+									<th>
+										<h:outputText value="#{msgs.applicationOwner}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:selectOneMenu id="owner"
+												value="#{operApplication.applicationOwner}" required="true"
+												styleClass="label">
+												<f:selectItems value="#{availableApplicationOwners}" />
+											</h:selectOneMenu>
+										</s:decorate>
+										<h:message for="owner" styleClass="error" />
+									</td>
+
+
+								</tr>
+								<tr>
 									<th>
 										<h:outputText value="#{msgs.applicationUrl}" />
 									</th>

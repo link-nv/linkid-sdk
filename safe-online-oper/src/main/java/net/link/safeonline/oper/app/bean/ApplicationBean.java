@@ -194,6 +194,7 @@ public class ApplicationBean implements Application {
         description = null;
         applicationUrl = null;
         applicationLogo = null;
+        applicationOwner = null;
         skipMessageIntegrityCheck = false;
         ssoLogoutUrl = null;
     }
@@ -590,7 +591,7 @@ public class ApplicationBean implements Application {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save()
             throws CertificateEncodingException, ApplicationNotFoundException, IOException, ApplicationIdentityNotFoundException,
-            AttributeTypeNotFoundException, PermissionDeniedException {
+            AttributeTypeNotFoundException, PermissionDeniedException, ApplicationOwnerNotFoundException {
 
         long applicationId = selectedApplication.getId();
         LOG.debug("save application: " + applicationId);
@@ -654,6 +655,8 @@ public class ApplicationBean implements Application {
         if (null != friendlyName) {
             applicationService.updateApplicationFriendlyName(applicationId, friendlyName);
         }
+        applicationService.updateApplicationOwner(applicationId, applicationOwner);
+
         applicationService.updateApplicationIdentity(applicationId, tempNewIdentityAttributes);
         applicationService.updateApplicationUrl(applicationId, newApplicationUrl);
         if (newApplicationLogo != null) {
@@ -710,6 +713,8 @@ public class ApplicationBean implements Application {
         name = selectedApplication.getName();
 
         friendlyName = selectedApplication.getFriendlyName();
+
+        applicationOwner = selectedApplication.getApplicationOwner().getName();
 
         if (null != selectedApplication.getApplicationUrl()) {
             applicationUrl = selectedApplication.getApplicationUrl().toExternalForm();

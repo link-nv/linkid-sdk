@@ -296,4 +296,13 @@ public interface ApplicationService extends SafeOnlineService {
      */
     void updateApplicationFriendlyName(long applicationId, String applicationFriendlyName)
             throws ApplicationNotFoundException;
+
+    /**
+     * Updates the application owner for the given application.
+     * 
+     * @throws ApplicationNotFoundException
+     * @throws ApplicationOwnerNotFoundException
+     */
+    void updateApplicationOwner(long applicationId, String applicationOwner)
+            throws ApplicationNotFoundException, ApplicationOwnerNotFoundException;
 }
