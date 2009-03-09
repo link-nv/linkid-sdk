@@ -18,9 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dCinemaTicket")
 @NamedQueries( { @NamedQuery(name = CinemaTicketEntity.getById, query = "SELECT t FROM CinemaTicketEntity t WHERE t.id = :id"),
         @NamedQuery(name = CinemaTicketEntity.getByUser, query = "SELECT t FROM CinemaTicketEntity t WHERE t.owner = :user"),
         @NamedQuery(name = CinemaTicketEntity.getByNrn, query = "SELECT t FROM CinemaTicketEntity t WHERE t.owner.nrn = :nrn") })

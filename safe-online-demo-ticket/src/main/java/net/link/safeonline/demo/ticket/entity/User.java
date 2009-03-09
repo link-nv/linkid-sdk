@@ -26,7 +26,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "demo_ticket_user")
+@Table(name = "dTicketUser")
 @NamedQueries( { @NamedQuery(name = QUERY_WHERE_NRN, query = "SELECT user FROM User AS user " + "WHERE user.nrn = :nrn") })
 public class User implements Serializable {
 

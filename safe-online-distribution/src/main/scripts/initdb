@@ -163,7 +163,12 @@ initDb() {
 
 				SafeOnlineZDemo.ear|safe-online-demo-deploy*.ear)
 					emit "Rebuilding SafeOnline Demo"
-						LD_LIBRARY_PATH=$ORACLE_HOME/lib:$ORACLE_HOME/client/lib sqlplus "$user/$pass@$db" @<(unzip -qc "$ear" oracle-safe-online-demo-ddl.sql)
+                        unzip -qc "$ear" oracle-safe-online-demo-ddl.sql > INITSCRIPT.sql
+                        echo "QUIT" >> INITSCRIPT.sql
+
+                        connect=$(sed 's|.*@||; s|\(.*\):|\1/|' <<< "$jdbcUrl")
+						LD_LIBRARY_PATH=$ORACLE_HOME/lib:$ORACLE_HOME/client/lib sqlplus "$user/$pass@$connect" @INITSCRIPT
+                        rm INITSCRIPT.sql
 					(( $? )) && exit
 				;;
 

@@ -21,7 +21,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "demo_payment_user")
+@Table(name = "dPaymentUser")
 @NamedQueries( { @NamedQuery(name = PaymentUserEntity.getAll, query = "SELECT u FROM PaymentUserEntity u") })
 public class PaymentUserEntity implements Serializable {
 

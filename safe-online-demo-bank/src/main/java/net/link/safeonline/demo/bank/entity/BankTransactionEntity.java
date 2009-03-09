@@ -10,6 +10,7 @@ package net.link.safeonline.demo.bank.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,9 +18,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dBankTransaction")
 @NamedQueries( {
         @NamedQuery(name = BankTransactionEntity.getById, query = "SELECT t FROM BankTransactionEntity t WHERE t.id = :id"),
         @NamedQuery(name = BankTransactionEntity.getByCode, query = "SELECT t FROM BankTransactionEntity t WHERE t.source.code = :code OR t.target = :code ORDER BY t.date DESC") })
@@ -41,6 +44,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
 
     private String             target;
 
+    @Column(name = "processDate")
     private Date               date;
 
     private Double             amount;

@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,9 +19,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dCinemaOccupation")
 // @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "seat", "start" }))
 @NamedQueries( { @NamedQuery(name = CinemaSeatOccupationEntity.getFor, query = "SELECT o FROM CinemaSeatOccupationEntity o WHERE o.seat = :seat AND o.start = :start") })
 public class CinemaSeatOccupationEntity implements Serializable {
@@ -35,6 +38,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
 
     @ManyToOne
     private CinemaSeatEntity   seat;
+    @Column(name = "startTime")
     private Date               start;
     private boolean            reserved;
 
@@ -95,7 +99,6 @@ public class CinemaSeatOccupationEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format("{Occ: %s - %s}", seat, DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                start));
+        return String.format("{Occ: %s - %s}", seat, DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(start));
     }
 }

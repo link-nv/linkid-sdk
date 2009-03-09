@@ -15,9 +15,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dCinemaTheatre")
 @NamedQueries( { @NamedQuery(name = CinemaTheatreEntity.getAll, query = "SELECT t FROM CinemaTheatreEntity t"),
         @NamedQuery(name = CinemaTheatreEntity.getById, query = "SELECT t FROM CinemaTheatreEntity t WHERE t.id = :id"),
         @NamedQuery(name = CinemaTheatreEntity.getAllFor, query = "SELECT r.theatre FROM CinemaRoomEntity r WHERE :film MEMBER OF r.films") })

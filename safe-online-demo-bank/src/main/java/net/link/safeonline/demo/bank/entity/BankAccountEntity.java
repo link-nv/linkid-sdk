@@ -14,9 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dBankAccount")
 @NamedQueries( { @NamedQuery(name = BankAccountEntity.getByCode, query = "SELECT a FROM BankAccountEntity a WHERE a.code = :code"),
         @NamedQuery(name = BankAccountEntity.getByUser, query = "SELECT a FROM BankAccountEntity a WHERE a.user = :user") })
 public class BankAccountEntity implements Serializable {

@@ -19,9 +19,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dCinemaRoom")
 @NamedQueries( {
         @NamedQuery(name = CinemaRoomEntity.getById, query = "SELECT r FROM CinemaRoomEntity r WHERE r.id = :id"),
         @NamedQuery(name = CinemaRoomEntity.getFor, query = "SELECT r FROM CinemaRoomEntity r WHERE r.theatre = :theatre AND :film MEMBER OF r.films") })

@@ -13,9 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dCinemaUser")
 @NamedQueries( { @NamedQuery(name = CinemaUserEntity.getByOlasId, query = "SELECT u FROM CinemaUserEntity u WHERE u.olasId = :olasId") })
 public class CinemaUserEntity implements Serializable {
 
