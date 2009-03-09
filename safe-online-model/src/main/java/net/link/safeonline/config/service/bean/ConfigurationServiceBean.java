@@ -68,10 +68,11 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void saveConfiguration(List<ConfigGroupEntity> configGroupList) {
 
-        for (ConfigGroupEntity configGroup : configGroupList) {
-            LOG.debug("save group: " + configGroup.getName());
-            List<ConfigItemEntity> detachedItems = configGroup.getConfigItems();
+        for (ConfigGroupEntity detachedConfigGroup : configGroupList) {
+            LOG.debug("save group: " + detachedConfigGroup.getName());
+            List<ConfigItemEntity> detachedItems = detachedConfigGroup.getConfigItems();
             int i = 0;
+            ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(detachedConfigGroup.getName());
             for (ConfigItemEntity configItem : configItemDAO.getConfigItems(configGroup)) {
                 LOG.debug("save item: " + configItem.getName());
                 List<ConfigItemValueEntity> configItemValues = configItemValueDAO.listConfigItemValues(configItem);
