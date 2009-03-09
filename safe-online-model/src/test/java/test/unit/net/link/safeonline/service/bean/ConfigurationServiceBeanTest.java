@@ -8,6 +8,7 @@
 package test.unit.net.link.safeonline.service.bean;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -78,10 +79,12 @@ public class ConfigurationServiceBeanTest extends TestCase {
         // setup
         ConfigGroupEntity configGroup = configGroupDAO.addConfigGroup("group 1");
         ConfigItemEntity configItem = configItemDAO.addConfigItem("item 1", String.class.getName(), false, configGroup);
+        configGroup.setConfigItems(Collections.singletonList(configItem));
         configItemValueDAO.addConfigItemValue(configItem, "value 1");
 
         ConfigGroupEntity detachedGroup = new ConfigGroupEntity("group 1");
         ConfigItemEntity detachedItem = new ConfigItemEntity("item 1", String.class.getName(), false, detachedGroup);
+        detachedGroup.setConfigItems(Collections.singletonList(detachedItem));
         ConfigItemValueEntity detachedItemValue = new ConfigItemValueEntity(detachedItem, "value 2");
         detachedItem.getValues().add(detachedItemValue);
         List<ConfigGroupEntity> groupList = new ArrayList<ConfigGroupEntity>();
@@ -105,6 +108,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
         // setup
         ConfigGroupEntity configGroup = configGroupDAO.addConfigGroup("group 1");
         ConfigItemEntity configItem = configItemDAO.addConfigItem("item 1", String.class.getName(), true, configGroup);
+        configGroup.setConfigItems(Collections.singletonList(configItem));
         configItem.setValueIndex(1);
         configItemValueDAO.addConfigItemValue(configItem, "value 1");
         configItemValueDAO.addConfigItemValue(configItem, "value 2");
@@ -112,6 +116,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
 
         ConfigGroupEntity detachedGroup = new ConfigGroupEntity("group 1");
         ConfigItemEntity detachedItem = new ConfigItemEntity("item 1", String.class.getName(), true, detachedGroup);
+        detachedGroup.setConfigItems(Collections.singletonList(detachedItem));
         ConfigItemValueEntity detachedItemValue1 = new ConfigItemValueEntity(detachedItem, "value 1");
         ConfigItemValueEntity detachedItemValue2 = new ConfigItemValueEntity(detachedItem, "value 2");
         ConfigItemValueEntity detachedItemValue3 = new ConfigItemValueEntity(detachedItem, "value 3");

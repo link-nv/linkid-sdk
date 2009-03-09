@@ -275,5 +275,25 @@
 			allowed to change to name of any OLAS specific application. (
 			olas-user, olas-oper, olas-owner, olas-helpdesk ).
 		</para>
+		<subtitle>OLAS application ppols</subtitle>
+		<para>OLAS applications can be grouped together to form
+			application pools. Applications pools provide the possibility to use
+			single-sign on between the applications in the pool. Such an
+			application has one configuration parameter, being single-sign on
+			timeout. This specifies the lifetime of a single-sign on session. The
+			value of the parameter has to be positive and not 0. If 0 or
+			negative, this will result in an immediate invalid single sign on
+			session, causing authentications for other application in the pool
+			not being able to use single-sign on.</para>
+	</chapter>
+	<chapter id="language">
+		<title>OLAS language</title>
+		<para>
+			The OLAS authentication webapp and other OLAS core applications offer
+			a language selection. This language selection feature will not
+			properly function if the system property
+			<code>user.language</code>
+			is explicitly set in the JVM.
+		</para>
 	</chapter>
 </book>

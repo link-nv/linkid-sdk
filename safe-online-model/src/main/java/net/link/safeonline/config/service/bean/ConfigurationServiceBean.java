@@ -68,14 +68,17 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void saveConfiguration(List<ConfigGroupEntity> configGroupList) {
 
-        for (ConfigGroupEntity configGroup : configGroupList) {
-            LOG.debug("save group: " + configGroup.getName());
+        for (ConfigGroupEntity detachedConfigGroup : configGroupList) {
+            LOG.debug("save group: " + detachedConfigGroup.getName());
+            List<ConfigItemEntity> detachedItems = detachedConfigGroup.getConfigItems();
+            int i = 0;
+            ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(detachedConfigGroup.getName());
             for (ConfigItemEntity configItem : configItemDAO.getConfigItems(configGroup)) {
                 LOG.debug("save item: " + configItem.getName());
                 List<ConfigItemValueEntity> configItemValues = configItemValueDAO.listConfigItemValues(configItem);
                 if (configItem.isMultipleChoice()) {
                     LOG.debug("save multiple choice");
-                    String selectedValue = configItem.getValue();
+                    String selectedValue = detachedItems.get(i).getValue();
                     int idx = 0;
                     for (ConfigItemValueEntity configItemValue : configItemValues) {
                         if (configItemValue.getValue().equals(selectedValue)) {
@@ -91,11 +94,12 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
                     LOG.debug("save single");
                     int idx = 0;
                     for (ConfigItemValueEntity configItemValue : configItemValues) {
-                        LOG.debug("save value: " + configItem.getValues().get(idx).getValue());
-                        configItemValue.setValue(configItem.getValues().get(idx).getValue());
+                        LOG.debug("save value: " + detachedItems.get(i).getValues().get(idx).getValue());
+                        configItemValue.setValue(detachedItems.get(i).getValues().get(idx).getValue());
                         idx++;
                     }
                 }
+                i++;
 
                 /*
                  * int index = configItem.getValueIndex(); if (configItem.getValues().size() == configItemValues.size()) { // equal size,

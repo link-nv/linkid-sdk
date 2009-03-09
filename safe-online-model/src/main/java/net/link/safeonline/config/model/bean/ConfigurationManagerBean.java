@@ -130,8 +130,33 @@ public class ConfigurationManagerBean implements ConfigurationManager {
         if (null == configItem)
             return null;
 
-        return configItem.getValue();
+        return getValue(configItem);
 
+    }
+
+    private Object getValue(ConfigItemEntity configItem) {
+
+        try {
+            if (configItem.getValueType().equals(Integer.class.getName()))
+                return Integer.parseInt(configItem.getValue());
+            else if (configItem.getValueType().equals(Long.class.getName()))
+                return Long.parseLong(configItem.getValue());
+            else if (configItem.getValueType().equals(Double.class.getName()))
+                return Double.parseDouble(configItem.getValue());
+            else if (configItem.getValueType().equals(Float.class.getName()))
+                return Float.parseFloat(configItem.getValue());
+            else if (configItem.getValueType().equals(String.class.getName()))
+                return configItem.getValue();
+            else if (configItem.getValueType().equals(Boolean.class.getName()))
+                return Boolean.parseBoolean(configItem.getValue());
+            else {
+                LOG.debug("Value type " + configItem.getValueType() + " not supported yet");
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            LOG.error("NFE: " + e.getMessage(), e);
+            return null;
+        }
     }
 
     public void removeConfigurationValue(String group, String name, Object value) {

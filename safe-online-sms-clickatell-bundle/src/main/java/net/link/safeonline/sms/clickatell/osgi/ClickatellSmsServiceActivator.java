@@ -29,7 +29,7 @@ public class ClickatellSmsServiceActivator implements BundleActivator {
 	public static final String CONFIG_URL = "URL";
 	public static final String CONFIG_DEFAULT_USERNAME = "test";
 	public static final String CONFIG_DEFAULT_PASSWORD = "test";
-	public static final String CONFIG_DEFAULT_API_ID = "1234";
+	public static final Integer CONFIG_DEFAULT_API_ID = 1234;
 	public static final String CONFIG_DEFAULT_URL = "http://api.clickatell.com/soap/webservice.php";
 
 	/*

@@ -28,7 +28,8 @@
 			provides an OSGi attribute plugin service API which can be
 			implemented to create specific OSGi attribute plugin bundles. In the
 			same way OLAS provides a service API to OSGi bundles so they can
-			retrieve attributes from OLAS. As OSGi R4 implentation OLAS is using
+			retrieve attributes from OLAS. As OSGi R4 implementation OLAS is
+			using
 			an embedded instance of Apache Felix.</para>
 		<para>During the creation of an attribute type in the operator
 			webapp of the OLAS product, the operator can configure an attribute
@@ -39,6 +40,17 @@
 	</chapter>
 	<chapter id="services">
 		<title>Service API</title>
+		<para>
+			OSGi attribute plugins are standalone OSGi bundles. For more
+			information on how OSGi bundles work and should be implemented,
+			here are some interesting links:
+			<orderedlist>
+				<listitem>http://www.osgi.org/About/Technology</listitem>
+				<listitem>http://www.knopflerfish.org/osgi_service_tutorial.html</listitem>
+				<listitem>http://felix.apache.org/site/apache-felix-osgi-tutorial.html</listitem>
+				<listitem>http://www.theserverside.com/tt/articles/article.tss?l=OSGiforBeginners</listitem>
+			</orderedlist>
+		</para>
 		<section>
 			<title>Plugin Attribute Service API</title>
 			<para>
@@ -113,8 +125,10 @@
 			<title>OLAS Log Service API</title>
 			<para>
 				To allow attribute plugins to use the OLAS logging facilities
-				OLAS offers a log service. This is an implementation of the 
-				<code>LogService</code> as defined in the OSGi Compendium. 
+				OLAS
+				offers a log service. This is an implementation of the
+				<code>LogService</code>
+				as defined in the OSGi Compendium.
 				<programlisting>
 				ServiceReference serviceReference =
 					bundleContext.getServiceReference(
