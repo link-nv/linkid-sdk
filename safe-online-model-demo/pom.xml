@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.3</version>
+		<version>1.3-p1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Model Demo</name>
@@ -21,7 +21,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-model-demo</artifactId>
-	<version>1.3</version>
+	<version>1.3-p1-SNAPSHOT</version>
 	<packaging>ejb</packaging>
 
 	<build>
@@ -54,92 +54,92 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-demo-client</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-client</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid-client</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-digipass-client</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-encap-client</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-password-client</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-node-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-bank-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-prescription-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-keystore</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-jpa-util</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 		</dependency>
 
 
@@ -152,35 +152,35 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 			<type>ejb</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 			<type>ejb</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-digipass</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 			<type>ejb</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-encap</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 			<type>ejb</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-password</artifactId>
-			<version>1.3</version>
+			<version>1.3-p1-SNAPSHOT</version>
 			<type>ejb</type>
 			<scope>test</scope>
 		</dependency>
