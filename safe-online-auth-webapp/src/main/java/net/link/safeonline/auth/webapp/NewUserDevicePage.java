@@ -22,8 +22,11 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
+import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.wicket.IRequestTarget;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -131,12 +134,12 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    String deviceName = device.getObject().getDevice().getName();
+                    final String deviceName = device.getObject().getDevice().getName();
                     LOG.debug("deviceNext: " + deviceName);
 
                     HelpdeskLogger.add("account creation: register device: " + deviceName, LogLevelType.INFO);
 
-                    String registrationURL;
+                    final String registrationURL;
                     try {
                         registrationURL = devicePolicyService.getRegistrationURL(deviceName);
                     } catch (DeviceNotFoundException e) {
@@ -144,11 +147,21 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
                         return;
                     }
 
-                    AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()), WicketUtil.toServletResponse(getResponse()),
-                            getLocale(), registrationURL, deviceName, LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
-                    setRedirect(false);
-                    return;
+                    throw new RedirectResponseException(new IRequestTarget() {
 
+                        public void detach(RequestCycle requestCycle) {
+
+                        }
+
+                        public void respond(RequestCycle requestCycle) {
+
+                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()),
+                                    WicketUtil.toServletResponse(getResponse()), getLocale(), registrationURL, deviceName,
+                                    LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
+
+                        }
+
+                    });
                 }
             });
 
