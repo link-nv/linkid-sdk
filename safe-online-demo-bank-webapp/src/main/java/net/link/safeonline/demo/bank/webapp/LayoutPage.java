@@ -1,6 +1,7 @@
 package net.link.safeonline.demo.bank.webapp;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
@@ -51,18 +52,20 @@ public abstract class LayoutPage extends OlasApplicationPage {
 
         // Support linking bank user to olas user.
         if (BankSession.isLinking() && WicketUtil.isOlasAuthenticated(getRequest())) {
-            BankUserEntity user = BankSession.get().getUser();
-            String olasId = WicketUtil.findOlasId(getRequest());
-
             try {
+                BankUserEntity user = BankSession.get().getUser();
+                String olasId = WicketUtil.findOlasId(getRequest());
+
                 BankSession.get().setUser(userService.linkOLASUser(user, olasId, WicketUtil.toServletRequest(getRequest())));
             }
 
-            catch (IllegalStateException e) {
-                error(e.getMessage());
+            catch (EJBException e) {
+                error(e.getCause().getMessage());
             }
 
-            BankSession.get().setLinkingUser(null);
+            finally {
+                BankSession.get().setLinkingUser(null);
+            }
         }
     }
 
