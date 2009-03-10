@@ -107,11 +107,13 @@ public class AccountPage extends LayoutPage {
                         protected void populateItem(ListItem<BankTransactionEntity> transactionItem) {
 
                             final BankTransactionEntity transaction = transactionItem.getModelObject();
+                            int plusOrMinus = transaction.getSource().equals(account)? -1: 1;
 
                             /* Transaction Details. */
                             transactionItem.add(new Label("target", transaction.getTarget()));
                             transactionItem.add(new Label("date", WicketUtil.format(getLocale(), transaction.getDate())));
-                            transactionItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, transaction.getAmount())));
+                            transactionItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, transaction.getAmount())
+                                    * plusOrMinus));
                         }
                     });
                 }
