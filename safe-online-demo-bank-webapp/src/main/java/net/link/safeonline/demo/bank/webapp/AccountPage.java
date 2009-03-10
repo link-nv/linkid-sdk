@@ -112,8 +112,8 @@ public class AccountPage extends LayoutPage {
                             /* Transaction Details. */
                             transactionItem.add(new Label("target", transaction.getTarget()));
                             transactionItem.add(new Label("date", WicketUtil.format(getLocale(), transaction.getDate())));
-                            transactionItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, transaction.getAmount())
-                                    * plusOrMinus));
+                            transactionItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, transaction.getAmount()
+                                    * plusOrMinus)));
                         }
                     });
                 }

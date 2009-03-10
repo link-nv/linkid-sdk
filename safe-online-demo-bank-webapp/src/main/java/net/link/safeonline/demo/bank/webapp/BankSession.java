@@ -119,12 +119,4 @@ public class BankSession extends OLASSession {
 
         return (BankSession) Session.get();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void cleanupFeedbackMessages() {
-
-    }
 }

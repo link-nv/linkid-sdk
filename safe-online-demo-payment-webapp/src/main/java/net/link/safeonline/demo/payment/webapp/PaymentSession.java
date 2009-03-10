@@ -111,12 +111,4 @@ public class PaymentSession extends OLASSession {
 
         return (PaymentSession) Session.get();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void cleanupFeedbackMessages() {
-
-    }
 }
