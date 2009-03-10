@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
@@ -29,6 +30,7 @@ import javax.persistence.Id;
  * @author mbillemo
  */
 @Entity
+@Table(name = "dCinemaShowTime")
 public class CinemaShowTimeEntity implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
@@ -70,8 +72,7 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
     public String toString() {
 
         return String.format("[M: %s, T: %s, W: %s, T: %s, F: %s, S: %s, S: %s]", timeToStr(monStart), timeToStr(tueStart),
-                timeToStr(wedStart), timeToStr(thuStart), timeToStr(friStart), timeToStr(satStart),
-                timeToStr(sunStart));
+                timeToStr(wedStart), timeToStr(thuStart), timeToStr(friStart), timeToStr(satStart), timeToStr(sunStart));
     }
 
     private String timeToStr(Integer time) {
@@ -126,7 +127,6 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
     @Override
     public CinemaShowTimeEntity clone() {
 
-        return new CinemaShowTimeEntity(monStart, tueStart, wedStart, thuStart, friStart, satStart,
-                sunStart);
+        return new CinemaShowTimeEntity(monStart, tueStart, wedStart, thuStart, friStart, satStart, sunStart);
     }
 }

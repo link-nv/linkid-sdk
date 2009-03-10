@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "demo_mandate_user")
+@Table(name = "dMandateUser")
 public class UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

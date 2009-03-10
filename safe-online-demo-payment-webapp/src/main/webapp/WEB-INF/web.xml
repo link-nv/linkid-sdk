@@ -118,7 +118,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
@@ -133,7 +133,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 		<init-param>
 			<description>Used to wrap the servlet request's request URL for

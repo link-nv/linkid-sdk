@@ -14,9 +14,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dBankUser")
 @NamedQueries( { @NamedQuery(name = BankUserEntity.getAll, query = "SELECT u FROM BankUserEntity u"),
         @NamedQuery(name = BankUserEntity.getByBankId, query = "SELECT u FROM BankUserEntity u WHERE u.bankId = :bankId"),
         @NamedQuery(name = BankUserEntity.getByOlasId, query = "SELECT u FROM BankUserEntity u WHERE u.olasId = :olasId") })

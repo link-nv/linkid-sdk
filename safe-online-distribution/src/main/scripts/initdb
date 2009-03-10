@@ -135,16 +135,27 @@ initDb() {
 			case $ear in
 				SafeOnline.ear|safe-online-deploy*.ear)
 					emit "Rebuilding SafeOnline"
-						LD_LIBRARY_PATH=$ORACLE_HOME/lib:$ORACLE_HOME/client/lib sqlplus "$user/$pass" @<(
-							cat <<-END
-								SET ESCAPE \
-								SPOOL DELETEME.sql
-								select 'drop table ', table_name, 'cascade constraints \;' from user_tables;
-								drop sequence hibernate_sequence;
-								SPOOL OFF
-								@DELETEME
-							END
-						)
+						cat >DROPSCRIPT.sql <<-END
+							SET NEWPAGE 0
+							SET SPACE 0
+							SET LINESIZE 80
+							SET PAGESIZE 0
+							SET ECHO OFF
+							SET FEEDBACK OFF
+							SET HEADING OFF
+							SET MARKUP HTML OFF
+							SET ESCAPE \\
+							SPOOL DELETEME.sql
+							select 'drop table ', table_name, 'cascade constraints \;' from user_tables;
+							drop sequence hibernate_sequence;
+							SPOOL OFF
+							@DELETEME
+							QUIT
+						END
+
+                        connect=$(sed 's|.*@||; s|\(.*\):|\1/|' <<< "$jdbcUrl")
+						LD_LIBRARY_PATH=$ORACLE_HOME/lib:$ORACLE_HOME/client/lib sqlplus "$user/$pass@$connect" @DROPSCRIPT
+                        rm DROPSCRIPT.sql DELETEME.sql
 
                         driver=ojdbc5-11.1.0.6.0.jar
 						initDbWithCLI "$ear"
@@ -152,7 +163,12 @@ initDb() {
 
 				SafeOnlineZDemo.ear|safe-online-demo-deploy*.ear)
 					emit "Rebuilding SafeOnline Demo"
-						LD_LIBRARY_PATH=$ORACLE_HOME/lib:$ORACLE_HOME/client/lib sqlplus "$user/$pass@$db" @<(unzip -qc "$ear" oracle-safe-online-demo-ddl.sql)
+                        unzip -qc "$ear" oracle-safe-online-demo-ddl.sql > INITSCRIPT.sql
+                        echo "QUIT" >> INITSCRIPT.sql
+
+                        connect=$(sed 's|.*@||; s|\(.*\):|\1/|' <<< "$jdbcUrl")
+						LD_LIBRARY_PATH=$ORACLE_HOME/lib:$ORACLE_HOME/client/lib sqlplus "$user/$pass@$connect" @INITSCRIPT
+                        rm INITSCRIPT.sql
 					(( $? )) && exit
 				;;
 

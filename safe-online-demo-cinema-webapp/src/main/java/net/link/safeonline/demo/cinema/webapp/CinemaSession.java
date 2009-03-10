@@ -377,12 +377,4 @@ public class CinemaSession extends OLASSession {
 
         return get().getTicket() != null;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void cleanupFeedbackMessages() {
-
-    }
 }

@@ -20,9 +20,11 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "dCinemaFilm")
 @NamedQueries( { @NamedQuery(name = CinemaFilmEntity.getAll, query = "SELECT f FROM CinemaFilmEntity f"),
         @NamedQuery(name = CinemaFilmEntity.getById, query = "SELECT f FROM CinemaFilmEntity f WHERE f.id = :id"),
         @NamedQuery(name = CinemaFilmEntity.getAllFrom, query = "SELECT r.films FROM CinemaRoomEntity r WHERE r.theatre = :theatre") })

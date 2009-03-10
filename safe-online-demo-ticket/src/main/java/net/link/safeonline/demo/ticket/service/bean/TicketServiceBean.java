@@ -68,14 +68,14 @@ public class TicketServiceBean implements TicketService {
 
         for (Ticket ticket : tickets) {
             if (ticket.isBiDirectional()) {
-                if (start != ticket.getStart() && destination != ticket.getStart()) {
+                if (start != ticket.getSource() && destination != ticket.getSource()) {
                     continue;
                 }
                 if (destination != ticket.getDestination() && start != ticket.getDestination()) {
                     continue;
                 }
             } else {
-                if (start != ticket.getStart()) {
+                if (start != ticket.getSource()) {
                     continue;
                 }
                 if (destination != ticket.getDestination()) {

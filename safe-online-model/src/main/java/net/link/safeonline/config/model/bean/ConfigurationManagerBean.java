@@ -12,9 +12,18 @@ import static net.link.safeonline.common.Configurable.defaultGroup;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.dao.ConfigGroupDAO;
@@ -31,10 +40,14 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
+@TransactionManagement(TransactionManagementType.BEAN)
 @LocalBinding(jndiBinding = ConfigurationManager.JNDI_BINDING)
 public class ConfigurationManagerBean implements ConfigurationManager {
 
     private static final Log   LOG = LogFactory.getLog(ConfigurationManagerBean.class);
+
+    @Resource
+    private UserTransaction    ut;
 
     @EJB(mappedName = ConfigGroupDAO.JNDI_BINDING)
     private ConfigGroupDAO     configGroupDAO;
@@ -52,8 +65,39 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
         ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(group);
         if (configGroup == null) {
+            try {
+                ut.begin();
+            } catch (NotSupportedException e) {
+                LOG.error("Already in a transaction and nested transactions not supported.", e);
+            } catch (SystemException e) {
+                LOG.error("Unexpected transaction creation error.", e);
+            }
+
             LOG.debug("Adding configuration group: " + group);
             configGroup = configGroupDAO.addConfigGroup(group);
+
+            try {
+                ut.commit();
+            }
+
+            catch (RollbackException e) {
+                LOG.debug("Couldn't add configuration group; retrying read in case another thread added it.");
+                configGroup = configGroupDAO.findConfigGroup(group);
+                if (configGroup == null)
+                    throw new EJBException("Couldn't add configuration group but re-read didn't find an existing group.", e);
+            }
+
+            catch (HeuristicMixedException e) {
+                LOG.error("A heuristic decision was made and some relevant updates have been committed, others rolled back.", e);
+            } catch (HeuristicRollbackException e) {
+                LOG.error("A heuristic decision was made and all relevant updates have been rolled back.", e);
+            } catch (SecurityException e) {
+                LOG.error("This thread cannot commit the active transaction.", e);
+            } catch (IllegalStateException e) {
+                LOG.error("Tried to commit a transaction but none was active.", e);
+            } catch (SystemException e) {
+                LOG.error("Unexpected transaction commit error.", e);
+            }
         }
 
         ConfigItemEntity configItem = configItemDAO.findConfigItem(configGroup.getName(), name);
@@ -154,8 +198,39 @@ public class ConfigurationManagerBean implements ConfigurationManager {
                 }
                 ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(group);
                 if (configGroup == null) {
+                    try {
+                        ut.begin();
+                    } catch (NotSupportedException e) {
+                        LOG.error("Already in a transaction and nested transactions not supported.", e);
+                    } catch (SystemException e) {
+                        LOG.error("Unexpected transaction creation error.", e);
+                    }
+
                     LOG.debug("Adding configuration group: " + group);
                     configGroup = configGroupDAO.addConfigGroup(group);
+
+                    try {
+                        ut.commit();
+                    }
+
+                    catch (RollbackException e) {
+                        LOG.debug("Couldn't add configuration group; retrying read in case another thread added it.");
+                        configGroup = configGroupDAO.findConfigGroup(group);
+                        if (configGroup == null)
+                            throw new EJBException("Couldn't add configuration group but re-read didn't find an existing group.", e);
+                    }
+
+                    catch (HeuristicMixedException e) {
+                        LOG.error("A heuristic decision was made and some relevant updates have been committed, others rolled back.", e);
+                    } catch (HeuristicRollbackException e) {
+                        LOG.error("A heuristic decision was made and all relevant updates have been rolled back.", e);
+                    } catch (SecurityException e) {
+                        LOG.error("This thread cannot commit the active transaction.", e);
+                    } catch (IllegalStateException e) {
+                        LOG.error("Tried to commit a transaction but none was active.", e);
+                    } catch (SystemException e) {
+                        LOG.error("Unexpected transaction commit error.", e);
+                    }
                 }
 
                 String name = configurable.name();

@@ -16,12 +16,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 @Entity
-@NamedQueries( {
-
-@NamedQuery(name = CinemaSeatEntity.getById, query = "SELECT s FROM CinemaSeatEntity s WHERE s.id = :id"),
+@Table(name = "dCinemaSeat")
+@NamedQueries( { @NamedQuery(name = CinemaSeatEntity.getById, query = "SELECT s FROM CinemaSeatEntity s WHERE s.id = :id"),
         @NamedQuery(name = CinemaSeatEntity.getFor, query = "SELECT s FROM CinemaSeatEntity s WHERE s.room = :room") })
 public class CinemaSeatEntity implements Serializable {
 

@@ -26,7 +26,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "demo_ticket")
+@Table(name = "dTicketTicket")
 @NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT ticket FROM Ticket AS ticket " + "WHERE ticket.owner = :owner"))
 public class Ticket implements Serializable {
 
@@ -62,7 +62,8 @@ public class Ticket implements Serializable {
 
     private User    owner;
 
-    private Site    start;
+    @Enumerated(EnumType.STRING)
+    private Site    source;
 
     private Site    destination;
 
@@ -78,10 +79,10 @@ public class Ticket implements Serializable {
         // empty
     }
 
-    public Ticket(User owner, Site start, Site destination, Date validFrom, Date validTo, boolean biDirectional) {
+    public Ticket(User owner, Site source, Site destination, Date validFrom, Date validTo, boolean biDirectional) {
 
         this.owner = owner;
-        this.start = start;
+        this.source = source;
         this.destination = destination;
         this.validFrom = validFrom;
         this.validTo = validTo;
@@ -110,15 +111,14 @@ public class Ticket implements Serializable {
         this.owner = owner;
     }
 
-    @Enumerated(EnumType.STRING)
-    public Site getStart() {
+    public Site getSource() {
 
-        return start;
+        return source;
     }
 
-    public void setStart(Site start) {
+    public void setSource(Site source) {
 
-        this.start = start;
+        this.source = source;
     }
 
     public Date getValidFrom() {

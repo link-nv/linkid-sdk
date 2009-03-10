@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 
 @Entity
-@Table(name = "prescription_medicines")
+@Table(name = "dPrescriptionMedicines")
 public class PrescriptionMedicineEntity implements Serializable {
 
     private static final long      serialVersionUID = 1L;

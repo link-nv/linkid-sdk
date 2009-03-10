@@ -25,7 +25,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "demo_payment")
+@Table(name = "dPaymentPayment")
 @NamedQueries(@NamedQuery(name = getByOwner, query = "SELECT payment FROM PaymentEntity AS payment " + "WHERE payment.owner = :owner "
         + "ORDER BY payment.paymentDate DESC"))
 public class PaymentEntity implements Serializable {
