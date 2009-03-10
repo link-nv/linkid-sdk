@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 
 	<name>Siemens SMS Web Service Runtime</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online.siemens</groupId>
 	<artifactId>siemens-sms-ws-runtime</artifactId>
-	<version>1.3</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<build>
@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online.siemens</groupId>
 			<artifactId>siemens-sms-ws-impl</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 
