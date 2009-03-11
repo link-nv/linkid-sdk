@@ -32,6 +32,8 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
@@ -44,26 +46,26 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long           serialVersionUID       = 1L;
+    static final Log           LOG                    = LogFactory.getLog(AuthenticationPage.class);
 
-    public static final String          AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String          MOBILE_FIELD_ID        = "mobile";
-    public static final String          OTP_FIELD_ID           = "otp";
-    public static final String          CHALLENGE_BUTTON_ID    = "challenge";
-    public static final String          LOGIN_BUTTON_ID        = "login";
-    public static final String          CANCEL_BUTTON_ID       = "cancel";
+    private static final long  serialVersionUID       = 1L;
+
+    public static final String AUTHENTICATION_FORM_ID = "authentication_form";
+    public static final String MOBILE_FIELD_ID        = "mobile";
+    public static final String OTP_FIELD_ID           = "otp";
+    public static final String CHALLENGE_BUTTON_ID    = "challenge";
+    public static final String LOGIN_BUTTON_ID        = "login";
+    public static final String CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService      samlAuthorityService;
+    SamlAuthorityService       samlAuthorityService;
 
     @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
-    transient NodeAuthenticationService nodeAuthenticationService;
+    NodeAuthenticationService  nodeAuthenticationService;
 
-    Goal                                goal;
-    ProtocolContext                     protocolContext;
-    AuthenticationContext               authenticationContext;
+    Goal                       goal;
 
-    private String                      pageTitle;
+    private String             pageTitle;
 
 
     public enum Goal {
@@ -90,8 +92,8 @@ public class AuthenticationPage extends TemplatePage {
     public AuthenticationPage(final Goal goal, String mobile) {
 
         this.goal = goal;
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
+                getRequest()).getSession());
 
         // Header & Sidebar.
         getHeader();
@@ -129,7 +131,8 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
+                AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession()).setUsedDevice(
+                        EncapConstants.ENCAP_DEVICE_ID);
                 exit(false);
             }
         });
@@ -227,6 +230,13 @@ public class AuthenticationPage extends TemplatePage {
 
                 @Override
                 public void onSubmit() {
+
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    AuthenticationContext authenticationContext = AuthenticationContext
+                                                                                       .getAuthenticationContext(WicketUtil
+                                                                                                                           .toServletRequest(
+                                                                                                                                   getRequest())
+                                                                                                                           .getSession());
 
                     LOG.debug("mobile: " + mobile);
                     HelpdeskLogger.add("login: begin for: " + mobile.getObject(), LogLevelType.INFO);
@@ -358,6 +368,10 @@ public class AuthenticationPage extends TemplatePage {
 
 
     void exit(boolean success) {
+
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
+                getRequest()).getSession());
 
         switch (goal) {
             case AUTHENTICATE:

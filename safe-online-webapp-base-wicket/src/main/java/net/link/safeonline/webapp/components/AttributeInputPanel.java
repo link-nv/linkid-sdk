@@ -62,6 +62,7 @@ public class AttributeInputPanel extends Panel {
     AttributeDO                attribute;
 
 
+    @SuppressWarnings("unchecked")
     public AttributeInputPanel(String id, final AttributeDO attribute, boolean required) {
 
         super(id);

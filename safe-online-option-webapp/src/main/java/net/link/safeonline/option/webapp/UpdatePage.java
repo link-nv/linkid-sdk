@@ -20,6 +20,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -33,27 +35,25 @@ import org.apache.wicket.model.Model;
 
 public class UpdatePage extends TemplatePage implements IHeaderContributor {
 
-    private static final long      serialVersionUID         = 1L;
+    static final Log           LOG                      = LogFactory.getLog(UpdatePage.class);
 
-    public static final String     UPDATE_FORM_ID           = "update_form";
-    public static final String     OLD_PIN_FIELD_ID         = "oldPin";
-    public static final String     NEW_PIN_FIELD_ID         = "newPin";
-    public static final String     NEW_PIN_CONFIRM_FIELD_ID = "newPinConfirm";
-    public static final String     UPDATE_BUTTON_ID         = "update";
-    public static final String     CANCEL_BUTTON_ID         = "cancel";
+    private static final long  serialVersionUID         = 1L;
+
+    public static final String UPDATE_FORM_ID           = "update_form";
+    public static final String OLD_PIN_FIELD_ID         = "oldPin";
+    public static final String NEW_PIN_FIELD_ID         = "newPin";
+    public static final String NEW_PIN_CONFIRM_FIELD_ID = "newPinConfirm";
+    public static final String UPDATE_BUTTON_ID         = "update";
+    public static final String CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = OptionDeviceService.JNDI_BINDING)
-    transient OptionDeviceService  optionDeviceService;
+    OptionDeviceService        optionDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
-
-    ProtocolContext                protocolContext;
+    SamlAuthorityService       samlAuthorityService;
 
 
     public UpdatePage() {
-
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpOptionUpdate"));
@@ -168,6 +168,7 @@ public class UpdatePage extends TemplatePage implements IHeaderContributor {
 
     public void exit(boolean success) {
 
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         protocolContext.setSuccess(success);
 

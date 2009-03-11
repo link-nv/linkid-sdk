@@ -28,6 +28,8 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -43,28 +45,26 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage implements IHeaderContributor {
 
-    private static final long           serialVersionUID       = 1L;
+    static final Log           LOG                    = LogFactory.getLog(AuthenticationPage.class);
 
-    public static final String          AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String          PIN_FIELD_ID           = "pin";
-    public static final String          LOGIN_BUTTON_ID        = "login";
-    public static final String          CANCEL_BUTTON_ID       = "cancel";
+    private static final long  serialVersionUID       = 1L;
+
+    public static final String AUTHENTICATION_FORM_ID = "authentication_form";
+    public static final String PIN_FIELD_ID           = "pin";
+    public static final String LOGIN_BUTTON_ID        = "login";
+    public static final String CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = OptionDeviceService.JNDI_BINDING)
-    transient OptionDeviceService       optionDeviceService;
+    OptionDeviceService        optionDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService      samlAuthorityService;
+    SamlAuthorityService       samlAuthorityService;
 
     @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
-    transient NodeAuthenticationService nodeAuthenticationService;
-
-    AuthenticationContext               authenticationContext;
+    NodeAuthenticationService  nodeAuthenticationService;
 
 
     public AuthenticationPage() {
-
-        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         // Header & Sidebar.
         getHeader();
@@ -76,7 +76,8 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
             @Override
             public void onClick() {
 
-                authenticationContext.setUsedDevice(OptionConstants.OPTION_DEVICE_ID);
+                AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession()).setUsedDevice(
+                        OptionConstants.OPTION_DEVICE_ID);
                 exit();
             }
         });
@@ -86,7 +87,9 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
 
         getContent().add(progress);
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
-        getContent().add(new Label("title", localize("%l %s", "authenticatingFor", authenticationContext.getApplication())));
+        getContent().add(
+                new Label("title", localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
+                        WicketUtil.toServletRequest(getRequest()).getSession()).getApplication())));
     }
 
     /**
@@ -169,6 +172,11 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
 
                 // Authentication passed, log the user in.
                 try {
+                    AuthenticationContext authenticationContext = AuthenticationContext
+                                                                                       .getAuthenticationContext(WicketUtil
+                                                                                                                           .toServletRequest(
+                                                                                                                                   getRequest())
+                                                                                                                           .getSession());
                     authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
                     authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
                     authenticationContext.setUsedDevice(OptionConstants.OPTION_DEVICE_ID);
@@ -209,7 +217,8 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
     void exit() {
 
         LOG.debug("option: exit");
-        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession()).setValidity(
+                samlAuthorityService.getAuthnAssertionValidity());
 
         throw new RedirectToUrlException("authenticationexit");
     }

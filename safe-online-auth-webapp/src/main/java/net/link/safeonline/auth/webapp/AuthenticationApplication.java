@@ -39,6 +39,8 @@ public class AuthenticationApplication extends OlasApplication {
         mountBookmarkablePage(IdentityUnavailablePage.PATH, IdentityUnavailablePage.class);
         mountBookmarkablePage(MissingAttributesPage.PATH, MissingAttributesPage.class);
 
+        getApplicationSettings().setPageExpiredErrorPage(TimeoutPage.class);
+
     }
 
     /**

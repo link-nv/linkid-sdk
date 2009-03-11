@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<pages>
-	<page view-id="/entry.xhtml" action="#{paymentServiceEntry.init}" />
-</pages>

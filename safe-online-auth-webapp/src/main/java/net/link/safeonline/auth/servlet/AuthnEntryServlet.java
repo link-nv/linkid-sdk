@@ -153,6 +153,13 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         ProtocolContext.setProtocolContext(protocolContext, session);
 
         /*
+         * Set application cookie in case of a timeout to know where to redirect to
+         */
+        Cookie applicationCookie = new Cookie(SafeOnlineCookies.APPLICATION_COOKIE, new Long(protocolContext.getApplicationId()).toString());
+        applicationCookie.setPath(cookiePath);
+        response.addCookie(applicationCookie);
+
+        /*
          * create new helpdesk volatile context
          */
         HelpdeskLogger.clear(session);

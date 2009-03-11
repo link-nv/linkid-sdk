@@ -25,14 +25,14 @@ import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -44,38 +44,33 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long             serialVersionUID       = 1L;
+    static final Log           LOG                    = LogFactory.getLog(AuthenticationPage.class);
 
-    public static final String            AUTHENTICATION_FORM_ID = "authentication_form";
+    private static final long  serialVersionUID       = 1L;
 
-    public static final String            LOGIN_NAME_FIELD_ID    = "loginName";
+    public static final String AUTHENTICATION_FORM_ID = "authentication_form";
 
-    public static final String            TOKEN_FIELD_ID         = "token";
+    public static final String LOGIN_NAME_FIELD_ID    = "loginName";
 
-    public static final String            LOGIN_BUTTON_ID        = "login";
+    public static final String TOKEN_FIELD_ID         = "token";
 
-    public static final String            CANCEL_BUTTON_ID       = "cancel";
+    public static final String LOGIN_BUTTON_ID        = "login";
+
+    public static final String CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
-    transient DigipassDeviceService       digipassDeviceService;
+    DigipassDeviceService      digipassDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService        samlAuthorityService;
-
-    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
-    transient NameIdentifierMappingClient idMappingClient;
+    SamlAuthorityService       samlAuthorityService;
 
     @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
-    transient NodeAuthenticationService   nodeAuthenticationService;
-
-    AuthenticationContext                 authenticationContext;
+    NodeAuthenticationService  nodeAuthenticationService;
 
 
     public AuthenticationPage() {
 
         super();
-
-        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         getHeader();
         getSidebar(localize("helpDigipassAuthentication")).add(new Link<String>("tryAnotherDevice") {
@@ -86,7 +81,8 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                authenticationContext.setUsedDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+                AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession()).setUsedDevice(
+                        DigipassConstants.DIGIPASS_DEVICE_ID);
                 exit();
 
             }
@@ -94,7 +90,8 @@ public class AuthenticationPage extends TemplatePage {
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
-        String title = localize("%l %s", "authenticatingFor", authenticationContext.getApplication());
+        String title = localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
+                WicketUtil.toServletRequest(getRequest()).getSession()).getApplication());
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
@@ -199,7 +196,7 @@ public class AuthenticationPage extends TemplatePage {
                 throws SubjectNotFoundException, PermissionDeniedException {
 
             try {
-                return idMappingClient.getUserId(login.getObject());
+                return getNameIdentifierMappingClient(SafeOnlineNodeKeyStore.class).getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
@@ -217,6 +214,8 @@ public class AuthenticationPage extends TemplatePage {
     public void login(String userId) {
 
         try {
+            AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
+                    getRequest()).getSession());
             authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
             authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
             authenticationContext.setUsedDevice(DigipassConstants.DIGIPASS_DEVICE_ID);

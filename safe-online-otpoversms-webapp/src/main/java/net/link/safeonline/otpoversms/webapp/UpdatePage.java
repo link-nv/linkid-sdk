@@ -27,6 +27,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -38,34 +40,32 @@ import org.apache.wicket.model.Model;
 
 public class UpdatePage extends TemplatePage {
 
-    private static final long      serialVersionUID         = 1L;
+    static final Log           LOG                      = LogFactory.getLog(UpdatePage.class);
 
-    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String     MOBILE_FIELD_ID          = "mobile";
-    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    private static final long  serialVersionUID         = 1L;
 
-    public static final String     UPDATE_FORM_ID           = "update_form";
-    public static final String     OTP_FIELD_ID             = "otp";
-    public static final String     OLDPIN_FIELD_ID          = "oldpin";
-    public static final String     PIN1_FIELD_ID            = "pin1";
-    public static final String     PIN2_FIELD_ID            = "pin2";
-    public static final String     SAVE_BUTTON_ID           = "save";
-    public static final String     CANCEL_BUTTON_ID         = "cancel";
+    public static final String REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String MOBILE_FIELD_ID          = "mobile";
+    public static final String REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+
+    public static final String UPDATE_FORM_ID           = "update_form";
+    public static final String OTP_FIELD_ID             = "otp";
+    public static final String OLDPIN_FIELD_ID          = "oldpin";
+    public static final String PIN1_FIELD_ID            = "pin1";
+    public static final String PIN2_FIELD_ID            = "pin2";
+    public static final String SAVE_BUTTON_ID           = "save";
+    public static final String CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
+    SamlAuthorityService       samlAuthorityService;
 
-    ProtocolContext                protocolContext;
+    private RequestOtpForm     requestForm;
 
-    private RequestOtpForm         requestForm;
-
-    private UpdateForm             updateForm;
+    private UpdateForm         updateForm;
 
 
     public UpdatePage() {
-
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpOtpOverSmsPinChange"));
@@ -107,8 +107,8 @@ public class UpdatePage extends TemplatePage {
 
             super(id);
 
-            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(
-                    new PhoneNumber(protocolContext.getAttribute())), PhoneNumber.class);
+            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             mobileField.setRequired(true);
             add(mobileField);
@@ -122,6 +122,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
                         OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
@@ -229,6 +230,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     LOG.debug("update pin for " + protocolContext.getSubject() + " for mobile " + protocolContext.getAttribute());
 
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
@@ -269,7 +271,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    protocolContext.setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
                     exit();
                 }
 
@@ -295,7 +297,8 @@ public class UpdatePage extends TemplatePage {
 
     public void exit() {
 
-        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+                samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

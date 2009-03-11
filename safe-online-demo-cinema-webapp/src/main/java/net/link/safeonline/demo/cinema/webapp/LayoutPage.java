@@ -15,6 +15,8 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.ComponentTag;
@@ -31,13 +33,15 @@ import org.apache.wicket.request.target.component.BookmarkablePageRequestTarget;
 
 public class LayoutPage extends OlasApplicationPage {
 
+    static final Log          LOG              = LogFactory.getLog(LayoutPage.class);
+
     private static final long serialVersionUID = 1L;
 
     @EJB(mappedName = TicketService.JNDI_BINDING)
-    transient TicketService   ticketService;
+    TicketService             ticketService;
 
     @EJB(mappedName = UserService.JNDI_BINDING)
-    transient UserService     userService;
+    UserService               userService;
 
     private Ticket            ticketForm;
 

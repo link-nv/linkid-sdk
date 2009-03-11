@@ -12,8 +12,10 @@ import java.applet.Applet;
 import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RedirectToUrlException;
@@ -37,10 +39,10 @@ import org.apache.wicket.markup.html.link.Link;
  */
 public class AuthenticationPage extends AppletPage {
 
-    private static final long      serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
+    SamlAuthorityService      samlAuthorityService;
 
 
     public AuthenticationPage(PageParameters parameters) {
@@ -65,7 +67,9 @@ public class AuthenticationPage extends AppletPage {
         // Our content.
         ProgressAuthenticationPanel progress = new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate);
         getContent().add(progress);
-        getContent().add(new Label("title", localize("%l %s", "authenticatingFor", authenticationContext.getApplicationFriendlyName())));
+        getContent().add(
+                new Label("title", localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
+                        WicketUtil.toServletRequest(getRequest()).getSession()).getApplicationFriendlyName())));
     }
 
     /**
@@ -108,6 +112,8 @@ public class AuthenticationPage extends AppletPage {
     @Override
     protected void cancel() {
 
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
+                getRequest()).getSession());
         authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
         authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 

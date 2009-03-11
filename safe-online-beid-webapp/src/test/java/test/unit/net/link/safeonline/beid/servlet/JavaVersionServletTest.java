@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.beid.servlet.JavaVersionServlet;
+import net.link.safeonline.beid.webapp.BeIdErrorPage;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -70,7 +71,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.LINUX, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "error?type=protocol", resultLocation);
+        assertEquals(location + BeIdErrorPage.PATH + "?type=protocol", resultLocation);
     }
 
     @Test
@@ -91,7 +92,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "error?type=protocol", resultLocation);
+        assertEquals(location + BeIdErrorPage.PATH + "?type=protocol", resultLocation);
     }
 
     @Test
@@ -112,7 +113,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.MAC, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "error?type=protocol", resultLocation);
+        assertEquals(location + BeIdErrorPage.PATH + "?type=protocol", resultLocation);
     }
 
     @Test
@@ -133,7 +134,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.UNSUPPORTED, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "error?type=platform", resultLocation);
+        assertEquals(location + BeIdErrorPage.PATH + "?type=platform", resultLocation);
     }
 
     @Test
@@ -154,7 +155,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "error?type=java-disabled", resultLocation);
+        assertEquals(location + BeIdErrorPage.PATH + "?type=java-disabled", resultLocation);
     }
 
     @Test
@@ -175,7 +176,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "error?type=java-version", resultLocation);
+        assertEquals(location + BeIdErrorPage.PATH + "?type=java-version", resultLocation);
     }
 
     @Test

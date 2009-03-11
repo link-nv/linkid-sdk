@@ -25,6 +25,8 @@ import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -41,21 +43,23 @@ import org.apache.wicket.model.Model;
 
 public class NewUserDevicePage extends AuthenticationTemplatePage {
 
-    private static final long     serialVersionUID        = 1L;
+    static final Log           LOG                     = LogFactory.getLog(NewUserDevicePage.class);
 
-    public static final String    PATH                    = "new-user-device";
+    private static final long  serialVersionUID        = 1L;
 
-    public static final String    LOGIN_LABEL_ID          = "loginLabel";
+    public static final String PATH                    = "new-user-device";
 
-    public static final String    NEW_USER_DEVICE_FORM_ID = "new_user_device_form";
-    public static final String    DEVICE_GROUP_ID         = "deviceGroup";
-    public static final String    DEVICES_ID              = "devices";
-    public static final String    NEXT_BUTTON_ID          = "next";
+    public static final String LOGIN_LABEL_ID          = "loginLabel";
+
+    public static final String NEW_USER_DEVICE_FORM_ID = "new_user_device_form";
+    public static final String DEVICE_GROUP_ID         = "deviceGroup";
+    public static final String DEVICES_ID              = "devices";
+    public static final String NEXT_BUTTON_ID          = "next";
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
-    transient DevicePolicyService devicePolicyService;
+    DevicePolicyService        devicePolicyService;
 
-    List<DeviceDO>                devices;
+    List<DeviceDO>             devices;
 
 
     public NewUserDevicePage() {

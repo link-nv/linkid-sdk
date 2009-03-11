@@ -13,12 +13,12 @@ import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.service.OlasService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
@@ -34,31 +34,30 @@ import org.apache.wicket.model.PropertyModel;
 
 public class RemovePage extends TemplatePage {
 
-    private static final long             serialVersionUID   = 1L;
+    static final Log           LOG                = LogFactory.getLog(RemovePage.class);
 
-    public static final String            GET_FORM_ID        = "get_form";
+    private static final long  serialVersionUID   = 1L;
 
-    public static final String            LIST_FORM_ID       = "list_form";
+    public static final String GET_FORM_ID        = "get_form";
 
-    public static final String            LOGIN_FIELD_ID     = "login";
+    public static final String LIST_FORM_ID       = "list_form";
 
-    public static final String            VIEW_BUTTON_ID     = "view";
+    public static final String LOGIN_FIELD_ID     = "login";
 
-    public static final String            CANCEL_BUTTON_ID   = "cancel";
+    public static final String VIEW_BUTTON_ID     = "view";
 
-    public static final String            DIGIPASSS_LIST_ID  = "digipassList";
+    public static final String CANCEL_BUTTON_ID   = "cancel";
 
-    public static final String            DIGIPASS_LIST_ID   = "digipassList";
+    public static final String DIGIPASSS_LIST_ID  = "digipassList";
 
-    public static final String            REMOVE_LINK_ID     = "remove";
+    public static final String DIGIPASS_LIST_ID   = "digipassList";
+
+    public static final String REMOVE_LINK_ID     = "remove";
 
     @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
-    transient DigipassDeviceService       digipassDeviceService;
+    DigipassDeviceService      digipassDeviceService;
 
-    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
-    transient NameIdentifierMappingClient idMappingClient;
-
-    List<AttributeDO>                     digipassAttributes = new LinkedList<AttributeDO>();
+    List<AttributeDO>          digipassAttributes = new LinkedList<AttributeDO>();
 
 
     public RemovePage() {
@@ -174,7 +173,7 @@ public class RemovePage extends TemplatePage {
                 throws SubjectNotFoundException, PermissionDeniedException {
 
             try {
-                return idMappingClient.getUserId(login.getObject());
+                return getNameIdentifierMappingClient(SafeOnlineNodeKeyStore.class).getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();

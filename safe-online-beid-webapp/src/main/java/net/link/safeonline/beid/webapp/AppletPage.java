@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import net.link.safeonline.applet.AppletBase;
 import net.link.safeonline.applet.AppletControl;
 import net.link.safeonline.applet.RuntimeContext;
-import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
@@ -46,16 +45,11 @@ import org.apache.wicket.util.template.TextTemplate;
  */
 public abstract class AppletPage extends TemplatePage {
 
-    protected ProtocolContext       protocolContext;
-    protected AuthenticationContext authenticationContext;
-
-
     public AppletPage(PageParameters parameters, Class<? extends Applet> code, String archive, int width, int height,
                       String smartCardConfig, String servletPath, String targetPath, String helpdeskEventPath, String helpPath,
                       String noPkcs11Path) {
 
-        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         String operation = null;
         String language = getLocale().getLanguage();

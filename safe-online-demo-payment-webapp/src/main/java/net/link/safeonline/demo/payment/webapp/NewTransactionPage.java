@@ -10,11 +10,11 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.web.RequireLogin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RestartResponseException;
@@ -42,10 +42,9 @@ import org.apache.wicket.model.Model;
 @RequireLogin(loginPage = LoginPage.class)
 public class NewTransactionPage extends LayoutPage {
 
-    private static final long serialVersionUID = 1L;
+    static final Log          LOG              = LogFactory.getLog(NewTransactionPage.class);
 
-    @OlasService(keyStore = DemoPaymentKeyStore.class)
-    transient AttributeClient attribService;
+    private static final long serialVersionUID = 1L;
 
 
     /**
@@ -91,8 +90,8 @@ public class NewTransactionPage extends LayoutPage {
                 PaymentUserEntity user = PaymentSession.get().getUser();
 
                 List<String> visas;
-                visas = Arrays.asList(attribService.getAttributeValue(user.getOlasId(), DemoConstants.DEMO_VISA_ATTRIBUTE_NAME,
-                        String[].class));
+                visas = Arrays.asList(getAttributeClient(DemoPaymentKeyStore.class).getAttributeValue(user.getOlasId(),
+                        DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, String[].class));
 
                 TextArea<String> descriptionField = new TextArea<String>("description", description = new Model<String>());
                 RadioChoice<String> visaField = new RadioChoice<String>("visa", visa = new Model<String>(), visas);

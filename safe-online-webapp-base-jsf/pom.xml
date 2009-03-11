@@ -27,6 +27,15 @@
 				<configuration>
 					<packagingExcludes>WEB-INF/lib/*</packagingExcludes>
 					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+					<webResources>
+						<resource>
+							<directory>
+								${basedir}/src/main/webapp/WEB-INF
+	                            </directory>
+							<targetPath>WEB-INF</targetPath>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
 
 					<overlays>
 						<overlay>

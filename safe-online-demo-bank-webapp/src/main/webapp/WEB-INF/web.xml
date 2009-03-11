@@ -4,32 +4,36 @@
       "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 	<display-name>Demo Bank Application</display-name>
-    <listener>
-        <listener-class>
-            net.link.safeonline.demo.bank.startup.BankStartupListener 
+	<listener>
+		<listener-class>
+			net.link.safeonline.demo.bank.startup.BankStartupListener 
         </listener-class>
-    </listener>
-	<servlet>
-		<servlet-name>bankapp</servlet-name>
-		<servlet-class> org.apache.wicket.protocol.http.WicketServlet 
-		</servlet-class>
+	</listener>
+	<filter>
+		<filter-name>WicketFilter</filter-name>
+		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
 			<param-value>
 				net.link.safeonline.demo.bank.webapp.BankApplication 
-			</param-value>
+		</param-value>
 		</init-param>
 		<init-param>
 			<param-name>configuration</param-name>
 			<param-value>${wicket.configuration}</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-    <context-param>
-        <description>URL used to initiate a login process.</description>
-        <param-name>AuthenticationServiceUrl</param-name>
-        <param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
-    </context-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>WicketFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+	<context-param>
+		<description>URL used to initiate a login process.</description>
+		<param-name>AuthenticationServiceUrl</param-name>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
+	</context-param>
 	<context-param>
 		<description>URL used to initiate a single logout process.</description>
 		<param-name>LogoutServiceUrl</param-name>
@@ -42,71 +46,71 @@
 		<param-name>LogoutExitServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
 	</context-param>
-    <context-param>
-        <param-name>ApplicationName</param-name>
-        <param-value>${safe-online.demo.bank.webapp.name}</param-value>
-    </context-param>
-    <context-param>
-        <param-name>ApplicationColor</param-name>
-        <param-value>#00006A</param-value>
-    </context-param>
-    <context-param>
-        <param-name>ApplicationMinimal</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>AuthenticationProtocol</param-name>
-        <param-value>SAML2_BROWSER_POST</param-value>
-    </context-param>
-    <context-param>
-        <param-name>KeyStoreResource</param-name>
-        <param-value>safe-online-demo-bank-keystore.jks</param-value>
-    </context-param>
-    <context-param>
-        <param-name>KeyStoreType</param-name>
-        <param-value>jks</param-value>
-    </context-param>
-    <context-param>
-        <param-name>KeyStorePassword</param-name>
-        <param-value>secret</param-value>
-    </context-param>
-    <context-param>
-        <param-name>SingleSignOnEnabled</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <description>Landing page to finalize a login process.</description>
-        <param-name>LandingPage</param-name>
-        <param-value>
-            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/login 
+	<context-param>
+		<param-name>ApplicationName</param-name>
+		<param-value>${safe-online.demo.bank.webapp.name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ApplicationColor</param-name>
+		<param-value>#00006A</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ApplicationMinimal</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>AuthenticationProtocol</param-name>
+		<param-value>SAML2_BROWSER_POST</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStoreResource</param-name>
+		<param-value>safe-online-demo-bank-keystore.jks</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+	<context-param>
+		<param-name>SingleSignOnEnabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<description>Landing page to finalize a login process.</description>
+		<param-name>LandingPage</param-name>
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/login 
         </param-value>
-    </context-param>
-    <context-param>
-        <description>Landing page to finalize a logout process.</description>
-        <param-name>LogoutLandingPage</param-name>
-        <param-value>
-            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/logout 
+	</context-param>
+	<context-param>
+		<description>Landing page to finalize a logout process.</description>
+		<param-name>LogoutLandingPage</param-name>
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/logout 
         </param-value>
-    </context-param>
-    <context-param>
-        <param-name>TargetBaseUrl</param-name>
-        <param-value>
-            ${safe-online.host.basename}/${safe-online.demo.bank.webapp.url}/ 
+	</context-param>
+	<context-param>
+		<param-name>TargetBaseUrl</param-name>
+		<param-value>
+			${safe-online.host.basename}/${safe-online.demo.bank.webapp.url}/ 
         </param-value>
-        <description>Url to redirect to after successful authentication</description>
-    </context-param>
-    <context-param>
-        <param-name>WsLocation</param-name>
-        <param-value>${safe-online.host.auth.basename}</param-value>
-    </context-param>
-    <context-param>
-        <param-name>DemoHostName</param-name>
-        <param-value>${safe-online.host.name}</param-value>
-    </context-param>
-    <context-param>
-        <param-name>DemoHostPort</param-name>
-        <param-value>${safe-online.host.port:insecure}</param-value>
-    </context-param>
+		<description>Url to redirect to after successful authentication</description>
+	</context-param>
+	<context-param>
+		<param-name>WsLocation</param-name>
+		<param-value>${safe-online.host.auth.basename}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>DemoHostName</param-name>
+		<param-value>${safe-online.host.name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>DemoHostPort</param-name>
+		<param-value>${safe-online.host.port:insecure}</param-value>
+	</context-param>
 	<servlet>
 		<servlet-name>AuthLoginServlet</servlet-name>
 		<servlet-class> net.link.safeonline.sdk.auth.servlet.LoginServlet 
@@ -173,52 +177,44 @@
 		<servlet-name>BankLogoutServlet</servlet-name>
 		<url-pattern>/banklogout</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>bankapp</servlet-name>
-		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
-    <filter>
-        <filter-name>JAASLoginFilter</filter-name>
-        <filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
+	<filter>
+		<filter-name>JAASLoginFilter</filter-name>
+		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
         </filter-class>
-        <init-param>
-            <param-name>LoginContextName</param-name>
-            <param-value>client-login</param-value>
-        </init-param>
-    </filter>
-    <filter>
-        <filter-name>ContainerLoginFilter</filter-name>
-        <filter-class>
-            net.link.safeonline.sdk.auth.filter.ContainerLoginFilter 
-        </filter-class>
-    </filter>
-    <filter>
-        <filter-name>AuthnResponseFilter</filter-name>
-        <filter-class>net.link.safeonline.sdk.auth.filter.AuthnResponseFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>AuthnResponseFilter</filter-name>
-        <url-pattern>*.seam</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>JAASLoginFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ContainerLoginFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-	<!--filter>
-		<filter-name>AuthnResponseFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.sdk.auth.filter.AuthnResponseFilter
-		</filter-class>
+		<init-param>
+			<param-name>LoginContextName</param-name>
+			<param-value>client-login</param-value>
+		</init-param>
 	</filter>
-
+	<filter>
+		<filter-name>ContainerLoginFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter 
+        </filter-class>
+	</filter>
+	<filter>
+		<filter-name>AuthnResponseFilter</filter-name>
+		<filter-class>net.link.safeonline.sdk.auth.filter.AuthnResponseFilter</filter-class>
+	</filter>
 	<filter-mapping>
 		<filter-name>AuthnResponseFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping-->
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ContainerLoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--
+		filter> <filter-name>AuthnResponseFilter</filter-name> <filter-class>
+		net.link.safeonline.sdk.auth.filter.AuthnResponseFilter
+		</filter-class> </filter> <filter-mapping>
+		<filter-name>AuthnResponseFilter</filter-name>
+		<url-pattern>/*</url-pattern> </filter-mapping
+	-->
 	<session-config>
 		<session-timeout>${sessionTimeout}</session-timeout>
 	</session-config>

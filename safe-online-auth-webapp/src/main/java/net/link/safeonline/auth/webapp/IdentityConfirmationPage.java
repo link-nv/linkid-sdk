@@ -48,7 +48,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
     public static final String REJECT_BUTTON_ID              = "reject";
 
     @EJB(mappedName = IdentityService.JNDI_BINDING)
-    transient IdentityService  identityService;
+    IdentityService            identityService;
 
 
     public IdentityConfirmationPage() {

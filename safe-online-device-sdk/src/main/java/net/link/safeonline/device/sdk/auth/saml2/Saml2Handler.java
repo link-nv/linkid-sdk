@@ -179,6 +179,9 @@ public class Saml2Handler implements Serializable {
         AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request.getSession());
         String usedDevice = authenticationContext.getUsedDevice();
         String userId = authenticationContext.getUserId();
+
+        LOG.debug("userId: " + userId);
+
         String applicationId = authenticationContext.getApplication();
         String target = authenticationContext.getTargetUrl();
         String inResponseTo = authenticationContext.getInResponseTo();

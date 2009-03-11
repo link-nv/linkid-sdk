@@ -30,7 +30,7 @@ import org.apache.wicket.markup.html.link.Link;
 
 
 /**
- * <h2>{@link ErrorPage}<br>
+ * <h2>{@link BeIdErrorPage}<br>
  * <sub>Failure during the BeID detection pipeline.</sub></h2>
  * 
  * <p>
@@ -44,19 +44,15 @@ import org.apache.wicket.markup.html.link.Link;
  * 
  * @author lhunath
  */
-public class ErrorPage extends TemplatePage {
+public class BeIdErrorPage extends TemplatePage {
+
+    public static final String PATH = "beid_error";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
-
-    AuthenticationContext          authenticationContext;
-    ProtocolContext                protocolContext;
+    SamlAuthorityService       samlAuthorityService;
 
 
-    public ErrorPage(PageParameters parameters) {
-
-        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+    public BeIdErrorPage(PageParameters parameters) {
 
         // Header & Sidebar.
         getHeader();
@@ -128,6 +124,10 @@ public class ErrorPage extends TemplatePage {
     }
 
     void cancel() {
+
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
+                getRequest()).getSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         if (authenticationContext != null && authenticationContext.getApplication() != null
                 && authenticationContext.getApplication().length() > 0) {

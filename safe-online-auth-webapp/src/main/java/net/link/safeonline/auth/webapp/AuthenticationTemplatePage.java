@@ -10,11 +10,16 @@ import net.link.safeonline.service.PublicApplicationService;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 public abstract class AuthenticationTemplatePage extends TemplatePage {
 
+    private static final Log LOG = LogFactory.getLog(AuthenticationTemplatePage.class);
+
     @EJB(mappedName = PublicApplicationService.JNDI_BINDING)
-    transient PublicApplicationService publicApplicationService;
+    PublicApplicationService publicApplicationService;
 
 
     public AuthenticationTemplatePage() {
@@ -52,9 +57,9 @@ public abstract class AuthenticationTemplatePage extends TemplatePage {
         } finally {
             LOG.debug("removing entry and timeout cookie");
             HttpServletResponse response = WicketUtil.toServletResponse(getResponse());
-            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, response);
-            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, response);
             removeCookie(SafeOnlineCookies.APPLICATION_COOKIE, response);
+            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, response);
+            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, response);
         }
     }
 

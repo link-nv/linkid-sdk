@@ -40,10 +40,10 @@ public class FilmTheatreSelectionPage extends LayoutPage {
     private static final long serialVersionUID = 1L;
 
     @EJB(mappedName = FilmService.JNDI_BINDING)
-    transient FilmService     filmService;
+    FilmService               filmService;
 
     @EJB(mappedName = TheatreService.JNDI_BINDING)
-    transient TheatreService  theatreService;
+    TheatreService            theatreService;
 
     private FilmsForm         filmsForm;
 

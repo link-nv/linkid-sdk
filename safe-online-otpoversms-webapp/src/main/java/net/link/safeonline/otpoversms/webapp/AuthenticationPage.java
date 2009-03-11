@@ -32,6 +32,8 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -44,33 +46,31 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long           serialVersionUID         = 1L;
+    static final Log           LOG                      = LogFactory.getLog(AuthenticationPage.class);
 
-    public static final String          REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String          MOBILE_FIELD_ID          = "mobile";
-    public static final String          REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String          REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    private static final long  serialVersionUID         = 1L;
 
-    public static final String          VERIFY_OTP_FORM_ID       = "verify_otp_form";
-    public static final String          OTP_FIELD_ID             = "otp";
-    public static final String          PIN_FIELD_ID             = "pin";
-    public static final String          LOGIN_BUTTON_ID          = "login";
-    public static final String          CANCEL_BUTTON_ID         = "cancel";
+    public static final String REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String MOBILE_FIELD_ID          = "mobile";
+    public static final String REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+
+    public static final String VERIFY_OTP_FORM_ID       = "verify_otp_form";
+    public static final String OTP_FIELD_ID             = "otp";
+    public static final String PIN_FIELD_ID             = "pin";
+    public static final String LOGIN_BUTTON_ID          = "login";
+    public static final String CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService      samlAuthorityService;
+    SamlAuthorityService       samlAuthorityService;
 
     @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
-    transient NodeAuthenticationService nodeAuthenticationService;
+    NodeAuthenticationService  nodeAuthenticationService;
 
-    AuthenticationContext               authenticationContext;
-
-    Model<PhoneNumber>                  mobile;
+    Model<PhoneNumber>         mobile;
 
 
     public AuthenticationPage() {
-
-        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpOtpOverSmsAuthentication")).add(new Link<String>("tryAnotherDevice") {
@@ -81,14 +81,16 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                authenticationContext.setUsedDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
+                AuthenticationContext.getAuthenticationContext(WicketUtil.getHttpSession(getRequest())).setUsedDevice(
+                        OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
                 exit();
             }
         });
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
-        String title = localize("%l %s", "authenticatingFor", authenticationContext.getApplication());
+        String title = localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
+                WicketUtil.getHttpSession(getRequest())).getApplication());
         getContent().add(new Label("title", title));
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(new VerifyOtpForm(VERIFY_OTP_FORM_ID));
@@ -297,6 +299,9 @@ public class AuthenticationPage extends TemplatePage {
     public void login(String userId) {
 
         try {
+            AuthenticationContext authenticationContext = AuthenticationContext
+                                                                               .getAuthenticationContext(WicketUtil
+                                                                                                                   .getHttpSession(getRequest()));
             authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
             authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
             authenticationContext.setUsedDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);

@@ -8,12 +8,11 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
-import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
-import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.web.ForceLogout;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -47,13 +46,9 @@ import org.apache.wicket.model.Model;
 @ForceLogout
 public class AdminPage extends LayoutPage {
 
-    private static final long             serialVersionUID = 1L;
+    static final Log          LOG              = LogFactory.getLog(AdminPage.class);
 
-    @OlasService(keyStore = DemoPaymentKeyStore.class)
-    transient DataClient                  dataClient;
-
-    @OlasService(keyStore = DemoPaymentKeyStore.class)
-    transient NameIdentifierMappingClient nameIdentifierMappingClient;
+    private static final long serialVersionUID = 1L;
 
 
     /**
@@ -184,10 +179,10 @@ public class AdminPage extends LayoutPage {
 
                 // Submit was a search query.
                 try {
-                    String userId = nameIdentifierMappingClient.getUserId(name.getObject());
+                    String userId = getNameIdentifierMappingClient(DemoPaymentKeyStore.class).getUserId(name.getObject());
 
-                    Attribute<Boolean> attributeValue = dataClient.getAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-                            Boolean.class);
+                    Attribute<Boolean> attributeValue = getDataClient(DemoPaymentKeyStore.class).getAttributeValue(userId,
+                            DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
                     if (attributeValue == null) {
                         junior.setObject(false);
                         createJunior = true;
@@ -214,12 +209,14 @@ public class AdminPage extends LayoutPage {
 
                 if (juniorField.isVisible()) {
                     try {
-                        String userId = nameIdentifierMappingClient.getUserId(name.getObject());
+                        String userId = getNameIdentifierMappingClient(DemoPaymentKeyStore.class).getUserId(name.getObject());
 
                         if (createJunior) {
-                            dataClient.createAttribute(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
+                            getDataClient(DemoPaymentKeyStore.class).createAttribute(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+                                    junior.getObject());
                         } else {
-                            dataClient.setAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
+                            getDataClient(DemoPaymentKeyStore.class).setAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+                                    junior.getObject());
                         }
                     }
 

@@ -22,18 +22,18 @@ import org.apache.wicket.model.Model;
 
 public abstract class LayoutPage extends OlasApplicationPage {
 
-    private static final long    serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @EJB(mappedName = UserService.JNDI_BINDING)
-    transient UserService        userService;
+    UserService               userService;
 
     @EJB(mappedName = AccountService.JNDI_BINDING)
-    transient AccountService     accountService;
+    AccountService            accountService;
 
     @EJB(mappedName = TransactionService.JNDI_BINDING)
-    transient TransactionService transactionService;
+    TransactionService        transactionService;
 
-    private FeedbackPanel        globalFeedback;
+    private FeedbackPanel     globalFeedback;
 
 
     /**

@@ -23,6 +23,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
@@ -32,24 +34,26 @@ import org.apache.wicket.markup.html.form.Form;
 
 public class SubscriptionPage extends AuthenticationTemplatePage {
 
-    private static final long       serialVersionUID        = 1L;
+    static final Log           LOG                     = LogFactory.getLog(SubscriptionPage.class);
 
-    public static final String      PATH                    = "subscription";
+    private static final long  serialVersionUID        = 1L;
 
-    public static final String      USAGE_AGREEMENT_TEXT_ID = "usageAgreementText";
+    public static final String PATH                    = "subscription";
 
-    public static final String      SUBSCRIPTION_FORM_ID    = "subscription_form";
-    public static final String      CONFIRM_BUTTON_ID       = "confirm";
-    public static final String      SUBSCRIBE_BUTTON_ID     = "subscribe";
-    public static final String      REJECT_BUTTON_ID        = "reject";
+    public static final String USAGE_AGREEMENT_TEXT_ID = "usageAgreementText";
+
+    public static final String SUBSCRIPTION_FORM_ID    = "subscription_form";
+    public static final String CONFIRM_BUTTON_ID       = "confirm";
+    public static final String SUBSCRIBE_BUTTON_ID     = "subscribe";
+    public static final String REJECT_BUTTON_ID        = "reject";
 
     @EJB(mappedName = SubscriptionService.JNDI_BINDING)
-    transient SubscriptionService   subscriptionService;
+    SubscriptionService        subscriptionService;
 
     @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
-    transient UsageAgreementService usageAgreementService;
+    UsageAgreementService      usageAgreementService;
 
-    String                          text;
+    String                     text;
 
 
     public SubscriptionPage() {

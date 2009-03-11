@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE webapp-configuration PUBLIC
+    "-//Webapp Configuration DTD//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd" [
+    <!ENTITY web-common-wicket SYSTEM "web-common-wicket.xml">
+    <!ENTITY web-error-codes SYSTEM "web-error-codes.xml"> ]>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 	<display-name>Olas BeId Device Web Application</display-name>
-	<servlet>
-		<servlet-name>beidapp</servlet-name>
-		<servlet-class> org.apache.wicket.protocol.http.WicketServlet 
-		</servlet-class>
+	&web-common-wicket;
+	&web-error-codes;
+	<filter>
+		<filter-name>WicketFilter</filter-name>
+		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
 			<param-value>
 				net.link.safeonline.beid.webapp.BeIdApplication 
-			</param-value>
+		</param-value>
 		</init-param>
-		<!--
-			<init-param> <param-name>configuration</param-name>
-			<param-value>DEPLOYMENT</param-value> </init-param>
-		-->
-		<context-param>
+		<init-param>
 			<param-name>configuration</param-name>
-			<param-value>development</param-value>
-		</context-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>beidapp</servlet-name>
+			<param-value>${wicket.configuration}</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>WicketFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
@@ -71,7 +74,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>error?type=protocol</param-value>
+			<param-value>beid_error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -92,7 +95,7 @@
 			net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>error?type=protocol</param-value>
+			<param-value>beid_error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -130,7 +133,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>error?type=protocol</param-value>
+			<param-value>beid_error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -150,7 +153,7 @@
 		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>error?type=protocol</param-value>
+			<param-value>beid_error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -264,7 +267,4 @@
 		<servlet-name>Style Servlet</servlet-name>
 		<url-pattern>/theme.css</url-pattern>
 	</servlet-mapping>
-	<session-config>
-		<session-timeout>${sessionTimeout}</session-timeout>
-	</session-config>
 </web-app>

@@ -12,8 +12,10 @@ import java.applet.Applet;
 import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RedirectToUrlException;
@@ -35,10 +37,10 @@ import org.apache.wicket.RedirectToUrlException;
  */
 public class RegistrationPage extends AppletPage {
 
-    private static final long      serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
+    SamlAuthorityService      samlAuthorityService;
 
 
     public RegistrationPage(PageParameters parameters) {
@@ -52,7 +54,8 @@ public class RegistrationPage extends AppletPage {
 
         // Our content.
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
+        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getDeviceOperation().equals(
+                DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
     }
 
@@ -96,6 +99,7 @@ public class RegistrationPage extends AppletPage {
     @Override
     protected void cancel() {
 
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
         protocolContext.setSuccess(false);
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 

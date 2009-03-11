@@ -27,6 +27,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -35,6 +37,8 @@ import org.apache.wicket.markup.html.list.ListView;
 
 
 public class MissingAttributesPage extends AuthenticationTemplatePage {
+
+    static final Log           LOG                         = LogFactory.getLog(MissingAttributesPage.class);
 
     private static final long  serialVersionUID            = 1L;
 
@@ -48,7 +52,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
     public static final String SAVE_BUTTON_ID              = "save";
 
     @EJB(mappedName = IdentityService.JNDI_BINDING)
-    transient IdentityService  identityService;
+    IdentityService            identityService;
 
     long                       applicationId;
 

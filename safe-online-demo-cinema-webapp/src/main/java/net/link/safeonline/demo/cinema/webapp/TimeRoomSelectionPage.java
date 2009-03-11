@@ -43,10 +43,10 @@ public class TimeRoomSelectionPage extends LayoutPage {
     private static final long serialVersionUID = 1L;
 
     @EJB(mappedName = FilmService.JNDI_BINDING)
-    transient FilmService     filmService;
+    FilmService               filmService;
 
     @EJB(mappedName = RoomService.JNDI_BINDING)
-    transient RoomService     roomService;
+    RoomService               roomService;
 
     private TimesForm         timesForm;
 

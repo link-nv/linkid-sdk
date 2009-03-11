@@ -20,17 +20,17 @@ import org.apache.wicket.model.Model;
 
 public abstract class LayoutPage extends OlasApplicationPage {
 
-    private static final long    serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @EJB(mappedName = UserService.JNDI_BINDING)
-    transient UserService        userService;
+    UserService               userService;
 
     @EJB(mappedName = TransactionService.JNDI_BINDING)
-    transient TransactionService transactionService;
+    TransactionService        transactionService;
 
-    private UserInfo             userForm;
+    private UserInfo          userForm;
 
-    private FeedbackPanel        globalFeedback;
+    private FeedbackPanel     globalFeedback;
 
 
     /**

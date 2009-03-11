@@ -22,15 +22,15 @@ import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -42,27 +42,22 @@ import org.apache.wicket.model.Model;
 
 public class RegistrationPage extends TemplatePage {
 
-    private static final long             serialVersionUID    = 1L;
+    static final Log           LOG                 = LogFactory.getLog(RegistrationPage.class);
 
-    public static final String            REGISTER_FORM_ID    = "register_form";
-    public static final String            MOBILE_FIELD_ID     = "mobile";
-    public static final String            ACTIVATION_FIELD_ID = "activation";
-    public static final String            ACTIVATE_BUTTON_ID  = "activate";
-    public static final String            REGISTER_BUTTON_ID  = "register";
-    public static final String            CANCEL_BUTTON_ID    = "cancel";
+    private static final long  serialVersionUID    = 1L;
+
+    public static final String REGISTER_FORM_ID    = "register_form";
+    public static final String MOBILE_FIELD_ID     = "mobile";
+    public static final String ACTIVATION_FIELD_ID = "activation";
+    public static final String ACTIVATE_BUTTON_ID  = "activate";
+    public static final String REGISTER_BUTTON_ID  = "register";
+    public static final String CANCEL_BUTTON_ID    = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService        samlAuthorityService;
-
-    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
-    transient NameIdentifierMappingClient idMappingClient;
-
-    ProtocolContext                       protocolContext;
+    SamlAuthorityService       samlAuthorityService;
 
 
     public RegistrationPage() {
-
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpRegisterMobile"));
@@ -159,6 +154,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     protocolContext.setSuccess(false);
                     protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
@@ -195,7 +191,7 @@ public class RegistrationPage extends TemplatePage {
                 throws SubjectNotFoundException, PermissionDeniedException {
 
             try {
-                return idMappingClient.getUserId(mobile.getObject().getNumber());
+                return getNameIdentifierMappingClient(SafeOnlineNodeKeyStore.class).getUserId(mobile.getObject().getNumber());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + mobile);
                 throw new SubjectNotFoundException();

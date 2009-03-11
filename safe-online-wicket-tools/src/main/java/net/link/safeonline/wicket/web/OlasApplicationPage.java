@@ -9,6 +9,8 @@ package net.link.safeonline.wicket.web;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.Session;
@@ -39,6 +41,8 @@ import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
  * @author lhunath
  */
 public abstract class OlasApplicationPage extends WicketPage {
+
+    static final Log LOG = LogFactory.getLog(OlasApplicationPage.class);
 
     {
         try {

@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.wicket.service.AnnotSDKInjector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,7 +50,6 @@ public abstract class WicketUtil {
 
     static final Log            LOG = LogFactory.getLog(WicketUtil.class);
     static ConfigurableInjector eeInjector;
-    static AnnotSDKInjector     sdkInjector;
 
 
     /**
@@ -111,12 +109,8 @@ public abstract class WicketUtil {
         if (eeInjector == null) {
             eeInjector = new AnnotJavaEEInjector(new OlasNamingStrategy());
         }
-        if (sdkInjector == null) {
-            sdkInjector = new AnnotSDKInjector();
-        }
 
         eeInjector.inject(injectee);
-        sdkInjector.inject(injectee);
     }
 
     /**

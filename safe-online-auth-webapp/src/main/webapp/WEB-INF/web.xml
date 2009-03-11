@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE webapp-configuration PUBLIC
+    "-//Webapp Configuration DTD//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd" [
+    <!ENTITY web-common-wicket SYSTEM "web-common-wicket.xml">
+    <!ENTITY web-error-codes SYSTEM "web-error-codes.xml"> ]>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 	<display-name>Olas Authentication Web Application</display-name>
-	<servlet>
-		<servlet-name>authapp</servlet-name>
-		<servlet-class>org.apache.wicket.protocol.http.WicketServlet</servlet-class>
+	&web-common-wicket;
+	&web-error-codes;
+	<filter>
+		<filter-name>WicketFilter</filter-name>
+		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
 			<param-value>
-				net.link.safeonline.auth.webapp.AuthenticationApplication 
-			</param-value>
+				net.link.safeonline.auth.webapp.AuthenticationApplication
+		</param-value>
 		</init-param>
 		<init-param>
 			<param-name>configuration</param-name>
 			<param-value>${wicket.configuration}</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>authapp</servlet-name>
+	</filter>
+	<filter-mapping>
+		<filter-name>WicketFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
 	<listener>
 		<listener-class>
 			net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
@@ -29,7 +37,6 @@
 	<listener>
 		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
 	</listener>
-	7
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
@@ -81,12 +88,40 @@
 
 	<!-- ${safe-online.profiling.filter} -->
 	<filter-mapping>
-		<filter-name>TimeoutFilter</filter-name>
+		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/entry</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/login</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/exit</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/logoutentry</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/logoutexit</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/device/auth</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/device/reg</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/pki/cert</url-pattern>
 	</filter-mapping>
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
@@ -268,7 +303,4 @@
 		<servlet-name>Style Servlet</servlet-name>
 		<url-pattern>/theme.css</url-pattern>
 	</servlet-mapping>
-	<session-config>
-		<session-timeout>${sessionTimeout}</session-timeout>
-	</session-config>
 </web-app>

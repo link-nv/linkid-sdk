@@ -26,6 +26,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -36,34 +38,32 @@ import org.apache.wicket.model.Model;
 
 public class EnablePage extends TemplatePage {
 
-    private static final long      serialVersionUID         = 1L;
+    static final Log           LOG                      = LogFactory.getLog(EnablePage.class);
 
-    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String     MOBILE_FIELD_ID          = "mobile";
-    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    private static final long  serialVersionUID         = 1L;
 
-    public static final String     ENABLE_FORM_ID           = "enable_form";
-    public static final String     OTP_FIELD_ID             = "otp";
-    public static final String     PIN_FIELD_ID             = "pin";
-    public static final String     ENABLE_BUTTON_ID         = "enable";
-    public static final String     CANCEL_BUTTON_ID         = "cancel";
+    public static final String REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String MOBILE_FIELD_ID          = "mobile";
+    public static final String REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+
+    public static final String ENABLE_FORM_ID           = "enable_form";
+    public static final String OTP_FIELD_ID             = "otp";
+    public static final String PIN_FIELD_ID             = "pin";
+    public static final String ENABLE_BUTTON_ID         = "enable";
+    public static final String CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
+    SamlAuthorityService       samlAuthorityService;
 
-    ProtocolContext                protocolContext;
+    private RequestOtpForm     requestForm;
 
-    private RequestOtpForm         requestForm;
-
-    private EnableForm             enableForm;
+    private EnableForm         enableForm;
 
 
     public EnablePage() {
 
         super();
-
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpOtpOverSmsEnable"));
@@ -106,8 +106,8 @@ public class EnablePage extends TemplatePage {
 
             super(id);
 
-            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(
-                    new PhoneNumber(protocolContext.getAttribute())), PhoneNumber.class);
+            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
@@ -120,6 +120,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
                         OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
@@ -212,6 +213,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     LOG.debug("enable mobile " + protocolContext.getAttribute() + " for " + protocolContext.getSubject());
 
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
@@ -245,7 +247,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    protocolContext.setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
                     exit();
                 }
 
@@ -271,7 +273,8 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+                samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

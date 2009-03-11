@@ -79,7 +79,7 @@ public class BeIdMountPoints {
         IDENTIFICATION("identify", IdentificationPage.class, AuthenticationType.class),
         REGISTRATION("register", RegistrationPage.class, AuthenticationType.class),
         ENABLE("enable", EnablePage.class, AuthenticationType.class),
-        ERROR("error", ErrorPage.class, ErrorType.class);
+        ERROR("beid_error", BeIdErrorPage.class, ErrorType.class);
 
         public static final String              TYPE_PARAMETER = "type";
 

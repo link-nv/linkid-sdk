@@ -39,7 +39,7 @@ public class IdentityUnavailablePage extends AuthenticationTemplatePage {
     public static final String MAIN_LINK_ID                  = "main";
 
     @EJB(mappedName = IdentityService.JNDI_BINDING)
-    transient IdentityService  identityService;
+    IdentityService            identityService;
 
 
     public IdentityUnavailablePage() {

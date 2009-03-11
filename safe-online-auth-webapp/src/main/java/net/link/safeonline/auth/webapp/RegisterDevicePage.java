@@ -27,6 +27,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.RestartResponseException;
@@ -43,23 +45,25 @@ import org.apache.wicket.model.Model;
 
 public class RegisterDevicePage extends AuthenticationTemplatePage {
 
-    private static final long     serialVersionUID           = 1L;
+    static final Log           LOG                        = LogFactory.getLog(RegisterDevicePage.class);
 
-    public static final String    PATH                       = "register-device";
+    private static final long  serialVersionUID           = 1L;
 
-    public static final String    NEW_USER_LINK_ID           = "new_user";
-    public static final String    TRY_ANOTHER_DEVICE_LINK_ID = "try_another_device";
+    public static final String PATH                       = "register-device";
 
-    public static final String    REGISTER_DEVICE_FORM_ID    = "register_device_form";
-    public static final String    DEVICE_GROUP_ID            = "deviceGroup";
-    public static final String    DEVICES_ID                 = "devices";
-    public static final String    BACK_BUTTON_ID             = "back";
-    public static final String    NEXT_BUTTON_ID             = "next";
+    public static final String NEW_USER_LINK_ID           = "new_user";
+    public static final String TRY_ANOTHER_DEVICE_LINK_ID = "try_another_device";
+
+    public static final String REGISTER_DEVICE_FORM_ID    = "register_device_form";
+    public static final String DEVICE_GROUP_ID            = "deviceGroup";
+    public static final String DEVICES_ID                 = "devices";
+    public static final String BACK_BUTTON_ID             = "back";
+    public static final String NEXT_BUTTON_ID             = "next";
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
-    transient DevicePolicyService devicePolicyService;
+    DevicePolicyService        devicePolicyService;
 
-    List<DeviceDO>                devices;
+    List<DeviceDO>             devices;
 
 
     public RegisterDevicePage() {

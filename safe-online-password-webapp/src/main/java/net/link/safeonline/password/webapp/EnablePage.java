@@ -22,6 +22,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -31,25 +33,23 @@ import org.apache.wicket.model.Model;
 
 public class EnablePage extends TemplatePage {
 
-    private static final long       serialVersionUID  = 1L;
+    static final Log           LOG               = LogFactory.getLog(EnablePage.class);
 
-    public static final String      ENABLE_FORM_ID    = "enable_form";
-    public static final String      PASSWORD_FIELD_ID = "password";
-    public static final String      ENABLE_BUTTON_ID  = "enable";
-    public static final String      CANCEL_BUTTON_ID  = "cancel";
+    private static final long  serialVersionUID  = 1L;
+
+    public static final String ENABLE_FORM_ID    = "enable_form";
+    public static final String PASSWORD_FIELD_ID = "password";
+    public static final String ENABLE_BUTTON_ID  = "enable";
+    public static final String CANCEL_BUTTON_ID  = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
-    transient PasswordDeviceService passwordDeviceService;
+    PasswordDeviceService      passwordDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService  samlAuthorityService;
-
-    ProtocolContext                 protocolContext;
+    SamlAuthorityService       samlAuthorityService;
 
 
     public EnablePage() {
-
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpPasswordEnable"));
@@ -91,6 +91,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     LOG.debug("enable password for " + protocolContext.getSubject());
 
                     try {
@@ -124,7 +125,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    protocolContext.setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
                     exit();
                 }
 
@@ -139,7 +140,8 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+                samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

@@ -28,6 +28,8 @@ import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
@@ -40,37 +42,36 @@ import org.apache.wicket.model.Model;
 
 public class RegistrationPage extends TemplatePage {
 
-    private static final long      serialVersionUID         = 1L;
+    static final Log           LOG                      = LogFactory.getLog(RegistrationPage.class);
 
-    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String     MOBILE_FIELD_ID          = "mobile";
-    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    private static final long  serialVersionUID         = 1L;
 
-    public static final String     VERIFY_OTP_FORM_ID       = "verify_otp_form";
-    public static final String     OTP_FIELD_ID             = "otp";
-    public static final String     PIN1_FIELD_ID            = "pin1";
-    public static final String     PIN2_FIELD_ID            = "pin2";
-    public static final String     SAVE_BUTTON_ID           = "save";
-    public static final String     CANCEL_BUTTON_ID         = "cancel";
+    public static final String REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String MOBILE_FIELD_ID          = "mobile";
+    public static final String REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+
+    public static final String VERIFY_OTP_FORM_ID       = "verify_otp_form";
+    public static final String OTP_FIELD_ID             = "otp";
+    public static final String PIN1_FIELD_ID            = "pin1";
+    public static final String PIN2_FIELD_ID            = "pin2";
+    public static final String SAVE_BUTTON_ID           = "save";
+    public static final String CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
+    SamlAuthorityService       samlAuthorityService;
 
-    ProtocolContext                protocolContext;
-
-    Model<PhoneNumber>             mobile;
+    Model<PhoneNumber>         mobile;
 
 
     public RegistrationPage() {
-
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpRegisterOtpOverSms"));
 
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
+        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getDeviceOperation().equals(
+                DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
 
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
@@ -110,6 +111,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     LOG.debug("request otp for mobile " + mobile);
 
                     try {
@@ -153,7 +155,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    protocolContext.setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
                     exit();
                 }
 
@@ -226,6 +228,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
                     try {
@@ -254,7 +257,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    protocolContext.setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
                     exit();
                 }
 
@@ -289,7 +292,8 @@ public class RegistrationPage extends TemplatePage {
 
     public void exit() {
 
-        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+                samlAuthorityService.getAuthnAssertionValidity());
         throw new RedirectToUrlException("deviceexit");
     }
 }

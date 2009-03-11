@@ -20,6 +20,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -33,26 +35,24 @@ import org.apache.wicket.model.Model;
 
 public class RegistrationPage extends TemplatePage implements IHeaderContributor {
 
-    private static final long      serialVersionUID     = 1L;
+    static final Log           LOG                  = LogFactory.getLog(RegistrationPage.class);
 
-    public static final String     REGISTER_FORM_ID     = "register_form";
-    public static final String     PIN_FIELD_ID         = "pin";
-    public static final String     PIN_CONFIRM_FIELD_ID = "pinConfirm";
-    public static final String     REGISTER_BUTTON_ID   = "register";
-    public static final String     CANCEL_BUTTON_ID     = "cancel";
+    private static final long  serialVersionUID     = 1L;
+
+    public static final String REGISTER_FORM_ID     = "register_form";
+    public static final String PIN_FIELD_ID         = "pin";
+    public static final String PIN_CONFIRM_FIELD_ID = "pinConfirm";
+    public static final String REGISTER_BUTTON_ID   = "register";
+    public static final String CANCEL_BUTTON_ID     = "cancel";
 
     @EJB(mappedName = OptionDeviceService.JNDI_BINDING)
-    transient OptionDeviceService  optionDeviceService;
+    OptionDeviceService        optionDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService samlAuthorityService;
-
-    ProtocolContext                protocolContext;
+    SamlAuthorityService       samlAuthorityService;
 
 
     public RegistrationPage() {
-
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpOptionRegistration"));
@@ -144,6 +144,7 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
 
             String imei = OptionDevice.register(pin.getObject());
             try {
+                ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
                 optionDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), imei);
             } catch (NodeNotFoundException e) {
                 RegisterForm.this.error(localize("errorNodeNotFound"));
@@ -158,6 +159,7 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
 
     public void exit(boolean success) {
 
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         protocolContext.setSuccess(success);
 

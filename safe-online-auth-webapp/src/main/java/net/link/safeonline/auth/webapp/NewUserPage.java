@@ -24,6 +24,8 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -39,18 +41,20 @@ import org.apache.wicket.model.Model;
 
 public class NewUserPage extends AuthenticationTemplatePage {
 
-    private static final long         serialVersionUID      = 1L;
+    static final Log           LOG                   = LogFactory.getLog(NewUserDevicePage.class);
 
-    public static final String        NEW_USER_FORM_ID      = "new_user_form";
-    public static final String        EXISTING_USER_LINK_ID = "existingUser";
-    public static final String        LOGIN_NAME_FIELD_ID   = "loginName";
-    public static final String        CAPTCHA_FIELD_ID      = "captcha";
-    public static final String        CAPTCHA_IMAGE_ID      = "captchaImage";
-    public static final String        CAPTCHA_REFRESH_ID    = "captchaRefresh";
-    public static final String        REGISTER_BUTTON_ID    = "register";
+    private static final long  serialVersionUID      = 1L;
+
+    public static final String NEW_USER_FORM_ID      = "new_user_form";
+    public static final String EXISTING_USER_LINK_ID = "existingUser";
+    public static final String LOGIN_NAME_FIELD_ID   = "loginName";
+    public static final String CAPTCHA_FIELD_ID      = "captcha";
+    public static final String CAPTCHA_IMAGE_ID      = "captchaImage";
+    public static final String CAPTCHA_REFRESH_ID    = "captchaRefresh";
+    public static final String REGISTER_BUTTON_ID    = "register";
 
     @EJB(mappedName = UserRegistrationService.JNDI_BINDING)
-    transient UserRegistrationService userRegistrationService;
+    UserRegistrationService    userRegistrationService;
 
 
     public NewUserPage() {
