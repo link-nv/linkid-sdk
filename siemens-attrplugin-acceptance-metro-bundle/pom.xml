@@ -70,9 +70,9 @@
 						<Export-Package>net.link.safeonline.siemens.acceptance.metro.*
 						</Export-Package>
 						<Import-Package>
-							net.link.safeonline.osgi; version="[1.4-SNAPSHOT, 1.4-SNAPSHOT]",
-							net.link.safeonline.osgi.exception; version="[1.4-SNAPSHOT, 1.4-SNAPSHOT]",
-							net.link.safeonline.osgi.plugin; version="[1.4-SNAPSHOT, 1.4-SNAPSHOT]",
+							net.link.safeonline.osgi; version="[1.4, 1.4]",
+							net.link.safeonline.osgi.exception; version="[1.4, 1.4]",
+							net.link.safeonline.osgi.plugin; version="[1.4, 1.4]",
 							org.osgi.framework,
 							javax.net.ssl,
 							javax.crypto,

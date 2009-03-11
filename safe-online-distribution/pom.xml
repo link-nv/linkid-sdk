@@ -461,6 +461,26 @@
                     <scope>provided</scope>
                     <type>jar</type>
                 </dependency>
+                <dependency>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>hsqldb</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>hsqldb-plugin</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.oracle.jdbc</groupId>
+                    <artifactId>ojdbc5</artifactId>
+                </dependency>
             </dependencies>
 
             <build>
@@ -533,77 +553,5 @@
             </dependencies>
         </profile>
 
-        <!-- DS profiles to manage DS dialect dependencies. -->
-        <profile>
-            <id>ds:hsql</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>hsql</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss</groupId>
-                    <artifactId>hsqldb</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss</groupId>
-                    <artifactId>hsqldb-plugin</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>ds:mysql</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>mysql</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>ds:postgresql</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>postgresql</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>ds:oracle</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>oracle</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.oracle.jdbc</groupId>
-                    <artifactId>ojdbc5</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
     </profiles>
 </project>
