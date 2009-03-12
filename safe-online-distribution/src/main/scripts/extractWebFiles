@@ -23,7 +23,6 @@
 #   * http://lhunath.lyndir.com                                               #
 #   * Maarten Billemont.                                                      #
 #                                                                             #
-source "${0%/*}/bashlib"                                                      #
 scripts="${0%/*}"; [[ $scripts = /* ]] || scripts=$PWD/$scripts
 distribution=$(cd "$scripts/.."; echo "${PWD##*/}")
 source "$scripts/bashlib"

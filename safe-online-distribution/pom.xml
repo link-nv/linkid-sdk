@@ -6,13 +6,13 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.3-SNAPSHOT</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Distribution</name>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-distribution</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
     <build>
@@ -267,25 +267,25 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<version>1.4-SNAPSHOT</version>
 			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<version>1.4-SNAPSHOT</version>
 			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
 		</dependency>
 
@@ -293,7 +293,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<version>1.4-SNAPSHOT</version>
             <scope>provided</scope>
 			<type>jar</type>
 		</dependency>
@@ -310,25 +310,25 @@
                 <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-root-webapp</artifactId>
-                   <version>1.3-SNAPSHOT</version>
+                   <version>1.4-SNAPSHOT</version>
                    <type>war</type>
                </dependency>
                <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-root-webapp</artifactId>
-                   <version>1.3-SNAPSHOT</version>
+                   <version>1.4-SNAPSHOT</version>
                    <type>zip</type>
                </dependency>
                <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-install-manual</artifactId>
-                   <version>1.3-SNAPSHOT</version>
+                   <version>1.4-SNAPSHOT</version>
                    <type>zip</type>
                </dependency>
                <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-maintenance-manual</artifactId>
-                   <version>1.3-SNAPSHOT</version>
+                   <version>1.4-SNAPSHOT</version>
                    <type>zip</type>
                 </dependency>
             </dependencies>
@@ -382,74 +382,74 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-beid-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-beid-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-digipass-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-digipass-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-encap-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-encap-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-otpoversms-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-otpoversms-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
 
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-demo-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-demo-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
 
@@ -457,9 +457,29 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-demo-sql-ddl</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <scope>provided</scope>
                     <type>jar</type>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>hsqldb</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>hsqldb-plugin</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.oracle.jdbc</groupId>
+                    <artifactId>ojdbc5</artifactId>
                 </dependency>
             </dependencies>
 
@@ -502,13 +522,13 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-option-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-option-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
             </dependencies>
@@ -521,89 +541,17 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-performance-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-performance-deploy</artifactId>
-                    <version>1.3-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
             </dependencies>
         </profile>
 
-        <!-- DS profiles to manage DS dialect dependencies. -->
-        <profile>
-            <id>ds:hsql</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>hsql</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss</groupId>
-                    <artifactId>hsqldb</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss</groupId>
-                    <artifactId>hsqldb-plugin</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>ds:mysql</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>mysql</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>ds:postgresql</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>postgresql</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>ds:oracle</id>
-
-            <activation>
-                <property>
-                    <name>safe-online.data.source.type</name>
-                    <value>oracle</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.oracle.jdbc</groupId>
-                    <artifactId>ojdbc5</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
     </profiles>
 </project>

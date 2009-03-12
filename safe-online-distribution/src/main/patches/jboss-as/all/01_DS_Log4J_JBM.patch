@@ -221,3 +221,35 @@
  
       <!-- table name -->
       <attribute name="TableName">HILOSEQUENCES</attribute>
+--- server/default/deploy/ejb3.deployer/META-INF/persistence.properties	2009-03-11 10:22:46.000000000 +0100
++++ server/default/deploy/ejb3.deployer/META-INF/persistence.properties	2009-03-11 10:31:15.000000000 +0100
+@@ -1,3 +1,6 @@
++# JBoss Defaults.
++# ---------------
++
+ hibernate.transaction.manager_lookup_class=org.hibernate.transaction.JBossTransactionManagerLookup
+ #hibernate.connection.release_mode=after_statement
+ #hibernate.transaction.flush_before_completion=false
+@@ -14,4 +17,20 @@
+ hibernate.jndi.java.naming.factory.url.pkgs=org.jboss.naming:org.jnp.interfaces
+ hibernate.bytecode.use_reflection_optimizer=false
+ # I don't think this is honored, but EJB3Deployer uses it
+-hibernate.bytecode.provider=javassist
+\ No newline at end of file
++hibernate.bytecode.provider=javassist
++
++
++
++# Safe Online Configuration.
++# --------------------------
++
++hibernate.hbm2ddl.auto=${safe-online.hibernate.hbm2ddl.auto}
++hibernate.dialect=org.hibernate.dialect.HSQLDialect
++#hibernate.dialect=org.hibernate.dialect.MySQLDialect
++#hibernate.dialect=net.link.safeonline.hibernate.dialect.Oracle11Dialect
++#hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
++
++hibernate.use_sql_comments=true
++hibernate.show_sql=${safe-online.show.sql}
++hibernate.jdbc.batch_size=${safe-online.batch.size}
++hibernate.bytecode.use_reflection_optimizer=${safe-online.hibernate.reflection.optimizer}

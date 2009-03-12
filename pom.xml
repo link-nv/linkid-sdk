@@ -10,7 +10,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Lin.k N.V.</name>
@@ -145,63 +145,6 @@
 			</modules>
 		</profile>
 
-		<!-- DATA SOURCE TYPE PROFILES -->
-		<!-- Profile to enable Hypersonic SQL as DS -->
-		<profile>
-			<id>ds:hsql</id>
-			<properties>
-				<safe-online.data.source.type>hsql
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:hsqldb:.
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>org.hibernate.dialect.HSQLDialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
-		<!-- Profile to enable MySQL as DS -->
-		<profile>
-			<id>ds:mysql</id>
-			<properties>
-				<safe-online.data.source.type>mysql
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:mysql://localhost:3306/safeonline
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>org.hibernate.dialect.MySQLDialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
-		<!-- Profile to enable PostGreSQL as DS -->
-		<profile>
-			<id>ds:postgresql</id>
-			<properties>
-				<safe-online.data.source.type>postgresql
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>
-					jdbc:postgresql://localhost:5432/safeonline
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>
-					org.hibernate.dialect.PostgreSQLDialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
-		<!-- Profile to enable Oracle as DS -->
-		<profile>
-			<id>ds:oracle</id>
-			<properties>
-				<safe-online.data.source.type>oracle
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>
-					jdbc:oracle:thin:@localhost:1521:safeonline
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>
-					net.link.safeonline.hibernate.dialect.Oracle11Dialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
 		<!-- DISTRIBUTION PROFILES -->
 		<!-- Profile to build base distribution -->
 		<profile>
@@ -222,7 +165,6 @@
 
 				<log.level>INFO</log.level>
 				<debug.mode>false</debug.mode>
-				<safe-online.show.sql>false</safe-online.show.sql>
 				<wicket.configuration>DEPLOYMENT</wicket.configuration>
 				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
 				<safe-online.hibernate.hbm2ddl.auto>validate
@@ -689,6 +631,7 @@
 				<debug.mode>true</debug.mode>
 				<safe-online.show.sql>true</safe-online.show.sql>
 				<safe-online.batch.size>0</safe-online.batch.size>
+                <safe-online.hibernate.reflection.optimizer>false</safe-online.hibernate.reflection.optimizer>
 			</properties>
 		</profile>
 
@@ -737,6 +680,8 @@
 		</safe-online.data.source.pass>
 		<safe-online.hibernate.hbm2ddl.auto>update
 		</safe-online.hibernate.hbm2ddl.auto>
+        <safe-online.hibernate.reflection.optimizer>true
+        </safe-online.hibernate.reflection.optimizer>
 
 		<safe-online.host.name>localhost</safe-online.host.name>
 		<safe-online.node.name>olas-${safe-online.host.name}

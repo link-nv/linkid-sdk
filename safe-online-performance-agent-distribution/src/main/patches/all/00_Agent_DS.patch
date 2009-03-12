@@ -60,15 +60,165 @@
  
       <!-- table name -->
       <attribute name="TableName">HILOSEQUENCES</attribute>
---- jboss/server/default/deploy/${safe-online.data.source.type}-safe-online-ds.xml	2008-12-09 11:41:05.000000000 +0100
-+++ jboss/server/default/deploy/${safe-online.data.source.type}-safe-online-ds.xml	2008-12-09 11:41:05.000000000 +0100
+--- jboss/server/default/deploy/safe-online-ds.xml	2008-12-09 11:41:05.000000000 +0100
++++ jboss/server/default/deploy/safe-online-ds.xml	2008-12-09 11:41:05.000000000 +0100
 @@ -4,2 +4,2 @@
 -		<jndi-name>${safe-online.data.source}</jndi-name>
 -		<connection-url>${safe-online.data.source.uri}</connection-url>
 +       <jndi-name>${safe-online.profiling.agent.data.source}</jndi-name>
 +		<connection-url>${safe-online.profiling.agent.data.source.uri}</connection-url>
---- jboss/server/default/deploy/jboss-messaging.sar/${safe-online.data.source.type}-persistence-service.xml	2008-12-09 16:28:19.000000000 +0100
-+++ jboss/server/default/deploy/jboss-messaging.sar/${safe-online.data.source.type}-persistence-service.xml	2008-12-09 16:28:48.000000000 +0100
+--- jboss/server/default/deploy/jboss-messaging.sar/hsql-persistence-service.xml	2008-12-09 16:28:19.000000000 +0100
++++ jboss/server/default/deploy/jboss-messaging.sar/hsql-persistence-service.xml	2008-12-09 16:28:48.000000000 +0100
+@@ -17,13 +17,13 @@
+       name="jboss.messaging:service=PersistenceManager"
+       xmbean-dd="xmdesc/JDBCPersistenceManager-xmbean.xml">
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+             
+       <!-- The datasource to use for the persistence manager -->
+                                 
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <!-- If true will attempt to create tables and indexes on every start-up -->
+                   
+@@ -47,7 +47,7 @@
+             
+       <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+       
+@@ -57,7 +57,7 @@
+       
+       <!-- The datasource used by the post office to access it's binding information -->                       
+       
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <!-- If true will attempt to create tables and indexes on every start-up -->
+                         
+@@ -75,11 +75,11 @@
+       name="jboss.messaging:service=JMSUserManager"
+       xmbean-dd="xmdesc/JMSUserManager-xmbean.xml">
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+       
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <attribute name="CreateTablesOnStartup">true</attribute>
+       
+--- jboss/server/default/deploy/jboss-messaging.sar/mysql-persistence-service.xml~	2008-12-09 16:28:19.000000000 +0100
++++ jboss/server/default/deploy/jboss-messaging.sar/mysql-persistence-service.xml~	2008-12-09 16:28:48.000000000 +0100
+@@ -17,13 +17,13 @@
+       name="jboss.messaging:service=PersistenceManager"
+       xmbean-dd="xmdesc/JDBCPersistenceManager-xmbean.xml">
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+             
+       <!-- The datasource to use for the persistence manager -->
+                                 
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <!-- If true will attempt to create tables and indexes on every start-up -->
+                   
+@@ -47,7 +47,7 @@
+             
+       <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+       
+@@ -57,7 +57,7 @@
+       
+       <!-- The datasource used by the post office to access it's binding information -->                       
+       
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <!-- If true will attempt to create tables and indexes on every start-up -->
+                         
+@@ -75,11 +75,11 @@
+       name="jboss.messaging:service=JMSUserManager"
+       xmbean-dd="xmdesc/JMSUserManager-xmbean.xml">
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+       
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <attribute name="CreateTablesOnStartup">true</attribute>
+       
+--- jboss/server/default/deploy/jboss-messaging.sar/oracle-persistence-service.xml~	2008-12-09 16:28:19.000000000 +0100
++++ jboss/server/default/deploy/jboss-messaging.sar/oracle-persistence-service.xml~	2008-12-09 16:28:48.000000000 +0100
+@@ -17,13 +17,13 @@
+       name="jboss.messaging:service=PersistenceManager"
+       xmbean-dd="xmdesc/JDBCPersistenceManager-xmbean.xml">
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+             
+       <!-- The datasource to use for the persistence manager -->
+                                 
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <!-- If true will attempt to create tables and indexes on every start-up -->
+                   
+@@ -47,7 +47,7 @@
+             
+       <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+       
+@@ -57,7 +57,7 @@
+       
+       <!-- The datasource used by the post office to access it's binding information -->                       
+       
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <!-- If true will attempt to create tables and indexes on every start-up -->
+                         
+@@ -75,11 +75,11 @@
+       name="jboss.messaging:service=JMSUserManager"
+       xmbean-dd="xmdesc/JMSUserManager-xmbean.xml">
+       
+-      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+       
+       <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+       
+-      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
++      <attribute name="DataSource">java:/${safe-online.profiling.agent.data.source}</attribute>
+       
+       <attribute name="CreateTablesOnStartup">true</attribute>
+       
+--- jboss/server/default/deploy/jboss-messaging.sar/postgresql-persistence-service.xml~	2008-12-09 16:28:19.000000000 +0100
++++ jboss/server/default/deploy/jboss-messaging.sar/postgresql-persistence-service.xml~	2008-12-09 16:28:48.000000000 +0100
 @@ -17,13 +17,13 @@
        name="jboss.messaging:service=PersistenceManager"
        xmbean-dd="xmdesc/JDBCPersistenceManager-xmbean.xml">

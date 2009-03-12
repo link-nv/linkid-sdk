@@ -107,7 +107,7 @@ public class AccountPage extends LayoutPage {
                         protected void populateItem(ListItem<BankTransactionEntity> transactionItem) {
 
                             final BankTransactionEntity transaction = transactionItem.getModelObject();
-                            int plusOrMinus = transaction.getSource().equals(account)? -1: 1;
+                            int plusOrMinus = transaction.getSource().getCode().equals(account.getCode())? -1: 1;
 
                             /* Transaction Details. */
                             transactionItem.add(new Label("target", transaction.getTarget()));
