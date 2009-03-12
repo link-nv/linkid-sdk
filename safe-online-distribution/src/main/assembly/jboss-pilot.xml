@@ -162,8 +162,8 @@
 			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
 
             <includes>
-                <include>*-persistence-service.xml</include>
-                <include>*-persistence-service.xml~</include>
+                <include>persistence-service.xml</include>
+                <include>*-persistence-service.xml.choice</include>
             </includes>
 		</fileSet>
 

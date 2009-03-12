@@ -22,19 +22,13 @@
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
 		</file>
 
-        <!-- The JBoss Messaging DS configuration           -> /jboss/server/default/deploy/jboss-messaging.sar -->
-		<file>
-            <source>target/classes/jboss/server/default/deploy/jboss-messaging.sar/${safe-online.data.source.type}-persistence-service.xml</source>
-			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
-		</file>
-		
 		<!-- Default error page for root webapp				-> /jboss/server/default/deploy/jboss-web.deployer/ROOT.war -->
 		<file>
 			<source>target/classes/jboss/server/default/deploy/jboss-web.deployer/ROOT.war/error.html</source>
 			<outputDirectory>jboss/server/default/deploy/jboss-web.deployer/ROOT.war</outputDirectory>
 		</file>
 
-		<!-- web.xml of root webapp				-> /jboss/server/default/deploy/jboss-web.deployer/ROOT.war/WEB-INF -->
+		<!-- web.xml of root webapp				            -> /jboss/server/default/deploy/jboss-web.deployer/ROOT.war/WEB-INF -->
 		<file>
 			<source>target/classes/jboss/server/default/deploy/jboss-web.deployer/ROOT.war/WEB-INF/web.xml</source>
 			<outputDirectory>jboss/server/default/deploy/jboss-web.deployer/ROOT.war/WEB-INF</outputDirectory>
@@ -77,8 +71,7 @@
 			</excludes>
 		</fileSet>
 
-        <!-- Re-include some things we do need, like jms-ra.rar & jbossall-client.jar
--->
+        <!-- Re-include some things we do need, like jms-ra.rar & jbossall-client.jar -->
 		<fileSet>
 			<directory>target/files/jboss-${jboss.version}/server/default/deploy/jms</directory>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
@@ -112,8 +105,7 @@
 			<fileMode>0500</fileMode>
 		</fileSet>
 
-        <!-- External JaxWS lib to replace bundled JaxWS    -> /jboss/server/default/lib
--->
+        <!-- External JaxWS lib to replace bundled JaxWS    -> /jboss/server/default/lib -->
 		<fileSet>
 			<directory>target/files/jaxws-ri/lib</directory>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
@@ -138,13 +130,12 @@
 			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
 
             <includes>
-                <include>*-persistence-service.xml</include>
-                <include>*-persistence-service.xml~</include>
+                <include>persistence-service.xml</include>
+                <include>*-persistence-service.xml.choice</include>
             </includes>
 		</fileSet>
 
-        <!-- External JBoss-Messaging lib                   -> /jboss/server/default/lib
--->
+        <!-- External JBoss-Messaging lib                   -> /jboss/server/default/lib -->
 		<fileSet>
 			<directory>target/files/jboss-messaging-${jboss-messaging.version}</directory>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
@@ -187,15 +178,13 @@
 			<outputDirectory>jboss/osgi</outputDirectory>
 		</fileSet>
 
-		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib
--->
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
 		<fileSet>
 			<directory>target/deploy</directory>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
 		</fileSet>
 
-        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib
--->
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
 		<fileSet>
 			<directory>target/dependency</directory>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>

@@ -57,6 +57,6 @@ emit "JBoss Messaging Persistence Service" --
     (
         cd "$scripts/../jboss/server/default/deploy/jboss-messaging.sar/" && \
         rm "persistence-service.xml" && \
-        ln -s "${dbms%db}-persistence-service~xml" "persistence-service.xml"
+        ln -s "${dbms%db}-persistence-service.xml.choice" "persistence-service.xml"
     )
 emit -$? || exit
