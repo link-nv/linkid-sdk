@@ -119,12 +119,7 @@
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 
-<<<<<<< HEAD:safe-online-distribution/src/main/assembly/jboss-base.xml
-        <!-- External JBoss-Messaging (not the default DS)  -> /jboss/server/default/deploy
--->
-=======
         <!-- External JBoss-Messaging (except persistence)  -> /jboss/server/default/deploy -->
->>>>>>> d460fd8c64d50f11f6b0ae32430c40799e09e76a:safe-online-distribution/src/main/assembly/jboss-base.xml
 		<fileSet>
 			<directory>target/files</directory>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
