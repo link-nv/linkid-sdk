@@ -22,6 +22,8 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -32,8 +34,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.model.Model;
 
@@ -99,20 +99,21 @@ public class UpdatePage extends TemplatePage {
 
     class RequestOtpForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
-        TextField<PhoneNumber>    mobileField;
+        private static final long            serialVersionUID = 1L;
+        CustomRequiredTextField<PhoneNumber> mobileField;
 
 
         public RequestOtpForm(String id) {
 
             super(id);
 
-            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
+            mobileField = new CustomRequiredTextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
                     ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             mobileField.setRequired(true);
+            mobileField.setRequiredMessageKey("errorMissingMobileNumber");
             add(mobileField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
 
             add(new Button(REQUEST_OTP_BUTTON_ID) {
 
@@ -184,17 +185,17 @@ public class UpdatePage extends TemplatePage {
 
     class UpdateForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long       serialVersionUID = 1L;
 
-        Model<String>             otp;
+        Model<String>                   otp;
 
-        Model<String>             oldPin;
+        Model<String>                   oldPin;
 
-        Model<String>             pin1;
+        Model<String>                   pin1;
 
-        Model<String>             pin2;
+        Model<String>                   pin2;
 
-        TextField<String>         otpField;
+        CustomRequiredTextField<String> otpField;
 
 
         @SuppressWarnings("unchecked")
@@ -202,23 +203,29 @@ public class UpdatePage extends TemplatePage {
 
             super(id);
 
-            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new CustomRequiredTextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
+            otpField.setRequiredMessageKey("errorMissingMobileOTP");
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField oldpinField = new PasswordTextField(OLDPIN_FIELD_ID, oldPin = new Model<String>());
+            final CustomRequiredPasswordTextField oldpinField = new CustomRequiredPasswordTextField(OLDPIN_FIELD_ID,
+                    oldPin = new Model<String>());
+            oldpinField.setRequiredMessageKey("errorMissingOldMobilePIN");
             add(oldpinField);
-            add(new ErrorComponentFeedbackLabel("oldpin_feedback", oldpinField, new Model<String>(localize("errorMissingOldMobilePIN"))));
+            add(new ErrorComponentFeedbackLabel("oldpin_feedback", oldpinField));
 
-            final PasswordTextField password1Field = new PasswordTextField(PIN1_FIELD_ID, pin1 = new Model<String>());
+            final CustomRequiredPasswordTextField password1Field = new CustomRequiredPasswordTextField(PIN1_FIELD_ID,
+                    pin1 = new Model<String>());
+            password1Field.setRequiredMessageKey("errorMissingNewMobilePIN");
             add(password1Field);
-            add(new ErrorComponentFeedbackLabel("pin1_feedback", password1Field, new Model<String>(localize("errorMissingNewMobilePIN"))));
+            add(new ErrorComponentFeedbackLabel("pin1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PIN2_FIELD_ID, pin2 = new Model<String>());
+            final CustomRequiredPasswordTextField password2Field = new CustomRequiredPasswordTextField(PIN2_FIELD_ID,
+                    pin2 = new Model<String>());
+            password2Field.setRequiredMessageKey("errorMissingRepeatNewMobilePIN");
             add(password2Field);
-            add(new ErrorComponentFeedbackLabel("pin2_feedback", password2Field, new Model<String>(
-                    localize("errorMissingRepeatNewMobilePIN"))));
+            add(new ErrorComponentFeedbackLabel("pin2_feedback", password2Field));
 
             add(new EqualPasswordInputValidator(password1Field, password2Field));
 
@@ -243,15 +250,15 @@ public class UpdatePage extends TemplatePage {
                     }
 
                     catch (SubjectNotFoundException e) {
-                        password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
+                        UpdateForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
-                        password1Field.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
+                        UpdateForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not registered",
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
-                        password1Field.error(getLocalizer().getString("errorDeviceDisabled", this));
+                        UpdateForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile " + protocolContext.getAttribute()
                                 + " disabled", LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {

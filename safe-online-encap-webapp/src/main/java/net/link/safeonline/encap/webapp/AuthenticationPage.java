@@ -26,6 +26,7 @@ import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
@@ -39,7 +40,6 @@ import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
@@ -163,17 +163,17 @@ public class AuthenticationPage extends TemplatePage {
 
     class AuthenticationForm extends Form<String> {
 
-        private static final long      serialVersionUID = 1L;
+        private static final long                    serialVersionUID = 1L;
 
-        Model<PhoneNumber>             mobile;
-        Model<String>                  otp;
+        Model<PhoneNumber>                           mobile;
+        Model<String>                                otp;
 
-        private TextField<PhoneNumber> mobileField;
-        private TextField<String>      otpField;
+        private CustomRequiredTextField<PhoneNumber> mobileField;
+        private CustomRequiredTextField<String>      otpField;
 
-        private Button                 challengeButton;
-        private Button                 loginButton;
-        private Button                 cancelButton;
+        private Button                               challengeButton;
+        private Button                               loginButton;
+        private Button                               cancelButton;
 
 
         @SuppressWarnings("unchecked")
@@ -182,9 +182,10 @@ public class AuthenticationPage extends TemplatePage {
             super(id);
 
             // Create our form's components.
-            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(new PhoneNumber(mobileValue)),
-                    PhoneNumber.class);
+            mobileField = new CustomRequiredTextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(new PhoneNumber(
+                    mobileValue)), PhoneNumber.class);
             mobileField.setRequired(true);
+            mobileField.setRequiredMessageKey("errorMissingMobileNumber");
             switch (goal) {
                 case AUTHENTICATE:
                     mobileField.setEnabled(true);
@@ -197,7 +198,8 @@ public class AuthenticationPage extends TemplatePage {
                 break;
             }
 
-            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new CustomRequiredTextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField.setRequiredMessageKey("errorMissingMobileOTP");
 
             challengeButton = new Button(CHALLENGE_BUTTON_ID) {
 
@@ -331,8 +333,8 @@ public class AuthenticationPage extends TemplatePage {
 
             // Add em to the page.
             add(mobileField, otpField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
             add(challengeButton, loginButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
         }

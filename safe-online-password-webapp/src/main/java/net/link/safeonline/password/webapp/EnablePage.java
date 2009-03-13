@@ -17,6 +17,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -27,7 +28,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.Model;
 
 
@@ -78,8 +78,10 @@ public class EnablePage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
+            final CustomRequiredPasswordTextField passwordField = new CustomRequiredPasswordTextField(PASSWORD_FIELD_ID,
+                    password = new Model<String>());
             add(passwordField);
+            passwordField.setRequiredMessageKey("errorMissingPassword");
             add(new ErrorComponentFeedbackLabel("password_feedback", passwordField, new Model<String>(localize("errorMissingPassword"))));
             focus(passwordField);
 
@@ -102,7 +104,7 @@ public class EnablePage extends TemplatePage {
                     }
 
                     catch (SubjectNotFoundException e) {
-                        passwordField.error(getLocalizer().getString("errorSubjectNotFound", this));
+                        EnableForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {

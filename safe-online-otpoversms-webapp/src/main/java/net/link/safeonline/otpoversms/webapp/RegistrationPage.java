@@ -22,6 +22,8 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
@@ -34,8 +36,6 @@ import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.model.Model;
 
@@ -90,18 +90,19 @@ public class RegistrationPage extends TemplatePage {
 
     class RequestOtpForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
-        TextField<PhoneNumber>    mobileField;
+        private static final long            serialVersionUID = 1L;
+        CustomRequiredTextField<PhoneNumber> mobileField;
 
 
         public RequestOtpForm(String id) {
 
             super(id);
 
-            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
+            mobileField = new CustomRequiredTextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
+            mobileField.setRequiredMessageKey("errorMissingMobileNumber");
             add(mobileField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
 
             add(new Button(REQUEST_OTP_BUTTON_ID) {
 
@@ -189,34 +190,36 @@ public class RegistrationPage extends TemplatePage {
 
     class VerifyOtpForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long       serialVersionUID = 1L;
 
-        Model<String>             otp;
+        Model<String>                   otp;
 
-        Model<String>             pin1;
+        Model<String>                   pin1;
 
-        Model<String>             pin2;
+        Model<String>                   pin2;
 
-        TextField<String>         otpField;
+        CustomRequiredTextField<String> otpField;
 
 
         public VerifyOtpForm(String id) {
 
             super(id);
 
-            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new CustomRequiredTextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
+            otpField.setRequiredMessageKey("errorMissingMobileOTP");
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField pin1Field = new PasswordTextField(PIN1_FIELD_ID, pin1 = new Model<String>());
+            final CustomRequiredPasswordTextField pin1Field = new CustomRequiredPasswordTextField(PIN1_FIELD_ID, pin1 = new Model<String>());
+            pin1Field.setRequiredMessageKey("errorMissingChooseMobilePIN");
             add(pin1Field);
-            add(new ErrorComponentFeedbackLabel("pin1_feedback", pin1Field, new Model<String>(localize("errorMissingChooseMobilePIN"))));
+            add(new ErrorComponentFeedbackLabel("pin1_feedback", pin1Field));
 
-            final PasswordTextField pin2Field = new PasswordTextField(PIN2_FIELD_ID, pin2 = new Model<String>());
+            final CustomRequiredPasswordTextField pin2Field = new CustomRequiredPasswordTextField(PIN2_FIELD_ID, pin2 = new Model<String>());
+            pin2Field.setRequiredMessageKey("errorMissingRepeatChooseMobilePIN");
             add(pin2Field);
-            add(new ErrorComponentFeedbackLabel("pin2_feedback", pin2Field,
-                    new Model<String>(localize("errorMissingRepeatChooseMobilePIN"))));
+            add(new ErrorComponentFeedbackLabel("pin2_feedback", pin2Field));
 
             add(new EqualPasswordInputValidator(pin1Field, pin2Field));
 

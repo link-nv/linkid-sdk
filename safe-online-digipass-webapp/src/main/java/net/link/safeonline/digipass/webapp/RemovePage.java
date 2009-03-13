@@ -13,6 +13,7 @@ import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -24,7 +25,6 @@ import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -80,11 +80,11 @@ public class RemovePage extends TemplatePage {
 
     class GetForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long       serialVersionUID = 1L;
 
-        Model<String>             login;
+        Model<String>                   login;
 
-        TextField<String>         loginField;
+        CustomRequiredTextField<String> loginField;
 
 
         @SuppressWarnings("unchecked")
@@ -92,8 +92,9 @@ public class RemovePage extends TemplatePage {
 
             super(id);
 
-            loginField = new TextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
+            loginField = new CustomRequiredTextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
+            loginField.setRequiredMessageKey("errorMissingLoginName");
             loginField.setEnabled(digipassAttributes.isEmpty());
 
             add(loginField);

@@ -17,6 +17,7 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
@@ -28,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
@@ -136,18 +136,18 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, password1 = new Model<String>());
-
+            final CustomRequiredPasswordTextField password1Field = new CustomRequiredPasswordTextField(PASSWORD1_FIELD_ID,
+                    password1 = new Model<String>());
+            password1Field.setRequiredMessageKey("errorMissingChoosePassword");
             add(password1Field);
             focus(password1Field);
-            add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field, new Model<String>(
-                    localize("errorMissingChoosePassword"))));
+            add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, password2 = new Model<String>());
-
+            final CustomRequiredPasswordTextField password2Field = new CustomRequiredPasswordTextField(PASSWORD2_FIELD_ID,
+                    password2 = new Model<String>());
+            password2Field.setRequiredMessageKey("errorMissingRepeatChosenPassword");
             add(password2Field);
-            add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field, new Model<String>(
-                    localize("errorMissingRepeatChosenPassword"))));
+            add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field));
 
             add(new EqualPasswordInputValidator(password1Field, password2Field));
 

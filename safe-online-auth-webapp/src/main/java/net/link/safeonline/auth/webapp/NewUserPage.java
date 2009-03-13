@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
@@ -33,7 +34,6 @@ import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
@@ -106,16 +106,20 @@ public class NewUserPage extends AuthenticationTemplatePage {
             super(id);
             setMarkupId(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, login = new Model<String>());
+            final CustomRequiredTextField<String> loginField = new CustomRequiredTextField<String>(LOGIN_NAME_FIELD_ID,
+                    login = new Model<String>());
             loginField.setRequired(true);
+            loginField.setRequiredMessageKey("errorMissingLoginName");
             add(loginField);
             focus(loginField);
-            add(new ErrorComponentFeedbackLabel("login_feedback", loginField, new Model<String>(localize("errorMissingLoginName"))));
+            add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
 
-            final TextField<String> captchaField = new TextField<String>(CAPTCHA_FIELD_ID, captcha = new Model<String>());
+            final CustomRequiredTextField<String> captchaField = new CustomRequiredTextField<String>(CAPTCHA_FIELD_ID,
+                    captcha = new Model<String>());
             captchaField.setRequired(true);
+            captchaField.setRequiredMessageKey("errorMissingCaptcha");
             add(captchaField);
-            add(new ErrorComponentFeedbackLabel("captcha_feedback", captchaField, new Model<String>(localize("errorMissingCaptcha"))));
+            add(new ErrorComponentFeedbackLabel("captcha_feedback", captchaField));
 
             final Image captchaImage = new Image(CAPTCHA_IMAGE_ID, "override");
             captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
@@ -123,7 +127,6 @@ public class NewUserPage extends AuthenticationTemplatePage {
             captchaImage.setOutputMarkupId(true);
             add(captchaImage);
 
-            // TODO: something wrong when trying to refresh for the second time ...
             add(new AjaxLink(CAPTCHA_REFRESH_ID) {
 
                 private static final long serialVersionUID = 1L;

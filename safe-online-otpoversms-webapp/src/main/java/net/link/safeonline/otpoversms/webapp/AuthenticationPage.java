@@ -26,6 +26,8 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
@@ -38,8 +40,6 @@ import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
@@ -108,18 +108,19 @@ public class AuthenticationPage extends TemplatePage {
 
     class RequestOtpForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
-        TextField<PhoneNumber>    mobileField;
+        private static final long            serialVersionUID = 1L;
+        CustomRequiredTextField<PhoneNumber> mobileField;
 
 
         public RequestOtpForm(String id) {
 
             super(id);
 
-            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
+            mobileField = new CustomRequiredTextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
+            mobileField.setRequiredMessageKey("errorMissingMobileNumber");
             add(mobileField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
 
             add(new Button(REQUEST_OTP_BUTTON_ID) {
 
@@ -202,27 +203,29 @@ public class AuthenticationPage extends TemplatePage {
 
     class VerifyOtpForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long       serialVersionUID = 1L;
 
-        Model<String>             otp;
+        Model<String>                   otp;
 
-        Model<String>             pin;
+        Model<String>                   pin;
 
-        TextField<String>         otpField;
+        CustomRequiredTextField<String> otpField;
 
 
         public VerifyOtpForm(String id) {
 
             super(id);
 
-            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new CustomRequiredTextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
+            otpField.setRequiredMessageKey("errorMissingMobileOTP");
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
+            final CustomRequiredPasswordTextField pinField = new CustomRequiredPasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
+            pinField.setRequiredMessageKey("errorMissingMobilePIN");
             add(pinField);
-            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField, new Model<String>(localize("errorMissingMobilePIN"))));
+            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField));
 
             add(new Button(LOGIN_BUTTON_ID) {
 
@@ -246,7 +249,7 @@ public class AuthenticationPage extends TemplatePage {
                         VerifyOtpForm.this.error(localize("errorSubjectNotFound"));
                         HelpdeskLogger.add(localize("subject not found: %s", mobile.getObject()), LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
-                        pinField.error(localize("errorDeviceDisabled"));
+                        VerifyOtpForm.this.error(localize("errorDeviceDisabled"));
                         HelpdeskLogger.add(localize("login: mobile %s disabled", mobile.getObject()), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         VerifyOtpForm.this.error(localize("errorDeviceRegistrationNotFound"));

@@ -24,6 +24,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -76,17 +77,17 @@ public class RegistrationPage extends TemplatePage {
 
     class RegisterForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long            serialVersionUID = 1L;
 
-        Model<PhoneNumber>        mobile;
-        Model<String>             activation;
+        Model<PhoneNumber>                   mobile;
+        Model<String>                        activation;
 
-        TextField<PhoneNumber>    mobileField;
-        TextField<String>         activationField;
+        CustomRequiredTextField<PhoneNumber> mobileField;
+        TextField<String>                    activationField;
 
-        private Button            activateButton;
-        private Button            registerButton;
-        private Button            cancelButton;
+        private Button                       activateButton;
+        private Button                       registerButton;
+        private Button                       cancelButton;
 
 
         @SuppressWarnings("unchecked")
@@ -94,8 +95,9 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
+            mobileField = new CustomRequiredTextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
+            mobileField.setRequiredMessageKey("errorMissingMobileNumber");
 
             activationField = new TextField(ACTIVATION_FIELD_ID, activation = new Model<String>());
             activationField.setEnabled(false);
@@ -166,7 +168,7 @@ public class RegistrationPage extends TemplatePage {
 
             // Add em to the page.
             add(mobileField, activationField);
-            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
+            add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
             add(activateButton, registerButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
             focus(mobileField);

@@ -26,6 +26,8 @@ import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
@@ -38,8 +40,6 @@ import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
@@ -119,17 +119,19 @@ public class AuthenticationPage extends TemplatePage {
             super(id);
             setMarkupId(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, login = new Model<String>());
+            final CustomRequiredTextField<String> loginField = new CustomRequiredTextField<String>(LOGIN_NAME_FIELD_ID,
+                    login = new Model<String>());
             loginField.setRequired(true);
+            loginField.setRequiredMessageKey("errorMissingLoginName");
             add(loginField);
             focus(loginField);
-            add(new ErrorComponentFeedbackLabel(LOGIN_NAME_FEEDBACK_FIELD_ID, loginField, new Model<String>(
-                    localize("errorMissingLoginName"))));
+            add(new ErrorComponentFeedbackLabel(LOGIN_NAME_FEEDBACK_FIELD_ID, loginField));
 
-            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
+            final CustomRequiredPasswordTextField passwordField = new CustomRequiredPasswordTextField(PASSWORD_FIELD_ID,
+                    password = new Model<String>());
+            passwordField.setRequiredMessageKey("errorMissingPassword");
             add(passwordField);
-            add(new ErrorComponentFeedbackLabel(PASSWORD_FEEDBACK_FIELD_ID, passwordField, new Model<String>(
-                    localize("errorMissingPassword"))));
+            add(new ErrorComponentFeedbackLabel(PASSWORD_FEEDBACK_FIELD_ID, passwordField));
 
             add(new Button(LOGIN_BUTTON_ID) {
 

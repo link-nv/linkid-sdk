@@ -15,6 +15,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.option.OptionDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -29,7 +30,6 @@ import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.Model;
 
 
@@ -96,14 +96,17 @@ public class UpdatePage extends TemplatePage implements IHeaderContributor {
             setMarkupId("progressform");
             setOutputMarkupId(true);
 
-            PasswordTextField oldPinField = new PasswordTextField(OLD_PIN_FIELD_ID, oldPin = new Model<String>());
-            oldPinField.setRequired(true);
+            CustomRequiredPasswordTextField oldPinField = new CustomRequiredPasswordTextField(OLD_PIN_FIELD_ID,
+                    oldPin = new Model<String>());
+            oldPinField.setRequiredMessageKey("errorMissingOldPIN");
 
-            PasswordTextField newPinField = new PasswordTextField(NEW_PIN_FIELD_ID, newPin = new Model<String>());
-            newPinField.setRequired(true);
+            CustomRequiredPasswordTextField newPinField = new CustomRequiredPasswordTextField(NEW_PIN_FIELD_ID,
+                    newPin = new Model<String>());
+            newPinField.setRequiredMessageKey("errorMissingNewPIN");
 
-            PasswordTextField newPinConfirmField = new PasswordTextField(NEW_PIN_CONFIRM_FIELD_ID, newPinConfirm = new Model<String>());
-            newPinConfirmField.setRequired(true);
+            CustomRequiredPasswordTextField newPinConfirmField = new CustomRequiredPasswordTextField(NEW_PIN_CONFIRM_FIELD_ID,
+                    newPinConfirm = new Model<String>());
+            newPinConfirmField.setRequiredMessageKey("errorMissingRepeatNewPIN");
 
             Button updateButton = new Button(UPDATE_BUTTON_ID);
             updateButton.setMarkupId("update");
@@ -125,10 +128,9 @@ public class UpdatePage extends TemplatePage implements IHeaderContributor {
 
             // Add em to the page.
             add(oldPinField, newPinField, newPinConfirmField, updateButton, cancelButton);
-            add(new ErrorComponentFeedbackLabel("oldPin_feedback", oldPinField, new Model<String>(localize("errorMissingOldPIN"))));
-            add(new ErrorComponentFeedbackLabel("newPin_feedback", newPinField, new Model<String>(localize("errorMissingNewPIN"))));
-            add(new ErrorComponentFeedbackLabel("newPinConfirm_feedback", newPinConfirmField, new Model<String>(
-                    localize("errorMissingRepeatNewPIN"))));
+            add(new ErrorComponentFeedbackLabel("oldPin_feedback", oldPinField));
+            add(new ErrorComponentFeedbackLabel("newPin_feedback", newPinField));
+            add(new ErrorComponentFeedbackLabel("newPinConfirm_feedback", newPinConfirmField));
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
             focus(oldPinField);
         }

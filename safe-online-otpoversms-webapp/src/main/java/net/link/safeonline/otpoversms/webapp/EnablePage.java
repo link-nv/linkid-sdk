@@ -21,6 +21,8 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.webapp.components.CustomRequiredPasswordTextField;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -31,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 
@@ -182,13 +183,13 @@ public class EnablePage extends TemplatePage {
 
     class EnableForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long       serialVersionUID = 1L;
 
-        Model<String>             otp;
+        Model<String>                   otp;
 
-        Model<String>             pin;
+        Model<String>                   pin;
 
-        TextField<String>         otpField;
+        CustomRequiredTextField<String> otpField;
 
 
         @SuppressWarnings("unchecked")
@@ -196,12 +197,14 @@ public class EnablePage extends TemplatePage {
 
             super(id);
 
-            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new CustomRequiredTextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
+            otpField.setRequiredMessageKey("errorMissingMobileOTP");
             add(otpField);
-            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField, new Model<String>(localize("errorMissingMobileOTP"))));
+            add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
+            final CustomRequiredPasswordTextField pinField = new CustomRequiredPasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
+            pinField.setRequiredMessageKey("errorMissingMobilePIN");
             add(pinField);
             add(new ErrorComponentFeedbackLabel("pin_feedback", pinField, new Model<String>(localize("errorMissingMobilePIN"))));
 
@@ -230,10 +233,10 @@ public class EnablePage extends TemplatePage {
                         HelpdeskLogger.add("mobile otp: verification failed for mobile " + protocolContext.getAttribute(),
                                 LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
-                        pinField.error(getLocalizer().getString("errorSubjectNotFound", this));
+                        EnableForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add("enable: subject not found", LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
-                        pinField.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
+                        EnableForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add("enable: device registration not found", LogLevelType.ERROR);
                     }
                 }

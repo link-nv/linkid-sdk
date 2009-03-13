@@ -17,6 +17,7 @@ import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -27,7 +28,6 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.StringValidator;
 
@@ -83,15 +83,19 @@ public class RegisterPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
+            final CustomRequiredTextField<String> loginField = new CustomRequiredTextField<String>(LOGIN_FIELD_ID,
+                    login = new Model<String>());
             loginField.setRequired(true);
+            loginField.setRequiredMessageKey("errorMissingLoginName");
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
             focus(loginField);
 
-            final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, serialNumber = new Model<String>());
+            final CustomRequiredTextField serialNumberField = new CustomRequiredTextField(SERIALNUMBER_FIELD_ID,
+                    serialNumber = new Model<String>());
             serialNumberField.setRequired(true);
+            serialNumberField.setRequiredMessageKey("errorMissingSerialNumber");
             serialNumberField.add(StringValidator.lengthBetween(8, 12));
 
             add(serialNumberField);
