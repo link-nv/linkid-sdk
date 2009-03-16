@@ -6,17 +6,17 @@
 
 	<display-name>Siemens Auth WS Acceptance Test Web Service Runtime</display-name>
 
+    <!-- Application Event Listeners -->
 	<listener>
 		<listener-class>
 			com.sun.xml.ws.transport.http.servlet.WSServletContextListener
 		</listener-class>
 	</listener>
 
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>JAX-WS Servlet</servlet-name>
-		<servlet-class>
-			com.sun.xml.ws.transport.http.servlet.WSServlet
-		</servlet-class>
+		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -25,6 +25,7 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
+    <!-- Application Session Configuration -->
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>

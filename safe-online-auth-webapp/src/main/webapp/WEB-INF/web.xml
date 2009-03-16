@@ -7,70 +7,50 @@
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
+
 	<display-name>Olas Authentication Web Application</display-name>
-	&web-common-wicket;
-	&web-error-codes;
+
+    <!-- Application Context Parameters -->
+	<context-param>
+		<param-name>CommercialName</param-name>
+		<param-value>${safe-online.commercial.name}</param-value>
+	</context-param>
+	<context-param>
+		<description>Point of return for remote device issuers when authenticating</description>
+		<param-name>DeviceAuthenticationServiceUrl</param-name>
+		<param-value>/device/auth</param-value>
+	</context-param>
+	<context-param>
+		<description>Point of return for remote device issuers when registering</description>
+		<param-name>DeviceRegistrationServiceUrl</param-name>
+		<param-value>/device/reg</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ApplicationName</param-name>
+		<param-value>${safe-online.auth.webapp.name}</param-value>
+	</context-param>
+
+    <!-- Application Filter Definitions And Mappings -->
 	<filter>
 		<filter-name>WicketFilter</filter-name>
 		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+
 		<init-param>
 			<param-name>applicationClassName</param-name>
-			<param-value>
-				net.link.safeonline.auth.webapp.AuthenticationApplication
-		</param-value>
+			<param-value>net.link.safeonline.auth.webapp.AuthenticationApplication</param-value>
 		</init-param>
 		<init-param>
 			<param-name>configuration</param-name>
 			<param-value>${wicket.configuration}</param-value>
 		</init-param>
 	</filter>
-	<filter-mapping>
-		<filter-name>WicketFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>ERROR</dispatcher>
-	</filter-mapping>
-	<listener>
-		<listener-class>
-			net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
-	</listener>
-	<listener>
-		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
-	</listener>
-	<context-param>
-		<param-name>CommercialName</param-name>
-		<param-value>${safe-online.commercial.name}</param-value>
-	</context-param>
-	<context-param>
-		<description>Point of return for remote device issuers when
-			authenticating</description>
-		<param-name>DeviceAuthenticationServiceUrl</param-name>
-		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/auth 
-		</param-value>
-	</context-param>
-	<context-param>
-		<description>Point of return for remote device issuers when
-			registrating</description>
-		<param-name>DeviceRegistrationServiceUrl</param-name>
-		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/reg 
-		</param-value>
-	</context-param>
-	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value> ${safe-online.host.auth.basename} </param-value>
-	</context-param>
-	<context-param>
-		<param-name>ApplicationName</param-name>
-		<param-value>${safe-online.auth.webapp.name}</param-value>
-	</context-param>
 	<filter>
 		<filter-name>TimeoutFilter</filter-name>
 		<filter-class>net.link.safeonline.auth.filter.TimeoutFilter</filter-class>
+
 		<init-param>
 			<param-name>TimeoutPath</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.auth.webapp.name}/timeout</param-value>
+			<param-value>/timeout</param-value>
 		</init-param>
 		<init-param>
 			<param-name>CookiePath</param-name>
@@ -80,13 +60,21 @@
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
+
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
 		</init-param>
 	</filter>
-
 	<!-- ${safe-online.profiling.filter} -->
+
+	<filter-mapping>
+		<filter-name>WicketFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
 	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -123,184 +111,156 @@
 		<filter-name>TimeoutFilter</filter-name>
 		<url-pattern>/pki/cert</url-pattern>
 	</filter-mapping>
+
+    <!-- Application Event Listeners -->
+	<listener>
+		<listener-class>net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
+	</listener>
+	<listener>
+		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
+	</listener>
+
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.LoginServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>LoginServlet</servlet-name>
-		<url-pattern>/login</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthnEntryServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.AuthnEntryServlet</servlet-class>
+
 		<init-param>
 			<param-name>LoginUrl</param-name>
 			<param-value>login</param-value>
 		</init-param>
 		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry 
-			</param-value>
-		</init-param>
-		<init-param>
 			<param-name>CookiePath</param-name>
 			<param-value>/${safe-online.auth.webapp.name}</param-value>
 		</init-param>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>AuthnEntryServlet</servlet-name>
-		<url-pattern>/entry</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.ExitServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>ExitServlet</servlet-name>
-		<url-pattern>/exit</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>LogoutEntryServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.LogoutEntryServlet</servlet-class>
+
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
-		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry 
-			</param-value>
+			<param-value>/logoutexit</param-value>
 		</init-param>
 		<init-param>
 			<param-name>CookiePath</param-name>
 			<param-value>/${safe-online.auth.webapp.name}</param-value>
 		</init-param>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>LogoutEntryServlet</servlet-name>
-		<url-pattern>/logoutentry</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>LogoutExitServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.LogoutExitServlet</servlet-class>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit 
-			</param-value>
-		</init-param>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>LogoutExitServlet</servlet-name>
-		<url-pattern>/logoutexit</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>Kaptcha</servlet-name>
 		<servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>Kaptcha</servlet-name>
-		<url-pattern>/captcha.jpg</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.DeviceLandingServlet</servlet-class>
+
 		<init-param>
 			<param-name>LoginUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
+			<param-value>/login</param-value>
 		</init-param>
 		<init-param>
 			<param-name>TryAnotherDeviceUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/all-devices</param-value>
-		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/auth 
-			</param-value>
+			<param-value>/all-devices</param-value>
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error</param-value>
+			<param-value>/device-error</param-value>
 		</init-param>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>DeviceLandingServlet</servlet-name>
-		<url-pattern>/device/auth</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet</servlet-class>
+
 		<init-param>
 			<param-name>RegisterDeviceUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/register-device</param-value>
+			<param-value>/register-device</param-value>
 		</init-param>
 		<init-param>
 			<param-name>NewUserDeviceUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/new-user-device</param-value>
+			<param-value>/new-user-device</param-value>
 		</init-param>
 		<init-param>
 			<param-name>LoginUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
-		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/reg 
-			</param-value>
+			<param-value>/login</param-value>
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error</param-value>
+			<param-value>/device-error</param-value>
 		</init-param>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
-		<url-pattern>/device/reg</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>PkiServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.PkiServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>Logo Servlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.ApplicationLogoServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Style Servlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AuthnEntryServlet</servlet-name>
+		<url-pattern>/entry</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ExitServlet</servlet-name>
+		<url-pattern>/exit</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>LogoutEntryServlet</servlet-name>
+		<url-pattern>/logoutentry</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>LogoutExitServlet</servlet-name>
+		<url-pattern>/logoutexit</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Kaptcha</servlet-name>
+		<url-pattern>/captcha.jpg</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<url-pattern>/device/auth</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
+		<url-pattern>/device/reg</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PkiServlet</servlet-name>
 		<url-pattern>/pki/cert</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>Logo Servlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationLogoServlet</servlet-class>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>Logo Servlet</servlet-name>
 		<url-pattern>/logo</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>Style Servlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>
 		<url-pattern>/theme.css</url-pattern>
 	</servlet-mapping>
+
+	&web-common-wicket;
+
+	&web-error-codes;
+
 </web-app>

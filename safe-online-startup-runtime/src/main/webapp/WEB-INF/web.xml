@@ -6,18 +6,16 @@
 
 	<display-name>SafeOnline Startup</display-name>
 
-	<listener>
-		<listener-class>
-			net.link.safeonline.listener.StartupServletContextListener
-		</listener-class>
-	</listener>
-
-	<context-param>
-		<description>
-			The JNDI prefix used by startable components.
-		</description>
+    <!-- Application Context Parameters -->
+ 	<context-param>
+		<description>The JNDI prefix used by startable components.</description>
 		<param-name>StartableJndiPrefix</param-name>
 		<param-value>SafeOnline/startup</param-value>
 	</context-param>
+
+    <!-- Application Event Listeners -->
+	<listener>
+		<listener-class>net.link.safeonline.listener.StartupServletContextListener</listener-class>
+	</listener>
 
 </web-app>

@@ -5,6 +5,7 @@
 
 	<display-name>Siemens Acceptance Test WS Runtime</display-name>
 
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>Siemens Acceptance Test WS</servlet-name>
 		<servlet-class>net.link.safeonline.siemens.metro.ws.MetroPortImpl</servlet-class>

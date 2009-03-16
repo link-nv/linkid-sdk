@@ -5,11 +5,15 @@
 
 	<display-name>SafeOnline OTP over SMS Web Service Runtime</display-name>
 
+    <!-- Application Filter Definitions And Mappings -->
+	<!--  ${safe-online.profiling.filter} -->
+
+    <!-- Application Event Listeners -->
 	<listener>
-		<listener-class>
-			com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+		<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
 	</listener>
 
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>JAX-WS Servlet</servlet-name>
 		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
@@ -21,10 +25,9 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
+    <!-- Application Session Configuration -->
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>
-
-	<!--  ${safe-online.profiling.filter} -->
 
 </web-app>

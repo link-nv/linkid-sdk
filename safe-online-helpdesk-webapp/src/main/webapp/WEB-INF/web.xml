@@ -2,22 +2,10 @@
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
+
 	<display-name>Olas Helpdesk Web Application</display-name>
-	<security-constraint>
-		<display-name>Restrict Viewing XHTML Documents</display-name>
-		<web-resource-collection>
-			<web-resource-name>XHTML</web-resource-name>
-			<url-pattern>*.xhtml</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-		</auth-constraint>
-	</security-constraint>
-	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-	</listener>
+
+    <!-- Application Context Parameters -->
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
@@ -34,9 +22,6 @@
 		<param-name>org.jboss.seam.core.init.debug</param-name>
 		<param-value>${debug.mode}</param-value>
 	</context-param>
-	<session-config>
-		<session-timeout>${sessionTimeout}</session-timeout>
-	</session-config>
 	<context-param>
 		<description>URL used to initiate a login process.</description>
 		<param-name>AuthenticationServiceUrl</param-name>
@@ -48,9 +33,7 @@
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry</param-value>
 	</context-param>
 	<context-param>
-		<description>URL used to finalize a logout request sent by the
-			authentication webapp following a single logout process by another
-			application.</description>
+		<description>URL used to finalize a logout request sent by the authentication webapp following a single logout process by another application.</description>
 		<param-name>LogoutExitServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
 	</context-param>
@@ -89,28 +72,24 @@
 	<context-param>
 		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
-		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/login 
-		</param-value>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/login</param-value>
 	</context-param>
 	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
-		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/logout 
-		</param-value>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/logout</param-value>
 	</context-param>
 	<context-param>
 		<description>Url to redirect to after successful authentication</description>
 		<param-name>TargetBaseUrl</param-name>
-		<param-value>
-			${safe-online.host.basename}/${safe-online.helpdesk.webapp.name}/ 
-		</param-value>
+		<param-value>${safe-online.host.basename}/${safe-online.helpdesk.webapp.name}/</param-value>
 	</context-param>
 	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>${safe-online.host.auth.basename}</param-value>
 	</context-param>
+
+    <!-- Application Filter Definitions And Mappings -->
 	<filter>
 		<filter-name>Seam Filter</filter-name>
 		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
@@ -126,6 +105,7 @@
 	<filter>
 		<filter-name>ExceptionFilter</filter-name>
 		<filter-class>net.link.safeonline.webapp.filter.ExceptionFilter</filter-class>
+
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>${safe-online.host.basename}/${safe-online.helpdesk.webapp.name}/error.seam</param-value>
@@ -134,6 +114,7 @@
 	<filter>
 		<filter-name>TimeoutFilter</filter-name>
 		<filter-class>net.link.safeonline.webapp.filter.TimeoutFilter</filter-class>
+
 		<init-param>
 			<param-name>TimeoutPath</param-name>
 			<param-value>${safe-online.host.basename}/${safe-online.helpdesk.webapp.name}/timeout.seam</param-value>
@@ -146,6 +127,7 @@
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
+
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
@@ -167,6 +149,7 @@
 			<param-value>/${safe-online.helpdesk.webapp.name}/error.seam</param-value>
 		</init-param>
 	</filter>
+
 	<filter-mapping>
 		<filter-name>ExceptionFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -203,6 +186,16 @@
 		<filter-name>Seam Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+    <!-- Application Event Listeners -->
+   	<listener>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+	</listener>
+
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -211,15 +204,7 @@
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>net.link.safeonline.sdk.auth.servlet.LoginServlet</servlet-class>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml response.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/login 
-			</param-value>
-		</init-param>
+
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
@@ -228,24 +213,14 @@
 	<servlet>
 		<servlet-name>LogoutServlet</servlet-name>
 		<servlet-class>net.link.safeonline.sdk.auth.servlet.LogoutServlet</servlet-class>
+
 		<init-param>
 			<param-name>LogoutUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/helpdesklogout 
-			</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/helpdesklogout</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
-		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml response.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/logout 
-			</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
@@ -253,11 +228,14 @@
 		<servlet-class>net.link.safeonline.webapp.resources.LogoutServlet</servlet-class>
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/logout 
-			</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/logout</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+		<servlet-name>Style Servlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
@@ -274,15 +252,17 @@
 		<servlet-name>HelpdeskLogoutServlet</servlet-name>
 		<url-pattern>/helpdesklogout</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>Style Servlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>
 		<url-pattern>/theme.css</url-pattern>
 	</servlet-mapping>
+
+    <!-- Application Session Configuration -->
+	<session-config>
+		<session-timeout>${sessionTimeout}</session-timeout>
+	</session-config>
+
+    <!-- Application Error Pages -->
 	<error-page>
 		<error-code>400</error-code>
 		<location>/error.seam</location>
@@ -371,4 +351,16 @@
 		<error-code>504</error-code>
 		<location>/error.seam</location>
 	</error-page>
+
+    <!-- Application Security Configuration -->
+	<security-constraint>
+		<display-name>Restrict Viewing XHTML Documents</display-name>
+
+		<web-resource-collection>
+			<web-resource-name>XHTML</web-resource-name>
+			<url-pattern>*.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint />
+	</security-constraint>
+
 </web-app>
