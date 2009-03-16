@@ -4,12 +4,14 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.WicketPage;
+import net.link.safeonline.wicket.web.OlasApplicationPage;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.wicket.behavior.HeaderContributor;
+import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
 
 
-public abstract class TemplatePage extends WicketPage {
+public abstract class TemplatePage extends OlasApplicationPage {
 
     public static final String HEADER_ID  = "header_border";
     public static final String CONTENT_ID = "content_border";
@@ -47,6 +49,16 @@ public abstract class TemplatePage extends WicketPage {
      * @return The main title of the page.
      */
     protected abstract String getPageTitle();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onOlasAuthenticated() {
+
+        throw new AbortWithWebErrorCodeException(HttpStatus.SC_NOT_IMPLEMENTED);
+
+    }
 
     /**
      * Logout link is <b>DISABLED</b> by default using this method.

@@ -5,11 +5,12 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.pages;
 
 import javax.ejb.EJB;
 
 import net.link.safeonline.auth.servlet.LoginServlet;
+import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;

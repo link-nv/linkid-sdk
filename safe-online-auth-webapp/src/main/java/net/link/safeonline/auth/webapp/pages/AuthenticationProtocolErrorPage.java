@@ -5,8 +5,9 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.pages;
 
+import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.basic.Label;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.pages;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,17 +13,17 @@ import java.util.List;
 import javax.ejb.EJB;
 
 import net.link.safeonline.auth.AuthenticationUtils;
-import net.link.safeonline.authentication.ProtocolContext;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.webapp.DeviceDO;
+import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
-import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
+import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
@@ -31,34 +31,32 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.RequestCycle;
-import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
 
 
-public class MainPage extends AuthenticationTemplatePage {
+public class NewUserDevicePage extends AuthenticationTemplatePage {
 
-    static final Log           LOG                        = LogFactory.getLog(MainPage.class);
+    static final Log           LOG                     = LogFactory.getLog(NewUserDevicePage.class);
 
-    private static final long  serialVersionUID           = 1L;
+    private static final long  serialVersionUID        = 1L;
 
-    public static final String PATH                       = "main";
+    public static final String PATH                    = "new-user-device";
 
-    public static final String NEW_USER_LINK_ID           = "new_user";
-    public static final String TRY_ANOTHER_DEVICE_LINK_ID = "try_another_device";
+    public static final String LOGIN_LABEL_ID          = "loginLabel";
 
-    public static final String MAIN_FORM_ID               = "main_form";
-    public static final String DEVICE_GROUP_ID            = "deviceGroup";
-    public static final String DEVICES_ID                 = "devices";
-    public static final String NEXT_BUTTON_ID             = "next";
+    public static final String NEW_USER_DEVICE_FORM_ID = "new_user_device_form";
+    public static final String DEVICE_GROUP_ID         = "deviceGroup";
+    public static final String DEVICES_ID              = "devices";
+    public static final String NEXT_BUTTON_ID          = "next";
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     DevicePolicyService        devicePolicyService;
@@ -66,55 +64,25 @@ public class MainPage extends AuthenticationTemplatePage {
     List<DeviceDO>             devices;
 
 
-    public MainPage() {
+    public NewUserDevicePage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
         devices = new LinkedList<DeviceDO>();
-        List<DeviceEntity> deviceEntities;
-        try {
-            deviceEntities = devicePolicyService.getDevicePolicy(protocolContext.getApplicationId(), protocolContext.getRequiredDevices());
-        } catch (ApplicationNotFoundException e) {
-            error(localize("errorApplicationNotFound"));
-            return;
-        } catch (EmptyDevicePolicyException e) {
-            error(localize("errorEmptyDevicePolicy"));
-            return;
-        }
+        List<DeviceEntity> deviceEntities = devicePolicyService.getDevices();
         for (DeviceEntity deviceEntity : deviceEntities) {
             String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
             devices.add(new DeviceDO(deviceEntity, friendlyName));
         }
 
-        Link<String> newUserLink = new Link<String>(NEW_USER_LINK_ID) {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                throw new RestartResponseException(new NewUserPage());
-            }
-        };
-        Link<String> tryAnotherDeviceLink = new Link<String>(TRY_ANOTHER_DEVICE_LINK_ID) {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                throw new RestartResponseException(new AllDevicesPage());
-            }
-        };
-
-        getSidebar(localize("helpAuthenticationMain")).add(newUserLink, tryAnotherDeviceLink);
+        getSidebar(localize("helpNewUserDevice"));
 
         getHeader();
 
-        getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.select));
+        getContent().add(new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.initial));
 
-        getContent().add(new MainForm(MAIN_FORM_ID));
+        String loginLabel = localize("%l: %s", "login", LoginManager.getLogin(WicketUtil.getHttpSession(getRequest())));
+        getContent().add(new Label(LOGIN_LABEL_ID, loginLabel));
+
+        getContent().add(new NewUserDeviceForm(NEW_USER_DEVICE_FORM_ID));
 
     }
 
@@ -124,13 +92,11 @@ public class MainPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-        String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
-        return title;
+        return localize("createAccount");
     }
 
 
-    class MainForm extends Form<String> {
+    class NewUserDeviceForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
 
@@ -138,7 +104,7 @@ public class MainPage extends AuthenticationTemplatePage {
 
 
         @SuppressWarnings("unchecked")
-        public MainForm(String id) {
+        public NewUserDeviceForm(String id) {
 
             super(id);
             setMarkupId(id);
@@ -157,6 +123,7 @@ public class MainPage extends AuthenticationTemplatePage {
                 protected void populateItem(final ListItem<DeviceDO> deviceItem) {
 
                     Radio deviceRadio = new Radio("radio", deviceItem.getModel());
+                    deviceRadio.setEnabled(deviceItem.getModelObject().getDevice().isRegistrable());
                     deviceRadio.setLabel(new Model<String>(deviceItem.getModelObject().getFriendlyName()));
                     deviceItem.add(new SimpleFormComponentLabel("name", deviceRadio));
                     deviceItem.add(deviceRadio);
@@ -174,24 +141,17 @@ public class MainPage extends AuthenticationTemplatePage {
                 public void onSubmit() {
 
                     final String deviceName = device.getObject().getDevice().getName();
-                    LOG.debug("next: " + deviceName);
+                    LOG.debug("deviceNext: " + deviceName);
 
-                    HelpdeskLogger.add("selected authentication device: " + deviceName, LogLevelType.INFO);
+                    HelpdeskLogger.add("account creation: register device: " + deviceName, LogLevelType.INFO);
 
-                    final String authenticationPath;
+                    final String registrationURL;
                     try {
-                        authenticationPath = devicePolicyService.getAuthenticationURL(deviceName);
+                        registrationURL = devicePolicyService.getRegistrationURL(deviceName);
                     } catch (DeviceNotFoundException e) {
-                        MainForm.this.error(localize("errorDeviceNotFound"));
+                        NewUserDeviceForm.this.error(localize("errorDeviceNotFound"));
                         return;
                     }
-                    LOG.debug("authenticationPath: " + authenticationPath);
-
-                    String requestPath = WicketUtil.toServletRequest(getRequest()).getRequestURL().toString();
-                    if (!requestPath.endsWith(PATH)) {
-                        requestPath += PATH;
-                    }
-                    final String finalRequestPath = requestPath;
 
                     throw new RedirectResponseException(new IRequestTarget() {
 
@@ -201,14 +161,13 @@ public class MainPage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), finalRequestPath, authenticationPath,
-                                    deviceName);
+                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()),
+                                    WicketUtil.toServletResponse(getResponse()), getLocale(), registrationURL, deviceName,
+                                    LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
 
                         }
 
                     });
-
                 }
             });
 

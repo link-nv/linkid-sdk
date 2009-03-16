@@ -5,22 +5,23 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.pages;
 
+import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.link.Link;
 
 
-public class IdentityRejectionPage extends AuthenticationTemplatePage {
+public class GlobalConfirmationRejectionPage extends AuthenticationTemplatePage {
 
     private static final long  serialVersionUID = 1L;
 
     public static final String MAIN_LINK_ID     = "main";
 
 
-    public IdentityRejectionPage() {
+    public GlobalConfirmationRejectionPage() {
 
         final String applicationUrl = findApplicationUrl();
 

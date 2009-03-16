@@ -5,19 +5,20 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.pages;
 
-public class UnsupportedProtocolPage extends AuthenticationTemplatePage {
+import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
+
+public class IndexPage extends AuthenticationTemplatePage {
 
     private static final long  serialVersionUID = 1L;
 
-    public static final String PATH             = "unsupported-protocol";
+    public static final String PATH             = "index";
 
 
-    public UnsupportedProtocolPage() {
+    public IndexPage() {
 
         getHeader();
-
     }
 
     /**
@@ -26,6 +27,6 @@ public class UnsupportedProtocolPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        return localize("protocolUnsupported");
+        return localize("authWebapp");
     }
 }

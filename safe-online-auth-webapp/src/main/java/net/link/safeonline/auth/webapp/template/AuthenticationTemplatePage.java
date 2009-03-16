@@ -1,4 +1,4 @@
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.template;
 
 import javax.ejb.EJB;
 import javax.servlet.http.Cookie;

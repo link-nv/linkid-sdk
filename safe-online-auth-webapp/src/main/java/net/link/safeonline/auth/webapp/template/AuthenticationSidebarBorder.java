@@ -1,4 +1,4 @@
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.template;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.webapp.template.SidebarBorder;

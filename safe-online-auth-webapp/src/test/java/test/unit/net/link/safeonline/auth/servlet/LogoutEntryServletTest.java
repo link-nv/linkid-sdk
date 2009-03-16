@@ -23,7 +23,7 @@ import javax.servlet.http.Cookie;
 
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.LogoutEntryServlet;
-import net.link.safeonline.auth.webapp.UnsupportedProtocolPage;
+import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;

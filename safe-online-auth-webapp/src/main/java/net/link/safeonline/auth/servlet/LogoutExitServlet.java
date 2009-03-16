@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
-import net.link.safeonline.auth.webapp.AuthenticationProtocolErrorPage;
+import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;

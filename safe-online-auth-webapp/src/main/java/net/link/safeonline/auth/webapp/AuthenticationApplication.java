@@ -7,6 +7,21 @@
 
 package net.link.safeonline.auth.webapp;
 
+import net.link.safeonline.auth.webapp.pages.AllDevicesPage;
+import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
+import net.link.safeonline.auth.webapp.pages.DeviceErrorPage;
+import net.link.safeonline.auth.webapp.pages.FirstTimePage;
+import net.link.safeonline.auth.webapp.pages.GlobalConfirmationPage;
+import net.link.safeonline.auth.webapp.pages.IdentityConfirmationPage;
+import net.link.safeonline.auth.webapp.pages.IdentityUnavailablePage;
+import net.link.safeonline.auth.webapp.pages.IndexPage;
+import net.link.safeonline.auth.webapp.pages.MainPage;
+import net.link.safeonline.auth.webapp.pages.MissingAttributesPage;
+import net.link.safeonline.auth.webapp.pages.NewUserDevicePage;
+import net.link.safeonline.auth.webapp.pages.RegisterDevicePage;
+import net.link.safeonline.auth.webapp.pages.SubscriptionPage;
+import net.link.safeonline.auth.webapp.pages.TimeoutPage;
+import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.webapp.template.OlasApplication;
 
 import org.apache.commons.logging.Log;

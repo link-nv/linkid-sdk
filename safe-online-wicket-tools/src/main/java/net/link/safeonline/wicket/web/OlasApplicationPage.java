@@ -50,28 +50,32 @@ public abstract class OlasApplicationPage extends WicketPage {
             if (getClass().isAnnotationPresent(ForceLogout.class))
                 throw new IllegalStateException("Page " + getClass() + " requires forced logout.");
 
-            // Check whether OLAS user has changed.
-            String wicketOlasId = OLASSession.get().getUserOlasId();
-            if (WicketUtil.isOlasAuthenticated(getRequest())) {
-                if (wicketOlasId != null) {
-                    String currentOlasId = WicketUtil.findOlasId(getRequest());
-                    if (!wicketOlasId.equals(currentOlasId))
-                        throw new IllegalStateException("User changed from " + wicketOlasId + " into " + currentOlasId);
+            // Check whether dealing with an OLAS Session
+            if (Session.get() instanceof OLASSession) {
+
+                // Check whether OLAS user has changed.
+                String wicketOlasId = OLASSession.get().getUserOlasId();
+                if (WicketUtil.isOlasAuthenticated(getRequest())) {
+                    if (wicketOlasId != null) {
+                        String currentOlasId = WicketUtil.findOlasId(getRequest());
+                        if (!wicketOlasId.equals(currentOlasId))
+                            throw new IllegalStateException("User changed from " + wicketOlasId + " into " + currentOlasId);
+                    }
+
+                    // If just logged in using OLAS, let application create/push its user onto wicket session.
+                    if (!OLASSession.get().isUserSet()) {
+                        onOlasAuthenticated();
+                        postAuth();
+                    }
                 }
 
-                // If just logged in using OLAS, let application create/push its user onto wicket session.
-                if (!OLASSession.get().isUserSet()) {
-                    onOlasAuthenticated();
-                    postAuth();
+                else if (wicketOlasId != null) {
+                    // No OLAS user on session, but wicket session says an OLAS user is logged in..
+                    // Either the application allowed an OLAS user to login without using OLAS (eg. demo-bank),
+                    // or the OLAS user logged itself out but the wicket session wasn't cleaned up properly.
+                    // In this latter case, the logged out user's privileges leak to the next user.
+                    // (TODO) Not sure what to do. (SOS-373)
                 }
-            }
-
-            else if (wicketOlasId != null) {
-                // No OLAS user on session, but wicket session says an OLAS user is logged in..
-                // Either the application allowed an OLAS user to login without using OLAS (eg. demo-bank),
-                // or the OLAS user logged itself out but the wicket session wasn't cleaned up properly.
-                // In this latter case, the logged out user's privileges leak to the next user.
-                // (TODO) Not sure what to do. (SOS-373)
             }
         }
 

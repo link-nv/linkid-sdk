@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.webapp;
+package net.link.safeonline.auth.webapp.pages;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,24 +13,20 @@ import java.util.List;
 import javax.ejb.EJB;
 
 import net.link.safeonline.auth.AuthenticationUtils;
-import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.webapp.DeviceDO;
+import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
 import net.link.safeonline.authentication.ProtocolContext;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
-import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.IRequestTarget;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
@@ -38,27 +34,26 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
 
 
-public class RegisterDevicePage extends AuthenticationTemplatePage {
+public class AllDevicesPage extends AuthenticationTemplatePage {
 
-    static final Log           LOG                        = LogFactory.getLog(RegisterDevicePage.class);
+    static final Log           LOG                 = LogFactory.getLog(AllDevicesPage.class);
 
-    private static final long  serialVersionUID           = 1L;
+    private static final long  serialVersionUID    = 1L;
 
-    public static final String PATH                       = "register-device";
+    public static final String PATH                = "all-devices";
 
-    public static final String NEW_USER_LINK_ID           = "new_user";
-    public static final String TRY_ANOTHER_DEVICE_LINK_ID = "try_another_device";
+    public static final String NEW_USER_LINK_ID    = "new_user";
 
-    public static final String REGISTER_DEVICE_FORM_ID    = "register_device_form";
-    public static final String DEVICE_GROUP_ID            = "deviceGroup";
-    public static final String DEVICES_ID                 = "devices";
-    public static final String BACK_BUTTON_ID             = "back";
-    public static final String NEXT_BUTTON_ID             = "next";
+    public static final String ALL_DEVICES_FORM_ID = "all_devices_form";
+    public static final String DEVICE_GROUP_ID     = "deviceGroup";
+    public static final String DEVICES_ID          = "devices";
+    public static final String NEXT_BUTTON_ID      = "next";
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     DevicePolicyService        devicePolicyService;
@@ -66,30 +61,31 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
     List<DeviceDO>             devices;
 
 
-    public RegisterDevicePage() {
+    public AllDevicesPage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
         devices = new LinkedList<DeviceDO>();
-        List<DeviceEntity> deviceEntities;
-        try {
-            deviceEntities = devicePolicyService.getDevicePolicy(protocolContext.getApplicationId(), protocolContext.getRequiredDevices());
-        } catch (ApplicationNotFoundException e) {
-            error(localize("errorApplicationNotFound"));
-            return;
-        } catch (EmptyDevicePolicyException e) {
-            error(localize("errorEmptyDevicePolicy"));
-            return;
-        }
+        List<DeviceEntity> deviceEntities = devicePolicyService.getDevices();
         for (DeviceEntity deviceEntity : deviceEntities) {
             String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
             devices.add(new DeviceDO(deviceEntity, friendlyName));
         }
 
-        getSidebar(localize("helpRegisterDevice"));
+        Link<String> newUserLink = new Link<String>(NEW_USER_LINK_ID) {
+
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public void onClick() {
+
+                throw new RestartResponseException(new NewUserPage());
+            }
+        };
+        getSidebar(localize("helpAllDevices")).add(newUserLink);
 
         getHeader();
 
-        getContent().add(new RegisterDeviceForm(REGISTER_DEVICE_FORM_ID));
+        getContent().add(new MainForm(ALL_DEVICES_FORM_ID));
 
     }
 
@@ -105,7 +101,7 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
     }
 
 
-    class RegisterDeviceForm extends Form<String> {
+    class MainForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
 
@@ -113,7 +109,7 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
 
 
         @SuppressWarnings("unchecked")
-        public RegisterDeviceForm(String id) {
+        public MainForm(String id) {
 
             super(id);
             setMarkupId(id);
@@ -140,22 +136,6 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
             };
             deviceGroup.add(deviceView);
 
-            add(new Button(BACK_BUTTON_ID) {
-
-                private static final long serialVersionUID = 1L;
-
-
-                /**
-                 * {@inheritDoc}
-                 */
-                @Override
-                public void onSubmit() {
-
-                    throw new RestartResponseException(new AllDevicesPage());
-                }
-
-            }.setDefaultFormProcessing(false));
-
             add(new Button(NEXT_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
@@ -164,34 +144,30 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    final String deviceName = device.getObject().getDevice().getName();
-                    LOG.debug("deviceNext: " + deviceName);
+                    String deviceName = device.getObject().getDevice().getName();
+                    LOG.debug("next: " + deviceName);
 
-                    HelpdeskLogger.add("register device: " + deviceName, LogLevelType.INFO);
+                    HelpdeskLogger.add("selected authentication device: " + deviceName, LogLevelType.INFO);
 
-                    final String registrationURL;
+                    String authenticationPath;
                     try {
-                        registrationURL = devicePolicyService.getRegistrationURL(deviceName);
+                        authenticationPath = devicePolicyService.getAuthenticationURL(deviceName);
                     } catch (DeviceNotFoundException e) {
-                        RegisterDeviceForm.this.error(localize("errorDeviceNotFound"));
+                        MainForm.this.error(localize("errorDeviceNotFound"));
                         return;
                     }
+                    LOG.debug("authenticationPath: " + authenticationPath);
 
-                    throw new RedirectResponseException(new IRequestTarget() {
+                    String requestPath = WicketUtil.toServletRequest(getRequest()).getRequestURL().toString();
+                    if (!requestPath.endsWith(PATH)) {
+                        requestPath += PATH;
+                    }
 
-                        public void detach(RequestCycle requestCycle) {
+                    AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(getRequest()),
+                            WicketUtil.toServletResponse(getResponse()), getLocale(), requestPath, authenticationPath, deviceName);
+                    setRedirect(false);
+                    return;
 
-                        }
-
-                        public void respond(RequestCycle requestCycle) {
-
-                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), registrationURL, deviceName,
-                                    LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
-
-                        }
-
-                    });
                 }
             });
 
