@@ -9,6 +9,7 @@ package net.link.safeonline.user.webapp;
 import net.link.safeonline.wicket.web.OLASSession;
 
 import org.apache.wicket.Request;
+import org.apache.wicket.Session;
 
 
 /**
@@ -73,6 +74,14 @@ public class UserSession extends OLASSession {
 
         userId = null;
         return true;
+    }
+
+    /**
+     * @return The session for the current user.
+     */
+    public static UserSession get() {
+
+        return (UserSession) Session.get();
     }
 
 }

@@ -7,6 +7,9 @@
 package net.link.safeonline.user.webapp;
 
 import net.link.safeonline.user.webapp.pages.MainPage;
+import net.link.safeonline.user.webapp.pages.OverviewPage;
+import net.link.safeonline.user.webapp.pages.profile.ProfilePage;
+import net.link.safeonline.webapp.common.TimeoutPage;
 import net.link.safeonline.webapp.template.OlasApplication;
 
 import org.apache.wicket.Page;
@@ -31,6 +34,19 @@ import org.apache.wicket.Session;
  */
 public class UserApplication extends OlasApplication {
 
+    @Override
+    protected void init() {
+
+        super.init();
+
+        mountBookmarkablePage(MainPage.PATH, MainPage.class);
+        mountBookmarkablePage(OverviewPage.PATH, OverviewPage.class);
+        mountBookmarkablePage(ProfilePage.PATH, ProfilePage.class);
+
+        getApplicationSettings().setPageExpiredErrorPage(TimeoutPage.class);
+
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -48,6 +64,15 @@ public class UserApplication extends OlasApplication {
 
         return new UserSession(request);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return true;
     }
 
 }

@@ -41,6 +41,8 @@ public abstract class OlasApplication extends WebApplication {
     @Override
     public RequestCycle newRequestCycle(Request request, Response response) {
 
-        return new MyRequestCycle(this, (WebRequest) request, (WebResponse) response);
+        return new MyRequestCycle(this, (WebRequest) request, (WebResponse) response, jaasLogin());
     }
+
+    protected abstract boolean jaasLogin();
 }

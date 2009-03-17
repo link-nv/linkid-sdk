@@ -64,6 +64,6 @@ public class HeaderBorder extends Border {
         });
 
         // logout link
-        add(new OlasLogoutLink("logout").setVisible(logoutEnabled));
+        add(new OlasLogoutLink("logout", getApplication().getHomePage()).setVisible(logoutEnabled));
     }
 }

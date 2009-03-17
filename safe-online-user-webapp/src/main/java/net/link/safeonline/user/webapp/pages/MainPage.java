@@ -46,8 +46,6 @@ public class MainPage extends UserTemplatePage {
 
         getSidebar(localize("helpMain"), false).add(loginLink, logoutLink);
 
-        getHeader();
-
         String commercialName = WicketUtil.toServletRequest(getRequest()).getSession().getServletContext().getInitParameter(
                 "CommercialName");
         getContent().add(

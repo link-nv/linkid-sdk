@@ -6,7 +6,8 @@
  */
 package net.link.safeonline.user.webapp.template;
 
-import net.link.safeonline.user.webapp.pages.MainPage;
+import net.link.safeonline.user.webapp.pages.OverviewPage;
+import net.link.safeonline.user.webapp.pages.profile.ProfilePage;
 import net.link.safeonline.wicket.web.OLASSession;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -54,11 +55,11 @@ public class NavigationPanel extends Panel {
 
         super(id);
 
-        add(new PageLink<String>(HOME_LINK_ID, MainPage.class));
-        add(new PageLink<String>(PROFILE_LINK_ID, MainPage.class));
-        add(new PageLink<String>(APPLICATIONS_LINK_ID, MainPage.class));
-        add(new PageLink<String>(DEVICES_LINK_ID, MainPage.class));
-        add(new PageLink<String>(ACCOUNT_LINK_ID, MainPage.class));
+        add(new PageLink<String>(HOME_LINK_ID, OverviewPage.class));
+        add(new PageLink<String>(PROFILE_LINK_ID, ProfilePage.class));
+        add(new PageLink<String>(APPLICATIONS_LINK_ID, OverviewPage.class));
+        add(new PageLink<String>(DEVICES_LINK_ID, OverviewPage.class));
+        add(new PageLink<String>(ACCOUNT_LINK_ID, OverviewPage.class));
 
         String setClassScript = "function setClass(id, className)" + "{ obj = document.getElementById(id); " + "if (obj != null) "
                 + "{ obj.className = className; }" + " }" + " setClass(\"page_" + panel + "\", \"selected\");";

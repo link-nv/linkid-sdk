@@ -122,15 +122,6 @@
 		</init-param>
 	</filter>
 	<filter>
-		<filter-name>AuthnResponseFilter</filter-name>
-		<filter-class>net.link.safeonline.sdk.auth.filter.AuthnResponseFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>ContainerLoginFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter</filter-class>
-	</filter>
-	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
 		<init-param>
@@ -139,28 +130,32 @@
 		</init-param>
 		<init-param>
 			<param-name>LoginPath</param-name>
-			<param-value>/${safe-online.user.webapp.name}/main.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/main</param-value>
 		</init-param>
 		<init-param>
 			<param-name>UnauthenticatedPath.1</param-name>
-			<param-value>/${safe-online.user.webapp.name}/language.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/theme.css</param-value>
 		</init-param>
 		<init-param>
 			<param-name>UnauthenticatedPath.2</param-name>
-			<param-value>/${safe-online.user.webapp.name}/protocol-error.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/language</param-value>
 		</init-param>
 		<init-param>
 			<param-name>UnauthenticatedPath.3</param-name>
-			<param-value>/${safe-online.user.webapp.name}/error.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/protocol-error</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnauthenticatedPath.4</param-name>
+			<param-value>/${safe-online.user.webapp.name}/error</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnauthenticatedPath.5</param-name>
+			<param-value>/${safe-online.user.webapp.name}/login</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>ExceptionFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
@@ -171,21 +166,13 @@
 		<url-pattern>/device/landing</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>AuthnResponseFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/device/landing</url-pattern>
 	</filter-mapping>
-	<filter-mapping>
-		<filter-name>ContainerLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
+	<!--
+		<filter-mapping> <filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/*</url-pattern> </filter-mapping>
+	-->
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>net.link.safeonline.sdk.auth.servlet.LoginServlet</servlet-class>
@@ -228,7 +215,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>UserLogoutServlet</servlet-name>
-		<servlet-class>net.link.safeonline.webapp.resources.LogoutServlet</servlet-class>
+		<servlet-class>net.link.safeonline.webapp.resources.DefaultLogoutServlet</servlet-class>
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
 			<param-value>

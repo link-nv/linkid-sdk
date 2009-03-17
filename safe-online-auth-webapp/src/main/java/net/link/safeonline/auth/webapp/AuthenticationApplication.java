@@ -66,4 +66,13 @@ public class AuthenticationApplication extends OlasApplication {
 
         return IndexPage.class;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return true;
+    }
 }

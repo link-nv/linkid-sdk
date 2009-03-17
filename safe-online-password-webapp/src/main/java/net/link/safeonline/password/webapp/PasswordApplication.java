@@ -39,4 +39,14 @@ public class PasswordApplication extends OlasApplication {
 
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return false;
+    }
+
 }

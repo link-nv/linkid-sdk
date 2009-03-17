@@ -6,7 +6,10 @@
  */
 package net.link.safeonline.user.webapp.template;
 
+import net.link.safeonline.user.webapp.UserSession;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OLASSession;
 
 
 /**
@@ -32,8 +35,18 @@ public abstract class UserTemplatePage extends TemplatePage {
 
         super();
 
-        getHeader().add(new NavigationPanel(NAVIGATION_ID, panel));
+        getHeader(OLASSession.get().isUserSet()).add(new NavigationPanel(NAVIGATION_ID, panel));
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onOlasAuthenticated() {
+
+        String olasId = WicketUtil.findOlasId(getRequest());
+        UserSession.get().setUserId(olasId);
     }
 
 }
