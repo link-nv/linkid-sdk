@@ -17,7 +17,7 @@ import net.link.safeonline.authentication.exception.NodeMappingNotFoundException
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
 
 
 /**

@@ -104,8 +104,8 @@ public abstract class AbstractWicketTests {
         wicketContext.addInitParameter(SafeOnlineLoginUtils.LOGOUT_SERVICE_URL_INIT_PARAM, "");
         wicketContext.addInitParameter(SafeOnlineLoginUtils.TARGET_BASE_URL_INIT_PARAM, "");
         wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, getClass().toString());
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, AuthenticationProtocol.UNIT_TEST.name());
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, getClass().toString());
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, AuthenticationProtocol.UNIT_TEST.name());
         wicket.processRequestCycle();
     }
 

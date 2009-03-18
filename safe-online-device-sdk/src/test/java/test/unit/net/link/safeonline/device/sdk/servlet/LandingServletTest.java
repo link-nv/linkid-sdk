@@ -28,9 +28,9 @@ import javax.jws.HandlerChain;
 import javax.jws.WebService;
 
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
-import net.link.safeonline.device.sdk.servlet.LandingServlet;
+import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.manage.saml2.request.DeviceOperationRequestFactory;
+import net.link.safeonline.device.sdk.manage.servlet.AbstractDeviceManagementLandingServlet;
 import net.link.safeonline.keystore.KeyStoreUtils;
 import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.saml.common.Challenge;
@@ -136,7 +136,7 @@ public class LandingServletTest {
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
         initParams.put("WsLocation", webServiceTestUtils.getLocation());
 
-        servletTestManager.setUp(TestLandingServlet.class, initParams, null, null, null);
+        servletTestManager.setUp(TestDeviceManagementLandingServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
     }
@@ -286,7 +286,7 @@ public class LandingServletTest {
     }
 
 
-    public static class TestLandingServlet extends LandingServlet {
+    public static class TestDeviceManagementLandingServlet extends AbstractDeviceManagementLandingServlet {
 
         private static final long   serialVersionUID  = 1L;
         private static final String KEYSTORE_PASSWORD = "test-password";

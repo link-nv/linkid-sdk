@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.common.SafeOnlineAppConstants;
+import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -84,13 +86,9 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
- * The optional <code>TargetBaseUrl</code> init parameter specifies the base location to redirect to after successful authentication.
- * </p>
- * 
- * <p>
  * The optional <code>Target</code> init parameter specifies the location to redirecto to after successful authentication. If not specified
- * the authentication will redirect to the location this filter is activated on. This init parameter should be configured together with the
- * <code>TargetBaseUrl</code> parameter.
+ * the authentication will redirect to the location this filter is activated on. If not absolute, the web application's base URL will be
+ * prefixed to it.
  * </p>
  * 
  * <p>
@@ -119,11 +117,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
-    @Init(name = SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM)
-    private String                             authenticationServiceUrl;
-
-    @Init(name = SafeOnlineLoginUtils.TARGET_BASE_URL_INIT_PARAM, optional = true)
-    private String                             targetBaseUrl;
+    @Init(name = SafeOnlineLoginUtils.AUTH_SERVICE_PATH_CONTEXT_PARAM)
+    private String                             authenticationServicePath;
 
     @Init(name = SafeOnlineLoginUtils.TARGET_INIT_PARAM, optional = true, checkContext = false)
     private String                             target;
@@ -134,38 +129,38 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
     private String                             skipLandingPageString;
     private boolean                            skipLandingPage;
 
-    @Init(name = SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM)
+    @Init(name = SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM)
     private String                             applicationName;
 
     @Init(name = SafeOnlineLoginUtils.APPLICATION_FRIENDLY_NAME_INIT_PARAM, optional = true)
     private String                             applicationFriendlyName;
 
-    @Init(name = SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, optional = true)
+    @Init(name = SafeOnlineLoginUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, optional = true)
     private String                             authenticationProtocolString;
 
     private AuthenticationProtocol             authenticationProtocol;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_RESOURCE_INIT_PARAM, optional = true)
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, optional = true)
     private String                             p12KeyStoreResourceName;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_FILE_INIT_PARAM, optional = true)
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_FILE_CONTEXT_PARAM, optional = true)
     private String                             p12KeyStoreFileName;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_PASSWORD_INIT_PARAM)
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM)
     private String                             keyStorePassword;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_TYPE_INIT_PARAM, defaultValue = "pkcs12")
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_TYPE_CONTEXT_PARAM, defaultValue = "pkcs12")
     private String                             keyStoreType;
 
-    @Init(name = SafeOnlineLoginUtils.SINGLE_SIGN_ON_INIT_PARAM, optional = true)
+    @Init(name = SafeOnlineLoginUtils.SINGLE_SIGN_ON_CONTEXT_PARAM, optional = true)
     private String                             ssoEnabledString;
     private boolean                            ssoEnabled;
 
-    @Init(name = SafeOnlineAppConstants.COLOR_CONTEXT, optional = true)
+    @Init(name = SafeOnlineAppConstants.COLOR_CONTEXT_PARAM, optional = true)
     private String                             colorConfig;
     private Integer                            authColor;
 
-    @Init(name = SafeOnlineAppConstants.MINIMAL_CONTEXT, optional = true)
+    @Init(name = SafeOnlineAppConstants.MINIMAL_CONTEXT_PARAM, optional = true)
     private String                             minimalConfig;
     private Boolean                            authMinimal;
 
@@ -224,8 +219,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
             }
         }
         if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
-                    keyStorePassword, keyStorePassword);
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream, keyStorePassword,
+                    keyStorePassword);
             applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
             applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
@@ -245,30 +240,32 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         }
     }
 
-    private void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    private void initiateAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, authenticationServiceUrl,
-                applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, ssoEnabled,
-                configParams, httpRequest);
+        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
 
-        /*
-         * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from SafeOnline auth should the
-         * browser not support cookies.
-         */
-        if (null != targetBaseUrl && null != target) {
-            targetUrl = targetBaseUrl + target;
-            targetUrl = httpResponse.encodeRedirectURL(targetUrl);
+        AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, safeOnlineConfig.authbase
+                + authenticationServicePath, applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate,
+                ssoEnabled, configParams, request);
+
+        // Use encodeRedirectURL to add the session ID to the target URL (preserve session for browsers that don't support cookies).
+        if (null != target) {
+            targetUrl = target;
+            if (!URI.create(targetUrl).isAbsolute()) {
+                targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteUrlFromPath(request, target));
+            }
+
             LOG.debug("target url: " + targetUrl);
         }
 
         Locale language = null;
-        if (null != httpRequest.getAttribute(LANGUAGE_SESSION_PARAM)) {
-            language = (Locale) httpRequest.getAttribute(LANGUAGE_SESSION_PARAM);
+        if (null != request.getAttribute(LANGUAGE_SESSION_PARAM)) {
+            language = (Locale) request.getAttribute(LANGUAGE_SESSION_PARAM);
         }
 
-        AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl, skipLandingPage, language,
-                authColor, authMinimal);
+        AuthenticationProtocolManager.initiateAuthentication(request, response, targetUrl, skipLandingPage, language, authColor,
+                authMinimal);
     }
 
     public void destroy() {

@@ -176,7 +176,7 @@
 			<param-value>/all-devices</param-value>
 		</init-param>
 		<init-param>
-			<param-name>DeviceErrorUrl</param-name>
+			<param-name>DeviceErrorPath</param-name>
 			<param-value>/device-error</param-value>
 		</init-param>
 	</servlet>
@@ -197,7 +197,7 @@
 			<param-value>/login</param-value>
 		</init-param>
 		<init-param>
-			<param-name>DeviceErrorUrl</param-name>
+			<param-name>DeviceErrorPath</param-name>
 			<param-value>/device-error</param-value>
 		</init-param>
 	</servlet>

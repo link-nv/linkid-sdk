@@ -22,12 +22,29 @@ package net.link.safeonline.common;
  */
 public interface SafeOnlineAppConstants {
 
-    /**
+    /*
      * Application Style.
      */
-    public static final String COLOR_CONTEXT     = "ApplicationColor";
-    public static final String MINIMAL_CONTEXT   = "ApplicationMinimal";
+    /**
+     * The 24-bit base color to use for the OLAS authentication web application's style sheet.
+     * 
+     * <p>
+     * Accepted values are all encoded integers. HTML color codes are recommended <i>(for example: <code>#3333CC</code>)</i>.
+     * </p>
+     */
+    public static final String COLOR_CONTEXT_PARAM       = "ApplicationColor";
 
-    public static final String COLOR_ATTRIBUTE   = "applicationColor";
-    public static final String MINIMAL_ATTRIBUTE = "applicationMinimal";
+    /**
+     * Determines whether the OLAS authentication webapp will be displayed in-line. This will cause it to change its style sheet accordingly
+     * (for instance, hide its headers and footers).
+     * 
+     * <ul>
+     * <li>True</li>
+     * <li>False <i>[default]</i></li>
+     * </ul>
+     */
+    public static final String MINIMAL_CONTEXT_PARAM     = "ApplicationMinimal";
+
+    public static final String COLOR_SESSION_ATTRIBUTE   = "applicationColor";
+    public static final String MINIMAL_SESSION_ATTRIBUTE = "applicationMinimal";
 }

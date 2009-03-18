@@ -9,22 +9,22 @@
 	<context-param>
 		<description>URL used to initiate a login process.</description>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
+		<param-value>/entry</param-value>
 	</context-param>
 	<context-param>
 		<description>URL used to initiate a single logout process.</description>
 		<param-name>LogoutServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry</param-value>
+		<param-value>/logoutentry</param-value>
 	</context-param>
 	<context-param>
 		<description>URL used to finalize a logout request sent by the authentication webapp following a single logout process by another application.</description>
 		<param-name>LogoutExitServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
+		<param-value>/logoutexit</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for the remote device operations.</description>
 		<param-name>DeviceServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/device/landing</param-value>
+		<param-value>/device/landing</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
@@ -55,23 +55,19 @@
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.auth.basename}</param-value>
-	</context-param>
-	<context-param>
 		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/login</param-value>
+		<param-value>/login</param-value>
 	</context-param>
 	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout</param-value>
+		<param-value>/logout</param-value>
 	</context-param>
 	<context-param>
 		<description>Url to redirect to after successful authentication</description>
 		<param-name>TargetBaseUrl</param-name>
-		<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/</param-value>
+		<param-value>/</param-value>
 	</context-param>
 
     <!-- Application Filter Definitions And Mappings -->
@@ -81,7 +77,7 @@
 
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/error.seam</param-value>
+			<param-value>/error.seam</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -90,7 +86,7 @@
 
 		<init-param>
 			<param-name>TimeoutPath</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/timeout.seam</param-value>
+			<param-value>/timeout.seam</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -212,7 +208,7 @@
 
 		<init-param>
 			<param-name>LogoutUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/userlogout</param-value>
+			<param-value>/userlogout</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -225,7 +221,7 @@
 
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout</param-value>
+			<param-value>/logout</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
@@ -234,7 +230,7 @@
 
 		<init-param>
 			<param-name>DevicesPage</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/device/devices.seam</param-value>
+			<param-value>/device/devices.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>

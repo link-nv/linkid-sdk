@@ -58,22 +58,12 @@
     <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>AuthLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.beid.servlet.AuthLandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.DeviceAuthenticationLandingServlet</servlet-class>
 
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>beid.html</param-value>
-			<description> URL to where we redirect after successful handling SAML
-				POST request. </description>
-		</init-param>
-		<init-param>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.beid.webapp.name}/_auth 
-			</param-value>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
+			<description> URL to where we redirect after successful handling SAML POST request. </description>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -86,7 +76,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.auth.servlet.DeviceAuthenticationExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -96,7 +86,7 @@
 	<servlet>
 		<description>Entry point for device operation service.</description>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.beid.servlet.DeviceLandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.DeviceManagementLandingServlet</servlet-class>
 
 		<init-param>
 			<param-name>RegistrationUrl</param-name>
@@ -125,7 +115,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.manage.servlet.DeviceManagementExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>

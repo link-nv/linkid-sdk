@@ -70,7 +70,7 @@ public class LogoutServletTest {
 
     private JndiTestUtils       jndiTestUtils;
 
-    private String              logoutUrl            = "logout";
+    private String              logoutPath           = "logout";
 
     private String              errorPage            = "error";
 
@@ -126,12 +126,12 @@ public class LogoutServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LogoutUrl", logoutUrl);
+        initParams.put("LogoutPath", logoutPath);
         initParams.put("ErrorPage", errorPage);
         initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_URL_INIT_PARAM, logoutExitServiceUrl);
-        initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, applicationName);
-        initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_INIT_PARAM, p12ResourceName);
-        initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_INIT_PARAM, "secret");
+        initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, applicationName);
+        initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
+        initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
         initParams.put("WsLocation", webServiceTestUtils.getLocation());
 
@@ -252,7 +252,7 @@ public class LogoutServletTest {
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String resultTarget = postMethod.getResponseHeader("Location").getValue();
-        assertTrue(resultTarget.endsWith(logoutUrl));
+        assertTrue(resultTarget.endsWith(logoutPath));
     }
 
     @Test
@@ -279,7 +279,7 @@ public class LogoutServletTest {
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String resultTarget = postMethod.getResponseHeader("Location").getValue();
-        assertTrue(resultTarget.endsWith(logoutUrl));
+        assertTrue(resultTarget.endsWith(logoutPath));
     }
 
     @Test

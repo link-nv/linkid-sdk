@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.In;
@@ -72,6 +73,36 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         initInitParameters(config);
         initContextParameters(config);
         injectEjbs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
+
+        /*
+         * When we're behind a proxy or load balancer, the servlet request URI here points to this machine rather than the server that the
+         * request was actually sent to. This causes validation issues in OpenSAML and problems when redirecting to relative URIs.
+         * 
+         * To solve this problem, we wrap the servlet request and response such that the request URI in the HttpServletRequest is the
+         * request URI of the client's request (the request to the proxy/load balancer), and such that sendRedirects with relative URIs are
+         * translated to absolute URIs using the client's request URI base.
+         */
+        String endPoint = safeOnlineConfig.endpointFor(request);
+        if (endPoint != null) {
+            HttpServletRequestEndpointWrapper wrappedRequest = new HttpServletRequestEndpointWrapper(request, endPoint);
+            HttpServletResponseEndpointWrapper wrappedResponse = new HttpServletResponseEndpointWrapper(request, response, endPoint);
+
+            super.service(wrappedRequest, wrappedResponse);
+        }
+
+        else {
+            super.service(request, response);
+        }
     }
 
     @Override

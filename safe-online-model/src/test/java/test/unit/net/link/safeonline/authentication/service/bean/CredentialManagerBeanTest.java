@@ -26,7 +26,7 @@ import net.link.safeonline.authentication.exception.PkiInvalidException;
 import net.link.safeonline.authentication.service.AuthenticationStatement;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.bean.CredentialManagerBean;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;

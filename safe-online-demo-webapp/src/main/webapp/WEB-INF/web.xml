@@ -18,7 +18,7 @@
 
 		<init-param>
 			<param-name>AuthenticationServiceUrl</param-name>
-			<param-value>${safe-online.host.basename}/olas-auth/entry</param-value>
+			<param-value>/entry</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ApplicationName</param-name>

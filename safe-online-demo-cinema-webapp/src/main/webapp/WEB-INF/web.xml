@@ -10,17 +10,17 @@
 	<context-param>
 		<description>URL used to initiate a login process.</description>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
+		<param-value>/entry</param-value>
 	</context-param>
 	<context-param>
 		<description>URL used to initiate a single logout process.</description>
 		<param-name>LogoutServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry</param-value>
+		<param-value>/logoutentry</param-value>
 	</context-param>
 	<context-param>
 		<description>URL used to finalize a logout request sent by the authentication webapp following a single logout process by another application.</description>
 		<param-name>LogoutExitServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
+		<param-value>/logoutexit</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
@@ -49,29 +49,12 @@
 	<context-param>
 		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.demo.cinema.webapp.url}/login</param-value>
+		<param-value>/login</param-value>
 	</context-param>
 	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.demo.cinema.webapp.url}/logout</param-value>
-	</context-param>
-	<context-param>
-		<param-name>TargetBaseUrl</param-name>
-		<param-value>${safe-online.host.basename}/${safe-online.demo.cinema.webapp.url}/</param-value>
-		<description>Url to redirect to after successful authentication</description>
-	</context-param>
-	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.auth.basename}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>DemoHostName</param-name>
-		<param-value>${safe-online.host.name}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>DemoHostPort</param-name>
-		<param-value>${safe-online.host.port:insecure}</param-value>
+		<param-value>/logout</param-value>
 	</context-param>
 
     <!-- Application Filter Definitions And Mappings -->
@@ -163,7 +146,7 @@
 
 		<init-param>
 			<param-name>LogoutUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.demo.cinema.webapp.url}/cinemalogout</param-value>
+			<param-value>/cinemalogout</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -175,7 +158,7 @@
 		<servlet-class>net.link.safeonline.demo.cinema.webapp.servlet.LogoutServlet</servlet-class>
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.demo.cinema.webapp.url}/logout</param-value>
+			<param-value>/logout</param-value>
 		</init-param>
 	</servlet>
 

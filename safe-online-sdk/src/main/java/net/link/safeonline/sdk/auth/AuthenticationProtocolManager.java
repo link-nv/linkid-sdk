@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth;
 
 import java.io.IOException;
+import java.net.URI;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
 
 import org.apache.commons.logging.Log;
@@ -115,22 +117,32 @@ public class AuthenticationProtocolManager {
     /**
      * Initiates the authentication.
      * 
+     * @param target
+     *            The URL where the user will be sent to after authentication has completed. If this is not an absolute URI, it will be made
+     *            absolute using the web application's base URL. If <code>null</code>, the web application's base URL will be used.
+     * 
      * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)
      */
     public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target,
                                               boolean skipLandingPage, Locale language, Integer color, Boolean minimal)
             throws IOException, ServletException {
 
+        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
+
+        // Figure out the target and landing page URLs.
         String targetUrl = target;
         if (null == targetUrl) {
-            targetUrl = request.getRequestURL().toString();
+            targetUrl = safeOnlineConfig.endpointFor(request);
+        } else if (!URI.create(targetUrl).isAbsolute()) {
+            targetUrl = safeOnlineConfig.absoluteUrlFromPath(request, targetUrl);
         }
+        String landingPage = safeOnlineConfig.absoluteUrlFromParam(request, LANDING_PAGE_INIT_PARAM);
 
+        // Delegate the authentication initiation to the relevant protocol handler.
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
             throw new IllegalStateException("no active protocol handler found");
 
-        String landingPage = request.getSession().getServletContext().getInitParameter(LANDING_PAGE_INIT_PARAM);
         if (null != landingPage && !skipLandingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(targetUrl, request);
@@ -187,9 +199,12 @@ public class AuthenticationProtocolManager {
     /**
      * Initiates a logout request.
      * 
+     * @param target
+     *            The URL where the user will be sent to after authentication has completed. If this is not an absolute URI, it will be made
+     *            absolute using the web application's base URL. If <code>null</code>, the web application's base URL will be used.
+     * 
      * @param request
      * @param response
-     * @param target
      * @param subjectName
      * @throws IOException
      * @throws ServletException
@@ -197,11 +212,22 @@ public class AuthenticationProtocolManager {
     public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName)
             throws IOException, ServletException {
 
+        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
+
+        // Figure out the target and landing page URLs.
+        String targetUrl = target;
+        if (null == targetUrl) {
+            targetUrl = safeOnlineConfig.endpointFor(request);
+        } else if (!URI.create(targetUrl).isAbsolute()) {
+            targetUrl = safeOnlineConfig.absoluteUrlFromPath(request, targetUrl);
+        }
+        String landingPage = safeOnlineConfig.absoluteUrlFromParam(request, LOGOUT_LANDING_PAGE_INIT_PARAM);
+
+        // Delegate the authentication initiation to the relevant protocol handler.
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
             throw new IllegalStateException("no active protocol handler found");
 
-        String landingPage = request.getSession().getServletContext().getInitParameter(LOGOUT_LANDING_PAGE_INIT_PARAM);
         if (null != landingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(target, request);

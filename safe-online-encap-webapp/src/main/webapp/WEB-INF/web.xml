@@ -57,7 +57,7 @@
     <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>AuthLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.encap.servlet.AuthLandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.encap.servlet.DeviceAuthenticationLandingServlet</servlet-class>
 
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
@@ -70,7 +70,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.auth.servlet.DeviceAuthenticationExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -79,7 +79,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.encap.servlet.DeviceLandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.encap.servlet.DeviceManagementLandingServlet</servlet-class>
 
         <init-param>
             <param-name>RegistrationUrl</param-name>
@@ -104,7 +104,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.manage.servlet.DeviceManagementExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>

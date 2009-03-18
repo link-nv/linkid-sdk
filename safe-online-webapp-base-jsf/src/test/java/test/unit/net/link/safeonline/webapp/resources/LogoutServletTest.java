@@ -25,13 +25,13 @@ import org.apache.commons.logging.LogFactory;
 
 public class LogoutServletTest extends TestCase {
 
-    private static final Log   LOG           = LogFactory.getLog(LogoutServletTest.class);
+    private static final Log   LOG            = LogFactory.getLog(LogoutServletTest.class);
 
     private ServletTestManager servletTestManager;
 
     private String             servletLocation;
 
-    private String             logoutExitUrl = "logoutexit";
+    private String             logoutExitPath = "logoutexit";
 
 
     @Override
@@ -41,7 +41,7 @@ public class LogoutServletTest extends TestCase {
         super.setUp();
 
         servletTestManager = new ServletTestManager();
-        servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitUrl", logoutExitUrl), null, null,
+        servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitPath", logoutExitPath), null, null,
                 Collections.singletonMap(LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
         servletLocation = servletTestManager.getServletLocation();
     }
@@ -71,7 +71,7 @@ public class LogoutServletTest extends TestCase {
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, result);
         String resultLocation = getMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(logoutExitUrl));
+        assertTrue(resultLocation.endsWith(logoutExitPath));
 
         String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         assertNull(resultUserId);
