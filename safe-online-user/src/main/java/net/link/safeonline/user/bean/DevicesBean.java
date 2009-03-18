@@ -186,9 +186,8 @@ public class DevicesBean implements Devices {
         String userId = subjectManager.getCallerSubject().getUserId();
 
         String registrationURL = devicePolicyService.getRegistrationURL(selectedDevice.getDevice().getName());
-        DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, selectedDevice.getDevice().getName(),
+        return DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, selectedDevice.getDevice().getName(),
                 authenticatedDevice, userId, null, null);
-        return null;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -203,9 +202,8 @@ public class DevicesBean implements Devices {
         String userId = subjectManager.getCallerSubject().getUserId();
         String removalURL = selectedDeviceRegistration.getDevice().getRemovalURL();
 
-        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, selectedDeviceRegistration.getDevice().getName(),
+        return DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, selectedDeviceRegistration.getDevice().getName(),
                 authenticatedDevice, userId, selectedDeviceRegistration.getId(), selectedDeviceRegistration.getAttribute());
-        return null;
     }
 
     private boolean deviceRemovalDisablingAllowed() {
@@ -229,9 +227,8 @@ public class DevicesBean implements Devices {
         String userId = subjectManager.getCallerSubject().getUserId();
         String updateURL = selectedDeviceRegistration.getDevice().getUpdateURL();
 
-        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, selectedDeviceRegistration.getDevice().getName(),
+        return DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, selectedDeviceRegistration.getDevice().getName(),
                 authenticatedDevice, userId, selectedDeviceRegistration.getId(), selectedDeviceRegistration.getAttribute());
-        return null;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -247,10 +244,9 @@ public class DevicesBean implements Devices {
         LOG.debug("disable device: " + selectedDeviceRegistration.getFriendlyName());
         String userId = subjectManager.getCallerSubject().getUserId();
 
-        DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
+        return DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
                 selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId, selectedDeviceRegistration.getId(),
                 selectedDeviceRegistration.getAttribute());
-        return null;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -260,9 +256,8 @@ public class DevicesBean implements Devices {
         LOG.debug("enable device: " + selectedDeviceRegistration.getFriendlyName());
         String userId = subjectManager.getCallerSubject().getUserId();
 
-        DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getEnableURL(), DeviceOperationType.ENABLE,
+        return DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getEnableURL(), DeviceOperationType.ENABLE,
                 selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId, selectedDeviceRegistration.getId(),
                 selectedDeviceRegistration.getAttribute());
-        return null;
     }
 }

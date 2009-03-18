@@ -227,6 +227,10 @@ public class SafeOnlineLoginUtils {
     }
 
     /**
+     * <p>
+     * <b>Note: This is a general purpose method that should work for any web application framework.</b>
+     * </p>
+     * 
      * Performs a SafeOnline login using the SafeOnline authentication web application.
      * 
      * <p>
