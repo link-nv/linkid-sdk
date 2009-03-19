@@ -40,21 +40,36 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DeviceAuthnLandingServlet extends AbstractInjectionServlet {
 
+    private static final Log   LOG                            = LogFactory.getLog(DeviceAuthnLandingServlet.class);
     private static final long  serialVersionUID               = 1L;
 
-    private static final Log   LOG                            = LogFactory.getLog(DeviceAuthnLandingServlet.class);
+    /**
+     * PATH within the authentication web application where the authentication pipeline continues after the user has been successfully
+     * logged in. <i>[required]</i>
+     */
+    public static final String LOGIN_PATH                     = "LoginPath";
+
+    /**
+     * PATH within the authentication web application where user can choose another device to authenticate with. <i>[required]</i>
+     */
+    public static final String TRY_ANOTHER_DEVICE_PATH        = "TryAnotherDevicePath";
+
+    /**
+     * PATH within the authentication web application to redirect to when a protocol error occurs. <i>[required]</i>
+     */
+    public static final String DEVICE_ERROR_PATH              = "DeviceErrorPath";
 
     public static final String RESOURCE_BASE                  = "messages.webapp";
 
     public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-    @Init(name = "LoginUrl")
-    private String             loginUrl;
+    @Init(name = LOGIN_PATH)
+    private String             loginPath;
 
-    @Init(name = "TryAnotherDeviceUrl")
-    private String             tryAnotherDeviceUrl;
+    @Init(name = TRY_ANOTHER_DEVICE_PATH)
+    private String             tryAnotherDevicePath;
 
-    @Init(name = "DeviceErrorPath")
+    @Init(name = DEVICE_ERROR_PATH)
     private String             deviceErrorPath;
 
 
@@ -92,7 +107,7 @@ public class DeviceAuthnLandingServlet extends AbstractInjectionServlet {
              */
             HelpdeskLogger.add(request.getSession(), "authentication failed, request to try another device", LogLevelType.ERROR);
 
-            response.sendRedirect(tryAnotherDeviceUrl);
+            response.sendRedirect(tryAnotherDevicePath);
         } else if (null == userId) {
             /*
              * Authentication failed, redirect to start page
@@ -117,7 +132,7 @@ public class DeviceAuthnLandingServlet extends AbstractInjectionServlet {
                 response.addCookie(authenticationService.getSsoCookie());
             }
 
-            response.sendRedirect(loginUrl);
+            response.sendRedirect(loginPath);
         }
     }
 }

@@ -32,9 +32,9 @@ public abstract class DeviceOperationUtils {
     private static final Log   LOG                                      = LogFactory.getLog(DeviceOperationUtils.class);
 
     /**
-     * PATH within olas-user that the device should redirect back to after having completed the device operation.
+     * PATH within olas-user that the device should redirect back to after having completed the device operation. <i>[required]</i>
      */
-    public static final String DEVICE_SERVICE_URL_INIT_PARAM            = "DeviceServiceUrl";
+    public static final String DEVICE_SERVICE_PATH_INIT_PARAM           = "DeviceServicePath";
 
     public static final String SAML2_POST_BINDING_VM_RESOURCE           = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
@@ -96,7 +96,7 @@ public abstract class DeviceOperationUtils {
                                 AttributeDO attribute) {
 
         SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        String serviceUrl = safeOnlineConfig.absoluteUrlFromParam(request, DEVICE_SERVICE_URL_INIT_PARAM);
+        String serviceUrl = safeOnlineConfig.absoluteUrlFromParam(request, DEVICE_SERVICE_PATH_INIT_PARAM);
 
         LOG.debug("redirecting to: " + landingUrl);
 

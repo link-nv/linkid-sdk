@@ -7,20 +7,28 @@
 
     <!-- Application Context Parameters -->
 	<context-param>
-		<description>URL used to initiate a login process.</description>
-		<param-name>AuthenticationServiceUrl</param-name>
+		<param-name>SafeOnlineConfig</param-name>
+        <param-value>../../conf/safeonline.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.demo.lawyer.webapp.url}/</param-value>
+	</context-param>
+	<context-param>
+		<description>Path used to initiate a login process.</description>
+		<param-name>AuthenticationServicePath</param-name>
 		<param-value>/entry</param-value>
 	</context-param>
 	<context-param>
-		<description>URL used to initiate a single logout process.</description>
-		<param-name>LogoutServiceUrl</param-name>
+		<description>Path used to initiate a single logout process.</description>
+		<param-name>LogoutServicePath</param-name>
 		<param-value>/logoutentry</param-value>
 	</context-param>
 	<context-param>
-		<description>URL used to finalize a logout request sent by the
+		<description>Path used to finalize a logout request sent by the
 			authentication webapp following a single logout process by another
 			application.</description>
-		<param-name>LogoutExitServiceUrl</param-name>
+		<param-name>LogoutExitServicePath</param-name>
 		<param-value>/logoutexit</param-value>
 	</context-param>
 	<context-param>
@@ -146,7 +154,7 @@
 		<servlet-class>net.link.safeonline.sdk.auth.servlet.LogoutServlet</servlet-class>
 
 		<init-param>
-			<param-name>LogoutUrl</param-name>
+			<param-name>LogoutPath</param-name>
 			<param-value>/lawyerlogout</param-value>
 		</init-param>
 		<init-param>
@@ -159,7 +167,7 @@
 		<servlet-class>net.link.safeonline.demo.lawyer.servlet.LogoutServlet</servlet-class>
 
 		<init-param>
-			<param-name>LogoutExitUrl</param-name>
+			<param-name>LogoutExitPath</param-name>
 			<param-value>/authlogout</param-value>
 		</init-param>
 	</servlet>

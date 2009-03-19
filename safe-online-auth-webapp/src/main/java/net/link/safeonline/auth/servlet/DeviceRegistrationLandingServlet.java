@@ -41,6 +41,27 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
+    /**
+     * PATH within the authentication web application where the authentication pipeline continues after the user has been successfully
+     * logged in. <i>[required]</i>
+     */
+    public static final String LOGIN_PATH                     = "LoginPath";
+
+    /**
+     * 
+     */
+    public static final String REGISTER_DEVICE_PATH           = "RegisterDevicePath";
+
+    /**
+     * 
+     */
+    public static final String NEW_USER_DEVICE_PATH           = "NewUserDevicePath";
+
+    /**
+     * PATH within the authentication web application to redirect to when a protocol error occurs. <i>[required]</i>
+     */
+    public static final String DEVICE_ERROR_PATH              = "DeviceErrorPath";
+
     private static final long  serialVersionUID               = 1L;
 
     private static final Log   LOG                            = LogFactory.getLog(DeviceRegistrationLandingServlet.class);
@@ -49,16 +70,16 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
     public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-    @Init(name = "LoginUrl")
-    private String             loginUrl;
+    @Init(name = LOGIN_PATH)
+    private String             loginPath;
 
-    @Init(name = "RegisterDeviceUrl")
-    private String             registerDeviceUrl;
+    @Init(name = REGISTER_DEVICE_PATH)
+    private String             registerDevicePath;
 
-    @Init(name = "NewUserDeviceUrl")
-    private String             newUserDeviceUrl;
+    @Init(name = NEW_USER_DEVICE_PATH)
+    private String             newUserDevicePath;
 
-    @Init(name = "DeviceErrorPath")
+    @Init(name = DEVICE_ERROR_PATH)
     private String             deviceErrorPath;
 
 
@@ -93,28 +114,24 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
             /* Registration failed, redirect to register-device or new-user-device */
             HelpdeskLogger.add(request.getSession(), "registration failed", LogLevelType.ERROR);
             if (authenticationService.getAuthenticationState().equals(AuthenticationState.USER_AUTHENTICATED)) {
-                response.sendRedirect(registerDeviceUrl);
+                response.sendRedirect(registerDevicePath);
             } else {
-                response.sendRedirect(newUserDeviceUrl);
+                response.sendRedirect(newUserDevicePath);
             }
 
         } else {
-            /*
-             * Registration ok, redirect to login servlet
-             */
+            /* Registration OK, redirect to login servlet */
             LoginManager.relogin(request.getSession(), authenticationService.getAuthenticationDevice());
             HelpdeskLogger.add(request.getSession(), "successfully registered device: " + authenticationService.getAuthenticationDevice(),
                     LogLevelType.INFO);
 
-            /*
-             * Set SSO Cookie
-             */
+            /* Set SSO Cookie */
             Cookie ssoCookie = authenticationService.getSsoCookie();
             if (null != ssoCookie) {
                 response.addCookie(ssoCookie);
             }
 
-            response.sendRedirect(loginUrl);
+            response.sendRedirect(loginPath);
         }
     }
 }

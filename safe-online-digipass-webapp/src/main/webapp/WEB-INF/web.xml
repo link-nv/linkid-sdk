@@ -10,6 +10,14 @@
 
     <!-- Application Context Parameters -->
 	<context-param>
+		<param-name>SafeOnlineConfig</param-name>
+        <param-value>../../conf/safeonline.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.digipass.webapp.name}/</param-value>
+	</context-param>
+	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
@@ -58,7 +66,7 @@
 		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceAuthenticationLandingServlet</servlet-class>
 		<init-param>
-			<param-name>AuthenticationUrl</param-name>
+			<param-name>AuthenticationPath</param-name>
 			<param-value>authentication</param-value>
 		</init-param>
 		<init-param>
@@ -78,11 +86,11 @@
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceManagementLandingServlet</servlet-class>
 		<init-param>
-			<param-name>DisableUrl</param-name>
+			<param-name>DisablePath</param-name>
 			<param-value>disable</param-value>
 		</init-param>
 		<init-param>
-			<param-name>EnableUrl</param-name>
+			<param-name>EnablePath</param-name>
 			<param-value>enable</param-value>
 		</init-param>
 		<init-param>

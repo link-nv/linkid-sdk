@@ -12,17 +12,25 @@
 
     <!-- Application Context Parameters -->
 	<context-param>
+		<param-name>SafeOnlineConfig</param-name>
+        <param-value>../../conf/safeonline.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.auth.webapp.name}/</param-value>
+	</context-param>
+	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for remote device issuers when authenticating</description>
-		<param-name>DeviceAuthenticationServiceUrl</param-name>
+		<param-name>DeviceAuthenticationServicePath</param-name>
 		<param-value>/device/auth</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for remote device issuers when registering</description>
-		<param-name>DeviceRegistrationServiceUrl</param-name>
+		<param-name>DeviceRegistrationServicePath</param-name>
 		<param-value>/device/reg</param-value>
 	</context-param>
 	<context-param>
@@ -130,7 +138,7 @@
 		<servlet-class>net.link.safeonline.auth.servlet.AuthnEntryServlet</servlet-class>
 
 		<init-param>
-			<param-name>LoginUrl</param-name>
+			<param-name>LoginPath</param-name>
 			<param-value>login</param-value>
 		</init-param>
 		<init-param>
@@ -147,7 +155,7 @@
 		<servlet-class>net.link.safeonline.auth.servlet.LogoutEntryServlet</servlet-class>
 
 		<init-param>
-			<param-name>LogoutExitUrl</param-name>
+			<param-name>LogoutExitPath</param-name>
 			<param-value>/logoutexit</param-value>
 		</init-param>
 		<init-param>
@@ -168,11 +176,11 @@
 		<servlet-class>net.link.safeonline.auth.servlet.DeviceLandingServlet</servlet-class>
 
 		<init-param>
-			<param-name>LoginUrl</param-name>
+			<param-name>LoginPath</param-name>
 			<param-value>/login</param-value>
 		</init-param>
 		<init-param>
-			<param-name>TryAnotherDeviceUrl</param-name>
+			<param-name>TryAnotherDevicePath</param-name>
 			<param-value>/all-devices</param-value>
 		</init-param>
 		<init-param>
@@ -185,15 +193,15 @@
 		<servlet-class>net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet</servlet-class>
 
 		<init-param>
-			<param-name>RegisterDeviceUrl</param-name>
+			<param-name>RegisterDevicePath</param-name>
 			<param-value>/register-device</param-value>
 		</init-param>
 		<init-param>
-			<param-name>NewUserDeviceUrl</param-name>
+			<param-name>NewUserDevicePath</param-name>
 			<param-value>/new-user-device</param-value>
 		</init-param>
 		<init-param>
-			<param-name>LoginUrl</param-name>
+			<param-name>LoginPath</param-name>
 			<param-value>/login</param-value>
 		</init-param>
 		<init-param>

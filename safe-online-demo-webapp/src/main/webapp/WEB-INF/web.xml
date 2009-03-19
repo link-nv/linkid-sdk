@@ -7,6 +7,14 @@
 
     <!-- Application Context Parameters -->
 	<context-param>
+		<param-name>SafeOnlineConfig</param-name>
+        <param-value>../../conf/safeonline.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.demo.app.webapp.url}/</param-value>
+	</context-param>
+	<context-param>
 		<param-name>title</param-name>
 		<param-value>OLAS Test Web Application</param-value>
 	</context-param>
@@ -17,7 +25,7 @@
 		<filter-class>net.link.safeonline.sdk.auth.filter.AuthnRequestFilter</filter-class>
 
 		<init-param>
-			<param-name>AuthenticationServiceUrl</param-name>
+			<param-name>AuthenticationServicePath</param-name>
 			<param-value>/entry</param-value>
 		</init-param>
 		<init-param>

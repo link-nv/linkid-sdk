@@ -71,7 +71,11 @@ public class SafeOnlineConfig extends Properties {
      */
     public String endpointFor(HttpServletRequest request) {
 
-        return hostbase + request.getSession().getServletContext().getInitParameter(WEBAPP_PATH_CONTEXT_PARAM);
+        String webappPath = request.getSession().getServletContext().getInitParameter(WEBAPP_PATH_CONTEXT_PARAM);
+        if (webappPath == null || webappPath.length() == 0)
+            throw new IllegalStateException(WEBAPP_PATH_CONTEXT_PARAM + " not configured in web.xml!");
+
+        return hostbase + webappPath;
     }
 
     /**
@@ -123,6 +127,8 @@ public class SafeOnlineConfig extends Properties {
     public static SafeOnlineConfig load(HttpServletRequest request) {
 
         String propertiesPath = request.getSession().getServletContext().getInitParameter(CONFIG_CONTEXT_PARAM);
+        if (propertiesPath == null || propertiesPath.length() == 0)
+            throw new IllegalStateException(CONFIG_CONTEXT_PARAM + " not configured in web.xml!");
 
         return SafeOnlineConfig.load(propertiesPath);
     }

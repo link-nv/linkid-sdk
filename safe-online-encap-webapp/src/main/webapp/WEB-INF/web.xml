@@ -10,6 +10,14 @@
 
     <!-- Application Context Parameters -->
 	<context-param>
+		<param-name>SafeOnlineConfig</param-name>
+        <param-value>../../conf/safeonline.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.encap.webapp.name}/</param-value>
+	</context-param>
+	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
@@ -60,7 +68,7 @@
 		<servlet-class>net.link.safeonline.encap.servlet.DeviceAuthenticationLandingServlet</servlet-class>
 
 		<init-param>
-			<param-name>AuthenticationUrl</param-name>
+			<param-name>AuthenticationPath</param-name>
 			<param-value>authentication</param-value>
 		</init-param>
 		<init-param>
@@ -82,19 +90,19 @@
 		<servlet-class>net.link.safeonline.encap.servlet.DeviceManagementLandingServlet</servlet-class>
 
         <init-param>
-            <param-name>RegistrationUrl</param-name>
+            <param-name>RegistrationPath</param-name>
             <param-value>registration</param-value>
         </init-param>
         <init-param>
-            <param-name>RemovalUrl</param-name>
+            <param-name>RemovalPath</param-name>
             <param-value>remove</param-value>
         </init-param>
 		<init-param>
-			<param-name>DisableUrl</param-name>
+			<param-name>DisablePath</param-name>
 			<param-value>disable</param-value>
 		</init-param>
 		<init-param>
-			<param-name>EnableUrl</param-name>
+			<param-name>EnablePath</param-name>
 			<param-value>enable</param-value>
 		</init-param>
 		<init-param>

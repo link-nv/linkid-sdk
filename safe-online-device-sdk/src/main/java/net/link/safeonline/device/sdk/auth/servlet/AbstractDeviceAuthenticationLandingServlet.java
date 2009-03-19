@@ -31,15 +31,26 @@ import org.apache.commons.logging.LogFactory;
 
 public abstract class AbstractDeviceAuthenticationLandingServlet extends AbstractInjectionServlet {
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * PATH within the web application that performs the device authentication. <i>[required]</i>
+     */
+    public static final String AUTHENTICATION_PATH = "AuthenticationPath";
 
-    private static final Log  LOG              = LogFactory.getLog(AbstractDeviceAuthenticationLandingServlet.class);
+    /**
+     * PATH within the web application to redirect to when a protocol error occurs. <i>[optional, default: a plain HTML page with the error
+     * on it]</i>
+     */
+    public static final String ERROR_PAGE          = "ErrorPage";
 
-    @Init(name = "AuthenticationUrl")
-    protected String          authenticationUrl;
+    private static final long  serialVersionUID    = 1L;
 
-    @Init(name = "ErrorPage", optional = true)
-    protected String          errorPage;
+    private static final Log   LOG                 = LogFactory.getLog(AbstractDeviceAuthenticationLandingServlet.class);
+
+    @Init(name = AUTHENTICATION_PATH)
+    protected String           authenticationPath;
+
+    @Init(name = ERROR_PAGE, optional = true)
+    protected String           errorPage;
 
 
     @Override
@@ -82,7 +93,7 @@ public abstract class AbstractDeviceAuthenticationLandingServlet extends Abstrac
             redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
             return;
         }
-        response.sendRedirect(authenticationUrl);
+        response.sendRedirect(authenticationPath);
     }
 
     /**

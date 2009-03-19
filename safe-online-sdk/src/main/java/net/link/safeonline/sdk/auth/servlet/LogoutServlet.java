@@ -21,6 +21,7 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
@@ -64,8 +65,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
     @Init(name = "ErrorPage", optional = true)
     private String                             errorPage;
 
-    @Context(name = SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_URL_INIT_PARAM)
-    private String                             logoutExitServiceUrl;
+    @Context(name = SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM)
+    private String                             logoutExitServicePath;
 
     @Context(name = SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM)
     private String                             applicationName;
@@ -170,6 +171,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
+
         AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(request);
         if (null == protocolHandler) {
             /*
@@ -178,8 +181,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
              */
             try {
                 protocolHandler = AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol,
-                        logoutExitServiceUrl, applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, true,
-                        configParams, request);
+                        safeOnlineConfig.authbase + logoutExitServicePath, applicationName, applicationFriendlyName, applicationKeyPair,
+                        applicationCertificate, true, configParams, request);
                 LOG.debug("initialized protocol");
             } catch (ServletException e) {
                 throw new RuntimeException("could not init authentication protocol handler: " + authenticationProtocol

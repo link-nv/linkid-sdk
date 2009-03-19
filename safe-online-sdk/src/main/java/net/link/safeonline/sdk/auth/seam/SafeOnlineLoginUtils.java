@@ -31,6 +31,7 @@ import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
@@ -48,7 +49,7 @@ public class SafeOnlineLoginUtils {
     private static final Log                   LOG                                  = LogFactory.getLog(SafeOnlineLoginUtils.class);
 
     /**
-     * PATH to the servlet within olas-auth that initiates the authentication.
+     * PATH to the servlet within olas-auth that initiates the authentication. <i>[required]</i>
      * 
      * <p>
      * We go here when the user begins an authentication from our application.
@@ -57,7 +58,7 @@ public class SafeOnlineLoginUtils {
     public static final String                 AUTH_SERVICE_PATH_CONTEXT_PARAM      = "AuthenticationServicePath";
 
     /**
-     * PATH to the service within olas-auth that initiates the logout.
+     * PATH to the service within olas-auth that initiates the logout. <i>[required]</i>
      * 
      * <p>
      * We go here when the user begins a logout from our application.
@@ -66,30 +67,31 @@ public class SafeOnlineLoginUtils {
     public static final String                 LOGOUT_SERVICE_PATH_INIT_PARAM       = "LogoutServicePath";
 
     /**
-     * PATH to the service within olas-auth that continues an SSO logout that was initiated by another application.
+     * PATH to the service within olas-auth that continues an SSO logout that was initiated by another application. <i>[required]</i>
      * 
      * <p>
      * We go here after olas-auth asked us to clean our session up following a logout request that was initiated from another application in
      * our application's SSO pool; such that olas-auth can continue this SSO logout process.
      * </p>
      */
-    public static final String                 LOGOUT_EXIT_SERVICE_URL_INIT_PARAM   = "LogoutExitServiceUrl";
+    public static final String                 LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM  = "LogoutExitServicePath";
 
     /**
-     * PATH within our application to return to after a successful authentication that was initiated by the AuthnRequestFilter.
+     * PATH within our application to return to after a successful authentication that was initiated by the {@link AuthnRequestFilter}.
+     * <i>[optional, default: The URL that the filter was triggered on]</i>
      */
     public static final String                 TARGET_INIT_PARAM                    = "Target";
 
     public static final String                 SKIP_LANDING_PAGE_INIT_PARAM         = "SkipLandingPage";
 
     /**
-     * The application name that will be communicated towards the SafeOnline authentication web application.
+     * The application name that will be communicated towards the SafeOnline authentication web application. <i>[required]</i>
      */
     public static final String                 APPLICATION_NAME_CONTEXT_PARAM       = "ApplicationName";
     public static final String                 APPLICATION_FRIENDLY_NAME_INIT_PARAM = "ApplicationFriendlyName";
 
     /**
-     * The authentication protocol used to begin the session with the OLAS authentication web application.
+     * The authentication protocol used to begin the session with the OLAS authentication web application. <i>[optional]</i>
      * 
      * <ul>
      * <li>SAML2_BROWSER_POST <i>[default]</i></li>
@@ -98,7 +100,8 @@ public class SafeOnlineLoginUtils {
     public static final String                 AUTHN_PROTOCOL_CONTEXT_PARAM         = "AuthenticationProtocol";
 
     /**
-     * The authentication protocol may use the resource denoted by this value to digitally sign the authentication request.
+     * The authentication protocol may use the resource denoted by this value to digitally sign the authentication request. <i>[protocol
+     * specific]</i>
      * 
      * <p>
      * The resource will be loaded using the context classloader.
@@ -107,7 +110,8 @@ public class SafeOnlineLoginUtils {
     public static final String                 KEY_STORE_RESOURCE_CONTEXT_PARAM     = "KeyStoreResource";
 
     /**
-     * The authentication protocol may use the file denoted by this value to digitally sign the authentication request.
+     * The authentication protocol may use the file denoted by this value to digitally sign the authentication request. <i>[protocol
+     * specific]</i>
      * 
      * <p>
      * The value should be an absolute pathname in the file system.
@@ -116,7 +120,7 @@ public class SafeOnlineLoginUtils {
     public static final String                 KEY_STORE_FILE_CONTEXT_PARAM         = "KeyStoreFile";
 
     /**
-     * The type of keystore denoted by the value of {@link #KEY_STORE_RESOURCE_CONTEXT_PARAM}.
+     * The type of keystore denoted by the value of {@link #KEY_STORE_RESOURCE_CONTEXT_PARAM}. <i>[protocol specific]</i>
      * 
      * <ul>
      * <li>PKCS12</li>
@@ -126,12 +130,13 @@ public class SafeOnlineLoginUtils {
     public static final String                 KEY_STORE_TYPE_CONTEXT_PARAM         = "KeyStoreType";
 
     /**
-     * The password that unlocks the keystore and key entry specified by {@link #KEY_STORE_RESOURCE_CONTEXT_PARAM}.
+     * The password that unlocks the keystore and key entry specified by {@link #KEY_STORE_RESOURCE_CONTEXT_PARAM}. <i>[protocol
+     * specific]</i>
      */
     public static final String                 KEY_STORE_PASSWORD_CONTEXT_PARAM     = "KeyStorePassword";
 
     /**
-     * Determines whether single sign-on authentication should be used during the authentication request or not.
+     * Determines whether single sign-on authentication should be used during the authentication request or not. <i>[optional]</i>
      * 
      * <ul>
      * <li>True <i>[default]</i></li>
@@ -236,17 +241,17 @@ public class SafeOnlineLoginUtils {
      * <p>
      * The method uses:
      * <ul>
-     * <li>{@link #AUTH_SERVICE_PATH_CONTEXT_PARAM} <i>[required]</i></li>
-     * <li>{@link #APPLICATION_NAME_CONTEXT_PARAM} <i>[required]</i></li>
-     * <li>{@link #AUTHN_PROTOCOL_CONTEXT_PARAM} <i>[required]</i></li>
-     * <li>{@link #KEY_STORE_RESOURCE_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link #KEY_STORE_FILE_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link #KEY_STORE_TYPE_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link #KEY_STORE_PASSWORD_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link #SINGLE_SIGN_ON_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link SafeOnlineAppConstants#COLOR_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link SafeOnlineAppConstants#MINIMAL_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <ul>
+     * <li>{@link #AUTH_SERVICE_PATH_CONTEXT_PARAM}</li>
+     * <li>{@link #APPLICATION_NAME_CONTEXT_PARAM}</li>
+     * <li>{@link #AUTHN_PROTOCOL_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_RESOURCE_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_FILE_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_TYPE_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_PASSWORD_CONTEXT_PARAM}</li>
+     * <li>{@link #SINGLE_SIGN_ON_CONTEXT_PARAM}</li>
+     * <li>{@link SafeOnlineAppConstants#COLOR_CONTEXT_PARAM}</li>
+     * <li>{@link SafeOnlineAppConstants#MINIMAL_CONTEXT_PARAM}</li>
+     * </ul>
      * </p>
      * 
      * @param target
@@ -409,14 +414,14 @@ public class SafeOnlineLoginUtils {
      * <p>
      * The method uses:
      * <ul>
-     * <li>{@link #LOGOUT_SERVICE_PATH_INIT_PARAM} <i>[required]</i></li>
-     * <li>{@link #APPLICATION_NAME_CONTEXT_PARAM} <i>[required]</i></li>
-     * <li>{@link #AUTHN_PROTOCOL_CONTEXT_PARAM} <i>[required]</i></li>
-     * <li>{@link #KEY_STORE_RESOURCE_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link #KEY_STORE_FILE_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link #KEY_STORE_TYPE_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <li>{@link #KEY_STORE_PASSWORD_CONTEXT_PARAM} <i>[optional]</i></li>
-     * <ul>
+     * <li>{@link #LOGOUT_SERVICE_PATH_INIT_PARAM}</li>
+     * <li>{@link #APPLICATION_NAME_CONTEXT_PARAM}</li>
+     * <li>{@link #AUTHN_PROTOCOL_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_RESOURCE_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_FILE_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_TYPE_CONTEXT_PARAM}</li>
+     * <li>{@link #KEY_STORE_PASSWORD_CONTEXT_PARAM}</li>
+     * </ul>
      * 
      * @param subjectName
      *            The user ID of the subject logging out.

@@ -62,7 +62,7 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 public class LogoutServletTest {
 
-    private static final Log    LOG                  = LogFactory.getLog(LogoutServletTest.class);
+    private static final Log    LOG                   = LogFactory.getLog(LogoutServletTest.class);
 
     private ServletTestManager  servletTestManager;
 
@@ -70,15 +70,17 @@ public class LogoutServletTest {
 
     private JndiTestUtils       jndiTestUtils;
 
-    private String              logoutPath           = "logout";
+    private String              logoutPath            = "logout";
 
-    private String              errorPage            = "error";
+    private String              errorPage             = "error";
 
-    private String              servletEndpointUrl   = "http://test.logout/servlet";
+    private String              servletEndpointUrl    = "http://test.logout/servlet";
 
-    private String              logoutExitServiceUrl = "http://test.auth/logoutexit";
+    private String              authbase              = "http://test.auth/";
 
-    private String              applicationName      = "test-application-id";
+    private String              logoutExitServicePath = "logoutexit";
+
+    private String              applicationName       = "test-application-id";
 
     private KeyPair             keyPair;
 
@@ -128,7 +130,7 @@ public class LogoutServletTest {
         Map<String, String> initParams = new HashMap<String, String>();
         initParams.put("LogoutPath", logoutPath);
         initParams.put("ErrorPage", errorPage);
-        initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_URL_INIT_PARAM, logoutExitServiceUrl);
+        initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM, logoutExitServicePath);
         initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, applicationName);
         initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
         initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");

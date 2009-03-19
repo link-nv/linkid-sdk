@@ -40,27 +40,58 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractDeviceManagementLandingServlet extends AbstractInjectionServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID  = 1L;
+    private static final Log   LOG               = LogFactory.getLog(AbstractDeviceManagementLandingServlet.class);
 
-    private static final Log  LOG              = LogFactory.getLog(AbstractDeviceManagementLandingServlet.class);
+    /**
+     * PATH within the device web application that provides the device registration service. <i>[optional, default: Abort request as not
+     * supported]</i>
+     */
+    public static final String REGISTRATION_PATH = "RegistrationPath";
 
-    @Init(name = "RegistrationUrl", optional = true)
-    private String            registrationUrl;
+    /**
+     * PATH within the device web application that removes a registered device. <i>[optional, default: Abort request as not supported]</i>
+     */
+    public static final String REMOVAL_PATH      = "RemovalPath";
 
-    @Init(name = "RemovalUrl", optional = true)
-    private String            removalUrl;
+    /**
+     * PATH within the device web application that updates a registered device. <i>[optional, default: Abort request as not supported]</i>
+     */
+    public static final String UPDATE_PATH       = "UpdatePath";
 
-    @Init(name = "UpdateUrl", optional = true)
-    private String            updateUrl;
+    /**
+     * PATH within the device web application that disables a registered device. <i>[optional, default: Abort request as not supported]</i>
+     */
+    public static final String DISABLE_PATH      = "DisablePath";
 
-    @Init(name = "DisableUrl", optional = true)
-    private String            disableUrl;
+    /**
+     * PATH within the device web application that enabled a disabled device. <i>[optional, default: Abort request as not supported]</i>
+     */
+    public static final String ENABLE_PATH       = "EnablePath";
 
-    @Init(name = "EnableUrl", optional = true)
-    private String            enableUrl;
+    /**
+     * PATH within the device web application to redirect to when a protocol error occurs. <i>[optional, default: A simple HTML page
+     * containing the error message]</i>
+     */
+    public static final String ERROR_PAGE        = "ErrorPage";
 
-    @Init(name = "ErrorPage", optional = true)
-    private String            errorPage;
+    @Init(name = REGISTRATION_PATH, optional = true)
+    private String             registrationPath;
+
+    @Init(name = REMOVAL_PATH, optional = true)
+    private String             removalPath;
+
+    @Init(name = UPDATE_PATH, optional = true)
+    private String             updatePath;
+
+    @Init(name = DISABLE_PATH, optional = true)
+    private String             disablePath;
+
+    @Init(name = ENABLE_PATH, optional = true)
+    private String             enablePath;
+
+    @Init(name = ERROR_PAGE, optional = true)
+    private String             errorPage;
 
 
     @Override
@@ -101,30 +132,30 @@ public abstract class AbstractDeviceManagementLandingServlet extends AbstractInj
             handler.init(configParams, getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
             deviceOperation = handler.initDeviceOperation(request);
             if (deviceOperation.equals(DeviceOperationType.REGISTER) || deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
-                if (null == registrationUrl) {
+                if (null == registrationPath) {
                     handler.abortDeviceOperation(request, response);
                 }
-                response.sendRedirect(registrationUrl);
+                response.sendRedirect(registrationPath);
             } else if (deviceOperation.equals(DeviceOperationType.REMOVE)) {
-                if (null == removalUrl) {
+                if (null == removalPath) {
                     handler.abortDeviceOperation(request, response);
                 }
-                response.sendRedirect(removalUrl);
+                response.sendRedirect(removalPath);
             } else if (deviceOperation.equals(DeviceOperationType.UPDATE)) {
-                if (null == updateUrl) {
+                if (null == updatePath) {
                     handler.abortDeviceOperation(request, response);
                 }
-                response.sendRedirect(updateUrl);
+                response.sendRedirect(updatePath);
             } else if (deviceOperation.equals(DeviceOperationType.DISABLE)) {
-                if (null == disableUrl) {
+                if (null == disablePath) {
                     handler.abortDeviceOperation(request, response);
                 }
-                response.sendRedirect(disableUrl);
+                response.sendRedirect(disablePath);
             } else if (deviceOperation.equals(DeviceOperationType.ENABLE)) {
-                if (null == enableUrl) {
+                if (null == enablePath) {
                     handler.abortDeviceOperation(request, response);
                 }
-                response.sendRedirect(enableUrl);
+                response.sendRedirect(enablePath);
             } else {
                 handler.abortDeviceOperation(request, response);
             }

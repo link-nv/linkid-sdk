@@ -45,61 +45,22 @@ import org.apache.commons.logging.LogFactory;
  * authentication response is done via the {@link AuthnResponseFilter}.
  * 
  * <p>
- * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor. If these configuration parameters
- * are not specified as init parameters in the Filter's declaration, it will search in the context parameters in web.xml.
+ * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
  * </p>
  * 
- * <p>
- * The init parameter <code>AuthenticationServiceUrl</code> should point to the Authentication Web Application entry point.
- * </p>
- * 
- * <p>
- * The init parameter <code>ApplicationName</code> should contain the application name of this service provider.
- * </p>
- * 
- * <p>
- * The optional init parameter <code>AuthenticationProtocol</code> should contain the name of the protocol used between the SafeOnline
- * authentication web application and this service provider. This can be: SAML2_BROWSER_POST. Defaults to: SAML2_BROWSER_POST
- * </p>
- * 
- * <p>
- * The optional keystore resource name <code>KeyStoreResource</code> init parameter. The key pair within this keystore can be used by the
- * authentication protocol handler to digitally sign the authentication request.
- * </p>
- * 
- * <p>
- * The optional keystore file name <code>KeyStoreFile</code> init parameter. The key pair within this keystore can be used by the
- * authentication protocol handler to digitally sign the authentication request.
- * </p>
- * 
- * <p>
- * The optional <code>KeyStoreType</code> key store type init parameter. Accepted values are: <code>pkcs12</code> and <code>jks</code>.
- * </p>
- * 
- * <p>
- * The optional <code>KeyStorePassword</code> init parameter contains the password to unlock the keystore and key entry.
- * </p>
- * 
- * <p>
- * The optional <code>SingleSignOnEnabled</code> init parameter specifies whether single sign-on can be used or not. Accepted values are:
- * <code>true</code> or <code>false</code>. If omitted, single sign-on will be enabled by default.
- * </p>
- * 
- * <p>
- * The optional <code>Target</code> init parameter specifies the location to redirecto to after successful authentication. If not specified
- * the authentication will redirect to the location this filter is activated on. If not absolute, the web application's base URL will be
- * prefixed to it.
- * </p>
- * 
- * <p>
- * The optional <code>ApplicationColor</code> init parameter specifies the color the OLAS authentication webapp should display. Accepted
- * values are HTML color codes e.g. <code>#000000</code>
- * </p>
- * 
- * <p>
- * The optional <code>ApplicationMinimal</code> init parameter specified whether the OLAS authentication webapp should be displayed in an
- * inline frame or not. Accepted values are: <code>true</code> or <code>false</code>.
- * </p>
+ * <ul>
+ * <li>{@link SafeOnlineLoginUtils#AUTH_SERVICE_PATH_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#APPLICATION_NAME_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#AUTHN_PROTOCOL_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#TARGET_INIT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#KEY_STORE_RESOURCE_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#KEY_STORE_FILE_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#KEY_STORE_TYPE_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#KEY_STORE_PASSWORD_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineLoginUtils#SINGLE_SIGN_ON_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAppConstants#COLOR_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAppConstants#MINIMAL_CONTEXT_PARAM}</li>
+ * </ul>
  * 
  * <p>
  * If an application wishes to communicate to the OLAS authentication webapp the language to be used, the session parameter

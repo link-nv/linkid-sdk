@@ -12,6 +12,14 @@
 
     <!-- Application Context Parameters -->
 	<context-param>
+		<param-name>SafeOnlineConfig</param-name>
+        <param-value>../../conf/safeonline.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.beid.webapp.name}/</param-value>
+	</context-param>
+	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
@@ -61,9 +69,9 @@
 		<servlet-class>net.link.safeonline.beid.servlet.DeviceAuthenticationLandingServlet</servlet-class>
 
 		<init-param>
-			<param-name>AuthenticationUrl</param-name>
+			<param-name>AuthenticationPath</param-name>
 			<param-value>beid.html</param-value>
-			<description> URL to where we redirect after successful handling SAML POST request. </description>
+			<description> Path to where we redirect after successful handling SAML POST request. </description>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -89,19 +97,19 @@
 		<servlet-class>net.link.safeonline.beid.servlet.DeviceManagementLandingServlet</servlet-class>
 
 		<init-param>
-			<param-name>RegistrationUrl</param-name>
+			<param-name>RegistrationPath</param-name>
 			<param-value>_registration</param-value>
 		</init-param>
 		<init-param>
-			<param-name>RemovalUrl</param-name>
+			<param-name>RemovalPath</param-name>
 			<param-value>_removal</param-value>
 		</init-param>
 		<init-param>
-			<param-name>DisableUrl</param-name>
+			<param-name>DisablePath</param-name>
 			<param-value>_disabling</param-value>
 		</init-param>
 		<init-param>
-			<param-name>EnableUrl</param-name>
+			<param-name>EnablePath</param-name>
 			<param-value>_enabling</param-value>
 		</init-param>
 		<init-param>
