@@ -23,8 +23,8 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.webapp.components.AttributeInputPanel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
+import net.link.safeonline.webapp.components.attribute.AttributeInputPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
@@ -68,7 +68,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.attributes));
 
-        getContent().add(new IdentityForm(MISSING_ATTRIBUTES_FORM_ID));
+        getContent().add(new MissingAttributesForm(MISSING_ATTRIBUTES_FORM_ID));
 
     }
 
@@ -87,7 +87,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
     }
 
 
-    class IdentityForm extends Form<String> {
+    class MissingAttributesForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
 
@@ -96,7 +96,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
 
 
         @SuppressWarnings("unchecked")
-        public IdentityForm(String id) {
+        public MissingAttributesForm(String id) {
 
             super(id);
             setMarkupId(id);

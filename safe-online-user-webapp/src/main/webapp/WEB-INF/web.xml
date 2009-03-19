@@ -169,16 +169,12 @@
 		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/device/landing</url-pattern>
 	</filter-mapping>
-	<!--
-		<filter-mapping> <filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>/*</url-pattern> </filter-mapping>
-	-->
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>net.link.safeonline.sdk.auth.servlet.LoginServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 		<init-param>
 			<description>Used to wrap the servlet request's request URL for
@@ -201,7 +197,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 		<init-param>
 			<description>Used to wrap the servlet request's request URL for
@@ -240,7 +236,7 @@
 		<servlet-class>net.link.safeonline.user.servlet.DeviceLandingServlet</servlet-class>
 		<init-param>
 			<param-name>DevicesPage</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/device/devices.seam</param-value>
+			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/device_page</param-value>
 		</init-param>
 		<init-param>
 			<description>Used to wrap the servlet request's request URL for
@@ -253,7 +249,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>device-error.seam</param-value>
+			<param-value>device-error</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ResourceBundle</param-name>

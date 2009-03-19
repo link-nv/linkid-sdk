@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border">
+			<wicket:container wicket:id="navigation_panel">[Navigation
+				Panel]</wicket:container>
+		</wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+				<li>
+					<a wicket:id="account_side">
+						<wicket:message key="accountManagement">[Account]</wicket:message>
+					</a>
+				</li>
+				<li>
+					<a wicket:id="usage_side">
+						<wicket:message key="usageAgreement">[Usage Agreement]</wicket:message>
+					</a>
+				</li>
+				<li>
+					<a wicket:id="remove_side">
+						<wicket:message key="removeAccount">[Remove Account]</wicket:message>
+					</a>
+				</li>
+			</wicket:container>
+
+			<table>
+				<tr>
+					<th>
+						<wicket:message key="when">[When]</wicket:message>
+					</th>
+					<th>
+						<wicket:message key="event">[Event]</wicket:message>
+					</th>
+				</tr>
+				<tr wicket:id="history">
+					<td>
+						<span wicket:id="when">[When]</span>
+					</td>
+					<td>
+						<span wicket:id="message">[Message]</span>
+					</td>
+				</tr>
+			</table>
+			<span wicket:id="navigator">[Navigator]</span>
+
+		</wicket:container>
+
+	</body>
+</html>

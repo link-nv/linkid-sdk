@@ -703,6 +703,40 @@ table.rich-shuttle-body table {
 }
 
 
+/* ==================================================================
+ * Section: Wicket Toggle Border
+ */
+div.toggle-header {
+	background-color: rgb(212, 207, 199);
+	background-repeat: repeat-x;
+	border-color: rgb(212, 207, 199);
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-right-style: solid;
+	border-right-width: 1px;
+	display: block;
+	font-weight: bold;
+	color:  black;
+	width: 562px;
+}
+
+div.toggle-header-marker {
+	display: block;
+	float: right;
+}
+
+div.toggle-body {
+	background-color: white;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+}
+
 
 /* ==================================================================
  * Section: Browser Hacks

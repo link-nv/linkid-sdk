@@ -980,9 +980,7 @@
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-wicket-tools</module>
 		<module>safe-online-taglib</module>
-		<module>safe-online-user</module>
 		<module>safe-online-user-webapp</module>
-		<module>safe-online-user-service</module>
 		<module>safe-online-user-keystore</module>
 		<module>safe-online-oper</module>
 		<module>safe-online-oper-webapp</module>

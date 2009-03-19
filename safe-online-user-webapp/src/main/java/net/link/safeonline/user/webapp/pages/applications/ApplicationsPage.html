@@ -18,28 +18,33 @@
 		<wicket:container wicket:id="content_border">
 
 			<wicket:container wicket:id="sidebar_border">
-				<wicket:enclosure>
-					<li>
-						<a wicket:id="login">
-							<wicket:message key="loginaction">[Login]</wicket:message>
-						</a>
-					</li>
-				</wicket:enclosure>
-				<wicket:enclosure>
-					<li>
-						<a wicket:id="logout">
-							<wicket:message key="logout">[Logout]</wicket:message>
-						</a>
-					</li>
-				</wicket:enclosure>
-
 			</wicket:container>
 
-			<p>
-				<span wicket:id="intro_message">[Intro Message]</span>
-			</p>
+			<table>
+				<tr>
+					<th>
+						<wicket:message key="applications">[Applications]</wicket:message>
+					</th>
+					<th>
+						<wicket:message key="action">[Action]</wicket:message>
+					</th>
+				</tr>
+				<tr wicket:id="subscriptions">
+					<td>
+						<a wicket:id="view">
+							<span wicket:id="name">[Application Name]</span>
+						</a>
+					</td>
+					<td>
+						<a wicket:id="unsubscribe">
+							<wicket:message key="unsubscribe">[Unsubscribe]</wicket:message>
+						</a>
+					</td>
+				</tr>
+			</table>
+			<span wicket:id="navigator">[Navigator]</span>
 
-
+			<div wicket:id="feedback" class="error"></div>
 
 		</wicket:container>
 

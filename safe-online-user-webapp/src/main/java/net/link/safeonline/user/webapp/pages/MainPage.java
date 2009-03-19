@@ -7,6 +7,11 @@
 
 package net.link.safeonline.user.webapp.pages;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
 import net.link.safeonline.wicket.tools.WicketUtil;
@@ -38,10 +43,29 @@ public class MainPage extends UserTemplatePage {
 
         super(Panel.home);
 
-        OlasLoginLink loginLink = new OlasLoginLink(LOGIN_LINK_ID, OverviewPage.class);
+        OlasLoginLink loginLink = new OlasLoginLink(LOGIN_LINK_ID, OverviewPage.class) {
+
+            private static final long serialVersionUID = 1L;
+
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
+
+                super.delegate(target, request, response);
+
+                // set login cookie for timeout filter
+                Cookie loginCookie = new Cookie(SafeOnlineCookies.LOGIN_COOKIE, "true");
+                loginCookie.setPath(request.getContextPath());
+                response.addCookie(loginCookie);
+            }
+
+        };
         loginLink.setVisible(!OLASSession.get().isUserSet());
 
-        OlasLogoutLink logoutLink = new OlasLogoutLink(LOGOUT_LINK_ID, OverviewPage.class);
+        OlasLogoutLink logoutLink = new OlasLogoutLink(LOGOUT_LINK_ID, MainPage.class);
         logoutLink.setVisible(OLASSession.get().isUserSet());
 
         getSidebar(localize("helpMain"), false).add(loginLink, logoutLink);
@@ -51,7 +75,6 @@ public class MainPage extends UserTemplatePage {
         getContent().add(
                 new Label(INTRO_MESSAGE_ID, new StringResourceModel("introMessage", this, new Model<MainPage>(this),
                         new Object[] { commercialName })));
-
     }
 
     /**

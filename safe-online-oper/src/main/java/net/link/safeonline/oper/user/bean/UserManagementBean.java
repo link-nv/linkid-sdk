@@ -22,6 +22,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -33,8 +34,6 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
-import net.link.safeonline.ctrl.HistoryMessage;
-import net.link.safeonline.ctrl.HistoryMessageManager;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
@@ -42,6 +41,8 @@ import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.history.HistoryMessage;
+import net.link.safeonline.history.HistoryMessageManager;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.user.UserManagement;
@@ -158,7 +159,9 @@ public class UserManagementBean implements UserManagement {
         List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
 
         for (HistoryEntity historyEntity : result) {
-            String historyMessage = HistoryMessageManager.getMessage(FacesContext.getCurrentInstance(), historyEntity);
+            String historyMessage = HistoryMessageManager.getMessage(FacesContext.getCurrentInstance().getExternalContext()
+                                                                                 .getRequestLocale(),
+                    ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()), historyEntity);
             messageList.add(new HistoryMessage(historyEntity.getWhen(), historyMessage));
         }
         return messageList;

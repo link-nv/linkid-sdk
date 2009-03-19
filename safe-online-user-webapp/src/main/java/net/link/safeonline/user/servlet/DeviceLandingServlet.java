@@ -71,28 +71,28 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
         DeviceOperationService deviceOperationService = (DeviceOperationService) requestWrapper.getSession().getAttribute(
                 DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
         if (null == deviceOperationService) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorProtocolHandlerFinalization"));
             return;
         }
 
         try {
             deviceOperationService.finalize(requestWrapper);
         } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorProtocolHandlerFinalization"));
             return;
         } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorDeviceRegistrationNotFound"));
             return;
         } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorProtocolHandlerFinalization"));
             return;
         } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    "errorProtocolHandlerFinalization"));
             return;
         }
 

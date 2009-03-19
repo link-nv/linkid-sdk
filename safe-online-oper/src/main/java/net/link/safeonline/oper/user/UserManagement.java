@@ -18,9 +18,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.RoleNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.ctrl.HistoryMessage;
 import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.history.HistoryMessage;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.oper.OperatorConstants;
 

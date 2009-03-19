@@ -8,7 +8,8 @@ package net.link.safeonline.user.webapp;
 
 import net.link.safeonline.user.webapp.pages.MainPage;
 import net.link.safeonline.user.webapp.pages.OverviewPage;
-import net.link.safeonline.user.webapp.pages.profile.ProfilePage;
+import net.link.safeonline.user.webapp.pages.devices.DeviceErrorPage;
+import net.link.safeonline.user.webapp.pages.devices.DevicesPage;
 import net.link.safeonline.webapp.common.TimeoutPage;
 import net.link.safeonline.webapp.template.OlasApplication;
 
@@ -41,7 +42,8 @@ public class UserApplication extends OlasApplication {
 
         mountBookmarkablePage(MainPage.PATH, MainPage.class);
         mountBookmarkablePage(OverviewPage.PATH, OverviewPage.class);
-        mountBookmarkablePage(ProfilePage.PATH, ProfilePage.class);
+        mountBookmarkablePage(DevicesPage.PATH, DevicesPage.class);
+        mountBookmarkablePage(DeviceErrorPage.PATH, DeviceErrorPage.class);
 
         getApplicationSettings().setPageExpiredErrorPage(TimeoutPage.class);
 

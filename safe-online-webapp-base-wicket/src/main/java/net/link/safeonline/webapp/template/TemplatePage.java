@@ -104,4 +104,10 @@ public abstract class TemplatePage extends OlasApplicationPage {
 
         return sidebarBorder;
     }
+
+    public SidebarBorder getSidebar() {
+
+        return getSidebar(null, true);
+
+    }
 }

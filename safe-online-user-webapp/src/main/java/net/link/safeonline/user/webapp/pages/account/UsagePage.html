@@ -18,27 +18,24 @@
 		<wicket:container wicket:id="content_border">
 
 			<wicket:container wicket:id="sidebar_border">
-				<wicket:enclosure>
-					<li>
-						<a wicket:id="login">
-							<wicket:message key="loginaction">[Login]</wicket:message>
-						</a>
-					</li>
-				</wicket:enclosure>
-				<wicket:enclosure>
-					<li>
-						<a wicket:id="logout">
-							<wicket:message key="logout">[Logout]</wicket:message>
-						</a>
-					</li>
-				</wicket:enclosure>
-
+				<li>
+					<a wicket:id="account_side">
+						<wicket:message key="accountManagement">[Account]</wicket:message>
+					</a>
+				</li>
+				<li>
+					<a wicket:id="history_side">
+						<wicket:message key="history">[History]</wicket:message>
+					</a>
+				</li>
+				<li>
+					<a wicket:id="remove_side">
+						<wicket:message key="removeAccount">[Remove Account]</wicket:message>
+					</a>
+				</li>
 			</wicket:container>
 
-			<p>
-				<span wicket:id="intro_message">[Intro Message]</span>
-			</p>
-
+			<div wicket:id="usage_text" class="text usage block" />
 
 
 		</wicket:container>

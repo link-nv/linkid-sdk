@@ -97,23 +97,6 @@
 			<type>pom</type>
 		</dependency>
 
-		<!-- Specific Dependencies: OLAS: Backing Beans -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-user</artifactId>
-			<version>1.4-SNAPSHOT</version>
-			<scope>runtime</scope>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-user-service
-			</artifactId>
-			<version>1.4-SNAPSHOT</version>
-			<scope>runtime</scope>
-			<type>sar</type>
-		</dependency>
-
 		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

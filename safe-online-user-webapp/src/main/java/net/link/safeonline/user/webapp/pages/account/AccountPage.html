@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border">
+			<wicket:container wicket:id="navigation_panel">[Navigation
+				Panel]</wicket:container>
+		</wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+				<li>
+					<a wicket:id="history_side">
+						<wicket:message key="history">[History]</wicket:message>
+					</a>
+				</li>
+				<li>
+					<a wicket:id="usage_side">
+						<wicket:message key="usageAgreement">[Usage Agreement]</wicket:message>
+					</a>
+				</li>
+				<li>
+					<a wicket:id="remove_side">
+						<wicket:message key="removeAccount">[Remove Account]</wicket:message>
+					</a>
+				</li>
+			</wicket:container>
+
+			<h2>
+				<wicket:message key="userYourHistory">[History]</wicket:message>
+			</h2>
+			<p>
+				<wicket:message key="userYourHistoryInfo">[History Info]</wicket:message>
+				<a wicket:id="history">
+					<wicket:message key="clickHere">[Click Here]</wicket:message>
+				</a>
+			</p>
+			<h2>
+				<wicket:message key="usageAgreement">[Usage Agreement]</wicket:message>
+			</h2>
+			<p>
+				<wicket:message key="usageAgreementInfo">[Usage Agreement Info]</wicket:message>
+				<a wicket:id="usage">
+					<wicket:message key="clickHere">[Click Here]</wicket:message>
+				</a>
+			</p>
+			<h2>
+				<wicket:message key="actions">[Actions]</wicket:message>
+			</h2>
+			<p>
+				<wicket:message key="removeAccountInfo">[Remove Account Info]</wicket:message>
+				<a wicket:id="remove">
+					<wicket:message key="clickHere">[Click Here]</wicket:message>
+				</a>
+			</p>
+
+		</wicket:container>
+
+	</body>
+</html>

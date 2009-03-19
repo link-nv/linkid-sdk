@@ -18,28 +18,27 @@
 		<wicket:container wicket:id="content_border">
 
 			<wicket:container wicket:id="sidebar_border">
-				<wicket:enclosure>
-					<li>
-						<a wicket:id="login">
-							<wicket:message key="loginaction">[Login]</wicket:message>
-						</a>
-					</li>
-				</wicket:enclosure>
-				<wicket:enclosure>
-					<li>
-						<a wicket:id="logout">
-							<wicket:message key="logout">[Logout]</wicket:message>
-						</a>
-					</li>
-				</wicket:enclosure>
-
 			</wicket:container>
 
-			<p>
-				<span wicket:id="intro_message">[Intro Message]</span>
-			</p>
+			<form wicket:id="attribute_add_form">
+				<span wicket:id="attribute_context">
+					<span wicket:id="attribute" />
+				</span>
 
+				<label>&nbsp;</label>
+				<wicket:enclosure>
+					<input wicket:id="add" type="submit" value="[Add]"
+						wicket:message="value:addaction" class="submit" />
+				</wicket:enclosure>
+				<wicket:enclosure>
+					<input wicket:id="save" type="submit" value="[Save]"
+						wicket:message="value:saveaction" class="submit" />
+				</wicket:enclosure>
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
 
+				<div wicket:id="feedback" class="error"></div>
+			</form>
 
 		</wicket:container>
 

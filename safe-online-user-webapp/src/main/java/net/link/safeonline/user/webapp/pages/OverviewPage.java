@@ -7,6 +7,9 @@
 
 package net.link.safeonline.user.webapp.pages;
 
+import net.link.safeonline.user.webapp.pages.account.AccountPage;
+import net.link.safeonline.user.webapp.pages.applications.ApplicationsPage;
+import net.link.safeonline.user.webapp.pages.devices.DevicesPage;
 import net.link.safeonline.user.webapp.pages.profile.ProfilePage;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
@@ -37,9 +40,9 @@ public class OverviewPage extends UserTemplatePage {
         super(Panel.home);
 
         getContent().add(new PageLink<String>(PROFILE_LINK_ID, ProfilePage.class));
-        getContent().add(new PageLink<String>(APPLICATIONS_LINK_ID, OverviewPage.class));
-        getContent().add(new PageLink<String>(DEVICES_LINK_ID, OverviewPage.class));
-        getContent().add(new PageLink<String>(ACCOUNT_LINK_ID, OverviewPage.class));
+        getContent().add(new PageLink<String>(APPLICATIONS_LINK_ID, ApplicationsPage.class));
+        getContent().add(new PageLink<String>(DEVICES_LINK_ID, DevicesPage.class));
+        getContent().add(new PageLink<String>(ACCOUNT_LINK_ID, AccountPage.class));
 
     }
 

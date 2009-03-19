@@ -68,4 +68,14 @@ public class EncapApplication extends OlasApplication {
 
         return new EncapSession(request);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return false;
+    }
+
 }

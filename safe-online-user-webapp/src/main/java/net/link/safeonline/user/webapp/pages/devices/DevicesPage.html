@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border">
+			<wicket:container wicket:id="navigation_panel">[Navigation
+				Panel]</wicket:container>
+		</wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<h2>
+				<wicket:message key="availableDevices">[Available devices]</wicket:message>
+			</h2>
+
+			<table>
+				<tr>
+					<th>
+						<wicket:message key="name">[Name]</wicket:message>
+					</th>
+					<th>
+						<wicket:message key="deviceActions">[Actions]</wicket:message>
+					</th>
+				</tr>
+				<tr wicket:id="devices">
+					<td>
+						<span wicket:id="name">[Device Name]</span>
+					</td>
+					<td>
+						<a wicket:id="register">
+							<wicket:message key="deviceRegister">[Register]</wicket:message>
+						</a>
+					</td>
+				</tr>
+			</table>
+
+			<h2>
+				<wicket:message key="registeredDevices">[Register devices]</wicket:message>
+			</h2>
+
+			<table>
+				<tr>
+					<th>
+						<wicket:message key="name">[Name]</wicket:message>
+					</th>
+					<th>
+						<wicket:message key="information">[Information]</wicket:message>
+					</th>
+					<th>
+						<wicket:message key="deviceActions">[Actions]</wicket:message>
+					</th>
+				</tr>
+				<tr wicket:id="registered_devices">
+					<td>
+						<span wicket:id="registered_name">[Device Name]</span>
+					</td>
+					<td>
+						<span wicket:id="information">[Device Information]</span>
+					</td>
+					<td>
+						<a wicket:id="remove" class="noblock">
+							<wicket:message key="deviceRemove">[Remove]</wicket:message>
+						</a>
+						<a wicket:id="update" class="noblock">
+							<wicket:message key="deviceUpdate">[Update]</wicket:message>
+						</a>
+						<a wicket:id="disable" class="noblock">
+							<wicket:message key="deviceDisable">[Disable]</wicket:message>
+						</a>
+						<a wicket:id="enable" class="noblock">
+							<wicket:message key="deviceEnable">[Enable]</wicket:message>
+						</a>
+					</td>
+				</tr>
+			</table>
+
+			<div wicket:id="feedback" class="error"></div>
+
+		</wicket:container>
+
+	</body>
+</html>
