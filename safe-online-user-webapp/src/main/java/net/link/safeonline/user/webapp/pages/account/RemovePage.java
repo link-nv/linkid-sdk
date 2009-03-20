@@ -20,6 +20,8 @@ import net.link.safeonline.user.webapp.pages.MainPage;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.RequireLogin;
 
@@ -55,11 +57,10 @@ public class RemovePage extends UserTemplatePage {
 
         super(Panel.account);
 
-        getSidebar(localize("helpRemoveAccount"), false);
-
-        getSidebar().add(new PageLink<String>(ACCOUNT_SIDE_LINK_ID, AccountPage.class));
-        getSidebar().add(new PageLink<String>(HISTORY_SIDE_LINK_ID, HistoryPage.class));
-        getSidebar().add(new PageLink<String>(USAGE_SIDE_LINK_ID, UsagePage.class));
+        getSidebar(localize("helpRemoveAccount"), false, new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, AccountPage.class),
+                localize("accountManagement")), new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, HistoryPage.class),
+                localize("history")),
+                new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, UsagePage.class), localize("usageAgreement")));
 
         getContent().add(new RemoveForm(REMOVE_FORM_ID));
     }

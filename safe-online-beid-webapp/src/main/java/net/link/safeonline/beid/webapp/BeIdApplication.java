@@ -39,4 +39,13 @@ public class BeIdApplication extends OlasApplication {
 
         return MainPage.class;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return false;
+    }
 }

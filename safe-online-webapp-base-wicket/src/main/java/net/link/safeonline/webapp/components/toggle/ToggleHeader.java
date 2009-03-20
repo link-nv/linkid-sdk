@@ -9,12 +9,14 @@ package net.link.safeonline.webapp.components.toggle;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 
 
@@ -108,5 +110,18 @@ public class ToggleHeader extends Border {
     public void addTargetComponent(Component component) {
 
         targetComponents.add(component);
+
+        component.setOutputMarkupId(true);
+        component.add(new AttributeModifier("style", true, new AbstractReadOnlyModel<Object>() {
+
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public Object getObject() {
+
+                return opened? "": "display:none";
+            }
+        }));
     }
 }

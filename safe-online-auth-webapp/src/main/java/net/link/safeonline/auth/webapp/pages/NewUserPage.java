@@ -24,6 +24,8 @@ import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
@@ -42,17 +44,16 @@ import org.apache.wicket.model.Model;
 
 public class NewUserPage extends AuthenticationTemplatePage {
 
-    static final Log           LOG                   = LogFactory.getLog(NewUserDevicePage.class);
+    static final Log           LOG                 = LogFactory.getLog(NewUserDevicePage.class);
 
-    private static final long  serialVersionUID      = 1L;
+    private static final long  serialVersionUID    = 1L;
 
-    public static final String NEW_USER_FORM_ID      = "new_user_form";
-    public static final String EXISTING_USER_LINK_ID = "existingUser";
-    public static final String LOGIN_NAME_FIELD_ID   = "loginName";
-    public static final String CAPTCHA_FIELD_ID      = "captcha";
-    public static final String CAPTCHA_IMAGE_ID      = "captchaImage";
-    public static final String CAPTCHA_REFRESH_ID    = "captchaRefresh";
-    public static final String REGISTER_BUTTON_ID    = "register";
+    public static final String NEW_USER_FORM_ID    = "new_user_form";
+    public static final String LOGIN_NAME_FIELD_ID = "loginName";
+    public static final String CAPTCHA_FIELD_ID    = "captcha";
+    public static final String CAPTCHA_IMAGE_ID    = "captchaImage";
+    public static final String CAPTCHA_REFRESH_ID  = "captchaRefresh";
+    public static final String REGISTER_BUTTON_ID  = "register";
 
     @EJB(mappedName = UserRegistrationService.JNDI_BINDING)
     UserRegistrationService    userRegistrationService;
@@ -60,7 +61,7 @@ public class NewUserPage extends AuthenticationTemplatePage {
 
     public NewUserPage() {
 
-        getSidebar(localize("helpNewUser")).add(new Link<String>(EXISTING_USER_LINK_ID) {
+        Link<String> existingUserLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
 
@@ -70,8 +71,8 @@ public class NewUserPage extends AuthenticationTemplatePage {
 
                 throw new RestartResponseException(new MainPage());
             }
-        });
-
+        };
+        getSidebar(localize("helpNewUser"), new SideLink(existingUserLink, localize("existingUser")));
         getHeader();
 
         getContent().add(new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.choose));

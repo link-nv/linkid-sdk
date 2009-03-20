@@ -27,17 +27,6 @@ public abstract class AuthenticationTemplatePage extends TemplatePage {
         super();
     }
 
-    @Override
-    public AuthenticationSidebarBorder getSidebar(String helpMessage, boolean showHelpdeskLink) {
-
-        if (null == sidebarBorder) {
-            sidebarBorder = new AuthenticationSidebarBorder(SIDEBAR_ID, helpMessage, showHelpdeskLink);
-            contentBorder.add(sidebarBorder);
-        }
-
-        return (AuthenticationSidebarBorder) sidebarBorder;
-    }
-
     protected String findApplicationUrl() {
 
         Cookie[] cookies = WicketUtil.toServletRequest(getRequest()).getCookies();

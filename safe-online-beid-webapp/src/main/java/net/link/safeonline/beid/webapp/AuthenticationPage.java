@@ -15,6 +15,8 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.PageParameters;
@@ -52,7 +54,7 @@ public class AuthenticationPage extends AppletPage {
 
         // Header & Sidebar.
         getHeader();
-        getSidebar(localize("helpBeid")).add(new Link<String>("tryAnotherDevice") {
+        Link<String> tryAnotherDeviceLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
 
@@ -62,7 +64,8 @@ public class AuthenticationPage extends AppletPage {
 
                 cancel();
             }
-        });
+        };
+        getSidebar(localize("helpBeid"), new SideLink(tryAnotherDeviceLink, localize("tryAnotherDevice")));
 
         // Our content.
         ProgressAuthenticationPanel progress = new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate);

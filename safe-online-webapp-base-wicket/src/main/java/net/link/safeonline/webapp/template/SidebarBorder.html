@@ -16,19 +16,26 @@
 				<img src="images/box_top.png" border="0" />
 				<div id="sidebox">
 
-					<ul>
-						<wicket:enclosure child="help-link">
-							<li>
-								<a wicket:id="help-link">
-									<wicket:message key="helpaction">[Help]</wicket:message>
+					<wicket:body>
+						[ Additional Info ]
+                    </wicket:body>
+
+					<wicket:enclosure child="side_links">
+						<ul wicket:id="side_links">
+							<wicket:enclosure child="help-link">
+								<li>
+									<a wicket:id="help-link">
+										<wicket:message key="helpaction">[Help]</wicket:message>
+									</a>
+								</li>
+							</wicket:enclosure>
+							<li wicket:id="links">
+								<a wicket:id="link">
+									<span wicket:id="link_message">[Link]</span>
 								</a>
 							</li>
-						</wicket:enclosure>
-
-						<wicket:body>
-							[ Additional Links ]
-	                    </wicket:body>
-					</ul>
+						</ul>
+					</wicket:enclosure>
 
 					<p wicket:id="help-message" />
 				</div>

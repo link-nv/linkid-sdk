@@ -69,4 +69,13 @@ public class OtpOverSmsApplication extends OlasApplication {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return false;
+    }
+
 }

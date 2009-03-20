@@ -21,28 +21,40 @@
 			</wicket:container>
 
 			<table>
-				<tr>
-					<th>
-						<wicket:message key="applications">[Applications]</wicket:message>
-					</th>
-					<th>
-						<wicket:message key="action">[Action]</wicket:message>
-					</th>
-				</tr>
-				<tr wicket:id="subscriptions">
-					<td>
-						<a wicket:id="view">
-							<span wicket:id="name">[Application Name]</span>
-						</a>
-					</td>
-					<td>
-						<a wicket:id="unsubscribe">
-							<wicket:message key="unsubscribe">[Unsubscribe]</wicket:message>
-						</a>
-					</td>
-				</tr>
+				<thead>
+					<tr>
+						<th>
+							<wicket:message key="applications">[Applications]</wicket:message>
+						</th>
+						<th>
+							<wicket:message key="action">[Action]</wicket:message>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr wicket:id="subscriptions">
+						<td>
+							<a wicket:id="view">
+								<span wicket:id="name">[Application Name]</span>
+							</a>
+						</td>
+						<td>
+							<a wicket:id="unsubscribe">
+								<wicket:message key="unsubscribe">[Unsubscribe]</wicket:message>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr class="navigator-table-footer-tr">
+						<td colspan="2" scope="colgroup" class="navigator-table-footer-td">
+							<span wicket:id="navigator" class="navigator-table-footer-span">[Navigator]
+							</span>
+						</td>
+					</tr>
+				</tfoot>
 			</table>
-			<span wicket:id="navigator">[Navigator]</span>
+
 
 			<div wicket:id="feedback" class="error"></div>
 

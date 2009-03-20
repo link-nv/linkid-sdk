@@ -28,6 +28,8 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
@@ -73,7 +75,7 @@ public class AuthenticationPage extends TemplatePage {
         super();
 
         getHeader();
-        getSidebar(localize("helpDigipassAuthentication")).add(new Link<String>("tryAnotherDevice") {
+        Link<String> tryAnotherDeviceLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
 
@@ -86,7 +88,8 @@ public class AuthenticationPage extends TemplatePage {
                 exit();
 
             }
-        });
+        };
+        getSidebar(localize("helpDigipassAuthentication"), new SideLink(tryAnotherDeviceLink, localize("tryAnotherDevice")));
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 

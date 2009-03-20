@@ -26,6 +26,8 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
@@ -87,7 +89,7 @@ public class MainPage extends AuthenticationTemplatePage {
             devices.add(new DeviceDO(deviceEntity, friendlyName));
         }
 
-        Link<String> newUserLink = new Link<String>(NEW_USER_LINK_ID) {
+        Link<String> newUserLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
 
@@ -98,7 +100,7 @@ public class MainPage extends AuthenticationTemplatePage {
                 throw new RestartResponseException(new NewUserPage());
             }
         };
-        Link<String> tryAnotherDeviceLink = new Link<String>(TRY_ANOTHER_DEVICE_LINK_ID) {
+        Link<String> tryAnotherDeviceLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
 
@@ -110,7 +112,8 @@ public class MainPage extends AuthenticationTemplatePage {
             }
         };
 
-        getSidebar(localize("helpAuthenticationMain")).add(newUserLink, tryAnotherDeviceLink);
+        getSidebar(localize("helpAuthenticationMain"), new SideLink(newUserLink, localize("newUser")), new SideLink(tryAnotherDeviceLink,
+                localize("tryAnotherDevice")));
 
         getHeader();
 

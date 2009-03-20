@@ -21,6 +21,9 @@ import net.link.safeonline.history.HistoryMessageManager;
 import net.link.safeonline.user.webapp.pages.MainPage;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
+import net.link.safeonline.webapp.components.CustomPagingNavigator;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.RequireLogin;
 
@@ -28,7 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.PageLink;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -62,11 +64,10 @@ public class HistoryPage extends UserTemplatePage {
 
         super(Panel.account);
 
-        getSidebar(localize("helpHistory"), false);
-
-        getSidebar().add(new PageLink<String>(ACCOUNT_SIDE_LINK_ID, AccountPage.class));
-        getSidebar().add(new PageLink<String>(USAGE_SIDE_LINK_ID, UsagePage.class));
-        getSidebar().add(new PageLink<String>(REMOVE_SIDE_LINK_ID, RemovePage.class));
+        getSidebar(localize("helpHistory"), false, new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, AccountPage.class),
+                localize("accountManagement")), new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, UsagePage.class),
+                localize("usageAgreement")), new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, RemovePage.class),
+                localize("removeAccount")));
 
         /*
          * Add history messages
@@ -86,7 +87,7 @@ public class HistoryPage extends UserTemplatePage {
             }
         };
         getContent().add(historyView);
-        getContent().add(new PagingNavigator(NAVIGATOR_ID, historyView));
+        getContent().add(new CustomPagingNavigator(NAVIGATOR_ID, historyView));
 
     }
 

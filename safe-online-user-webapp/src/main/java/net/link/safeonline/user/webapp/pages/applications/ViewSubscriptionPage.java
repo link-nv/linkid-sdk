@@ -21,7 +21,6 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.user.webapp.pages.MainPage;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
-import net.link.safeonline.webapp.components.toggle.ToggleBody;
 import net.link.safeonline.webapp.components.toggle.ToggleHeader;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.RequireLogin;
@@ -29,6 +28,7 @@ import net.link.safeonline.wicket.web.RequireLogin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -86,7 +86,7 @@ public class ViewSubscriptionPage extends UserTemplatePage {
          */
         final ToggleHeader informationHeader = new ToggleHeader(INFORMATION_HEADER_ID, localize("information"), true);
         getContent().add(informationHeader);
-        ToggleBody informationBody = new ToggleBody(INFORMATION_BODY_ID, informationHeader);
+        WebMarkupContainer informationBody = new WebMarkupContainer(INFORMATION_BODY_ID);
         informationHeader.addTargetComponent(informationBody);
         informationHeader.add(informationBody);
 
@@ -107,7 +107,7 @@ public class ViewSubscriptionPage extends UserTemplatePage {
         }
         final ToggleHeader usageAgreementHeader = new ToggleHeader(USAGE_AGREEMENT_HEADER_ID, localize("confirmedUsageAgreement"), false);
         getContent().add(usageAgreementHeader);
-        ToggleBody usageAgreementBody = new ToggleBody(USAGE_AGREEMENT_BODY_ID, usageAgreementHeader);
+        WebMarkupContainer usageAgreementBody = new WebMarkupContainer(USAGE_AGREEMENT_BODY_ID);
         usageAgreementHeader.addTargetComponent(usageAgreementBody);
         usageAgreementHeader.add(usageAgreementBody);
         usageAgreementHeader.setVisible(usageAgreementText != null);
@@ -133,7 +133,7 @@ public class ViewSubscriptionPage extends UserTemplatePage {
 
         final ToggleHeader identityHeader = new ToggleHeader(IDENTITY_HEADER_ID, localize("confirmedIdentity"), false);
         getContent().add(identityHeader);
-        ToggleBody identityBody = new ToggleBody(IDENTITY_BODY_ID, identityHeader);
+        WebMarkupContainer identityBody = new WebMarkupContainer(IDENTITY_BODY_ID);
         identityHeader.addTargetComponent(identityBody);
         identityHeader.add(identityBody);
         identityHeader.setVisible(!confirmedIdentityAttributes.isEmpty());

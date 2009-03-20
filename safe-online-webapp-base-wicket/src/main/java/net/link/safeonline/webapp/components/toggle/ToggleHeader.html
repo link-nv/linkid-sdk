@@ -7,17 +7,20 @@
 	<body>
 		<wicket:border>
 
-			<div class="toggle-header">
-				<span wicket:id="label">[Label]</span>
-				<div class="toggle-header-marker">
-					<a wicket:id="minimize">
-						<span wicket:id="minimize_label">[>>]</span>
-					</a>
+			<div class="toggle-panel">
+				<div class="toggle-header">
+					<span wicket:id="label">[Label]</span>
+					<div class="toggle-header-marker">
+						<a wicket:id="minimize">
+							<span wicket:id="minimize_label">[>>]</span>
+						</a>
+					</div>
 				</div>
+
+				<wicket:body />
+
 			</div>
-
-			<wicket:body />
-
+			
 		</wicket:border>
 	</body>
 </html>

@@ -51,4 +51,13 @@ public class DigipassApplication extends OlasApplication {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return false;
+    }
+
 }

@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OLASSession;
 import net.link.safeonline.wicket.web.OlasLoginLink;
@@ -43,7 +45,7 @@ public class MainPage extends UserTemplatePage {
 
         super(Panel.home);
 
-        OlasLoginLink loginLink = new OlasLoginLink(LOGIN_LINK_ID, OverviewPage.class) {
+        OlasLoginLink loginLink = new OlasLoginLink(SidebarBorder.LINK_ID, OverviewPage.class) {
 
             private static final long serialVersionUID = 1L;
 
@@ -63,12 +65,14 @@ public class MainPage extends UserTemplatePage {
             }
 
         };
-        loginLink.setVisible(!OLASSession.get().isUserSet());
 
-        OlasLogoutLink logoutLink = new OlasLogoutLink(LOGOUT_LINK_ID, MainPage.class);
-        logoutLink.setVisible(OLASSession.get().isUserSet());
+        OlasLogoutLink logoutLink = new OlasLogoutLink(SidebarBorder.LINK_ID, MainPage.class);
 
-        getSidebar(localize("helpMain"), false).add(loginLink, logoutLink);
+        if (OLASSession.get().isUserSet()) {
+            getSidebar(localize("helpMain"), false, new SideLink(logoutLink, localize("logout")));
+        } else {
+            getSidebar(localize("helpMain"), false, new SideLink(loginLink, localize("loginaction")));
+        }
 
         String commercialName = WicketUtil.toServletRequest(getRequest()).getSession().getServletContext().getInitParameter(
                 "CommercialName");

@@ -52,4 +52,13 @@ public class OptionApplication extends OlasApplication {
 
         return new OptionSession(request);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return false;
+    }
 }

@@ -30,6 +30,8 @@ import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
@@ -119,7 +121,7 @@ public class AuthenticationPage extends TemplatePage {
             break;
         }
 
-        getSidebar(helpMessage).add(new Link<String>("tryAnotherDevice") {
+        Link<String> tryAnotherDeviceLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
 
@@ -135,7 +137,8 @@ public class AuthenticationPage extends TemplatePage {
                         EncapConstants.ENCAP_DEVICE_ID);
                 exit(false);
             }
-        });
+        };
+        getSidebar(helpMessage, new SideLink(tryAnotherDeviceLink, localize("tryAnotherDevice")));
 
         updatePageTitle();
         Label titleLabel = new Label("title", title);

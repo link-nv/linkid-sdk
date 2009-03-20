@@ -14,6 +14,8 @@ import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.user.webapp.pages.MainPage;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
+import net.link.safeonline.webapp.template.SideLink;
+import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.commons.logging.Log;
@@ -48,11 +50,10 @@ public class UsagePage extends UserTemplatePage {
 
         super(Panel.account);
 
-        getSidebar(localize("helpUsageAgreement"), false);
-
-        getSidebar().add(new PageLink<String>(ACCOUNT_SIDE_LINK_ID, AccountPage.class));
-        getSidebar().add(new PageLink<String>(HISTORY_SIDE_LINK_ID, HistoryPage.class));
-        getSidebar().add(new PageLink<String>(REMOVE_SIDE_LINK_ID, RemovePage.class));
+        getSidebar(localize("helpUsageAgreement"), false, new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, AccountPage.class),
+                localize("accountManagement")), new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, HistoryPage.class),
+                localize("history")),
+                new SideLink(new PageLink<String>(SidebarBorder.LINK_ID, RemovePage.class), localize("removeAccount")));
 
         getContent().add(
                 new Label(USAGE_TEXT, usageAgreementService.getGlobalUsageAgreementText(getLocale().getLanguage(),

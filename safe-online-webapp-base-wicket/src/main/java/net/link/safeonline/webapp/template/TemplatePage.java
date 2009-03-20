@@ -90,24 +90,24 @@ public abstract class TemplatePage extends OlasApplicationPage {
      * 
      * @see #getHeader(boolean)
      */
-    public SidebarBorder getSidebar(String helpMessage) {
+    public SidebarBorder getSidebar(String helpMessage, SideLink... links) {
 
-        return getSidebar(helpMessage, true);
+        return getSidebar(helpMessage, true, links);
     }
 
-    public SidebarBorder getSidebar(String helpMessage, boolean showHelpdeskLink) {
+    public SidebarBorder getSidebar(String helpMessage, boolean showHelpdeskLink, SideLink... links) {
 
         if (null == sidebarBorder) {
-            sidebarBorder = new SidebarBorder(SIDEBAR_ID, helpMessage, showHelpdeskLink);
+            sidebarBorder = new SidebarBorder(SIDEBAR_ID, helpMessage, showHelpdeskLink, links);
             contentBorder.add(sidebarBorder);
         }
 
         return sidebarBorder;
     }
 
-    public SidebarBorder getSidebar() {
+    public SidebarBorder getSidebar(SideLink... links) {
 
-        return getSidebar(null, true);
+        return getSidebar(null, true, links);
 
     }
 }

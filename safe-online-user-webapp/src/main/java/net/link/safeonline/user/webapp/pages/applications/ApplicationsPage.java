@@ -21,6 +21,7 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 import net.link.safeonline.user.webapp.pages.MainPage;
 import net.link.safeonline.user.webapp.template.UserTemplatePage;
 import net.link.safeonline.user.webapp.template.NavigationPanel.Panel;
+import net.link.safeonline.webapp.components.CustomPagingNavigator;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.wicket.web.RequireLogin;
 
@@ -28,7 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -131,7 +131,7 @@ public class ApplicationsPage extends UserTemplatePage {
 
         };
         getContent().add(subscriptionView);
-        getContent().add(new PagingNavigator(NAVIGATOR_ID, subscriptionView));
+        getContent().add(new CustomPagingNavigator(NAVIGATOR_ID, subscriptionView));
 
         getContent().add(new ErrorFeedbackPanel("feedback"));
 

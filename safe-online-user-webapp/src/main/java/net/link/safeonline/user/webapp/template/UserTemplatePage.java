@@ -48,5 +48,4 @@ public abstract class UserTemplatePage extends TemplatePage {
         String olasId = WicketUtil.findOlasId(getRequest());
         UserSession.get().setUserId(olasId);
     }
-
 }
