@@ -150,7 +150,6 @@ public class RegistrationPageTest {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());

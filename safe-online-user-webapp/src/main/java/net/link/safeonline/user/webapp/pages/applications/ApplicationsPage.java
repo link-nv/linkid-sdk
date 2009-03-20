@@ -50,6 +50,8 @@ public class ApplicationsPage extends UserTemplatePage {
     public static final String UNSUBSCRIBE_LINK_ID = "unsubscribe";
     public static final String NAVIGATOR_ID        = "navigator";
 
+    public static final String FEEDBACK_ID         = "feedback";
+
     @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     SubscriptionService        subscriptionService;
 
@@ -133,7 +135,7 @@ public class ApplicationsPage extends UserTemplatePage {
         getContent().add(subscriptionView);
         getContent().add(new CustomPagingNavigator(NAVIGATOR_ID, subscriptionView));
 
-        getContent().add(new ErrorFeedbackPanel("feedback"));
+        getContent().add(new ErrorFeedbackPanel(FEEDBACK_ID));
 
     }
 

@@ -29,6 +29,8 @@ public class SidebarBorder extends Border {
     public static final String LINK_ID          = "link";
     public static final String LINK_MESSAGE_ID  = "link_message";
 
+    public static final String HELP_MESSAGE_ID  = "help_message";
+
 
     public SidebarBorder(String id, String helpMessage, final boolean showHelpdeskLink, final SideLink... links) {
 
@@ -84,7 +86,7 @@ public class SidebarBorder extends Border {
 
         });
 
-        add(new Label("help-message", helpMessage));
+        add(new Label(HELP_MESSAGE_ID, helpMessage));
     }
 
 

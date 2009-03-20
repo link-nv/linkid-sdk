@@ -105,9 +105,12 @@ public class HistoryPage extends UserTemplatePage {
         List<HistoryEntity> result = identityService.listHistory();
         List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
 
-        for (HistoryEntity historyEntity : result) {
-            String historyMessage = HistoryMessageManager.getMessage(getLocale(), WicketUtil.toServletRequest(getRequest()), historyEntity);
-            messageList.add(new HistoryMessage(historyEntity.getWhen(), historyMessage));
+        if (null != result) {
+            for (HistoryEntity historyEntity : result) {
+                String historyMessage = HistoryMessageManager.getMessage(getLocale(), WicketUtil.toServletRequest(getRequest()),
+                        historyEntity);
+                messageList.add(new HistoryMessage(historyEntity.getWhen(), historyMessage));
+            }
         }
 
         return messageList;
