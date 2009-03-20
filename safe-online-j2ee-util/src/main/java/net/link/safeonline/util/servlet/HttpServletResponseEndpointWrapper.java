@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * {@link HttpServletResponse} wrapper used to convert relative redirects correctly when behind a proxy or load balancer.
@@ -29,28 +32,25 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class HttpServletResponseEndpointWrapper extends HttpServletResponseWrapper {
 
-    private URI requestBaseUri;
+    private static final Log LOG = LogFactory.getLog(HttpServletResponseEndpointWrapper.class);
+
+    private URI              requestBaseUri;
 
 
     /**
-     * @param request
-     *            The {@link HttpServletRequest} that caused this servlet response. Used to resolve relative redirection paths sent to this
-     *            {@link HttpServletResponse}.
      * @param response
      *            The real {@link HttpServletResponse} that we're wrapping.
      * @param responseBase
      *            The base URI that we're using for the scheme and authority part of redirections.
      */
-    public HttpServletResponseEndpointWrapper(HttpServletRequest request, HttpServletResponse response, String responseBase) {
+    public HttpServletResponseEndpointWrapper(HttpServletResponse response, String responseBase) {
 
         super(response);
 
         try {
-            URI requestUri = new URI(request.getRequestURI());
             URI responseBaseUri = new URI(responseBase);
 
-            requestBaseUri = new URI(responseBaseUri.getScheme(), responseBaseUri.getAuthority(), requestUri.getPath(),
-                    requestUri.getQuery(), requestUri.getFragment());
+            requestBaseUri = new URI(responseBaseUri.getScheme(), responseBaseUri.getAuthority(), responseBaseUri.getPath(), null, null);
         }
 
         catch (URISyntaxException e) {
@@ -72,6 +72,9 @@ public class HttpServletResponseEndpointWrapper extends HttpServletResponseWrapp
             locationUri = URI.create(location.substring(1));
         }
 
-        super.sendRedirect(requestBaseUri.resolve(locationUri).toASCIIString());
+        String absoluteLocation = requestBaseUri.resolve(locationUri).toASCIIString();
+        LOG.debug("Redirect request to '" + location + "'; resolved into: " + absoluteLocation);
+
+        super.sendRedirect(absoluteLocation);
     }
 }

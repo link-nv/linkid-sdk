@@ -13,7 +13,7 @@
     <!-- Application Context Parameters -->
 	<context-param>
 		<param-name>SafeOnlineConfig</param-name>
-        <param-value>../../conf/safeonline.properties</param-value>
+        <param-value>../conf/safeonline.properties</param-value>
 	</context-param>
 	<context-param>
 		<param-name>WebappPath</param-name>

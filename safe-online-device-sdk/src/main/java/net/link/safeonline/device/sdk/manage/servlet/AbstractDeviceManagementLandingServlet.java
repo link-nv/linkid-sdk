@@ -129,7 +129,7 @@ public abstract class AbstractDeviceManagementLandingServlet extends AbstractInj
         DeviceOperationType deviceOperation;
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
-            handler.init(configParams, getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
+            handler.init(getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
             deviceOperation = handler.initDeviceOperation(request);
             if (deviceOperation.equals(DeviceOperationType.REGISTER) || deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
                 if (null == registrationPath) {

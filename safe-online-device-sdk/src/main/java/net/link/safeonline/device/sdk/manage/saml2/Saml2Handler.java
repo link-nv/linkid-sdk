@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +24,7 @@ import net.link.safeonline.device.sdk.manage.saml2.request.DeviceOperationReques
 import net.link.safeonline.device.sdk.manage.saml2.response.DeviceOperationResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,8 +50,6 @@ public class Saml2Handler implements Serializable {
     private static final Log    LOG                            = LogFactory.getLog(Saml2Handler.class);
 
     private static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
-
-    private String              wsLocation;
 
     private String              issuer;
 
@@ -95,24 +93,21 @@ public class Saml2Handler implements Serializable {
         return instance;
     }
 
-    public void init(Map<String, String> configParams, String newIssuer, X509Certificate newApplicationCertificate,
-                     KeyPair newApplicationKeyPair)
-            throws DeviceInitializationException {
+    public void init(String newIssuer, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair) {
 
-        wsLocation = configParams.get("WsLocation");
         issuer = newIssuer;
         applicationCertificate = newApplicationCertificate;
         applicationKeyPair = newApplicationKeyPair;
-        if (null == wsLocation)
-            throw new DeviceInitializationException("Missing WS Location ( \"WsLocation\" )");
     }
 
     public DeviceOperationType initDeviceOperation(HttpServletRequest request)
             throws DeviceInitializationException {
 
+        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
+
         DeviceOperationRequest deviceOperationRequest;
         try {
-            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, wsLocation, applicationCertificate,
+            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, safeOnlineConfig.wsbase(), applicationCertificate,
                     applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new DeviceInitializationException(e.getMessage());

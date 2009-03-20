@@ -27,12 +27,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.common.SafeOnlineAppConstants;
-import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -88,6 +88,11 @@ public class SafeOnlineLoginUtils {
      * The application name that will be communicated towards the SafeOnline authentication web application. <i>[required]</i>
      */
     public static final String                 APPLICATION_NAME_CONTEXT_PARAM       = "ApplicationName";
+
+    /**
+     * The user-friendly application name that will be communicated towards the SafeOnline authentication web application. <i>[optional,
+     * default: The application name]</i>
+     */
     public static final String                 APPLICATION_FRIENDLY_NAME_INIT_PARAM = "ApplicationFriendlyName";
 
     /**
@@ -289,7 +294,7 @@ public class SafeOnlineLoginUtils {
         String ssoEnabledString = getInitParameter(config, SINGLE_SIGN_ON_CONTEXT_PARAM, null);
 
         SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        authenticationServicePath = safeOnlineConfig.authbase + authenticationServicePath;
+        authenticationServicePath = safeOnlineConfig.authbase() + authenticationServicePath;
 
         LOG.debug("redirecting to: " + authenticationServicePath);
 
@@ -454,7 +459,7 @@ public class SafeOnlineLoginUtils {
         String ssoEnabledString = getInitParameter(config, SINGLE_SIGN_ON_CONTEXT_PARAM, null);
 
         SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        logoutServicePath = safeOnlineConfig.authbase + logoutServicePath;
+        logoutServicePath = safeOnlineConfig.authbase() + logoutServicePath;
 
         LOG.debug("redirecting to: " + logoutServicePath);
 

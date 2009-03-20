@@ -21,7 +21,6 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
@@ -30,6 +29,7 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -181,7 +181,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
              */
             try {
                 protocolHandler = AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol,
-                        safeOnlineConfig.authbase + logoutExitServicePath, applicationName, applicationFriendlyName, applicationKeyPair,
+                        safeOnlineConfig.authbase() + logoutExitServicePath, applicationName, applicationFriendlyName, applicationKeyPair,
                         applicationCertificate, true, configParams, request);
                 LOG.debug("initialized protocol");
             } catch (ServletException e) {

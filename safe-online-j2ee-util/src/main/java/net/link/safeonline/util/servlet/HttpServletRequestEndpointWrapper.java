@@ -13,6 +13,9 @@ import java.net.URISyntaxException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * {@link HttpServletRequest} wrapper used to provide the correct endpoint URI when behind a proxy or load balancer.
@@ -22,14 +25,24 @@ import javax.servlet.http.HttpServletRequestWrapper;
  */
 public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper {
 
-    private URI requestBaseUri;
+    private static final Log LOG = LogFactory.getLog(HttpServletRequestEndpointWrapper.class);
+
+    private URI              requestBaseUri;
 
 
-    public HttpServletRequestEndpointWrapper(HttpServletRequest request, String requestBaseUri) {
+    public HttpServletRequestEndpointWrapper(HttpServletRequest request, String responseBase) {
 
         super(request);
 
-        this.requestBaseUri = URI.create(requestBaseUri);
+        try {
+            URI responseBaseUri = new URI(responseBase);
+
+            requestBaseUri = new URI(responseBaseUri.getScheme(), responseBaseUri.getAuthority(), responseBaseUri.getPath(), null, null);
+        }
+
+        catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**
@@ -38,16 +51,15 @@ public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper
     @Override
     public String getRequestURI() {
 
-        try {
-            URI originalRequest = new URI(super.getRequestURI());
+        // FIXME
+        String originalRequest = super.getRequestURI();
+        String[] requestURIElements = originalRequest.split("/");
+        URI locationUri = URI.create(requestURIElements[requestURIElements.length - 1]);
 
-            return new URI(requestBaseUri.getScheme(), requestBaseUri.getAuthority(), originalRequest.getPath(),
-                    originalRequest.getQuery(), originalRequest.getFragment()).toASCIIString();
-        }
+        String rebasedRequestURI = requestBaseUri.resolve(locationUri).toASCIIString();
+        LOG.debug("Rebased request URI '" + originalRequest + "' to: " + rebasedRequestURI);
 
-        catch (URISyntaxException e) {
-            throw new IllegalStateException(e);
-        }
+        return rebasedRequestURI;
     }
 
     @Override

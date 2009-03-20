@@ -27,12 +27,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.common.SafeOnlineAppConstants;
-import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -206,7 +206,7 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
         SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
 
-        AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, safeOnlineConfig.authbase
+        AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, safeOnlineConfig.authbase()
                 + authenticationServicePath, applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate,
                 ssoEnabled, configParams, request);
 

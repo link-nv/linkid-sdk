@@ -87,7 +87,7 @@ public abstract class AbstractDeviceAuthenticationLandingServlet extends Abstrac
         OlasKeyStore nodeKeyStore = getKeyStore();
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
-            handler.init(configParams, getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
+            handler.init(getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
             handler.initAuthentication(request);
         } catch (AuthenticationInitializationException e) {
             redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));

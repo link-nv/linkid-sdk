@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.In;
@@ -92,15 +91,17 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
          * request URI of the client's request (the request to the proxy/load balancer), and such that sendRedirects with relative URIs are
          * translated to absolute URIs using the client's request URI base.
          */
-        String endPoint = safeOnlineConfig.endpointFor(request);
-        if (endPoint != null) {
-            HttpServletRequestEndpointWrapper wrappedRequest = new HttpServletRequestEndpointWrapper(request, endPoint);
-            HttpServletResponseEndpointWrapper wrappedResponse = new HttpServletResponseEndpointWrapper(request, response, endPoint);
+        String endpoint = safeOnlineConfig.endpointFor(request);
+        if (endpoint != null) {
+            HttpServletRequestEndpointWrapper wrappedRequest = new HttpServletRequestEndpointWrapper(request, endpoint);
+            HttpServletResponseEndpointWrapper wrappedResponse = new HttpServletResponseEndpointWrapper(response, endpoint);
 
+            LOG.debug("Wrapped request and response using endpoint: " + endpoint);
             super.service(wrappedRequest, wrappedResponse);
         }
 
         else {
+            LOG.debug("No endpoint defined.  Not wrapping request and response.");
             super.service(request, response);
         }
     }

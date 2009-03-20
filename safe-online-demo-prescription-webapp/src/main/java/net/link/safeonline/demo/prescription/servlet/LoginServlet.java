@@ -8,11 +8,7 @@
 package net.link.safeonline.demo.prescription.servlet;
 
 import java.io.IOException;
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +21,9 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
@@ -50,26 +46,6 @@ public class LoginServlet extends HttpServlet {
 
     private static final Log  LOG              = LogFactory.getLog(LoginServlet.class);
 
-    private DataClient        dataClient;
-
-
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
-
-        super.init(config);
-
-        LOG.debug("init");
-
-        String wsLocation = config.getInitParameter("WsLocation");
-
-        PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStore.getPrivateKeyEntry();
-
-        X509Certificate clientCertificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
-
-        dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
-    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -92,9 +68,9 @@ public class LoginServlet extends HttpServlet {
          */
         LOG.debug("userId: " + userId);
 
-        boolean admin = getBoolean(userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
-        boolean careProvider = getBoolean(userId, DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
-        boolean pharmacist = getBoolean(userId, DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
+        boolean admin = getBoolean(request, userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
+        boolean careProvider = getBoolean(request, userId, DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
+        boolean pharmacist = getBoolean(request, userId, DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
 
         int rolesCount = 0;
         if (admin) {
@@ -137,11 +113,12 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    private boolean getBoolean(String username, String attributeName)
+    private boolean getBoolean(HttpServletRequest request, String username, String attributeName)
             throws ServletException {
 
         Attribute<Boolean> attribute;
         try {
+            DataClient dataClient = OlasServiceFactory.getDataService(request, DemoPrescriptionKeyStore.getPrivateKeyEntry());
             attribute = dataClient.getAttributeValue(username, attributeName, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve prescription admin attribute");

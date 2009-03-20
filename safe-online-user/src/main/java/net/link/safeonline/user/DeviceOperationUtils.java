@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
-import net.link.safeonline.common.SafeOnlineConfig;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

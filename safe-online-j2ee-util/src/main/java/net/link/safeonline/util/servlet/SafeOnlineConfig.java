@@ -4,9 +4,8 @@
  * Copyright 2006-2009 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.common;
+package net.link.safeonline.util.servlet;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
@@ -54,15 +53,53 @@ public class SafeOnlineConfig extends Properties {
     public static final String                   WEBAPP_PATH_CONTEXT_PARAM = "WebappPath";
 
     /**
-     * Property in the SafeOnlineConfig that defines the host that we're running on.
+     * Determines which base this webapp uses for absolute URLs.
+     * 
+     * <ul>
+     * <li>Host <i>[default]</i></li>
+     * <li>Auth</li>
+     * <li>WS</li>
+     * </ul>
      */
-    public final String                          hostbase                  = getProperty("hostbase");
+    public static final String                   WEBAPP_BASE_CONTEXT_PARAM = "WebappBase";
+
+
+    /**
+     * Property in the SafeOnlineConfig that defines the host that we're running on.
+     * 
+     * <p>
+     * Use the form: <code>[scheme]//[authority]</code> (eg. <code>http://my.olas.be</code>) <i>[required]</i>
+     * </p>
+     */
+    public String hostbase() {
+
+        return getProperty("hostbase");
+    }
 
     /**
      * Property in the SafeOnlineConfig that defines the absolute URL to the olas-auth application base.
+     * 
+     * <p>
+     * Use the form: <code>[scheme]//[authority]/[path-to-olas-auth]</code> (eg. <code>https://my.olas.be/olas-auth</code>)
+     * <i>[required]</i>
+     * </p>
      */
-    public final String                          authbase                  = getProperty("authbase");
+    public String authbase() {
 
+        return getProperty("authbase");
+    }
+
+    /**
+     * Property in the SafeOnlineConfig that defines the location of the OLAS web services.
+     * 
+     * <p>
+     * Use the form: <code>[scheme]//[authority]</code> (eg. <code>https://my.olas.be</code>) <i>[required]</i>
+     * </p>
+     */
+    public String wsbase() {
+
+        return getProperty("wsbase");
+    }
 
     /**
      * The endpoint URL is the base URL at which the application runs.
@@ -75,7 +112,23 @@ public class SafeOnlineConfig extends Properties {
         if (webappPath == null || webappPath.length() == 0)
             throw new IllegalStateException(WEBAPP_PATH_CONTEXT_PARAM + " not configured in web.xml!");
 
-        return hostbase + webappPath;
+        String useBase = request.getSession().getServletContext().getInitParameter(WEBAPP_BASE_CONTEXT_PARAM);
+
+        // WS
+        if ("ws".equalsIgnoreCase(useBase))
+            return wsbase() + webappPath;
+
+        // Auth
+        else if ("auth".equalsIgnoreCase(useBase))
+            return authbase() + "/";
+
+        // Something else that isn't Host
+        else if (useBase != null && !"host".equalsIgnoreCase(useBase)) {
+            LOG.warn("Didn't understand " + WEBAPP_BASE_CONTEXT_PARAM + " configured in web.xml; falling back to Host.");
+        }
+
+        // Host
+        return hostbase() + webappPath;
     }
 
     /**
@@ -86,7 +139,10 @@ public class SafeOnlineConfig extends Properties {
         if (URI.create(path).isAbsolute())
             return path;
 
-        return endpointFor(request) + path;
+        String absolutePath = endpointFor(request) + path;
+        LOG.debug("Absolute path for '" + path + "' is: " + absolutePath);
+
+        return absolutePath;
     }
 
     /**
@@ -94,6 +150,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public String absoluteUrlFromParam(HttpServletRequest request, String contextParamName) {
 
+        LOG.debug("Looking up absolute path for " + contextParamName + " ..");
         return absoluteUrlFromPath(request, request.getSession().getServletContext().getInitParameter(contextParamName));
     }
 
@@ -112,12 +169,13 @@ public class SafeOnlineConfig extends Properties {
         SafeOnlineConfig config = new SafeOnlineConfig();
 
         try {
-            config.load(new FileReader(propertiesPath));
+            config.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesPath));
             configs.put(propertiesPath, config);
         } catch (IOException e) {
             LOG.error("Couldn't load config file.", e);
         }
 
+        LOG.debug("Successfully loaded SafeOnlineConfig with hostbase: " + config.keySet());
         return config;
     }
 
