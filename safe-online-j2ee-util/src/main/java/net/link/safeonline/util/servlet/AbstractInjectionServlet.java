@@ -81,17 +81,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
-        /*
-         * When we're behind a proxy or load balancer, the servlet request URI here points to this machine rather than the server that the
-         * request was actually sent to. This causes validation issues in OpenSAML and problems when redirecting to relative URIs.
-         * 
-         * To solve this problem, we wrap the servlet request and response such that the request URI in the HttpServletRequest is the
-         * request URI of the client's request (the request to the proxy/load balancer), and such that sendRedirects with relative URIs are
-         * translated to absolute URIs using the client's request URI base.
-         */
-        String endpoint = safeOnlineConfig.endpointFor(request);
+        LOG.debug("servlet " + getClass() + " beginning service");
+        String endpoint = getWrapperEndpoint(request);
         if (endpoint != null) {
             HttpServletRequestEndpointWrapper wrappedRequest = new HttpServletRequestEndpointWrapper(request, endpoint);
             HttpServletResponseEndpointWrapper wrappedResponse = new HttpServletResponseEndpointWrapper(response, endpoint);
@@ -104,6 +95,44 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             LOG.debug("No endpoint defined.  Not wrapping request and response.");
             super.service(request, response);
         }
+    }
+
+    /**
+     * <b>REQUEST AND RESPONSE WRAPPING</b>:
+     * 
+     * <p>
+     * When we're behind a proxy or load balancer, the servlet request URI that the container gives us points to this machine rather than
+     * the server that the request was actually sent to. This causes validation issues in OpenSAML and problems when redirecting to relative
+     * URIs.
+     * </p>
+     * 
+     * <p>
+     * <code>[User] >--[ https://olas.be/app/foo ]--> [Proxy] >--[ http://provider.com/olas/app/foo ]--> [OLAS]</code> <br>
+     * <code>[OLAS: redirect to bar] >--[ redirect: http://provider.com/olas/app/bar ]--> [Proxy] >--[ redirect: http://provider.com/olas/app/bar]--> [User]</code>
+     * <br>
+     * <code>[User] >--[ http://provider.com/olas/app/bar ]--> [Problem!]</code>
+     * </p>
+     * 
+     * <p>
+     * To solve this problem, we wrap the servlet request and response such that the request URI in the HttpServletRequest is the request
+     * URI of the client's request (the request to the proxy/load balancer), and such that sendRedirects with relative URIs are translated
+     * to absolute URIs using the client's request URI base.
+     * </p>
+     * 
+     * <p>
+     * However, we don't know what the client's request was. So instead we use the a base URI that we know the node is configured on. The
+     * default hostbase is configured in the {@link SafeOnlineConfig} file (see {@link SafeOnlineConfig#getApplicationEndpointFor(HttpServletRequest)}).
+     * If the base URI for your web application is different than what is configured there, you need to override this method and return the
+     * correct endpoint for your web application.
+     * </p>
+     * 
+     * @return The endpoint URL that the wrapper should use to replace the servlet request's requestURI and to calculate the absolute URL
+     *         for the servlet response's relative sendRedirects.
+     */
+    protected String getWrapperEndpoint(HttpServletRequest request) {
+
+        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
+        return safeOnlineConfig.getApplicationEndpointFor(request);
     }
 
     @Override

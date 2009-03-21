@@ -78,7 +78,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.auth.servlet.DeviceAuthenticationExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.otpoversms.webapp.servlet.DeviceAuthenticationExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -86,8 +86,8 @@
 		</init-param>
 	</servlet>
 	<servlet>
-		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.otpoversms.webapp.servlet.DeviceLandingServlet</servlet-class>
+		<servlet-name>DeviceAuthenticationLandingServlet</servlet-name>
+		<servlet-class>net.link.safeonline.otpoversms.webapp.servlet.DeviceAuthenticationLandingServlet</servlet-class>
 
 		<init-param>
 			<param-name>DisablePath</param-name>
@@ -116,7 +116,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.manage.servlet.DeviceManagementExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.otpoversms.webapp.servlet.DeviceManagementExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -155,7 +155,7 @@
 		<url-pattern>/authenticationexit</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>DeviceLandingServlet</servlet-name>
+		<servlet-name>DeviceAuthenticationLandingServlet</servlet-name>
 		<url-pattern>/device</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>

@@ -13,9 +13,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationManager;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.model.option.OptionDeviceService;
 import net.link.safeonline.option.webapp.OptionDevice;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class RemoveServlet extends AbstractInjectionServlet {
+public class RemoveServlet extends AbstractNodeInjectionServlet {
 
     private static final long   serialVersionUID = 1L;
 

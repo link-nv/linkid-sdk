@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Out;
 import net.link.safeonline.util.servlet.annotation.RequestParameter;
 
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class JavaVersionServlet extends AbstractInjectionServlet {
+public class JavaVersionServlet extends AbstractNodeInjectionServlet {
 
     private static final long   serialVersionUID                = 1L;
 

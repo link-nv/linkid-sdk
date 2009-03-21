@@ -27,7 +27,6 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.SafeOnlineConfig;
 import net.link.safeonline.util.servlet.annotation.Context;
@@ -49,7 +48,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class LogoutServlet extends AbstractInjectionServlet {
+public class LogoutServlet extends AbstractLandingInjectionServlet {
 
     private static final long                  serialVersionUID       = 1L;
 

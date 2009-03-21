@@ -214,7 +214,7 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         if (null != target) {
             targetUrl = target;
             if (!URI.create(targetUrl).isAbsolute()) {
-                targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteUrlFromPath(request, target));
+                targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
             }
 
             LOG.debug("target url: " + targetUrl);

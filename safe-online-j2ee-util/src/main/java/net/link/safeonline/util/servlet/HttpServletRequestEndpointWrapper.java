@@ -34,6 +34,7 @@ public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper
 
         super(request);
 
+        LOG.debug("wrapper " + this + ": Created.", new Throwable());
         try {
             URI responseBaseUri = new URI(responseBase);
 
@@ -57,7 +58,7 @@ public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper
         URI locationUri = URI.create(requestURIElements[requestURIElements.length - 1]);
 
         String rebasedRequestURI = requestBaseUri.resolve(locationUri).toASCIIString();
-        LOG.debug("Rebased request URI '" + originalRequest + "' to: " + rebasedRequestURI);
+        LOG.debug("wrapper " + this + ": Rebased request URI '" + originalRequest + "' to: " + rebasedRequestURI, new Throwable());
 
         return rebasedRequestURI;
     }

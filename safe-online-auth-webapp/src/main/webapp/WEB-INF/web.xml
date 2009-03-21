@@ -30,12 +30,12 @@
 	<context-param>
 		<description>Point of return for remote device issuers when authenticating</description>
 		<param-name>DeviceAuthenticationServicePath</param-name>
-		<param-value>/device/auth</param-value>
+		<param-value>/device-auth</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for remote device issuers when registering</description>
 		<param-name>DeviceRegistrationServicePath</param-name>
-		<param-value>/device/reg</param-value>
+		<param-value>/device-reg</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
@@ -113,15 +113,15 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/device/auth</url-pattern>
+		<url-pattern>/device-auth</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/device/reg</url-pattern>
+		<url-pattern>/device-reg</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/pki/cert</url-pattern>
+		<url-pattern>/pki-cert</url-pattern>
 	</filter-mapping>
 
     <!-- Application Event Listeners -->
@@ -176,8 +176,8 @@
 		<servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.auth.servlet.DeviceLandingServlet</servlet-class>
+		<servlet-name>DeviceAuthnLandingServlet</servlet-name>
+		<servlet-class>net.link.safeonline.auth.servlet.DeviceAuthnLandingServlet</servlet-class>
 
 		<init-param>
 			<param-name>LoginPath</param-name>
@@ -251,16 +251,16 @@
 		<url-pattern>/captcha.jpg</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>DeviceLandingServlet</servlet-name>
-		<url-pattern>/device/auth</url-pattern>
+		<servlet-name>DeviceAuthnLandingServlet</servlet-name>
+		<url-pattern>/device-auth</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
-		<url-pattern>/device/reg</url-pattern>
+		<url-pattern>/device-reg</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PkiServlet</servlet-name>
-		<url-pattern>/pki/cert</url-pattern>
+		<url-pattern>/pki-cert</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Logo Servlet</servlet-name>

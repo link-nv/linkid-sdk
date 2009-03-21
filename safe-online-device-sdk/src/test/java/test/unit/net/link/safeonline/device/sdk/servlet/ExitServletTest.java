@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.device.sdk.manage.servlet.DeviceManagementExitServlet;
+import net.link.safeonline.device.sdk.manage.servlet.AbstractDeviceManagementExitServlet;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 
@@ -50,7 +50,7 @@ public class ExitServletTest {
             throws Exception {
 
         servletTestManager = new ServletTestManager();
-        servletTestManager.setUp(DeviceManagementExitServlet.class);
+        servletTestManager.setUp(AbstractDeviceManagementExitServlet.class);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
     }

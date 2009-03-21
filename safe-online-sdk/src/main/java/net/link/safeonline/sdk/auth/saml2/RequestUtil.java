@@ -84,7 +84,8 @@ public abstract class RequestUtil {
             velocityContext.put("Language", language.getLanguage());
         }
         if (null != color) {
-            velocityContext.put("Color", String.format("#%02X%02X%02X", (color >> 16) % (0xFF + 1), (color >> 8) % (0xFF + 1), (color >> 0) % (0xFF + 1)));
+            velocityContext.put("Color", String.format("#%02X%02X%02X", (color >> 16) % (0xFF + 1), (color >> 8) % (0xFF + 1), (color >> 0)
+                    % (0xFF + 1)));
         }
         if (null != minimal) {
             velocityContext.put("Minimal", Boolean.toString(minimal));

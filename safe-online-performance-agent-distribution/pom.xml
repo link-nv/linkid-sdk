@@ -112,7 +112,7 @@
                         <configuration>
                             <naturalOrderProcessing>true</naturalOrderProcessing>
                             <patchDirectory>target/classes/patches</patchDirectory>
-                            <targetDirectory>target/files/safe-online-distribution-${safe-online.version}</targetDirectory>
+                            <targetDirectory>target/files/safe-online-distribution-${pom.version}</targetDirectory>
                         </configuration>
                     </execution>
                 </executions>

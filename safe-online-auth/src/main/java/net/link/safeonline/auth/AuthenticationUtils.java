@@ -22,8 +22,8 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.common.SafeOnlineAppConstants;
+import net.link.safeonline.model.node.util.NodeUtils;
 import net.link.safeonline.sdk.auth.saml2.RequestUtil;
-import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -90,44 +90,42 @@ public class AuthenticationUtils {
      * @param landingUrl
      * @param device
      */
-    public static void redirectAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale language,
-                                              String requestUrl, String landingUrl, String device) {
+    public static void redirectAuthentication(HttpServletRequest request, HttpServletResponse response, Locale language, String requestUrl,
+                                              String landingUrl, String device) {
 
         LOG.debug("redirecting to: " + landingUrl);
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(httpRequest);
-        String deviceAuthenticationServicePath = safeOnlineConfig.absoluteUrlFromParam(httpRequest, DEVICE_AUTH_SERVICE_PATH_INIT_PARAM);
+        try {
+            String deviceAuthenticationServicePath = NodeUtils.absoluteLocalNodeUrlForParam(request, DEVICE_AUTH_SERVICE_PATH_INIT_PARAM);
 
-        String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
-        if (findInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
-            templateResourceName = getInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+            String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+            if (findInitParameter(request, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
+                templateResourceName = getInitParameter(request, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+            }
+
+            // Required for the servlet handling the returned SAML response to know where to redirect to if the
+            // authentication is cancelled.
+            request.getSession().setAttribute(REQUEST_URL_SESSION_ATTRIBUTE, requestUrl);
+            Integer color = (Integer) request.getSession().getAttribute(SafeOnlineAppConstants.COLOR_SESSION_ATTRIBUTE);
+            Boolean minimal = (Boolean) request.getSession().getAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE);
+
+            /*
+             * Next is required to preserve the session if the browser does not support cookies.
+             */
+            String encodedLandingUrl = response.encodeRedirectURL(landingUrl);
+            LOG.debug("landing url: " + encodedLandingUrl);
+
+            AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
+
+            String encodedSamlRequestToken = authenticationService.redirectAuthentication(deviceAuthenticationServicePath,
+                    encodedLandingUrl, device);
+
+            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, language, color, minimal, templateResourceName, response,
+                    false);
         }
 
-        // Required for the servlet handling the returned SAML response to know where to redirect to if the
-        // authentication is cancelled.
-        httpRequest.getSession().setAttribute(REQUEST_URL_SESSION_ATTRIBUTE, requestUrl);
-        Integer color = (Integer) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.COLOR_SESSION_ATTRIBUTE);
-        Boolean minimal = (Boolean) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE);
-
-        /*
-         * Next is required to preserve the session if the browser does not support cookies.
-         */
-        String encodedLandingUrl = httpResponse.encodeRedirectURL(landingUrl);
-        LOG.debug("landing url: " + encodedLandingUrl);
-
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(httpRequest.getSession());
-
-        String encodedSamlRequestToken;
-        try {
-            encodedSamlRequestToken = authenticationService.redirectAuthentication(deviceAuthenticationServicePath, encodedLandingUrl,
-                    device);
-        } catch (NodeNotFoundException e) {
-            throw new RuntimeException("could not initiate authentication: Node not found :" + e.getMessage(), e);
-        }
-
-        try {
-            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, language, color, minimal, templateResourceName,
-                    httpResponse, false);
+        catch (NodeNotFoundException e) {
+            throw new IllegalStateException("not on an olas node?", e);
         } catch (ServletException e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);
         } catch (IOException e) {
@@ -150,40 +148,38 @@ public class AuthenticationUtils {
      * @param device
      * @param userId
      */
-    public static void redirect(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale language, String landingUrl,
+    public static void redirect(HttpServletRequest request, HttpServletResponse response, Locale language, String landingUrl,
                                 String device, String userId) {
 
         LOG.debug("redirecting to: " + landingUrl);
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(httpRequest);
-        String deviceRegistrationServicePath = safeOnlineConfig.absoluteUrlFromParam(httpRequest, DEVICE_REG_SERVICE_PATH_INIT_PARAM);
+        try {
+            String deviceRegistrationServicePath = NodeUtils.absoluteLocalNodeUrlForParam(request, DEVICE_REG_SERVICE_PATH_INIT_PARAM);
 
-        String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
-        if (findInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
-            templateResourceName = getInitParameter(httpRequest, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+            String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+            if (findInitParameter(request, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM) != null) {
+                templateResourceName = getInitParameter(request, SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+            }
+
+            /*
+             * Next is required to preserve the session if the browser does not support cookies.
+             */
+            String encodedLandingUrl = response.encodeRedirectURL(landingUrl);
+            LOG.debug("landing url: " + encodedLandingUrl);
+
+            AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
+            Integer color = (Integer) request.getSession().getAttribute(SafeOnlineAppConstants.COLOR_SESSION_ATTRIBUTE);
+            Boolean minimal = (Boolean) request.getSession().getAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE);
+
+            String encodedSamlRequestToken = authenticationService.redirectRegistration(deviceRegistrationServicePath, encodedLandingUrl,
+                    device, userId);
+
+            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, language, color, minimal, templateResourceName, response,
+                    false);
         }
 
-        /*
-         * Next is required to preserve the session if the browser does not support cookies.
-         */
-        String encodedLandingUrl = httpResponse.encodeRedirectURL(landingUrl);
-        LOG.debug("landing url: " + encodedLandingUrl);
-
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(httpRequest.getSession());
-        Integer color = (Integer) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.COLOR_SESSION_ATTRIBUTE);
-        Boolean minimal = (Boolean) httpRequest.getSession().getAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE);
-
-        String encodedSamlRequestToken;
-        try {
-            encodedSamlRequestToken = authenticationService.redirectRegistration(deviceRegistrationServicePath, encodedLandingUrl, device,
-                    userId);
-        } catch (SafeOnlineException e) {
+        catch (SafeOnlineException e) {
             throw new RuntimeException("could not initiate device registration:" + e.getMessage(), e);
-        }
-
-        try {
-            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, language, color, minimal, templateResourceName,
-                    httpResponse, false);
         } catch (ServletException e) {
             throw new RuntimeException("could not initiate device registration: " + e.getMessage(), e);
         } catch (IOException e) {

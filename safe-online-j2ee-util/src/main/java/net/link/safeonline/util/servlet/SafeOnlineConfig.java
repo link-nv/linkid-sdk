@@ -52,32 +52,33 @@ public class SafeOnlineConfig extends Properties {
      */
     public static final String                   WEBAPP_PATH_CONTEXT_PARAM = "WebappPath";
 
-    /**
-     * Determines which base this webapp uses for absolute URLs.
-     * 
-     * <ul>
-     * <li>Host <i>[default]</i></li>
-     * <li>Auth</li>
-     * <li>WS</li>
-     * </ul>
-     */
-    public static final String                   WEBAPP_BASE_CONTEXT_PARAM = "WebappBase";
-
 
     /**
-     * Property in the SafeOnlineConfig that defines the host that we're running on.
+     * Property that defines the base URL for applications on this host.
      * 
      * <p>
-     * Use the form: <code>[scheme]//[authority]</code> (eg. <code>http://my.olas.be</code>) <i>[required]</i>
+     * Use the form: <code>[scheme]//[authority]</code> (eg. <code>http://my.host.be</code>) <i>[required]</i>
      * </p>
      */
-    public String hostbase() {
+    public String appbase() {
 
-        return getProperty("hostbase");
+        return getProperty("appbase");
     }
 
     /**
-     * Property in the SafeOnlineConfig that defines the absolute URL to the olas-auth application base.
+     * Property that defines the base URL for application landing pages on this host (should be on HTTPS).
+     * 
+     * <p>
+     * Use the form: <code>[scheme]//[authority]</code> (eg. <code>https://my.host.be</code>) <i>[required]</i>
+     * </p>
+     */
+    public String applandingbase() {
+
+        return getProperty("applandingbase");
+    }
+
+    /**
+     * Property that defines the base URL to the OLAS authentication web application to use for application authentication.
      * 
      * <p>
      * Use the form: <code>[scheme]//[authority]/[path-to-olas-auth]</code> (eg. <code>https://my.olas.be/olas-auth</code>)
@@ -90,7 +91,7 @@ public class SafeOnlineConfig extends Properties {
     }
 
     /**
-     * Property in the SafeOnlineConfig that defines the location of the OLAS web services.
+     * Property that defines the base URL to the OLAS web services to use.
      * 
      * <p>
      * Use the form: <code>[scheme]//[authority]</code> (eg. <code>https://my.olas.be</code>) <i>[required]</i>
@@ -104,54 +105,116 @@ public class SafeOnlineConfig extends Properties {
     /**
      * The endpoint URL is the base URL at which the application runs.
      * 
+     * <p>
+     * <b>Note:</b> This method uses {@link #appbase()}. Whenever an application <b>inside a node</b> needs to know its endpoint, it should
+     * <b>use its node's location attribute instead</b>.
+     * </p>
+     * 
      * @return The endpoint URL for the web application triggered by the given request.
      */
-    public String endpointFor(HttpServletRequest request) {
+    public String getApplicationEndpointFor(HttpServletRequest request) {
 
-        String webappPath = request.getSession().getServletContext().getInitParameter(WEBAPP_PATH_CONTEXT_PARAM);
-        if (webappPath == null || webappPath.length() == 0)
-            throw new IllegalStateException(WEBAPP_PATH_CONTEXT_PARAM + " not configured in web.xml!");
+        String webappPath = webappPath(request);
 
-        String useBase = request.getSession().getServletContext().getInitParameter(WEBAPP_BASE_CONTEXT_PARAM);
-
-        // WS
-        if ("ws".equalsIgnoreCase(useBase))
-            return wsbase() + webappPath;
-
-        // Auth
-        else if ("auth".equalsIgnoreCase(useBase))
-            return authbase() + "/";
-
-        // Something else that isn't Host
-        else if (useBase != null && !"host".equalsIgnoreCase(useBase)) {
-            LOG.warn("Didn't understand " + WEBAPP_BASE_CONTEXT_PARAM + " configured in web.xml; falling back to Host.");
-        }
-
-        // Host
-        return hostbase() + webappPath;
+        return appbase() + webappPath;
     }
 
     /**
+     * The landingpoint URL is the base URL at which the application's landing servlets are bound. This is to provide a seamless transition
+     * between HTTPS and HTTP.
+     * 
+     * <p>
+     * <b>Note:</b> This method uses {@link #applandingbase()}. Whenever an application <b>inside a node</b> needs to know its endpoint, it
+     * should <b>use its node's location attribute instead</b>.
+     * </p>
+     * 
+     * @return The endpoint URL for the web application triggered by the given request.
+     */
+    public String getApplicationLandingpointFor(HttpServletRequest request) {
+
+        String webappPath = webappPath(request);
+
+        return applandingbase() + webappPath;
+    }
+
+    /**
+     * The path of the web application that services the given request.
+     */
+    public String webappPath(HttpServletRequest request) {
+
+        return getValue(request, WEBAPP_PATH_CONTEXT_PARAM);
+    }
+
+    /**
+     * <p>
+     * <b>Note: Only for use by OLAS applications.</b> Node services should use their node's location to create the absolute URL.
+     * </p>
+     * 
      * @return An absolute URL within the current web application using the specified path.
      */
-    public String absoluteUrlFromPath(HttpServletRequest request, String path) {
+    public String absoluteApplicationUrlFromPath(HttpServletRequest request, String path) {
 
         if (URI.create(path).isAbsolute())
             return path;
 
-        String absolutePath = endpointFor(request) + path;
+        String appPath = path;
+        if (appPath.charAt(0) == '/') {
+            appPath = path.substring(1);
+        }
+
+        String absolutePath = getApplicationEndpointFor(request) + appPath;
         LOG.debug("Absolute path for '" + path + "' is: " + absolutePath);
 
         return absolutePath;
     }
 
     /**
+     * <p>
+     * <b>Note: Only for use by OLAS applications.</b> Node services should use their node's location to create the absolute URL.
+     * </p>
+     * 
      * @return An absolute URL within the current web application using the path specified in the given context parameter.
      */
-    public String absoluteUrlFromParam(HttpServletRequest request, String contextParamName) {
+    public String absoluteApplicationUrlFromParam(HttpServletRequest request, String contextParamName) {
 
         LOG.debug("Looking up absolute path for " + contextParamName + " ..");
-        return absoluteUrlFromPath(request, request.getSession().getServletContext().getInitParameter(contextParamName));
+        return absoluteApplicationUrlFromPath(request, request.getSession().getServletContext().getInitParameter(contextParamName));
+    }
+
+    /**
+     * <p>
+     * <b>Note: Only for use by OLAS applications.</b> Node services should use their node's location to create the absolute URL.
+     * </p>
+     * 
+     * @return An absolute URL within the current web application using the specified path.
+     */
+    public String absoluteApplicationLandingUrlFromPath(HttpServletRequest request, String path) {
+
+        if (URI.create(path).isAbsolute())
+            return path;
+
+        String appPath = path;
+        if (appPath.charAt(0) == '/') {
+            appPath = path.substring(1);
+        }
+
+        String absolutePath = getApplicationLandingpointFor(request) + appPath;
+        LOG.debug("Absolute landing path for '" + path + "' is: " + absolutePath);
+
+        return absolutePath;
+    }
+
+    /**
+     * <p>
+     * <b>Note: Only for use by OLAS applications.</b> Node services should use their node's location to create the absolute URL.
+     * </p>
+     * 
+     * @return An absolute URL within the current web application using the path specified in the given context parameter.
+     */
+    public String absoluteApplicationLandingUrlFromParam(HttpServletRequest request, String contextParamName) {
+
+        LOG.debug("Looking up absolute landing path for " + contextParamName + " ..");
+        return absoluteApplicationLandingUrlFromPath(request, request.getSession().getServletContext().getInitParameter(contextParamName));
     }
 
     /**
@@ -184,10 +247,15 @@ public class SafeOnlineConfig extends Properties {
      */
     public static SafeOnlineConfig load(HttpServletRequest request) {
 
-        String propertiesPath = request.getSession().getServletContext().getInitParameter(CONFIG_CONTEXT_PARAM);
-        if (propertiesPath == null || propertiesPath.length() == 0)
-            throw new IllegalStateException(CONFIG_CONTEXT_PARAM + " not configured in web.xml!");
+        return SafeOnlineConfig.load(getValue(request, CONFIG_CONTEXT_PARAM));
+    }
 
-        return SafeOnlineConfig.load(propertiesPath);
+    private static String getValue(HttpServletRequest request, String paramName) {
+
+        String value = request.getSession().getServletContext().getInitParameter(paramName);
+        if (value == null || value.length() == 0)
+            throw new IllegalStateException(paramName + " not configured in web.xml!");
+
+        return value;
     }
 }

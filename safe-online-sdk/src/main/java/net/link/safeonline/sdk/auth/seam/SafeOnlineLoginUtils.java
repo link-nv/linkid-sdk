@@ -329,7 +329,7 @@ public class SafeOnlineLoginUtils {
          * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from SafeOnline auth should the
          * browser not support cookies.
          */
-        String targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteUrlFromPath(request, target));
+        String targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
         LOG.debug("target url: " + targetUrl);
 
         /* Initialize and execute the authentication protocol. */
@@ -496,7 +496,7 @@ public class SafeOnlineLoginUtils {
          * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from SafeOnline auth should the
          * browser not support cookies.
          */
-        String targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteUrlFromPath(request, target));
+        String targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
         LOG.debug("target url: " + targetUrl);
 
         /* Initialize and execute the authentication protocol. */

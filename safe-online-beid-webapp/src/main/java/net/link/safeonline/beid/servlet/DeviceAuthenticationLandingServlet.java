@@ -26,6 +26,7 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.device.sdk.auth.servlet.AbstractDeviceAuthenticationLandingServlet;
 import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.model.node.util.NodeUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,6 +70,23 @@ public class DeviceAuthenticationLandingServlet extends AbstractDeviceAuthentica
         JavaVersionServlet.setJava16NoPkcs11Target(AUTHENTICATION.linkFor(PCSC), session);
 
         super.invokePost(request, response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getWrapperEndpoint(HttpServletRequest request) {
+
+        try {
+            return NodeUtils.getLocalNodeEndpoint(request);
+        }
+
+        catch (NodeNotFoundException e) {
+            LOG.error("Expected to be in a node, but node wasn't found: falling back to default method of endpoint retrieval.", e);
+        }
+
+        return super.getWrapperEndpoint(request);
     }
 
     /**

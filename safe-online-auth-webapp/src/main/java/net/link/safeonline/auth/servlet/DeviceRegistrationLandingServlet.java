@@ -22,8 +22,8 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
+public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServlet {
 
     /**
      * PATH within the authentication web application where the authentication pipeline continues after the user has been successfully

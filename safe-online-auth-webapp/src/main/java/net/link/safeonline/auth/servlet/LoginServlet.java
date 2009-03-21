@@ -37,8 +37,8 @@ import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.In;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +53,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class LoginServlet extends AbstractInjectionServlet {
+public class LoginServlet extends AbstractNodeInjectionServlet {
 
     private static final long     serialVersionUID = 1L;
 

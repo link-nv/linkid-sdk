@@ -24,7 +24,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.common.SafeOnlineCookies;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -52,7 +52,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class LogoutEntryServlet extends AbstractInjectionServlet {
+public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
 
     private static final long  serialVersionUID = 1L;
 

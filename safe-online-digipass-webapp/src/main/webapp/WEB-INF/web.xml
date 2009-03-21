@@ -76,7 +76,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.auth.servlet.DeviceAuthenticationExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceAuthenticationExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error</param-value>
@@ -100,7 +100,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.device.sdk.manage.servlet.DeviceManagementExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceManagementExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>

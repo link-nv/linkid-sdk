@@ -48,6 +48,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-as</artifactId>
+            <version>1.4-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
 
@@ -82,6 +83,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
+            <version>1.4-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
 

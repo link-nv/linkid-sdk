@@ -17,7 +17,7 @@ import net.link.safeonline.authentication.exception.NodeMappingNotFoundException
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.auth.servlet.AbstractLandingInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class DeviceLandingServlet extends AbstractInjectionServlet {
+public class DeviceLandingServlet extends AbstractLandingInjectionServlet {
 
     private static final long  serialVersionUID               = 1L;
 
