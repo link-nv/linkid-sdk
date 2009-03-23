@@ -153,11 +153,11 @@ public class ViewSubscriptionPage extends UserTemplatePage {
                 }
                 item.add(new Label(IDENTITY_ATTRIBUTE_NAME, attributeName));
 
-                Image languageImage = new Image(DATA_MINING_IMAGE, "override");
-                languageImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
+                Image dataMiningImage = new Image(DATA_MINING_IMAGE, "override");
+                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
                         + "/images/icons/accept.png"));
-                languageImage.setVisible(attribute.isDataMining());
-                add(languageImage);
+                dataMiningImage.setVisible(attribute.isDataMining());
+                item.add(dataMiningImage);
 
             }
         });
