@@ -1,55 +1,55 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="applications" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.addApplicationOwner}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="applications" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.addApplicationOwner}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<f:facet name="aroundInvalidField">
-			</f:facet>
-			<h:outputLabel for="name" value="#{msgs.name}" />
-			<s:decorate>
-				<h:inputText id="name" value="#{applicationOwner.name}"
-					required="true" styleClass="label" />
-			</s:decorate>
-			<h:message for="name" styleClass="error" />
-			<h:outputLabel for="login" value="#{msgs.admin}" />
-			<s:decorate>
-				<h:inputText id="login" value="#{applicationOwner.login}"
-					required="true" styleClass="label" />
-			</s:decorate>
-			<h:message for="login" styleClass="error" />
+				<h:form>
+					<f:facet name="aroundInvalidField">
+					</f:facet>
+					<h:outputLabel for="name" value="#{msgs.name}" />
+					<s:decorate>
+						<h:inputText id="name" value="#{applicationOwner.name}"
+							required="true" styleClass="label" />
+					</s:decorate>
+					<h:message for="name" styleClass="error" />
+					<h:outputLabel for="login" value="#{msgs.admin}" />
+					<s:decorate>
+						<h:inputText id="login" value="#{applicationOwner.login}"
+							required="true" styleClass="label" />
+					</s:decorate>
+					<h:message for="login" styleClass="error" />
 
-			<h:outputLabel for="add" value="" />
-			<h:commandButton action="#{applicationOwner.add}" id="add"
-				value="#{msgs.addaction}" styleClass="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
-		</h:form>
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/applications/applications.seam"
-					value="#{msgs.applications}" /></li>
-				<li><h:commandLink action="/pools/pools.seam"
-					value="#{msgs.applicationPools}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+					<h:outputLabel for="add" value="" />
+					<h:commandButton action="#{applicationOwner.add}"
+						id="add" value="#{msgs.addaction}" styleClass="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+				</h:form>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/applications/applications.seam"
+								value="#{msgs.applications}" />
+						</li>
+						<li>
+							<h:commandLink action="/pools/pools.seam" value="#{msgs.applicationPools}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

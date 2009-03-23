@@ -1,53 +1,62 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="maintenance" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.operatorAuditRecordsSince}</h1>
-		<h2><h:outputLabel value="#{ageLimit}">
-			<f:convertDateTime type="both" timeStyle="medium" dateStyle="short" />
-		</h:outputLabel></h2>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="maintenance" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.operatorAuditRecordsSince}
+				</h1>
+				<h2>
+					<h:outputLabel value="#{ageLimit}">
+						<f:convertDateTime type="both" timeStyle="medium"
+							dateStyle="short" />
+					</h:outputLabel>
+				</h2>
+			</ui:define>
+			<ui:define name="content">
 
-		<h2>#{msgs.operatorAccessAuditRecords}</h2>
-		<ui:include src="/audit/audit-access.xhtml" />
+				<h2>#{msgs.operatorAccessAuditRecords}
+				</h2>
+				<ui:include src="/audit/audit-access.xhtml" />
 
-		<h2>#{msgs.operatorSecurityAuditRecords}</h2>
-		<ui:include src="/audit/audit-security.xhtml" />
+				<h2>#{msgs.operatorSecurityAuditRecords}
+				</h2>
+				<ui:include src="/audit/audit-security.xhtml" />
 
-		<h2>#{msgs.operatorResourceAuditRecords}</h2>
-		<ui:include src="/audit/audit-resource.xhtml" />
+				<h2>#{msgs.operatorResourceAuditRecords}
+				</h2>
+				<ui:include src="/audit/audit-resource.xhtml" />
 
-		<h2>#{msgs.operatorAuditAuditRecords}</h2>
-		<ui:include src="/audit/audit-audit.xhtml" />
+				<h2>#{msgs.operatorAuditAuditRecords}
+				</h2>
+				<ui:include src="/audit/audit-audit.xhtml" />
 
-		<h:form>
-			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" styleClass="submit" />
-		</h:form>
+				<h:form>
+					<h:commandButton action="back" id="back"
+						value="#{msgs.backaction}" immediate="true" styleClass="submit" />
+				</h:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/tasks/tasks.seam"
-					value="#{msgs.operatorTasks}" /></li>
-				<li><h:commandLink action="/user/main.seam"
-					value="#{msgs.operatorUserManagement}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/tasks/tasks.seam" value="#{msgs.operatorTasks}" />
+						</li>
+						<li>
+							<h:commandLink action="/user/main.seam"
+								value="#{msgs.operatorUserManagement}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

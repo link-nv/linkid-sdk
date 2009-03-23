@@ -1,17 +1,18 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="top_content">
-		<h1>#{msgs.applications}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<body>
+		<ui:composition template="/WEB-INF/incl/owner-template-root.xhtml">
+			<ui:define name="top_content">
+				<h1>#{msgs.applications}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<p>#{msgs.ownerApplicationsInfo} <a href="./applications.seam">#{msgs.clickHere}</a></p>
-	</ui:define>
-</ui:composition>
-</body>
+				<p>
+					#{msgs.ownerApplicationsInfo}
+					<a href="./applications.seam">#{msgs.clickHere}</a>
+				</p>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

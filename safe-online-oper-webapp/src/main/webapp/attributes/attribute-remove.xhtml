@@ -1,34 +1,34 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="attributes" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.removeaction}: #{selectedAttributeType.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="attributes" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.removeaction}:
+					#{selectedAttributeType.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<p>#{msgs.removeAttributeTypeQuestion}</p>
+				<p>#{msgs.removeAttributeTypeQuestion}
+				</p>
 
-		<h:form>
-			<h:commandButton action="#{attributes.removeConfirm}" id="remove"
-				value="#{msgs.removeaction}" class="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" class="submit" />
+				<h:form>
+					<h:commandButton action="#{attributes.removeConfirm}"
+						id="remove" value="#{msgs.removeaction}" class="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" class="submit" />
 
-			<h:messages styleClass="error" />
+					<h:messages styleClass="error" />
 
-		</h:form>
+				</h:form>
 
 
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

@@ -1,54 +1,60 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:tr="http://myfaces.apache.org/trinidad"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="attributes" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.addAttribute}: #{msgs.accessControl}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:tr="http://myfaces.apache.org/trinidad" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="attributes" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.addAttribute}: #{msgs.accessControl}
+				</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
+				<h:form>
 
-			<table>
-				<colgroup class="half" />
-				<colgroup />
+					<table>
+						<colgroup class="half" />
+						<colgroup />
 
-				<tr>
-					<th><h:outputText value="#{msgs.userVisible}" /></th>
-					<td><h:selectBooleanCheckbox id="userVisible"
-						value="#{addAttribute.userVisible}" /></td>
-				</tr>
-				<tr>
-					<th><h:outputText value="#{msgs.userEditable}" /></th>
-					<td><h:selectBooleanCheckbox id="userEditable"
-						value="#{addAttribute.userEditable}" /></td>
-				</tr>
-			</table>
-			<h:messages styleClass="error" globalOnly="true" />
+						<tr>
+							<th>
+								<h:outputText value="#{msgs.userVisible}" />
+							</th>
+							<td>
+								<h:selectBooleanCheckbox id="userVisible"
+									value="#{addAttribute.userVisible}" />
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<h:outputText value="#{msgs.userEditable}" />
+							</th>
+							<td>
+								<h:selectBooleanCheckbox id="userEditable"
+									value="#{addAttribute.userEditable}" />
+							</td>
+						</tr>
+					</table>
+					<h:messages styleClass="error" globalOnly="true" />
 
-			<h:outputLabel for="previous" value="" />
-			<h:commandButton value="#{msgs.previous}" id="previous"
-				action="previous" immediate="true" styleClass="submit" />
-			<h:commandButton value="#{msgs.next}" id="next"
-				action="#{addAttribute.acNext}" styleClass="submit" />
-			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+					<h:outputLabel for="previous" value="" />
+					<h:commandButton value="#{msgs.previous}" id="previous"
+						action="previous" immediate="true" styleClass="submit" />
+					<h:commandButton value="#{msgs.next}" id="next"
+						action="#{addAttribute.acNext}" styleClass="submit" />
+					<h:commandButton action="#{addAttribute.cancel}"
+						id="cancel" value="#{msgs.cancelaction}" immediate="true"
+						styleClass="submit" />
 
-		</h:form>
+				</h:form>
 
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

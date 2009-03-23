@@ -1,49 +1,47 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
 
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="maintenance" />
-		</ui:include>
-	</ui:define>
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="maintenance" />
+				</ui:include>
+			</ui:define>
 
-	<ui:define name="top_content">
-		<h1>#{selectedStat.name}</h1>
-	</ui:define>
-	
-    <ui:define name="content">
+			<ui:define name="top_content">
+				<h1>#{selectedStat.name}</h1>
+			</ui:define>
 
-        <table class="center fullwidth">
-			<tr>
-				<th>#{msgs.lastUpdate}:</th>
-            </tr>
-            <tr>
-				<td>#{selectedStat.creationTime}</td>
-			</tr>
-        </table>
+			<ui:define name="content">
 
-        <table class="fullwidth">
-            <tr>
-                <th>
-                    <a href="#{chartURL}">
-                        <img src="#{chartURL}" class="inner noborders" />
-                    </a>
-                </th>
-            </tr>
-		</table>
+				<table class="center fullwidth">
+					<tr>
+						<th>#{msgs.lastUpdate}:</th>
+					</tr>
+					<tr>
+						<td>#{selectedStat.creationTime}</td>
+					</tr>
+				</table>
 
-		<h:form>
-			<h:commandButton value="#{msgs.backaction}" action="back"
-				class="submit" />
-		</h:form>
+				<table class="fullwidth">
+					<tr>
+						<th>
+							<a href="#{chartURL}">
+								<img src="#{chartURL}" class="inner noborders" />
+							</a>
+						</th>
+					</tr>
+				</table>
 
-	</ui:define>
-</ui:composition>
-</body>
+				<h:form>
+					<h:commandButton value="#{msgs.backaction}" action="back"
+						class="submit" />
+				</h:form>
+
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

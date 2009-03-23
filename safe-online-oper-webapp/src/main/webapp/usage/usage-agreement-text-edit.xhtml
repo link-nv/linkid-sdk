@@ -1,60 +1,68 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{msgs.draft}</h2>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h2>
+					#{msgs.usageAgreementVersion}:
+					<so:nbsp />
+					#{msgs.draft}
+				</h2>
+			</ui:define>
+			<ui:define name="content">
 
-		<a4j:form>
-            <table>
-                <tr>
-                    <th><h:outputText value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
-                </tr>
-                <tr>
-                    <td class="center">
-                        <h:inputTextarea id="text"
-                            value="#{selectedUsageAgreementText.text}" escape="false" cols="60"
-                            rows="10" />
-                    </td>
-                </tr>
-            </table>
+				<a4j:form>
+					<table>
+						<tr>
+							<th>
+								<h:outputText
+									value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
+							</th>
+						</tr>
+						<tr>
+							<td class="center">
+								<h:inputTextarea id="text"
+									value="#{selectedUsageAgreementText.text}" escape="false" cols="60"
+									rows="10" />
+							</td>
+						</tr>
+					</table>
 
-			<a4j:commandButton value="#{msgs.saveaction}"
-				action="#{globalUsageAgreement.saveText}" id="save"
-				styleClass="submit" />
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
-				styleClass="submit" />
-		</a4j:form>
+					<a4j:commandButton value="#{msgs.saveaction}"
+						action="#{globalUsageAgreement.saveText}" id="save" styleClass="submit" />
+					<a4j:commandButton value="#{msgs.backaction}"
+						action="back" id="back" styleClass="submit" />
+				</a4j:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/pkix/pkix.seam"
-					value="#{msgs.PKIX}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/nodes/nodes.seam" value="#{msgs.operatorOlasNodes}" />
+						</li>
+						<li>
+							<h:commandLink action="/configuration.seam"
+								value="#{msgs.operatorGeneralConfiguration}" />
+						</li>
+						<li>
+							<h:commandLink action="/pkix/pkix.seam" value="#{msgs.PKIX}" />
+						</li>
+						<li>
+							<h:commandLink action="/notifications/notifications.seam"
+								value="#{msgs.operatorNotifications}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

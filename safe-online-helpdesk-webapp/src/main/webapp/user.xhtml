@@ -1,112 +1,109 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
-    xmlns:s="http://jboss.com/products/seam/taglib">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="user" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.helpdeskUsers}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich" xmlns:s="http://jboss.com/products/seam/taglib">
+	<body>
+		<ui:composition template="/WEB-INF/incl/helpdesk-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="user" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.helpdeskUsers}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
+				<h:form>
+					<f:facet name="aroundInvalidField">
+						<s:span styleClass="error" />
+					</f:facet>
 
-            <table>
-                <colgroup class="half" />
-                <colgroup />
+					<table>
+						<colgroup class="half" />
+						<colgroup />
 
-                <tr>
-                    <th>#{msgs.helpdeskUser}</th>
-                    <td>
-                        <h:inputText value="#{helpdeskLog.searchUserName}"
-                            validator="#{helpdeskLog.validateUser}" id="searchUserName"
-                            required="true" />
-                        <rich:suggestionbox for="searchUserName"
-                            suggestionAction="#{helpdeskLog.autocompleteUser}"
-                            var="searchUserNameInput" selfRendered="true">
-                            <h:column>
-                                <h:outputText value="#{searchUserNameInput}" />
-                            </h:column>
-                        </rich:suggestionbox>
-                        <h:messages styleClass="error" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="center">
-                        <h:commandLink action="#{helpdeskLog.searchUser}" id="searchUser"
-                            value="#{msgs.searchAction}" />
-                    </td>
-                </tr>
-			</table>
-		</h:form>
+						<tr>
+							<th>#{msgs.helpdeskUser}</th>
+							<td>
+								<h:inputText value="#{helpdeskLog.searchUserName}"
+									validator="#{helpdeskLog.validateUser}" id="searchUserName"
+									required="true" />
+								<rich:suggestionbox for="searchUserName"
+									suggestionAction="#{helpdeskLog.autocompleteUser}" var="searchUserNameInput"
+									selfRendered="true">
+									<h:column>
+										<h:outputText value="#{searchUserNameInput}" />
+									</h:column>
+								</rich:suggestionbox>
+								<h:messages styleClass="error" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="center">
+								<h:commandLink action="#{helpdeskLog.searchUser}"
+									id="searchUser" value="#{msgs.searchAction}" />
+							</td>
+						</tr>
+					</table>
+				</h:form>
 
-		<h:form>
-			<rich:dataTable id="helpdesk-user-data" var="item"
-				value="#{helpdeskUserList}" rows="10" preserveDataModel="false"
-				rowClasses="listingTable_Row1,listingTable_Row2">
+				<h:form>
+					<rich:dataTable id="helpdesk-user-data" var="item"
+						value="#{helpdeskUserList}" rows="10" preserveDataModel="false"
+						rowClasses="listingTable_Row1,listingTable_Row2">
 
-				<h:column>
-					<f:facet name="header">#{msgs.user}</f:facet>
-					<h:outputLabel value="#{item}" />
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.user}</f:facet>
+							<h:outputLabel value="#{item}" />
+						</h:column>
 
-				<h:column>
-					<f:facet name="header">#{msgs.viewaction}</f:facet>
-					<h:commandLink value="#{msgs.viewaction}"
-						action="#{helpdeskLog.viewUser}" styleClass="submit" />
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.viewaction}</f:facet>
+							<h:commandLink value="#{msgs.viewaction}" action="#{helpdeskLog.viewUser}"
+								styleClass="submit" />
+						</h:column>
 
-				<f:facet name="footer">
-					<rich:datascroller for="helpdesk-user-data"
-						pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
-						<f:facet name="first">
-							<h:graphicImage value="/images/icons/control_start.png" />
+						<f:facet name="footer">
+							<rich:datascroller for="helpdesk-user-data"
+								pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+								<f:facet name="first">
+									<h:graphicImage value="/images/icons/control_start.png" />
+								</f:facet>
+								<f:facet name="first_disabled">
+									<h:graphicImage value="/images/icons/control_start.png" />
+								</f:facet>
+								<f:facet name="previous">
+									<h:graphicImage value="/images/icons/control_rewind.png" />
+								</f:facet>
+								<f:facet name="previous_disabled">
+									<h:graphicImage value="/images/icons/control_rewind.png" />
+								</f:facet>
+								<f:facet name="pages">
+									<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+								</f:facet>
+								<f:facet name="next">
+									<h:graphicImage value="/images/icons/control_fastforward.png" />
+								</f:facet>
+								<f:facet name="next_disabled">
+									<h:graphicImage value="/images/icons/control_fastforward.png" />
+								</f:facet>
+								<f:facet name="last">
+									<h:graphicImage value="/images/icons/control_end.png" />
+								</f:facet>
+								<f:facet name="last_disabled">
+									<h:graphicImage value="/images/icons/control_end.png" />
+								</f:facet>
+							</rich:datascroller>
 						</f:facet>
-						<f:facet name="first_disabled">
-							<h:graphicImage value="/images/icons/control_start.png" />
-						</f:facet>
-						<f:facet name="previous">
-							<h:graphicImage value="/images/icons/control_rewind.png" />
-						</f:facet>
-						<f:facet name="previous_disabled">
-							<h:graphicImage value="/images/icons/control_rewind.png" />
-						</f:facet>
-						<f:facet name="pages">
-							<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
-						</f:facet>
-						<f:facet name="next">
-							<h:graphicImage value="/images/icons/control_fastforward.png" />
-						</f:facet>
-						<f:facet name="next_disabled">
-							<h:graphicImage value="/images/icons/control_fastforward.png" />
-						</f:facet>
-						<f:facet name="last">
-							<h:graphicImage value="/images/icons/control_end.png" />
-						</f:facet>
-						<f:facet name="last_disabled">
-							<h:graphicImage value="/images/icons/control_end.png" />
-						</f:facet>
-					</rich:datascroller>
-				</f:facet>
 
-			</rich:dataTable>
-		</h:form>
+					</rich:dataTable>
+				</h:form>
 
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>
 

@@ -1,21 +1,27 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="home" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="content">
-		<h2>#{msgs.helpdeskLookupLog}</h2>
-		<p>#{msgs.helpdeskLookupLogInfo} <a href="./log.seam">#{msgs.clickHere}</a>.</p>
-		<h2>#{msgs.helpdeskLookupUser}</h2>
-		<p>#{msgs.helpdeskLookupUserInfo} <a href="./user.seam">#{msgs.clickHere}</a>.</p>
-	</ui:define>
-</ui:composition>
-</body>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<body>
+		<ui:composition template="/WEB-INF/incl/helpdesk-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="home" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="content">
+				<h2>#{msgs.helpdeskLookupLog}</h2>
+				<p>
+					#{msgs.helpdeskLookupLogInfo}
+					<a href="./log.seam">#{msgs.clickHere}</a>
+					.
+				</p>
+				<h2>#{msgs.helpdeskLookupUser}</h2>
+				<p>
+					#{msgs.helpdeskLookupUserInfo}
+					<a href="./user.seam">#{msgs.clickHere}</a>
+					.
+				</p>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

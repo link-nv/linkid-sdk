@@ -1,41 +1,43 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="top_content">
-		<h1>#{selectedApplication.name}</h1>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/incl/owner-template.xhtml">
+			<ui:define name="top_content">
+				<h1>#{selectedApplication.name}</h1>
 
-		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedUsageAgreement.usageAgreementVersion}
-		</h2>
-	</ui:define>
-	<ui:define name="content">
+				<h2>
+					#{msgs.usageAgreementVersion}:
+					<so:nbsp />
+					#{selectedUsageAgreement.usageAgreementVersion}
+				</h2>
+			</ui:define>
+			<ui:define name="content">
 
-        <table>
-            <tr>
-                <th><h:outputText value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
-            </tr>
-            <tr>
-                <td class="center text usage block">#{selectedUsageAgreementText.text}</td>
-            </tr>
-        </table>
+				<table>
+					<tr>
+						<th>
+							<h:outputText
+								value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
+						</th>
+					</tr>
+					<tr>
+						<td class="center text usage block">#{selectedUsageAgreementText.text}</td>
+					</tr>
+				</table>
 
-		<a4j:form>
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
-				styleClass="submit" />
-			<so:nbsp />
-		</a4j:form>
+				<a4j:form>
+					<a4j:commandButton value="#{msgs.backaction}"
+						action="back" id="back" styleClass="submit" />
+					<so:nbsp />
+				</a4j:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<p>#{msgs.helpUsageAgreementView}</p>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<p>#{msgs.helpUsageAgreementView}</p>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>
