@@ -89,7 +89,27 @@
 	<!-- ${safe-online.profiling.filter} -->
 	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/login</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/logoutentry</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/logoutexit</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/device/auth</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/device/reg</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/exit</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
