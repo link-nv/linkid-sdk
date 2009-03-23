@@ -10,6 +10,7 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.wicket.web.RequireLogin;
 
@@ -90,8 +91,8 @@ public class NewTransactionPage extends LayoutPage {
                 PaymentUserEntity user = PaymentSession.get().getUser();
 
                 List<String> visas;
-                visas = Arrays.asList(getAttributeClient(DemoPaymentKeyStore.class).getAttributeValue(user.getOlasId(),
-                        DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, String[].class));
+                visas = Arrays.asList(OlasServiceFactory.getAttributeService(DemoPaymentKeyStore.getPrivateKeyEntry()).getAttributeValue(
+                        user.getOlasId(), DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, String[].class));
 
                 TextArea<String> descriptionField = new TextArea<String>("description", description = new Model<String>());
                 RadioChoice<String> visaField = new RadioChoice<String>("visa", visa = new Model<String>(), visas);

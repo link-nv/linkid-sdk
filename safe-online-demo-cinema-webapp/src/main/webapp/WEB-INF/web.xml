@@ -8,10 +8,6 @@
 
     <!-- Application Context Parameters -->
 	<context-param>
-		<param-name>SafeOnlineConfig</param-name>
-        <param-value>../conf/safeonline.properties</param-value>
-	</context-param>
-	<context-param>
 		<param-name>WebappPath</param-name>
         <param-value>/${safe-online.demo.cinema.webapp.url}/</param-value>
 	</context-param>
@@ -102,6 +98,10 @@
 	</filter-->
 
 	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
 		<filter-name>WicketFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 
@@ -111,10 +111,6 @@
 	<filter-mapping>
 		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>ContainerLoginFilter</filter-name>

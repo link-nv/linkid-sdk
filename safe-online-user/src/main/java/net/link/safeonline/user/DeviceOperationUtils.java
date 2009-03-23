@@ -95,8 +95,7 @@ public abstract class DeviceOperationUtils {
                                 DeviceOperationType deviceOperation, String device, String authenticatedDevice, String userId, String id,
                                 AttributeDO attribute) {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        String serviceUrl = safeOnlineConfig.absoluteApplicationLandingUrlFromParam(request, DEVICE_SERVICE_PATH_INIT_PARAM);
+        String serviceUrl = SafeOnlineConfig.absoluteApplicationLandingUrlFromParam(request, DEVICE_SERVICE_PATH_INIT_PARAM);
 
         LOG.debug("redirecting to: " + landingUrl);
 

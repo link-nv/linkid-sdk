@@ -265,29 +265,27 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
         ExternalContext externalContext = facesContext.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
         HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
 
         String user = getUsername();
         String recipient = "De Lijn";
         String message = "Ticket " + ticket.getId();
-        String target = safeOnlineConfig.absoluteApplicationUrlFromPath(request, "list.seam");
+        String target = SafeOnlineConfig.absoluteApplicationUrlFromPath(request, "list.seam");
         target = response.encodeRedirectURL(target);
 
-        String redirectUrl;
         try {
-            redirectUrl = safeOnlineConfig.absoluteApplicationUrlFromPath(request, "../entry.seam?user=" + URLEncoder.encode(user, "UTF-8")
-                    + "&recipient=" + URLEncoder.encode(recipient, "UTF-8") + "&amount="
+            String redirectUrl = SafeOnlineConfig.absoluteApplicationUrlFromPath(request, "../entry.seam?user="
+                    + URLEncoder.encode(user, "UTF-8") + "&recipient=" + URLEncoder.encode(recipient, "UTF-8") + "&amount="
                     + URLEncoder.encode(Double.toString(ticketPrice - juniorReduction), "UTF-8") + "&message="
                     + URLEncoder.encode(message, "UTF-8") + "&target=" + URLEncoder.encode(target, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+
+            externalContext.redirect(redirectUrl);
+        }
+
+        catch (UnsupportedEncodingException e) {
             String msg = "URL encoding error";
             log.debug(msg);
             facesMessages.add(msg);
             return;
-        }
-
-        try {
-            externalContext.redirect(redirectUrl);
         } catch (IOException e) {
             String msg = "IO redirect error";
             log.debug(msg);

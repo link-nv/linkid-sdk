@@ -8,8 +8,6 @@ package net.link.safeonline.util.servlet;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,14 +32,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public class SafeOnlineConfig extends Properties {
 
-    private static final long                    serialVersionUID          = 1L;
-    private static final Log                     LOG                       = LogFactory.getLog(SafeOnlineConfig.class);
-    private static Map<String, SafeOnlineConfig> configs;
+    private static final long       serialVersionUID          = 1L;
+    private static final Log        LOG                       = LogFactory.getLog(SafeOnlineConfig.class);
 
-    /**
-     * The path to the configuration file to use for host-specific configuration.
-     */
-    public static final String                   CONFIG_CONTEXT_PARAM      = "SafeOnlineConfig";
+    private static final String     SAFEONLINE_CONFIG         = "../conf/safeonline.properties";
+    private static SafeOnlineConfig config;
 
     /**
      * The absolute base path for the web application.
@@ -50,8 +45,66 @@ public class SafeOnlineConfig extends Properties {
      * <b>NOTE:</b> Put slashes before and after: /myapp/
      * </p>
      */
-    public static final String                   WEBAPP_PATH_CONTEXT_PARAM = "WebappPath";
+    public static final String      WEBAPP_PATH_CONTEXT_PARAM = "WebappPath";
 
+
+    /**
+     * Property that defines the name of this OLAS node.
+     */
+    public static String nodeName() {
+
+        return load().getProperty("olas.node.name");
+    }
+
+    /**
+     * Property that defines the hostname that clients talk to for reaching our node.
+     */
+    public static String nodeHost() {
+
+        return load().getProperty("olas.host.name");
+    }
+
+    /**
+     * Property that defines the port on which the web server accepts connections for {@link #nodeProtocol()}.
+     */
+    public static int nodePort() {
+
+        return Integer.parseInt(load().getProperty("olas.host.port"));
+    }
+
+    /**
+     * Property that defines the port on which the web server accepts connections for {@link #nodeProtocolSecure()}.
+     */
+    public static int nodePortSecure() {
+
+        return Integer.parseInt(load().getProperty("olas.host.port.ssl"));
+    }
+
+    /**
+     * Property that defines the web protocol to use general communication.
+     * 
+     * <ul>
+     * <li><code>HTTP</code> <i>[recommended]</i></li>
+     * <li><code>HTTPS</code></li>
+     * </ul>
+     */
+    public static String nodeProtocol() {
+
+        return load().getProperty("olas.host.protocol");
+    }
+
+    /**
+     * Property that defines the web protocol to use for communication of private data.
+     * 
+     * <ul>
+     * <li><code>HTTP</code></li>
+     * <li><code>HTTPS</code> <i>[recommended]</i></li>
+     * </ul>
+     */
+    public static String nodeProtocolSecure() {
+
+        return load().getProperty("olas.host.protocol.ssl");
+    }
 
     /**
      * Property that defines the base URL for applications on this host.
@@ -60,9 +113,9 @@ public class SafeOnlineConfig extends Properties {
      * Use the form: <code>[scheme]//[authority]</code> (eg. <code>http://my.host.be</code>) <i>[required]</i>
      * </p>
      */
-    public String appbase() {
+    public static String appbase() {
 
-        return getProperty("appbase");
+        return load().getProperty("appbase");
     }
 
     /**
@@ -72,9 +125,9 @@ public class SafeOnlineConfig extends Properties {
      * Use the form: <code>[scheme]//[authority]</code> (eg. <code>https://my.host.be</code>) <i>[required]</i>
      * </p>
      */
-    public String applandingbase() {
+    public static String applandingbase() {
 
-        return getProperty("applandingbase");
+        return load().getProperty("applandingbase");
     }
 
     /**
@@ -85,9 +138,9 @@ public class SafeOnlineConfig extends Properties {
      * <i>[required]</i>
      * </p>
      */
-    public String authbase() {
+    public static String authbase() {
 
-        return getProperty("authbase");
+        return load().getProperty("authbase");
     }
 
     /**
@@ -97,9 +150,9 @@ public class SafeOnlineConfig extends Properties {
      * Use the form: <code>[scheme]//[authority]</code> (eg. <code>https://my.olas.be</code>) <i>[required]</i>
      * </p>
      */
-    public String wsbase() {
+    public static String wsbase() {
 
-        return getProperty("wsbase");
+        return load().getProperty("wsbase");
     }
 
     /**
@@ -112,11 +165,9 @@ public class SafeOnlineConfig extends Properties {
      * 
      * @return The endpoint URL for the web application triggered by the given request.
      */
-    public String getApplicationEndpointFor(HttpServletRequest request) {
+    public static String getApplicationEndpointFor(HttpServletRequest request) {
 
-        String webappPath = webappPath(request);
-
-        return appbase() + webappPath;
+        return appbase() + webappPath(request);
     }
 
     /**
@@ -130,17 +181,15 @@ public class SafeOnlineConfig extends Properties {
      * 
      * @return The endpoint URL for the web application triggered by the given request.
      */
-    public String getApplicationLandingpointFor(HttpServletRequest request) {
+    public static String getApplicationLandingpointFor(HttpServletRequest request) {
 
-        String webappPath = webappPath(request);
-
-        return applandingbase() + webappPath;
+        return applandingbase() + webappPath(request);
     }
 
     /**
      * The path of the web application that services the given request.
      */
-    public String webappPath(HttpServletRequest request) {
+    public static String webappPath(HttpServletRequest request) {
 
         return getValue(request, WEBAPP_PATH_CONTEXT_PARAM);
     }
@@ -152,7 +201,7 @@ public class SafeOnlineConfig extends Properties {
      * 
      * @return An absolute URL within the current web application using the specified path.
      */
-    public String absoluteApplicationUrlFromPath(HttpServletRequest request, String path) {
+    public static String absoluteApplicationUrlFromPath(HttpServletRequest request, String path) {
 
         if (URI.create(path).isAbsolute())
             return path;
@@ -175,7 +224,7 @@ public class SafeOnlineConfig extends Properties {
      * 
      * @return An absolute URL within the current web application using the path specified in the given context parameter.
      */
-    public String absoluteApplicationUrlFromParam(HttpServletRequest request, String contextParamName) {
+    public static String absoluteApplicationUrlFromParam(HttpServletRequest request, String contextParamName) {
 
         LOG.debug("Looking up absolute path for " + contextParamName + " ..");
         return absoluteApplicationUrlFromPath(request, request.getSession().getServletContext().getInitParameter(contextParamName));
@@ -188,7 +237,7 @@ public class SafeOnlineConfig extends Properties {
      * 
      * @return An absolute URL within the current web application using the specified path.
      */
-    public String absoluteApplicationLandingUrlFromPath(HttpServletRequest request, String path) {
+    public static String absoluteApplicationLandingUrlFromPath(HttpServletRequest request, String path) {
 
         if (URI.create(path).isAbsolute())
             return path;
@@ -211,7 +260,7 @@ public class SafeOnlineConfig extends Properties {
      * 
      * @return An absolute URL within the current web application using the path specified in the given context parameter.
      */
-    public String absoluteApplicationLandingUrlFromParam(HttpServletRequest request, String contextParamName) {
+    public static String absoluteApplicationLandingUrlFromParam(HttpServletRequest request, String contextParamName) {
 
         LOG.debug("Looking up absolute landing path for " + contextParamName + " ..");
         return absoluteApplicationLandingUrlFromPath(request, request.getSession().getServletContext().getInitParameter(contextParamName));
@@ -222,32 +271,26 @@ public class SafeOnlineConfig extends Properties {
      */
     public static SafeOnlineConfig load(String propertiesPath) {
 
-        if (configs == null) {
-            configs = new HashMap<String, SafeOnlineConfig>();
-        }
+        if (config != null)
+            return config;
 
-        if (configs.containsKey(propertiesPath))
-            return configs.get(propertiesPath);
-
-        SafeOnlineConfig config = new SafeOnlineConfig();
+        config = new SafeOnlineConfig();
 
         try {
             config.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesPath));
-            configs.put(propertiesPath, config);
         } catch (IOException e) {
             LOG.error("Couldn't load config file.", e);
         }
 
-        LOG.debug("Successfully loaded SafeOnlineConfig with hostbase: " + config.keySet());
         return config;
     }
 
     /**
      * Get a reference to the web application configuration.
      */
-    public static SafeOnlineConfig load(HttpServletRequest request) {
+    public static SafeOnlineConfig load() {
 
-        return SafeOnlineConfig.load(getValue(request, CONFIG_CONTEXT_PARAM));
+        return SafeOnlineConfig.load(SAFEONLINE_CONFIG);
     }
 
     private static String getValue(HttpServletRequest request, String paramName) {

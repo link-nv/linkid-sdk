@@ -103,11 +103,9 @@ public class Saml2Handler implements Serializable {
     public DeviceOperationType initDeviceOperation(HttpServletRequest request)
             throws DeviceInitializationException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
         DeviceOperationRequest deviceOperationRequest;
         try {
-            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, safeOnlineConfig.wsbase(), applicationCertificate,
+            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, SafeOnlineConfig.wsbase(), applicationCertificate,
                     applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new DeviceInitializationException(e.getMessage());

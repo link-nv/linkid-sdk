@@ -8,11 +8,8 @@
 package net.link.safeonline.demo.mandate.bean;
 
 import javax.ejb.Stateless;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.mandate.AuthorizationService;
 import net.link.safeonline.demo.mandate.MandateConstants;
@@ -68,11 +65,7 @@ public class AuthorizationServiceBean implements AuthorizationService {
 
     private AttributeClient getAttributeClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getAttributeService(request, DemoMandateKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getAttributeService(DemoMandateKeyStore.getPrivateKeyEntry());
     }
 
     public boolean isAdmin(String userId) {

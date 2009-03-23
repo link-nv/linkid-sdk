@@ -194,12 +194,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
         DateTime now = new DateTime();
 
         Response samlResponse = ResponseUtil.validateResponse(now, request, challenge.getValue(), applicationName,
-                safeOnlineConfig.wsbase(), applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+                SafeOnlineConfig.wsbase(), applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlResponse)
             return null;
 
@@ -243,9 +241,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
-        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(request, challenge.getValue(), safeOnlineConfig.wsbase(),
+        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(request, challenge.getValue(), SafeOnlineConfig.wsbase(),
                 applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
 
         if (null == samlLogoutResponse)
@@ -263,9 +259,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
-        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, safeOnlineConfig.wsbase(), applicationCertificate,
+        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, SafeOnlineConfig.wsbase(), applicationCertificate,
                 applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlLogoutRequest)
             return null;

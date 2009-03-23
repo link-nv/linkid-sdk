@@ -170,8 +170,6 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
         AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(request);
         if (null == protocolHandler) {
             /*
@@ -180,7 +178,7 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
              */
             try {
                 protocolHandler = AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol,
-                        safeOnlineConfig.authbase() + logoutExitServicePath, applicationName, applicationFriendlyName, applicationKeyPair,
+                        SafeOnlineConfig.authbase() + logoutExitServicePath, applicationName, applicationFriendlyName, applicationKeyPair,
                         applicationCertificate, true, configParams, request);
                 LOG.debug("initialized protocol");
             } catch (ServletException e) {

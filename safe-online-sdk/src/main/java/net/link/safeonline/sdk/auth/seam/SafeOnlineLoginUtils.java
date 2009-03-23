@@ -293,8 +293,7 @@ public class SafeOnlineLoginUtils {
         String keyStoreType = getInitParameter(config, KEY_STORE_TYPE_CONTEXT_PARAM, null);
         String ssoEnabledString = getInitParameter(config, SINGLE_SIGN_ON_CONTEXT_PARAM, null);
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        authenticationServicePath = safeOnlineConfig.authbase() + authenticationServicePath;
+        authenticationServicePath = SafeOnlineConfig.authbase() + authenticationServicePath;
 
         LOG.debug("redirecting to: " + authenticationServicePath);
 
@@ -329,7 +328,7 @@ public class SafeOnlineLoginUtils {
          * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from SafeOnline auth should the
          * browser not support cookies.
          */
-        String targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
+        String targetUrl = response.encodeRedirectURL(SafeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
         LOG.debug("target url: " + targetUrl);
 
         /* Initialize and execute the authentication protocol. */
@@ -458,8 +457,7 @@ public class SafeOnlineLoginUtils {
         String keyStoreType = getInitParameter(config, KEY_STORE_TYPE_CONTEXT_PARAM, null);
         String ssoEnabledString = getInitParameter(config, SINGLE_SIGN_ON_CONTEXT_PARAM, null);
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        logoutServicePath = safeOnlineConfig.authbase() + logoutServicePath;
+        logoutServicePath = SafeOnlineConfig.authbase() + logoutServicePath;
 
         LOG.debug("redirecting to: " + logoutServicePath);
 
@@ -496,7 +494,7 @@ public class SafeOnlineLoginUtils {
          * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from SafeOnline auth should the
          * browser not support cookies.
          */
-        String targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
+        String targetUrl = response.encodeRedirectURL(SafeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
         LOG.debug("target url: " + targetUrl);
 
         /* Initialize and execute the authentication protocol. */

@@ -10,8 +10,6 @@ import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
@@ -63,163 +61,134 @@ public class OlasServiceFactory extends ServiceFactory {
 
     /**
      * Retrieve a proxy to the OLAS attribute web service.
-     * 
-     * @param request
-     *            The servlet request: used to access {@link SafeOnlineConfig#wsbase}.
      */
-    public static AttributeClient getAttributeService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    public static AttributeClient getAttributeService(PrivateKeyEntry privateKeyEntry) {
 
-        return getInstance()._getAttributeService(request, privateKeyEntry);
+        return getInstance()._getAttributeService(privateKeyEntry);
     }
 
     @Override
-    protected AttributeClient _getAttributeService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    protected AttributeClient _getAttributeService(PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new AttributeClientImpl(getWSLocation(request), certificate, privateKey);
+        return new AttributeClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 
     /**
      * Retrieve a proxy to the OLAS data web service.
-     * 
-     * @param request
-     *            The servlet request: used to access {@link SafeOnlineConfig#wsbase}.
      */
-    public static DataClient getDataService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    public static DataClient getDataService(PrivateKeyEntry privateKeyEntry) {
 
-        return getInstance()._getDataService(request, privateKeyEntry);
+        return getInstance()._getDataService(privateKeyEntry);
     }
 
     @Override
-    protected DataClient _getDataService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    protected DataClient _getDataService(PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new DataClientImpl(getWSLocation(request), certificate, privateKey);
+        return new DataClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 
     /**
      * Retrieve a proxy to the OLAS ID mapping web service.
-     * 
-     * @param request
-     *            The servlet request: used to access {@link SafeOnlineConfig#wsbase}.
      */
-    public static NameIdentifierMappingClient getIdMappingService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    public static NameIdentifierMappingClient getIdMappingService(PrivateKeyEntry privateKeyEntry) {
 
-        return getInstance()._getIdMappingService(request, privateKeyEntry);
+        return getInstance()._getIdMappingService(privateKeyEntry);
     }
 
     @Override
-    protected NameIdentifierMappingClient _getIdMappingService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    protected NameIdentifierMappingClient _getIdMappingService(PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NameIdentifierMappingClientImpl(getWSLocation(request), certificate, privateKey);
+        return new NameIdentifierMappingClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 
     /**
      * Retrieve a proxy to the OLAS Security Token web service.
-     * 
-     * @param request
-     *            The servlet request: used to access {@link SafeOnlineConfig#wsbase}.
      */
-    public static SecurityTokenServiceClient getStsService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    public static SecurityTokenServiceClient getStsService(PrivateKeyEntry privateKeyEntry) {
 
-        return getInstance()._getStsService(request, privateKeyEntry);
+        return getInstance()._getStsService(privateKeyEntry);
     }
 
     @Override
-    protected SecurityTokenServiceClient _getStsService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    protected SecurityTokenServiceClient _getStsService(PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new SecurityTokenServiceClientImpl(getWSLocation(request), certificate, privateKey);
+        return new SecurityTokenServiceClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 
     /**
      * Retrieve a proxy to the OLAS notification consumer web service.
-     * 
-     * @param request
-     *            The servlet request: used to access {@link SafeOnlineConfig#wsbase}.
      */
-    public static NotificationConsumerClient getNotificationConsumerService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    public static NotificationConsumerClient getNotificationConsumerService(PrivateKeyEntry privateKeyEntry) {
 
-        return getInstance()._getNotificationConsumerService(request, privateKeyEntry);
+        return getInstance()._getNotificationConsumerService(privateKeyEntry);
     }
 
     @Override
-    protected NotificationConsumerClient _getNotificationConsumerService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    protected NotificationConsumerClient _getNotificationConsumerService(PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NotificationConsumerClientImpl(getWSLocation(request), certificate, privateKey);
+        return new NotificationConsumerClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 
     /**
      * Retrieve a proxy to the OLAS notification producer web service.
-     * 
-     * @param request
-     *            The servlet request: used to access {@link SafeOnlineConfig#wsbase}.
      */
-    public static NotificationProducerClient getNotificationProducerService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    public static NotificationProducerClient getNotificationProducerService(PrivateKeyEntry privateKeyEntry) {
 
-        return getInstance()._getNotificationProducerService(request, privateKeyEntry);
+        return getInstance()._getNotificationProducerService(privateKeyEntry);
     }
 
     @Override
-    protected NotificationProducerClient _getNotificationProducerService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+    protected NotificationProducerClient _getNotificationProducerService(PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NotificationProducerClientImpl(getWSLocation(request), certificate, privateKey);
+        return new NotificationProducerClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 
     /**
      * Retrieve a proxy to the OLAS notification subscription manager web service.
-     * 
-     * @param request
-     *            The servlet request: used to access {@link SafeOnlineConfig#wsbase}.
      */
-    public static NotificationSubscriptionManagerClient getNotificationSubscriptionService(HttpServletRequest request,
-                                                                                           PrivateKeyEntry privateKeyEntry) {
+    public static NotificationSubscriptionManagerClient getNotificationSubscriptionService(PrivateKeyEntry privateKeyEntry) {
 
-        return getInstance()._getNotificationSubscriptionService(request, privateKeyEntry);
+        return getInstance()._getNotificationSubscriptionService(privateKeyEntry);
     }
 
     @Override
-    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(HttpServletRequest request,
-                                                                                        PrivateKeyEntry privateKeyEntry) {
+    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(PrivateKeyEntry privateKeyEntry) {
 
         // Find the key and certificate of the application.
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
-        return new NotificationSubscriptionManagerClientImpl(getWSLocation(request), certificate, privateKey);
-    }
-
-    private static String getWSLocation(HttpServletRequest request) {
-
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        return safeOnlineConfig.wsbase();
+        return new NotificationSubscriptionManagerClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 }

@@ -112,11 +112,9 @@ public class Saml2Handler implements Serializable {
     public void initAuthentication(HttpServletRequest request)
             throws AuthenticationInitializationException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
         AuthnRequest samlAuthnRequest;
         try {
-            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, safeOnlineConfig.wsbase(), applicationCertificate,
+            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, SafeOnlineConfig.wsbase(), applicationCertificate,
                     applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new AuthenticationInitializationException(e.getMessage());

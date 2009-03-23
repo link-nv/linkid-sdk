@@ -41,7 +41,6 @@ public abstract class AbstractLandingInjectionServlet extends AbstractInjectionS
     @Override
     protected String getWrapperEndpoint(HttpServletRequest request) {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        return safeOnlineConfig.getApplicationLandingpointFor(request);
+        return SafeOnlineConfig.getApplicationLandingpointFor(request);
     }
 }

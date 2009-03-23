@@ -11,9 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.mandate.AbstractMandateDataClient;
 import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStore;
@@ -84,29 +81,17 @@ public abstract class AbstractMandateDataClientBean implements AbstractMandateDa
 
     protected DataClient getDataClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getDataService(request, DemoMandateKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getDataService(DemoMandateKeyStore.getPrivateKeyEntry());
     }
 
     protected AttributeClient getAttributeClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getAttributeService(request, DemoMandateKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getAttributeService(DemoMandateKeyStore.getPrivateKeyEntry());
     }
 
     protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getIdMappingService(request, DemoMandateKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getIdMappingService(DemoMandateKeyStore.getPrivateKeyEntry());
     }
 
     /**

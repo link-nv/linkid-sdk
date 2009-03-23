@@ -38,8 +38,7 @@ public abstract class NodeUtils {
     public static String getLocalNodeEndpoint(HttpServletRequest request)
             throws NodeNotFoundException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        return getLocalNode().getLocation() + safeOnlineConfig.webappPath(request);
+        return getLocalNode().getLocation() + SafeOnlineConfig.webappPath(request);
     }
 
     /**

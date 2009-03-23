@@ -121,9 +121,9 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
      * 
      * <p>
      * However, we don't know what the client's request was. So instead we use the a base URI that we know the node is configured on. The
-     * default hostbase is configured in the {@link SafeOnlineConfig} file (see {@link SafeOnlineConfig#getApplicationEndpointFor(HttpServletRequest)}).
-     * If the base URI for your web application is different than what is configured there, you need to override this method and return the
-     * correct endpoint for your web application.
+     * default hostbase is configured in the {@link SafeOnlineConfig} file (see
+     * {@link SafeOnlineConfig#getApplicationEndpointFor(HttpServletRequest)}). If the base URI for your web application is different than
+     * what is configured there, you need to override this method and return the correct endpoint for your web application.
      * </p>
      * 
      * @return The endpoint URL that the wrapper should use to replace the servlet request's requestURI and to calculate the absolute URL
@@ -131,8 +131,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
      */
     protected String getWrapperEndpoint(HttpServletRequest request) {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-        return safeOnlineConfig.getApplicationEndpointFor(request);
+        return SafeOnlineConfig.getApplicationEndpointFor(request);
     }
 
     @Override

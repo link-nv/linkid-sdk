@@ -9,8 +9,6 @@ package net.link.safeonline.sdk.test;
 import java.lang.reflect.Field;
 import java.security.KeyStore.PrivateKeyEntry;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.ServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -66,7 +64,7 @@ public class DummyServiceFactory extends ServiceFactory {
      * {@inheritDoc}
      */
     @Override
-    protected AttributeClient _getAttributeService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
+    protected AttributeClient _getAttributeService(PrivateKeyEntry privateKeyEntry) {
 
         return new DummyAttributeClient();
     }
@@ -75,7 +73,7 @@ public class DummyServiceFactory extends ServiceFactory {
      * {@inheritDoc}
      */
     @Override
-    protected DataClient _getDataService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
+    protected DataClient _getDataService(PrivateKeyEntry privateKeyEntry) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
@@ -84,7 +82,7 @@ public class DummyServiceFactory extends ServiceFactory {
      * {@inheritDoc}
      */
     @Override
-    protected NameIdentifierMappingClient _getIdMappingService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
+    protected NameIdentifierMappingClient _getIdMappingService(PrivateKeyEntry privateKeyEntry) {
 
         return new DummyNameIdentifierMappingClient();
     }
@@ -93,7 +91,7 @@ public class DummyServiceFactory extends ServiceFactory {
      * {@inheritDoc}
      */
     @Override
-    protected NotificationConsumerClient _getNotificationConsumerService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
+    protected NotificationConsumerClient _getNotificationConsumerService(PrivateKeyEntry privateKeyEntry) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
@@ -102,7 +100,7 @@ public class DummyServiceFactory extends ServiceFactory {
      * {@inheritDoc}
      */
     @Override
-    protected NotificationProducerClient _getNotificationProducerService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
+    protected NotificationProducerClient _getNotificationProducerService(PrivateKeyEntry privateKeyEntry) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
@@ -111,8 +109,7 @@ public class DummyServiceFactory extends ServiceFactory {
      * {@inheritDoc}
      */
     @Override
-    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(HttpServletRequest httpRequest,
-                                                                                        PrivateKeyEntry privateKeyEntry) {
+    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(PrivateKeyEntry privateKeyEntry) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
@@ -121,7 +118,7 @@ public class DummyServiceFactory extends ServiceFactory {
      * {@inheritDoc}
      */
     @Override
-    protected SecurityTokenServiceClient _getStsService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
+    protected SecurityTokenServiceClient _getStsService(PrivateKeyEntry privateKeyEntry) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }

@@ -204,9 +204,7 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
     private void initiateAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
-        AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, safeOnlineConfig.authbase()
+        AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, SafeOnlineConfig.authbase()
                 + authenticationServicePath, applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate,
                 ssoEnabled, configParams, request);
 
@@ -214,7 +212,7 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         if (null != target) {
             targetUrl = target;
             if (!URI.create(targetUrl).isAbsolute()) {
-                targetUrl = response.encodeRedirectURL(safeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
+                targetUrl = response.encodeRedirectURL(SafeOnlineConfig.absoluteApplicationUrlFromPath(request, target));
             }
 
             LOG.debug("target url: " + targetUrl);

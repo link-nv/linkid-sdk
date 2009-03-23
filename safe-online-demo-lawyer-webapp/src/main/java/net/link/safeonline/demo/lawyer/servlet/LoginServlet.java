@@ -74,7 +74,7 @@ public class LoginServlet extends HttpServlet {
 
         Attribute<Boolean> barAdminAttribute;
         try {
-            DataClient dataClient = OlasServiceFactory.getDataService(request, DemoLawyerKeyStore.getPrivateKeyEntry());
+            DataClient dataClient = OlasServiceFactory.getDataService(DemoLawyerKeyStore.getPrivateKeyEntry());
             barAdminAttribute = dataClient.getAttributeValue(userId, DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve baradmin attribute");

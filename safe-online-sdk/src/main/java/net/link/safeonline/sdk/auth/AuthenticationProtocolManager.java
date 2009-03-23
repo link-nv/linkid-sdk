@@ -127,16 +127,14 @@ public class AuthenticationProtocolManager {
                                               boolean skipLandingPage, Locale language, Integer color, Boolean minimal)
             throws IOException, ServletException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
         // Figure out the target and landing page URLs.
         String targetUrl = target;
         if (null == targetUrl) {
-            targetUrl = safeOnlineConfig.getApplicationEndpointFor(request);
+            targetUrl = SafeOnlineConfig.getApplicationEndpointFor(request);
         } else if (!URI.create(targetUrl).isAbsolute()) {
-            targetUrl = safeOnlineConfig.absoluteApplicationUrlFromPath(request, targetUrl);
+            targetUrl = SafeOnlineConfig.absoluteApplicationUrlFromPath(request, targetUrl);
         }
-        String landingPage = safeOnlineConfig.absoluteApplicationLandingUrlFromParam(request, LANDING_PAGE_INIT_PARAM);
+        String landingPage = SafeOnlineConfig.absoluteApplicationLandingUrlFromParam(request, LANDING_PAGE_INIT_PARAM);
 
         // Delegate the authentication initiation to the relevant protocol handler.
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
@@ -212,16 +210,14 @@ public class AuthenticationProtocolManager {
     public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName)
             throws IOException, ServletException {
 
-        SafeOnlineConfig safeOnlineConfig = SafeOnlineConfig.load(request);
-
         // Figure out the target and landing page URLs.
         String targetUrl = target;
         if (null == targetUrl) {
-            targetUrl = safeOnlineConfig.getApplicationEndpointFor(request);
+            targetUrl = SafeOnlineConfig.getApplicationEndpointFor(request);
         } else if (!URI.create(targetUrl).isAbsolute()) {
-            targetUrl = safeOnlineConfig.absoluteApplicationUrlFromPath(request, targetUrl);
+            targetUrl = SafeOnlineConfig.absoluteApplicationUrlFromPath(request, targetUrl);
         }
-        String landingPage = safeOnlineConfig.absoluteApplicationLandingUrlFromParam(request, LOGOUT_LANDING_PAGE_INIT_PARAM);
+        String landingPage = SafeOnlineConfig.absoluteApplicationLandingUrlFromParam(request, LOGOUT_LANDING_PAGE_INIT_PARAM);
 
         // Delegate the authentication initiation to the relevant protocol handler.
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);

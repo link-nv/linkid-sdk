@@ -68,9 +68,9 @@ public class LoginServlet extends HttpServlet {
          */
         LOG.debug("userId: " + userId);
 
-        boolean admin = getBoolean(request, userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
-        boolean careProvider = getBoolean(request, userId, DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
-        boolean pharmacist = getBoolean(request, userId, DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
+        boolean admin = getBoolean(userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
+        boolean careProvider = getBoolean(userId, DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
+        boolean pharmacist = getBoolean(userId, DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
 
         int rolesCount = 0;
         if (admin) {
@@ -113,12 +113,12 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    private boolean getBoolean(HttpServletRequest request, String username, String attributeName)
+    private boolean getBoolean(String username, String attributeName)
             throws ServletException {
 
         Attribute<Boolean> attribute;
         try {
-            DataClient dataClient = OlasServiceFactory.getDataService(request, DemoPrescriptionKeyStore.getPrivateKeyEntry());
+            DataClient dataClient = OlasServiceFactory.getDataService(DemoPrescriptionKeyStore.getPrivateKeyEntry());
             attribute = dataClient.getAttributeValue(username, attributeName, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve prescription admin attribute");

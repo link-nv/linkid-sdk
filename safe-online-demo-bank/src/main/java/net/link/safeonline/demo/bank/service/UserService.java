@@ -9,7 +9,6 @@ package net.link.safeonline.demo.bank.service;
 import java.util.List;
 
 import javax.ejb.Local;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
@@ -78,7 +77,7 @@ public interface UserService extends BankService {
     /**
      * @return The {@link BankUserEntity} that has been linked to the OLAS account of the given OLAS id.
      */
-    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId, HttpServletRequest httpRequest);
+    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId);
 
     /**
      * Remove the OLAS userId from the given user entity so that it is no longer linked to an OLAS account.
@@ -88,7 +87,7 @@ public interface UserService extends BankService {
     /**
      * Update the given user's attributes from OLAS.
      */
-    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest httpRequest);
+    public BankUserEntity updateUser(BankUserEntity user);
 
     /**
      * @return All accounts that the given user owns.

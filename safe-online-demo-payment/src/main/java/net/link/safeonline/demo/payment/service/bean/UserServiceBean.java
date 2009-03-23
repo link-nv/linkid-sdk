@@ -9,7 +9,6 @@ package net.link.safeonline.demo.payment.service.bean;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStore;
@@ -65,13 +64,13 @@ public class UserServiceBean extends AbstractPaymentServiceBean implements UserS
     /**
      * {@inheritDoc}
      */
-    public PaymentUserEntity updateUser(PaymentUserEntity user, HttpServletRequest request) {
+    public PaymentUserEntity updateUser(PaymentUserEntity user) {
 
         try {
             PaymentUserEntity userEntity = attach(user);
 
             // OLAS username of the user.
-            AttributeClient attributeClient = OlasServiceFactory.getAttributeService(request, DemoPaymentKeyStore.getPrivateKeyEntry());
+            AttributeClient attributeClient = OlasServiceFactory.getAttributeService(DemoPaymentKeyStore.getPrivateKeyEntry());
             String name = attributeClient.getAttributeValue(userEntity.getOlasId(), DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setOlasName(name);
 

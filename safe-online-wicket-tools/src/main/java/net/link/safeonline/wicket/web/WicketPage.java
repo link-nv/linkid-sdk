@@ -6,23 +6,11 @@
  */
 package net.link.safeonline.wicket.web;
 
-import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
-import net.link.safeonline.keystore.AbstractKeyStore;
-import net.link.safeonline.sdk.ws.OlasServiceFactory;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
-import net.link.safeonline.wicket.tools.WicketUtil;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
 
@@ -42,8 +30,6 @@ import org.apache.wicket.markup.html.WebPage;
  * @author lhunath
  */
 public abstract class WicketPage extends WebPage {
-
-    private static final Log    LOG             = LogFactory.getLog(WicketPage.class);
 
     private FocusOnLoad         focusOnLoad;
 
@@ -134,40 +120,4 @@ public abstract class WicketPage extends WebPage {
             focusOnLoad.setPath(path);
         }
     }
-
-    private PrivateKeyEntry getPrivateKeyEntry(Class<? extends AbstractKeyStore> keyStore) {
-
-        try {
-            // Load the specified key store.
-            return keyStore.newInstance()._getPrivateKeyEntry();
-        } catch (InstantiationException e) {
-            LOG.error("Keystore class is not instantiatable", e);
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            LOG.error("Keystore class or default constructor is not accessible", e);
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    public NameIdentifierMappingClient getNameIdentifierMappingClient(Class<? extends AbstractKeyStore> keyStore) {
-
-        HttpServletRequest request = WicketUtil.toServletRequest(getRequest());
-        return OlasServiceFactory.getIdMappingService(request, getPrivateKeyEntry(keyStore));
-    }
-
-    public DataClient getDataClient(Class<? extends AbstractKeyStore> keyStore) {
-
-        HttpServletRequest request = WicketUtil.toServletRequest(getRequest());
-        return OlasServiceFactory.getDataService(request, getPrivateKeyEntry(keyStore));
-
-    }
-
-    public AttributeClient getAttributeClient(Class<? extends AbstractKeyStore> keyStore) {
-
-        HttpServletRequest request = WicketUtil.toServletRequest(getRequest());
-        return OlasServiceFactory.getAttributeService(request, getPrivateKeyEntry(keyStore));
-
-    }
-
 }

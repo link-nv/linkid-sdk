@@ -21,6 +21,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -48,23 +49,16 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("otpoversms_config");
-        String nodeName = properties.getString("olas.node.name");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        node = new Node(SafeOnlineConfig.nodeName(), SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePort(), SafeOnlineConfig.nodePortSecure(), nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureDevice() {
 
         ResourceBundle properties = ResourceBundle.getBundle("otpoversms_config");
-        String nodeName = properties.getString("olas.node.name");
         String otpOverSmsWebappName = properties.getString("otpoversms.webapp.name");
         String otpOverSmsAuthWSPath = properties.getString("otpoversms.auth.ws.webapp.name");
 
@@ -138,11 +132,11 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
                 "Mobile Lite", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, "nl", "GSM Lite", null));
 
-        devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
-                + otpOverSmsWebappName + "/auth", "/" + otpOverSmsAuthWSPath, "/" + otpOverSmsWebappName + "/device", "/"
-                + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
-                + otpOverSmsWebappName + "/device", otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType,
-                otpOverSmsDeviceDisableAttributeType));
+        devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS,
+                SafeOnlineConfig.nodeName(), "/" + otpOverSmsWebappName + "/auth", "/" + otpOverSmsAuthWSPath, "/" + otpOverSmsWebappName
+                        + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
+                        + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", otpOverSmsDeviceAttributeType,
+                otpOverSmsMobileAttributeType, otpOverSmsDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, "nl", "GSM Lite"));
         deviceDescriptions
                           .add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile Lite"));

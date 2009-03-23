@@ -11,9 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.lawyer.AbstractLawyerDataClient;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
@@ -87,29 +84,17 @@ public abstract class AbstractLawyerDataClientBean implements AbstractLawyerData
 
     protected DataClient getDataClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getDataService(request, DemoLawyerKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getDataService(DemoLawyerKeyStore.getPrivateKeyEntry());
     }
 
     protected AttributeClient getAttributeClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getAttributeService(request, DemoLawyerKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getAttributeService(DemoLawyerKeyStore.getPrivateKeyEntry());
     }
 
     protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getIdMappingService(request, DemoLawyerKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getIdMappingService(DemoLawyerKeyStore.getPrivateKeyEntry());
     }
 
     /**

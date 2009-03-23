@@ -11,9 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.ticket.AbstractTicketDataClient;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStore;
@@ -84,29 +81,17 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
 
     protected DataClient getDataClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getDataService(request, DemoTicketKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getDataService(DemoTicketKeyStore.getPrivateKeyEntry());
     }
 
     protected AttributeClient getAttributeClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getAttributeService(request, DemoTicketKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getAttributeService(DemoTicketKeyStore.getPrivateKeyEntry());
     }
 
     protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-
-        return OlasServiceFactory.getIdMappingService(request, DemoTicketKeyStore.getPrivateKeyEntry());
+        return OlasServiceFactory.getIdMappingService(DemoTicketKeyStore.getPrivateKeyEntry());
     }
 
     /**
