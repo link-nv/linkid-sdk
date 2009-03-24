@@ -11,6 +11,7 @@
 .classpath
 /*/eclipse
 /siemens/*/eclipse
+/demo/*/eclipse
 
 # IntelliJ
 *.iml
@@ -20,3 +21,4 @@
 # Compiled
 /*/target
 /siemens/*/target
+/demo/*/target
