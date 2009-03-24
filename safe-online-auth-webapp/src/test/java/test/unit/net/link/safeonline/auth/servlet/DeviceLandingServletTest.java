@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.auth.servlet.DeviceLandingServlet;
+import net.link.safeonline.auth.servlet.DeviceAuthnLandingServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceEntity;
@@ -97,9 +97,9 @@ public class DeviceLandingServletTest {
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
-        initialSessionAttributes.put(AuthenticationUtils.REQUEST_URL_INIT_PARAM, startUrl);
+        initialSessionAttributes.put(AuthenticationUtils.REQUEST_URL_SESSION_ATTRIBUTE, startUrl);
 
-        servletTestManager.setUp(DeviceLandingServlet.class, initParams, null, null, initialSessionAttributes);
+        servletTestManager.setUp(DeviceAuthnLandingServlet.class, initParams, null, null, initialSessionAttributes);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
 
@@ -218,8 +218,7 @@ public class DeviceLandingServletTest {
         String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
 
-        DeviceEntity resultDevice = (DeviceEntity) servletTestManager
-                                                                          .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
+        DeviceEntity resultDevice = (DeviceEntity) servletTestManager.getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
         assertEquals(device, resultDevice);
     }
 }

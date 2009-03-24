@@ -71,7 +71,7 @@
 				</executions>
 				<configuration>
 					<keystore>
-						${project.build.directory}/safe-online-node-keystore/safe-online-node-keystore.jks
+                        ${project.build.directory}/safe-online-node-keystore/safe-online-node-keystore.jks
 					</keystore>
 					<alias>safe-online</alias>
 					<storepass>secret</storepass>

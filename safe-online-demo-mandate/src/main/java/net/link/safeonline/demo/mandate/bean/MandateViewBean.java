@@ -67,7 +67,7 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements Ma
 
         log.debug("mandates factory for user: #0", mandateUser);
 
-        NameIdentifierMappingClient mappingClient = super.getMappingClient();
+        NameIdentifierMappingClient mappingClient = super.getNameIdentifierMappingClient();
         String mandateUserId;
         try {
             mandateUserId = mappingClient.getUserId(mandateUser);

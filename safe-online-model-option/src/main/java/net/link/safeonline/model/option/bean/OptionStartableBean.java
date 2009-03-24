@@ -21,6 +21,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.option.OptionConstants;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -86,14 +87,13 @@ public class OptionStartableBean extends AbstractInitBean {
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl", "Option", null));
 
         ResourceBundle properties = ResourceBundle.getBundle("option_config");
-        String nodeName = properties.getString("olas.node.name");
         String optionWebappName = properties.getString("option.webapp.name");
         String optionAuthWSPath = properties.getString("option.auth.ws.webapp.name");
 
-        devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-option/auth",
-                "/" + optionAuthWSPath, "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName
-                        + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", optionDeviceAttributeType,
-                optionImeiAttributeType, optionDeviceDisableAttributeType));
+        devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, SafeOnlineConfig.nodeName(),
+                "/olas-option/auth", "/" + optionAuthWSPath, "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", "/"
+                        + optionWebappName + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName + "/device",
+                optionDeviceAttributeType, optionImeiAttributeType, optionDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Option Data Card"));
 
@@ -102,16 +102,10 @@ public class OptionStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("option_config");
-        String nodeName = properties.getString("olas.node.name");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        node = new Node(SafeOnlineConfig.nodeName(), SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePort(), SafeOnlineConfig.nodePortSecure(), nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 

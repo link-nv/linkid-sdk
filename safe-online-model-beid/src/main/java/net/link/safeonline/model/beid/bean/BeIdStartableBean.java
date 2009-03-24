@@ -31,6 +31,7 @@ import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -128,14 +129,13 @@ public class BeIdStartableBean extends AbstractInitBean {
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, "nl", "BeID", null));
 
         ResourceBundle properties = ResourceBundle.getBundle("beid_config");
-        String nodeName = properties.getString("olas.node.name");
         String beidWebappName = properties.getString("beid.webapp.name");
         String beidAuthWSPath = properties.getString("beid.auth.ws.webapp.name");
 
-        devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName, "/" + beidWebappName
-                + "/_auth", "/" + beidAuthWSPath, "/" + beidWebappName + "/_device", "/" + beidWebappName + "/_device", null, "/"
-                + beidWebappName + "/_device", "/" + beidWebappName + "/_device", beidDeviceAttributeType, beidDeviceUserAttributeType,
-                beidDeviceDisableAttributeType));
+        devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, SafeOnlineConfig.nodeName(), "/"
+                + beidWebappName + "/_auth", "/" + beidAuthWSPath, "/" + beidWebappName + "/_device", "/" + beidWebappName + "/_device",
+                null, "/" + beidWebappName + "/_device", "/" + beidWebappName + "/_device", beidDeviceAttributeType,
+                beidDeviceUserAttributeType, beidDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Belgian eID"));
 
@@ -189,16 +189,10 @@ public class BeIdStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("beid_config");
-        String nodeName = properties.getString("olas.node.name");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        node = new Node(SafeOnlineConfig.nodeName(), SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePort(), SafeOnlineConfig.nodePortSecure(), nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 

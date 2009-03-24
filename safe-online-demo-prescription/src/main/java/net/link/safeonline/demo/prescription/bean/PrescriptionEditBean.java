@@ -47,10 +47,9 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean imp
     public String persist() {
 
         try {
-            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(userStatus.isAdmin()),
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(userStatus.isAdmin()), Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME, Boolean.valueOf(userStatus.isCareProvider()),
                     Boolean.class);
-            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
-                    Boolean.valueOf(userStatus.isCareProvider()), Boolean.class);
             createOrUpdateAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, Boolean.valueOf(userStatus.isPharmacist()),
                     Boolean.class);
         } catch (WSClientTransportException e) {

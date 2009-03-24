@@ -88,7 +88,7 @@ public class LayoutPage extends OlasApplicationPage {
         }
 
         if (CinemaSession.get().isUserSet()) {
-            CinemaSession.get().setUser(userService.updateUser(CinemaSession.get().getUser(), WicketUtil.toServletRequest(getRequest())));
+            CinemaSession.get().setUser(userService.updateUser(CinemaSession.get().getUser()));
         }
 
         userForm.setVisible(CinemaSession.get().isUserSet());
@@ -110,7 +110,7 @@ public class LayoutPage extends OlasApplicationPage {
         String olasId = WicketUtil.findOlasId(getRequest());
         CinemaUserEntity user = userService.getUser(olasId);
 
-        CinemaSession.get().setUser(userService.updateUser(user, WicketUtil.toServletRequest(getRequest())));
+        CinemaSession.get().setUser(userService.updateUser(user));
     }
 
 

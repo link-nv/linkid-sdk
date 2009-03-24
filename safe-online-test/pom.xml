@@ -56,6 +56,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-as
 			</artifactId>
+            <version>1.4-SNAPSHOT</version>
 			<type>pom</type>
 			<scope>test</scope>
 		</dependency>
@@ -63,6 +64,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-saml
 			</artifactId>
+            <version>1.4-SNAPSHOT</version>
 			<type>pom</type>
 			<scope>test</scope>
 		</dependency>
@@ -89,13 +91,6 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-option-device
-			</artifactId>
-			<version>1.4-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-client
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -117,12 +112,6 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-pkcs11-sc-beid
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-sms</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
@@ -203,13 +192,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-sms-clickatell-sdk
-			</artifactId>
-			<version>1.4-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket</artifactId>
 			<scope>test</scope>
@@ -222,11 +204,6 @@
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-ioc</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-contrib-javaee</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -255,6 +232,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-test
 			</artifactId>
+            <version>1.4-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.beid.servlet.JavaVersionServlet.JAVA_VERSION;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.In;
 
 import org.apache.commons.logging.Log;
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class NoPkcs11Servlet extends AbstractInjectionServlet {
+public class NoPkcs11Servlet extends AbstractNodeInjectionServlet {
 
     private static final Log  LOG              = LogFactory.getLog(NoPkcs11Servlet.class);
 

@@ -52,7 +52,7 @@ public class MandateAddBean extends AbstractMandateDataClientBean implements Man
 
         log.debug("add new mandate for user #0", mandateUser);
 
-        NameIdentifierMappingClient mappingClient = getMappingClient();
+        NameIdentifierMappingClient mappingClient = getNameIdentifierMappingClient();
         String mandateUserId;
         try {
             mandateUserId = mappingClient.getUserId(mandateUser);

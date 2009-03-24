@@ -71,7 +71,7 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements 
 
         log.debug("search for #0", name);
 
-        NameIdentifierMappingClient mappingClient = getMappingClient();
+        NameIdentifierMappingClient mappingClient = getNameIdentifierMappingClient();
         String userId;
         try {
             userId = mappingClient.getUserId(name);
@@ -118,7 +118,7 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements 
 
         log.debug("remove mandate : " + selectedMandate);
 
-        NameIdentifierMappingClient mappingClient = getMappingClient();
+        NameIdentifierMappingClient mappingClient = getNameIdentifierMappingClient();
         String userId;
         try {
             userId = mappingClient.getUserId(mandateUser);

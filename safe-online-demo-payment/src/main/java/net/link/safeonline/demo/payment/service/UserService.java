@@ -9,7 +9,6 @@ package net.link.safeonline.demo.payment.service;
 import java.util.List;
 
 import javax.ejb.Local;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 
@@ -49,5 +48,5 @@ public interface UserService extends PaymentService {
     /**
      * Update the given user's attributes from OLAS.
      */
-    public PaymentUserEntity updateUser(PaymentUserEntity user, HttpServletRequest loginRequest);
+    public PaymentUserEntity updateUser(PaymentUserEntity user);
 }

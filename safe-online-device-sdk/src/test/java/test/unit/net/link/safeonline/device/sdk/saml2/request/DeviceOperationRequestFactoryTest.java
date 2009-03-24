@@ -20,9 +20,9 @@ import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequest;
-import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequest;
+import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;

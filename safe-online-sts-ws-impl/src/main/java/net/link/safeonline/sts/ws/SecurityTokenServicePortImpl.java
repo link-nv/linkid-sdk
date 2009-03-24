@@ -16,8 +16,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 
-import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequest;
-import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequest;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.ws.util.ri.Injection;
 
 import org.apache.commons.logging.Log;

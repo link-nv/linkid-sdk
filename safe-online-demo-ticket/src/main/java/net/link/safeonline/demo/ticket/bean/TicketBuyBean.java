@@ -24,6 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.demo.ticket.TicketBuy;
@@ -34,6 +35,7 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -261,29 +263,29 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+        HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
 
         String user = getUsername();
         String recipient = "De Lijn";
         String message = "Ticket " + ticket.getId();
-        String target = "http://" + demoHostName + ":" + demoHostPort + "/demo-ticket/list.seam";
-        HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext.getResponse();
-        target = httpServletResponse.encodeRedirectURL(target);
+        String target = SafeOnlineConfig.absoluteApplicationUrlFromPath(request, "list.seam");
+        target = response.encodeRedirectURL(target);
 
-        String redirectUrl;
         try {
-            redirectUrl = "http://" + demoHostName + ":" + demoHostPort + "/demo-payment/entry.seam?user="
+            String redirectUrl = SafeOnlineConfig.absoluteApplicationUrlFromPath(request, "../entry.seam?user="
                     + URLEncoder.encode(user, "UTF-8") + "&recipient=" + URLEncoder.encode(recipient, "UTF-8") + "&amount="
                     + URLEncoder.encode(Double.toString(ticketPrice - juniorReduction), "UTF-8") + "&message="
-                    + URLEncoder.encode(message, "UTF-8") + "&target=" + URLEncoder.encode(target, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+                    + URLEncoder.encode(message, "UTF-8") + "&target=" + URLEncoder.encode(target, "UTF-8"));
+
+            externalContext.redirect(redirectUrl);
+        }
+
+        catch (UnsupportedEncodingException e) {
             String msg = "URL encoding error";
             log.debug(msg);
             facesMessages.add(msg);
             return;
-        }
-
-        try {
-            externalContext.redirect(redirectUrl);
         } catch (IOException e) {
             String msg = "IO redirect error";
             log.debug(msg);

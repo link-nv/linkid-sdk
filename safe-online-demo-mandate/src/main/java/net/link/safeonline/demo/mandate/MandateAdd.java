@@ -20,9 +20,4 @@ public interface MandateAdd extends AbstractMandateDataClient {
      * Actions.
      */
     String add();
-
-    /*
-     * Factory
-     */
-    Mandate newMandateFactory();
 }

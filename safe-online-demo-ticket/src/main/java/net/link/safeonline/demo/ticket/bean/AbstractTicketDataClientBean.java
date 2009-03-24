@@ -7,17 +7,10 @@
 
 package net.link.safeonline.demo.ticket.bean;
 
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
-
 import javax.annotation.PostConstruct;
-import javax.ejb.EJBException;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.ticket.AbstractTicketDataClient;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStore;
@@ -25,11 +18,11 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -47,80 +40,58 @@ import org.jboss.seam.log.Log;
 public abstract class AbstractTicketDataClientBean implements AbstractTicketDataClient {
 
     @Logger
-    private Log                       log;
+    private Log   log;
 
     @In(create = true)
-    FacesMessages                     facesMessages;
-
-    private transient DataClient      dataClient;
-
-    private transient AttributeClient attributeClient;
-
-    protected String                  wsLocation;
-
-    protected String                  demoHostName;
-    protected String                  demoHostPort;
-
-    private X509Certificate           certificate;
-
-    private PrivateKey                privateKey;
+    FacesMessages facesMessages;
 
 
+    /**
+     * {@inheritDoc}
+     */
     @PostConstruct
     public void postConstructCallback() {
 
-        log.debug("postConstruct");
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        demoHostName = externalContext.getInitParameter("DemoHostName");
-        demoHostPort = externalContext.getInitParameter("DemoHostPort");
-        wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStore.getPrivateKeyEntry();
-        certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        privateKey = privateKeyEntry.getPrivateKey();
-        postActivateCallback();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @PostActivate
     public void postActivateCallback() {
 
-        log.debug("postActivate");
-        dataClient = new DataClientImpl(wsLocation, certificate, privateKey);
-        attributeClient = new AttributeClientImpl(wsLocation, certificate, privateKey);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @PrePassivate
     public void prePassivateCallback() {
 
-        log.debug("prePassivate");
-        dataClient = null;
-        attributeClient = null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Remove
     @Destroy
     public void destroyCallback() {
 
-        log.debug("destroy");
-        dataClient = null;
-        attributeClient = null;
-        wsLocation = null;
-        certificate = null;
-        privateKey = null;
     }
 
     protected DataClient getDataClient() {
 
-        if (null == dataClient)
-            throw new EJBException("data client not yet initialized");
-        return dataClient;
+        return OlasServiceFactory.getDataService(DemoTicketKeyStore.getPrivateKeyEntry());
     }
 
     protected AttributeClient getAttributeClient() {
 
-        if (null == attributeClient)
-            throw new EJBException("attribute client not yet initialized");
-        return attributeClient;
+        return OlasServiceFactory.getAttributeService(DemoTicketKeyStore.getPrivateKeyEntry());
+    }
+
+    protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
+
+        return OlasServiceFactory.getIdMappingService(DemoTicketKeyStore.getPrivateKeyEntry());
     }
 
     /**

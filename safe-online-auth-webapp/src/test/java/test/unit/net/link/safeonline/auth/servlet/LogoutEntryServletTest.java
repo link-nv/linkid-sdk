@@ -78,8 +78,7 @@ public class LogoutEntryServletTest {
 
         logoutEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LogoutExitUrl", logoutExitUrl);
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put("LogoutExitPath", logoutExitUrl);
         initParams.put("CookiePath", cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);

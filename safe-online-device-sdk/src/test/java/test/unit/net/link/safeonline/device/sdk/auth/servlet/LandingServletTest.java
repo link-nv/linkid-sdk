@@ -31,7 +31,7 @@ import javax.jws.WebService;
 
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
-import net.link.safeonline.device.sdk.auth.servlet.LandingServlet;
+import net.link.safeonline.device.sdk.auth.servlet.AbstractDeviceAuthenticationLandingServlet;
 import net.link.safeonline.keystore.KeyStoreUtils;
 import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.saml.common.Challenge;
@@ -126,7 +126,7 @@ public class LandingServletTest {
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
         initParams.put("WsLocation", webServiceTestUtils.getLocation());
 
-        servletTestManager.setUp(TestLandingServlet.class, initParams, null, null, null);
+        servletTestManager.setUp(TestDeviceAuthenticationLandingServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
     }
@@ -201,7 +201,7 @@ public class LandingServletTest {
     }
 
 
-    public static class TestLandingServlet extends LandingServlet {
+    public static class TestDeviceAuthenticationLandingServlet extends AbstractDeviceAuthenticationLandingServlet {
 
         private static final long   serialVersionUID  = 1L;
         private static final String KEYSTORE_PASSWORD = "test-password";

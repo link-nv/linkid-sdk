@@ -6,25 +6,20 @@
 
 	<display-name>SafeOnline AXIS Web Service Runtime</display-name>
 
+    <!-- Application Event Listeners -->
 	<listener>
-		<listener-class>
-			org.apache.axis.transport.http.AxisHTTPSessionListener
-		</listener-class>
+		<listener-class>org.apache.axis.transport.http.AxisHTTPSessionListener</listener-class>
 	</listener>
 
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>AxisServlet</servlet-name>
-		<servlet-class>
-			org.apache.axis.transport.http.AxisServlet
-		</servlet-class>
+		<servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
 	<servlet>
 		<servlet-name>AdminServlet</servlet-name>
-		<servlet-class>
-			org.apache.axis.transport.http.AdminServlet
-		</servlet-class>
+		<servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -32,22 +27,20 @@
 		<servlet-name>AxisServlet</servlet-name>
 		<url-pattern>/servlet/AxisServlet</url-pattern>
 	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>AdminServlet</servlet-name>
 		<url-pattern>/servlet/AdminServlet</url-pattern>
 	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>AxisServlet</servlet-name>
 		<url-pattern>*.jws</url-pattern>
 	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>AxisServlet</servlet-name>
 		<url-pattern>/services/*</url-pattern>
 	</servlet-mapping>
 
+    <!-- Application Session Configuration -->
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>
