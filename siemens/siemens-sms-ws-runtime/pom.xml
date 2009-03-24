@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.lin-k.safe-online</groupId>
+		<artifactId>siemens</artifactId>
+		<version>1.4-SNAPSHOT</version>
+	</parent>
+
+	<name>Siemens SMS Web Service Runtime</name>
+	<description>
+		The JAX-WS Web Service Runtime for the Siemens SMS services.
+    </description>
+
+	<groupId>net.lin-k.safe-online.siemens</groupId>
+	<artifactId>siemens-sms-ws-runtime</artifactId>
+	<version>1.4-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<configuration>
+					<container>
+						<containerId>jboss4x</containerId>
+						<type>remote</type>
+					</container>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Dependency Groups -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
+		</dependency>
+
+		<!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online.siemens</groupId>
+			<artifactId>siemens-sms-ws-impl</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+
+	</dependencies>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
+</project>
