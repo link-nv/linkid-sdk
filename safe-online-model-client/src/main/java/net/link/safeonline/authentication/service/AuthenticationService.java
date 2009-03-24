@@ -34,7 +34,7 @@ import net.link.safeonline.authentication.exception.SignatureValidationException
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
-import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 

@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationManager;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.model.password.PasswordDeviceService;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class RemovalServlet extends AbstractInjectionServlet {
+public class RemovalServlet extends AbstractNodeInjectionServlet {
 
     private static final long     serialVersionUID = 1L;
 

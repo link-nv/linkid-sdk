@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.SupportedAuthenticationProtocol;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,17 +52,15 @@ import org.opensaml.xml.ConfigurationException;
  * Optional configuration parameters:
  * </p>
  * <ul>
- * <li><code>Saml2BrowserPostTemplate</code>: contains the path to the custom SAML2 Browser POST template resource.</li>
- * <li><code>Saml2Devices</code>: contains the list of allowed authentication devices, comma separated string</li>
- * <li><code>WsLocation</code>: contains the location of the OLAS web services. If present this handler will use the STS web service for
- * SAML authentication token validation.</li>
+ * <li>{@link #SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM}</li>
+ * <li>{@link #SAML2_DEVICES_CONFIG_PARAM}</li>
  * </ul>
  * 
  * <p>
  * Optional session configuration attributes:
  * </p>
  * <ul>
- * <li><code>Saml2Devices</code>: contains the <code>Set&lt;String&gt;</code> of allowed authentication devices.</li>
+ * <li>{@link #SAML2_DEVICES_ATTRIBUTE}</li>
  * </ul>
  * 
  * @author fcorneli
@@ -74,10 +73,20 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
     public static final String  SAML2_POST_BINDING_VM_RESOURCE           = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm";
 
+    /**
+     * Resource path to a custom velocity template to build the browser POST that contains the SAML2 ticket. <i>[optional, default: A
+     * built-in template]</i>
+     */
     public static final String  SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM = "Saml2BrowserPostTemplate";
 
+    /**
+     * A comma separated string of allowed authentication devices for this application. <i>[optional, default: All devices are allowed]</i>
+     */
     public static final String  SAML2_DEVICES_CONFIG_PARAM               = "Saml2Devices";
 
+    /**
+     * Session attribute that contains the <code>Set&lt;String&gt;</code> of allowed authentication devices.
+     */
     public static final String  SAML2_DEVICES_ATTRIBUTE                  = "Saml2Devices";
 
     private static final Log    LOG                                      = LogFactory
@@ -110,8 +119,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
     private Challenge<String>   challenge;
 
-    private String              wsLocation;
-
     private boolean             ssoEnabled;
 
 
@@ -127,9 +134,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         configParams = inConfigParams;
         challenge = new Challenge<String>();
         ssoEnabled = inSsoEnabled;
-        wsLocation = inConfigParams.get("WsLocation");
-        if (null == wsLocation)
-            throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
     }
 
     @SuppressWarnings("unchecked")
@@ -164,15 +168,14 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         throw new RuntimeException("WTF");
     }
 
-    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, Locale language,
+    public void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String targetUrl, Locale language,
                                        Integer color, Boolean minimal)
             throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
-        Set<String> devices = getDevices(httpRequest);
-        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName,
-                applicationFriendlyName, applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices,
-                ssoEnabled);
+        Set<String> devices = getDevices(request);
+        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, applicationFriendlyName,
+                applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices, ssoEnabled);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -183,18 +186,18 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        Locale olasLanguage = language == null? httpRequest.getLocale(): language;
-        RequestUtil.sendRequest(authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal, templateResourceName,
-                httpResponse, minimal == null || !minimal);
+        Locale olasLanguage = language == null? request.getLocale(): language;
+        RequestUtil.sendRequest(authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal, templateResourceName, response,
+                minimal == null || !minimal);
     }
 
-    public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
         DateTime now = new DateTime();
 
-        Response samlResponse = ResponseUtil.validateAuthnResponse(now, httpRequest, challenge.getValue(), applicationName,
-                wsLocation, applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+        Response samlResponse = ResponseUtil.validateAuthnResponse(now, request, challenge.getValue(), applicationName,
+                SafeOnlineConfig.wsbase(), applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlResponse)
             return null;
 
@@ -235,10 +238,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     /**
      * {@inheritDoc}
      */
-    public boolean finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    public boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, challenge.getValue(), wsLocation,
+        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(request, challenge.getValue(), SafeOnlineConfig.wsbase(),
                 applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
 
         if (null == samlLogoutResponse)
@@ -256,7 +259,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, wsLocation, applicationCertificate,
+        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, SafeOnlineConfig.wsbase(), applicationCertificate,
                 applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlLogoutRequest)
             return null;
@@ -272,8 +275,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String samlResponseToken = LogoutResponseFactory.createLogoutResponse(challenge.getValue(), applicationName,
-                applicationKeyPair, authnServiceUrl);
+        String samlResponseToken = LogoutResponseFactory.createLogoutResponse(challenge.getValue(), applicationName, applicationKeyPair,
+                authnServiceUrl);
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
 

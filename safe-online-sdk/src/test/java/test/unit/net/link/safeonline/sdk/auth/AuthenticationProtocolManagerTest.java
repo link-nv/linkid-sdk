@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,7 +33,9 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -82,14 +83,12 @@ public class AuthenticationProtocolManagerTest {
         replay(mockObjects);
 
         // operate
-        Map<String, String> configParams = Collections.singletonMap("WsLocation", "https://ws.location");
         AuthenticationProtocolHandler saml2AuthenticationProtocolHandler = AuthenticationProtocolManager
                                                                                                         .createAuthenticationProtocolHandler(
                                                                                                                 AuthenticationProtocol.SAML2_BROWSER_POST,
                                                                                                                 "http://authn.service",
                                                                                                                 "application-id", null,
-                                                                                                                null, null, false,
-                                                                                                                configParams,
+                                                                                                                null, null, false, null,
                                                                                                                 mockHttpServletRequest);
 
         // verify
@@ -133,13 +132,16 @@ public class AuthenticationProtocolManagerTest {
         Map<String, String> initParams = new HashMap<String, String>();
         String landingPage = "login";
         initParams.put(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM, "login");
+        initParams.put(SafeOnlineConfig.WEBAPP_PATH_CONTEXT_PARAM, "/");
         servletTestManager.setUp(TestServlet.class, initParams);
         servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockProtocolHandler);
+        SafeOnlineTestConfig.loadTest(servletTestManager);
+
         try {
             String location = servletTestManager.getServletLocation();
             mockProtocolHandler.initiateAuthentication((HttpServletRequest) EasyMock.anyObject(),
-                    (HttpServletResponse) EasyMock.anyObject(), EasyMock.eq(landingPage), (Locale) EasyMock.anyObject(),
-                    (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject());
+                    (HttpServletResponse) EasyMock.anyObject(), EasyMock.eq(SafeOnlineConfig.applandingbase() + "/" + landingPage),
+                    (Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject());
             replay(mockProtocolHandler);
             LOG.debug("servlet location: " + location);
             HttpClient httpClient = new HttpClient();

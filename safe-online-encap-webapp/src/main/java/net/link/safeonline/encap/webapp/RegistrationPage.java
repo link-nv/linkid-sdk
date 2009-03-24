@@ -21,6 +21,7 @@ import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -193,7 +194,8 @@ public class RegistrationPage extends TemplatePage {
                 throws SubjectNotFoundException, PermissionDeniedException {
 
             try {
-                return getNameIdentifierMappingClient(SafeOnlineNodeKeyStore.class).getUserId(mobile.getObject().getNumber());
+                return OlasServiceFactory.getIdMappingService(SafeOnlineNodeKeyStore.getPrivateKeyEntry()).getUserId(
+                        mobile.getObject().getNumber());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + mobile);
                 throw new SubjectNotFoundException();

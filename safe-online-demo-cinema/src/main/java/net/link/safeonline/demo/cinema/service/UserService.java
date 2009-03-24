@@ -7,7 +7,6 @@
 package net.link.safeonline.demo.cinema.service;
 
 import javax.ejb.Local;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 
@@ -42,5 +41,5 @@ public interface UserService extends CinemaService {
     /**
      * Update the given user's attributes from OLAS.
      */
-    public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest loginRequest);
+    public CinemaUserEntity updateUser(CinemaUserEntity user);
 }

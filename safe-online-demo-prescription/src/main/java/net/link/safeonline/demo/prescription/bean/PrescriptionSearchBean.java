@@ -57,7 +57,7 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean i
         userStatus = new UserStatus();
 
         String userId;
-        NameIdentifierMappingClient mappingClient = super.getMappingClient();
+        NameIdentifierMappingClient mappingClient = super.getNameIdentifierMappingClient();
         try {
             userId = mappingClient.getUserId(name);
         } catch (SubjectNotFoundException e) {

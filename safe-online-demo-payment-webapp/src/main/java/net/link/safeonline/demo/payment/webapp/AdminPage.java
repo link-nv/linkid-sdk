@@ -7,6 +7,7 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.wicket.web.ForceLogout;
@@ -179,10 +180,13 @@ public class AdminPage extends LayoutPage {
 
                 // Submit was a search query.
                 try {
-                    String userId = getNameIdentifierMappingClient(DemoPaymentKeyStore.class).getUserId(name.getObject());
+                    String userId = OlasServiceFactory.getIdMappingService(DemoPaymentKeyStore.getPrivateKeyEntry()).getUserId(
+                            name.getObject());
 
-                    Attribute<Boolean> attributeValue = getDataClient(DemoPaymentKeyStore.class).getAttributeValue(userId,
-                            DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
+                    Attribute<Boolean> attributeValue = OlasServiceFactory.getDataService(DemoPaymentKeyStore.getPrivateKeyEntry())
+                                                                          .getAttributeValue(userId,
+                                                                                  DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+                                                                                  Boolean.class);
                     if (attributeValue == null) {
                         junior.setObject(false);
                         createJunior = true;
@@ -209,14 +213,15 @@ public class AdminPage extends LayoutPage {
 
                 if (juniorField.isVisible()) {
                     try {
-                        String userId = getNameIdentifierMappingClient(DemoPaymentKeyStore.class).getUserId(name.getObject());
+                        String userId = OlasServiceFactory.getIdMappingService(DemoPaymentKeyStore.getPrivateKeyEntry()).getUserId(
+                                name.getObject());
 
                         if (createJunior) {
-                            getDataClient(DemoPaymentKeyStore.class).createAttribute(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-                                    junior.getObject());
+                            OlasServiceFactory.getDataService(DemoPaymentKeyStore.getPrivateKeyEntry()).createAttribute(userId,
+                                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
                         } else {
-                            getDataClient(DemoPaymentKeyStore.class).setAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-                                    junior.getObject());
+                            OlasServiceFactory.getDataService(DemoPaymentKeyStore.getPrivateKeyEntry()).setAttributeValue(userId,
+                                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
                         }
                     }
 

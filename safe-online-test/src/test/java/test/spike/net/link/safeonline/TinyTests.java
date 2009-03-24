@@ -15,13 +15,8 @@
  */
 package test.spike.net.link.safeonline;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.util.tester.FormTester;
-import org.apache.wicket.util.tester.WicketTester;
+import java.net.URI;
+
 import org.junit.Test;
 
 
@@ -38,56 +33,14 @@ import org.junit.Test;
  */
 public class TinyTests {
 
-    public static class MyApp extends WebApplication {
-
-        @Override
-        public Class<? extends Page> getHomePage() {
-
-            return MyPage.class;
-        }
-    }
-
-    public static class MyPage extends WebPage {
-
-        public MyPage() {
-
-            add(new MyForm("form"));
-        }
-
-
-        class MyForm extends Form<String> {
-
-            private static final long serialVersionUID = 1L;
-
-
-            public MyForm(String id) {
-
-                super(id);
-
-                TextField<String> f = new TextField<String>("field");
-                f.setRequired(true);
-                add(f);
-            }
-        }
-    }
-
-
     @Test
-    public void wicketTest() {
+    public void testURI() {
 
-        WicketTester wicket = new WicketTester(new MyApp());
-        wicket.processRequestCycle();
+        URI base = URI.create("http://server:1/path");
+        URI request = URI.create("http://server:2/path/");
+        URI redirect = URI.create("other.html");
 
-        FormTester form = wicket.newFormTester("form");
-        form.submit();
-
-        wicket.assertErrorMessages(new String[] { "Field 'field' is required." });
-
-        form = wicket.newFormTester("form");
-        form.setValue("field", "foo");
-        form.submit();
-
-        wicket.assertNoErrorMessage();
+        System.err.println(request.resolve(redirect));
     }
 
     void print(Object[] array) {

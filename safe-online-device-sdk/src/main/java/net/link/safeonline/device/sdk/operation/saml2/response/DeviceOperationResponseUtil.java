@@ -14,17 +14,8 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-<<<<<<< HEAD:safe-online-device-sdk/src/main/java/net/link/safeonline/device/sdk/saml2/response/DeviceOperationResponseUtil.java
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
-=======
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
-import net.link.safeonline.saml.common.DomUtils;
-import net.link.safeonline.sdk.auth.saml2.SamlResponseSecurityPolicyResolver;
-import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
-import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
->>>>>>> d94bd455fb9758863f7be2ed75b612830d101230:safe-online-device-sdk/src/main/java/net/link/safeonline/device/sdk/operation/saml2/response/DeviceOperationResponseUtil.java
+import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.joda.time.DateTime;

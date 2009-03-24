@@ -21,6 +21,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.encap.EncapConstants;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,14 +74,13 @@ public class EncapStartableBean extends AbstractInitBean {
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap", null));
 
         ResourceBundle properties = ResourceBundle.getBundle("encap_config");
-        String nodeName = properties.getString("olas.node.name");
         String encapWebappName = properties.getString("encap.webapp.name");
         String encapAuthWSPath = properties.getString("encap.auth.ws.webapp.name");
 
-        devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-encap/auth", "/"
-                + encapAuthWSPath, "/" + encapWebappName + "/device", "/" + encapWebappName + "/device", null, "/" + encapWebappName
-                + "/device", "/" + encapWebappName + "/device", encapDeviceAttributeType, encapMobileAttributeType,
-                encapDeviceDisableAttributeType));
+        devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, SafeOnlineConfig.nodeName(),
+                "/olas-encap/auth", "/" + encapAuthWSPath, "/" + encapWebappName + "/device", "/" + encapWebappName + "/device", null, "/"
+                        + encapWebappName + "/device", "/" + encapWebappName + "/device", encapDeviceAttributeType,
+                encapMobileAttributeType, encapDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
         deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile"));
 
@@ -89,16 +89,10 @@ public class EncapStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("encap_config");
-        String nodeName = properties.getString("olas.node.name");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        node = new Node(SafeOnlineConfig.nodeName(), SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePort(), SafeOnlineConfig.nodePortSecure(), nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 

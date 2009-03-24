@@ -621,9 +621,9 @@ public static class MyCompounded {
 		net.link.safeonline.sdk.auth.filter.AuthnRequestFilter
 	</filter-class>
 	<init-param>
-		<param-name>AuthenticationServiceUrl</param-name>
+		<param-name>AuthenticationServicePath</param-name>
 		<param-value>
-			https://olas.lin-k.net/olas-auth/
+            /entry 
 		</param-value>
 	</init-param>
 	<init-param>
@@ -667,7 +667,7 @@ public static class MyCompounded {
 </filter-mapping>
 ]]>
 				</programlisting>
-				It is important to notice here that the
+				It is important to note that the
 				<code>AuthnResponseFilter</code>
 				should come before the
 				<code>AuthnRequestFilter</code>
@@ -705,23 +705,21 @@ public static class MyCompounded {
 		<section>
 			<title>Landing Page</title>
 			<para>
-				The advantage of using a landing page to go back from the
-				authentication web application to your web application is that in
-				that way you can prevent a browser security warning when your web
-				application in not running over SSL. For example, the warning that
+                If your web application doesn't run in SSL, the user will receive
+                a browser warning when he returns from OLAS that warns him about
+                the fact that OLAS, running on SSL, is telling the user to post
+                data to the web application which is not running on SSL.
+   				For example, the warning that
 				Firefox gives looks like:
 				<quote> Although this page is encrypted, the information you have
 					entered is to be sent over an unencrypted connection and could
 					easily be read by a third party. Are you sure you want to continue
 					sending this information?</quote>
-				This can be prevented by using a landing page where the
-				authentication web application can land on with its authentication
-				response token. The idea is to have the local landing page over SSL.
-				That way the browser can do a smooth and secure transfer of the
-				authentication response token from the authentication web
-				application back to your web application. After successful login the
-				landing page will redirect to the original target page, which can
-				run over a non-SSL connection.
+             
+                To avoid this warning and improve the security of the SAML response
+                ticket you should use a landing page.  The landing page is a page
+                in your application that uses SSL and redirects to your non-SSL'ed
+                application after having handled the authentication token.
 			</para>
 			<para>
 				The OLAS SDK comes with a landing page component implemented as a
@@ -739,22 +737,11 @@ public static class MyCompounded {
 				.
 			</para>
 			<para>
-				When you are setting up a configuration behind a proxy, you will
-				need to specify an extra initialization parameter
-				<code>ServletEndpointUrl</code>
-				for the
-				<code>LoginServlet</code>
-				. If not, the validation of the incoming SAML response will fail as
-				the receiving endpoint ( behind the proxy ) will not match the
-				endpoint specified in the SAML response. Below you find a
-				configuration where this optional parameter is specified.
-			</para>
-			<para>
 				<programlisting><![CDATA[
 	<context-param>
 		<param-name>LandingPage</param-name>
 		<param-value>
-			https://your.application.domain/your-application-context/login
+            /login
 		</param-value>
 	</context-param>
 	
@@ -763,12 +750,6 @@ public static class MyCompounded {
 		<servlet-class>
 			net.link.safeonline.sdk.auth.servlet.LoginServlet
 		</servlet-class>
-		<init-param>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				https://device.webapp/device/login 
-			</param-value>
-		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
@@ -884,16 +865,16 @@ public static class MyCompounded {
 				requests to. Below you will find an example of such a configuration.
 				<programlisting><![CDATA[
 	<context-param>
-		<description>URL used to initiate a single logout process.</description>
-		<param-name>LogoutServiceUrl</param-name>
-		<param-value>https://olas.lin-k.net/olas-auth/logoutentry</param-value>
+		<description>Path used to initiate a single logout process.</description>
+		<param-name>LogoutServicePath</param-name>
+        <param-value>/logoutentry</param-value>
 	</context-param>
 	<context-param>
-		<description>URL used to finalize a logout request sent by the
+		<description>Path used to finalize a logout request sent by the
 			authentication webapp following a single logout process by another
 			application.</description>
-		<param-name>LogoutExitServiceUrl</param-name>
-		<param-value>https://olas.lin-k.net/olas-auth/logoutexit</param-value>
+		<param-name>LogoutExitServicePath</param-name>
+		<param-value>/logoutexit</param-value>
 	</context-param>
 		<context-param>
 		<param-name>ApplicationName</param-name>
@@ -920,47 +901,32 @@ public static class MyCompounded {
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
-		<param-name>TargetBaseUrl</param-name>
-		<param-value>
-			http://your.application.domain/your-application-context/
-		</param-value>
-	</context-param>
-	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
-		<param-value>https://your.application.domain/your-application-context/logout</param-value>
+        <param-value>/logout</param-value>
 	</context-param>
 	<servlet>
 		<servlet-name>LogoutServlet</servlet-name>
 		<servlet-class> net.link.safeonline.sdk.auth.servlet.LogoutServlet 
 		</servlet-class>
 		<init-param>
-			<param-name>LogoutUrl</param-name>
+			<param-name>LogoutPath</param-name>
 			<param-value>
-				https://your.application.domain/your-application-context/your-application-logout
+				/your-application-logout
 			</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml response.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				https://your.application.domain/your-application-context/logout
-			</param-value>
-		</init-param>
 	</servlet>
 	<servlet>
 		<servlet-name>DemoApplicationLogoutServlet</servlet-name>
 		<servlet-class>your.application.packahe.servlet.LogoutServlet</servlet-class>
 		<init-param>
-			<param-name>LogoutExitUrl</param-name>
+			<param-name>LogoutExitPath</param-name>
 			<param-value>
-				https://your.application.domain/your-application-context/logout
+				/logout
 			</param-value>
 		</init-param>
 	</servlet>

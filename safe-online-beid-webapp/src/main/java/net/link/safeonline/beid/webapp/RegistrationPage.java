@@ -13,7 +13,7 @@ import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 import net.link.safeonline.wicket.tools.WicketUtil;
 

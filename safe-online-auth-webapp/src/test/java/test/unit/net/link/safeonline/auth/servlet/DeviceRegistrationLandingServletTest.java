@@ -64,15 +64,13 @@ public class DeviceRegistrationLandingServletTest {
 
     private String                location;
 
-    private String                deviceErrorUrl     = "device-error";
+    private String                deviceErrorPath    = "device-error";
 
-    private String                registerDeviceUrl  = "register-device";
+    private String                registerDevicePath = "register-device";
 
-    private String                newUserDeviceUrl   = "new-user-device";
+    private String                newUserDevicePath  = "new-user-device";
 
-    private String                loginUrl           = "login";
-
-    private String                servletEndpointUrl = "http://test.auth/servlet";
+    private String                loginPath          = "login";
 
     String                        userId             = UUID.randomUUID().toString();
 
@@ -100,11 +98,10 @@ public class DeviceRegistrationLandingServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("RegisterDeviceUrl", registerDeviceUrl);
-        initParams.put("NewUserDeviceUrl", newUserDeviceUrl);
-        initParams.put("LoginUrl", loginUrl);
-        initParams.put("DeviceErrorUrl", deviceErrorUrl);
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put(DeviceRegistrationLandingServlet.REGISTER_DEVICE_PATH, registerDevicePath);
+        initParams.put(DeviceRegistrationLandingServlet.NEW_USER_DEVICE_PATH, newUserDevicePath);
+        initParams.put(DeviceRegistrationLandingServlet.LOGIN_PATH, loginPath);
+        initParams.put(DeviceRegistrationLandingServlet.DEVICE_ERROR_PATH, deviceErrorPath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
@@ -173,7 +170,7 @@ public class DeviceRegistrationLandingServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(newUserDeviceUrl));
+        assertTrue(resultLocation.endsWith(newUserDevicePath));
     }
 
     @Test
@@ -208,7 +205,7 @@ public class DeviceRegistrationLandingServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(registerDeviceUrl));
+        assertTrue(resultLocation.endsWith(registerDevicePath));
     }
 
     @Test
@@ -248,7 +245,7 @@ public class DeviceRegistrationLandingServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(loginUrl));
+        assertTrue(resultLocation.endsWith(loginPath));
         String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
 

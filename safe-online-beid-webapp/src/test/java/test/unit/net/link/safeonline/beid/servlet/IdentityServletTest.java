@@ -21,10 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.beid.servlet.IdentityServlet;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationManager;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -77,6 +78,8 @@ public class IdentityServletTest {
         servletTestManager.setSessionAttribute(DeviceOperationManager.DEVICE_OPERATION_SESSION_ATTRIBUTE,
                 DeviceOperationType.REGISTER.name());
         location = servletTestManager.getServletLocation();
+
+        SafeOnlineTestConfig.loadTest(servletTestManager);
 
         httpClient = new HttpClient();
     }

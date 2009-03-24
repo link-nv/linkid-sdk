@@ -56,7 +56,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
                 BankUserEntity user = BankSession.get().getUser();
                 String olasId = WicketUtil.findOlasId(getRequest());
 
-                BankSession.get().setUser(userService.linkOLASUser(user, olasId, WicketUtil.toServletRequest(getRequest())));
+                BankSession.get().setUser(userService.linkOLASUser(user, olasId));
             }
 
             catch (EJBException e) {
@@ -89,7 +89,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
         String olasId = WicketUtil.findOlasId(getRequest());
         BankUserEntity user = userService.getOLASUser(olasId);
 
-        BankSession.get().setUser(userService.updateUser(user, WicketUtil.toServletRequest(getRequest())));
+        BankSession.get().setUser(userService.updateUser(user));
     }
 
     /**

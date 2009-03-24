@@ -75,50 +75,18 @@ public class DeviceAuthnLandingServlet extends AbstractNodeInjectionServlet {
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-<<<<<<< HEAD:safe-online-auth-webapp/src/main/java/net/link/safeonline/auth/servlet/DeviceLandingServlet.java
-        /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
-         * checking the destination field.
-         */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
-
         /**
          * Authenticate
          */
         String userId;
         try {
-            userId = ProtocolHandlerManager.handleDeviceAuthnResponse(requestWrapper);
+            userId = ProtocolHandlerManager.handleDeviceAuthnResponse(request);
         } catch (ProtocolException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+            redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
                     e.getMessage()));
-=======
-        /*
-         * Authenticate
-         */
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
-        String userId;
-        try {
-            userId = authenticationService.authenticate(request);
-        } catch (NodeNotFoundException e) {
-            redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorProtocolHandlerFinalization"));
-            return;
-        } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorDeviceRegistrationNotFound"));
-            return;
-        } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorProtocolHandlerFinalization"));
-            return;
-        } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorDeviceRegistrationNotFound"));
->>>>>>> d94bd455fb9758863f7be2ed75b612830d101230:safe-online-auth-webapp/src/main/java/net/link/safeonline/auth/servlet/DeviceAuthnLandingServlet.java
-            return;
         }
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(requestWrapper.getSession());
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
         if (null == userId && authenticationService.getAuthenticationState().equals(AuthenticationState.REDIRECTED)) {
             /*
              * Authentication failed but user requested to try another device
