@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
-import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.auth.protocol.ProtocolException;
+import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -78,27 +76,19 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
          */
         HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(requestWrapper.getSession());
+        /**
+         * Register
+         */
         String userId;
         try {
-            userId = authenticationService.register(requestWrapper);
-        } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
-            return;
-        } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
-            return;
-        } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
-            return;
-        } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            userId = ProtocolHandlerManager.handleDeviceRegistrationResponse(requestWrapper);
+        } catch (ProtocolException e) {
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    e.getMessage()));
             return;
         }
+
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(requestWrapper.getSession());
         if (null == userId) {
             /*
              * Registration failed, redirect to register-device or new-user-device

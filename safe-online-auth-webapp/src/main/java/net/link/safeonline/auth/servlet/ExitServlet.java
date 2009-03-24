@@ -75,7 +75,7 @@ public class ExitServlet extends AbstractInjectionServlet {
         }
 
         try {
-            ProtocolHandlerManager.authnResponse(session, response);
+            ProtocolHandlerManager.sendAuthnResponse(session, response);
         } catch (ProtocolException e) {
             LOG.debug("protocol error: " + e.getMessage());
             redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(

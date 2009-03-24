@@ -10,28 +10,28 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.opensaml.saml2.core.LogoutRequest;
+import org.opensaml.saml2.core.LogoutResponse;
 
 
 /**
  * Logout service interface. This service allows the authentication web application to logout users. The bean behind this interface is
  * stateful. This means that a certain method invocation pattern must be respected. First the method {@link #initialize(LogoutRequest)} must
  * be invoked. Then for each application being logged out, the methods {@link #getLogoutRequest(ApplicationEntity)} followed by
- * {@link #handleLogoutResponse(HttpServletRequest)} must be invoked. Finally {@link #finalizeLogout(boolean)} has to be invoked. In case
- * the logout process needs to be aborted one should invoke {@link #abort()} .
+ * {@link #handleLogoutResponse(LogoutResponse)} must be invoked. Finally {@link #finalizeLogout(boolean)} has to be invoked. In case the
+ * logout process needs to be aborted one should invoke {@link #abort()} .
  * 
  * @author wvdhaute
  */
@@ -66,12 +66,11 @@ public interface LogoutService extends SafeOnlineService {
      * @param samlLogoutRequest
      * @throws TrustDomainNotFoundException
      * @throws ApplicationNotFoundException
-     * @throws AuthenticationInitializationException
      * @throws SubjectNotFoundException
+     * @throws SignatureValidationException
      */
     LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
-            SubjectNotFoundException;
+            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException;
 
     /**
      * Returns the next Application to logout. Returns <code>null</code> if none.
@@ -98,11 +97,16 @@ public interface LogoutService extends SafeOnlineService {
      * 
      * Calling this method is only valid after a call to {@link #getLogoutRequest(ApplicationEntity)}.
      * 
+     * @param logoutResponse
      * @throws ServletException
      * @throws NodeNotFoundException
+     * @throws ApplicationNotFoundException
+     * @throws TrustDomainNotFoundException
+     * @throws SignatureValidationException
      */
-    String handleLogoutResponse(HttpServletRequest httpRequest)
-            throws ServletException, NodeNotFoundException;
+    String handleLogoutResponse(LogoutResponse logoutResponse)
+            throws ServletException, NodeNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SignatureValidationException;
 
     /**
      * Finalizes a logout process by constructing an encoded SAML logout response to be sent to the application.

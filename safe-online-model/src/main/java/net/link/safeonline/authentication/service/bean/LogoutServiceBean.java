@@ -32,7 +32,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
@@ -40,9 +39,9 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
@@ -65,8 +64,6 @@ import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
-import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
-import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NotNull;
@@ -86,6 +83,7 @@ import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.xml.security.x509.BasicX509Credential;
+import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.validation.ValidationException;
 
@@ -416,13 +414,11 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
     /**
      * {@inheritDoc}
-     * 
      */
-    public LogoutProtocolContext initialize(@NotNull LogoutRequest samlLogoutRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
-            SubjectNotFoundException {
+    public LogoutProtocolContext initialize(@NotNull LogoutRequest logoutRequest)
+            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException {
 
-        Issuer issuer = samlLogoutRequest.getIssuer();
+        Issuer issuer = logoutRequest.getIssuer();
         String issuerName = issuer.getValue();
         LOG.debug("issuer: " + issuerName);
         ApplicationEntity application = applicationDAO.getApplication(issuerName);
@@ -431,18 +427,18 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
         boolean validSignature = false;
         for (X509Certificate certificate : certificates) {
-            validSignature = validateSignature(certificate, samlLogoutRequest);
+            validSignature = validateSignature(certificate, logoutRequest.getSignature());
             if (validSignature) {
                 break;
             }
         }
         if (!validSignature)
-            throw new AuthenticationInitializationException("signature validation error");
+            throw new SignatureValidationException("signature validation error");
 
-        String samlAuthnRequestId = samlLogoutRequest.getID();
+        String samlAuthnRequestId = logoutRequest.getID();
         LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
 
-        String subjectName = samlLogoutRequest.getNameID().getValue();
+        String subjectName = logoutRequest.getNameID().getValue();
         LOG.debug("subject name: " + subjectName);
         String userId = userIdMappingService.findUserId(application.getId(), subjectName);
         if (null == userId)
@@ -462,7 +458,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
     }
 
-    private boolean validateSignature(X509Certificate certificate, LogoutRequest samlLogoutRequest)
+    private boolean validateSignature(X509Certificate certificate, Signature signature)
             throws TrustDomainNotFoundException {
 
         PkiResult certificateValid = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
@@ -475,7 +471,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         basicX509Credential.setPublicKey(certificate.getPublicKey());
         SignatureValidator signatureValidator = new SignatureValidator(basicX509Credential);
         try {
-            signatureValidator.validate(samlLogoutRequest.getSignature());
+            signatureValidator.validate(signature);
         } catch (ValidationException e) {
             return false;
         }
@@ -514,19 +510,32 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
     /**
      * {@inheritDoc}
      */
-    public String handleLogoutResponse(@NotNull HttpServletRequest httpRequest)
-            throws ServletException, NodeNotFoundException {
+    public String handleLogoutResponse(@NotNull LogoutResponse logoutResponse)
+            throws ServletException, NodeNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SignatureValidationException {
 
         LOG.debug("handle logout response");
         if (logoutState != LOGGING_OUT)
             throw new IllegalStateException("call getLogoutRequest first");
 
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
+        Issuer issuer = logoutResponse.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer: " + issuerName);
 
-        LogoutResponse logoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, expectedLogoutChallenge.getValue(),
-                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.APPLICATION);
-        if (null == logoutResponse)
-            return null;
+        List<X509Certificate> certificates = applicationAuthenticationService.getCertificates(issuerName);
+
+        boolean validSignature = false;
+        for (X509Certificate certificate : certificates) {
+            validSignature = validateSignature(certificate, logoutResponse.getSignature());
+            if (validSignature) {
+                break;
+            }
+        }
+        if (!validSignature)
+            throw new SignatureValidationException("signature validation error");
+
+        if (!logoutResponse.getInResponseTo().equals(expectedLogoutChallenge.getValue()))
+            throw new ServletException("SAML logout response is not a response belonging to the original request.");
 
         if (!logoutResponse.getStatus().getStatusCode().getValue().equals(StatusCode.SUCCESS_URI)) {
             /*

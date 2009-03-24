@@ -167,4 +167,6 @@ public class LogoutServiceBeanTest {
         LogoutRequest logoutRequest = (LogoutRequest) unmarshaller.unmarshall(doc.getDocumentElement());
         return logoutRequest;
     }
+
+    // XXX: TODO: unit test handle logout response ...
 }

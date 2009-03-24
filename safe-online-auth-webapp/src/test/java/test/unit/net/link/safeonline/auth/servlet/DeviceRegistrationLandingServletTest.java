@@ -14,30 +14,38 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseFactory;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.utils.Base64;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -98,6 +106,7 @@ public class DeviceRegistrationLandingServletTest {
         initParams.put("DeviceErrorUrl", deviceErrorUrl);
         initParams.put("ServletEndpointUrl", servletEndpointUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+        initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
         initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, userId);
 
@@ -137,10 +146,18 @@ public class DeviceRegistrationLandingServletTest {
             throws Exception {
 
         // setup
+        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        String applicationName = "test-application-id";
+        String deviceOperationResponse = DeviceOperationResponseFactory.createDeviceOperationResponse("test-inresponse-to",
+                DeviceOperationType.NEW_ACCOUNT_REGISTER, applicationName, UUID.randomUUID().toString(), "test-device", applicationKeyPair,
+                0, servletEndpointUrl);
+        String encodedDeviceOperationResponse = Base64.encode(deviceOperationResponse.getBytes());
         PostMethod postMethod = new PostMethod(location);
+        NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedDeviceOperationResponse) };
+        postMethod.setRequestBody(data);
 
         // expectations
-        expect(mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
+        expect(mockAuthenticationService.register((DeviceOperationResponse) EasyMock.anyObject())).andStubReturn(null);
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
         expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
 
@@ -164,10 +181,18 @@ public class DeviceRegistrationLandingServletTest {
             throws Exception {
 
         // setup
+        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        String applicationName = "test-application-id";
+        String deviceOperationResponse = DeviceOperationResponseFactory.createDeviceOperationResponse("test-inresponse-to",
+                DeviceOperationType.NEW_ACCOUNT_REGISTER, applicationName, UUID.randomUUID().toString(), "test-device", applicationKeyPair,
+                0, servletEndpointUrl);
+        String encodedDeviceOperationResponse = Base64.encode(deviceOperationResponse.getBytes());
         PostMethod postMethod = new PostMethod(location);
+        NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedDeviceOperationResponse) };
+        postMethod.setRequestBody(data);
 
         // expectations
-        expect(mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
+        expect(mockAuthenticationService.register((DeviceOperationResponse) EasyMock.anyObject())).andStubReturn(null);
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.USER_AUTHENTICATED);
         expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
 
@@ -193,11 +218,19 @@ public class DeviceRegistrationLandingServletTest {
         // setup
         DeviceEntity device = new DeviceEntity();
 
+        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        String applicationName = "test-application-id";
+        String deviceOperationResponse = DeviceOperationResponseFactory.createDeviceOperationResponse("test-inresponse-to",
+                DeviceOperationType.NEW_ACCOUNT_REGISTER, applicationName, UUID.randomUUID().toString(), "test-device", applicationKeyPair,
+                0, servletEndpointUrl);
+        String encodedDeviceOperationResponse = Base64.encode(deviceOperationResponse.getBytes());
         PostMethod postMethod = new PostMethod(location);
+        NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedDeviceOperationResponse) };
+        postMethod.setRequestBody(data);
 
         // expectations
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
-        expect(mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(userId);
+        expect(mockAuthenticationService.register((DeviceOperationResponse) EasyMock.anyObject())).andStubReturn(userId);
         expect(mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
         expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
         expect(mockAuthenticationService.getSsoCookie()).andStubReturn(null);
@@ -219,8 +252,7 @@ public class DeviceRegistrationLandingServletTest {
         String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
 
-        DeviceEntity resultDevice = (DeviceEntity) servletTestManager
-                                                                          .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
+        DeviceEntity resultDevice = (DeviceEntity) servletTestManager.getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
         assertEquals(device, resultDevice);
     }
 }

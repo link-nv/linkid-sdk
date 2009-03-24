@@ -33,8 +33,8 @@ import javax.servlet.http.Cookie;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.ProtocolContext;
-import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -294,7 +294,7 @@ public class AuthenticationServiceBeanTest {
         // operate
         try {
             testedInstance.initialize(null, null, null, authnRequest);
-        } catch (AuthenticationInitializationException e) {
+        } catch (SignatureValidationException e) {
             // expected
             return;
         }
@@ -333,7 +333,7 @@ public class AuthenticationServiceBeanTest {
         // operate
         try {
             testedInstance.initialize(null, null, null, authnRequest);
-        } catch (AuthenticationInitializationException e) {
+        } catch (SignatureValidationException e) {
             // expected
             return;
         }

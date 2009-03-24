@@ -33,6 +33,12 @@ public class ProtocolException extends Exception {
         protocolName = "unknown";
     }
 
+    public ProtocolException(String message, Throwable cause) {
+
+        super(message, cause);
+        protocolName = "unknown";
+    }
+
     /**
      * Sets the protocol name.
      * 

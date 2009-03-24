@@ -193,7 +193,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         DateTime now = new DateTime();
 
-        Response samlResponse = ResponseUtil.validateResponse(now, httpRequest, challenge.getValue(), applicationName,
+        Response samlResponse = ResponseUtil.validateAuthnResponse(now, httpRequest, challenge.getValue(), applicationName,
                 wsLocation, applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlResponse)
             return null;

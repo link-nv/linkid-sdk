@@ -46,7 +46,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
@@ -67,6 +66,7 @@ import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
@@ -91,7 +91,6 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
-import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseUtil;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -111,7 +110,6 @@ import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
-import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
@@ -139,6 +137,7 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.security.x509.BasicX509Credential;
+import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.validation.ValidationException;
 
@@ -268,7 +267,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
 
     public ProtocolContext initialize(Locale language, Integer color, Boolean minimal, @NotNull AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException {
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SignatureValidationException {
 
         Issuer issuer = samlAuthnRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -280,13 +280,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         boolean validSignature = false;
         for (X509Certificate certificate : certificates) {
-            validSignature = validateSignature(certificate, samlAuthnRequest);
+            validSignature = validateSignature(certificate, samlAuthnRequest.getSignature(),
+                    SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
             if (validSignature) {
                 break;
             }
         }
         if (!validSignature)
-            throw new AuthenticationInitializationException("signature validation error");
+            throw new SignatureValidationException("signature validation error");
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
         if (null == assertionConsumerService) {
@@ -344,11 +345,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 color, minimal, requiredDevicePolicy);
     }
 
-    private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest)
+    private boolean validateSignature(X509Certificate certificate, Signature signature, String trustDomain)
             throws TrustDomainNotFoundException {
 
-        PkiResult certificateValid = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                certificate);
+        PkiResult certificateValid = pkiValidator.validateCertificate(trustDomain, certificate);
 
         if (PkiResult.VALID != certificateValid)
             return false;
@@ -357,7 +357,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         basicX509Credential.setPublicKey(certificate.getPublicKey());
         SignatureValidator signatureValidator = new SignatureValidator(basicX509Credential);
         try {
-            signatureValidator.validate(samlAuthnRequest.getSignature());
+            signatureValidator.validate(signature);
         } catch (ValidationException e) {
             return false;
         }
@@ -440,29 +440,41 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return encodedSamlRequestToken;
     }
 
-    public String authenticate(@NotNull HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
+    public String authenticate(@NotNull Response response)
+            throws ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException, ServletException,
+            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException, NodeNotFoundException {
 
         LOG.debug("authenticate");
         if (authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
 
+        Issuer issuer = response.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer: " + issuerName);
+
+        List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
+        boolean validSignature = false;
+        for (X509Certificate certificate : certificates) {
+            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+            if (validSignature) {
+                break;
+            }
+        }
+        if (!validSignature)
+            throw new SignatureValidationException("signature validation error");
+
         DateTime now = new DateTime();
+        for (Assertion assertion : response.getAssertions()) {
+            ResponseUtil.validateAssertion(assertion, now, expectedApplicationName);
+        }
 
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
-
-        Response samlResponse = ResponseUtil.validateResponse(now, request, expectedDeviceChallengeId, expectedApplicationName,
-                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.NODE);
-        if (null == samlResponse)
-            return null;
-
-        if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
+        if (response.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
             /*
              * Authentication failed, user wants to try another device tho. Set the state to redirected to mark this
              */
             authenticationState = REDIRECTED;
             return null;
-        } else if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
+        } else if (response.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
             /*
              * Authentication failed, reset the state
              */
@@ -474,7 +486,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             return null;
         }
 
-        Assertion assertion = samlResponse.getAssertions().get(0);
+        Assertion assertion = response.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
         if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");
@@ -847,22 +859,51 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return true;
     }
 
-    public String register(@NotNull HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
+    public String register(@NotNull DeviceOperationResponse response)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
+            SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException {
 
         LOG.debug("register");
         if (authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
 
-        DateTime now = new DateTime();
+        Issuer issuer = response.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer: " + issuerName);
 
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
+        List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
+        boolean validSignature = false;
+        for (X509Certificate certificate : certificates) {
+            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+            if (validSignature) {
+                break;
+            }
+        }
+        if (!validSignature)
+            throw new SignatureValidationException("signature validation error");
 
-        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, expectedDeviceChallengeId,
-                DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(),
-                TrustDomainType.NODE);
-        if (null == response)
-            return null;
+        /*
+         * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
+         */
+        if (!response.getInResponseTo().equals(expectedDeviceChallengeId))
+            throw new ServletException("device operation response is not a response belonging to the original request.");
+
+        if (!response.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER.name()))
+            throw new ServletException(
+                    "device operation response is not a response belonging to the original request, mismatch in device operation");
+
+        if (!response.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)
+                && !response.getStatus().getStatusCode().getValue().equals(DeviceOperationResponse.FAILED_URI)) {
+            DateTime now = new DateTime();
+
+            List<Assertion> assertions = response.getAssertions();
+            if (assertions.isEmpty())
+                throw new ServletException("missing Assertion");
+
+            for (Assertion assertion : assertions) {
+                ResponseUtil.validateAssertion(assertion, now, null);
+            }
+        }
 
         if (response.getStatus().getStatusCode().getValue().equals(DeviceOperationResponse.FAILED_URI)) {
             /*

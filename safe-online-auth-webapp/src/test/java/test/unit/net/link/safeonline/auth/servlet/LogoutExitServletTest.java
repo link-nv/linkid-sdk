@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.XMLConstants;
 
 import net.link.safeonline.auth.protocol.LogoutServiceManager;
@@ -54,6 +53,7 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensaml.saml2.core.LogoutResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -68,8 +68,6 @@ public class LogoutExitServletTest {
     private String             servletEndpointUrl = "http://test.auth/servlet";
 
     private String             inResponseTo       = "test-in-response-to";
-
-    private String             target             = "http://test.target";
 
     private JndiTestUtils      jndiTestUtils;
 
@@ -125,7 +123,8 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair, target);
+        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair,
+                servletEndpointUrl);
         String encodedSamlLogoutResponse = Base64.encode(samlLogoutResponse.getBytes());
 
         String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair,
@@ -137,7 +136,7 @@ public class LogoutExitServletTest {
 
         // expectations
         expect(mockLogoutService.getLogoutState()).andStubReturn(LogoutState.LOGGING_OUT);
-        expect(mockLogoutService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject())).andStubReturn(applicationName);
+        expect(mockLogoutService.handleLogoutResponse((LogoutResponse) EasyMock.anyObject())).andStubReturn(applicationName);
         expect(mockLogoutService.findSsoApplicationToLogout()).andStubReturn(application2);
         expect(mockLogoutService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
 

@@ -111,7 +111,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         ProtocolContext protocolContext;
         try {
-            protocolContext = ProtocolHandlerManager.handleRequest(wrappedRequest);
+            protocolContext = ProtocolHandlerManager.handleAuthnRequest(wrappedRequest);
         } catch (ProtocolException e) {
             redirectToErrorPage(wrappedRequest, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(

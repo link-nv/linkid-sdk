@@ -108,7 +108,7 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
             LOG.debug("send logout response to " + target + " (partialLogout=" + partialLogout + ")");
 
             try {
-                ProtocolHandlerManager.logoutResponse(partialLogout, target, request.getSession(), response);
+                ProtocolHandlerManager.sendLogoutResponse(partialLogout, target, request.getSession(), response);
             } catch (ProtocolException e) {
                 redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                         AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
@@ -120,7 +120,7 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
 
             LOG.debug("send logout request to: " + application.getName());
             try {
-                ProtocolHandlerManager.logoutRequest(application, request.getSession(), response);
+                ProtocolHandlerManager.sendLogoutRequest(application, request.getSession(), response);
             } catch (ProtocolException e) {
                 redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                         AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(

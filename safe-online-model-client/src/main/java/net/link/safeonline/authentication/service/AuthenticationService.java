@@ -12,7 +12,6 @@ import java.util.Locale;
 import javax.ejb.Local;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.ProtocolContext;
@@ -31,21 +30,24 @@ import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Response;
 
 
 /**
  * Authentication service interface. This service allows the authentication web application to authenticate users. The bean behind this
  * interface is stateful. This means that a certain method invocation pattern must be respected. First the method
- * {@link #initialize(Locale, Integer, Boolean, AuthnRequest)} must be invoked. Then the method {@link #authenticate(HttpServletRequest)}
- * must be invoked. After this the method {@link #commitAuthentication(String)} must be invoked and finally
- * {@link #finalizeAuthentication()}. In case the authentication process needs to be aborted one should invoke {@link #abort()} .
+ * {@link #initialize(Locale, Integer, Boolean, AuthnRequest)} must be invoked. Then the method {@link #authenticate(Response)} must be
+ * invoked. After this the method {@link #commitAuthentication(String)} must be invoked and finally {@link #finalizeAuthentication()}. In
+ * case the authentication process needs to be aborted one should invoke {@link #abort()} .
  * 
  * @author fcorneli
  */
@@ -74,7 +76,7 @@ public interface AuthenticationService extends SafeOnlineService {
     /**
      * Commits the authentication.
      * 
-     * Calling this method is only valid after a call to {@link #authenticate(HttpServletRequest)}.
+     * Calling this method is only valid after a call to {@link #authenticate(Response)}.
      * 
      * @param language
      * 
@@ -136,16 +138,18 @@ public interface AuthenticationService extends SafeOnlineService {
      * 
      * Returns the user ID of the authenticated user.
      * 
-     * 
-     * 
+     * @throws {@linkSignatureValidationException}
+     * @throws {@linkTrustDomainNotFoundException}
+     * @throws {@linkApplicationNotFoundException}
      * @throws {@link DeviceNotFoundException}
      * @throws {@link NodeMappingNotFoundException}
      * @throws {@link ServletException}
      * @throws {@link NodeNotFoundException}
      * @throws {@link SubjectNotFoundException}
      */
-    String authenticate(HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
+    String authenticate(Response response)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
+            SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
 
     /**
      * Initializes an authentication process. Validates the incoming authentication request and stores the application, device policy and
@@ -158,9 +162,11 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws AuthenticationInitializationException
      * @throws ApplicationNotFoundException
      * @throws TrustDomainNotFoundException
+     * @throws SignatureValidationException
      */
     ProtocolContext initialize(Locale language, Integer color, Boolean minimal, AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException;
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SignatureValidationException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
@@ -245,8 +251,12 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws NodeNotFoundException
      * @throws DeviceNotFoundException
      * @throws SubjectNotFoundException
+     * @throws SignatureValidationException
+     * @throws TrustDomainNotFoundException
+     * @throws ApplicationNotFoundException
      * 
      */
-    String register(HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
+    String register(DeviceOperationResponse response)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
+            SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
 }
