@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.LogoutProtocolContext;
@@ -27,6 +28,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.sdk.auth.saml2.RequestUtil;
@@ -195,9 +197,9 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
             throw new ProtocolException("SAML message not a logout request message");
         LogoutRequest samlLogoutRequest = (LogoutRequest) samlMessage;
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(logoutRequest.getSession());
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(logoutRequest.getSession());
         try {
-            return authenticationService.initialize(samlLogoutRequest);
+            return logoutService.initialize(samlLogoutRequest);
         } catch (TrustDomainNotFoundException e) {
             LOG.debug("trust domain not found: " + e.getMessage());
             throw new ProtocolException("Trust domain not found");
@@ -220,10 +222,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     public String handleLogoutResponse(HttpServletRequest httpRequest)
             throws ProtocolException {
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(httpRequest.getSession());
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(httpRequest.getSession());
         String applicationName;
         try {
-            applicationName = authenticationService.handleLogoutResponse(httpRequest);
+            applicationName = logoutService.handleLogoutResponse(httpRequest);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
         } catch (ServletException e) {
@@ -241,10 +243,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
         String target = application.getSsoLogoutUrl().toString();
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(session);
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(session);
         String encodedSamlLogoutRequestToken;
         try {
-            encodedSamlLogoutRequestToken = authenticationService.getLogoutRequest(application);
+            encodedSamlLogoutRequestToken = logoutService.getLogoutRequest(application);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
         } catch (SubscriptionNotFoundException e) {
@@ -273,7 +275,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
         String encodedSamlLogoutResponseToken;
         try {
-            encodedSamlLogoutResponseToken = AuthenticationServiceManager.finalizeLogout(partialLogout, session);
+            encodedSamlLogoutResponseToken = LogoutServiceManager.finalizeLogout(partialLogout, session);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
         }

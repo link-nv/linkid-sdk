@@ -13,8 +13,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
@@ -22,7 +23,7 @@ import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
-import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
@@ -88,7 +89,10 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
     }
 
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
+
+        // Create a new session (invalidate an old one, if there is one).
+        HttpSession session = restartSession(request);
 
         /**
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
@@ -114,20 +118,18 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
         /*
          * Store target to send LogoutResponse to later on
          */
-        logoutRequestWrapper.getSession().setAttribute(LogoutExitServlet.LOGOUT_TARGET_ATTRIBUTE, logoutProtocolContext.getTarget());
+        session.setAttribute(LogoutExitServlet.LOGOUT_TARGET_ATTRIBUTE, logoutProtocolContext.getTarget());
 
         /*
          * Check Single Sign-On Cookies and send logout requests to the authenticated applications
          */
-        AuthenticationService authenticationService = AuthenticationServiceManager
-                                                                                  .getAuthenticationService(logoutRequestWrapper
-                                                                                                                                .getSession());
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(session);
         Cookie[] cookies = logoutRequestWrapper.getCookies();
         if (null != cookies) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
                     try {
-                        if (authenticationService.checkSsoCookieForLogout(cookie)) {
+                        if (logoutService.checkSsoCookieForLogout(cookie)) {
                             // If cookie has passed checks for logout, remove it, applications that need to be logged
                             // out are stored in the AuthenticationService
                             removeCookie(cookie.getName(), response);
@@ -144,6 +146,19 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
         }
 
         response.sendRedirect(logoutExitUrl);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected HttpSession restartSession(HttpServletRequest request)
+            throws ServletException {
+
+        HttpSession session = super.restartSession(request);
+        LogoutServiceManager.bindLogoutService(session);
+
+        return session;
     }
 
     private void removeCookie(String name, HttpServletResponse response) {

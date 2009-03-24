@@ -35,6 +35,10 @@
 			net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
 	</listener>
 	<listener>
+		<listener-class>
+			net.link.safeonline.auth.protocol.LogoutServiceManager</listener-class>
+	</listener>
+	<listener>
 		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
 	</listener>
 	<context-param>

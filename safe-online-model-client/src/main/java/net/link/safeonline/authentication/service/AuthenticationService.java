@@ -15,7 +15,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineService;
-import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -35,12 +34,10 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
-import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.LogoutRequest;
 
 
 /**
@@ -221,15 +218,6 @@ public interface AuthenticationService extends SafeOnlineService {
             throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException, DevicePolicyException;
 
     /**
-     * Returns whether the specified cookie is ok for logout. Meaning all applications specified in the cookie have to be logged out.
-     * 
-     * @throws ApplicationNotFoundException
-     * @throws InvalidCookieException
-     */
-    boolean checkSsoCookieForLogout(Cookie ssoCookie)
-            throws ApplicationNotFoundException, InvalidCookieException;
-
-    /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
      * 
      * Calling this method is only valid after a call to {@link #initialize(Locale, Integer, Boolean, AuthnRequest)}.
@@ -261,60 +249,4 @@ public interface AuthenticationService extends SafeOnlineService {
      */
     String register(HttpServletRequest request)
             throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
-
-    /**
-     * Initializes a logout process. Validates the incoming logout request and stores the application.
-     * 
-     * @param samlLogoutRequest
-     * @throws TrustDomainNotFoundException
-     * @throws ApplicationNotFoundException
-     * @throws AuthenticationInitializationException
-     * @throws SubjectNotFoundException
-     */
-    LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
-            SubjectNotFoundException;
-
-    /**
-     * Returns the next Application to logout. Returns <code>null</code> if none.
-     */
-    ApplicationEntity findSsoApplicationToLogout();
-
-    /**
-     * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent to the application.
-     * 
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
-     * 
-     * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
-     * @throws NodeNotFoundException
-     * 
-     */
-    String getLogoutRequest(ApplicationEntity application)
-            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException;
-
-    /**
-     * Validates the returned SAML logout response message. Returns the application name if successful or <code>null</code> if the response
-     * did not have status successful.
-     * 
-     * Calling this method is only valid after a call to {@link #getLogoutRequest(ApplicationEntity)}.
-     * 
-     * @throws ServletException
-     * @throws NodeNotFoundException
-     */
-    String handleLogoutResponse(HttpServletRequest httpRequest)
-            throws ServletException, NodeNotFoundException;
-
-    /**
-     * Finalizes a logout process by constructing an encoded SAML logout response to be sent to the application.
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
-     * 
-     * @param partialLogout
-     * 
-     * @throws NodeNotFoundException
-     */
-    String finalizeLogout(boolean partialLogout)
-            throws NodeNotFoundException;
 }

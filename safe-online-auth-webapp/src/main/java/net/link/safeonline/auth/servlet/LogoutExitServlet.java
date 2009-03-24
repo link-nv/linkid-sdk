@@ -13,11 +13,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
-import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
@@ -92,8 +92,8 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
     private void logoutNextSsoApplication(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
-        ApplicationEntity application = authenticationService.findSsoApplicationToLogout();
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
+        ApplicationEntity application = logoutService.findSsoApplicationToLogout();
         if (null == application) {
 
             // no more applications to logout: send LogoutResponse back to requesting application

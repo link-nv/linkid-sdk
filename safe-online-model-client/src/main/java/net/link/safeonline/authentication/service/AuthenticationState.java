@@ -36,9 +36,5 @@ public enum AuthenticationState {
     /**
      * This state marks that the user authentication has been committed to the core.
      */
-    COMMITTED,
-    /**
-     * This state marks that a logout request is being sent to a single sign-on application.
-     */
-    LOGGING_OUT,
+    COMMITTED
 }
