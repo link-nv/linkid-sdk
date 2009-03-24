@@ -38,10 +38,10 @@ import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.TestClassLoader;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -136,7 +136,7 @@ public class LogoutServletTest {
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
 
-        SafeOnlineConfig.load(servletTestManager, webServiceTestUtils);
+        SafeOnlineTestConfig.loadTest(servletTestManager, webServiceTestUtils);
     }
 
     @After

@@ -42,8 +42,8 @@ import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -113,7 +113,7 @@ public class AuthnEntryServletTest {
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
 
         authnEntryServletTestManager.setUp(AuthnEntryServlet.class, initParams, null, null, initialSessionAttributes);
-        SafeOnlineConfig.load(authnEntryServletTestManager);
+        SafeOnlineTestConfig.loadTest(authnEntryServletTestManager);
 
         mockObjects = new Object[] { mockApplicationAuthenticationService, mockPkiValidator, mockSamlAuthorityService,
                 mockDevicePolicyService, mockAuthenticationService };

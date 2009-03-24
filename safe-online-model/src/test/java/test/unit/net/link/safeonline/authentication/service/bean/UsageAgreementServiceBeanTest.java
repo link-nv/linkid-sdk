@@ -15,6 +15,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.net.URL;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
@@ -44,6 +45,7 @@ import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 
 import org.junit.After;
 import org.junit.Before;
@@ -84,6 +86,7 @@ public class UsageAgreementServiceBeanTest {
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
+        SafeOnlineTestConfig.loadTestNode(new URL("http://127.0.0.1/"));
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
         systemStartable.postStart();

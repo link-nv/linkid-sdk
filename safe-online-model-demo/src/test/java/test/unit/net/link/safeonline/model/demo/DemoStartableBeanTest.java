@@ -20,6 +20,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 
+import java.net.URL;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
@@ -116,6 +117,7 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 
 import org.junit.After;
 import org.junit.Before;
@@ -178,8 +180,8 @@ public class DemoStartableBeanTest {
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
+        SafeOnlineTestConfig.loadTestNode(new URL("http://127.0.0.1/"));
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
-
         systemStartable.postStart();
 
         verify(mockKeyService);
@@ -203,6 +205,7 @@ public class DemoStartableBeanTest {
             throws Exception {
 
         // setup
+        SafeOnlineTestConfig.loadTestNode(new URL("http://127.0.0.1/"));
         EntityManager entityManager = entityTestManager.getEntityManager();
         BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container, entityManager);
         DigipassStartableBean digipassStartableBean = EJBTestUtils.newInstance(DigipassStartableBean.class, container, entityManager);

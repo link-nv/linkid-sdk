@@ -25,6 +25,7 @@ import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
 import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.TestClassLoader;
 import net.link.safeonline.util.servlet.SafeOnlineConfig;
@@ -111,7 +112,7 @@ public class AuthnRequestFilterTest {
 
         GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();
-        SafeOnlineConfig.load(servletTestManager);
+        SafeOnlineTestConfig.loadTest(servletTestManager);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);
@@ -153,7 +154,7 @@ public class AuthnRequestFilterTest {
 
         GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();
-        SafeOnlineConfig.load(servletTestManager);
+        SafeOnlineTestConfig.loadTest(servletTestManager);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);

@@ -24,7 +24,6 @@ import net.link.safeonline.test.util.WebServiceTestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
-import org.junit.Test;
 
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
@@ -45,7 +44,6 @@ public class EmailBeanTest {
 
     }
 
-    @Test
     public void testEmail()
             throws Exception {
 
