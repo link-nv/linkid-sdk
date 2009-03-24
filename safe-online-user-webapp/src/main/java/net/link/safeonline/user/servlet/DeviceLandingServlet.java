@@ -36,19 +36,23 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DeviceLandingServlet extends AbstractLandingInjectionServlet {
 
+    public static final String DEVICES_PAGE                   = "DevicesPage";
+    public static final String ERROR_PAGE                     = "ErrorPage";
+    public static final String RESOURCE_BUNDLE                = "ResourceBundle";
+
     private static final long  serialVersionUID               = 1L;
 
     private static final Log   LOG                            = LogFactory.getLog(DeviceLandingServlet.class);
 
     public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-    @Init(name = "DevicesPage")
+    @Init(name = DEVICES_PAGE)
     private String             devicesPage;
 
-    @Init(name = "ErrorPage", optional = true)
+    @Init(name = ERROR_PAGE, optional = true)
     private String             errorPage;
 
-    @Init(name = "ResourceBundle", optional = true)
+    @Init(name = RESOURCE_BUNDLE, optional = true)
     private String             resourceBundleName;
 
 
