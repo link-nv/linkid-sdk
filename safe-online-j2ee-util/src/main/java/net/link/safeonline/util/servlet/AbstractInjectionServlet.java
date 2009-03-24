@@ -131,7 +131,14 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
      */
     protected String getWrapperEndpoint(HttpServletRequest request) {
 
-        return SafeOnlineConfig.getApplicationEndpointFor(request);
+        try {
+            return SafeOnlineConfig.getApplicationEndpointFor(request);
+        }
+
+        // Application not configured for request wrapping.
+        catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     @Override

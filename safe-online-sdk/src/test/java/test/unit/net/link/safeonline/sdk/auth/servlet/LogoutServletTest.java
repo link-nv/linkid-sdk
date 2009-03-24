@@ -41,6 +41,7 @@ import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.TestClassLoader;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -73,10 +74,6 @@ public class LogoutServletTest {
     private String              logoutPath            = "logout";
 
     private String              errorPage             = "error";
-
-    private String              servletEndpointUrl    = "http://test.logout/servlet";
-
-    private String              authbase              = "http://test.auth/";
 
     private String              logoutExitServicePath = "logoutexit";
 
@@ -134,12 +131,12 @@ public class LogoutServletTest {
         initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, applicationName);
         initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
         initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("WsLocation", webServiceTestUtils.getLocation());
 
         servletTestManager.setUp(LogoutServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
+
+        SafeOnlineConfig.load(servletTestManager, webServiceTestUtils);
     }
 
     @After
@@ -264,8 +261,7 @@ public class LogoutServletTest {
         // setup
         String userId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory
-                                                       .createLogoutRequest(userId, applicationName, keyPair, servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
@@ -292,8 +288,7 @@ public class LogoutServletTest {
         String userId = UUID.randomUUID().toString();
         String fooUserId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory
-                                                       .createLogoutRequest(userId, applicationName, keyPair, servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, fooUserId);

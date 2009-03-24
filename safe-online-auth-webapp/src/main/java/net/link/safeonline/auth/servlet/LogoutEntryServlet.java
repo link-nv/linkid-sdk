@@ -54,16 +54,19 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
 
+    public static final String LOGOUT_EXIT_PATH = "LogoutExitPath";
+    public static final String COOKIE_PATH      = "CookiePath";
+
     private static final long  serialVersionUID = 1L;
 
     private static final Log   LOG              = LogFactory.getLog(LogoutEntryServlet.class);
 
     public static final String SERVLET_PATH     = "logoutentry";
 
-    @Init(name = "LogoutExitPath")
+    @Init(name = LOGOUT_EXIT_PATH)
     private String             logoutExitPath;
 
-    @Init(name = "CookiePath")
+    @Init(name = COOKIE_PATH)
     private String             cookiePath;
 
 

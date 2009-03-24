@@ -134,7 +134,10 @@ public class AuthenticationProtocolManager {
         } else if (!URI.create(targetUrl).isAbsolute()) {
             targetUrl = SafeOnlineConfig.absoluteApplicationUrlFromPath(request, targetUrl);
         }
-        String landingPage = SafeOnlineConfig.absoluteApplicationLandingUrlFromParam(request, LANDING_PAGE_INIT_PARAM);
+        String landingPage = request.getSession().getServletContext().getInitParameter(LANDING_PAGE_INIT_PARAM);
+        if (landingPage != null) {
+            landingPage = SafeOnlineConfig.absoluteApplicationLandingUrlFromPath(request, landingPage);
+        }
 
         // Delegate the authentication initiation to the relevant protocol handler.
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);

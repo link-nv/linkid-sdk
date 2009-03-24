@@ -46,7 +46,7 @@ public abstract class AbstractNodeInjectionServlet extends AbstractInjectionServ
         }
 
         catch (NodeNotFoundException e) {
-            LOG.error("Expected to be in a node, but node wasn't found: falling back to default method of endpoint retrieval.", e);
+            LOG.warn("Expected to be in a node, but node wasn't found: falling back to default method of endpoint retrieval.", e);
         }
 
         return super.getWrapperEndpoint(request);

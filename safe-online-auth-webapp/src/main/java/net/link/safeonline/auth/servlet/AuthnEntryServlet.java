@@ -66,16 +66,18 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
 
+    public static final String LOGIN_PATH       = "LoginPath";
+    public static final String COOKIE_PATH      = "CookiePath";
+    public static final String SERVLET_PATH     = "entry";
+
     private static final long  serialVersionUID = 1L;
 
     private static final Log   LOG              = LogFactory.getLog(AuthnEntryServlet.class);
 
-    public static final String SERVLET_PATH     = "entry";
-
-    @Init(name = "LoginPath")
+    @Init(name = LOGIN_PATH)
     private String             loginPath;
 
-    @Init(name = "CookiePath")
+    @Init(name = COOKIE_PATH)
     private String             cookiePath;
 
 

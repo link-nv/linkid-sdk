@@ -1,4 +1,4 @@
-package test.unit.net.link.safeonline.device.sdk.saml2.response;
+package test.unit.net.link.safeonline.device.sdk.operation.saml2.response;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

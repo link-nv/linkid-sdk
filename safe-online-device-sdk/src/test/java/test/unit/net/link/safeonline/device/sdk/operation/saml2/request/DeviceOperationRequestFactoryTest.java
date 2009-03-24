@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.device.sdk.saml2.request;
+package test.unit.net.link.safeonline.device.sdk.operation.saml2.request;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

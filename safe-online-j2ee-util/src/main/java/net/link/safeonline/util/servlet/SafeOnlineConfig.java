@@ -12,6 +12,9 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.test.util.WebServiceTestUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,6 +34,19 @@ import org.apache.commons.logging.LogFactory;
  * @author lhunath
  */
 public class SafeOnlineConfig extends Properties {
+
+    public static final String      OLAS_NODE_NAME            = "olas.node.name";
+    public static final String      OLAS_HOST_NAME            = "olas.host.name";
+    public static final String      OLAS_HOST_PORT            = "olas.host.port";
+    public static final String      OLAS_HOST_PORT_SSL        = "olas.host.port.ssl";
+    public static final String      OLAS_HOST_PROTOCOL        = "olas.host.protocol";
+    public static final String      OLAS_HOST_PROTOCOL_SSL    = "olas.host.protocol.ssl";
+
+    public static final String      APPBASE                   = "appbase";
+    public static final String      APPLANDINGBASE            = "applandingbase";
+
+    public static final String      AUTHBASE                  = "authbase";
+    public static final String      WSBASE                    = "wsbase";
 
     private static final long       serialVersionUID          = 1L;
     private static final Log        LOG                       = LogFactory.getLog(SafeOnlineConfig.class);
@@ -53,7 +69,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String nodeName() {
 
-        return load().getProperty("olas.node.name");
+        return load().getProperty(OLAS_NODE_NAME);
     }
 
     /**
@@ -61,7 +77,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String nodeHost() {
 
-        return load().getProperty("olas.host.name");
+        return load().getProperty(OLAS_HOST_NAME);
     }
 
     /**
@@ -69,7 +85,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static int nodePort() {
 
-        return Integer.parseInt(load().getProperty("olas.host.port"));
+        return Integer.parseInt(load().getProperty(OLAS_HOST_PORT));
     }
 
     /**
@@ -77,7 +93,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static int nodePortSecure() {
 
-        return Integer.parseInt(load().getProperty("olas.host.port.ssl"));
+        return Integer.parseInt(load().getProperty(OLAS_HOST_PORT_SSL));
     }
 
     /**
@@ -90,7 +106,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String nodeProtocol() {
 
-        return load().getProperty("olas.host.protocol");
+        return load().getProperty(OLAS_HOST_PROTOCOL);
     }
 
     /**
@@ -103,7 +119,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String nodeProtocolSecure() {
 
-        return load().getProperty("olas.host.protocol.ssl");
+        return load().getProperty(OLAS_HOST_PROTOCOL_SSL);
     }
 
     /**
@@ -115,7 +131,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String appbase() {
 
-        return load().getProperty("appbase");
+        return load().getProperty(APPBASE);
     }
 
     /**
@@ -127,7 +143,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String applandingbase() {
 
-        return load().getProperty("applandingbase");
+        return load().getProperty(APPLANDINGBASE);
     }
 
     /**
@@ -140,7 +156,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String authbase() {
 
-        return load().getProperty("authbase");
+        return load().getProperty(AUTHBASE);
     }
 
     /**
@@ -152,7 +168,7 @@ public class SafeOnlineConfig extends Properties {
      */
     public static String wsbase() {
 
-        return load().getProperty("wsbase");
+        return load().getProperty(WSBASE);
     }
 
     /**
@@ -291,6 +307,55 @@ public class SafeOnlineConfig extends Properties {
     public static SafeOnlineConfig load() {
 
         return SafeOnlineConfig.load(SAFEONLINE_CONFIG);
+    }
+
+    /**
+     * Create the {@link SafeOnlineConfig} based off of the configuration of the given {@link ServletTestManager}.
+     * 
+     * <p>
+     * The {@link ServletTestManager} must already have been set up.
+     * </p>
+     * 
+     * <p>
+     * <b>Note:</b> Unlike the {@link #load()} and {@link #load(String)} methods, this one throws away any old {@link SafeOnlineConfig} and
+     * rebuilds it either way.
+     * </p>
+     */
+    public static SafeOnlineConfig load(ServletTestManager servletTestManager)
+            throws Exception {
+
+        config = new SafeOnlineConfig();
+        URI servletLocation = URI.create(servletTestManager.getServletLocation());
+        config.setProperty(OLAS_NODE_NAME, "olas-test");
+        config.setProperty(OLAS_HOST_NAME, servletLocation.getHost());
+        config.setProperty(OLAS_HOST_PORT, String.valueOf(servletLocation.getPort()));
+        config.setProperty(OLAS_HOST_PORT_SSL, String.valueOf(servletLocation.getPort()));
+        config.setProperty(OLAS_HOST_PROTOCOL, servletLocation.getScheme());
+        config.setProperty(OLAS_HOST_PROTOCOL_SSL, servletLocation.getScheme());
+
+        config.setProperty(APPBASE, new URI(servletLocation.getScheme(), servletLocation.getAuthority(), "/", null, null).toASCIIString());
+        config.setProperty(APPLANDINGBASE,
+                new URI(servletLocation.getScheme(), servletLocation.getAuthority(), "/", null, null).toASCIIString());
+
+        config.setProperty(AUTHBASE, servletLocation.toASCIIString());
+        config.setProperty(WSBASE, servletLocation.toASCIIString());
+
+        return config;
+    }
+
+    /**
+     * Create the {@link SafeOnlineConfig} based off of the configuration of the given {@link ServletTestManager} and
+     * {@link WebServiceTestUtils}.
+     * 
+     * @see #load(ServletTestManager)
+     */
+    public static SafeOnlineConfig load(ServletTestManager servletTestManager, WebServiceTestUtils webServiceTestUtils)
+            throws Exception {
+
+        load(servletTestManager);
+        config.setProperty(SafeOnlineConfig.WSBASE, webServiceTestUtils.getLocation());
+
+        return config;
     }
 
     private static String getValue(HttpServletRequest request, String paramName) {

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.device.sdk.servlet;
+package test.unit.net.link.safeonline.device.sdk.operation.servlet;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -40,6 +40,7 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -60,9 +61,9 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 
-public class LandingServletTest {
+public class DeviceOperationLandingServletTest {
 
-    private static final Log               LOG                           = LogFactory.getLog(LandingServletTest.class);
+    private static final Log               LOG                           = LogFactory.getLog(DeviceOperationLandingServletTest.class);
 
     private ServletTestManager             servletTestManager;
 
@@ -89,8 +90,6 @@ public class LandingServletTest {
     private String                         deviceRegistrationAttribute   = "test-attribute";
 
     private String                         applicationName               = "test-application";
-
-    private String                         servletEndpointUrl            = "http://test.device/servlet";
 
     String                                 userId                        = UUID.randomUUID().toString();
 
@@ -130,15 +129,15 @@ public class LandingServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("RegistrationUrl", registrationUrl);
-        initParams.put("UpdateUrl", updateUrl);
-        initParams.put("RemovalUrl", removalUrl);
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("WsLocation", webServiceTestUtils.getLocation());
+        initParams.put(AbstractDeviceOperationLandingServlet.REGISTRATION_PATH, registrationUrl);
+        initParams.put(AbstractDeviceOperationLandingServlet.UPDATE_PATH, updateUrl);
+        initParams.put(AbstractDeviceOperationLandingServlet.REMOVAL_PATH, removalUrl);
 
-        servletTestManager.setUp(TestDeviceManagementLandingServlet.class, initParams, null, null, null);
+        servletTestManager.setUp(TestDeviceOperationLandingServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
+
+        SafeOnlineConfig.load(servletTestManager, webServiceTestUtils);
     }
 
     @After
@@ -182,7 +181,7 @@ public class LandingServletTest {
 
         // setup
         String deviceOperationRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
-                "http://test.authn.service", servletEndpointUrl, DeviceOperationType.REGISTER, new Challenge<String>(), deviceName,
+                "http://test.authn.service", location, DeviceOperationType.REGISTER, new Challenge<String>(), deviceName,
                 authenticatedDeviceName, null, null);
         String encodedSamlAuthnRequest = Base64.encode(deviceOperationRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
@@ -217,7 +216,7 @@ public class LandingServletTest {
 
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
-                "http://test.authn.service", servletEndpointUrl, DeviceOperationType.REMOVE, new Challenge<String>(), deviceName,
+                "http://test.authn.service", location, DeviceOperationType.REMOVE, new Challenge<String>(), deviceName,
                 authenticatedDeviceName, deviceRegistrationAttributeId, deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
@@ -254,7 +253,7 @@ public class LandingServletTest {
 
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
-                "http://test.authn.service", servletEndpointUrl, DeviceOperationType.UPDATE, new Challenge<String>(), deviceName,
+                "http://test.authn.service", location, DeviceOperationType.UPDATE, new Challenge<String>(), deviceName,
                 authenticatedDeviceName, deviceRegistrationAttributeId, deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
@@ -286,7 +285,7 @@ public class LandingServletTest {
     }
 
 
-    public static class TestDeviceManagementLandingServlet extends AbstractDeviceOperationLandingServlet {
+    public static class TestDeviceOperationLandingServlet extends AbstractDeviceOperationLandingServlet {
 
         private static final long   serialVersionUID  = 1L;
         private static final String KEYSTORE_PASSWORD = "test-password";

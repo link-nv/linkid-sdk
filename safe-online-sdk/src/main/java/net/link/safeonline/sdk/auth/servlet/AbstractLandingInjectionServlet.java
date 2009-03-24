@@ -41,6 +41,13 @@ public abstract class AbstractLandingInjectionServlet extends AbstractInjectionS
     @Override
     protected String getWrapperEndpoint(HttpServletRequest request) {
 
-        return SafeOnlineConfig.getApplicationLandingpointFor(request);
+        try {
+            return SafeOnlineConfig.getApplicationLandingpointFor(request);
+        }
+
+        // Application not set up for servlet wrapping.
+        catch (IllegalStateException e) {
+            return null;
+        }
     }
 }

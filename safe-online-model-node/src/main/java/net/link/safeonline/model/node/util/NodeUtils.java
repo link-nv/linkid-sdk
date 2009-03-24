@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.model.node.util;
 
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -47,10 +48,18 @@ public abstract class NodeUtils {
     public static NodeEntity getLocalNode()
             throws NodeNotFoundException {
 
-        NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING,
-                NodeAuthenticationService.class);
+        try {
+            NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING,
+                    NodeAuthenticationService.class);
+            return nodeAuthenticationService.getLocalNode();
+        }
 
-        return nodeAuthenticationService.getLocalNode();
+        catch (RuntimeException e) {
+            if (e.getCause() instanceof NamingException)
+                throw new NodeNotFoundException("Node services not available.");
+
+            throw e;
+        }
     }
 
     /**

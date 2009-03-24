@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.device.sdk.servlet;
+package test.unit.net.link.safeonline.device.sdk.operation.servlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.device.sdk.operation.servlet.AbstractDeviceOperationExitServlet;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -32,9 +33,9 @@ import org.w3c.dom.Node;
 import org.w3c.tidy.Tidy;
 
 
-public class ExitServletTest {
+public class DeviceOperationExitServletTest {
 
-    private static final Log   LOG    = LogFactory.getLog(ExitServletTest.class);
+    private static final Log   LOG    = LogFactory.getLog(DeviceOperationExitServletTest.class);
 
     private ServletTestManager servletTestManager;
 
@@ -50,9 +51,11 @@ public class ExitServletTest {
             throws Exception {
 
         servletTestManager = new ServletTestManager();
-        servletTestManager.setUp(AbstractDeviceOperationExitServlet.class);
+        servletTestManager.setUp(TestDeviceOperationExitServlet.class);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
+
+        SafeOnlineConfig.load(servletTestManager);
     }
 
     @After
@@ -85,5 +88,12 @@ public class ExitServletTest {
         Node h1Node = XPathAPI.selectSingleNode(resultDocument, "//h1/text()");
         assertNotNull(h1Node);
         assertEquals("Error(s)", h1Node.getNodeValue());
+    }
+
+
+    public static class TestDeviceOperationExitServlet extends AbstractDeviceOperationExitServlet {
+
+        private static final long serialVersionUID = 1L;
+
     }
 }

@@ -42,6 +42,7 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -62,9 +63,9 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 
-public class LandingServletTest {
+public class DeviceAuthenticationLandingServletTest {
 
-    private static final Log               LOG                = LogFactory.getLog(LandingServletTest.class);
+    private static final Log               LOG                = LogFactory.getLog(DeviceAuthenticationLandingServletTest.class);
 
     private ServletTestManager             servletTestManager;
 
@@ -76,9 +77,7 @@ public class LandingServletTest {
 
     private String                         location;
 
-    private String                         authenticationUrl  = "authentication";
-
-    private String                         servletEndpointUrl = "http://test.device/servlet";
+    private String                         authenticationPath = "authentication";
 
     private String                         deviceName         = "test-device";
 
@@ -122,13 +121,13 @@ public class LandingServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("AuthenticationUrl", authenticationUrl);
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("WsLocation", webServiceTestUtils.getLocation());
+        initParams.put(AbstractDeviceAuthenticationLandingServlet.AUTHENTICATION_PATH, authenticationPath);
 
         servletTestManager.setUp(TestDeviceAuthenticationLandingServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
+
+        SafeOnlineConfig.load(servletTestManager, webServiceTestUtils);
     }
 
     @After
@@ -173,7 +172,7 @@ public class LandingServletTest {
         // setup
         wantedDevices = Collections.singleton(deviceName);
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, nodeKeyPair,
-                "http://test.authn.service", servletEndpointUrl, new Challenge<String>(), wantedDevices, false);
+                "http://test.authn.service", location, new Challenge<String>(), wantedDevices, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -188,7 +187,7 @@ public class LandingServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(authenticationUrl));
+        assertTrue(resultLocation.endsWith(authenticationPath));
         String resultApplicationId = (String) servletTestManager.getSessionAttribute(DeviceManager.APPLICATION_ID_SESSION_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationId);
         assertNull(servletTestManager.getSessionAttribute(DeviceManager.APPLICATION_NAME_SESSION_ATTRIBUTE));
