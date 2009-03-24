@@ -467,24 +467,9 @@
 			distribution
 		-->
 		<profile>
-			<id>dep:siemens</id>
+			<id>sub:siemens</id>
 			<modules>
-				<module>siemens-metro-acceptance-ws-impl
-				</module>
-				<module>siemens-metro-acceptance-ws-runtime
-				</module>
-				<module>siemens-auth-ws-acceptance-console
-				</module>
-				<module>siemens-auth-ws-acceptance-console-package
-				</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws
-				</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws-impl
-				</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws-runtime
-				</module>
-				<module>siemens-metro-distribution
-				</module>
+				<module>siemens</module>
 			</modules>
 		</profile>
 
@@ -1010,20 +995,6 @@
 		</module>
 		<module>safe-online-otpoversms-auth-ws-runtime
 		</module>
-
-		<module>siemens-attrplugin-acceptance-bundle
-		</module>
-		<module>siemens-metro-acceptance-ws
-		</module>
-		<module>siemens-attrplugin-acceptance-metro-bundle
-		</module>
-		<module>siemens-sms-ws</module>
-		<module>siemens-sms-ws-impl
-		</module>
-		<module>siemens-sms-ws-runtime
-		</module>
-		<module>siemens-sms-sdk</module>
-		<module>siemens-sms-bundle</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->

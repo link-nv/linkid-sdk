@@ -6,17 +6,17 @@
 /.m2-repo
 
 # Eclipse
-/*/.settings
-/*/.project
-/*/.classpath
+.settings
+.project
+.classpath
 /*/eclipse
+/siemens/*/eclipse
 
 # IntelliJ
-/*/*.iml
-/*.iml
-/*.ipr
-/*.iws
+*.iml
+*.ipr
+*.iws
 
 # Compiled
-/target
 /*/target
+/siemens/*/target
