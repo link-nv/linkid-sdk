@@ -7,17 +7,10 @@
 
 package net.link.safeonline.demo.lawyer.bean;
 
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
-
 import javax.annotation.PostConstruct;
-import javax.ejb.EJBException;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.lawyer.AbstractLawyerDataClient;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
@@ -27,14 +20,12 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -52,85 +43,58 @@ import org.jboss.seam.log.Log;
 public abstract class AbstractLawyerDataClientBean implements AbstractLawyerDataClient {
 
     @Logger
-    private Log                                   log;
+    private Log   log;
 
     @In(create = true)
-    FacesMessages                                 facesMessages;
-
-    private transient DataClient                  dataClient;
-
-    private transient AttributeClient             attributeClient;
-
-    private transient NameIdentifierMappingClient identifierMappingClient;
-
-    private String                                wsLocation;
-
-    private X509Certificate                       certificate;
-
-    private PrivateKey                            privateKey;
+    FacesMessages facesMessages;
 
 
+    /**
+     * {@inheritDoc}
+     */
     @PostConstruct
     public void postConstructCallback() {
 
-        log.debug("postConstruct");
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStore.getPrivateKeyEntry();
-        certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        privateKey = privateKeyEntry.getPrivateKey();
-        postActivateCallback();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @PostActivate
     public void postActivateCallback() {
 
-        log.debug("postActivate: location=" + wsLocation);
-        dataClient = new DataClientImpl(wsLocation, certificate, privateKey);
-        attributeClient = new AttributeClientImpl(wsLocation, certificate, privateKey);
-        identifierMappingClient = new NameIdentifierMappingClientImpl(wsLocation, certificate, privateKey);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @PrePassivate
     public void prePassivateCallback() {
 
-        log.debug("prePassivate");
-        dataClient = null;
-        attributeClient = null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Remove
     @Destroy
     public void destroyCallback() {
 
-        log.debug("destroy");
-        dataClient = null;
-        attributeClient = null;
-        wsLocation = null;
-        certificate = null;
-        privateKey = null;
     }
 
     protected DataClient getDataClient() {
 
-        if (null == dataClient)
-            throw new EJBException("data client not yet initialized");
-        return dataClient;
+        return OlasServiceFactory.getDataService(DemoLawyerKeyStore.getPrivateKeyEntry());
     }
 
     protected AttributeClient getAttributeClient() {
 
-        if (null == attributeClient)
-            throw new EJBException("attribute client not yet initialized");
-        return attributeClient;
+        return OlasServiceFactory.getAttributeService(DemoLawyerKeyStore.getPrivateKeyEntry());
     }
 
     protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-        if (null == identifierMappingClient)
-            throw new EJBException("name identifier client not yet initialized");
-        return identifierMappingClient;
+        return OlasServiceFactory.getIdMappingService(DemoLawyerKeyStore.getPrivateKeyEntry());
     }
 
     /**

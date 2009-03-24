@@ -19,10 +19,8 @@ import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
-import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class LogoutExitServlet extends AbstractInjectionServlet {
+public class LogoutExitServlet extends AbstractNodeInjectionServlet {
 
     private static final long  serialVersionUID         = 1L;
 
@@ -43,9 +41,6 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
     public static final String LOGOUT_PARTIAL_ATTRIBUTE = "Logout.partial";
 
     public static final String LOGOUT_TARGET_ATTRIBUTE  = "Logout.target";
-
-    @Init(name = "ServletEndpointUrl")
-    private String             servletEndpointUrl;
 
 
     @Override
@@ -60,16 +55,10 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
-         * checking the destination field.
-         */
-        HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
-
         LOG.debug("handle logout response");
         String loggedOutApplication;
         try {
-            loggedOutApplication = ProtocolHandlerManager.handleLogoutResponse(logoutRequestWrapper);
+            loggedOutApplication = ProtocolHandlerManager.handleLogoutResponse(request);
         } catch (ProtocolException e) {
             redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
@@ -81,7 +70,7 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
             request.getSession().setAttribute(LOGOUT_PARTIAL_ATTRIBUTE, "true");
         }
 
-        logoutNextSsoApplication(logoutRequestWrapper, response);
+        logoutNextSsoApplication(request, response);
     }
 
     /**

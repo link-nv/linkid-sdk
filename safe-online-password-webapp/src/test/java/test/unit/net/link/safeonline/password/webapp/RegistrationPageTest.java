@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.RegistrationPage;
 import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;

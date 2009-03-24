@@ -33,8 +33,7 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
-import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -65,21 +64,20 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class AuthnEntryServlet extends AbstractInjectionServlet {
+public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
+
+    public static final String LOGIN_PATH       = "LoginPath";
+    public static final String COOKIE_PATH      = "CookiePath";
+    public static final String SERVLET_PATH     = "entry";
 
     private static final long  serialVersionUID = 1L;
 
     private static final Log   LOG              = LogFactory.getLog(AuthnEntryServlet.class);
 
-    public static final String SERVLET_PATH     = "entry";
+    @Init(name = LOGIN_PATH)
+    private String             loginPath;
 
-    @Init(name = "LoginUrl")
-    private String             loginUrl;
-
-    @Init(name = "ServletEndpointUrl")
-    private String             servletEndpointUrl;
-
-    @Init(name = "CookiePath")
+    @Init(name = COOKIE_PATH)
     private String             cookiePath;
 
 
@@ -103,17 +101,11 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         // Create a new session (invalidate an old one, if there is one).
         HttpSession session = restartSession(request);
 
-        /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or load balancer when OpenSAML
-         * is checking the destination field.
-         */
-        HttpServletRequestEndpointWrapper wrappedRequest = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
-
         ProtocolContext protocolContext;
         try {
-            protocolContext = ProtocolHandlerManager.handleRequest(wrappedRequest);
+            protocolContext = ProtocolHandlerManager.handleRequest(request);
         } catch (ProtocolException e) {
-            redirectToErrorPage(wrappedRequest, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
@@ -138,8 +130,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             response.addCookie(authLanguageCookie);
         }
         if (null != minimal && minimal) {
-            session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
-            session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+            session.setAttribute(SafeOnlineAppConstants.COLOR_SESSION_ATTRIBUTE, color);
+            session.setAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE, minimal);
         }
 
         /*
@@ -164,7 +156,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
          */
         HelpdeskLogger.clear(session);
 
-        if (isFirstTime(wrappedRequest, response)) {
+        if (isFirstTime(request, response)) {
             response.sendRedirect(FirstTimePage.PATH);
             return;
         }
@@ -172,8 +164,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         /*
          * Check Single Sign-On
          */
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(wrappedRequest.getSession());
-        Cookie[] cookies = wrappedRequest.getCookies();
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
+        Cookie[] cookies = request.getCookies();
         boolean validSso = false;
         if (null != cookies) {
             for (Cookie cookie : cookies) {
@@ -204,14 +196,12 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             }
         }
         if (validSso) {
-            LoginManager.login(wrappedRequest.getSession(), authenticationService.getUserId(),
-                    authenticationService.getAuthenticationDevice());
-            response.sendRedirect(loginUrl);
+            LoginManager.login(request.getSession(), authenticationService.getUserId(), authenticationService.getAuthenticationDevice());
+            response.sendRedirect(loginPath);
             return;
         }
 
         response.sendRedirect(MainPage.PATH);
-
     }
 
     /**

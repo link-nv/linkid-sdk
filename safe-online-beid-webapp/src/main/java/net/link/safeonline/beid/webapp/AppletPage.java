@@ -17,7 +17,7 @@ import net.link.safeonline.applet.AppletControl;
 import net.link.safeonline.applet.RuntimeContext;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationManager;
 import net.link.safeonline.sc.pkcs11.auth.AuthenticationApplet;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;

@@ -473,128 +473,6 @@
 			</modules>
 		</profile>
 
-		<!-- HOST SELECTION PROFILES -->
-		<!-- Profile for deploying on the Option OLAS server -->
-		<profile>
-			<id>host:option</id>
-			<properties>
-				<safe-online.host.name>option.olas.be
-				</safe-online.host.name>
-
-				<safe-online.data.source.user>olasoption
-				</safe-online.data.source.user>
-				<safe-online.data.source.pass>380464ce4c61ebcc2fb9
-				</safe-online.data.source.pass>
-				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on the Demo OLAS server -->
-		<profile>
-			<id>host:demo</id>
-			<properties>
-				<safe-online.distribution>base</safe-online.distribution>
-				<safe-online.host.name>demo.olas.be
-				</safe-online.host.name>
-
-				<safe-online.data.source.user>olasdemo
-				</safe-online.data.source.user>
-				<safe-online.data.source.pass>1abb9f16a7ba974a6cf1
-				</safe-online.data.source.pass>
-
-				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-				<safe-online.host.port:insecure>80</safe-online.host.port:insecure>
-				<safe-online.host.port:secure>443</safe-online.host.port:secure>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on Encap server -->
-		<profile>
-			<id>host:encap</id>
-			<properties>
-				<safe-online.host.name>test.encap.no
-				</safe-online.host.name>
-
-				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-test-10 -->
-		<profile>
-			<id>host:buildserver</id>
-			<properties>
-				<safe-online.host.name>buildserver
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-test-10 -->
-		<profile>
-			<id>host:sebeco-test-10</id>
-			<properties>
-				<safe-online.host.name>sebeco-test-10
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-10 -->
-		<profile>
-			<id>host:sebeco-dev-10</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-10
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-11 -->
-		<profile>
-			<id>host:sebeco-dev-11</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-11
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-12 -->
-		<profile>
-			<id>host:sebeco-dev-12</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-12
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-13 -->
-		<profile>
-			<id>host:sebeco-dev-13</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-13
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-22 -->
-		<profile>
-			<id>host:sebeco-dev-22</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-22
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on Wim's Laptop -->
-		<profile>
-			<id>host:wim</id>
-			<properties>
-				<safe-online.host.name>192.168.5.11
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-
 		<!-- CONFIGURATION PROFILES -->
 		<!--
 			Profile that uses insecure transport for secure traffic to reduce
@@ -723,8 +601,6 @@
 		</safe-online.otpoversms.auth.ws.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-		<safe-online.version>${pom.version}
-		</safe-online.version>
 		<bcel.version>5.1</bcel.version>
 		<bsf.version>2.4.0</bsf.version>
 		<bsh.version>1.3.0</bsh.version>
@@ -954,6 +830,7 @@
 		<module>safe-online-saml-authn-context
 		</module>
 		<module>safe-online-saml-common</module>
+		<module>safe-online-model-node</module>
 		<module>safe-online-node-keystore</module>
 		<!--
 			TODO: Remove the following. Only here because of a test dependency in
@@ -1556,7 +1433,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-as
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>provided</scope>
 				<type>pom</type>
 			</dependency>
@@ -1564,21 +1441,21 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-jsf
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-saml
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-test
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>test</scope>
 				<type>pom</type>
 			</dependency>
@@ -1586,7 +1463,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-olas
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
@@ -1594,7 +1471,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-option
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
@@ -1602,14 +1479,14 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-jsf
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-sql-ddl</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>provided</scope>
 				<type>jar</type>
 			</dependency>
@@ -1617,7 +1494,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-demo-sql-ddl
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>provided</scope>
 				<type>jar</type>
 			</dependency>

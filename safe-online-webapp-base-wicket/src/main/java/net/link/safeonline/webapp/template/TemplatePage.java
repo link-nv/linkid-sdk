@@ -26,7 +26,7 @@ public abstract class TemplatePage extends OlasApplicationPage {
 
         // If minimal session attribute is set, add minimal.css style sheet.
         HttpSession httpSession = WicketUtil.getHttpSession(getRequest());
-        Object minimalAttribute = httpSession.getAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE);
+        Object minimalAttribute = httpSession.getAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE);
         boolean isMinimal = Boolean.parseBoolean(String.valueOf(minimalAttribute));
         if (isMinimal) {
             add(HeaderContributor.forCss(TemplatePage.class, "minimal.css"));

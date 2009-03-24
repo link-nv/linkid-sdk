@@ -22,9 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
+import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.TestClassLoader;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -94,18 +97,21 @@ public class AuthnRequestFilterTest {
         String p12ResourceName = "p12-resource-name.p12";
         testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
 
+        Map<String, String> servletInitParameters = new HashMap<String, String>();
+        servletInitParameters.put(SafeOnlineConfig.WEBAPP_PATH_CONTEXT_PARAM, "/");
         Map<String, String> filterInitParameters = new HashMap<String, String>();
-        filterInitParameters.put("AuthenticationServiceUrl", "http://authn.service");
-        filterInitParameters.put("ApplicationName", "application-id");
-        filterInitParameters.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
-        filterInitParameters.put("KeyStoreResource", p12ResourceName);
-        filterInitParameters.put("KeyStorePassword", "secret");
-        filterInitParameters.put("WsLocation", "https://ws.location");
+        filterInitParameters.put(SafeOnlineLoginUtils.AUTH_SERVICE_PATH_CONTEXT_PARAM, "/");
+        filterInitParameters.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, "application-id");
+        filterInitParameters.put(SafeOnlineLoginUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, "SAML2_BROWSER_POST");
+        filterInitParameters.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
+        filterInitParameters.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
+        servletTestManager.setUp(TestServlet.class, servletInitParameters, AuthnRequestFilter.class, filterInitParameters,
+                initialSessionAttributes);
 
         GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();
+        SafeOnlineConfig.load(servletTestManager);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);
@@ -131,19 +137,23 @@ public class AuthnRequestFilterTest {
         String p12ResourceName = "p12-resource-name.p12";
         testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
 
+        Map<String, String> servletInitParameters = new HashMap<String, String>();
+        servletInitParameters.put(SafeOnlineConfig.WEBAPP_PATH_CONTEXT_PARAM, "/");
         Map<String, String> filterInitParameters = new HashMap<String, String>();
-        filterInitParameters.put("AuthenticationServiceUrl", "http://authn.service");
-        filterInitParameters.put("ApplicationName", "application-id");
-        filterInitParameters.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
-        filterInitParameters.put("KeyStoreResource", p12ResourceName);
-        filterInitParameters.put("KeyStorePassword", "secret");
-        filterInitParameters.put("Saml2BrowserPostTemplate", "test-saml2-post-binding.vm");
-        filterInitParameters.put("WsLocation", "https://ws.location");
+        filterInitParameters.put(SafeOnlineLoginUtils.AUTH_SERVICE_PATH_CONTEXT_PARAM, "/");
+        filterInitParameters.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, "application-id");
+        filterInitParameters.put(SafeOnlineLoginUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, "SAML2_BROWSER_POST");
+        filterInitParameters.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
+        filterInitParameters.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");
+        filterInitParameters.put(Saml2BrowserPostAuthenticationProtocolHandler.SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM,
+                "test-saml2-post-binding.vm");
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
+        servletTestManager.setUp(TestServlet.class, servletInitParameters, AuthnRequestFilter.class, filterInitParameters,
+                initialSessionAttributes);
 
         GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();
+        SafeOnlineConfig.load(servletTestManager);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);

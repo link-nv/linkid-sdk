@@ -5,11 +5,16 @@
 
 	<display-name>SafeOnline BeId Authentication Web Service Runtime</display-name>
 
+    <!-- Application Filter Definitions And Mappings -->
+	<!--  ${safe-online.profiling.filter} -->
+
+    <!-- Application Event Listeners -->
 	<listener>
 		<listener-class>
 			com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
 	</listener>
 
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>JAX-WS Servlet</servlet-name>
 		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
@@ -21,6 +26,12 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
+    <!-- Application Session Configuration -->
+	<session-config>
+		<session-timeout>5</session-timeout>
+	</session-config>
+
+    <!-- JNDI Environment Bindings -->
 	<env-entry>
 		<env-entry-name>wsSecurityConfigurationServiceJndiName</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
@@ -34,12 +45,4 @@
 		<env-entry-value>false</env-entry-value>
 	</env-entry>
 	
-
-
-	<session-config>
-		<session-timeout>5</session-timeout>
-	</session-config>
-
-	<!--  ${safe-online.profiling.filter} -->
-
 </web-app>

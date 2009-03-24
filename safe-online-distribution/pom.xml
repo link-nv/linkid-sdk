@@ -297,6 +297,31 @@
             <scope>provided</scope>
 			<type>jar</type>
 		</dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>hsqldb-plugin</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.jdbc</groupId>
+            <artifactId>ojdbc5</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
 	</dependencies>
 
@@ -460,26 +485,6 @@
                     <version>1.4-SNAPSHOT</version>
                     <scope>provided</scope>
                     <type>jar</type>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss</groupId>
-                    <artifactId>hsqldb</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss</groupId>
-                    <artifactId>hsqldb-plugin</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>com.oracle.jdbc</groupId>
-                    <artifactId>ojdbc5</artifactId>
                 </dependency>
             </dependencies>
 

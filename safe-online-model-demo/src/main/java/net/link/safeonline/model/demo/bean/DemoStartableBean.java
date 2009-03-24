@@ -49,6 +49,7 @@ import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.password.PasswordManager;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -84,18 +85,6 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private List<PasswordRegistration> passwordRegistrations;
 
-    private String                     nodeName;
-
-    private String                     protocol;
-
-    private String                     sslProtocol;
-
-    private String                     hostname;
-
-    private int                        hostport;
-
-    private int                        hostportssl;
-
     private String                     demoAppWebappName;
     private String                     demoTicketWebappName;
     private String                     demoPaymentWebappName;
@@ -125,12 +114,6 @@ public class DemoStartableBean extends AbstractInitBean {
     public void postStart() {
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
-        nodeName = properties.getString("olas.node.name");
-        sslProtocol = properties.getString("olas.host.protocol.ssl");
-        protocol = properties.getString("olas.host.protocol");
-        hostname = properties.getString("olas.host.name");
-        hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
         demoAppWebappName = properties.getString("olas.demo.app.webapp.name");
         demoTicketWebappName = properties.getString("olas.demo.ticket.webapp.name");
         demoPaymentWebappName = properties.getString("olas.demo.payment.webapp.name");
@@ -154,9 +137,12 @@ public class DemoStartableBean extends AbstractInitBean {
         PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStore.getPrivateKeyEntry();
         X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry.getCertificate();
         try {
-            registeredApplications.add(new Application(demoAppWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoAppWebappUrl), getLogo(), true, true, demoCertificate, false, IdScopeType.USER, true, new URL(sslProtocol,
-                    hostname, hostportssl, "/" + demoAppWebappUrl + "/logout")));
+            URL demoAppApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(), SafeOnlineConfig.nodePort(),
+                    "/" + demoAppWebappUrl);
+            URL demoAppSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeName(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoAppWebappUrl + "/logout");
+            registeredApplications.add(new Application(demoAppWebappName, "owner", null, demoAppApplicationUrl, getLogo(), true, true,
+                    demoCertificate, false, IdScopeType.USER, true, demoAppSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -215,9 +201,13 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         trustedCertificates.put(demoMandateCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoMandateWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoMandateWebappUrl), getLogo(), true, true, demoMandateCertificate, true, IdScopeType.APPLICATION, true, new URL(
-                    sslProtocol, hostname, hostportssl, "/" + demoMandateWebappUrl + "/authlogout")));
+            URL demoMandateApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePort(), "/" + demoMandateWebappUrl);
+            URL demoMandateSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoMandateWebappUrl + "/authlogout");
+
+            registeredApplications.add(new Application(demoMandateWebappName, "owner", null, demoMandateApplicationUrl, getLogo(), true,
+                    true, demoMandateCertificate, true, IdScopeType.APPLICATION, true, demoMandateSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -293,9 +283,14 @@ public class DemoStartableBean extends AbstractInitBean {
 
         trustedCertificates.put(demoTicketCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoTicketWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoTicketWebappUrl), getLogo("/eticket-small.png"), true, true, demoTicketCertificate, false,
-                    IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoTicketWebappUrl + "/logout")));
+            URL demoTicketApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePort(), "/" + demoTicketWebappUrl);
+            URL demoTicketSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoTicketWebappUrl + "/logout");
+
+            registeredApplications.add(new Application(demoTicketWebappName, "owner", null, demoTicketApplicationUrl,
+                    getLogo("/eticket-small.png"), true, true, demoTicketCertificate, false, IdScopeType.SUBSCRIPTION, true,
+                    demoTicketSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -332,9 +327,14 @@ public class DemoStartableBean extends AbstractInitBean {
 
         trustedCertificates.put(demoBankCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoBankWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoBankWebappUrl), getLogo("/ebank-small.png"), true, true, demoBankCertificate, false, IdScopeType.SUBSCRIPTION,
-                    true, new URL(sslProtocol, hostname, hostportssl, "/" + demoBankWebappUrl + "/logout")));
+            URL demoBankApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(), SafeOnlineConfig.nodePort(),
+                    "/" + demoBankWebappUrl);
+            URL demoBankSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoBankWebappUrl + "/logout");
+
+            registeredApplications.add(new Application(demoBankWebappName, "owner", null, demoBankApplicationUrl,
+                    getLogo("/ebank-small.png"), true, true, demoBankCertificate, false, IdScopeType.SUBSCRIPTION, true,
+                    demoBankSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -371,9 +371,14 @@ public class DemoStartableBean extends AbstractInitBean {
 
         trustedCertificates.put(demoCinemaCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoCinemaWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoCinemaWebappUrl), getLogo("/ecinema-small.png"), true, true, demoCinemaCertificate, false,
-                    IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoCinemaWebappUrl + "/logout")));
+            URL demoCinemaApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePort(), "/" + demoCinemaWebappUrl);
+            URL demoCinemaSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoCinemaWebappUrl + "/logout");
+
+            registeredApplications.add(new Application(demoCinemaWebappName, "owner", null, demoCinemaApplicationUrl,
+                    getLogo("/ecinema-small.png"), true, true, demoCinemaCertificate, false, IdScopeType.SUBSCRIPTION, true,
+                    demoCinemaSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -418,9 +423,14 @@ public class DemoStartableBean extends AbstractInitBean {
         X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry.getCertificate();
 
         try {
-            registeredApplications.add(new Application(demoPaymentWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoPaymentWebappUrl), getLogo("/epayment-small.png"), true, true, demoPaymentCertificate, true,
-                    IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoPaymentWebappUrl + "/logout")));
+            URL demoPaymentApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePort(), "/" + demoPaymentWebappUrl);
+            URL demoPaymentSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoPaymentWebappUrl + "/logout");
+
+            registeredApplications.add(new Application(demoPaymentWebappName, "owner", null, demoPaymentApplicationUrl,
+                    getLogo("/epayment-small.png"), true, true, demoPaymentCertificate, true, IdScopeType.SUBSCRIPTION, true,
+                    demoPaymentSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -494,9 +504,15 @@ public class DemoStartableBean extends AbstractInitBean {
         X509Certificate demoPrescriptionCertificate = (X509Certificate) demoPrescriptionPrivateKeyEntry.getCertificate();
         trustedCertificates.put(demoPrescriptionCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoPrescriptionWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoPrescriptionWebappUrl), getLogo(), true, true, demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true,
-                    new URL(sslProtocol, hostname, hostportssl, "/" + demoPrescriptionWebappUrl + "/authlogout")));
+            URL demoPrescriptionApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePort(), "/" + demoPrescriptionWebappUrl);
+            URL demoPrescriptionSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoPrescriptionWebappUrl + "/authlogout");
+
+            registeredApplications
+                                  .add(new Application(demoPrescriptionWebappName, "owner", null, demoPrescriptionApplicationUrl,
+                                          getLogo(), true, true, demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true,
+                                          demoPrescriptionSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -564,9 +580,13 @@ public class DemoStartableBean extends AbstractInitBean {
         PrivateKeyEntry demoLawyerPrivateKeyEntry = DemoLawyerKeyStore.getPrivateKeyEntry();
         X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry.getCertificate();
         try {
-            registeredApplications.add(new Application(demoLawyerWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
-                    + demoLawyerWebappUrl), getLogo(), true, true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(
-                    sslProtocol, hostname, hostportssl, "/" + demoLawyerWebappUrl + "/authlogout")));
+            URL demoLawyerApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePort(), "/" + demoLawyerWebappUrl);
+            URL demoLawyerSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + demoLawyerWebappUrl + "/authlogout");
+
+            registeredApplications.add(new Application(demoLawyerWebappName, "owner", null, demoLawyerApplicationUrl, getLogo(), true,
+                    true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION, true, demoLawyerSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -693,13 +713,9 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configSubscription(String topic, X509Certificate certificate) {
 
-        String address = protocol + "://" + hostname + ":";
-        if (protocol.equals("http")) {
-            address += hostport;
-        } else {
-            address += hostportssl;
-        }
-        address += "/safe-online-demo-ws/consumer";
+        String address = String.format("%s://%s:%d/%s", SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePortSecure(), "safe-online-demo-ws/consumer");
+
         notificationSubcriptions.add(new NotificationSubscription(topic, address, certificate));
     }
 
@@ -707,7 +723,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, sslProtocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        node = new Node(SafeOnlineConfig.nodeName(), SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePort(), SafeOnlineConfig.nodePortSecure(), nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 

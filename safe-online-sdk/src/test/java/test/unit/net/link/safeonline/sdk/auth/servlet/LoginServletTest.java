@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.servlet.LoginServlet;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -55,6 +56,7 @@ public class LoginServletTest {
 
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(LoginServlet.class);
+        SafeOnlineConfig.load(servletTestManager);
     }
 
     @After
@@ -100,8 +102,7 @@ public class LoginServletTest {
         String location = servletTestManager.getServletLocation();
         LOG.debug("servlet location: " + location);
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-                mockAuthenticationProtocolHandler);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockAuthenticationProtocolHandler);
 
         // expectations
         expect(
@@ -132,8 +133,7 @@ public class LoginServletTest {
         String location = servletTestManager.getServletLocation();
         LOG.debug("servlet location: " + location);
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-                mockAuthenticationProtocolHandler);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockAuthenticationProtocolHandler);
         String target = "http://test.target";
         servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
         String userId = UUID.randomUUID().toString();
@@ -163,7 +163,7 @@ public class LoginServletTest {
         String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         assertEquals(userId, resultUserId);
         String resultAuthenticatedDevice = (String) servletTestManager
-                                                                           .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+                                                                      .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         assertEquals(authenticatedDevice, resultAuthenticatedDevice);
         String resultTarget = getMethod.getResponseHeader("Location").getValue();
         assertEquals(target, resultTarget);

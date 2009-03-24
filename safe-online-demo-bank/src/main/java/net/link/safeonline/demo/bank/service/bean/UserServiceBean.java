@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
@@ -132,7 +131,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     /**
      * {@inheritDoc}
      */
-    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId, HttpServletRequest httpRequest) {
+    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId) {
 
         BankUserEntity olasEntity = findOLASUser(olasId);
         if (olasEntity != null) {
@@ -146,7 +145,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
         BankUserEntity userEntity = attach(user);
         userEntity.setOlasId(olasId);
 
-        return updateUser(userEntity, httpRequest);
+        return updateUser(userEntity);
     }
 
     /**
@@ -160,7 +159,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     /**
      * {@inheritDoc}
      */
-    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest httpRequest) {
+    public BankUserEntity updateUser(BankUserEntity user) {
 
         try {
             BankUserEntity userEntity = attach(user);
@@ -168,8 +167,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
                 return userEntity;
 
             // OLAS username of the user.
-            AttributeClient attributeClient = OlasServiceFactory
-                                                                .getAttributeService(httpRequest, DemoBankKeyStore.getPrivateKeyEntry());
+            AttributeClient attributeClient = OlasServiceFactory.getAttributeService(DemoBankKeyStore.getPrivateKeyEntry());
             String name = attributeClient.getAttributeValue(userEntity.getOlasId(), DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setName(name);
 

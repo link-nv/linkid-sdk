@@ -43,6 +43,7 @@ import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -61,15 +62,13 @@ import org.opensaml.saml2.core.AuthnRequest;
 
 public class AuthnEntryServletTest {
 
-    private static final Log                 LOG                = LogFactory.getLog(AuthnEntryServletTest.class);
+    private static final Log                 LOG        = LogFactory.getLog(AuthnEntryServletTest.class);
 
     private ServletTestManager               authnEntryServletTestManager;
 
-    private String                           loginUrl           = "login";
+    private String                           loginPath  = "login";
 
-    private String                           servletEndpointUrl = "http://test.auth/servlet";
-
-    private String                           cookiePath         = "/test-path/";
+    private String                           cookiePath = "/test-path/";
 
     private JndiTestUtils                    jndiTestUtils;
 
@@ -108,13 +107,13 @@ public class AuthnEntryServletTest {
 
         authnEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LoginUrl", loginUrl);
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("CookiePath", cookiePath);
+        initParams.put(AuthnEntryServlet.LOGIN_PATH, loginPath);
+        initParams.put(AuthnEntryServlet.COOKIE_PATH, cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
 
         authnEntryServletTestManager.setUp(AuthnEntryServlet.class, initParams, null, null, initialSessionAttributes);
+        SafeOnlineConfig.load(authnEntryServletTestManager);
 
         mockObjects = new Object[] { mockApplicationAuthenticationService, mockPkiValidator, mockSamlAuthorityService,
                 mockDevicePolicyService, mockAuthenticationService };
@@ -165,7 +164,7 @@ public class AuthnEntryServletTest {
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
-                assertionConsumerService, servletEndpointUrl, null, null, false);
+                assertionConsumerService, servletLocation, null, null, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
@@ -215,7 +214,7 @@ public class AuthnEntryServletTest {
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
-                assertionConsumerService, servletEndpointUrl, null, null, true);
+                assertionConsumerService, servletLocation, null, null, true);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 
         String userId = UUID.randomUUID().toString();
@@ -253,7 +252,7 @@ public class AuthnEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(loginUrl));
+        assertTrue(location.endsWith(loginPath));
         long resultApplicationId = (Long) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
         assertEquals(applicationId, resultApplicationId);
         String resultApplicationName = (String) authnEntryServletTestManager

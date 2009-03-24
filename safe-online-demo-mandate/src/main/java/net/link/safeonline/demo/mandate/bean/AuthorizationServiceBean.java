@@ -7,11 +7,6 @@
 
 package net.link.safeonline.demo.mandate.bean;
 
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
-import java.util.ResourceBundle;
-
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,8 +19,8 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.OlasServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
@@ -37,9 +32,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = AuthorizationService.JNDI_BINDING)
 public class AuthorizationServiceBean implements AuthorizationService {
 
-    private final String     WEBSERVICE_CONFIG = "ws_config";
-
-    private static final Log LOG               = LogFactory.getLog(AuthorizationServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(AuthorizationServiceBean.class);
 
     @PersistenceContext(unitName = MandateConstants.ENTITY_MANAGER_NAME)
     private EntityManager    entityManager;
@@ -72,17 +65,7 @@ public class AuthorizationServiceBean implements AuthorizationService {
 
     private AttributeClient getAttributeClient() {
 
-        ResourceBundle config = ResourceBundle.getBundle(WEBSERVICE_CONFIG);
-        String wsLocation = config.getString("WsLocation");
-
-        LOG.debug("Webservice: " + wsLocation);
-
-        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStore.getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        AttributeClient attributeClient = new AttributeClientImpl(wsLocation, certificate, privateKey);
-        return attributeClient;
+        return OlasServiceFactory.getAttributeService(DemoMandateKeyStore.getPrivateKeyEntry());
     }
 
     public boolean isAdmin(String userId) {

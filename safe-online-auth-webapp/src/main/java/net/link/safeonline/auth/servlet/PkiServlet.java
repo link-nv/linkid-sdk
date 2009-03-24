@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -32,7 +32,7 @@ import org.bouncycastle.openssl.PEMWriter;
  * @author fcorneli
  * 
  */
-public class PkiServlet extends AbstractInjectionServlet {
+public class PkiServlet extends AbstractNodeInjectionServlet {
 
     private static final long serialVersionUID = 1L;
 

@@ -27,6 +27,7 @@ import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordManager;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -90,23 +91,16 @@ public class PasswordStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("password_config");
-        String nodeName = properties.getString("olas.node.name");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
+        node = new Node(SafeOnlineConfig.nodeName(), SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePort(), SafeOnlineConfig.nodePortSecure(), nodeKeyStore.getCertificate());
         trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureDevice() {
 
         ResourceBundle properties = ResourceBundle.getBundle("password_config");
-        String nodeName = properties.getString("olas.node.name");
         String passwordWebappName = properties.getString("password.webapp.name");
         String passwordAuthWSPath = properties.getString("password.auth.ws.webapp.name");
 
@@ -159,10 +153,11 @@ public class PasswordStartableBean extends AbstractInitBean {
                 "Password", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl", "Wachtwoord", null));
 
-        devices.add(new Device(PasswordConstants.PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, nodeName, "/"
-                + passwordWebappName + "/auth", "/" + passwordAuthWSPath, "/" + passwordWebappName + "/device", "/" + passwordWebappName
-                + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName
-                + "/device", passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
+        devices.add(new Device(PasswordConstants.PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConfig.nodeName(), "/" + passwordWebappName + "/auth", "/" + passwordAuthWSPath, "/" + passwordWebappName
+                        + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName
+                        + "/device", "/" + passwordWebappName + "/device", passwordDeviceAttributeType, null,
+                passwordDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, "nl", "Paswoord"));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Password"));
     }

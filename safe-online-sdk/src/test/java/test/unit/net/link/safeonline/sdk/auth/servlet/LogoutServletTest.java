@@ -41,6 +41,7 @@ import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.TestClassLoader;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -62,7 +63,7 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 public class LogoutServletTest {
 
-    private static final Log    LOG                  = LogFactory.getLog(LogoutServletTest.class);
+    private static final Log    LOG                   = LogFactory.getLog(LogoutServletTest.class);
 
     private ServletTestManager  servletTestManager;
 
@@ -70,15 +71,13 @@ public class LogoutServletTest {
 
     private JndiTestUtils       jndiTestUtils;
 
-    private String              logoutUrl            = "logout";
+    private String              logoutPath            = "logout";
 
-    private String              errorPage            = "error";
+    private String              errorPage             = "error";
 
-    private String              servletEndpointUrl   = "http://test.logout/servlet";
+    private String              logoutExitServicePath = "logoutexit";
 
-    private String              logoutExitServiceUrl = "http://test.auth/logoutexit";
-
-    private String              applicationName      = "test-application-id";
+    private String              applicationName       = "test-application-id";
 
     private KeyPair             keyPair;
 
@@ -126,18 +125,18 @@ public class LogoutServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LogoutUrl", logoutUrl);
+        initParams.put("LogoutPath", logoutPath);
         initParams.put("ErrorPage", errorPage);
-        initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_URL_INIT_PARAM, logoutExitServiceUrl);
-        initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, applicationName);
-        initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_INIT_PARAM, p12ResourceName);
-        initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_INIT_PARAM, "secret");
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("WsLocation", webServiceTestUtils.getLocation());
+        initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM, logoutExitServicePath);
+        initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, applicationName);
+        initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
+        initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");
 
         servletTestManager.setUp(LogoutServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
+
+        SafeOnlineConfig.load(servletTestManager, webServiceTestUtils);
     }
 
     @After
@@ -252,7 +251,7 @@ public class LogoutServletTest {
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String resultTarget = postMethod.getResponseHeader("Location").getValue();
-        assertTrue(resultTarget.endsWith(logoutUrl));
+        assertTrue(resultTarget.endsWith(logoutPath));
     }
 
     @Test
@@ -262,8 +261,7 @@ public class LogoutServletTest {
         // setup
         String userId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory
-                                                       .createLogoutRequest(userId, applicationName, keyPair, servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
@@ -279,7 +277,7 @@ public class LogoutServletTest {
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String resultTarget = postMethod.getResponseHeader("Location").getValue();
-        assertTrue(resultTarget.endsWith(logoutUrl));
+        assertTrue(resultTarget.endsWith(logoutPath));
     }
 
     @Test
@@ -290,8 +288,7 @@ public class LogoutServletTest {
         String userId = UUID.randomUUID().toString();
         String fooUserId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory
-                                                       .createLogoutRequest(userId, applicationName, keyPair, servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, fooUserId);

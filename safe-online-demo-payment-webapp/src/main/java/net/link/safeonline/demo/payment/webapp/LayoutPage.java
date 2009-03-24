@@ -69,7 +69,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
         String olasId = WicketUtil.findOlasId(getRequest());
         PaymentUserEntity user = userService.getUser(olasId);
 
-        PaymentSession.get().setUser(userService.updateUser(user, WicketUtil.toServletRequest(getRequest())));
+        PaymentSession.get().setUser(userService.updateUser(user));
     }
 
     /**

@@ -8,7 +8,6 @@ package net.link.safeonline.demo.cinema.service.bean;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStore;
@@ -60,11 +59,11 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     /**
      * {@inheritDoc}
      */
-    public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest request) {
+    public CinemaUserEntity updateUser(CinemaUserEntity user) {
 
         try {
             CinemaUserEntity userEntity = attach(user);
-            AttributeClient attributeClient = OlasServiceFactory.getAttributeService(request, DemoCinemaKeyStore.getPrivateKeyEntry());
+            AttributeClient attributeClient = OlasServiceFactory.getAttributeService(DemoCinemaKeyStore.getPrivateKeyEntry());
 
             // National registry number of user.
             String nrns[] = attributeClient.getAttributeValue(userEntity.getOlasId(), BeIdConstants.BEID_NRN_ATTRIBUTE, String[].class);
