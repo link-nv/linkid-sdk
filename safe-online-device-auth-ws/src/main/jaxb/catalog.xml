@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:set ts=4 sw=4 noexpandtab: -->
+
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system" xml:base="../catalog">
 
     <!-- (X)HTML -->

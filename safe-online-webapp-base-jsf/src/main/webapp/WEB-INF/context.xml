@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!-- vi:set ts=4 sw=4 noexpandtab: -->
+
 <Context>
 	<!-- Next is not working in combination with jboss-app.xml loader-repository element.
 		To make this to work we would have to inject the class in the Tomcat classloader 

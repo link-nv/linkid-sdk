@@ -1,4 +1,6 @@
 <config>
+<!-- vi:set ts=4 sw=4 noexpandtab: -->
+
     <TCP start_port="7805" />
     <TCPPING initial_hosts="localhost[7800]"
         port_range="5"
