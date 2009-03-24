@@ -80,7 +80,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceManagementLandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceOperationLandingServlet</servlet-class>
 		<init-param>
 			<param-name>DisablePath</param-name>
 			<param-value>disable</param-value>
@@ -96,7 +96,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceManagementExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DeviceOperationExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>

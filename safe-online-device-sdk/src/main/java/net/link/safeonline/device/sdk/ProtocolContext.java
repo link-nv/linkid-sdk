@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 
 
 public class ProtocolContext implements Serializable {

@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.beid.servlet.IdentityServlet;
-import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationManager;
-import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationManager;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;

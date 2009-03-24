@@ -12,9 +12,9 @@ import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
-import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
-import net.link.safeonline.device.sdk.manage.saml2.response.DeviceOperationResponse;
-import net.link.safeonline.device.sdk.manage.saml2.response.DeviceOperationResponseFactory;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseFactory;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 

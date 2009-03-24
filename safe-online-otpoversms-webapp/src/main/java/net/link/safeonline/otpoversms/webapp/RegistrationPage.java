@@ -16,7 +16,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.custom.converter.PhoneNumber;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.osgi.sms.exception.SmsServiceException;

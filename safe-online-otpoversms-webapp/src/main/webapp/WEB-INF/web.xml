@@ -112,7 +112,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class>net.link.safeonline.otpoversms.webapp.servlet.DeviceManagementExitServlet</servlet-class>
+		<servlet-class>net.link.safeonline.otpoversms.webapp.servlet.DeviceOperationExitServlet</servlet-class>
 
 		<init-param>
 			<param-name>ErrorPage</param-name>

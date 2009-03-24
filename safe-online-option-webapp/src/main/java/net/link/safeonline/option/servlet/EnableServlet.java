@@ -11,7 +11,7 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.manage.saml2.DeviceOperationManager;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationManager;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.model.option.OptionDeviceService;

@@ -465,6 +465,23 @@ unitName=SafeOnlineEntityManager
 			</para>
 		</section>
 		<section>
+			<title>Host Configuration</title>
+			<para>
+                By default, JBoss and OLAS are configured to use
+                <code>
+                    localhost
+                </code>
+                as the hostname for the application and base of redirects.
+                The
+                <code>
+                    $JBOSS_HOME/server/default/conf/safeonline.properties
+                </code>
+                file contains all hostname parameters used by the OLAS
+                application for initialization of its nodes, base for
+                user redirects and SAML ticket validation.
+			</para>
+		</section>
+		<section>
 			<title>SSL</title>
 			<para>
 				Depending on the OLAS topology, i.e. whether you're
