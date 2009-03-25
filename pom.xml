@@ -304,107 +304,26 @@
 				<defaultCronExpression>0 0 0 1 1 ?</defaultCronExpression>
 
 				<!-- WEBAPP NAMES -->
-				<safe-online.demo.app.webapp.name>demo
-				</safe-online.demo.app.webapp.name>
-				<safe-online.demo.prescription.webapp.name>demo-prescription
-				</safe-online.demo.prescription.webapp.name>
 				<safe-online.demo.bank.webapp.name>ebank
 				</safe-online.demo.bank.webapp.name>
 				<safe-online.demo.cinema.webapp.name>cinema
 				</safe-online.demo.cinema.webapp.name>
-				<safe-online.demo.lawyer.webapp.name>demo-lawyer
-				</safe-online.demo.lawyer.webapp.name>
-				<safe-online.demo.mandate.webapp.name>demo-mandate
-				</safe-online.demo.mandate.webapp.name>
 				<safe-online.demo.payment.webapp.name>epayment
 				</safe-online.demo.payment.webapp.name>
-				<safe-online.demo.ticket.webapp.name>eticket
-				</safe-online.demo.ticket.webapp.name>
 				<safe-online.demo.ws.webapp.name>safe-online-demo-ws
 				</safe-online.demo.ws.webapp.name>
 
-				<safe-online.demo.app.webapp.url>demo
-				</safe-online.demo.app.webapp.url>
-				<safe-online.demo.prescription.webapp.url>demo-prescription
-				</safe-online.demo.prescription.webapp.url>
 				<safe-online.demo.bank.webapp.url>demo-bank
 				</safe-online.demo.bank.webapp.url>
 				<safe-online.demo.cinema.webapp.url>demo-cinema
 				</safe-online.demo.cinema.webapp.url>
-				<safe-online.demo.lawyer.webapp.url>demo-lawyer
-				</safe-online.demo.lawyer.webapp.url>
-				<safe-online.demo.mandate.webapp.url>demo-mandate
-				</safe-online.demo.mandate.webapp.url>
 				<safe-online.demo.payment.webapp.url>demo-payment
 				</safe-online.demo.payment.webapp.url>
-				<safe-online.demo.ticket.webapp.url>demo-ticket
-				</safe-online.demo.ticket.webapp.url>
 				<safe-online.demo.ws.webapp.url>safe-online-demo-ws
 				</safe-online.demo.ws.webapp.url>
 			</properties>
 			<modules>
-				<!-- DEMO CORE -->
-				<module>safe-online-model-demo-client
-				</module>
-				<module>safe-online-model-demo</module>
-				<module>safe-online-demo-sql-ddl</module>
-				<module>safe-online-demo-deploy</module>
-				<module>safe-online-demo-applet</module>
-				<module>safe-online-demo-webapp</module>
-				<module>safe-online-demo-startup-runtime
-				</module>
-				<module>safe-online-demo-keystore</module>
-				<module>safe-online-demo-remote-service
-				</module>
-				<module>safe-online-demo-notification-consumer-ws-impl
-				</module>
-				<module>safe-online-demo-ws-runtime
-				</module>
-				<module>safe-online-demo-ws-model</module>
-
-				<!-- DEMO APPLICATIONS -->
-				<module>safe-online-demo-ticket-webapp
-				</module>
-				<module>safe-online-demo-ticket</module>
-				<module>safe-online-demo-ticket-keystore
-				</module>
-				<module>safe-online-demo-payment</module>
-				<module>safe-online-demo-payment-webapp
-				</module>
-				<module>safe-online-demo-payment-keystore
-				</module>
-				<module>safe-online-demo-lawyer</module>
-				<module>safe-online-demo-lawyer-webapp
-				</module>
-				<module>safe-online-demo-lawyer-service
-				</module>
-				<module>safe-online-demo-lawyer-keystore
-				</module>
-				<module>safe-online-demo-prescription
-				</module>
-				<module>safe-online-demo-prescription-webapp
-				</module>
-				<module>safe-online-demo-prescription-service
-				</module>
-				<module>safe-online-demo-prescription-keystore
-				</module>
-				<module>safe-online-demo-mandate</module>
-				<module>safe-online-demo-mandate-webapp
-				</module>
-				<module>safe-online-demo-mandate-service
-				</module>
-				<module>safe-online-demo-mandate-keystore
-				</module>
-				<module>safe-online-demo-cinema</module>
-				<module>safe-online-demo-cinema-webapp
-				</module>
-				<module>safe-online-demo-cinema-keystore
-				</module>
-				<module>safe-online-demo-bank</module>
-				<module>safe-online-demo-bank-webapp
-				</module>
-				<module>safe-online-demo-bank-keystore
-				</module>
+				<module>demo</module>
 			</modules>
 		</profile>
 
