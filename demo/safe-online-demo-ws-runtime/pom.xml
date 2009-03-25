@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online</groupId>
+		<artifactId>demo</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -15,7 +15,7 @@
 		The JAX-WS Web Service Runtime for the Demo services.
 	</description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.demo</groupId>
 	<artifactId>safe-online-demo-ws-runtime</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -77,7 +77,7 @@
 
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.demo</groupId>
 			<artifactId>safe-online-demo-notification-consumer-ws-impl</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>runtime</scope>
