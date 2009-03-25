@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.webapp.resources.LogoutServlet;
 
@@ -44,6 +45,7 @@ public class LogoutServletTest extends TestCase {
         servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitPath", logoutExitPath), null, null,
                 Collections.singletonMap(LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
         servletLocation = servletTestManager.getServletLocation();
+        SafeOnlineTestConfig.loadTest(servletTestManager);
     }
 
     @Override

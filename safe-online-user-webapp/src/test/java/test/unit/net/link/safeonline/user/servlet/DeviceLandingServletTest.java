@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.user.servlet.DeviceLandingServlet;
 
@@ -41,7 +42,7 @@ import org.junit.Test;
 
 public class DeviceLandingServletTest {
 
-    private static final Log       LOG                = LogFactory.getLog(DeviceLandingServletTest.class);
+    private static final Log       LOG         = LogFactory.getLog(DeviceLandingServletTest.class);
 
     private ServletTestManager     servletTestManager;
 
@@ -49,11 +50,9 @@ public class DeviceLandingServletTest {
 
     private String                 location;
 
-    private String                 errorPage          = "error-page";
+    private String                 errorPage   = "error-page";
 
-    private String                 devicesPage        = "devices-page";
-
-    private String                 servletEndpointUrl = "http://test.user/servlet";
+    private String                 devicesPage = "devices-page";
 
     private DeviceOperationService mockDeviceOperationService;
 
@@ -68,15 +67,16 @@ public class DeviceLandingServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("ErrorPage", errorPage);
-        initParams.put("DevicesPage", devicesPage);
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put(DeviceLandingServlet.ERROR_PAGE, errorPage);
+        initParams.put(DeviceLandingServlet.DEVICES_PAGE, devicesPage);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE, mockDeviceOperationService);
 
         servletTestManager.setUp(DeviceLandingServlet.class, initParams, null, null, initialSessionAttributes);
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
+
+        SafeOnlineTestConfig.loadTest(servletTestManager);
 
         mockObjects = new Object[] { mockDeviceOperationService };
     }
@@ -111,8 +111,7 @@ public class DeviceLandingServletTest {
         PostMethod postMethod = new PostMethod(location);
 
         // expectations
-        expect(mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andThrow(
-                new NodeMappingNotFoundException());
+        expect(mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andThrow(new NodeMappingNotFoundException());
 
         // prepare
         replay(mockObjects);
@@ -155,7 +154,7 @@ public class DeviceLandingServletTest {
         LOG.debug("location: " + resultLocation);
         assertTrue(resultLocation.endsWith(devicesPage));
         DeviceOperationService deviceOperationService = (DeviceOperationService) servletTestManager
-                                                                                                        .getSessionAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+                                                                                                   .getSessionAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
         assertNull(deviceOperationService);
     }
 }
