@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.beid.servlet.JavaVersionServlet;
 import net.link.safeonline.beid.webapp.BeIdErrorPage;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -44,6 +45,8 @@ public class JavaVersionServletTest {
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(JavaVersionServlet.class);
         location = servletTestManager.getServletLocation();
+
+        SafeOnlineTestConfig.loadTest(servletTestManager);
     }
 
     @After

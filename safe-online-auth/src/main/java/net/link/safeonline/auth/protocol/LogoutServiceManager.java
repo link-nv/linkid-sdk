@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -76,8 +75,8 @@ public class LogoutServiceManager implements HttpSessionListener {
     /**
      * Gives back the logout service instance associated with the given HTTP session. Later on we could limit the usage of this method to
      * certain states on the logout service. It is clear that this method should not be used to finalize the logout service via
-     * {@link AuthenticationService#finalizeAuthentication()} or {@link AuthenticationService#abort()}. These operations should be performed
-     * via this logout service manager class.
+     * {@link LogoutService#finalizeLogout(boolean)} or {@link LogoutService#abort()}. These operations should be performed via this logout
+     * service manager class.
      * 
      * @param session
      */
@@ -116,7 +115,7 @@ public class LogoutServiceManager implements HttpSessionListener {
     }
 
     /**
-     * Aborts the authentication process.
+     * Aborts the logout process.
      * 
      * @param session
      */

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.Local;
@@ -211,6 +212,19 @@ public interface AuthenticationService extends SafeOnlineService {
      * 
      */
     Cookie getSsoCookie();
+
+    /**
+     * Attempts to login, given a set of Single Sign On Cookies.
+     * 
+     * @return list of valid single sign on assertions or <code>null</code> if not successful. The list of invalid cookies can be retrieved
+     *         with {@link #getInvalidCookies()}.
+     */
+    List<AuthenticationAssertion> login(List<Cookie> ssoCookies);
+
+    /**
+     * Returns list of invalid ( expired, ... ) SSO cookies.
+     */
+    List<Cookie> getInvalidCookies();
 
     /**
      * Returns whether the specified cookie allows the user to use single sign-on for the current application.

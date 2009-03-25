@@ -8,6 +8,8 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -29,6 +31,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
@@ -166,6 +169,19 @@ public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
          */
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
         Cookie[] cookies = request.getCookies();
+        List<Cookie> ssoCookies = new LinkedList<Cookie>();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
+                ssoCookies.add(cookie);
+            }
+        }
+        if (!ssoCookies.isEmpty()) {
+            List<AuthenticationAssertion> authenticationAssertions = authenticationService.login(ssoCookies);
+            if (null != authenticationAssertions) {
+
+            }
+        }
+
         boolean validSso = false;
         if (null != cookies) {
             for (Cookie cookie : cookies) {

@@ -33,6 +33,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -71,6 +72,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
@@ -78,6 +80,7 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.authentication.service.SingleSignOnService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.common.SafeOnlineCookies;
@@ -112,6 +115,7 @@ import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
@@ -127,6 +131,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.AuthnStatement;
@@ -169,11 +175,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     public static final String                  SECURITY_MESSAGE_INVALID_USER        = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid user: ";
 
-    private SubjectEntity                       authenticatedSubject;
-
-    private DeviceEntity                        authenticationDevice;
-
-    private DateTime                            authenticationDate;
+    private AuthenticationAssertion             authenticationAssertion;
 
     private long                                expectedApplicationId                = -1;
 
@@ -190,6 +192,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private Set<DeviceEntity>                   requiredDevicePolicy;
 
     private AuthenticationState                 authenticationState;
+
+    private SingleSignOnService                 ssoService;
 
     private boolean                             ssoEnabled;
 
@@ -208,6 +212,15 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Set the initial state of this authentication service bean.
          */
         authenticationState = INIT;
+    }
+
+    @PreDestroy
+    public void preDestroyCallback() {
+
+        if (null != ssoService) {
+            ssoService.abort();
+        }
+
     }
 
 
@@ -295,7 +308,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new AuthenticationInitializationException("missing AssertionConsumerServiceURL");
         }
 
-        // if null fetch from dbase
         String applicationFriendlyName = samlAuthnRequest.getProviderName();
         if (null == applicationFriendlyName) {
             if (null == application.getFriendlyName()) {
@@ -307,9 +319,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         String samlAuthnRequestId = samlAuthnRequest.getID();
         LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
-
-        boolean forceAuthn = samlAuthnRequest.isForceAuthn();
-        LOG.debug("ForceAuthn: " + forceAuthn);
 
         RequestedAuthnContext requestedAuthnContext = samlAuthnRequest.getRequestedAuthnContext();
         Set<DeviceEntity> devices;
@@ -329,6 +338,28 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         } else {
             devices = null;
         }
+
+        /*
+         * Get SSO info, if enabled, initialize stateful sso service
+         */
+        boolean forceAuthn = samlAuthnRequest.isForceAuthn();
+        LOG.debug("ForceAuthn: " + forceAuthn);
+
+        List<String> audienceList = new LinkedList<String>();
+        if (null != samlAuthnRequest.getConditions()) {
+            if (null != samlAuthnRequest.getConditions().getAudienceRestrictions()) {
+                List<AudienceRestriction> audienceRestrictions = samlAuthnRequest.getConditions().getAudienceRestrictions();
+                for (AudienceRestriction audienceRestriction : audienceRestrictions) {
+                    List<Audience> audiences = audienceRestriction.getAudiences();
+                    for (Audience audience : audiences) {
+                        audienceList.add(audience.getAudienceURI());
+                    }
+                }
+            }
+        }
+        ssoService = EjbUtils.getEJB(SingleSignOnService.JNDI_BINDING, SingleSignOnService.class);
+        ssoService.initialize(forceAuthn, audienceList, application, devices);
+
         /*
          * Safe the state in this stateful session bean.
          */
@@ -420,6 +451,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Challenge<String> challenge = new Challenge<String>();
 
+        // TODO: pass on all devices ... multiple authenticated devices possible with new sso ...
         String authenticatedDevice = null;
         if (null != authenticationDevice) {
             authenticatedDevice = authenticationDevice.getName();
@@ -478,7 +510,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             /*
              * Authentication failed, reset the state
              */
-            if (null == authenticatedSubject) {
+            if (null == authenticationAssertion) {
                 authenticationState = INITIALIZED;
             } else {
                 authenticationState = USER_AUTHENTICATED;
@@ -518,9 +550,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Safe the state in this stateful session bean.
          */
         authenticationState = USER_AUTHENTICATED;
-        authenticatedSubject = subjectEntity;
-        authenticationDevice = device;
-        authenticationDate = new DateTime();
+        authenticationAssertion = new AuthenticationAssertion(subjectEntity);
+        authenticationAssertion.addAuthentication(new DateTime(), device);
         expectedDeviceChallengeId = null;
 
         /*
@@ -533,7 +564,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void createSsoCookie(SecretKey ssoKey) {
 
-        if (null == authenticatedSubject || null == authenticationDevice || -1 == expectedApplicationId) {
+        if (null == authenticationAssertion || -1 == expectedApplicationId) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Attempt to create SSO Cookie without authenticating");
             throw new IllegalStateException("don't try to create a single sign-on cookie without authenticating");
         }
@@ -589,6 +620,38 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         ssoCookie.setPath(cookiePath);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public List<AuthenticationAssertion> login(List<Cookie> ssoCookies) {
+
+        List<AuthenticationAssertion> authenticationAssertions = ssoService.login(ssoCookies);
+        if (!authenticationAssertions.isEmpty() && authenticationAssertions.size() == 1) {
+            /*
+             * Safe the state in this stateful session bean.
+             */
+            authenticationState = USER_AUTHENTICATED;
+            authenticationAssertion = authenticationAssertions.get(0);
+
+            LOG.debug("single sign-on allowed for user " + authenticationAssertion.getSubject().getUserId() + " using devices: "
+                    + authenticationAssertion.getDevicesString());
+
+        }
+
+        return authenticationAssertions;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Cookie> getInvalidCookies() {
+
+        return ssoService.getInvalidCookies();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean checkSsoCookie(@NotNull Cookie cookie)
             throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException {
@@ -646,12 +709,11 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Safe the state in this stateful session bean.
          */
         authenticationState = USER_AUTHENTICATED;
-        authenticatedSubject = sso.subject;
-        authenticationDevice = sso.device;
-        authenticationDate = sso.time;
+        authenticationAssertion = new AuthenticationAssertion(sso.subject);
+        authenticationAssertion.addAuthentication(sso.time, sso.device);
 
-        LOG.debug("single sign-on allowed for user " + authenticatedSubject.getUserId() + " using device: "
-                + authenticationDevice.getName());
+        LOG.debug("single sign-on allowed for user " + authenticationAssertion.getSubject().getUserId() + " using devices: "
+                + authenticationAssertion.getDevicesString());
 
         return true;
     }
@@ -909,7 +971,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             /*
              * Registration failed, reset the state
              */
-            if (null == authenticatedSubject) {
+            if (null == authenticationAssertion) {
                 authenticationState = INITIALIZED;
             } else {
                 authenticationState = USER_AUTHENTICATED;
@@ -920,7 +982,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             /*
              * Registration not supported by this device, reset the state
              */
-            if (null == authenticatedSubject) {
+            if (null == authenticationAssertion) {
                 authenticationState = INITIALIZED;
             } else {
                 authenticationState = USER_AUTHENTICATED;
@@ -965,16 +1027,15 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Safe the state in this stateful session bean.
          */
         authenticationState = USER_AUTHENTICATED;
-        authenticatedSubject = subjectEntity;
-        authenticationDevice = device;
-        authenticationDate = new DateTime();
+        authenticationAssertion = new AuthenticationAssertion(subjectEntity);
+        authenticationAssertion.addAuthentication(new DateTime(), device);
 
         /*
          * Create SSO Cookie for authentication webapp
          */
         createSsoCookie(SafeOnlineNodeKeyStore.getSSOKey());
 
-        addHistoryEntry(authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
+        addHistoryEntry(authenticationAssertion.getSubject(), HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
 
         return userId;
     }
@@ -993,6 +1054,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         String userId = userIdMappingService.getApplicationUserId(expectedApplicationId, getUserId());
 
+        // XXX: todo return multiple authn statements is possible ...
         String samlResponseToken = AuthnResponseFactory.createAuthResponse(expectedChallengeId, expectedApplicationName, node.getName(),
                 userId, authenticationDevice.getAuthenticationContextClass(), nodeKeyStore.getKeyPair(), validity, expectedTarget,
                 authenticationDate);
@@ -1025,8 +1087,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public void abort() {
 
         LOG.debug("abort");
-        authenticatedSubject = null;
-        authenticationDevice = null;
+        authenticationAssertion = null;
         expectedApplicationId = -1;
         expectedApplicationFriendlyName = null;
         expectedChallengeId = null;
@@ -1107,6 +1168,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         checkRequiredMissingAttributes();
 
+        // XXX: check device policy against all devices
         checkDevicePolicy(authenticationDevice.getName());
 
         checkRequiredGlobalUsageAgreement(language);
@@ -1114,19 +1176,21 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         checkRequiredUsageAgreement(language);
 
         if (null == application) {
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, authenticatedSubject.getUserId(), "unknown application "
-                    + expectedApplicationId);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, authenticationAssertion.getSubject().getUserId(),
+                    "unknown application " + expectedApplicationId);
             throw new ApplicationNotFoundException();
         }
 
-        SubscriptionEntity subscription = subscriptionDAO.findSubscription(authenticatedSubject, application);
+        SubscriptionEntity subscription = subscriptionDAO.findSubscription(authenticationAssertion.getSubject(), application);
         if (null == subscription) {
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, authenticatedSubject.getUserId(),
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, authenticationAssertion.getSubject().getUserId(),
                     "susbcription not found for " + application.getName());
             throw new SubscriptionNotFoundException();
         }
 
-        addHistoryEntry(authenticatedSubject, HistoryEventType.LOGIN_SUCCESS, expectedApplicationName, authenticationDevice.getName());
+        // XXX: which device to add history entry for ?
+        addHistoryEntry(authenticationAssertion.getSubject(), HistoryEventType.LOGIN_SUCCESS, expectedApplicationName,
+                authenticationDevice.getName());
 
         subscriptionDAO.loggedIn(subscription);
         addLoginTick(application);
@@ -1142,7 +1206,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         LOG.debug("getUserId");
         if (authenticationState != USER_AUTHENTICATED && authenticationState != COMMITTED)
             throw new IllegalStateException("call authenticate first");
-        String userId = authenticatedSubject.getUserId();
+        String userId = authenticationAssertion.getSubject().getUserId();
         return userId;
     }
 
@@ -1169,6 +1233,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     public DeviceEntity getAuthenticationDevice() {
 
+        // XXX: which to return, return all probably ...
         return authenticationDevice;
     }
 
