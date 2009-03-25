@@ -455,7 +455,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
         boolean validSignature = false;
         for (X509Certificate certificate : certificates) {
-            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN);
             if (validSignature) {
                 break;
             }
@@ -874,7 +874,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
         boolean validSignature = false;
         for (X509Certificate certificate : certificates) {
-            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN);
             if (validSignature) {
                 break;
             }

@@ -223,7 +223,7 @@ public class DataServicePortImplTest {
         // expectations
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
                 PkiResult.INVALID);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate)).andReturn(
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN, certificate)).andReturn(
                 PkiResult.INVALID);
 
         // prepare
