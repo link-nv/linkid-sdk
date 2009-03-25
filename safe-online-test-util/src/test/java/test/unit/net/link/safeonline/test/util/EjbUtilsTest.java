@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.util.ee;
+package test.unit.net.link.safeonline.test.util;
 
 import java.util.List;
 import java.util.Map;

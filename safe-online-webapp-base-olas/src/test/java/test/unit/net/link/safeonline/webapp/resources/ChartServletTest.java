@@ -23,6 +23,7 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.service.StatisticService;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.webapp.resources.ChartServlet;
 
@@ -69,6 +70,7 @@ public class ChartServletTest extends TestCase {
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(ChartServlet.class);
         servletLocation = servletTestManager.getServletLocation();
+        SafeOnlineTestConfig.loadTest(servletTestManager);
 
         mockObjects = new Object[] { mockStatisticService };
     }

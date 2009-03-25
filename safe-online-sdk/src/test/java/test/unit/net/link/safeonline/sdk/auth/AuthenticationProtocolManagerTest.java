@@ -33,6 +33,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
@@ -134,7 +135,7 @@ public class AuthenticationProtocolManagerTest {
         initParams.put(SafeOnlineConfig.WEBAPP_PATH_CONTEXT_PARAM, "/");
         servletTestManager.setUp(TestServlet.class, initParams);
         servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockProtocolHandler);
-        SafeOnlineConfig.load(servletTestManager);
+        SafeOnlineTestConfig.loadTest(servletTestManager);
 
         try {
             String location = servletTestManager.getServletLocation();

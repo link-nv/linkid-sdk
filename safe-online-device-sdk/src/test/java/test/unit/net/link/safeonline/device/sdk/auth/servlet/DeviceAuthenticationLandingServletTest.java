@@ -31,18 +31,18 @@ import javax.jws.WebService;
 
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
+import net.link.safeonline.device.sdk.auth.saml2.request.DeviceAuthnRequestFactory;
 import net.link.safeonline.device.sdk.auth.servlet.AbstractDeviceAuthenticationLandingServlet;
 import net.link.safeonline.keystore.KeyStoreUtils;
 import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.saml.common.Challenge;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -127,7 +127,7 @@ public class DeviceAuthenticationLandingServletTest {
         location = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
 
-        SafeOnlineConfig.load(servletTestManager, webServiceTestUtils);
+        SafeOnlineTestConfig.loadTest(servletTestManager, webServiceTestUtils);
     }
 
     @After
@@ -171,8 +171,8 @@ public class DeviceAuthenticationLandingServletTest {
 
         // setup
         wantedDevices = Collections.singleton(deviceName);
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, nodeKeyPair,
-                "http://test.authn.service", location, new Challenge<String>(), wantedDevices, false);
+        String samlAuthnRequest = DeviceAuthnRequestFactory.createDeviceAuthnRequest(applicationName, applicationName, null, nodeKeyPair,
+                "http://test.authn.service", location, new Challenge<String>(), wantedDevices);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 

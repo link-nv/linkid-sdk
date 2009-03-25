@@ -10,7 +10,6 @@ package net.link.safeonline.authentication.service.bean;
 import static net.link.safeonline.authentication.service.AuthenticationState.COMMITTED;
 import static net.link.safeonline.authentication.service.AuthenticationState.INIT;
 import static net.link.safeonline.authentication.service.AuthenticationState.INITIALIZED;
-import static net.link.safeonline.authentication.service.AuthenticationState.LOGGING_OUT;
 import static net.link.safeonline.authentication.service.AuthenticationState.REDIRECTED;
 import static net.link.safeonline.authentication.service.AuthenticationState.USER_AUTHENTICATED;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
@@ -47,13 +46,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -69,6 +66,7 @@ import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
@@ -90,10 +88,11 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.device.sdk.auth.saml2.request.DeviceAuthnRequestFactory;
+import net.link.safeonline.device.sdk.auth.saml2.response.AuthnResponseFactory;
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
-import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseUtil;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -110,12 +109,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.Challenge;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
-import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
-import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
@@ -137,14 +131,13 @@ import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.LogoutRequest;
-import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.security.x509.BasicX509Credential;
+import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.validation.ValidationException;
 
@@ -203,10 +196,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private Cookie                              ssoCookie;
 
     private String                              cookiePath;
-
-    private List<ApplicationEntity>             ssoApplicationsToLogOut;
-
-    private Challenge<String>                   expectedLogoutChallenge;
 
 
     @PostConstruct
@@ -278,7 +267,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
 
     public ProtocolContext initialize(Locale language, Integer color, Boolean minimal, @NotNull AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException {
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SignatureValidationException {
 
         Issuer issuer = samlAuthnRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -290,13 +280,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         boolean validSignature = false;
         for (X509Certificate certificate : certificates) {
-            validSignature = validateSignature(certificate, samlAuthnRequest);
+            validSignature = validateSignature(certificate, samlAuthnRequest.getSignature(),
+                    SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
             if (validSignature) {
                 break;
             }
         }
         if (!validSignature)
-            throw new AuthenticationInitializationException("signature validation error");
+            throw new SignatureValidationException("signature validation error");
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
         if (null == assertionConsumerService) {
@@ -354,11 +345,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 color, minimal, requiredDevicePolicy);
     }
 
-    private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest)
+    private boolean validateSignature(X509Certificate certificate, Signature signature, String trustDomain)
             throws TrustDomainNotFoundException {
 
-        PkiResult certificateValid = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                certificate);
+        PkiResult certificateValid = pkiValidator.validateCertificate(trustDomain, certificate);
 
         if (PkiResult.VALID != certificateValid)
             return false;
@@ -367,7 +357,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         basicX509Credential.setPublicKey(certificate.getPublicKey());
         SignatureValidator signatureValidator = new SignatureValidator(basicX509Credential);
         try {
-            signatureValidator.validate(samlAuthnRequest.getSignature());
+            signatureValidator.validate(signature);
         } catch (ValidationException e) {
             return false;
         }
@@ -390,8 +380,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Challenge<String> challenge = new Challenge<String>();
 
-        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node.getName(), expectedApplicationName,
-                expectedApplicationFriendlyName, nodeKeyStore.getKeyPair(), authenticationServiceUrl, targetUrl, challenge, devices, false);
+        String samlRequestToken = DeviceAuthnRequestFactory.createDeviceAuthnRequest(node.getName(), expectedApplicationName,
+                expectedApplicationFriendlyName, nodeKeyStore.getKeyPair(), authenticationServiceUrl, targetUrl, challenge, devices);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -450,29 +440,41 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return encodedSamlRequestToken;
     }
 
-    public String authenticate(@NotNull HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
+    public String authenticate(@NotNull Response response)
+            throws ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException, ServletException,
+            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException, NodeNotFoundException {
 
         LOG.debug("authenticate");
         if (authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
 
+        Issuer issuer = response.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer: " + issuerName);
+
+        List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
+        boolean validSignature = false;
+        for (X509Certificate certificate : certificates) {
+            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN);
+            if (validSignature) {
+                break;
+            }
+        }
+        if (!validSignature)
+            throw new SignatureValidationException("signature validation error");
+
         DateTime now = new DateTime();
+        for (Assertion assertion : response.getAssertions()) {
+            ResponseUtil.validateAssertion(assertion, now, expectedApplicationName);
+        }
 
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
-
-        Response samlResponse = ResponseUtil.validateResponse(now, request, expectedDeviceChallengeId, expectedApplicationName,
-                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.NODE);
-        if (null == samlResponse)
-            return null;
-
-        if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
+        if (response.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
             /*
              * Authentication failed, user wants to try another device tho. Set the state to redirected to mark this
              */
             authenticationState = REDIRECTED;
             return null;
-        } else if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
+        } else if (response.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
             /*
              * Authentication failed, reset the state
              */
@@ -484,7 +486,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             return null;
         }
 
-        Assertion assertion = samlResponse.getAssertions().get(0);
+        Assertion assertion = response.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
         if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");
@@ -652,60 +654,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 + authenticationDevice.getName());
 
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public boolean checkSsoCookieForLogout(@NotNull Cookie cookie)
-            throws ApplicationNotFoundException, InvalidCookieException {
-
-        LOG.debug("check single sign on cookie for logout: " + cookie.getName());
-
-        ApplicationEntity application = applicationDAO.findApplication(expectedApplicationId);
-        if (null == application) {
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Attempt to check SSO Cookie for unknown application: "
-                    + expectedApplicationId);
-            throw new IllegalStateException("Attempt to check SSO Cookie for unknown application: " + expectedApplicationId);
-        }
-        if (!application.isSsoEnabled())
-            return false;
-
-        SingleSignOn sso = parseCookie(cookie);
-
-        if (null == ssoApplicationsToLogOut) {
-            ssoApplicationsToLogOut = new LinkedList<ApplicationEntity>();
-        }
-        if (sso.application.equals(application) || sso.ssoApplications.contains(application)) {
-            if (!ssoApplicationsToLogOut.contains(sso.application) && !sso.application.equals(application)) {
-                if (null != sso.application.getSsoLogoutUrl()) {
-                    LOG.debug("add application " + sso.application.getName() + " for logout");
-                    ssoApplicationsToLogOut.add(sso.application);
-                }
-            }
-            for (ApplicationEntity ssoApplication : sso.ssoApplications) {
-                if (!ssoApplicationsToLogOut.contains(sso.application) && !ssoApplication.equals(application)) {
-                    if (null != ssoApplication.getSsoLogoutUrl()) {
-                        LOG.debug("add application " + ssoApplication.getName() + " for logout");
-                        ssoApplicationsToLogOut.add(ssoApplication);
-                    }
-                }
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    public ApplicationEntity findSsoApplicationToLogout() {
-
-        if (null == ssoApplicationsToLogOut || ssoApplicationsToLogOut.isEmpty())
-            return null;
-
-        ApplicationEntity application = ssoApplicationsToLogOut.get(0);
-        ssoApplicationsToLogOut.remove(0);
-        return application;
     }
 
 
@@ -911,22 +859,51 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return true;
     }
 
-    public String register(@NotNull HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
+    public String register(@NotNull DeviceOperationResponse response)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
+            SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException {
 
         LOG.debug("register");
         if (authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
 
-        DateTime now = new DateTime();
+        Issuer issuer = response.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer: " + issuerName);
 
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
+        List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
+        boolean validSignature = false;
+        for (X509Certificate certificate : certificates) {
+            validSignature = validateSignature(certificate, response.getSignature(), SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN);
+            if (validSignature) {
+                break;
+            }
+        }
+        if (!validSignature)
+            throw new SignatureValidationException("signature validation error");
 
-        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, expectedDeviceChallengeId,
-                DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(),
-                TrustDomainType.NODE);
-        if (null == response)
-            return null;
+        /*
+         * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
+         */
+        if (!response.getInResponseTo().equals(expectedDeviceChallengeId))
+            throw new ServletException("device operation response is not a response belonging to the original request.");
+
+        if (!response.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER.name()))
+            throw new ServletException(
+                    "device operation response is not a response belonging to the original request, mismatch in device operation");
+
+        if (!response.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)
+                && !response.getStatus().getStatusCode().getValue().equals(DeviceOperationResponse.FAILED_URI)) {
+            DateTime now = new DateTime();
+
+            List<Assertion> assertions = response.getAssertions();
+            if (assertions.isEmpty())
+                throw new ServletException("missing Assertion");
+
+            for (Assertion assertion : assertions) {
+                ResponseUtil.validateAssertion(assertion, now, null);
+            }
+        }
 
         if (response.getStatus().getStatusCode().getValue().equals(DeviceOperationResponse.FAILED_URI)) {
             /*
@@ -1198,155 +1175,5 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public Cookie getSsoCookie() {
 
         return ssoCookie;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    public LogoutProtocolContext initialize(@NotNull LogoutRequest samlLogoutRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
-            SubjectNotFoundException {
-
-        Issuer issuer = samlLogoutRequest.getIssuer();
-        String issuerName = issuer.getValue();
-        LOG.debug("issuer: " + issuerName);
-        ApplicationEntity application = applicationDAO.getApplication(issuerName);
-
-        List<X509Certificate> certificates = applicationAuthenticationService.getCertificates(issuerName);
-
-        boolean validSignature = false;
-        for (X509Certificate certificate : certificates) {
-            validSignature = validateSignature(certificate, samlLogoutRequest);
-            if (validSignature) {
-                break;
-            }
-        }
-        if (!validSignature)
-            throw new AuthenticationInitializationException("signature validation error");
-
-        String samlAuthnRequestId = samlLogoutRequest.getID();
-        LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
-
-        String subjectName = samlLogoutRequest.getNameID().getValue();
-        LOG.debug("subject name: " + subjectName);
-        String userId = userIdMappingService.findUserId(application.getId(), subjectName);
-        if (null == userId)
-            throw new SubjectNotFoundException();
-        SubjectEntity subject = subjectService.getSubject(userId);
-
-        /*
-         * Safe the state in this stateful session bean.
-         */
-        authenticationState = INITIALIZED;
-        expectedApplicationId = application.getId();
-        expectedChallengeId = samlAuthnRequestId;
-        expectedTarget = application.getSsoLogoutUrl().toString();
-        authenticatedSubject = subject;
-
-        return new LogoutProtocolContext(application.getName(), expectedTarget);
-
-    }
-
-    private boolean validateSignature(X509Certificate certificate, LogoutRequest samlLogoutRequest)
-            throws TrustDomainNotFoundException {
-
-        PkiResult certificateValid = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                certificate);
-
-        if (PkiResult.VALID != certificateValid)
-            return false;
-
-        BasicX509Credential basicX509Credential = new BasicX509Credential();
-        basicX509Credential.setPublicKey(certificate.getPublicKey());
-        SignatureValidator signatureValidator = new SignatureValidator(basicX509Credential);
-        try {
-            signatureValidator.validate(samlLogoutRequest.getSignature());
-        } catch (ValidationException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getLogoutRequest(ApplicationEntity application)
-            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException {
-
-        LOG.debug("get logout request for " + application.getName());
-        if (authenticationState != INITIALIZED)
-            throw new IllegalStateException("call initialize first");
-
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
-
-        String userId = userIdMappingService.getApplicationUserId(application.getId(), authenticatedSubject.getUserId());
-
-        expectedLogoutChallenge = new Challenge<String>();
-
-        String samlLogoutRequestToken = LogoutRequestFactory.createLogoutRequest(userId, node.getName(), nodeKeyStore.getKeyPair(),
-                application.getSsoLogoutUrl().toString(), expectedLogoutChallenge);
-
-        String encodedSamlLogoutRequestToken = Base64.encode(samlLogoutRequestToken.getBytes());
-
-        /*
-         * Safe the state in this stateful session bean.
-         */
-        authenticationState = LOGGING_OUT;
-
-        return encodedSamlLogoutRequestToken;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String handleLogoutResponse(@NotNull HttpServletRequest httpRequest)
-            throws ServletException, NodeNotFoundException {
-
-        LOG.debug("handle logout response");
-        if (authenticationState != LOGGING_OUT)
-            throw new IllegalStateException("call getLogoutRequest first");
-
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
-
-        LogoutResponse logoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, expectedLogoutChallenge.getValue(),
-                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.APPLICATION);
-        if (null == logoutResponse)
-            return null;
-
-        if (!logoutResponse.getStatus().getStatusCode().getValue().equals(StatusCode.SUCCESS_URI)) {
-            /*
-             * Logout failed, reset state, return null
-             */
-            authenticationState = INITIALIZED;
-            expectedLogoutChallenge = null;
-            return null;
-        }
-
-        String applicationName = logoutResponse.getIssuer().getValue();
-        LOG.debug("application: " + applicationName);
-
-        /*
-         * Safe the state in this stateful session bean.
-         */
-        authenticationState = INITIALIZED;
-
-        return applicationName;
-    }
-
-    @Remove
-    public String finalizeLogout(boolean partialLogout)
-            throws NodeNotFoundException {
-
-        LOG.debug("finalize logout");
-        if (authenticationState != INITIALIZED)
-            throw new IllegalStateException("call initialize first");
-
-        NodeEntity node = nodeAuthenticationService.getLocalNode();
-
-        String samlLogoutResponseToken = LogoutResponseFactory.createLogoutResponse(partialLogout, expectedChallengeId, node.getName(),
-                nodeKeyStore.getKeyPair(), expectedTarget);
-        String encodedSamlLogoutResponseToken = Base64.encode(samlLogoutResponseToken.getBytes());
-        return encodedSamlLogoutResponseToken;
     }
 }

@@ -1,4 +1,6 @@
 <config>
+<!-- vi:set ts=4 sw=4 noexpandtab: -->
+
     <TCP
         start_port="7800" />
     <TCPPING

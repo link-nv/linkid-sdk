@@ -26,8 +26,8 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.servlet.LoginServlet;
 import net.link.safeonline.test.util.DomTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -56,7 +56,7 @@ public class LoginServletTest {
 
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(LoginServlet.class);
-        SafeOnlineConfig.load(servletTestManager);
+        SafeOnlineTestConfig.loadTest(servletTestManager);
     }
 
     @After

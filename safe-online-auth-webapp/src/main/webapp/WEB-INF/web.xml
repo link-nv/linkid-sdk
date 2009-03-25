@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:set ts=4 sw=4 noexpandtab: -->
+
 <!DOCTYPE webapp-configuration PUBLIC
     "-//Webapp Configuration DTD//EN"
     "http://java.sun.com/dtd/web-app_2_3.dtd" [
@@ -10,26 +12,29 @@
 
 	<display-name>Olas Authentication Web Application</display-name>
 
-    <!-- Application Context Parameters -->
+	<!-- Application Context Parameters -->
+
 	<context-param>
 		<param-name>WebappPath</param-name>
-        <param-value>/${safe-online.auth.webapp.name}/</param-value>
+		<param-value>/${safe-online.auth.webapp.name}/</param-value>
 	</context-param>
 	<context-param>
 		<param-name>WebappBase</param-name>
-        <param-value>Auth</param-value>
+		<param-value>Auth</param-value>
 	</context-param>
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
-		<description>Point of return for remote device issuers when authenticating</description>
+		<description>Point of return for remote device issuers when
+			authenticating</description>
 		<param-name>DeviceAuthenticationServicePath</param-name>
 		<param-value>/device-auth</param-value>
 	</context-param>
 	<context-param>
-		<description>Point of return for remote device issuers when registering</description>
+		<description>Point of return for remote device issuers when
+			registering</description>
 		<param-name>DeviceRegistrationServicePath</param-name>
 		<param-value>/device-reg</param-value>
 	</context-param>
@@ -38,7 +43,7 @@
 		<param-value>${safe-online.auth.webapp.name}</param-value>
 	</context-param>
 
-    <!-- Application Filter Definitions And Mappings -->
+	<!-- Application Filter Definitions And Mappings -->
 	<filter>
 		<filter-name>WicketFilter</filter-name>
 		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
@@ -140,15 +145,19 @@
 		<url-pattern>/pki-cert</url-pattern>
 	</filter-mapping>
 
-    <!-- Application Event Listeners -->
+	<!-- Application Event Listeners -->
 	<listener>
 		<listener-class>net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			net.link.safeonline.auth.protocol.LogoutServiceManager</listener-class>
 	</listener>
 	<listener>
 		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
 	</listener>
 
-    <!-- Application Servlet Definitions And Mappings -->
+	<!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.LoginServlet</servlet-class>

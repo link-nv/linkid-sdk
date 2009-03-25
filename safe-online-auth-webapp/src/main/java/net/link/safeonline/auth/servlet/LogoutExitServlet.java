@@ -13,11 +13,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
-import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
@@ -81,8 +81,8 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
     private void logoutNextSsoApplication(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
-        ApplicationEntity application = authenticationService.findSsoApplicationToLogout();
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
+        ApplicationEntity application = logoutService.findSsoApplicationToLogout();
         if (null == application) {
 
             // no more applications to logout: send LogoutResponse back to requesting application
@@ -97,7 +97,7 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
             LOG.debug("send logout response to " + target + " (partialLogout=" + partialLogout + ")");
 
             try {
-                ProtocolHandlerManager.logoutResponse(partialLogout, target, request.getSession(), response);
+                ProtocolHandlerManager.sendLogoutResponse(partialLogout, target, request.getSession(), response);
             } catch (ProtocolException e) {
                 redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                         AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
@@ -109,7 +109,7 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
 
             LOG.debug("send logout request to: " + application.getName());
             try {
-                ProtocolHandlerManager.logoutRequest(application, request.getSession(), response);
+                ProtocolHandlerManager.sendLogoutRequest(application, request.getSession(), response);
             } catch (ProtocolException e) {
                 redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                         AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(

@@ -69,13 +69,13 @@ public abstract class OlasAuthLink extends Link<Object> {
                 HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
 
                 // Where do we go to after the whole operation?
-                String realTarget = requestTarget;
-                if (realTarget == null) {
-                    realTarget = request.getServletPath();
+                String target = requestTarget;
+                if (target == null) {
+                    target = request.getServletPath();
                 }
 
                 // The SDK does the rest.
-                delegate(realTarget, request, response);
+                delegate(target, request, response);
             }
         });
 

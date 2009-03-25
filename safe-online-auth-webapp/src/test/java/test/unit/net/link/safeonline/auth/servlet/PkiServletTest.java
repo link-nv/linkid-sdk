@@ -28,6 +28,7 @@ import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -73,6 +74,9 @@ public class PkiServletTest {
 
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(PkiServlet.class);
+
+        SafeOnlineTestConfig.loadTest(servletTestManager);
+
     }
 
     @After

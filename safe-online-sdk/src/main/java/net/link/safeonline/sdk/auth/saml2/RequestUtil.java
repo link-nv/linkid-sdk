@@ -24,6 +24,8 @@ import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -51,6 +53,9 @@ import org.w3c.dom.Element;
  * 
  */
 public abstract class RequestUtil {
+
+    private static final Log LOG = LogFactory.getLog(RequestUtil.class);
+
 
     /**
      * Sends a SAML2 authentication or logout Request using the specified Velocity template. The SAML2 Token should already be Base64
@@ -116,53 +121,27 @@ public abstract class RequestUtil {
                                                     PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
             throws ServletException {
 
-        String encodedSamlRequest = request.getParameter("SAMLRequest");
-        if (null == encodedSamlRequest)
-            throw new ServletException("no SAML request found");
+        if (false == validateRequest(request, wsLocation, applicationCertificate, applicationPrivateKey, trustDomain))
+            return null;
 
-        byte[] decodedSamlResponse;
-        try {
-            decodedSamlResponse = Base64.decode(encodedSamlRequest);
-        } catch (Base64DecodingException e) {
-            throw new ServletException("BASE64 decoding error");
-        }
-        Document samlDocument;
-        try {
-            samlDocument = DomUtils.parseDocument(new String(decodedSamlResponse));
-        } catch (Exception e) {
-            throw new ServletException("DOM parsing error");
-        }
-        Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(wsLocation, applicationCertificate, applicationPrivateKey);
-        try {
-            stsClient.validate(samlElement, trustDomain);
-        } catch (RuntimeException e) {
-            throw new ServletException(e.getMessage());
-        } catch (WSClientTransportException e) {
-            throw new ServletException(e.getMessage());
-        }
+        return getAuthnRequest(request);
 
-        BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(request));
+    }
 
-        messageContext.setSecurityPolicyResolver(new SamlRequestSecurityPolicyResolver());
+    /**
+     * Returns the SAML v2.0 {@link AuthnRequest} embedded in the request. Throws a {@link ServletException} if not found or of the wrong
+     * type.
+     * 
+     * @param request
+     * @throws ServletException
+     */
+    public static AuthnRequest getAuthnRequest(HttpServletRequest request)
+            throws ServletException {
 
-        HTTPPostDecoder decoder = new HTTPPostDecoder();
-        try {
-            decoder.decode(messageContext);
-        } catch (MessageDecodingException e) {
-            throw new ServletException("SAML message decoding error");
-        } catch (SecurityPolicyException e) {
-            throw new ServletException("security policy error");
-        } catch (SecurityException e) {
-            throw new ServletException("security error");
-        }
-
-        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof AuthnRequest)
+        SAMLObject samlObject = getSAMLObject(request);
+        if (false == samlObject instanceof AuthnRequest)
             throw new ServletException("SAML message not an authentication request message");
-        AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
-        return samlAuthnRequest;
+        return (AuthnRequest) samlObject;
     }
 
     /**
@@ -179,31 +158,38 @@ public abstract class RequestUtil {
                                                       TrustDomainType trustDomain)
             throws ServletException {
 
-        String encodedSamlRequest = request.getParameter("SAMLRequest");
-        if (null == encodedSamlRequest)
-            throw new ServletException("no SAML request found");
+        if (false == validateRequest(request, wsLocation, applicationCertificate, applicationPrivateKey, trustDomain))
+            return null;
 
-        byte[] decodedSamlResponse;
-        try {
-            decodedSamlResponse = Base64.decode(encodedSamlRequest);
-        } catch (Base64DecodingException e) {
-            throw new ServletException("BASE64 decoding error");
-        }
-        Document samlDocument;
-        try {
-            samlDocument = DomUtils.parseDocument(new String(decodedSamlResponse));
-        } catch (Exception e) {
-            throw new ServletException("DOM parsing error");
-        }
-        Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(wsLocation, applicationCertificate, applicationPrivateKey);
-        try {
-            stsClient.validate(samlElement, trustDomain);
-        } catch (RuntimeException e) {
-            throw new ServletException(e.getMessage());
-        } catch (WSClientTransportException e) {
-            throw new ServletException(e.getMessage());
-        }
+        LogoutRequest logoutRequest = getLogoutRequest(request);
+
+        if (null == logoutRequest.getNameID() || null == logoutRequest.getNameID().getValue())
+            throw new ServletException("missing NameID element");
+
+        if (null == logoutRequest.getID())
+            throw new ServletException("missing ID element");
+
+        return logoutRequest;
+    }
+
+    /**
+     * Returns the SAML v2.0 {@link LogoutRequest} embedded in the request. Throws a {@link ServletException} if not found or of the wrong
+     * type.
+     * 
+     * @param request
+     * @throws ServletException
+     */
+    public static LogoutRequest getLogoutRequest(HttpServletRequest request)
+            throws ServletException {
+
+        SAMLObject samlObject = getSAMLObject(request);
+        if (false == samlObject instanceof LogoutRequest)
+            throw new ServletException("SAML message not an logout request message");
+        return (LogoutRequest) samlObject;
+    }
+
+    private static SAMLObject getSAMLObject(HttpServletRequest request)
+            throws ServletException {
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
         messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(request));
@@ -214,24 +200,59 @@ public abstract class RequestUtil {
         try {
             decoder.decode(messageContext);
         } catch (MessageDecodingException e) {
+            LOG.debug("SAML message decoding error: " + e.getMessage());
             throw new ServletException("SAML message decoding error");
         } catch (SecurityPolicyException e) {
+            LOG.debug("security policy error: " + e.getMessage());
             throw new ServletException("security policy error");
         } catch (SecurityException e) {
+            LOG.debug("security error: " + e.getMessage());
             throw new ServletException("security error");
         }
 
-        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof LogoutRequest)
-            throw new ServletException("SAML message not an authentication request message");
-        LogoutRequest samlLogoutRequest = (LogoutRequest) samlMessage;
-
-        if (null == samlLogoutRequest.getNameID() || null == samlLogoutRequest.getNameID().getValue())
-            throw new ServletException("missing NameID element");
-
-        if (null == samlLogoutRequest.getID())
-            throw new ServletException("missing ID element");
-
-        return samlLogoutRequest;
+        return messageContext.getInboundSAMLMessage();
     }
+
+    /**
+     * Validates the embedded SAML request token using the specified STS WS.
+     */
+    private static boolean validateRequest(HttpServletRequest request, String stsWsLocation, X509Certificate applicationCertificate,
+                                           PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
+            throws ServletException {
+
+        if (false == "POST".equals(request.getMethod()))
+            return false;
+        LOG.debug("POST response");
+        String encodedSamlRequest = request.getParameter("SAMLRequest");
+        if (null == encodedSamlRequest) {
+            LOG.debug("no SAMLRequest parameter found");
+            return false;
+        }
+        LOG.debug("encodedSamlRequest: " + encodedSamlRequest);
+
+        byte[] decodedSamlRequest;
+        try {
+            decodedSamlRequest = Base64.decode(encodedSamlRequest);
+        } catch (Base64DecodingException e) {
+            throw new ServletException("BASE64 decoding error");
+        }
+        Document samlDocument;
+        try {
+            samlDocument = DomUtils.parseDocument(new String(decodedSamlRequest));
+        } catch (Exception e) {
+            throw new ServletException("DOM parsing error");
+        }
+        Element samlElement = samlDocument.getDocumentElement();
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, applicationCertificate,
+                applicationPrivateKey);
+        try {
+            stsClient.validate(samlElement, trustDomain);
+        } catch (RuntimeException e) {
+            throw new ServletException(e.getMessage());
+        } catch (WSClientTransportException e) {
+            throw new ServletException(e.getMessage());
+        }
+        return true;
+    }
+
 }

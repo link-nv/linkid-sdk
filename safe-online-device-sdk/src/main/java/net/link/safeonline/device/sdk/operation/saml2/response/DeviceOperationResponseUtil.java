@@ -15,33 +15,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
-import net.link.safeonline.saml.common.DomUtils;
-import net.link.safeonline.sdk.auth.saml2.SamlResponseSecurityPolicyResolver;
-import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
-import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
+import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLObject;
-import org.opensaml.common.binding.BasicSAMLMessageContext;
-import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.StatusCode;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.ws.security.SecurityPolicyResolver;
-import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
-import org.opensaml.xml.security.SecurityException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 
 /**
@@ -51,9 +31,6 @@ import org.w3c.dom.Element;
  * 
  */
 public class DeviceOperationResponseUtil {
-
-    private static final Log LOG = LogFactory.getLog(DeviceOperationResponseUtil.class);
-
 
     private DeviceOperationResponseUtil() {
 
@@ -84,63 +61,10 @@ public class DeviceOperationResponseUtil {
                                                            X509Certificate certificate, PrivateKey privateKey, TrustDomainType trustDomain)
             throws ServletException {
 
-        if (false == "POST".equals(httpRequest.getMethod()))
+        if (false == ResponseUtil.validateResponse(httpRequest, stsWsLocation, certificate, privateKey, trustDomain))
             return null;
-        LOG.debug("POST response");
-        String encodedSamlResponse = httpRequest.getParameter("SAMLResponse");
-        if (null == encodedSamlResponse) {
-            LOG.debug("no SAMLResponse parameter found");
-            return null;
-        }
-        LOG.debug("SAMLResponse parameter found");
-        LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
-        BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(httpRequest));
-
-        SecurityPolicyResolver securityPolicyResolver = new SamlResponseSecurityPolicyResolver();
-        messageContext.setSecurityPolicyResolver(securityPolicyResolver);
-
-        HTTPPostDecoder decoder = new HTTPPostDecoder();
-        try {
-            decoder.decode(messageContext);
-        } catch (MessageDecodingException e) {
-            LOG.debug("SAML message decoding error: " + e.getMessage(), e);
-            throw new ServletException("SAML message decoding error");
-        } catch (SecurityPolicyException e) {
-            LOG.debug("security policy error: " + e.getMessage(), e);
-            throw new ServletException("security policy error");
-        } catch (SecurityException e) {
-            LOG.debug("security error: " + e.getMessage(), e);
-            throw new ServletException("security error");
-        }
-
-        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof DeviceOperationResponse)
-            throw new ServletException("SAML message not a DeviceOperationResponse message");
-        DeviceOperationResponse response = (DeviceOperationResponse) samlMessage;
-
-        byte[] decodedSamlResponse;
-        try {
-            decodedSamlResponse = Base64.decode(encodedSamlResponse);
-        } catch (Base64DecodingException e) {
-            throw new ServletException("BASE64 decoding error");
-        }
-        Document samlDocument;
-        try {
-            samlDocument = DomUtils.parseDocument(new String(decodedSamlResponse));
-        } catch (Exception e) {
-            throw new ServletException("DOM parsing error");
-        }
-        Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, certificate, privateKey);
-        try {
-            stsClient.validate(samlElement, trustDomain);
-        } catch (RuntimeException e) {
-            throw new ServletException(e.getMessage());
-        } catch (WSClientTransportException e) {
-            throw new ServletException(e.getMessage());
-        }
+        DeviceOperationResponse response = getDeviceOperationResponse(httpRequest);
 
         /*
          * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
@@ -166,32 +90,26 @@ public class DeviceOperationResponseUtil {
                 throw new ServletException("missing Assertion");
 
             for (Assertion assertion : assertions) {
-                Conditions conditions = assertion.getConditions();
-                DateTime notBefore = conditions.getNotBefore();
-                DateTime notOnOrAfter = conditions.getNotOnOrAfter();
-
-                LOG.debug("now: " + now.toString());
-                LOG.debug("notBefore: " + notBefore.toString());
-                LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
-
-                if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter))
-                    throw new ServletException("invalid SAML message timeframe");
-
-                Subject subject = assertion.getSubject();
-                if (null == subject)
-                    throw new ServletException("missing Assertion Subject");
-
-                if (assertion.getAuthnStatements().isEmpty())
-                    throw new ServletException("missing AuthnStatement");
-
-                AuthnStatement authnStatement = assertion.getAuthnStatements().get(0);
-                if (null == authnStatement.getAuthnContext())
-                    throw new ServletException("missing AuthnContext");
-
-                if (null == authnStatement.getAuthnContext().getAuthnContextClassRef())
-                    throw new ServletException("missing AuthnContextClassRef");
+                ResponseUtil.validateAssertion(assertion, now, null);
             }
         }
         return response;
     }
+
+    /**
+     * Returns the {@link DeviceOperationResponse} embedded in the request. Throws a {@link ServletException} if not found or of the wrong
+     * type.
+     * 
+     * @param request
+     * @throws ServletException
+     */
+    public static DeviceOperationResponse getDeviceOperationResponse(HttpServletRequest request)
+            throws ServletException {
+
+        SAMLObject samlObject = ResponseUtil.getSAMLObject(request);
+        if (false == samlObject instanceof DeviceOperationResponse)
+            throw new ServletException("SAML message not a device operation response message");
+        return (DeviceOperationResponse) samlObject;
+    }
+
 }

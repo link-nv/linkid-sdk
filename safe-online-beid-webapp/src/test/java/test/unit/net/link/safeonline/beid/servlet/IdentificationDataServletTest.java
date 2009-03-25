@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.beid.servlet.IdentificationDataServlet;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -36,6 +37,9 @@ public class IdentificationDataServletTest {
 
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(IdentificationDataServlet.class);
+
+        SafeOnlineTestConfig.loadTest(servletTestManager);
+
     }
 
     @After

@@ -174,7 +174,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         LOG.debug("target url: " + targetUrl);
         Set<String> devices = getDevices(request);
-        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, applicationFriendlyName,
+        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, null, applicationFriendlyName,
                 applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices, ssoEnabled);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
@@ -196,7 +196,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         DateTime now = new DateTime();
 
-        Response samlResponse = ResponseUtil.validateResponse(now, request, challenge.getValue(), applicationName,
+        Response samlResponse = ResponseUtil.validateAuthnResponse(now, request, challenge.getValue(), applicationName,
                 SafeOnlineConfig.wsbase(), applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlResponse)
             return null;

@@ -40,6 +40,7 @@ import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.Response;
@@ -135,102 +136,94 @@ public class ResponseUtil {
      * @param applicationPrivateKey
      * @throws ServletException
      */
-    public static Response validateResponse(DateTime now, HttpServletRequest httpRequest, String expectedInResponseTo,
-                                            String expectedAudience, String stsWsLocation, X509Certificate applicationCertificate,
-                                            PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
+    public static Response validateAuthnResponse(DateTime now, HttpServletRequest httpRequest, String expectedInResponseTo,
+                                                 String expectedAudience, String stsWsLocation, X509Certificate applicationCertificate,
+                                                 PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
             throws ServletException {
 
-        if (false == "POST".equals(httpRequest.getMethod()))
+        if (false == validateResponse(httpRequest, stsWsLocation, applicationCertificate, applicationPrivateKey, trustDomain))
             return null;
-        LOG.debug("POST response");
-        String encodedSamlResponse = httpRequest.getParameter("SAMLResponse");
-        if (null == encodedSamlResponse) {
-            LOG.debug("no SAMLResponse parameter found");
-            return null;
-        }
-        LOG.debug("SAMLResponse parameter found");
-        LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
-        BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(httpRequest));
-
-        SecurityPolicyResolver securityPolicyResolver = new SamlResponseSecurityPolicyResolver();
-        messageContext.setSecurityPolicyResolver(securityPolicyResolver);
-
-        HTTPPostDecoder decoder = new HTTPPostDecoder();
-        try {
-            decoder.decode(messageContext);
-        } catch (MessageDecodingException e) {
-            LOG.debug("SAML message decoding error: " + e.getMessage(), e);
-            throw new ServletException("SAML message decoding error");
-        } catch (SecurityPolicyException e) {
-            LOG.debug("security policy error: " + e.getMessage(), e);
-            throw new ServletException("security policy error");
-        } catch (SecurityException e) {
-            LOG.debug("security error: " + e.getMessage(), e);
-            throw new ServletException("security error");
-        }
-
-        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof Response)
-            throw new ServletException("SAML message not an response message");
-        Response samlResponse = (Response) samlMessage;
-
-        byte[] decodedSamlResponse;
-        try {
-            decodedSamlResponse = Base64.decode(encodedSamlResponse);
-        } catch (Base64DecodingException e) {
-            throw new ServletException("BASE64 decoding error");
-        }
-        Document samlDocument;
-        try {
-            samlDocument = DomUtils.parseDocument(new String(decodedSamlResponse));
-        } catch (Exception e) {
-            throw new ServletException("DOM parsing error");
-        }
-        Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, applicationCertificate,
-                applicationPrivateKey);
-        try {
-            stsClient.validate(samlElement, trustDomain);
-        } catch (RuntimeException e) {
-            throw new ServletException(e.getMessage());
-        } catch (WSClientTransportException e) {
-            throw new ServletException(e.getMessage());
-        }
+        Response authnResponse = getAuthnResponse(httpRequest);
 
         /*
          * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
          */
-        if (!samlResponse.getInResponseTo().equals(expectedInResponseTo))
+        if (!authnResponse.getInResponseTo().equals(expectedInResponseTo))
             throw new ServletException("SAML response is not a response belonging to the original request.");
 
-        if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)
-                || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI))
+        if (authnResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)
+                || authnResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI))
             /**
              * Authentication failed but response ok.
              */
-            return samlResponse;
+            return authnResponse;
 
-        List<Assertion> assertions = samlResponse.getAssertions();
+        List<Assertion> assertions = authnResponse.getAssertions();
         if (assertions.isEmpty())
             throw new ServletException("missing Assertion");
 
         for (Assertion assertion : assertions) {
-            Conditions conditions = assertion.getConditions();
-            DateTime notBefore = conditions.getNotBefore();
-            DateTime notOnOrAfter = conditions.getNotOnOrAfter();
 
-            LOG.debug("now: " + now.toString());
-            LOG.debug("notBefore: " + notBefore.toString());
-            LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
+            validateAssertion(assertion, now, expectedAudience);
+        }
+        return authnResponse;
+    }
 
-            if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter))
-                throw new ServletException("invalid SAML message timeframe");
+    /**
+     * Returns the SAML v2.0 {@link Response} embedded in the request. Throws a {@link ServletException} if not found or of the wrong type.
+     * 
+     * @param request
+     * @throws ServletException
+     */
+    public static Response getAuthnResponse(HttpServletRequest request)
+            throws ServletException {
 
-            Subject subject = assertion.getSubject();
-            if (null == subject)
-                throw new ServletException("missing Assertion Subject");
+        SAMLObject samlObject = getSAMLObject(request);
+        if (false == samlObject instanceof Response)
+            throw new ServletException("SAML message not an authentication response message");
+        return (Response) samlObject;
+    }
+
+    /**
+     * Validates the specified assertion. Throws A {@link ServletException} on failure.
+     * 
+     * Validates :
+     * <ul>
+     * <li>The notBefore and notOnOrAfter conditions based on the specified time.</li>
+     * <li>If the audience in the audience restriction matches the specified audience</li>
+     * <li>If a subject is present</li>
+     * </ul>
+     */
+    public static void validateAssertion(Assertion assertion, DateTime now, String expectedAudience)
+            throws ServletException {
+
+        Conditions conditions = assertion.getConditions();
+        DateTime notBefore = conditions.getNotBefore();
+        DateTime notOnOrAfter = conditions.getNotOnOrAfter();
+
+        LOG.debug("now: " + now.toString());
+        LOG.debug("notBefore: " + notBefore.toString());
+        LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
+
+        if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter))
+            throw new ServletException("invalid SAML message timeframe");
+
+        Subject subject = assertion.getSubject();
+        if (null == subject)
+            throw new ServletException("missing Assertion Subject");
+
+        if (assertion.getAuthnStatements().isEmpty())
+            throw new ServletException("missing AuthnStatement");
+
+        AuthnStatement authnStatement = assertion.getAuthnStatements().get(0);
+        if (null == authnStatement.getAuthnContext())
+            throw new ServletException("missing AuthnContext");
+
+        if (null == authnStatement.getAuthnContext().getAuthnContextClassRef())
+            throw new ServletException("missing AuthnContextClassRef");
+
+        if (null != expectedAudience) {
 
             /*
              * Check whether the audience of the response corresponds to the original audience restriction
@@ -250,9 +243,7 @@ public class ResponseUtil {
             LOG.debug("actual audience name: " + actualAudience);
             if (false == expectedAudience.equals(actualAudience))
                 throw new ServletException("audience name not correct, expected: " + expectedAudience);
-
         }
-        return samlResponse;
     }
 
     /**
@@ -274,19 +265,41 @@ public class ResponseUtil {
                                                         TrustDomainType trustDomain)
             throws ServletException {
 
-        if (false == "POST".equals(httpRequest.getMethod()))
+        if (false == validateResponse(httpRequest, stsWsLocation, applicationCertificate, applicationPrivateKey, trustDomain))
             return null;
-        LOG.debug("POST response");
-        String encodedSamlResponse = httpRequest.getParameter("SAMLResponse");
-        if (null == encodedSamlResponse) {
-            LOG.debug("no SAMLResponse parameter found");
-            return null;
-        }
-        LOG.debug("SAMLResponse parameter found");
-        LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
+
+        LogoutResponse logoutResponse = getLogoutResponse(httpRequest);
+
+        /*
+         * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
+         */
+        if (!logoutResponse.getInResponseTo().equals(expectedInResponseTo))
+            throw new ServletException("SAML logout response is not a response belonging to the original request.");
+
+        return logoutResponse;
+    }
+
+    /**
+     * Returns the SAML v2.0 {@link LogoutResponse} embedded in the request. Throws a {@link ServletException} if not found or of the wrong
+     * type.
+     * 
+     * @param request
+     * @throws ServletException
+     */
+    public static LogoutResponse getLogoutResponse(HttpServletRequest request)
+            throws ServletException {
+
+        SAMLObject samlObject = getSAMLObject(request);
+        if (false == samlObject instanceof LogoutResponse)
+            throw new ServletException("SAML message not an logout response message");
+        return (LogoutResponse) samlObject;
+    }
+
+    public static SAMLObject getSAMLObject(HttpServletRequest request)
+            throws ServletException {
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(httpRequest));
+        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(request));
 
         SecurityPolicyResolver securityPolicyResolver = new SamlResponseSecurityPolicyResolver();
         messageContext.setSecurityPolicyResolver(securityPolicyResolver);
@@ -305,10 +318,26 @@ public class ResponseUtil {
             throw new ServletException("security error");
         }
 
-        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof LogoutResponse)
-            throw new ServletException("SAML message not an response message");
-        LogoutResponse logoutResponse = (LogoutResponse) samlMessage;
+        return messageContext.getInboundSAMLMessage();
+    }
+
+    /**
+     * Validates the embedded SAML response token using the specified STS WS.
+     */
+    public static boolean validateResponse(HttpServletRequest request, String stsWsLocation, X509Certificate applicationCertificate,
+                                           PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
+            throws ServletException {
+
+        if (false == "POST".equals(request.getMethod()))
+            return false;
+        LOG.debug("POST response");
+        String encodedSamlResponse = request.getParameter("SAMLResponse");
+        if (null == encodedSamlResponse) {
+            LOG.debug("no SAMLResponse parameter found");
+            return false;
+        }
+        LOG.debug("SAMLResponse parameter found");
+        LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
         byte[] decodedSamlResponse;
         try {
@@ -332,13 +361,6 @@ public class ResponseUtil {
         } catch (WSClientTransportException e) {
             throw new ServletException(e.getMessage());
         }
-
-        /*
-         * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
-         */
-        if (!logoutResponse.getInResponseTo().equals(expectedInResponseTo))
-            throw new ServletException("SAML logout response is not a response belonging to the original request.");
-
-        return logoutResponse;
+        return true;
     }
 }

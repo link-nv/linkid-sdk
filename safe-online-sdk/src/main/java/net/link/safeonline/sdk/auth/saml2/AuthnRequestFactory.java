@@ -68,7 +68,8 @@ public class AuthnRequestFactory {
      * itself. Later on we could use the SAML Metadata service or a persistent server-side application field to locate this service.
      * 
      * @param issuerName
-     * @param applicationName
+     * @param audiences
+     *            the optional list of audiences is the optional list of application pools that can be specified for use in Single Sign On
      * @param applicationFriendlyName
      * @param signerKeyPair
      * @param assertionConsumerServiceURL
@@ -81,14 +82,12 @@ public class AuthnRequestFactory {
      * @param devices
      *            the optional list of allowed authentication devices.
      */
-    public static String createAuthnRequest(String issuerName, String applicationName, String applicationFriendlyName,
+    public static String createAuthnRequest(String issuerName, List<String> audiences, String applicationFriendlyName,
                                             KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
                                             Challenge<String> challenge, Set<String> devices, boolean ssoEnabled) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == applicationName)
-            throw new IllegalArgumentException("application name should not be null");
         if (null == issuerName)
             throw new IllegalArgumentException("application name should not be null");
 
@@ -142,16 +141,20 @@ public class AuthnRequestFactory {
             request.setRequestedAuthnContext(requestedAuthnContext);
         }
 
-        Conditions conditions = Saml2Util.buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
-        List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-        AudienceRestriction audienceRestriction = Saml2Util.buildXMLObject(AudienceRestriction.class,
-                AudienceRestriction.DEFAULT_ELEMENT_NAME);
-        audienceRestrictions.add(audienceRestriction);
-        List<Audience> audiences = audienceRestriction.getAudiences();
-        Audience audience = Saml2Util.buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
-        audiences.add(audience);
-        audience.setAudienceURI(applicationName);
-        request.setConditions(conditions);
+        if (null != audiences) {
+            Conditions conditions = Saml2Util.buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
+            List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
+            AudienceRestriction audienceRestriction = Saml2Util.buildXMLObject(AudienceRestriction.class,
+                    AudienceRestriction.DEFAULT_ELEMENT_NAME);
+            audienceRestrictions.add(audienceRestriction);
+            List<Audience> audienceList = audienceRestriction.getAudiences();
+            for (String audienceName : audiences) {
+                Audience audience = Saml2Util.buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
+                audienceList.add(audience);
+                audience.setAudienceURI(audienceName);
+            }
+            request.setConditions(conditions);
+        }
 
         return Saml2Util.sign(request, signerKeyPair);
     }

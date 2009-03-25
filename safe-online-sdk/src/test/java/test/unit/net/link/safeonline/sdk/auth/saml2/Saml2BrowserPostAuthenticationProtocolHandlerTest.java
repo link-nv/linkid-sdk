@@ -39,9 +39,9 @@ import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
@@ -230,7 +230,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         LOG.debug("test doGet");
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(requestServletTestManager.getServletLocation());
-        SafeOnlineConfig.load(requestServletTestManager, webServiceTestUtils);
+        SafeOnlineTestConfig.loadTest(requestServletTestManager, webServiceTestUtils);
 
         // operate
         int resultStatusCode = httpClient.executeMethod(getMethod);
@@ -265,7 +265,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         HttpClient httpClient = new HttpClient();
         String servletLocation = responseServletTestManager.getServletLocation();
         PostMethod postMethod = new PostMethod(servletLocation);
-        SafeOnlineConfig.load(responseServletTestManager, webServiceTestUtils);
+        SafeOnlineTestConfig.loadTest(responseServletTestManager, webServiceTestUtils);
 
         InputStream xmlInputStream = Saml2BrowserPostAuthenticationProtocolHandlerTest.class.getResourceAsStream("/test-saml-response.xml");
         String xmlInputString = IOUtils.toString(xmlInputStream);

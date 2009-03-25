@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:set ts=4 sw=4 noexpandtab: -->
+
 <mapping class="net.link.safeonline.demo.bank.entity.BankAccountEntity" />
 <mapping class="net.link.safeonline.demo.bank.entity.BankTransactionEntity" />
 <mapping class="net.link.safeonline.demo.bank.entity.BankUserEntity" />
