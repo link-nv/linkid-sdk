@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online</groupId>
+		<artifactId>demo</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -15,7 +15,7 @@
         The entity beans for the Bank Demo.
 	</description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.demo</groupId>
 	<artifactId>safe-online-demo-bank</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>ejb</packaging>
@@ -54,7 +54,7 @@
 
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.demo</groupId>
 			<artifactId>safe-online-demo-bank-keystore</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
@@ -64,7 +64,7 @@
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.demo</groupId>
 			<artifactId>safe-online-model-demo-client</artifactId>
    			<version>1.4-SNAPSHOT</version>
 		</dependency>

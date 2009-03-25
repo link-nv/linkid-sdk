@@ -9,8 +9,8 @@
     </properties-->
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online</groupId>
+		<artifactId>demo</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -20,7 +20,7 @@
 		for the Demos.
 	</description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.demo</groupId>
 	<artifactId>
 		safe-online-demo-notification-consumer-ws-impl
 	</artifactId>
@@ -54,7 +54,7 @@
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.demo</groupId>
 			<artifactId>safe-online-demo-ws-model</artifactId>
 			<version>1.4-SNAPSHOT</version>
             <type>ejb</type>

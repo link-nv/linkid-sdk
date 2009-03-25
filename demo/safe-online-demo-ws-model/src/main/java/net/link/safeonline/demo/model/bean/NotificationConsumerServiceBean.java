@@ -26,8 +26,6 @@ import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.demo.model.NotificationConsumerService;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
-import net.link.safeonline.demo.ticket.entity.Ticket;
-import net.link.safeonline.demo.ticket.entity.User;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,12 +40,10 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
     private static final String DEMO_BANK_APPLICATION_NAME    = "ebank";
     private static final String DEMO_CINEMA_APPLICATION_NAME  = "cinema";
-    private static final String DEMO_TICKET_APPLICATION_NAME  = "eticket";
     private static final String DEMO_PAYMENT_APPLICATION_NAME = "epayment";
 
     private EntityManager       demoBankEntityManager;
     private EntityManager       demoCinemaEntityManager;
-    private EntityManager       demoTicketEntityManager;
     private EntityManager       demoPaymentEntityManager;
 
     private TicketService       demoCinemaTicketService;
@@ -59,7 +55,6 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
             InitialContext context = new InitialContext();
             demoBankEntityManager = (EntityManager) context.lookup("java:/DemoBankEntityManager");
             demoCinemaEntityManager = (EntityManager) context.lookup("java:/DemoCinemaEntityManager");
-            demoTicketEntityManager = (EntityManager) context.lookup("java:/DemoTicketEntityManager");
             demoPaymentEntityManager = (EntityManager) context.lookup("java:/DemoPaymentEntityManager");
             demoCinemaTicketService = (TicketService) context.lookup(TicketService.JNDI_BINDING);
         } catch (NamingException e) {
@@ -71,8 +66,6 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
                 removeDemoBankUser(subject);
             } else if (destination.equals(DEMO_CINEMA_APPLICATION_NAME)) {
                 removeDemoCinemaUser(subject);
-            } else if (destination.equals(DEMO_TICKET_APPLICATION_NAME)) {
-                removeDemoTicketUser(subject);
             } else if (destination.equals(DEMO_PAYMENT_APPLICATION_NAME)) {
                 removeDemoPaymentUser(subject);
             }
@@ -126,26 +119,10 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         if (null != user) {
             Collection<CinemaTicketEntity> tickets = demoCinemaTicketService.getTickets(user);
             for (CinemaTicketEntity ticket : tickets) {
-                demoTicketEntityManager.remove(ticket);
+            	demoCinemaEntityManager.remove(ticket);
             }
             demoCinemaEntityManager.remove(user);
         }
-    }
-
-    private void removeDemoTicketUser(String userId) {
-
-        LOG.debug("remove demo ticket user id: " + userId);
-
-        User user = demoTicketEntityManager.find(User.class, userId);
-        if (null != user) {
-            LOG.debug("removing demo ticket user: " + user.getSafeOnlineUserName());
-            List<Ticket> tickets = user.getTickets();
-            for (Ticket ticket : tickets) {
-                demoTicketEntityManager.remove(ticket);
-            }
-            demoTicketEntityManager.remove(user);
-        }
-
     }
 
     private void removeDemoPaymentUser(String userId) {
