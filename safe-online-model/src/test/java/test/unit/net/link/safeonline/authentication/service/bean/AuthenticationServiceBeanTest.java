@@ -187,7 +187,7 @@ public class AuthenticationServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
         application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -228,7 +228,7 @@ public class AuthenticationServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
         application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, devices, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -278,7 +278,7 @@ public class AuthenticationServiceBeanTest {
         KeyPair foobarKeyPair = PkiTestUtils.generateKeyPair();
         X509Certificate foobarCert = PkiTestUtils.generateSelfSignedCertificate(foobarKeyPair, "CN=TestApplication");
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -317,7 +317,7 @@ public class AuthenticationServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
         application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -360,7 +360,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -427,7 +427,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -483,7 +483,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -537,7 +537,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -586,7 +586,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -645,7 +645,7 @@ public class AuthenticationServiceBeanTest {
 
         ApplicationEntity invalidApplication = new ApplicationEntity(invalidApplicationName, null, null, null, null, null, applicationCert);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -704,7 +704,7 @@ public class AuthenticationServiceBeanTest {
         application.setApplicationPools(Collections.singletonList(applicationPool));
         ApplicationEntity cookieApplication = new ApplicationEntity(cookieApplicationName, null, null, null, null, null, applicationCert);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -801,7 +801,7 @@ public class AuthenticationServiceBeanTest {
         application2.setApplicationPools(application2PoolList);
         application3.setApplicationPools(Collections.singletonList(applicationPool2));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(application3Name, application3Name, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(application3Name, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -862,7 +862,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -924,7 +924,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -986,7 +986,7 @@ public class AuthenticationServiceBeanTest {
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 

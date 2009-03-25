@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- vi:set ts=4 sw=4 noexpandtab: -->
 
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
 	soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://schemas.xmlsoap.org/soap/envelope/
                http://schemas.xmlsoap.org/soap/envelope/">
+<!-- vi:set ts=4 sw=4 noexpandtab: -->	
 	<soap:Header>
 		<tns:header soap:mustUnderstand="1" xmlns:tns="urn:test"
 			Id="test-id">

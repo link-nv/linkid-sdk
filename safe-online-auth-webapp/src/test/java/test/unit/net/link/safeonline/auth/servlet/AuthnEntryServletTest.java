@@ -163,7 +163,7 @@ public class AuthnEntryServletTest {
         long applicationId = 1234567890;
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, servletLocation, null, null, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 
@@ -213,7 +213,7 @@ public class AuthnEntryServletTest {
         long applicationId = 1234567890;
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
                 assertionConsumerService, servletLocation, null, null, true);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 

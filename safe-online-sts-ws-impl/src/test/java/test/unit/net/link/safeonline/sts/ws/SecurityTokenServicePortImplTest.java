@@ -30,6 +30,7 @@ import javax.xml.ws.handler.Handler;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
+import net.link.safeonline.device.sdk.auth.saml2.response.AuthnResponseFactory;
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseFactory;
@@ -41,7 +42,6 @@ import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.saml.common.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
 import net.link.safeonline.sdk.ws.LoggingHandler;
@@ -532,7 +532,7 @@ public class SecurityTokenServicePortImplTest {
             throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, nodeKeyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, null, applicationName, nodeKeyPair,
                 assertionConsumerServiceURL, destinationURL, challenge, Collections.singleton("test-device-name"), false);
         Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         return doc.getDocumentElement();

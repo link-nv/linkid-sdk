@@ -174,7 +174,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         LOG.debug("target url: " + targetUrl);
         Set<String> devices = getDevices(request);
-        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, applicationFriendlyName,
+        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, null, applicationFriendlyName,
                 applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices, ssoEnabled);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());

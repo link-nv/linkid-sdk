@@ -88,6 +88,8 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.device.sdk.auth.saml2.request.DeviceAuthnRequestFactory;
+import net.link.safeonline.device.sdk.auth.saml2.response.AuthnResponseFactory;
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
@@ -107,8 +109,6 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.Challenge;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
@@ -380,8 +380,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Challenge<String> challenge = new Challenge<String>();
 
-        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node.getName(), expectedApplicationName,
-                expectedApplicationFriendlyName, nodeKeyStore.getKeyPair(), authenticationServiceUrl, targetUrl, challenge, devices, false);
+        String samlRequestToken = DeviceAuthnRequestFactory.createDeviceAuthnRequest(node.getName(), expectedApplicationName,
+                expectedApplicationFriendlyName, nodeKeyStore.getKeyPair(), authenticationServiceUrl, targetUrl, challenge, devices);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
