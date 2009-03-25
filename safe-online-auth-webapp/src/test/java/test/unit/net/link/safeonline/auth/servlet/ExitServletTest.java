@@ -45,6 +45,7 @@ import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.codec.binary.Base64;
@@ -140,6 +141,8 @@ public class ExitServletTest {
                 device.getAuthenticationContextClass(), nodeKeyPair, validity, target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
         expect(mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
+
+        SafeOnlineTestConfig.loadTest(exitServletTestManager);
 
     }
 

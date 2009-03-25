@@ -31,6 +31,7 @@ import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -85,6 +86,9 @@ public class LogoutEntryServletTest {
         logoutEntryServletTestManager.setUp(LogoutEntryServlet.class, initParams, null, null, initialSessionAttributes);
 
         mockObjects = new Object[] { mockLogoutService };
+
+        SafeOnlineTestConfig.loadTest(logoutEntryServletTestManager);
+
     }
 
     @After

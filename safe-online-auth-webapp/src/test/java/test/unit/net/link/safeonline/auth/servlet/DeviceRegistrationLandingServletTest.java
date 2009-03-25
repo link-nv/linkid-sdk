@@ -36,6 +36,7 @@ import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -114,6 +115,9 @@ public class DeviceRegistrationLandingServletTest {
         mockObjects = new Object[] { mockAuthenticationService, mockSubjectService, mockHelpdeskManager };
 
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(50);
+
+        SafeOnlineTestConfig.loadTest(servletTestManager);
+
     }
 
     @After
