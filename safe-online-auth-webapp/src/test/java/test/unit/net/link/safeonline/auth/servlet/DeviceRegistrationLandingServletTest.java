@@ -28,9 +28,9 @@ import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
-import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseFactory;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseFactory;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.service.SubjectService;
@@ -147,7 +147,7 @@ public class DeviceRegistrationLandingServletTest {
         String applicationName = "test-application-id";
         String deviceOperationResponse = DeviceOperationResponseFactory.createDeviceOperationResponse("test-inresponse-to",
                 DeviceOperationType.NEW_ACCOUNT_REGISTER, applicationName, UUID.randomUUID().toString(), "test-device", applicationKeyPair,
-                0, servletEndpointUrl);
+                0, location);
         String encodedDeviceOperationResponse = Base64.encode(deviceOperationResponse.getBytes());
         PostMethod postMethod = new PostMethod(location);
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedDeviceOperationResponse) };
@@ -182,7 +182,7 @@ public class DeviceRegistrationLandingServletTest {
         String applicationName = "test-application-id";
         String deviceOperationResponse = DeviceOperationResponseFactory.createDeviceOperationResponse("test-inresponse-to",
                 DeviceOperationType.NEW_ACCOUNT_REGISTER, applicationName, UUID.randomUUID().toString(), "test-device", applicationKeyPair,
-                0, servletEndpointUrl);
+                0, location);
         String encodedDeviceOperationResponse = Base64.encode(deviceOperationResponse.getBytes());
         PostMethod postMethod = new PostMethod(location);
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedDeviceOperationResponse) };
@@ -219,7 +219,7 @@ public class DeviceRegistrationLandingServletTest {
         String applicationName = "test-application-id";
         String deviceOperationResponse = DeviceOperationResponseFactory.createDeviceOperationResponse("test-inresponse-to",
                 DeviceOperationType.NEW_ACCOUNT_REGISTER, applicationName, UUID.randomUUID().toString(), "test-device", applicationKeyPair,
-                0, servletEndpointUrl);
+                0, location);
         String encodedDeviceOperationResponse = Base64.encode(deviceOperationResponse.getBytes());
         PostMethod postMethod = new PostMethod(location);
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedDeviceOperationResponse) };
