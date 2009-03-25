@@ -96,6 +96,7 @@ public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServl
         } catch (ProtocolException e) {
             redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
                     e.getMessage()));
+            return;
         }
 
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
