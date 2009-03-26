@@ -154,7 +154,7 @@ public class ViewSubscriptionPage extends UserTemplatePage {
                 item.add(new Label(IDENTITY_ATTRIBUTE_NAME, attributeName));
 
                 Image dataMiningImage = new Image(DATA_MINING_IMAGE, "override");
-                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
+                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath()
                         + "/images/icons/accept.png"));
                 dataMiningImage.setVisible(attribute.isDataMining());
                 item.add(dataMiningImage);

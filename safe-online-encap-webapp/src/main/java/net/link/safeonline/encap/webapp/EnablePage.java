@@ -32,7 +32,7 @@ public class EnablePage extends WebPage {
 
     public EnablePage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         throw new RestartResponseException(new AuthenticationPage(Goal.ENABLE_DEVICE, protocolContext.getAttribute()));
     }

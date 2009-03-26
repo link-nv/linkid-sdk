@@ -45,7 +45,7 @@ public abstract class UserTemplatePage extends TemplatePage {
     @Override
     protected void onOlasAuthenticated() {
 
-        String olasId = WicketUtil.findOlasId(getRequest());
+        String olasId = WicketUtil.findOlasId();
         UserSession.get().setUserId(olasId);
     }
 }

@@ -72,7 +72,7 @@ public class AuthenticationPage extends AppletPage {
         getContent().add(progress);
         getContent().add(
                 new Label("title", localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
-                        WicketUtil.toServletRequest(getRequest()).getSession()).getApplicationFriendlyName())));
+                        WicketUtil.toServletRequest().getSession()).getApplicationFriendlyName())));
     }
 
     /**
@@ -115,8 +115,8 @@ public class AuthenticationPage extends AppletPage {
     @Override
     protected void cancel() {
 
-        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
-                getRequest()).getSession());
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest()
+                                                                                                               .getSession());
         authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
         authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 

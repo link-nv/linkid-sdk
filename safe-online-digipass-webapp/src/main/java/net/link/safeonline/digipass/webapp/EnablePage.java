@@ -54,7 +54,7 @@ public class EnablePage extends TemplatePage {
         getHeader();
         getSidebar(localize("helpDigipassEnable"));
 
-        String title = localize("%l %s", "digipass", ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()))
+        String title = localize("%l %s", "digipass", ProtocolContext.getProtocolContext(WicketUtil.getHttpSession())
                                                                     .getAttribute());
         getContent().add(new Label("title", title));
         getContent().add(new EnableForm(ENABLE_FORM_ID));
@@ -95,7 +95,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("enable digipass " + protocolContext.getAttribute());
 
                     try {
@@ -108,15 +108,15 @@ public class EnablePage extends TemplatePage {
 
                     catch (DeviceAuthenticationException e) {
                         EnableForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: authentication failed: "
+                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: authentication failed: "
                                 + protocolContext.getSubject(), LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found for "
+                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: subject not found for "
                                 + protocolContext.getSubject(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device registration not found",
+                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: device registration not found",
                                 LogLevelType.ERROR);
                     }
                 }
@@ -144,7 +144,7 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setValidity(
                 samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);

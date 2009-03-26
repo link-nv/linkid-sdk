@@ -69,7 +69,7 @@ public class RegistrationPage extends TemplatePage {
         getSidebar(localize("helpRegisterPassword"));
 
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getDeviceOperation().equals(
+        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).getDeviceOperation().equals(
                 DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
 
@@ -96,7 +96,7 @@ public class RegistrationPage extends TemplatePage {
 
         try {
             boolean passwordExists = passwordDeviceService.isPasswordConfigured(ProtocolContext.getProtocolContext(
-                    WicketUtil.getHttpSession(getRequest())).getSubject());
+                    WicketUtil.getHttpSession()).getSubject());
 
             alreadyRegistered.setVisible(passwordExists);
             registrationForm.setVisible(!passwordExists);
@@ -159,14 +159,14 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("register password for " + protocolContext.getSubject());
 
                     try {
                         passwordDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), password1.getObject());
                     } catch (NodeNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorNodeNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: node not found",
+                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "register: node not found",
                                 LogLevelType.ERROR);
                         return;
                     }
@@ -184,7 +184,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setSuccess(false);
                     exit();
                 }
 
@@ -199,7 +199,7 @@ public class RegistrationPage extends TemplatePage {
 
     public void exit() {
 
-        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setValidity(
                 samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);

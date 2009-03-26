@@ -144,7 +144,7 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
 
             String imei = OptionDevice.register(pin.getObject());
             try {
-                ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                 optionDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), imei);
             } catch (NodeNotFoundException e) {
                 RegisterForm.this.error(localize("errorNodeNotFound"));
@@ -159,7 +159,7 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
 
     public void exit(boolean success) {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         protocolContext.setSuccess(success);
 

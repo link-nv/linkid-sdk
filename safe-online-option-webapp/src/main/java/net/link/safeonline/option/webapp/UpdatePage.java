@@ -170,7 +170,7 @@ public class UpdatePage extends TemplatePage implements IHeaderContributor {
 
     public void exit(boolean success) {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         protocolContext.setSuccess(success);
 

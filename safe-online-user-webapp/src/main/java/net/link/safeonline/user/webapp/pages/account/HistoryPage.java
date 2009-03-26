@@ -107,8 +107,7 @@ public class HistoryPage extends UserTemplatePage {
 
         if (null != result) {
             for (HistoryEntity historyEntity : result) {
-                String historyMessage = HistoryMessageManager.getMessage(getLocale(), WicketUtil.toServletRequest(getRequest()),
-                        historyEntity);
+                String historyMessage = HistoryMessageManager.getMessage(getLocale(), WicketUtil.toServletRequest(), historyEntity);
                 messageList.add(new HistoryMessage(historyEntity.getWhen(), historyMessage));
             }
         }

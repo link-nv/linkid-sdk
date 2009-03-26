@@ -108,7 +108,7 @@ public class EnablePage extends TemplatePage {
             super(id);
 
             mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getAttribute())), PhoneNumber.class);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField, new Model<String>(localize("errorMissingMobileNumber"))));
@@ -121,7 +121,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
                         OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
@@ -133,19 +133,19 @@ public class EnablePage extends TemplatePage {
 
                     catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "enable: failed to send otp to "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "enable: failed to send otp to "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: mobile has no registered subject: "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "enable: mobile has no registered subject: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: mobile isn't registered: "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "enable: mobile isn't registered: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     }
                 }
@@ -216,7 +216,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("enable mobile " + protocolContext.getAttribute() + " for " + protocolContext.getSubject());
 
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
@@ -250,7 +250,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setSuccess(false);
                     exit();
                 }
 
@@ -276,7 +276,7 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setValidity(
                 samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);

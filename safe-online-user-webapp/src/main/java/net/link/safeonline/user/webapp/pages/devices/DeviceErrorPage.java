@@ -45,7 +45,7 @@ public class DeviceErrorPage extends TemplatePage {
         getHeader();
 
         getContent().add(
-                new Label(ERROR_MESSAGE_ID, (String) WicketUtil.getHttpSession(getRequest()).getAttribute(
+                new Label(ERROR_MESSAGE_ID, (String) WicketUtil.getHttpSession().getAttribute(
                         DeviceLandingServlet.DEVICE_ERROR_MESSAGE_ATTRIBUTE)));
         getContent().add(new PageLink<String>(MAIN_LINK_ID, getApplication().getHomePage()));
     }

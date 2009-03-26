@@ -108,7 +108,7 @@ public class UpdatePage extends TemplatePage {
             super(id);
 
             mobileField = new CustomRequiredTextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getAttribute())), PhoneNumber.class);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             mobileField.setRequired(true);
             mobileField.setRequiredMessageKey("errorMissingMobileNumber");
@@ -123,7 +123,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
                         OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
@@ -135,19 +135,19 @@ public class UpdatePage extends TemplatePage {
 
                     catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "update: failed to send otp to "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "update: failed to send otp to "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "update: failed to send otp to "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "update: failed to send otp to "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "update: mobile has no registered subject: "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "update: mobile has no registered subject: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "update: mobile isn't registered: "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "update: mobile isn't registered: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     }
                 }
@@ -237,7 +237,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("update pin for " + protocolContext.getSubject() + " for mobile " + protocolContext.getAttribute());
 
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
@@ -251,19 +251,19 @@ public class UpdatePage extends TemplatePage {
 
                     catch (SubjectNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
+                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "update: subject not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not registered",
+                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "update: device not registered",
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile " + protocolContext.getAttribute()
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "login: mobile " + protocolContext.getAttribute()
                                 + " disabled", LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {
                         oldpinField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
+                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "update: device not found",
                                 LogLevelType.ERROR);
                     }
                 }
@@ -278,7 +278,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setSuccess(false);
                     exit();
                 }
 
@@ -304,7 +304,7 @@ public class UpdatePage extends TemplatePage {
 
     public void exit() {
 
-        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setValidity(
                 samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
