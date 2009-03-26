@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- vi:set ts=4 sw=4 noexpandtab: -->
-
 <endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
 	version="2.0">
 

@@ -727,13 +727,10 @@
 		<jcommon.version>1.0.9</jcommon.version>
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
-		<wicket.version>1.4-so1</wicket.version>
-		<wicket-javaee.version>1.1-safe-online
-		</wicket-javaee.version>
-		<wicketstuff-annotation.version>1.1
-		</wicketstuff-annotation.version>
-		<wicket-datetime.version>1.4-so1
-		</wicket-datetime.version>
+		<wicket.version>1.4-rc2</wicket.version>
+		<wicket-javaee.version>1.1-safe-online</wicket-javaee.version>
+		<wicketstuff-annotation.version>1.1</wicketstuff-annotation.version>
+		<wicket-datetime.version>1.4-rc2</wicket-datetime.version>
 		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>

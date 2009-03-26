@@ -12,7 +12,7 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 
 
 /**
- * <h2>{@link FocusOnLoad}<br>
+ * <h2>{@link FocusOnReady}<br>
  * <sub>[in short] (TODO).</sub></h2>
  * 
  * <p>
@@ -25,14 +25,14 @@ import org.apache.wicket.markup.html.IHeaderResponse;
  * 
  * @author lhunath
  */
-public class FocusOnLoad extends AbstractHeaderContributor {
+public class FocusOnReady extends AbstractHeaderContributor {
 
     private static final long  serialVersionUID = 1L;
 
     private IHeaderContributor headercontributer;
 
 
-    public FocusOnLoad(String path) {
+    public FocusOnReady(String path) {
 
         setPath(path);
     }
@@ -46,7 +46,7 @@ public class FocusOnLoad extends AbstractHeaderContributor {
 
             public void renderHead(IHeaderResponse response) {
 
-                response.renderOnLoadJavascript(String.format("document.getElementById('%s').focus()", path.replaceAll("'", "\\'")));
+                response.renderOnDomReadyJavascript(String.format("document.getElementById('%s').focus()", path.replaceAll("'", "\\'")));
             }
         };
     }
