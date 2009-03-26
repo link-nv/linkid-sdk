@@ -59,7 +59,7 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
 
     public SubscriptionPage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         getSidebar(localize("helpSubscriptionConfirm"));
 
@@ -98,7 +98,7 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -182,7 +182,7 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
 
     void subscribe() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         try {
             if (!subscriptionService.isSubscribed(protocolContext.getApplicationId())) {

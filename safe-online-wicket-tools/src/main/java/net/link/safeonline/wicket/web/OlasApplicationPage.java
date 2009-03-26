@@ -55,9 +55,9 @@ public abstract class OlasApplicationPage extends WicketPage {
 
                 // Check whether OLAS user has changed.
                 String wicketOlasId = OLASSession.get().getUserOlasId();
-                if (WicketUtil.isOlasAuthenticated(getRequest())) {
+                if (WicketUtil.isOlasAuthenticated()) {
                     if (wicketOlasId != null) {
-                        String currentOlasId = WicketUtil.findOlasId(getRequest());
+                        String currentOlasId = WicketUtil.findOlasId();
                         if (!wicketOlasId.equals(currentOlasId))
                             throw new IllegalStateException("User changed from " + wicketOlasId + " into " + currentOlasId);
                     }

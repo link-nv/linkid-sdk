@@ -79,7 +79,7 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
 
         getContent().add(new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.initial));
 
-        String loginLabel = localize("%l: %s", "login", LoginManager.getLogin(WicketUtil.getHttpSession(getRequest())));
+        String loginLabel = localize("%l: %s", "login", LoginManager.getLogin(WicketUtil.getHttpSession()));
         getContent().add(new Label(LOGIN_LABEL_ID, loginLabel));
 
         getContent().add(new NewUserDeviceForm(NEW_USER_DEVICE_FORM_ID));
@@ -161,9 +161,8 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), registrationURL, deviceName,
-                                    LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
+                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(), WicketUtil.toServletResponse(), getLocale(),
+                                    registrationURL, deviceName, LoginManager.getUserId(WicketUtil.getHttpSession()));
 
                         }
 

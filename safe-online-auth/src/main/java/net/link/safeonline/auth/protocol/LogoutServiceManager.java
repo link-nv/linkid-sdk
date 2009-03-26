@@ -86,6 +86,7 @@ public class LogoutServiceManager implements HttpSessionListener {
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");
+
         return logoutService;
     }
 

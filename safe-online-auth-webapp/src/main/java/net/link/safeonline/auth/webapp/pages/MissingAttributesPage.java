@@ -78,7 +78,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         applicationId = protocolContext.getApplicationId();
         applicationFriendlyName = protocolContext.getApplicationFriendlyName();
 

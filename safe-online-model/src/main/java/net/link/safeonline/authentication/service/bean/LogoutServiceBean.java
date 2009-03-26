@@ -446,7 +446,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         SubjectEntity subject = subjectService.getSubject(userId);
 
         /*
-         * Safe the state in this stateful session bean.
+         * Save the state in this stateful session bean.
          */
         logoutState = INITIALIZED;
         expectedApplicationId = application.getId();

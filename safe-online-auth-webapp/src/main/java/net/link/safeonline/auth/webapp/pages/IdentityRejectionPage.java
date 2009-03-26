@@ -57,7 +57,7 @@ public class IdentityRejectionPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }

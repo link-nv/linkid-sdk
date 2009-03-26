@@ -72,7 +72,7 @@ public class MainPage extends AuthenticationTemplatePage {
 
     public MainPage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         devices = new LinkedList<DeviceDO>();
         List<DeviceEntity> deviceEntities;
         try {
@@ -129,7 +129,7 @@ public class MainPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -192,7 +192,7 @@ public class MainPage extends AuthenticationTemplatePage {
                     }
                     LOG.debug("authenticationPath: " + authenticationPath);
 
-                    String requestPath = WicketUtil.toServletRequest(getRequest()).getRequestURL().toString();
+                    String requestPath = WicketUtil.toServletRequest().getRequestURL().toString();
                     if (!requestPath.endsWith(PATH)) {
                         requestPath += PATH;
                     }
@@ -206,9 +206,8 @@ public class MainPage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), finalRequestPath, authenticationPath,
-                                    deviceName);
+                            AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(), WicketUtil.toServletResponse(),
+                                    getLocale(), finalRequestPath, authenticationPath, deviceName);
 
                         }
 
