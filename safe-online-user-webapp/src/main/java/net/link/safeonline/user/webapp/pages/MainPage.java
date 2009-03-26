@@ -74,7 +74,7 @@ public class MainPage extends UserTemplatePage {
             getSidebar(localize("helpMain"), false, new SideLink(loginLink, localize("loginaction")));
         }
 
-        String commercialName = WicketUtil.toServletRequest().getSession().getServletContext().getInitParameter("CommercialName");
+        String commercialName = WicketUtil.getServletRequest().getSession().getServletContext().getInitParameter("CommercialName");
         getContent().add(
                 new Label(INTRO_MESSAGE_ID, new StringResourceModel("introMessage", this, new Model<MainPage>(this),
                         new Object[] { commercialName })));

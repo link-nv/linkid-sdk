@@ -84,7 +84,7 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest().getSession()).setUsedDevice(
+                AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest().getSession()).setUsedDevice(
                         DigipassConstants.DIGIPASS_DEVICE_ID);
                 exit();
 
@@ -95,7 +95,7 @@ public class AuthenticationPage extends TemplatePage {
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
         String title = localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
-                WicketUtil.toServletRequest().getSession()).getApplication());
+                WicketUtil.getServletRequest().getSession()).getApplication());
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
@@ -150,27 +150,27 @@ public class AuthenticationPage extends TemplatePage {
                         digipassDeviceService.authenticate(userId, token.getObject());
                         login(userId);
 
-                        HelpdeskLogger.clear(WicketUtil.toServletRequest().getSession());
+                        HelpdeskLogger.clear(WicketUtil.getServletRequest().getSession());
                     }
 
                     catch (DeviceAuthenticationException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "login failed: " + login, LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "login failed: " + login, LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger
-                                      .add(WicketUtil.toServletRequest().getSession(), "Digipass device not registered", LogLevelType.ERROR);
+                                      .add(WicketUtil.getServletRequest().getSession(), "Digipass device not registered", LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "login: subject not found for " + login,
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "login: subject not found for " + login,
                                 LogLevelType.ERROR);
                     } catch (PermissionDeniedException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassAuthenticationFailed", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(),
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(),
                                 "Failed to contact OLAS to retrieve device mapping for " + login, LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "Digipass Device is disabled", LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "Digipass Device is disabled", LogLevelType.ERROR);
                     }
                 }
 
@@ -216,7 +216,7 @@ public class AuthenticationPage extends TemplatePage {
     public void login(String userId) {
 
         try {
-            AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest()
+            AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest()
                                                                                                                    .getSession());
             authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
             authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());

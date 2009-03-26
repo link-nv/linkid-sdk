@@ -94,7 +94,7 @@ public class AuthenticationPage extends TemplatePage {
     public AuthenticationPage(final Goal goal, String mobile) {
 
         this.goal = goal;
-        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest()
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest()
                                                                                                                .getSession());
 
         // Header & Sidebar.
@@ -133,7 +133,7 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest().getSession()).setUsedDevice(
+                AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest().getSession()).setUsedDevice(
                         EncapConstants.ENCAP_DEVICE_ID);
                 exit(false);
             }
@@ -239,7 +239,7 @@ public class AuthenticationPage extends TemplatePage {
                     ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     AuthenticationContext authenticationContext = AuthenticationContext
                                                                                        .getAuthenticationContext(WicketUtil
-                                                                                                                           .toServletRequest()
+                                                                                                                           .getServletRequest()
                                                                                                                            .getSession());
 
                     LOG.debug("mobile: " + mobile);
@@ -289,7 +289,7 @@ public class AuthenticationPage extends TemplatePage {
                         }
 
                         // All went well, clear helpdesk events.
-                        HelpdeskLogger.clear(WicketUtil.toServletRequest().getSession());
+                        HelpdeskLogger.clear(WicketUtil.getServletRequest().getSession());
                     }
 
                     catch (MobileException e) {
@@ -374,7 +374,7 @@ public class AuthenticationPage extends TemplatePage {
     void exit(boolean success) {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
-        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest()
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest()
                                                                                                                .getSession());
 
         switch (goal) {

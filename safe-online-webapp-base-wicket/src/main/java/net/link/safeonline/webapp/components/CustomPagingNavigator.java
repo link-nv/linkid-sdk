@@ -61,22 +61,22 @@ public class CustomPagingNavigator extends PagingNavigator {
             if (((Link<?>) get("first")).get(FIRST_IMAGE_ID) == null) {
 
                 Image firstImage = new Image(FIRST_IMAGE_ID, "override");
-                firstImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath()
+                firstImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                         + "/images/icons/control_start.png"));
                 ((Link<?>) get("first")).add(firstImage);
 
                 Image prevImage = new Image(PREV_IMAGE_ID, "override");
-                prevImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath()
+                prevImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                         + "/images/icons/control_rewind.png"));
                 ((Link<?>) get("prev")).add(prevImage);
 
                 Image nextImage = new Image(NEXT_IMAGE_ID, "override");
-                nextImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath()
+                nextImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                         + "/images/icons/control_fastforward.png"));
                 ((Link<?>) get("next")).add(nextImage);
 
                 Image lastImage = new Image(LAST_IMAGE_ID, "override");
-                lastImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath()
+                lastImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                         + "/images/icons/control_end.png"));
                 ((Link<?>) get("last")).add(lastImage);
             }

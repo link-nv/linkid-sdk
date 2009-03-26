@@ -251,11 +251,11 @@ public class UpdatePage extends TemplatePage {
 
                     catch (SubjectNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "update: subject not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "update: subject not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "update: device not registered",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "update: device not registered",
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
@@ -263,7 +263,7 @@ public class UpdatePage extends TemplatePage {
                                 + " disabled", LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {
                         oldpinField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "update: device not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "update: device not found",
                                 LogLevelType.ERROR);
                     }
                 }

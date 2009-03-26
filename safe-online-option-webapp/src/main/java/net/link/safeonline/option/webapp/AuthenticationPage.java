@@ -78,7 +78,7 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
             @Override
             public void onClick() {
 
-                AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest().getSession()).setUsedDevice(
+                AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest().getSession()).setUsedDevice(
                         OptionConstants.OPTION_DEVICE_ID);
                 exit();
             }
@@ -92,7 +92,7 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
         getContent().add(
                 new Label("title", localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
-                        WicketUtil.toServletRequest().getSession()).getApplication())));
+                        WicketUtil.getServletRequest().getSession()).getApplication())));
     }
 
     /**
@@ -177,7 +177,7 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
                 try {
                     AuthenticationContext authenticationContext = AuthenticationContext
                                                                                        .getAuthenticationContext(WicketUtil
-                                                                                                                           .toServletRequest()
+                                                                                                                           .getServletRequest()
                                                                                                                            .getSession());
                     authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
                     authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
@@ -190,7 +190,7 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
                 }
 
                 // All went well, clear helpdesk events & exit successfully.
-                HelpdeskLogger.clear(WicketUtil.toServletRequest().getSession());
+                HelpdeskLogger.clear(WicketUtil.getServletRequest().getSession());
                 exit();
             }
 
@@ -219,7 +219,7 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
     void exit() {
 
         LOG.debug("option: exit");
-        AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest().getSession()).setValidity(
+        AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest().getSession()).setValidity(
                 samlAuthorityService.getAuthnAssertionValidity());
 
         throw new RedirectToUrlException("authenticationexit");

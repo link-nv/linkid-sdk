@@ -108,15 +108,15 @@ public class EnablePage extends TemplatePage {
 
                     catch (DeviceAuthenticationException e) {
                         EnableForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: authentication failed: "
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: authentication failed: "
                                 + protocolContext.getSubject(), LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: subject not found for "
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: subject not found for "
                                 + protocolContext.getSubject(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: device registration not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: device registration not found",
                                 LogLevelType.ERROR);
                     }
                 }

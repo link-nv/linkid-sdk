@@ -105,15 +105,15 @@ public class EnablePage extends TemplatePage {
 
                     catch (SubjectNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: subject not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: subject not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {
                         passwordField.error(getLocalizer().getString("errorPasswordNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: permission denied: "
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: permission denied: "
                                 + e.getMessage(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         passwordField.error(getLocalizer().getString("errorPasswordNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "enable: device not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: device not found",
                                 LogLevelType.ERROR);
                     }
                 }

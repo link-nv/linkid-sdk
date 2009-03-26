@@ -117,7 +117,7 @@ public abstract class WicketUtil {
     /**
      * Get the {@link HttpServletRequest} contained in the active Wicket {@link Request}.
      */
-    public static HttpServletRequest toServletRequest() {
+    public static HttpServletRequest getServletRequest() {
 
         return ((WebRequest) RequestCycle.get().getRequest()).getHttpServletRequest();
     }
@@ -125,7 +125,7 @@ public abstract class WicketUtil {
     /**
      * Get the {@link HttpServletResponse} contained in the active Wicket {@link Response}.
      */
-    public static HttpServletResponse toServletResponse() {
+    public static HttpServletResponse getServletResponse() {
 
         return ((WebResponse) RequestCycle.get().getResponse()).getHttpServletResponse();
     }
@@ -135,7 +135,7 @@ public abstract class WicketUtil {
      */
     public static HttpSession getHttpSession() {
 
-        return toServletRequest().getSession();
+        return getServletRequest().getSession();
     }
 
     /**
@@ -143,7 +143,7 @@ public abstract class WicketUtil {
      */
     public static boolean isOlasAuthenticated() {
 
-        return LoginManager.isAuthenticated(toServletRequest());
+        return LoginManager.isAuthenticated(getServletRequest());
     }
 
     /**
@@ -152,6 +152,6 @@ public abstract class WicketUtil {
      */
     public static String findOlasId() {
 
-        return LoginManager.findUserId(toServletRequest());
+        return LoginManager.findUserId(getServletRequest());
     }
 }

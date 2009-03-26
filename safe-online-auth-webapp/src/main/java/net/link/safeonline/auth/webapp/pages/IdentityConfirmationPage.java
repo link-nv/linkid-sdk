@@ -91,7 +91,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
                 attributeItem.add(new Label(NAME_ID, name));
 
                 Image dataMiningImage = new Image(DATAMINING_IMAGE_ID, "override");
-                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath()
+                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                         + "/images/icons/accept.png"));
                 dataMiningImage.setVisible(attributeItem.getModelObject().isDataMining());
                 attributeItem.add(dataMiningImage);

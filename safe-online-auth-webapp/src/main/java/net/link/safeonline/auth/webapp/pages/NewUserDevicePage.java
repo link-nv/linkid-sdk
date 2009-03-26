@@ -161,7 +161,7 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(), WicketUtil.toServletResponse(), getLocale(),
+                            AuthenticationUtils.redirect(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(), getLocale(),
                                     registrationURL, deviceName, LoginManager.getUserId(WicketUtil.getHttpSession()));
 
                         }

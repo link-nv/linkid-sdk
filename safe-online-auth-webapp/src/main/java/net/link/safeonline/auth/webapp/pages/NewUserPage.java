@@ -124,7 +124,7 @@ public class NewUserPage extends AuthenticationTemplatePage {
             add(new ErrorComponentFeedbackLabel("captcha_feedback", captchaField));
 
             final Image captchaImage = new Image(CAPTCHA_IMAGE_ID, "override");
-            captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath() + "/captcha.jpg?cacheid="
+            captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath() + "/captcha.jpg?cacheid="
                     + Math.random() * 1000000));
             captchaImage.setOutputMarkupId(true);
             add(captchaImage);
@@ -137,7 +137,7 @@ public class NewUserPage extends AuthenticationTemplatePage {
                 @Override
                 public void onClick(AjaxRequestTarget target) {
 
-                    captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath()
+                    captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                             + "/captcha.jpg?cacheid=" + Math.random() * 1000000));
                     target.addComponent(captchaImage);
                 }

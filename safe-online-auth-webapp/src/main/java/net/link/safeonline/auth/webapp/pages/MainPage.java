@@ -192,7 +192,7 @@ public class MainPage extends AuthenticationTemplatePage {
                     }
                     LOG.debug("authenticationPath: " + authenticationPath);
 
-                    String requestPath = WicketUtil.toServletRequest().getRequestURL().toString();
+                    String requestPath = WicketUtil.getServletRequest().getRequestURL().toString();
                     if (!requestPath.endsWith(PATH)) {
                         requestPath += PATH;
                     }
@@ -206,7 +206,7 @@ public class MainPage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(), WicketUtil.toServletResponse(),
+                            AuthenticationUtils.redirectAuthentication(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(),
                                     getLocale(), finalRequestPath, authenticationPath, deviceName);
 
                         }

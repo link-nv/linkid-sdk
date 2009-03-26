@@ -246,7 +246,7 @@ public class RegistrationPage extends TemplatePage {
 
                     catch (DeviceAuthenticationException e) {
                         otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(),
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(),
                                 "mobile otp: verification failed for mobile " + mobile, LogLevelType.ERROR);
                     }
                 }

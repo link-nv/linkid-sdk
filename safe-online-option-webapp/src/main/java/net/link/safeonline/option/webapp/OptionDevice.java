@@ -101,7 +101,7 @@ public abstract class OptionDevice {
         webResponse.addCookie(imeiCookie);
 
         // TODO: Manually add cookies to the MockHttpServletRequest until https://issues.apache.org/jira/browse/WICKET-1886 is fixed.
-        HttpServletRequest servletRequest = WicketUtil.toServletRequest();
+        HttpServletRequest servletRequest = WicketUtil.getServletRequest();
         if (servletRequest instanceof org.apache.wicket.protocol.http.MockHttpServletRequest) {
             ((MockHttpServletRequest) servletRequest).addCookie(pinCookie);
             ((MockHttpServletRequest) servletRequest).addCookie(imeiCookie);

@@ -49,7 +49,7 @@ public class HeaderBorder extends Border {
 
             {
                 Image languageImage = new Image("language_image", "override");
-                languageImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest().getContextPath() + "/images/langs/"
+                languageImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath() + "/images/langs/"
                         + getLocale().getLanguage() + ".png"));
                 add(languageImage);
             }

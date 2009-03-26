@@ -166,7 +166,7 @@ public class RegistrationPage extends TemplatePage {
                         passwordDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), password1.getObject());
                     } catch (NodeNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorNodeNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest().getSession(), "register: node not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "register: node not found",
                                 LogLevelType.ERROR);
                         return;
                     }
