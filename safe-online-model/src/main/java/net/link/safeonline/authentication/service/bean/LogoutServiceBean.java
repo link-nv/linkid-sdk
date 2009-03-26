@@ -16,6 +16,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -209,14 +210,9 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         return false;
     }
 
-    public ApplicationEntity findSsoApplicationToLogout() {
+    public List<ApplicationEntity> getSsoApplicationsToLogout() {
 
-        if (null == ssoApplicationsToLogOut || ssoApplicationsToLogOut.isEmpty())
-            return null;
-
-        ApplicationEntity application = ssoApplicationsToLogOut.get(0);
-        ssoApplicationsToLogOut.remove(0);
-        return application;
+        return Collections.unmodifiableList(ssoApplicationsToLogOut);
     }
 
 

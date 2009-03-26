@@ -19,6 +19,7 @@ import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
+import net.link.safeonline.auth.webapp.pages.SSOLogoutPage;
 import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -63,9 +64,6 @@ public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
     private static final Log   LOG              = LogFactory.getLog(LogoutEntryServlet.class);
 
     public static final String SERVLET_PATH     = "logoutentry";
-
-    @Init(name = LOGOUT_EXIT_PATH)
-    private String             logoutExitPath;
 
     @Init(name = COOKIE_PATH)
     private String             cookiePath;
@@ -120,23 +118,24 @@ public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
                     try {
-                        if (logoutService.checkSsoCookieForLogout(cookie)) {
-                            // If cookie has passed checks for logout, remove it, applications that need to be logged
-                            // out are stored in the AuthenticationService
-                            removeCookie(cookie.getName(), response);
-                        }
-                    } catch (ApplicationNotFoundException e) {
+                        logoutService.checkSsoCookieForLogout(cookie);
+                    }
+
+                    catch (ApplicationNotFoundException e) {
                         LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
-                        removeCookie(cookie.getName(), response);
                     } catch (InvalidCookieException e) {
                         LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
+                    }
+
+                    finally {
+                        // Applications that need to be logged out are stored in the AuthenticationService
                         removeCookie(cookie.getName(), response);
                     }
                 }
             }
         }
 
-        response.sendRedirect(logoutExitPath);
+        response.sendRedirect(SSOLogoutPage.PATH);
     }
 
     /**

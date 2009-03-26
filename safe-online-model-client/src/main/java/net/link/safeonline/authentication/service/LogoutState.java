@@ -15,11 +15,11 @@ package net.link.safeonline.authentication.service;
  */
 public enum LogoutState {
     /**
-     * The initial state. At this point the user is not logging out, the initial logout request has yet to be received.
+     * Logout has not yet begin.
      */
     INIT,
     /**
-     * The initialized state. At this point we have received a logout request for a certain application.
+     * Logout requested.
      */
     INITIALIZED,
     /**

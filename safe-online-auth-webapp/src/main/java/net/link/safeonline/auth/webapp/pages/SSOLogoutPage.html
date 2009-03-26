@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<h2>
+				<wicket:message key="ssoLogoutProgress">[Logout in progress]</wicket:message>
+			</h2>
+
+			<form wicket:id="logoutForm">
+    
+                <table>
+                    <tr>
+                        <th><wicket:message key="application">[Application]</wicket:message></th>
+                        <th><wicket:message key="status">[Status]</wicket:message></th>
+                    </tr>
+                    
+                    <tr wicket:id="applications">
+                        <td wicket:id="name"></td>
+                        <td>
+                            <img wicket:id="status" />
+                            <iframe wicket:id="frame" />
+                        </td>
+                    </tr>
+                </table>
+
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

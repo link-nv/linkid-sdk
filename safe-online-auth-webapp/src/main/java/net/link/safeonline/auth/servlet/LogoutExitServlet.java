@@ -74,42 +74,20 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
     }
 
     /**
-     * Log out next sso application. If none left: send back a logout response to the requesting application.
-     * 
-     * @throws IOException
+     * Log out next SSO application.
      */
     private void logoutNextSsoApplication(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
-        ApplicationEntity application = logoutService.findSsoApplicationToLogout();
-        if (null == application) {
-
-            // no more applications to logout: send LogoutResponse back to requesting application
-            boolean partialLogout = false;
-            if (null != request.getSession().getAttribute(LOGOUT_PARTIAL_ATTRIBUTE)) {
-                partialLogout = true;
-            }
-            String target = (String) request.getSession().getAttribute(LOGOUT_TARGET_ATTRIBUTE);
-            if (null == target)
-                throw new IllegalStateException(LOGOUT_TARGET_ATTRIBUTE + " session attribute not present");
-
-            LOG.debug("send logout response to " + target + " (partialLogout=" + partialLogout + ")");
-
-            try {
-                ProtocolHandlerManager.sendLogoutResponse(partialLogout, target, request.getSession(), response);
-            } catch (ProtocolException e) {
-                redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
-                        AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
-                        AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
-                return;
-            }
+        ApplicationEntity nextApplication = logoutService.findSsoApplicationToLogout();
+        if (null == nextApplication) {
+            logoutComplete(request, response);
 
         } else {
-
-            LOG.debug("send logout request to: " + application.getName());
+            LOG.debug("send logout request to: " + nextApplication.getName());
             try {
-                ProtocolHandlerManager.sendLogoutRequest(application, request.getSession(), response);
+                ProtocolHandlerManager.sendLogoutRequest(nextApplication, request.getSession(), response);
             } catch (ProtocolException e) {
                 redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                         AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
@@ -119,5 +97,33 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
 
         }
 
+    }
+
+    /**
+     * No SSO applications left to logout: send back a logout response to the requesting application.
+     */
+    private void logoutComplete(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        // no more applications to logout: send LogoutResponse back to requesting application
+        boolean partialLogout = false;
+        if (null != request.getSession().getAttribute(LOGOUT_PARTIAL_ATTRIBUTE)) {
+            partialLogout = true;
+        }
+
+        String target = (String) request.getSession().getAttribute(LOGOUT_TARGET_ATTRIBUTE);
+        if (null == target)
+            throw new IllegalStateException(LOGOUT_TARGET_ATTRIBUTE + " session attribute not present");
+
+        LOG.debug("send logout response to " + target + " (partialLogout=" + partialLogout + ")");
+
+        try {
+            ProtocolHandlerManager.sendLogoutResponse(partialLogout, target, request.getSession(), response);
+        } catch (ProtocolException e) {
+            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+            return;
+        }
     }
 }

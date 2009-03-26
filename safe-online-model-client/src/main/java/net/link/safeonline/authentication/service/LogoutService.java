@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -73,9 +75,9 @@ public interface LogoutService extends SafeOnlineService {
             throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException;
 
     /**
-     * Returns the next Application to logout. Returns <code>null</code> if none.
+     * Returns a list of applications to logout. Returns an empty list if there are none.
      */
-    ApplicationEntity findSsoApplicationToLogout();
+    List<ApplicationEntity> getSsoApplicationsToLogout();
 
     /**
      * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent to the application.
