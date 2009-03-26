@@ -9,6 +9,8 @@ package net.link.safeonline.device.sdk.operation.saml2.response;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
@@ -136,9 +138,12 @@ public class DeviceOperationResponseFactory {
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
+        Map<DateTime, String> authentications = new HashMap<DateTime, String>();
+        authentications.put(new DateTime(), device);
+
         if (statusCodeURI.equals(StatusCode.SUCCESS_URI) && deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
-            Assertion assertion = Saml2Util.getAssertion(inResponseTo, null, subjectName, issuerName, device, validity, target,
-                    new DateTime(), Saml2SubjectConfirmationMethod.BEARER, null);
+            Assertion assertion = Saml2Util.getAssertion(inResponseTo, null, subjectName, issuerName, validity, target, authentications,
+                    Saml2SubjectConfirmationMethod.BEARER, null);
             response.getAssertions().add(assertion);
         }
 

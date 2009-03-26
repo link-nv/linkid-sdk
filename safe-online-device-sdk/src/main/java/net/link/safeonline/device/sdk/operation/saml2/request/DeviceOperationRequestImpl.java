@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDevice;
+
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.impl.RequestAbstractTypeImpl;
 import org.opensaml.xml.XMLObject;
+import org.opensaml.xml.util.IndexedXMLObjectChildrenList;
 
 
 /**
@@ -31,21 +34,22 @@ import org.opensaml.xml.XMLObject;
  */
 public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implements DeviceOperationRequest {
 
-    private String  deviceOperation;
+    private String                                        deviceOperation;
 
-    private String  device;
+    private String                                        device;
 
-    private String  authenticatedDevice;
+    private String                                        protocolBinding;
 
-    private String  protocolBinding;
+    private String                                        serviceURL;
 
-    private String  serviceURL;
+    private Subject                                       subject;
 
-    private Subject subject;
+    private String                                        attributeId;
 
-    private String  attributeId;
+    private String                                        attribute;
 
-    private String  attribute;
+    /** Authenticated Device child elements. */
+    private final IndexedXMLObjectChildrenList<XMLObject> indexedChildren;
 
 
     /**
@@ -61,6 +65,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
     protected DeviceOperationRequestImpl(String namespaceURI, String elementLocalName, String namespacePrefix) {
 
         super(namespaceURI, elementLocalName, namespacePrefix);
+        indexedChildren = new IndexedXMLObjectChildrenList<XMLObject>(this);
 
     }
 
@@ -99,17 +104,10 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
     /**
      * {@inheritDoc}
      */
-    public void setAuthenticatedDevice(String authenticatedDevice) {
+    @SuppressWarnings("unchecked")
+    public List<AuthenticatedDevice> getAuthenticatedDevices() {
 
-        this.authenticatedDevice = prepareForAssignment(this.authenticatedDevice, authenticatedDevice);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getAuthenticatedDevice() {
-
-        return authenticatedDevice;
+        return (List<AuthenticatedDevice>) indexedChildren.subList(AuthenticatedDevice.DEFAULT_ELEMENT_NAME);
     }
 
     /**
@@ -201,6 +199,8 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
         if (subject != null) {
             children.add(subject);
         }
+
+        children.addAll(indexedChildren);
 
         if (children.size() == 0)
             return null;

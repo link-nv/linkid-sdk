@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
-import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -118,13 +117,6 @@ public interface AuthenticationService extends SafeOnlineService {
     void abort();
 
     /**
-     * Gives back the user Id of the user that we're trying to authenticate. Calling this method in only valid after a call to
-     * {@link #authenticate(String, String)}.
-     * 
-     */
-    String getUserId();
-
-    /**
      * Gives back the username of the user that we're trying to authenticate. Calling this method is only valid after a call to
      * {@link #authenticate(String, String)}.
      * 
@@ -137,7 +129,7 @@ public interface AuthenticationService extends SafeOnlineService {
      * 
      * Calling this method is only valid after a call to {@link #redirectAuthentication(String, String, String)}.
      * 
-     * Returns the user ID of the authenticated user.
+     * Returns the authentication assertion containing the subject and authenticated device(s).
      * 
      * @throws {@linkSignatureValidationException}
      * @throws {@linkTrustDomainNotFoundException}
@@ -148,7 +140,7 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws {@link NodeNotFoundException}
      * @throws {@link SubjectNotFoundException}
      */
-    String authenticate(Response response)
+    AuthenticationAssertion authenticate(Response response)
             throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
             SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
 
@@ -205,13 +197,7 @@ public interface AuthenticationService extends SafeOnlineService {
      * Gives back the used authentication device.
      * 
      */
-    DeviceEntity getAuthenticationDevice();
-
-    /**
-     * Gives back the Single Sign-On Cookie.
-     * 
-     */
-    Cookie getSsoCookie();
+    DeviceEntity getRegisteredDevice();
 
     /**
      * Attempts to login, given a set of Single Sign On Cookies.
@@ -222,20 +208,15 @@ public interface AuthenticationService extends SafeOnlineService {
     List<AuthenticationAssertion> login(List<Cookie> ssoCookies);
 
     /**
+     * Gives back the list of new/update SSO cookies.
+     * 
+     */
+    List<Cookie> getSsoCookies();
+
+    /**
      * Returns list of invalid ( expired, ... ) SSO cookies.
      */
     List<Cookie> getInvalidCookies();
-
-    /**
-     * Returns whether the specified cookie allows the user to use single sign-on for the current application.
-     * 
-     * @throws ApplicationNotFoundException
-     * @throws InvalidCookieException
-     * @throws DevicePolicyException
-     * @throws EmptyDevicePolicyException
-     */
-    boolean checkSsoCookie(Cookie ssoCookie)
-            throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException, DevicePolicyException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
@@ -270,7 +251,7 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * 
      */
-    String register(DeviceOperationResponse response)
+    AuthenticationAssertion register(DeviceOperationResponse response)
             throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
             SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
 }

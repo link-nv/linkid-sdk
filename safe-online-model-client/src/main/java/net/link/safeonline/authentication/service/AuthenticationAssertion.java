@@ -6,7 +6,10 @@
  */
 package net.link.safeonline.authentication.service;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.link.safeonline.entity.DeviceEntity;
@@ -55,6 +58,20 @@ public class AuthenticationAssertion {
     public Map<DateTime, DeviceEntity> getAuthentications() {
 
         return authentications;
+    }
+
+    public Collection<DeviceEntity> getDevices() {
+
+        return authentications.values();
+    }
+
+    public List<String> getDevicesList() {
+
+        List<String> deviceList = new LinkedList<String>();
+        for (DeviceEntity device : authentications.values()) {
+            deviceList.add(device.getName());
+        }
+        return deviceList;
     }
 
     public String getDevicesString() {

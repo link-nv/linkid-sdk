@@ -12,9 +12,11 @@ import java.security.Principal;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.jws.HandlerChain;
@@ -1219,19 +1221,22 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
         PrivateKeyEntry olasKeyPair = SafeOnlineNodeKeyStore.getPrivateKeyEntry();
 
+        Map<DateTime, String> authentications = new HashMap<DateTime, String>();
+        authentications.put(new DateTime(), authenticatedDevice.getName());
+
         Element assertionElement = null;
         if (null != keyInfo) {
             // holder-of-key : SAML assertion SHOULD contain a <ds:signature> element that protects the integrity of the confirmation
             // <ds:KeyInfo> established by the assertion authority.
             Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),
-                    authenticatedDevice.getName(), samlAuthorityService.getAuthnAssertionValidity(), null, new DateTime(),
-                    Saml2SubjectConfirmationMethod.HOLDER_OF_KEY, null);
+                    samlAuthorityService.getAuthnAssertionValidity(), null, authentications, Saml2SubjectConfirmationMethod.HOLDER_OF_KEY,
+                    null);
             assertionElement = Saml2Util.sign(assertion, olasKeyPair.getCertificate().getPublicKey(), olasKeyPair.getPrivateKey());
 
         } else {
             Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),
-                    authenticatedDevice.getName(), samlAuthorityService.getAuthnAssertionValidity(), null, new DateTime(),
-                    Saml2SubjectConfirmationMethod.SENDER_VOUCHES, null);
+                    samlAuthorityService.getAuthnAssertionValidity(), null, authentications, Saml2SubjectConfirmationMethod.SENDER_VOUCHES,
+                    null);
             MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
             Marshaller marshaller = marshallerFactory.getMarshaller(assertion);
             try {

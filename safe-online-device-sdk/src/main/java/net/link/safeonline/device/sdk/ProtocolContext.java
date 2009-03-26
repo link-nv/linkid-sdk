@@ -8,6 +8,7 @@
 package net.link.safeonline.device.sdk;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,7 +21,7 @@ public class ProtocolContext implements Serializable {
 
     private String              device;
 
-    private String              authenticatedDevice;
+    private List<String>        authenticatedDevices;
 
     private String              subject;
 
@@ -139,14 +140,14 @@ public class ProtocolContext implements Serializable {
         this.success = success;
     }
 
-    public String getAuthenticatedDevice() {
+    public List<String> getAuthenticatedDevices() {
 
-        return authenticatedDevice;
+        return authenticatedDevices;
     }
 
-    public void setAuthenticatedDevice(String authenticatedDevice) {
+    public void setAuthenticatedDevices(List<String> authenticatedDevices) {
 
-        this.authenticatedDevice = authenticatedDevice;
+        this.authenticatedDevices = authenticatedDevices;
     }
 
     public int getValidity() {

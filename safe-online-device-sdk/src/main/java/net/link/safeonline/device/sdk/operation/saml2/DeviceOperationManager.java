@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.device.sdk.operation.saml2;
 
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,15 +32,15 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DeviceOperationManager {
 
-    private static final Log   LOG                                    = LogFactory.getLog(DeviceOperationManager.class);
+    private static final Log   LOG                                     = LogFactory.getLog(DeviceOperationManager.class);
 
-    public static final String USERID_SESSION_ATTRIBUTE               = "userId";
+    public static final String USERID_SESSION_ATTRIBUTE                = "userId";
 
-    public static final String DEVICE_OPERATION_SESSION_ATTRIBUTE     = "operation";
+    public static final String DEVICE_OPERATION_SESSION_ATTRIBUTE      = "operation";
 
-    public static final String AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE = "authenticatedDevice";
+    public static final String AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE = "authenticatedDevices";
 
-    public static final String DEVICE_ATTRIBUTE_ID_SESSION_ATTRIBUTE  = "attributeId";
+    public static final String DEVICE_ATTRIBUTE_ID_SESSION_ATTRIBUTE   = "attributeId";
 
 
     private DeviceOperationManager() {
@@ -78,33 +80,34 @@ public class DeviceOperationManager {
     }
 
     /**
-     * Sets the authenticatedDevice.
+     * Sets the authenticatedDevices.
      * 
-     * @param authenticatedDevice
+     * @param authenticatedDevices
      * @param httpRequest
      */
-    public static void setAuthenticatedDevice(String authenticatedDevice, HttpServletRequest httpRequest) {
+    public static void setAuthenticatedDevices(List<String> authenticatedDevices, HttpServletRequest httpRequest) {
 
-        LOG.debug("setting authenticated device: " + authenticatedDevice);
+        LOG.debug("setting authenticated devices: " + authenticatedDevices);
         HttpSession session = httpRequest.getSession();
-        session.setAttribute(AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE, authenticatedDevice);
+        session.setAttribute(AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE, authenticatedDevices);
 
     }
 
     /**
-     * Gets the authenticatedDevice
+     * Gets the authenticatedDevices
      * 
      * @param session
      * @throws ServletException
      */
-    public static String getAuthenticatedDevice(HttpSession session)
+    @SuppressWarnings("unchecked")
+    public static List<String> getAuthenticatedDevice(HttpSession session)
             throws ServletException {
 
-        String authenticatedDevice = (String) session.getAttribute(AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
-        if (null == authenticatedDevice)
-            throw new ServletException("authenticatedDevice attribute not found");
+        List<String> authenticatedDevices = (List<String>) session.getAttribute(AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE);
+        if (null == authenticatedDevices)
+            throw new ServletException("authenticatedDevices attribute not found");
 
-        return authenticatedDevice;
+        return authenticatedDevices;
 
     }
 

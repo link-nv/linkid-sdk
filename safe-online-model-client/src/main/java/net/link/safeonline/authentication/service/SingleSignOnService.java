@@ -15,6 +15,9 @@ import javax.servlet.http.Cookie;
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
+
+import org.joda.time.DateTime;
 
 
 /**
@@ -68,4 +71,14 @@ public interface SingleSignOnService extends SafeOnlineService {
      * Returns list of invalid ( expired, ... ) SSO cookies.
      */
     List<Cookie> getInvalidCookies();
+
+    /**
+     * Sets new/updated list of Single Sign On cookie(s). Multiple as in for each application pool.
+     */
+    void setCookies(SubjectEntity subject, DeviceEntity registeredDevice, DateTime authenticationTime);
+
+    /**
+     * Returns new/updated list of Single Sign On cookies.
+     */
+    List<Cookie> getCookies();
 }

@@ -20,6 +20,7 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -182,7 +183,7 @@ public class DeviceOperationLandingServletTest {
         // setup
         String deviceOperationRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
                 "http://test.authn.service", location, DeviceOperationType.REGISTER, new Challenge<String>(), deviceName,
-                authenticatedDeviceName, null, null);
+                Collections.singletonList(authenticatedDeviceName), null, null);
         String encodedSamlAuthnRequest = Base64.encode(deviceOperationRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -206,7 +207,7 @@ public class DeviceOperationLandingServletTest {
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.REGISTER, protocolContext.getDeviceOperation());
         assertEquals(deviceName, protocolContext.getDevice());
-        assertEquals(authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
+        assertTrue(protocolContext.getAuthenticatedDevices().contains(authenticatedDeviceName));
         assertEquals(userId, protocolContext.getSubject());
     }
 
@@ -217,7 +218,7 @@ public class DeviceOperationLandingServletTest {
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
                 "http://test.authn.service", location, DeviceOperationType.REMOVE, new Challenge<String>(), deviceName,
-                authenticatedDeviceName, deviceRegistrationAttributeId, deviceRegistrationAttribute);
+                Collections.singletonList(authenticatedDeviceName), deviceRegistrationAttributeId, deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -241,7 +242,7 @@ public class DeviceOperationLandingServletTest {
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.REMOVE, protocolContext.getDeviceOperation());
         assertEquals(deviceName, protocolContext.getDevice());
-        assertEquals(authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
+        assertTrue(protocolContext.getAuthenticatedDevices().contains(authenticatedDeviceName));
         assertEquals(userId, protocolContext.getSubject());
         assertEquals(deviceRegistrationAttribute, protocolContext.getAttribute());
         assertEquals(deviceRegistrationAttributeId, protocolContext.getAttributeId());
@@ -254,7 +255,7 @@ public class DeviceOperationLandingServletTest {
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(applicationName, userId, nodeKeyPair,
                 "http://test.authn.service", location, DeviceOperationType.UPDATE, new Challenge<String>(), deviceName,
-                authenticatedDeviceName, deviceRegistrationAttributeId, deviceRegistrationAttribute);
+                Collections.singletonList(authenticatedDeviceName), deviceRegistrationAttributeId, deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -278,7 +279,7 @@ public class DeviceOperationLandingServletTest {
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.UPDATE, protocolContext.getDeviceOperation());
         assertEquals(deviceName, protocolContext.getDevice());
-        assertEquals(authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
+        assertTrue(protocolContext.getAuthenticatedDevices().contains(authenticatedDeviceName));
         assertEquals(userId, protocolContext.getSubject());
         assertEquals(deviceRegistrationAttribute, protocolContext.getAttribute());
         assertEquals(deviceRegistrationAttributeId, protocolContext.getAttributeId());

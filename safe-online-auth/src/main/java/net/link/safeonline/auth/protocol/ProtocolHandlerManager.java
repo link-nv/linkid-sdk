@@ -21,6 +21,7 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -119,14 +120,13 @@ public class ProtocolHandlerManager {
 
     /**
      * Handles a device authentication response according to the authentication protocol by which the current authentication procedure was
-     * initiated. The method returns the user ID of the authentication subject or <code>null</code> if authentication failed or was
-     * canceled.
+     * initiated. The method returns the authentication assertion <code>null</code> if authentication failed or was canceled.
      * 
      * @param request
      * @throws ProtocolException
      * 
      */
-    public static String handleDeviceAuthnResponse(HttpServletRequest request)
+    public static AuthenticationAssertion handleDeviceAuthnResponse(HttpServletRequest request)
             throws ProtocolException {
 
         String protocolId = (String) request.getSession().getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
@@ -141,14 +141,13 @@ public class ProtocolHandlerManager {
 
     /**
      * Handles a device registration response according to the authentication protocol by which the current authentication procedure was
-     * initiated. The method returns the user ID of the authentication subject or <code>null</code> if authentication failed or was
-     * canceled.
+     * initiated. The method returns the {@link AuthenticationAssertion} or <code>null</code> if authentication failed or was canceled.
      * 
      * @param request
      * @throws ProtocolException
      * 
      */
-    public static String handleDeviceRegistrationResponse(HttpServletRequest request)
+    public static AuthenticationAssertion handleDeviceRegistrationResponse(HttpServletRequest request)
             throws ProtocolException {
 
         String protocolId = (String) request.getSession().getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);

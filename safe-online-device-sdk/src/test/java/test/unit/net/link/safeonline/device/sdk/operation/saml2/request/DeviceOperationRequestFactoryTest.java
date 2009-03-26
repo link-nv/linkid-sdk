@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.security.KeyPair;
+import java.util.Collections;
 import java.util.UUID;
 
 import javax.xml.crypto.dsig.XMLSignature;
@@ -72,7 +73,7 @@ public class DeviceOperationRequestFactoryTest {
         // operate
         long begin = System.currentTimeMillis();
         String result = DeviceOperationRequestFactory.createDeviceOperationRequest(nodeName, subject, keyPair, serviceURL, destinationURL,
-                deviceOperation, challenge, device, authenticatedDevice, null, null);
+                deviceOperation, challenge, device, Collections.singletonList(authenticatedDevice), null, null);
         long end = System.currentTimeMillis();
 
         // verify

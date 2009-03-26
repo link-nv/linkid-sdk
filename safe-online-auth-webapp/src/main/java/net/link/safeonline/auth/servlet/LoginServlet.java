@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -73,8 +74,8 @@ public class LoginServlet extends AbstractNodeInjectionServlet {
     @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService usageAgreementService;
 
-    @In(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE)
-    DeviceEntity                  device;
+    @In(LoginManager.AUTHENTICATION_ASSERTION_ATTRIBUTE)
+    AuthenticationAssertion       authenticationAssertion;
 
     @In(LoginManager.APPLICATION_ID_ATTRIBUTE)
     long                          applicationId;
@@ -216,8 +217,11 @@ public class LoginServlet extends AbstractNodeInjectionServlet {
         } catch (EmptyDevicePolicyException e) {
             throw new ServletException("empty device policy");
         }
-        if (devicePolicy.contains(device))
-            return true;
+
+        for (DeviceEntity device : authenticationAssertion.getDevices()) {
+            if (devicePolicy.contains(device))
+                return true;
+        }
         return false;
     }
 

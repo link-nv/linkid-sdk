@@ -16,9 +16,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.AuthenticationUtils;
@@ -27,10 +29,12 @@ import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.DeviceAuthnLandingServlet;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.device.sdk.auth.saml2.response.AuthnResponseFactory;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -47,15 +51,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
 import org.easymock.EasyMock;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.saml2.core.Response;
 
 
-public class DeviceLandingServletTest {
+public class DeviceAuthnLandingServletTest {
 
-    private static final Log      LOG                  = LogFactory.getLog(DeviceLandingServletTest.class);
+    private static final Log      LOG                  = LogFactory.getLog(DeviceAuthnLandingServletTest.class);
 
     private ServletTestManager    servletTestManager;
 
@@ -221,14 +226,17 @@ public class DeviceLandingServletTest {
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedSamlAuthnResponse) };
         postMethod.setRequestBody(data);
         String userId = UUID.randomUUID().toString();
+        SubjectEntity subject = new SubjectEntity(userId);
         DeviceEntity device = new DeviceEntity();
+        AuthenticationAssertion authenticationAssertion = new AuthenticationAssertion(subject);
+        authenticationAssertion.addAuthentication(new DateTime(), device);
 
         // expectations
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
-        expect(mockAuthenticationService.authenticate((Response) EasyMock.anyObject())).andStubReturn(userId);
-        expect(mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
+        expect(mockAuthenticationService.authenticate((Response) EasyMock.anyObject())).andReturn(authenticationAssertion);
+        expect(mockAuthenticationService.getRegisteredDevice()).andStubReturn(device);
         expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
-        expect(mockAuthenticationService.getSsoCookie()).andStubReturn(null);
+        expect(mockAuthenticationService.getSsoCookies()).andReturn(new LinkedList<Cookie>());
 
         // prepare
         replay(mockObjects);
@@ -246,8 +254,8 @@ public class DeviceLandingServletTest {
         assertTrue(resultLocation.endsWith(loginPath));
         String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
-
-        DeviceEntity resultDevice = (DeviceEntity) servletTestManager.getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
-        assertEquals(device, resultDevice);
+        AuthenticationAssertion resultAuthenticationAssertion = (AuthenticationAssertion) servletTestManager
+                                                                                                            .getSessionAttribute(LoginManager.AUTHENTICATION_ASSERTION_ATTRIBUTE);
+        assertEquals(authenticationAssertion, resultAuthenticationAssertion);
     }
 }

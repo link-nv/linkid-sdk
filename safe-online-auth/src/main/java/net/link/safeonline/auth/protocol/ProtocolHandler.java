@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.entity.ApplicationEntity;
 
 
@@ -47,29 +48,30 @@ public interface ProtocolHandler {
             throws ProtocolException;
 
     /**
-     * Device authentication response handle method. The protocol handler should return the user ID of the authentication subject if
-     * successful or <code>null</code> if the authentication was canceled. A {@link ProtocolException} should be thrown in case this handler
-     * can handle the authentication request but the request itself violates the authentication protocol supported by this handler.
+     * Device authentication response handle method. The protocol handler should return the authentication assertion if successful or
+     * <code>null</code> if the authentication was canceled. A {@link ProtocolException} should be thrown in case this handler can handle
+     * the authentication request but the request itself violates the authentication protocol supported by this handler.
      * 
      * @param request
      * @return the authentication user's ID or <code>null</code>.
      * @throws ProtocolException
      *             in case the authentication request violates the authentication protocol supported by this handler.
      */
-    String handleDeviceAuthnResponse(HttpServletRequest request)
+    AuthenticationAssertion handleDeviceAuthnResponse(HttpServletRequest request)
             throws ProtocolException;
 
     /**
-     * Device registration response handle method. The protocol handler should return the user ID of the authentication subject if
-     * successful or <code>null</code> if the authentication was canceled. A {@link ProtocolException} should be thrown in case this handler
-     * can handle the authentication request but the request itself violates the authentication protocol supported by this handler.
+     * Device registration response handle method. The protocol handler should return authentication assertion (
+     * {@link AuthenticationAssertion} or <code>null</code> if the authentication was canceled. A {@link ProtocolException} should be thrown
+     * in case this handler can handle the authentication request but the request itself violates the authentication protocol supported by
+     * this handler.
      * 
      * @param request
-     * @return the authentication user's ID or <code>null</code>.
+     * @return the authentication assertion or <code>null</code>.
      * @throws ProtocolException
      *             in case the authentication request violates the authentication protocol supported by this handler.
      */
-    String handleDeviceRegistrationResponse(HttpServletRequest request)
+    AuthenticationAssertion handleDeviceRegistrationResponse(HttpServletRequest request)
             throws ProtocolException;
 
     /**

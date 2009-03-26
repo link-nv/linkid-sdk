@@ -19,6 +19,7 @@ import net.link.safeonline.auth.webapp.pages.MainPage;
 import net.link.safeonline.auth.webapp.pages.MissingAttributesPage;
 import net.link.safeonline.auth.webapp.pages.NewUserDevicePage;
 import net.link.safeonline.auth.webapp.pages.RegisterDevicePage;
+import net.link.safeonline.auth.webapp.pages.SelectUserPage;
 import net.link.safeonline.auth.webapp.pages.SubscriptionPage;
 import net.link.safeonline.auth.webapp.pages.TimeoutPage;
 import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
@@ -41,6 +42,7 @@ public class AuthenticationApplication extends OlasApplication {
 
         mountBookmarkablePage(FirstTimePage.PATH, FirstTimePage.class);
         mountBookmarkablePage(MainPage.PATH, MainPage.class);
+        mountBookmarkablePage(SelectUserPage.PATH, SelectUserPage.class);
         mountBookmarkablePage(NewUserDevicePage.PATH, NewUserDevicePage.class);
         mountBookmarkablePage(AllDevicesPage.PATH, AllDevicesPage.class);
         mountBookmarkablePage(UnsupportedProtocolPage.PATH, UnsupportedProtocolPage.class);

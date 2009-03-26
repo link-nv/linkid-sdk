@@ -152,8 +152,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         }
 
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(), nodeUserId,
-                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName, id,
-                attributeValue);
+                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName,
+                Collections.singletonList(authenticatedDeviceName), id, attributeValue);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

@@ -6,7 +6,11 @@
  */
 package net.link.safeonline.device.sdk.operation.saml2.request;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
+
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDevice;
 
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.RequestAbstractType;
@@ -30,32 +34,29 @@ import org.opensaml.saml2.core.Subject;
 public interface DeviceOperationRequest extends RequestAbstractType {
 
     /** Element local name. */
-    public static final String DEFAULT_ELEMENT_LOCAL_NAME       = "DeviceOperationRequest";
+    public static final String DEFAULT_ELEMENT_LOCAL_NAME   = "DeviceOperationRequest";
 
     /** Default element name. */
-    public static final QName  DEFAULT_ELEMENT_NAME             = new QName(SAMLConstants.SAML20P_NS, DEFAULT_ELEMENT_LOCAL_NAME,
-                                                                        SAMLConstants.SAML20P_PREFIX);
+    public static final QName  DEFAULT_ELEMENT_NAME         = new QName(SAMLConstants.SAML20P_NS, DEFAULT_ELEMENT_LOCAL_NAME,
+                                                                    SAMLConstants.SAML20P_PREFIX);
 
     /** ProtocolBinding attribute name. */
-    public static final String PROTOCOL_BINDING_ATTRIB_NAME     = "ProtocolBinding";
+    public static final String PROTOCOL_BINDING_ATTRIB_NAME = "ProtocolBinding";
 
     /** ServiceURL attribute name. */
-    public static final String SERVICE_URL_ATTRIB_NAME          = "ServiceURL";
+    public static final String SERVICE_URL_ATTRIB_NAME      = "ServiceURL";
 
     /** Device Operation attribute name. */
-    public static final String DEVICE_OPERATION_ATTRIB_NAME     = "DeviceOperation";
+    public static final String DEVICE_OPERATION_ATTRIB_NAME = "DeviceOperation";
 
     /** Device attribute name. */
-    public static final String DEVICE_ATTRIB_NAME               = "Device";
-
-    /** Authenticated device attribute name. */
-    public static final String AUTHENTICATED_DEVICE_ATTRIB_NAME = "AuthenticatedDevice";
+    public static final String DEVICE_ATTRIB_NAME           = "Device";
 
     /** Device user attribute */
-    public static final String ATTRIBUTE_ATTRIB_NAME            = "Attribute";
+    public static final String ATTRIBUTE_ATTRIB_NAME        = "Attribute";
 
     /** Compound device attribute UUID */
-    public static final String ATTRIBUTE_ID_ATTRIB_NAME         = "AttributeId";
+    public static final String ATTRIBUTE_ID_ATTRIB_NAME     = "AttributeId";
 
 
     /**
@@ -119,19 +120,9 @@ public interface DeviceOperationRequest extends RequestAbstractType {
     public void setDevice(String device);
 
     /**
-     * Gets the name of the authenticated device of this request.
-     * 
-     * @return the value of the AuthenticatedDevice attribute
+     * Returns the list of authenticated devices of this request.
      */
-    public String getAuthenticatedDevice();
-
-    /**
-     * Sets the name of the device of this request.
-     * 
-     * @param authenticatedDevice
-     *            the new value of the AuthenticatedDevice attribute
-     */
-    public void setAuthenticatedDevice(String authenticatedDevice);
+    public List<AuthenticatedDevice> getAuthenticatedDevices();
 
     /**
      * Gets the {@link Subject} of the request.

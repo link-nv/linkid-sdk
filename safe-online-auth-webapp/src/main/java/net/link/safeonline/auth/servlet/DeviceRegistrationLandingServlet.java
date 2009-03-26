@@ -17,6 +17,7 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -60,6 +61,11 @@ public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServl
      */
     public static final String DEVICE_ERROR_PATH              = "DeviceErrorPath";
 
+    /**
+     * 
+     */
+    public static final String COOKIE_PATH                    = "CookiePath";
+
     private static final long  serialVersionUID               = 1L;
 
     private static final Log   LOG                            = LogFactory.getLog(DeviceRegistrationLandingServlet.class);
@@ -80,6 +86,9 @@ public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServl
     @Init(name = DEVICE_ERROR_PATH)
     private String             deviceErrorPath;
 
+    @Init(name = COOKIE_PATH)
+    private String             cookiePath;
+
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
@@ -90,9 +99,9 @@ public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServl
         /**
          * Register
          */
-        String userId;
+        AuthenticationAssertion authenticationAssertion;
         try {
-            userId = ProtocolHandlerManager.handleDeviceRegistrationResponse(request);
+            authenticationAssertion = ProtocolHandlerManager.handleDeviceRegistrationResponse(request);
         } catch (ProtocolException e) {
             redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
                     e.getMessage()));
@@ -100,7 +109,7 @@ public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServl
         }
 
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
-        if (null == userId) {
+        if (null == authenticationAssertion) {
             /* Registration failed, redirect to register-device or new-user-device */
             HelpdeskLogger.add(request.getSession(), "registration failed", LogLevelType.ERROR);
             if (authenticationService.getAuthenticationState().equals(AuthenticationState.USER_AUTHENTICATED)) {
@@ -111,13 +120,15 @@ public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServl
 
         } else {
             /* Registration OK, redirect to login servlet */
-            LoginManager.relogin(request.getSession(), authenticationService.getAuthenticationDevice());
-            HelpdeskLogger.add(request.getSession(), "successfully registered device: " + authenticationService.getAuthenticationDevice(),
+            LoginManager.login(request.getSession(), authenticationAssertion);
+            HelpdeskLogger.add(request.getSession(), "successfully registered device: " + authenticationService.getRegisteredDevice(),
                     LogLevelType.INFO);
 
-            /* Set SSO Cookie */
-            Cookie ssoCookie = authenticationService.getSsoCookie();
-            if (null != ssoCookie) {
+            /*
+             * Set / update SSO Cookies
+             */
+            for (Cookie ssoCookie : authenticationService.getSsoCookies()) {
+                ssoCookie.setPath(cookiePath);
                 response.addCookie(ssoCookie);
             }
 
