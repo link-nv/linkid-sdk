@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- vi:set ts=4 sw=4 noexpandtab: -->
-
 <mapping class="net.link.safeonline.entity.SubjectEntity" />
 <mapping class="net.link.safeonline.entity.ApplicationEntity" />
 <mapping class="net.link.safeonline.entity.ApplicationOwnerEntity" />

@@ -466,13 +466,13 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.demo</groupId>
                     <artifactId>safe-online-demo-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.demo</groupId>
                     <artifactId>safe-online-demo-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
@@ -480,7 +480,7 @@
 
                 <!-- Specific Dependencies: Persistance Provider -->
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.demo</groupId>
                     <artifactId>safe-online-demo-sql-ddl</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <scope>provided</scope>
@@ -506,7 +506,7 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>net.lin-k.safe-online</groupId>
+                                            <groupId>net.lin-k.safe-online.demo</groupId>
                                             <artifactId>safe-online-demo-sql-ddl</artifactId>
                                         </artifactItem>
                                     </artifactItems>
