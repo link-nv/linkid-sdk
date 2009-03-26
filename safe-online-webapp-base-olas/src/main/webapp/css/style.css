@@ -776,6 +776,7 @@ div.toggle-body {
 tr.navigator-table-footer-tr {
 	background-color: rgb(204, 204, 204);
 	vertical-align: middle;
+	text-align: center;
 }
 td.navigator-table-footer-td {
 	border-bottom-color: rgb(196, 192, 201);
@@ -796,7 +797,6 @@ td.navigator-table-footer-td {
 	font-size: 11px;
 }
 span.navigator-table-footer-span span {
-	display: block;
 	text-align: center;
 }
 span.navigator-table-footer-span span em img {
