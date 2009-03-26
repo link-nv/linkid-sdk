@@ -56,7 +56,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
 
-    public static final String LOGOUT_EXIT_PATH = "LogoutExitPath";
     public static final String COOKIE_PATH      = "CookiePath";
 
     private static final long  serialVersionUID = 1L;

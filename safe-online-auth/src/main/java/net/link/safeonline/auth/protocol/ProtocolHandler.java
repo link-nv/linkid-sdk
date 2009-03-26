@@ -123,7 +123,7 @@ public interface ProtocolHandler {
      * @param response
      * @throws ProtocolException
      */
-    void sendLogoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse response)
+    void sendLogoutResponse(String target, HttpSession session, HttpServletResponse response)
             throws ProtocolException;
 
     /**

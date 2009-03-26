@@ -23,10 +23,10 @@ import javax.servlet.http.Cookie;
 
 import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.servlet.LogoutEntryServlet;
+import net.link.safeonline.auth.servlet.LogoutExitServlet;
 import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.service.LogoutService;
-import net.link.safeonline.authentication.service.LogoutState;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -78,7 +78,7 @@ public class LogoutEntryServletTest {
 
         logoutEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put(LogoutEntryServlet.LOGOUT_EXIT_PATH, logoutExitPath);
+        initParams.put(LogoutExitServlet.PATH_CONTEXT_PARAM, logoutExitPath);
         initParams.put(LogoutEntryServlet.COOKIE_PATH, cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(LogoutServiceManager.LOGOUT_SERVICE_ATTRIBUTE, mockLogoutService);
@@ -145,7 +145,6 @@ public class LogoutEntryServletTest {
         // expectations
         expect(mockLogoutService.initialize((LogoutRequest) EasyMock.anyObject())).andStubReturn(
                 new LogoutProtocolContext(applicationName, servletLocation));
-        expect(mockLogoutService.getLogoutState()).andStubReturn(LogoutState.INIT);
         expect(mockLogoutService.checkSsoCookieForLogout((Cookie) EasyMock.anyObject())).andStubReturn(true);
 
         // prepare

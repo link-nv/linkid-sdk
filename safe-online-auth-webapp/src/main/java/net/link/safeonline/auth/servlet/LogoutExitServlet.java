@@ -9,6 +9,7 @@ package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,10 +18,13 @@ import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.annotation.RequestParameter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,21 +38,46 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutExitServlet extends AbstractNodeInjectionServlet {
 
-    private static final long  serialVersionUID         = 1L;
+    /**
+     * The GET parameter that holds the {@link ApplicationEntity} ID of the application that we should generate a logout request for and
+     * redirect to.
+     */
+    public static final String APPLICATION_ID_GET_PARAMETER = "id";
 
-    private static final Log   LOG                      = LogFactory.getLog(LogoutExitServlet.class);
+    private static final long  serialVersionUID             = 1L;
 
-    public static final String LOGOUT_PARTIAL_ATTRIBUTE = "Logout.partial";
+    private static final Log   LOG                          = LogFactory.getLog(LogoutExitServlet.class);
 
-    public static final String LOGOUT_TARGET_ATTRIBUTE  = "Logout.target";
+    public static final String PATH_CONTEXT_PARAM           = "LogoutExitPath";
+    public static final String LOGOUT_TARGET_ATTRIBUTE      = "Logout.target";
+
+    @EJB
+    private ApplicationService applicationService;
+
+    @RequestParameter(APPLICATION_ID_GET_PARAMETER)
+    String                     applicationId;
 
 
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        logoutNextSsoApplication(request, response);
+        // If an applicationId is given as a GET parameter, send logout request to that application.
+        if (applicationId != null) {
+            try {
+                logoutApplication(request, response, applicationService.getApplication(Long.valueOf(applicationId)));
+                return;
+            }
 
+            catch (NumberFormatException e) {
+                LOG.error("Application ID was not a valid long: " + applicationId, e);
+            } catch (ApplicationNotFoundException e) {
+                LOG.error("Application for application ID not found: " + applicationId, e);
+            }
+        }
+
+        // If that failed, or no applicationId was specified, fall back to a sequential logout.
+        logoutNextSsoApplication(request, response);
     }
 
     @Override
@@ -56,9 +85,8 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
             throws ServletException, IOException {
 
         LOG.debug("handle logout response");
-        String loggedOutApplication;
         try {
-            loggedOutApplication = ProtocolHandlerManager.handleLogoutResponse(request);
+            ProtocolHandlerManager.handleLogoutResponse(request);
         } catch (ProtocolException e) {
             redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
@@ -66,11 +94,8 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
             return;
         }
 
-        if (null == loggedOutApplication) {
-            request.getSession().setAttribute(LOGOUT_PARTIAL_ATTRIBUTE, "true");
-        }
-
-        logoutNextSsoApplication(request, response);
+        // TODO: Only continue sequential logout if we're not doing parallel logout.
+        // logoutNextSsoApplication(request, response);
     }
 
     /**
@@ -85,18 +110,25 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
             logoutComplete(request, response);
 
         } else {
-            LOG.debug("send logout request to: " + nextApplication.getName());
-            try {
-                ProtocolHandlerManager.sendLogoutRequest(nextApplication, request.getSession(), response);
-            } catch (ProtocolException e) {
-                redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
-                        AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
-                        AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
-                return;
-            }
+            logoutApplication(request, response, nextApplication);
 
         }
 
+    }
+
+    private void logoutApplication(HttpServletRequest request, HttpServletResponse response, ApplicationEntity application)
+            throws IOException {
+
+        LOG.debug("send logout request to: " + application.getName());
+        try {
+            ProtocolHandlerManager.sendLogoutRequest(application, request.getSession(), response);
+        }
+
+        catch (ProtocolException e) {
+            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                    AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+        }
     }
 
     /**
@@ -106,19 +138,14 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
             throws IOException {
 
         // no more applications to logout: send LogoutResponse back to requesting application
-        boolean partialLogout = false;
-        if (null != request.getSession().getAttribute(LOGOUT_PARTIAL_ATTRIBUTE)) {
-            partialLogout = true;
-        }
-
         String target = (String) request.getSession().getAttribute(LOGOUT_TARGET_ATTRIBUTE);
         if (null == target)
             throw new IllegalStateException(LOGOUT_TARGET_ATTRIBUTE + " session attribute not present");
 
-        LOG.debug("send logout response to " + target + " (partialLogout=" + partialLogout + ")");
+        LOG.debug("send logout response to " + target);
 
         try {
-            ProtocolHandlerManager.sendLogoutResponse(partialLogout, target, request.getSession(), response);
+            ProtocolHandlerManager.sendLogoutResponse(target, request.getSession(), response);
         } catch (ProtocolException e) {
             redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(

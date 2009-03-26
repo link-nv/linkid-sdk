@@ -290,13 +290,12 @@ public class ProtocolHandlerManager {
     /**
      * Sends a logout response according to the authentication protocol by which the current logout procedure was initiated.
      * 
-     * @param partialLogout
      * @param target
      * @param session
      * @param response
      * @throws ProtocolException
      */
-    public static void sendLogoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse response)
+    public static void sendLogoutResponse(String target, HttpSession session, HttpServletResponse response)
             throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
@@ -307,7 +306,7 @@ public class ProtocolHandlerManager {
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
 
         try {
-            protocolHandler.sendLogoutResponse(partialLogout, target, session, response);
+            protocolHandler.sendLogoutResponse(target, session, response);
         } catch (ProtocolException e) {
             String protocolName = protocolHandler.getName();
             e.setProtocolName(protocolName);

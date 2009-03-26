@@ -14,16 +14,29 @@ package net.link.safeonline.authentication.service;
  * 
  */
 public enum LogoutState {
+
     /**
-     * Logout has not yet begin.
-     */
-    INIT,
-    /**
-     * Logout requested.
+     * An application began the SSO logout sequence, but this application has not yet started its logout process.
      */
     INITIALIZED,
+
     /**
-     * This state marks that a logout request is being sent to a single sign-on application.
+     * An application was selected to begin the logout process. This state is only used during the sequential logout process.
      */
-    LOGGING_OUT
+    INITIATED,
+
+    /**
+     * This application began its logout process.
+     */
+    LOGGING_OUT,
+
+    /**
+     * This application's logout request completed but the application reported that it couldn't successfully log the user session out.
+     */
+    LOGOUT_FAILED,
+
+    /**
+     * This application's logout request completed and the application reported that it has successfully logged out the user session.
+     */
+    LOGOUT_SUCCESS
 }

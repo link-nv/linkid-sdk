@@ -32,8 +32,8 @@ import org.opensaml.saml2.core.LogoutResponse;
  * Logout service interface. This service allows the authentication web application to logout users. The bean behind this interface is
  * stateful. This means that a certain method invocation pattern must be respected. First the method {@link #initialize(LogoutRequest)} must
  * be invoked. Then for each application being logged out, the methods {@link #getLogoutRequest(ApplicationEntity)} followed by
- * {@link #handleLogoutResponse(LogoutResponse)} must be invoked. Finally {@link #finalizeLogout(boolean)} has to be invoked. In case the
- * logout process needs to be aborted one should invoke {@link #abort()} .
+ * {@link #handleLogoutResponse(LogoutResponse)} must be invoked. Finally {@link #finalizeLogout()} has to be invoked. In case the logout
+ * process needs to be aborted one should invoke {@link #abort()} .
  * 
  * @author wvdhaute
  */
@@ -44,9 +44,9 @@ public interface LogoutService extends SafeOnlineService {
 
 
     /**
-     * Returns the current state of the bean.
+     * @return The {@link LogoutState} of the given application that is part of the current SSO application logout process.
      */
-    LogoutState getLogoutState();
+    LogoutState getSSoApplicationState(ApplicationEntity application);
 
     /**
      * Aborts the current logout procedure.
@@ -75,9 +75,15 @@ public interface LogoutService extends SafeOnlineService {
             throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException;
 
     /**
-     * Returns a list of applications to logout. Returns an empty list if there are none.
+     * @return A list of applications to logout. Returns an empty list if there are none.
      */
     List<ApplicationEntity> getSsoApplicationsToLogout();
+
+    /**
+     * @return An application to send the logout request to when we're doing sequential logout instead of parallel. <code>null</code> means
+     *         all applications have been processed.
+     */
+    ApplicationEntity findSsoApplicationToLogout();
 
     /**
      * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent to the application.
@@ -115,10 +121,8 @@ public interface LogoutService extends SafeOnlineService {
      * 
      * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
      * 
-     * @param partialLogout
-     * 
      * @throws NodeNotFoundException
      */
-    String finalizeLogout(boolean partialLogout)
+    String finalizeLogout()
             throws NodeNotFoundException;
 }

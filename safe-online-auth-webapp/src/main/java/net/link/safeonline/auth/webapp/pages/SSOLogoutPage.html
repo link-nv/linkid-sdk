@@ -32,13 +32,19 @@
                     <tr wicket:id="applications">
                         <td wicket:id="name"></td>
                         <td>
-                            <img wicket:id="status" />
-                            <iframe wicket:id="frame" />
+                            <img wicket:id="session" />
+                            <img wicket:id="progress" />
                         </td>
                     </tr>
                 </table>
 
 			</form>
+			
+			<div class="hidden">
+			    <wicket:container wicket:id="applicationFrames">
+			        <iframe wicket:id="frame">[Application Logout Frame]</iframe>
+			    </wicket:container>
+			</div>
 
 		</wicket:container>
 

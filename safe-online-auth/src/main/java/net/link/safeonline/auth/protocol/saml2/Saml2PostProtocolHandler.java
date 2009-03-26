@@ -356,12 +356,12 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     /**
      * {@inheritDoc}
      */
-    public void sendLogoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse logoutResponse)
+    public void sendLogoutResponse(String target, HttpSession session, HttpServletResponse logoutResponse)
             throws ProtocolException {
 
         String encodedSamlLogoutResponseToken;
         try {
-            encodedSamlLogoutResponseToken = LogoutServiceManager.finalizeLogout(partialLogout, session);
+            encodedSamlLogoutResponseToken = LogoutServiceManager.finalizeLogout(session);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
         }

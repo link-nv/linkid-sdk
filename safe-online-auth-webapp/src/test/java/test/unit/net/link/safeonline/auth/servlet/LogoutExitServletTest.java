@@ -29,7 +29,6 @@ import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.LogoutExitServlet;
 import net.link.safeonline.authentication.service.LogoutService;
-import net.link.safeonline.authentication.service.LogoutState;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
@@ -134,7 +133,6 @@ public class LogoutExitServletTest {
         postMethod.setRequestBody(data);
 
         // expectations
-        expect(mockLogoutService.getLogoutState()).andStubReturn(LogoutState.LOGGING_OUT);
         expect(mockLogoutService.handleLogoutResponse((LogoutResponse) EasyMock.anyObject())).andStubReturn(applicationName);
         expect(mockLogoutService.findSsoApplicationToLogout()).andStubReturn(application2);
         expect(mockLogoutService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
@@ -198,7 +196,6 @@ public class LogoutExitServletTest {
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         // expectations
-        expect(mockLogoutService.getLogoutState()).andStubReturn(LogoutState.INITIALIZED);
         expect(mockLogoutService.findSsoApplicationToLogout()).andStubReturn(application);
         expect(mockLogoutService.getLogoutRequest(application)).andStubReturn(encodedSamlLogoutRequest);
 
