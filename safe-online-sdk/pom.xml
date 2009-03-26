@@ -22,7 +22,7 @@
 
 	<profiles>
 		<profile>
-			<id>sdk</id>
+			<id>dep:sdk</id>
 			<build>
 				<plugins>
 					<plugin>
