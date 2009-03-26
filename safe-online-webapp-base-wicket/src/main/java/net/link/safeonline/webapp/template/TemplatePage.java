@@ -7,7 +7,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasApplicationPage;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.wicket.behavior.HeaderContributor;
+import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
 
 
@@ -29,7 +29,7 @@ public abstract class TemplatePage extends OlasApplicationPage {
         Object minimalAttribute = httpSession.getAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE);
         boolean isMinimal = Boolean.parseBoolean(String.valueOf(minimalAttribute));
         if (isMinimal) {
-            add(HeaderContributor.forCss(TemplatePage.class, "minimal.css"));
+            add(CSSPackageResource.getHeaderContribution(TemplatePage.class, "minimal.css"));
         }
 
         // Add the <h1>page title</h1> component.
