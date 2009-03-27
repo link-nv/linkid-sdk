@@ -460,6 +460,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String issuerName = issuer.getValue();
         LOG.debug("issuer: " + issuerName);
 
+        if (!response.getID().equals(expectedDeviceChallengeId))
+            throw new ServletException("response is not matching the request");
+
         List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
         boolean validSignature = false;
         for (X509Certificate certificate : certificates) {

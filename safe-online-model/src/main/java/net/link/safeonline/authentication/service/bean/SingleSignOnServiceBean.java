@@ -196,7 +196,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
         /*
          * Lookup application pools from audience, if no audience, lookup all pools of the application. If empty, return.
          */
-        if (!applicationPoolNames.isEmpty()) {
+        if (null != applicationPoolNames && !applicationPoolNames.isEmpty()) {
             for (String applicationPoolName : applicationPoolNames) {
                 ApplicationPoolEntity applicationPool = applicationPoolDAO.findApplicationPool(applicationPoolName);
                 if (null == applicationPool) {
@@ -303,6 +303,12 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
      */
     public void setCookies(SubjectEntity subject, DeviceEntity authenticationDevice, DateTime authenticationTime) {
 
+        /*
+         * If SSO not enabled, return.
+         */
+        if (!authenticatingApplication.isSsoEnabled())
+            return;
+
         if (ssoItems.isEmpty()) {
             /*
              * Create SSO cookie for each application pool
@@ -342,11 +348,25 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
      */
     public List<Cookie> getCookies() {
 
+        /*
+         * If SSO not enabled, return.
+         */
+        if (!authenticatingApplication.isSsoEnabled())
+            return null;
+
         List<Cookie> cookies = new LinkedList<Cookie>();
         for (SingleSignOn sso : ssoItems) {
             cookies.add(sso.ssoCookie);
         }
         return cookies;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public SingleSignOnState getState() {
+
+        return singleSignOnState;
     }
 
     private void filterOnPools() {
@@ -361,6 +381,9 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     }
 
     private void filterOnDeviceRestriction() {
+
+        if (null == deviceRestriction)
+            return;
 
         List<SingleSignOn> newSsoItems = new LinkedList<SingleSignOn>();
         for (SingleSignOn sso : ssoItems) {
@@ -422,7 +445,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     }
 
 
-    private class SingleSignOn {
+    public class SingleSignOn {
 
         public static final String     SUBJECT_FIELD          = "subject";
         public static final String     APPLICATION_POOL_FIELD = "applicationPool";
@@ -447,6 +470,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
 
         public SingleSignOn(SubjectEntity subject, ApplicationPoolEntity applicationPool, DeviceEntity device, DateTime time) {
 
+            ssoApplications = new LinkedList<ApplicationEntity>();
             this.subject = subject;
             this.applicationPool = applicationPool;
             this.device = device;
@@ -516,7 +540,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             DateTime notAfter = time.plus(applicationPool.getSsoTimeout());
             DateTime now = new DateTime();
             if (now.isAfter(notAfter)) {
-                LOG.debug("SSO Cookie has expired");
+                LOG.debug("SSO Cookie has expired: " + ssoCookie.getName());
                 return false;
             }
             return true;

@@ -81,4 +81,9 @@ public interface SingleSignOnService extends SafeOnlineService {
      * Returns new/updated list of Single Sign On cookies.
      */
     List<Cookie> getCookies();
+
+    /**
+     * Returns current state of stateful bean.
+     */
+    SingleSignOnState getState();
 }
