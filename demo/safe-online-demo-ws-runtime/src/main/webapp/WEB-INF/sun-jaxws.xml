@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
+	version="2.0">
+
+	<endpoint name="SafeOnline-Demo-Notification-Consumer-WS"
+		implementation="net.link.safeonline.demo.notification.consumer.ws.NotificationConsumerPortImpl"
+		url-pattern="/consumer"
+		interface="net.lin_k.safe_online.notification.consumer.NotificationConsumerPort"
+		service="{urn:net:lin-k:safe-online:notification:consumer}NotificationConsumerService"
+		port="{urn:net:lin-k:safe-online:notification:consumer}NotificationConsumerPort" />
+
+</endpoints>

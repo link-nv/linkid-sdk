@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- vi:set ts=4 sw=4 noexpandtab: -->
-
 <samlp:Response Destination="replaceWithDestination"
 	ID="_bb64e2be9e6db72a13d17ab66d8459dc" InResponseTo="test-in-response-to"
 	IssueInstant="replaceWithCurrentTime" Version="2.0"
