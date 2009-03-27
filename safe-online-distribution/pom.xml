@@ -277,13 +277,13 @@
 			<type>zip</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>ear</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
@@ -441,13 +441,13 @@
                     <type>zip</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.password</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.password</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>

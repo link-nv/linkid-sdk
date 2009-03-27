@@ -88,7 +88,7 @@
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-model-password-client</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
@@ -156,7 +156,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-model-password</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>ejb</type>

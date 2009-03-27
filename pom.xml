@@ -881,21 +881,9 @@
 		</module>
 		<module>safe-online-sms-clickatell-bundle
 		</module>
-		<module>safe-online-model-password-client
-		</module>
-		<module>safe-online-model-password</module>
-		<module>safe-online-password-startup-runtime
-		</module>
-		<module>safe-online-password-webapp
-		</module>
-		<module>safe-online-password-deploy
-		</module>
+		<module>device</module>
 		<module>safe-online-device-auth-ws</module>
 		<module>safe-online-device-auth-ws-util
-		</module>
-		<module>safe-online-password-auth-ws-impl
-		</module>
-		<module>safe-online-password-auth-ws-runtime
 		</module>
 		<module>safe-online-model-otpoversms-client
 		</module>
