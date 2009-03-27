@@ -214,6 +214,10 @@
 			<param-name>DeviceErrorPath</param-name>
 			<param-value>/device-error</param-value>
 		</init-param>
+		<init-param>
+			<param-name>CookiePath</param-name>
+			<param-value>/${safe-online.auth.webapp.name}</param-value>
+		</init-param>
 	</servlet>
 	<servlet>
 		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
@@ -234,6 +238,10 @@
 		<init-param>
 			<param-name>DeviceErrorPath</param-name>
 			<param-value>/device-error</param-value>
+		</init-param>
+		<init-param>
+			<param-name>CookiePath</param-name>
+			<param-value>/${safe-online.auth.webapp.name}</param-value>
 		</init-param>
 	</servlet>
 	<servlet>

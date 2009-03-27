@@ -460,7 +460,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String issuerName = issuer.getValue();
         LOG.debug("issuer: " + issuerName);
 
-        if (!response.getID().equals(expectedDeviceChallengeId))
+        if (!response.getInResponseTo().equals(expectedDeviceChallengeId))
             throw new ServletException("response is not matching the request");
 
         List<X509Certificate> certificates = nodeAuthenticationService.getCertificates(issuerName);
@@ -548,7 +548,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public List<AuthenticationAssertion> login(List<Cookie> ssoCookies) {
 
         List<AuthenticationAssertion> authenticationAssertions = ssoService.login(ssoCookies);
-        if (!authenticationAssertions.isEmpty() && authenticationAssertions.size() == 1) {
+        if (null != authenticationAssertions && !authenticationAssertions.isEmpty() && authenticationAssertions.size() == 1) {
             /*
              * Safe the state in this stateful session bean.
              */

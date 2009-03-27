@@ -169,6 +169,7 @@ public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
         List<Cookie> ssoCookies = new LinkedList<Cookie>();
         for (Cookie cookie : cookies) {
             if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
+                LOG.debug("sso cookie found: " + cookie.getValue());
                 ssoCookies.add(cookie);
             }
         }

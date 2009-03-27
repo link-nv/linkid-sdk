@@ -41,8 +41,8 @@ public class DefaultLogoutServlet extends AbstractInjectionServlet {
 
     private static final Log  LOG              = LogFactory.getLog(DefaultLogoutServlet.class);
 
-    @Init(name = "LogoutExitUrl")
-    private String            logoutExitUrl;
+    @Init(name = "LogoutExitPath")
+    private String            logoutExitPath;
 
 
     @Override
@@ -52,7 +52,7 @@ public class DefaultLogoutServlet extends AbstractInjectionServlet {
         LOG.debug("invoke get");
 
         LoginManager.invalidateSession(request);
-        response.sendRedirect(logoutExitUrl);
+        response.sendRedirect(logoutExitPath);
 
     }
 }

@@ -107,8 +107,6 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
 
     private boolean                       forceAuthentication;
 
-    private List<String>                  applicationPoolNames;
-
     private List<ApplicationPoolEntity>   applicationPools;
 
     private ApplicationEntity             authenticatingApplication;
@@ -165,13 +163,31 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
          * Safe the state in this stateful session bean.
          */
         forceAuthentication = forceAuthn;
-        applicationPoolNames = audiences;
         authenticatingApplication = application;
         deviceRestriction = devices;
         applicationPools = new LinkedList<ApplicationPoolEntity>();
         ssoItems = new LinkedList<SingleSignOn>();
         invalidCookies = new LinkedList<Cookie>();
         singleSignOnState = SingleSignOnState.INITIALIZED;
+
+        /*
+         * Lookup application pools from audience, if no audience, lookup all pools of the application. If empty, return.
+         */
+        if (null != audiences && !audiences.isEmpty()) {
+            for (String applicationPoolName : audiences) {
+                ApplicationPoolEntity applicationPool = applicationPoolDAO.findApplicationPool(applicationPoolName);
+                if (null == applicationPool) {
+                    LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION_POOL + applicationPoolName);
+                    securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_APPLICATION_POOL
+                            + applicationPoolName);
+                    applicationPools.clear();
+                    return;
+                }
+                applicationPools.add(applicationPool);
+            }
+        } else {
+            applicationPools = applicationPoolDAO.listApplicationPools(authenticatingApplication);
+        }
 
     }
 
@@ -193,28 +209,6 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             return null;
         }
 
-        /*
-         * Lookup application pools from audience, if no audience, lookup all pools of the application. If empty, return.
-         */
-        if (null != applicationPoolNames && !applicationPoolNames.isEmpty()) {
-            for (String applicationPoolName : applicationPoolNames) {
-                ApplicationPoolEntity applicationPool = applicationPoolDAO.findApplicationPool(applicationPoolName);
-                if (null == applicationPool) {
-                    /*
-                     * Set state
-                     */
-                    singleSignOnState = SingleSignOnState.FAILED;
-
-                    LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION_POOL + applicationPoolName);
-                    securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_APPLICATION_POOL
-                            + applicationPoolName);
-                    return null;
-                }
-                applicationPools.add(applicationPool);
-            }
-        } else {
-            applicationPools = applicationPoolDAO.listApplicationPools(authenticatingApplication);
-        }
         if (applicationPools.isEmpty()) {
             /*
              * Set state
@@ -314,6 +308,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
              * Create SSO cookie for each application pool
              */
             createCookies(subject, authenticationDevice, authenticationTime);
+            return;
         }
 
         /*
@@ -487,7 +482,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             try {
                 Cipher encryptCipher = Cipher.getInstance("AES", bcp);
                 encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineNodeKeyStore.getSSOKey());
-                byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes());
+                byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
                 encryptedValue = new String(Base64.encode(encryptedBytes));
 
             } catch (InvalidKeyException e) {
@@ -505,9 +500,16 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             } catch (NoSuchPaddingException e) {
                 LOG.debug("no such padding: " + e.getMessage());
                 throw new InternalInconsistencyException("invalid key: " + e.getMessage());
+            } catch (UnsupportedEncodingException e) {
+                LOG.debug("unsupported encoding: " + e.getMessage());
+                throw new InternalInconsistencyException("invalid key: " + e.getMessage());
             }
 
+            LOG.debug("1: encrypted cookie value: " + encryptedValue);
+
             String encodedApplicationPoolName = Base64.encode(applicationPool.getName().getBytes());
+
+            LOG.debug("encodedApplicationPoolName: " + encodedApplicationPoolName);
 
             ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + encodedApplicationPoolName, encryptedValue);
             ssoCookie.setMaxAge(-1);
@@ -557,6 +559,8 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             /*
              * Decrypt SSO Cookie value
              */
+            LOG.debug("2: encrypted cookie value: " + cookie.getValue());
+
             BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
             String decryptedValue;
             try {
@@ -580,7 +584,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                 LOG.debug("no such padding: " + e.getMessage());
                 throw new InvalidCookieException(e.getMessage());
             } catch (Base64DecodingException e) {
-                LOG.debug("base 64 encoding error: " + e.getMessage());
+                LOG.debug("base 64 decoding error: " + e.getMessage());
                 throw new InvalidCookieException(e.getMessage());
             } catch (UnsupportedEncodingException e) {
                 LOG.debug("unsupported encoding error: " + e.getMessage());
