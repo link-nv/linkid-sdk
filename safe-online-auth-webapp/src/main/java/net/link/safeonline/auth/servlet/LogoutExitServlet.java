@@ -9,7 +9,6 @@ package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +18,6 @@ import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
@@ -52,9 +50,6 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
     public static final String PATH_CONTEXT_PARAM           = "LogoutExitPath";
     public static final String LOGOUT_TARGET_ATTRIBUTE      = "Logout.target";
 
-    @EJB
-    private ApplicationService applicationService;
-
     @RequestParameter(APPLICATION_ID_GET_PARAMETER)
     String                     applicationId;
 
@@ -66,7 +61,13 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
         // If an applicationId is given as a GET parameter, send logout request to that application.
         if (applicationId != null) {
             try {
-                logoutApplication(request, response, applicationService.getApplication(Long.valueOf(applicationId)));
+                LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
+
+                synchronized (request.getSession()) {
+                    ApplicationEntity application = logoutService.getSsoApplicationToLogout(Long.parseLong(applicationId));
+                    logoutApplication(request, response, application);
+                }
+
                 return;
             }
 
@@ -87,7 +88,9 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
 
         LOG.debug("handle logout response");
         try {
-            ProtocolHandlerManager.handleLogoutResponse(request);
+            synchronized (request.getSession()) {
+                ProtocolHandlerManager.handleLogoutResponse(request);
+            }
         } catch (ProtocolException e) {
             ServletUtils.redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
@@ -122,7 +125,9 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
 
         LOG.debug("send logout request to: " + application.getName());
         try {
-            ProtocolHandlerManager.sendLogoutRequest(application, request.getSession(), response);
+            synchronized (request.getSession()) {
+                ProtocolHandlerManager.sendLogoutRequest(application, request.getSession(), response);
+            }
         }
 
         catch (ProtocolException e) {
@@ -146,7 +151,9 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
         LOG.debug("send logout response to " + target);
 
         try {
-            ProtocolHandlerManager.sendLogoutResponse(target, request.getSession(), response);
+            synchronized (request.getSession()) {
+                ProtocolHandlerManager.sendLogoutResponse(target, request.getSession(), response);
+            }
         } catch (ProtocolException e) {
             ServletUtils.redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(

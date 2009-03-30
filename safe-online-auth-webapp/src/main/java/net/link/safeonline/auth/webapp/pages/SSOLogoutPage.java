@@ -136,7 +136,34 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
             add(new ListView<ApplicationEntity>("applications", getLogoutService().getSsoApplicationsToLogout()) {
 
                 private static final long serialVersionUID = 1L;
+                private boolean           logoutComplete;
 
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                protected void onBeforeRender() {
+
+                    logoutComplete = true;
+                    LOG.debug("before render: logout complete: " + logoutComplete);
+
+                    super.onBeforeRender();
+                }
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                protected void onAfterRender() {
+
+                    LOG.debug("after render: logout complete: " + logoutComplete);
+                    if (logoutComplete) {
+                        LogoutForm.this.onSubmit();
+                    }
+
+                    super.onAfterRender();
+                }
 
                 @Override
                 protected void populateItem(ListItem<ApplicationEntity> item) {
@@ -155,17 +182,20 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                         case INITIALIZED:
                             sessionStatusImage = "/images/icons/door_open.png";
                             progressStatusImage = "";
+                            logoutComplete = false;
                         break;
 
                         case INITIATED:
                         case LOGGING_OUT:
                             sessionStatusImage = "/images/icons/door_open.png";
                             progressStatusImage = "/images/icons/hourglass.png";
+                            logoutComplete = false;
                         break;
 
                         case LOGOUT_FAILED:
                             sessionStatusImage = "/images/icons/door_open.png";
                             progressStatusImage = "/images/icons/error.png";
+                            logoutComplete = false;
                         break;
 
                         case LOGOUT_SUCCESS:
@@ -173,6 +203,7 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                             progressStatusImage = "/images/icons/tick.png";
                         break;
                     }
+                    LOG.debug("item " + applicationName + ": logout complete: " + logoutComplete);
 
                     Image sessionStatus = new Image("session", "override");
                     sessionStatus.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
@@ -180,9 +211,9 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                     sessionStatus.setVisible(sessionStatusImage.length() > 0);
                     item.add(sessionStatus);
                     Image progressStatus = new Image("progress", "override");
-                    sessionStatus.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
+                    progressStatus.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                             + progressStatusImage));
-                    sessionStatus.setVisible(sessionStatusImage.length() > 0);
+                    progressStatus.setVisible(progressStatusImage.length() > 0);
 
                     item.add(new Label("name", applicationName), sessionStatus, progressStatus);
                 }

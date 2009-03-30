@@ -229,6 +229,19 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
     /**
      * {@inheritDoc}
      */
+    public ApplicationEntity getSsoApplicationToLogout(long applicationId)
+            throws ApplicationNotFoundException {
+
+        for (ApplicationEntity application : ssoApplicationStates.keySet())
+            if (application.getId() == applicationId)
+                return application;
+
+        throw new ApplicationNotFoundException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public ApplicationEntity findSsoApplicationToLogout() {
 
         ApplicationEntity nextApplication = null;

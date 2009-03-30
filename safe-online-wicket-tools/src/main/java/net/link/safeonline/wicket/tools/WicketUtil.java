@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -88,7 +88,7 @@ public abstract class WicketUtil {
     /**
      * Add an injector to the given Wicket web application that will resolve fields with the {@link EJB} annotation.
      * 
-     * @see OlasNamingStrategy
+     * @see FieldNamingStrategy
      */
     public static void addInjector(WebApplication application) {
 
@@ -108,7 +108,7 @@ public abstract class WicketUtil {
     public static void inject(Object injectee) {
 
         if (eeInjector == null) {
-            eeInjector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+            eeInjector = new AnnotJavaEEInjector(new FieldNamingStrategy());
         }
 
         eeInjector.inject(injectee);

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.In;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -311,13 +312,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                     continue;
                 }
                 String mappedName = ejb.mappedName();
-                if (null == mappedName)
-                    throw new ServletException(String.format("field %s.%s's @EJB requires mappedName attribute", getClass(), field));
-                LOG.debug("injecting: " + mappedName);
-
                 Class fieldType = field.getType();
                 if (false == fieldType.isInterface())
                     throw new ServletException(String.format("field %s.%s's type should be an interface", getClass(), field));
+                if (mappedName == null || mappedName.length() == 0) {
+                    mappedName = new FieldNamingStrategy().calculateName(fieldType);
+                }
+                if (mappedName == null || mappedName.length() == 0)
+                    throw new ServletException(String.format("field %s.%s's @EJB requires mappedName attribute", getClass(), field));
+                LOG.debug("injecting: " + mappedName);
+
                 try {
                     Object ejbRef = EjbUtils.getEJB(mappedName, fieldType);
                     field.setAccessible(true);

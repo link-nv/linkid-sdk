@@ -80,6 +80,12 @@ public interface LogoutService extends SafeOnlineService {
     List<ApplicationEntity> getSsoApplicationsToLogout();
 
     /**
+     * @return The application from the SSO logout application list that has the given application ID.
+     */
+    ApplicationEntity getSsoApplicationToLogout(long applicationId)
+            throws ApplicationNotFoundException;
+
+    /**
      * @return An application to send the logout request to when we're doing sequential logout instead of parallel. <code>null</code> means
      *         all applications have been processed.
      */
