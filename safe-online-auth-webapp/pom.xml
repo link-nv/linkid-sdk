@@ -193,13 +193,12 @@
 			<type>pom</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
 			<artifactId>safe-online-model-beid-client
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<reporting>

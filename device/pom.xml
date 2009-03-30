@@ -22,6 +22,7 @@
 		<module>digipass</module>
 		<module>option</module>
 		<module>otpoversms</module>
+		<module>beid</module>
 	</modules>
 
 </project>

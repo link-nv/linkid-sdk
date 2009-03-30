@@ -4,86 +4,60 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>beid</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
-	<name>SafeOnline eID Authentication Web Service
-		Implementation</name>
+	<name>SafeOnline Authentication Applet</name>
 	<description>
-		Contains the SafeOnline eID Device Authentication Web
-		Service Implementation.
-	</description>
+        SafeOnline Authentication Applet Library.
+    </description>
 
-	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-beid-auth-ws-impl
-	</artifactId>
+	<groupId>net.lin-k.safe-online.device.beid</groupId>
+	<artifactId>safe-online-beid-pkcs11-applet</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
 
-		<!-- Dependency Groups -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container-as
-			</artifactId>
-			<version>1.4-SNAPSHOT</version>
-			<type>pom</type>
-		</dependency>
-
 		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-device-auth-ws
-			</artifactId>
+			<artifactId>safe-online-applet-common</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-device-auth-ws-util
-			</artifactId>
+			<artifactId>safe-online-pkcs11-sc</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model-client
-			</artifactId>
+			<artifactId>safe-online-shared</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model-beid-client
-			</artifactId>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-pkcs11-sc-beid</artifactId>
 			<version>1.4-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Specific Dependencies: External -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-ws-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-ws-common</artifactId>
-			<version>1.4-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-sdk</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container-test
-			</artifactId>
+			<artifactId>safe-online-container-test</artifactId>
             <version>1.4-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
@@ -109,8 +83,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin
-				</artifactId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</reporting>

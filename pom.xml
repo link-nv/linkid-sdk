@@ -739,12 +739,6 @@
 		<module>safe-online-saml-common</module>
 		<module>safe-online-model-node</module>
 		<module>safe-online-node-keystore</module>
-		<!--
-			TODO: Remove the following. Only here because of a test dependency in
-			s-o-model.
-		-->
-		<module>safe-online-beid-pkcs11-applet
-		</module>
 
 		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base-olas
@@ -809,31 +803,12 @@
 		<module>safe-online-auth-ws-impl</module>
 
 		<!-- EXTERNAL DEVICES -->
-		<module>safe-online-model-beid-client
-		</module>
-		<module>safe-online-model-beid</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet
 		</module>
 		<module>safe-online-java-version-applet-package
 		</module>
 		<module>safe-online-pkcs11-sc</module>
-		<module>safe-online-pkcs11-sc-beid</module>
-		<!--module>safe-online-beid-pkcs11-applet</module-->
-		<module>safe-online-beid-pkcs11-applet-package
-		</module>
-		<module>safe-online-beid-pcsc-applet
-		</module>
-		<module>safe-online-beid-pcsc-applet-package
-		</module>
-		<module>safe-online-beid-startup-runtime
-		</module>
-		<module>safe-online-beid-auth-ws-impl
-		</module>
-		<module>safe-online-beid-auth-ws-runtime
-		</module>
-		<module>safe-online-beid-deploy</module>
-		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-attrplugin-template-bundle
