@@ -821,15 +821,6 @@
 		<module>safe-online-model-beid-client
 		</module>
 		<module>safe-online-model-beid</module>
-		<module>safe-online-model-digipass-client
-		</module>
-		<module>safe-online-model-digipass</module>
-		<module>safe-online-digipass-startup-runtime
-		</module>
-		<module>safe-online-digipass-deploy
-		</module>
-		<module>safe-online-digipass-webapp
-		</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet
 		</module>

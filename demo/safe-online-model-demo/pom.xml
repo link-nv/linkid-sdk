@@ -78,7 +78,7 @@
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.digipass</groupId>
 			<artifactId>safe-online-model-digipass-client</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
@@ -142,7 +142,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.digipass</groupId>
 			<artifactId>safe-online-model-digipass</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>ejb</type>

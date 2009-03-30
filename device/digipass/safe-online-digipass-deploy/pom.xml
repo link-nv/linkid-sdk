@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>digipass</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -14,7 +14,7 @@
         SafeOnline Deployable Digipass Application Package 
 	</description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.device.digipass</groupId>
 	<artifactId>safe-online-digipass-deploy</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>ear</packaging>
@@ -33,11 +33,11 @@
 					<defaultJavaBundleDir>lib/</defaultJavaBundleDir>
 					<modules>
                         <webModule>
-                            <groupId>net.lin-k.safe-online</groupId>
+                            <groupId>net.lin-k.safe-online.device.digipass</groupId>
                             <artifactId>safe-online-digipass-startup-runtime</artifactId>
                         </webModule>
 						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
+							<groupId>net.lin-k.safe-online.device.digipass</groupId>
 							<artifactId>safe-online-digipass-webapp</artifactId>
 							<contextRoot>/${safe-online.digipass.webapp.name}</contextRoot>
 						</webModule>
@@ -97,27 +97,27 @@
 
 		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.digipass</groupId>
 			<artifactId>safe-online-digipass-webapp</artifactId>
 			<version>1.4-SNAPSHOT</version>
             <scope>provided</scope>
 			<type>war</type>
 		</dependency>
             <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
+                <groupId>net.lin-k.safe-online.device.digipass</groupId>
                 <artifactId>safe-online-digipass-webapp</artifactId>
                 <version>1.4-SNAPSHOT</version>
                 <type>zip</type>
             </dependency>
         <dependency>
-   			<groupId>net.lin-k.safe-online</groupId>
+   			<groupId>net.lin-k.safe-online.device.digipass</groupId>
 			<artifactId>safe-online-digipass-startup-runtime</artifactId>
 			<version>1.4-SNAPSHOT</version>
             <scope>provided</scope>
             <type>war</type>
         </dependency>
             <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
+                <groupId>net.lin-k.safe-online.device.digipass</groupId>
                 <artifactId>safe-online-digipass-startup-runtime</artifactId>
                 <version>1.4-SNAPSHOT</version>
                 <type>zip</type>
@@ -125,7 +125,7 @@
 
 		<!-- Specific Dependencies: OLAS -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.digipass</groupId>
 			<artifactId>safe-online-model-digipass</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>ejb</type>
