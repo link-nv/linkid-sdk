@@ -19,7 +19,7 @@ public enum SingleSignOnState {
      */
     INIT,
     /**
-     * The initialized state. At this point the sso bean has been initialized with a list of application pools.
+     * The initialized state for sign on. At this point the sso bean has been initialized with a list of application pools.
      */
     INITIALIZED,
     /**

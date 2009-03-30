@@ -65,7 +65,20 @@ public interface SingleSignOnService extends SafeOnlineService {
      * @return list of valid single sign on assertions or <code>null</code> if not successful. The list of invalid cookies can be retrieved
      *         with {@link #getInvalidCookies()}.
      */
-    List<AuthenticationAssertion> login(List<Cookie> ssoCookies);
+    List<AuthenticationAssertion> signOn(List<Cookie> ssoCookies);
+
+    /**
+     * Investigates set of SSO cookies and extracts list of applications that will need to be logged out given a specified application that
+     * started the logout.
+     * 
+     * @param application
+     *            application that initiated the single logout process.
+     * @param ssoCookies
+     * 
+     * @return Returns list of applications to be logged out.
+     * 
+     */
+    List<ApplicationEntity> getApplicationsToLogout(ApplicationEntity application, List<Cookie> ssoCookies);
 
     /**
      * Returns list of invalid ( expired, ... ) SSO cookies.

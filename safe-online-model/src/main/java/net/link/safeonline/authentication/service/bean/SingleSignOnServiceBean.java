@@ -13,6 +13,7 @@ import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -88,6 +89,9 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                                                                                             + ": Invalid device: ";
     public static final String            SECURITY_MESSAGE_INVALID_USER             = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid user: ";
 
+    public static final String            SECURITY_MESSAGE_INVALID_APPLICATION      = SECURITY_MESSAGE_INVALID_COOKIE
+                                                                                            + ": Invalid application: ";
+
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     SecurityAuditLogger                   securityAuditLogger;
 
@@ -114,6 +118,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     private Set<DeviceEntity>             deviceRestriction;
 
     private List<SingleSignOn>            ssoItems;
+
     private List<Cookie>                  invalidCookies;
 
     private List<AuthenticationAssertion> authenticationAssertions;
@@ -149,7 +154,6 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_STATE);
             throw new IllegalStateException(SECURITY_MESSAGE_INVALID_STATE);
         }
-
     }
 
     /**
@@ -188,13 +192,12 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
         } else {
             applicationPools = applicationPoolDAO.listApplicationPools(authenticatingApplication);
         }
-
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<AuthenticationAssertion> login(List<Cookie> ssoCookies) {
+    public List<AuthenticationAssertion> signOn(List<Cookie> ssoCookies) {
 
         checkState(SingleSignOnState.INITIALIZED);
 
@@ -287,6 +290,34 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     /**
      * {@inheritDoc}
      */
+    public List<ApplicationEntity> getApplicationsToLogout(ApplicationEntity application, List<Cookie> ssoCookies) {
+
+        if (!application.isSsoEnabled())
+            return null;
+
+        /*
+         * Parse SSO cookies
+         */
+        List<ApplicationEntity> applicationsToLogout = new LinkedList<ApplicationEntity>();
+        invalidCookies = new LinkedList<Cookie>();
+        for (Cookie ssoCookie : ssoCookies) {
+            try {
+                SingleSignOn sso = new SingleSignOn(ssoCookie);
+                applicationsToLogout.addAll(sso.getApplicationsToLogout(application));
+            } catch (InvalidCookieException e) {
+                LOG.debug("Invalid cookie " + ssoCookie.getName() + " marked for removal");
+                ssoCookie.setMaxAge(0);
+                ssoCookie.setValue("");
+                invalidCookies.add(ssoCookie);
+            }
+        }
+        LOG.debug("found " + applicationsToLogout.size() + " to logout");
+        return applicationsToLogout;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public List<Cookie> getInvalidCookies() {
 
         return invalidCookies;
@@ -332,7 +363,8 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
         ssoItems = new LinkedList<SingleSignOn>();
 
         for (ApplicationPoolEntity applicationPool : applicationPools) {
-            SingleSignOn sso = new SingleSignOn(subject, applicationPool, authenticationDevice, authenticationTime);
+            SingleSignOn sso = new SingleSignOn(subject, applicationPool, authenticatingApplication, authenticationDevice,
+                    authenticationTime);
             sso.setCookie();
             ssoItems.add(sso);
         }
@@ -444,6 +476,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
 
         public static final String     SUBJECT_FIELD          = "subject";
         public static final String     APPLICATION_POOL_FIELD = "applicationPool";
+        public static final String     APPLICATION_FIELD      = "application";
         public static final String     DEVICE_FIELD           = "device";
         public static final String     TIME_FIELD             = "time";
         public static final String     SSO_APPLICATIONS_FIELD = "ssoApplications";
@@ -451,6 +484,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
         public Cookie                  ssoCookie;
         public SubjectEntity           subject;
         public ApplicationPoolEntity   applicationPool;
+        public ApplicationEntity       application;
         public DeviceEntity            device;
         public DateTime                time;
         public List<ApplicationEntity> ssoApplications;
@@ -463,11 +497,13 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             parseCookie(ssoCookie);
         }
 
-        public SingleSignOn(SubjectEntity subject, ApplicationPoolEntity applicationPool, DeviceEntity device, DateTime time) {
+        public SingleSignOn(SubjectEntity subject, ApplicationPoolEntity applicationPool, ApplicationEntity application,
+                            DeviceEntity device, DateTime time) {
 
             ssoApplications = new LinkedList<ApplicationEntity>();
             this.subject = subject;
             this.applicationPool = applicationPool;
+            this.application = application;
             this.device = device;
             this.time = time;
         }
@@ -507,11 +543,11 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
 
             LOG.debug("1: encrypted cookie value: " + encryptedValue);
 
-            String encodedApplicationPoolName = Base64.encode(applicationPool.getName().getBytes());
-
-            LOG.debug("encodedApplicationPoolName: " + encodedApplicationPoolName);
-
-            ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + encodedApplicationPoolName, encryptedValue);
+            if (null != ssoCookie) {
+                ssoCookie.setValue(encryptedValue);
+            } else {
+                ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + UUID.randomUUID().toString(), encryptedValue);
+            }
             ssoCookie.setMaxAge(-1);
         }
 
@@ -519,21 +555,22 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
 
             String ssoApplicationsValue = "";
             for (ApplicationEntity ssoApplication : ssoApplications) {
-                ssoApplicationsValue += ssoApplication.getName() + ",";
+                ssoApplicationsValue += ssoApplication.getId() + ",";
             }
             if (ssoApplicationsValue.endsWith(",")) {
                 ssoApplicationsValue = ssoApplicationsValue.substring(0, ssoApplicationsValue.length() - 1);
             }
 
             return SUBJECT_FIELD + "=" + subject.getUserId() + ";" + APPLICATION_POOL_FIELD + "=" + applicationPool.getName() + ";"
-                    + DEVICE_FIELD + "=" + device.getName() + ";" + TIME_FIELD + "=" + time.toString() + ";" + SSO_APPLICATIONS_FIELD + "="
-                    + ssoApplicationsValue;
+                    + APPLICATION_FIELD + "=" + application.getId() + ";" + DEVICE_FIELD + "=" + device.getName() + ";" + TIME_FIELD + "="
+                    + time.toString() + ";" + SSO_APPLICATIONS_FIELD + "=" + ssoApplicationsValue;
         }
 
         public void addSsoApplication(ApplicationEntity ssoApplication) {
 
             if (!ssoApplications.contains(ssoApplication)) {
                 ssoApplications.add(ssoApplication);
+                setCookie();
             }
         }
 
@@ -546,6 +583,29 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                 return false;
             }
             return true;
+        }
+
+        public List<ApplicationEntity> getApplicationsToLogout(ApplicationEntity logoutApplication) {
+
+            List<ApplicationEntity> applicationsToLogout = new LinkedList<ApplicationEntity>();
+            if (logoutApplication.equals(application) || ssoApplications.contains(logoutApplication)) {
+                if (!applicationsToLogout.contains(application) && !application.equals(logoutApplication)) {
+                    if (null != application.getSsoLogoutUrl()) {
+                        LOG.debug("add application " + application.getName() + " for logout");
+                        applicationsToLogout.add(application);
+                    }
+                }
+                for (ApplicationEntity ssoApplication : ssoApplications) {
+                    if (!applicationsToLogout.contains(ssoApplication) && !ssoApplication.equals(logoutApplication)) {
+                        if (null != ssoApplication.getSsoLogoutUrl()) {
+                            LOG.debug("add application " + ssoApplication.getName() + " for logout");
+                            applicationsToLogout.add(ssoApplication);
+                        }
+                    }
+                }
+            }
+            return applicationsToLogout;
+
         }
 
         private void parseCookie(Cookie cookie)
@@ -597,7 +657,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
              * Check SSO Cookie properties
              */
             String[] properties = decryptedValue.split(";");
-            if (null == properties || properties.length != 5) {
+            if (null == properties || properties.length != 6) {
                 LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
                 throw new InvalidCookieException("Invalid SSO Cookie");
@@ -638,9 +698,27 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             }
 
             /*
+             * Check application property
+             */
+            String[] applicationProperty = properties[2].split("=");
+            if (null == applicationProperty || applicationProperty.length != 2
+                    || !applicationProperty[0].equals(SingleSignOn.APPLICATION_FIELD)) {
+                LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+                throw new InvalidCookieException("Invalid SSO Cookie");
+            }
+            application = applicationDAO.findApplication(Long.parseLong(applicationProperty[1]));
+            if (null == application) {
+                LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperty[1]);
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_APPLICATION
+                        + applicationProperty[1]);
+                throw new InvalidCookieException("Invalid SSO Cookie");
+            }
+
+            /*
              * Check device property
              */
-            String[] deviceProperty = properties[2].split("=");
+            String[] deviceProperty = properties[3].split("=");
             if (null == deviceProperty || deviceProperty.length != 2 || !deviceProperty[0].equals(SingleSignOn.DEVICE_FIELD)) {
                 LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
@@ -656,7 +734,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             /*
              * Check time property
              */
-            String[] timeProperty = properties[3].split("=");
+            String[] timeProperty = properties[4].split("=");
             if (null == timeProperty || timeProperty.length != 2 || !timeProperty[0].equals(SingleSignOn.TIME_FIELD)) {
                 LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
@@ -665,6 +743,26 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTime();
             time = dateFormatter.parseDateTime(timeProperty[1]);
 
+            // check sso applications property
+            String[] ssoAppProperty = properties[5].split("=");
+            if (null == ssoAppProperty || !ssoAppProperty[0].equals(SingleSignOn.SSO_APPLICATIONS_FIELD)) {
+                LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+                throw new InvalidCookieException("Invalid SSO Cookie");
+            }
+            if (2 == ssoAppProperty.length) {
+                String[] ssoApplicationsString = ssoAppProperty[1].split(",");
+                for (String ssoApplicationId : ssoApplicationsString) {
+                    ApplicationEntity ssoApplication = applicationDAO.findApplication(Long.parseLong(ssoApplicationId));
+                    if (null == ssoApplication) {
+                        LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + ssoApplicationId);
+                        securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_APPLICATION
+                                + ssoApplicationId);
+                        throw new InvalidCookieException("Invalid SSO Cookie");
+                    }
+                    ssoApplications.add(ssoApplication);
+                }
+            }
         }
     }
 

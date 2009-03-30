@@ -190,6 +190,16 @@ public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
                 }
                 // valid SSO, log in
                 LoginManager.login(session, authenticationAssertions.get(0));
+
+                /*
+                 * Set / update SSO Cookies
+                 */
+                for (Cookie ssoCookie : authenticationService.getSsoCookies()) {
+                    ssoCookie.setPath(cookiePath);
+                    LOG.debug("sso cookie value: " + ssoCookie.getValue());
+                    response.addCookie(ssoCookie);
+                }
+
                 response.sendRedirect(loginPath);
                 return;
             }

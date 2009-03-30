@@ -142,25 +142,15 @@ import org.opensaml.xml.validation.ValidationException;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 
-    private static final Log                    LOG                                  = LogFactory.getLog(AuthenticationServiceBean.class);
+    private static final Log                    LOG                   = LogFactory.getLog(AuthenticationServiceBean.class);
 
-    private static final SafeOnlineNodeKeyStore nodeKeyStore                         = new SafeOnlineNodeKeyStore();
-
-    public static final String                  SECURITY_MESSAGE_INVALID_COOKIE      = "Attempt to use an invalid SSO Cookie";
-
-    public static final String                  SECURITY_MESSAGE_INVALID_APPLICATION = SECURITY_MESSAGE_INVALID_COOKIE
-                                                                                             + ": Invalid application: ";
-
-    public static final String                  SECURITY_MESSAGE_INVALID_DEVICE      = SECURITY_MESSAGE_INVALID_COOKIE
-                                                                                             + ": Invalid device: ";
-
-    public static final String                  SECURITY_MESSAGE_INVALID_USER        = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid user: ";
+    private static final SafeOnlineNodeKeyStore nodeKeyStore          = new SafeOnlineNodeKeyStore();
 
     private AuthenticationAssertion             authenticationAssertion;
 
     private DeviceEntity                        registeredDevice;
 
-    private long                                expectedApplicationId                = -1;
+    private long                                expectedApplicationId = -1;
 
     private String                              expectedApplicationName;
 
@@ -194,7 +184,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         if (null != ssoService) {
             ssoService.abort();
         }
-
     }
 
 
@@ -547,7 +536,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      */
     public List<AuthenticationAssertion> login(List<Cookie> ssoCookies) {
 
-        List<AuthenticationAssertion> authenticationAssertions = ssoService.login(ssoCookies);
+        List<AuthenticationAssertion> authenticationAssertions = ssoService.signOn(ssoCookies);
         if (null != authenticationAssertions && !authenticationAssertions.isEmpty() && authenticationAssertions.size() == 1) {
             /*
              * Safe the state in this stateful session bean.

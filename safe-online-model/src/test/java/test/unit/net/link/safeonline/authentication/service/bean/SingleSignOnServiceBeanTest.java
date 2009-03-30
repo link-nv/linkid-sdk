@@ -128,7 +128,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPoolName), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(null);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(null);
 
         // verify
         assertNull(assertions);
@@ -154,7 +154,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPoolName), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(null);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(null);
 
         // verify
         verify(mockObjects);
@@ -179,7 +179,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, null, application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(null);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(null);
 
         // verify
         verify(mockObjects);
@@ -214,7 +214,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPoolName), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(cookies);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(cookies);
 
         // verify
         verify(mockObjects);
@@ -237,16 +237,20 @@ public class SingleSignOnServiceBeanTest {
         application.setSsoEnabled(true);
 
         ApplicationPoolEntity cookieApplicationPool = new ApplicationPoolEntity("test-cookie-application-pool", ssoTimeout);
+        ApplicationEntity cookieApplication = new ApplicationEntity();
+        cookieApplication.setId(1L);
+        cookieApplication.setSsoEnabled(true);
         DeviceEntity cookieDevice = new DeviceEntity();
         cookieDevice.setName("test-cookie-device-name");
         List<Cookie> cookies = new LinkedList<Cookie>();
-        Cookie cookie = getSsoCookie(subject, cookieApplicationPool, cookieDevice);
+        Cookie cookie = getSsoCookie(subject, cookieApplicationPool, cookieApplication, cookieDevice);
         cookies.add(cookie);
 
         // expectations
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
         expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);
         expect(mockApplicationPoolDAO.findApplicationPool(cookieApplicationPool.getName())).andReturn(cookieApplicationPool);
+        expect(mockApplicationDAO.findApplication(cookieApplication.getId())).andReturn(cookieApplication);
         expect(mockDeviceDAO.findDevice(cookieDevice.getName())).andReturn(cookieDevice);
 
         // replay
@@ -254,7 +258,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPool.getName()), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(cookies);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(cookies);
 
         // verify
         verify(mockObjects);
@@ -277,16 +281,20 @@ public class SingleSignOnServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity();
         application.setSsoEnabled(true);
 
+        ApplicationEntity cookieApplication = new ApplicationEntity();
+        cookieApplication.setId(1L);
+        cookieApplication.setSsoEnabled(true);
         DeviceEntity cookieDevice = new DeviceEntity();
         cookieDevice.setName("test-cookie-device-name");
         List<Cookie> cookies = new LinkedList<Cookie>();
-        Cookie cookie = getSsoCookie(subject, applicationPool, cookieDevice);
+        Cookie cookie = getSsoCookie(subject, applicationPool, cookieApplication, cookieDevice);
         cookies.add(cookie);
 
         // expectations
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
         expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
+        expect(mockApplicationDAO.findApplication(cookieApplication.getId())).andReturn(cookieApplication);
         expect(mockDeviceDAO.findDevice(cookieDevice.getName())).andReturn(cookieDevice);
 
         // replay
@@ -294,7 +302,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPool.getName()), application, Collections.singleton(device));
-        List<AuthenticationAssertion> assertions = testedInstance.login(cookies);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(cookies);
 
         // verify
         verify(mockObjects);
@@ -315,16 +323,20 @@ public class SingleSignOnServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity();
         application.setSsoEnabled(true);
 
+        ApplicationEntity cookieApplication = new ApplicationEntity();
+        cookieApplication.setId(1L);
+        cookieApplication.setSsoEnabled(true);
         DeviceEntity cookieDevice = new DeviceEntity();
         cookieDevice.setName("test-cookie-device-name");
         List<Cookie> cookies = new LinkedList<Cookie>();
-        Cookie expiredCookie = getExpiredSsoCookie(subject, applicationPool, cookieDevice);
+        Cookie expiredCookie = getExpiredSsoCookie(subject, applicationPool, cookieApplication, cookieDevice);
         cookies.add(expiredCookie);
 
         // expectations
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
         expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
+        expect(mockApplicationDAO.findApplication(cookieApplication.getId())).andReturn(cookieApplication);
         expect(mockDeviceDAO.findDevice(cookieDevice.getName())).andReturn(cookieDevice);
 
         // replay
@@ -332,7 +344,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPool.getName()), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(cookies);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(cookies);
 
         // verify
         verify(mockObjects);
@@ -355,16 +367,20 @@ public class SingleSignOnServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity();
         application.setSsoEnabled(true);
 
+        ApplicationEntity cookieApplication = new ApplicationEntity();
+        cookieApplication.setId(1L);
+        cookieApplication.setSsoEnabled(true);
         DeviceEntity cookieDevice = new DeviceEntity();
         cookieDevice.setName("test-cookie-device-name");
         List<Cookie> cookies = new LinkedList<Cookie>();
-        Cookie cookie = getSsoCookie(subject, applicationPool, cookieDevice);
+        Cookie cookie = getSsoCookie(subject, applicationPool, cookieApplication, cookieDevice);
         cookies.add(cookie);
 
         // expectations
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
         expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
+        expect(mockApplicationDAO.findApplication(cookieApplication.getId())).andReturn(cookieApplication);
         expect(mockDeviceDAO.findDevice(cookieDevice.getName())).andReturn(cookieDevice);
 
         // replay
@@ -372,7 +388,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(true, Collections.singletonList(applicationPool.getName()), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(cookies);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(cookies);
 
         // verify
         verify(mockObjects);
@@ -394,16 +410,20 @@ public class SingleSignOnServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity();
         application.setSsoEnabled(true);
 
+        ApplicationEntity cookieApplication = new ApplicationEntity();
+        cookieApplication.setId(1L);
+        cookieApplication.setSsoEnabled(true);
         DeviceEntity cookieDevice = new DeviceEntity();
         cookieDevice.setName("test-cookie-device-name");
         List<Cookie> cookies = new LinkedList<Cookie>();
-        Cookie cookie = getSsoCookie(subject, applicationPool, cookieDevice);
+        Cookie cookie = getSsoCookie(subject, applicationPool, cookieApplication, cookieDevice);
         cookies.add(cookie);
 
         // expectations
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
         expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
+        expect(mockApplicationDAO.findApplication(cookieApplication.getId())).andReturn(cookieApplication);
         expect(mockDeviceDAO.findDevice(cookieDevice.getName())).andReturn(cookieDevice);
 
         // replay
@@ -411,7 +431,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPool.getName()), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(cookies);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(cookies);
 
         // verify
         verify(mockObjects);
@@ -438,11 +458,14 @@ public class SingleSignOnServiceBeanTest {
         ApplicationEntity application = new ApplicationEntity();
         application.setSsoEnabled(true);
 
+        ApplicationEntity cookieApplication = new ApplicationEntity();
+        cookieApplication.setId(1L);
+        cookieApplication.setSsoEnabled(true);
         DeviceEntity cookieDevice = new DeviceEntity();
         cookieDevice.setName("test-cookie-device-name");
         List<Cookie> cookies = new LinkedList<Cookie>();
-        Cookie cookie1 = getSsoCookie(subject1, applicationPool, cookieDevice);
-        Cookie cookie2 = getSsoCookie(subject2, applicationPool, cookieDevice);
+        Cookie cookie1 = getSsoCookie(subject1, applicationPool, cookieApplication, cookieDevice);
+        Cookie cookie2 = getSsoCookie(subject2, applicationPool, cookieApplication, cookieDevice);
         cookies.add(cookie1);
         cookies.add(cookie2);
 
@@ -451,6 +474,7 @@ public class SingleSignOnServiceBeanTest {
         expect(mockSubjectService.findSubject(subject1.getUserId())).andReturn(subject1);
         expect(mockSubjectService.findSubject(subject2.getUserId())).andReturn(subject2);
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool).times(2);
+        expect(mockApplicationDAO.findApplication(cookieApplication.getId())).andReturn(cookieApplication).times(2);
         expect(mockDeviceDAO.findDevice(cookieDevice.getName())).andReturn(cookieDevice).times(2);
 
         // replay
@@ -458,7 +482,7 @@ public class SingleSignOnServiceBeanTest {
 
         // operate
         testedInstance.initialize(false, Collections.singletonList(applicationPool.getName()), application, null);
-        List<AuthenticationAssertion> assertions = testedInstance.login(cookies);
+        List<AuthenticationAssertion> assertions = testedInstance.signOn(cookies);
 
         // verify
         verify(mockObjects);
@@ -473,20 +497,22 @@ public class SingleSignOnServiceBeanTest {
         assertEquals(0, testedInstance.getInvalidCookies().size());
     }
 
-    private Cookie getSsoCookie(SubjectEntity subject, ApplicationPoolEntity applicationPool, DeviceEntity device)
+    private Cookie getSsoCookie(SubjectEntity subject, ApplicationPoolEntity applicationPool, ApplicationEntity application,
+                                DeviceEntity device)
             throws Exception {
 
         DateTime now = new DateTime();
-        SingleSignOn sso = testedInstance.new SingleSignOn(subject, applicationPool, device, now);
+        SingleSignOn sso = testedInstance.new SingleSignOn(subject, applicationPool, application, device, now);
         sso.setCookie();
         return sso.ssoCookie;
     }
 
-    private Cookie getExpiredSsoCookie(SubjectEntity subject, ApplicationPoolEntity applicationPool, DeviceEntity device)
+    private Cookie getExpiredSsoCookie(SubjectEntity subject, ApplicationPoolEntity applicationPool, ApplicationEntity application,
+                                       DeviceEntity device)
             throws Exception {
 
         DateTime expired = new DateTime().minusDays(7);
-        SingleSignOn sso = testedInstance.new SingleSignOn(subject, applicationPool, device, expired);
+        SingleSignOn sso = testedInstance.new SingleSignOn(subject, applicationPool, application, device, expired);
         sso.setCookie();
         return sso.ssoCookie;
     }

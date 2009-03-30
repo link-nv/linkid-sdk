@@ -105,7 +105,7 @@ public class LogoutServiceManager implements HttpSessionListener {
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");
         try {
-            return logoutService.finalizeLogout(partialLogout);
+            return logoutService.finalizeLogout();
         } finally {
             /*
              * No matter what happens, we don't want the sessionDestroyed method to call abort on our finished logout service instance.
