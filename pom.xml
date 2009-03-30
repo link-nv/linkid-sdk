@@ -851,20 +851,6 @@
 		<module>safe-online-device-auth-ws</module>
 		<module>safe-online-device-auth-ws-util
 		</module>
-		<module>safe-online-model-otpoversms-client
-		</module>
-		<module>safe-online-model-otpoversms
-		</module>
-		<module>safe-online-otpoversms-startup-runtime
-		</module>
-		<module>safe-online-otpoversms-webapp
-		</module>
-		<module>safe-online-otpoversms-deploy
-		</module>
-		<module>safe-online-otpoversms-auth-ws-impl
-		</module>
-		<module>safe-online-otpoversms-auth-ws-runtime
-		</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->

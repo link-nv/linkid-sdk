@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>otpoversms</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -14,7 +14,7 @@
         The JAX-WS Web Service Runtime for the SafeOnline OTP over SMS Device.
     </description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.device.otpoversms</groupId>
 	<artifactId>safe-online-otpoversms-auth-ws-runtime</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -66,7 +66,7 @@
 
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.otpoversms</groupId>
 			<artifactId>safe-online-otpoversms-auth-ws-impl</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>runtime</scope>

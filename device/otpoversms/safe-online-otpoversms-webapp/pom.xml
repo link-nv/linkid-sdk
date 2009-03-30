@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>otpoversms</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -14,7 +14,7 @@
         SafeOnline OTP over SMS Device Web Application.
     </description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.device.otpoversms</groupId>
 	<artifactId>safe-online-otpoversms-webapp</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -130,7 +130,7 @@
             <type>ejb</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.otpoversms</groupId>
 			<artifactId>safe-online-model-otpoversms-client</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>

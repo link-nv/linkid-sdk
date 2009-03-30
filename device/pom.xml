@@ -20,6 +20,8 @@
 		<module>password</module>
 		<module>encap</module>
 		<module>digipass</module>
+		<module>option</module>
+		<module>otpoversms</module>
 	</modules>
 
 </project>
