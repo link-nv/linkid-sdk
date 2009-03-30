@@ -334,15 +334,6 @@
 				<safe-online.option.webapp.name>olas-option
 				</safe-online.option.webapp.name>
 			</properties>
-			<modules>
-				<module>safe-online-option-startup-runtime
-				</module>
-				<module>safe-online-option-webapp</module>
-				<module>safe-online-option-deploy</module>
-				<module>safe-online-model-option-client
-				</module>
-				<module>safe-online-model-option</module>
-			</modules>
 		</profile>
 
 		<!-- Profile that creates an SDK package -->

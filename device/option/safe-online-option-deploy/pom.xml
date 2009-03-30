@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>option</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -14,7 +14,7 @@
 		SafeOnline Deployable Option Application Package .
 	</description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.device.option</groupId>
 	<artifactId>safe-online-option-deploy
 	</artifactId>
 	<version>1.4-SNAPSHOT</version>
@@ -34,12 +34,12 @@
 					<defaultJavaBundleDir>lib/</defaultJavaBundleDir>
 					<modules>
 						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
+							<groupId>net.lin-k.safe-online.device.option</groupId>
 							<artifactId>safe-online-option-startup-runtime
 							</artifactId>
 						</webModule>
 						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
+							<groupId>net.lin-k.safe-online.device.option</groupId>
 							<artifactId>safe-online-option-webapp
 							</artifactId>
 							<contextRoot>/${safe-online.option.webapp.name}
@@ -101,7 +101,7 @@
 
 		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-webapp
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -109,14 +109,14 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-webapp
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-startup-runtime
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -124,7 +124,7 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-startup-runtime
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -133,7 +133,7 @@
 
 		<!-- Specific Dependencies: OLAS -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-model-option
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
