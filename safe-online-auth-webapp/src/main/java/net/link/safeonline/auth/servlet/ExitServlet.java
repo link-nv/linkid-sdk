@@ -22,6 +22,7 @@ import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,7 +79,7 @@ public class ExitServlet extends AbstractNodeInjectionServlet {
             ProtocolHandlerManager.sendAuthnResponse(session, response);
         } catch (ProtocolException e) {
             LOG.debug("protocol error: " + e.getMessage());
-            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
         }

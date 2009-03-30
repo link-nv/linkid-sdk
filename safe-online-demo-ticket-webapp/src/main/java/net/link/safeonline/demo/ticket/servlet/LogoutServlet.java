@@ -39,11 +39,13 @@ import org.jboss.seam.web.Session;
  */
 public class LogoutServlet extends AbstractInjectionServlet {
 
+    private static final String LOGOUT_EXIT_PATH = "LogoutExitPath";
+
     private static final long serialVersionUID = 1L;
 
     private static final Log  LOG              = LogFactory.getLog(LogoutServlet.class);
 
-    @Init(name = "LogoutExitPath")
+    @Init(name = LOGOUT_EXIT_PATH)
     private String            logoutExitPath;
 
 

@@ -25,6 +25,7 @@ import net.link.safeonline.device.sdk.operation.saml2.Saml2Handler;
 import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -161,12 +162,12 @@ public abstract class AbstractDeviceOperationLandingServlet extends AbstractInje
             }
         } catch (DeviceInitializationException e) {
             LOG.debug("device initialization exception: " + e.getMessage());
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
 
             return;
         } catch (DeviceFinalizationException e) {
             LOG.debug("device finalization exception: " + e.getMessage());
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
 
             return;
         }

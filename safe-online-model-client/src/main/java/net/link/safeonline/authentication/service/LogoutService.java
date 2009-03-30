@@ -125,4 +125,9 @@ public interface LogoutService extends SafeOnlineService {
      */
     String finalizeLogout()
             throws NodeNotFoundException;
+
+    /**
+     * @return <code>true</code>: Not all applications have successfully completed their logout process.
+     */
+    public boolean isPartial();
 }

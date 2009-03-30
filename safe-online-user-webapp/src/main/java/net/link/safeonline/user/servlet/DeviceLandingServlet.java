@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
 import net.link.safeonline.sdk.auth.servlet.AbstractLandingInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -65,28 +66,28 @@ public class DeviceLandingServlet extends AbstractLandingInjectionServlet {
         DeviceOperationService deviceOperationService = (DeviceOperationService) request.getSession().getAttribute(
                 DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
         if (null == deviceOperationService) {
-            redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorProtocolHandlerFinalization"));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         }
 
         try {
             deviceOperationService.finalize(request);
         } catch (NodeNotFoundException e) {
-            redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorProtocolHandlerFinalization"));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorDeviceRegistrationNotFound"));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
         } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorProtocolHandlerFinalization"));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                    "errorProtocolHandlerFinalization"));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         }
 

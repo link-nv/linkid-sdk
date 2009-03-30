@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -155,6 +156,13 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
     private SecurityAuditLogger                       securityAuditLogger;
 
 
+    @PostConstruct
+    public void postConstruct() {
+
+        ssoApplicationStates = new HashMap<ApplicationEntity, LogoutState>();
+        ssoApplicationChallenges = new HashMap<ApplicationEntity, Challenge<String>>();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -183,9 +191,6 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
         SingleSignOn sso = parseCookie(cookie);
 
-        if (null == ssoApplicationStates) {
-            ssoApplicationStates = new HashMap<ApplicationEntity, LogoutState>();
-        }
         if (sso.application.equals(application) || sso.ssoApplications.contains(application)) {
             if (!ssoApplicationStates.containsKey(sso.application) && !sso.application.equals(application)) {
                 if (null != sso.application.getSsoLogoutUrl()) {
@@ -569,12 +574,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
     public String finalizeLogout()
             throws NodeNotFoundException {
 
-        boolean partialLogout = false;
-        for (LogoutState state : ssoApplicationStates.values())
-            if (!LOGOUT_SUCCESS.equals(state)) {
-                partialLogout = true;
-                break;
-            }
+        boolean partialLogout = isPartial();
         LOG.debug("finalize logout (partial: " + partialLogout + ")");
 
         NodeEntity localNode = nodeAuthenticationService.getLocalNode();
@@ -582,5 +582,14 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
                 localNode.getName(), nodeKeyStore.getKeyPair(), expectedTarget);
 
         return Base64.encode(samlLogoutResponseToken.getBytes());
+    }
+
+    public boolean isPartial() {
+
+        for (LogoutState state : ssoApplicationStates.values())
+            if (!LOGOUT_SUCCESS.equals(state))
+                return true;
+
+        return false;
     }
 }

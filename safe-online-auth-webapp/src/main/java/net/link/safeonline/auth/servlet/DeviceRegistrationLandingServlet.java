@@ -23,6 +23,7 @@ import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -94,7 +95,7 @@ public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServl
         try {
             userId = ProtocolHandlerManager.handleDeviceRegistrationResponse(request);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+            ServletUtils.redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
                     e.getMessage()));
             return;
         }
