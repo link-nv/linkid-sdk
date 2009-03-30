@@ -438,6 +438,14 @@ table .text.block {
 .rich-panel {
     width:              575px;
 }
+.hidden, .hidden * {
+    width:              0;
+    height:             1px;
+    overflow:           hidden;
+
+    border:             none;
+    background:         transparent;
+}
 
 /************************************************* USAGE AGREEMENT **/
 .text.usage {

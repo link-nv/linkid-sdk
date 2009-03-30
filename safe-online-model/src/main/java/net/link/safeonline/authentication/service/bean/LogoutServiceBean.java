@@ -192,20 +192,31 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         SingleSignOn sso = parseCookie(cookie);
 
         if (sso.application.equals(application) || sso.ssoApplications.contains(application)) {
-            if (!ssoApplicationStates.containsKey(sso.application) && !sso.application.equals(application)) {
-                if (null != sso.application.getSsoLogoutUrl()) {
+            // Application that requested logout is in the SSO cookie.
+
+            if (!ssoApplicationStates.containsKey(sso.application) && !application.equals(sso.application)) {
+                // sso.application is not yet scheduled for logout.
+
+                if (sso.application.getSsoLogoutUrl() != null) {
+                    // sso.application has an sso logout url.
+
                     LOG.debug("add application " + sso.application.getName() + " for logout");
                     ssoApplicationStates.put(sso.application, LogoutState.INITIALIZED);
                 }
             }
             for (ApplicationEntity ssoApplication : sso.ssoApplications) {
-                if (!ssoApplicationStates.containsKey(sso.application) && !ssoApplication.equals(application)) {
-                    if (null != ssoApplication.getSsoLogoutUrl()) {
+                if (!ssoApplicationStates.containsKey(ssoApplication) && !application.equals(ssoApplication)) {
+                    // ssoApplication is not yet scheduled for logout.
+
+                    if (ssoApplication.getSsoLogoutUrl() != null) {
+                        // ssoApplication has an sso logout url.
+
                         LOG.debug("add application " + ssoApplication.getName() + " for logout");
                         ssoApplicationStates.put(ssoApplication, LogoutState.INITIALIZED);
                     }
                 }
             }
+
             return true;
         }
 

@@ -17,12 +17,15 @@ import net.link.safeonline.authentication.exception.InternalInconsistencyExcepti
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.authentication.service.LogoutState;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.AbortException;
+import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.RequestCycle;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.AbstractHeaderContributor;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -50,7 +53,7 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
     /**
      * Determines how often (in seconds) the page will check the SSO logout progress OLAS by refreshing the {@link #LOGOUT_FORM} using AJAX.
      */
-    private static final int   SSO_PROGRESS_CHECK_INTERVAL = 2;
+    private static final int   SSO_PROGRESS_CHECK_INTERVAL = 1;
 
     public static final String PATH                        = "ssologout";
     public static final String LOGOUT_FORM                 = "logoutForm";
@@ -136,7 +139,22 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
             super(id);
 
             setOutputMarkupId(true);
-            add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(SSO_PROGRESS_CHECK_INTERVAL)));
+            add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(SSO_PROGRESS_CHECK_INTERVAL)) {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                protected void onPostProcessTarget(AjaxRequestTarget target) {
+
+                    // Submit the form when logout is complete.
+                    synchronized (WicketUtil.getHttpSession()) {
+                        if (!getLogoutService().isPartial()) {
+                            target.appendJavascript(String.format("document.getElementById('%s').submit();", getMarkupId()));
+                        }
+                    }
+                }
+            });
 
             List<ApplicationEntity> ssoApplicationsToLogout = null;
             synchronized (WicketUtil.getHttpSession()) {
@@ -146,34 +164,7 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
             add(new ListView<ApplicationEntity>("applications", ssoApplicationsToLogout) {
 
                 private static final long serialVersionUID = 1L;
-                private boolean           logoutComplete;
 
-
-                /**
-                 * {@inheritDoc}
-                 */
-                @Override
-                protected void onBeforeRender() {
-
-                    logoutComplete = true;
-                    LOG.debug("before render: logout complete: " + logoutComplete);
-
-                    super.onBeforeRender();
-                }
-
-                /**
-                 * {@inheritDoc}
-                 */
-                @Override
-                protected void onAfterRender() {
-
-                    LOG.debug("after render: logout complete: " + logoutComplete);
-                    if (logoutComplete) {
-                        LogoutForm.this.onSubmit();
-                    }
-
-                    super.onAfterRender();
-                }
 
                 @Override
                 protected void populateItem(ListItem<ApplicationEntity> item) {
@@ -195,20 +186,17 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                         case INITIALIZED:
                             sessionStatusImage = "/images/icons/door_open.png";
                             progressStatusImage = "";
-                            logoutComplete = false;
                         break;
 
                         case INITIATED:
                         case LOGGING_OUT:
                             sessionStatusImage = "/images/icons/door_open.png";
                             progressStatusImage = "/images/icons/hourglass.png";
-                            logoutComplete = false;
                         break;
 
                         case LOGOUT_FAILED:
                             sessionStatusImage = "/images/icons/door_open.png";
                             progressStatusImage = "/images/icons/error.png";
-                            logoutComplete = false;
                         break;
 
                         case LOGOUT_SUCCESS:
@@ -216,7 +204,6 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                             progressStatusImage = "/images/icons/tick.png";
                         break;
                     }
-                    LOG.debug("item " + applicationName + ": logout complete: " + logoutComplete);
 
                     Image sessionStatus = new Image("session", "override");
                     sessionStatus.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
@@ -241,6 +228,7 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
         @Override
         protected void onBeforeRender() {
 
+            // Change the logout button string once logout it complete.
             synchronized (WicketUtil.getHttpSession()) {
                 if (getLogoutService().isPartial()) {
                     logoutButton.setModelObject(localize("interruptLogout"));
@@ -255,13 +243,23 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
         @Override
         protected void onSubmit() {
 
-            try {
-                LOG.debug("logout submit");
-                LogoutExitServlet.logoutComplete(WicketUtil.getServletRequest(), WicketUtil.getServletResponse());
-                throw new AbortException();
-            } catch (IOException e) {
-                throw new InternalInconsistencyException("Redirect failed.", e);
-            }
+            throw new RedirectResponseException(new IRequestTarget() {
+
+                public void detach(RequestCycle requestCycle) {
+
+                }
+
+                public void respond(RequestCycle requestCycle) {
+
+                    requestCycle.getResponse().reset();
+
+                    try {
+                        LogoutExitServlet.logoutComplete(WicketUtil.getServletRequest(), WicketUtil.getServletResponse());
+                    } catch (IOException e) {
+                        throw new InternalInconsistencyException("Redirect failed.", e);
+                    }
+                }
+            });
         }
     }
 
