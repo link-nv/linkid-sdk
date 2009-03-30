@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>encap</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -14,7 +14,7 @@
 		SafeOnline Deployable Encap Application Package .
 	</description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.device.encap</groupId>
 	<artifactId>safe-online-encap-deploy
 	</artifactId>
 	<version>1.4-SNAPSHOT</version>
@@ -34,19 +34,19 @@
 					<defaultJavaBundleDir>lib/</defaultJavaBundleDir>
 					<modules>
 						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
+							<groupId>net.lin-k.safe-online.device.encap</groupId>
 							<artifactId>safe-online-encap-startup-runtime
 							</artifactId>
 						</webModule>
 						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
+							<groupId>net.lin-k.safe-online.device.encap</groupId>
 							<artifactId>safe-online-encap-auth-ws-runtime
 							</artifactId>
 							<contextRoot>/${safe-online.encap.auth.ws.webapp.name}
 							</contextRoot>
 						</webModule>
 						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
+							<groupId>net.lin-k.safe-online.device.encap</groupId>
 							<artifactId>safe-online-encap-webapp
 							</artifactId>
 							<contextRoot>/${safe-online.encap.webapp.name}
@@ -108,7 +108,7 @@
 
 		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-encap-webapp
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -116,14 +116,14 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-encap-webapp
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-encap-startup-runtime
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -131,14 +131,14 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-encap-startup-runtime
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-encap-auth-ws-runtime
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -146,7 +146,7 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-encap-auth-ws-runtime
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -155,7 +155,7 @@
 
 		<!-- Specific Dependencies: OLAS -->
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-model-encap
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>

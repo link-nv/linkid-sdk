@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>encap</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 
@@ -15,7 +15,7 @@
         Services.
     </description>
 
-	<groupId>net.lin-k.safe-online</groupId>
+	<groupId>net.lin-k.safe-online.device.encap</groupId>
 	<artifactId>safe-online-encap-ws</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>

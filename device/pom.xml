@@ -18,6 +18,7 @@
 
 	<modules>
 		<module>password</module>
+		<module>encap</module>
 	</modules>
 
 </project>

@@ -83,7 +83,7 @@
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-model-encap-client</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
@@ -149,7 +149,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.encap</groupId>
 			<artifactId>safe-online-model-encap</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>ejb</type>
