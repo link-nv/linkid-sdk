@@ -8,6 +8,7 @@
 package net.link.safeonline.auth.webapp.pages;
 
 import java.io.IOException;
+import java.util.List;
 
 import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.servlet.LogoutExitServlet;
@@ -85,7 +86,11 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
             }
         });
 
-        getContent().add(new ListView<ApplicationEntity>("applicationFrames", getLogoutService().getSsoApplicationsToLogout()) {
+        List<ApplicationEntity> ssoApplicationsToLogout = null;
+        synchronized (WicketUtil.getHttpSession()) {
+            ssoApplicationsToLogout = getLogoutService().getSsoApplicationsToLogout();
+        }
+        getContent().add(new ListView<ApplicationEntity>("applicationFrames", ssoApplicationsToLogout) {
 
             private static final long serialVersionUID = 1L;
 
@@ -133,7 +138,12 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
             setOutputMarkupId(true);
             add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(SSO_PROGRESS_CHECK_INTERVAL)));
 
-            add(new ListView<ApplicationEntity>("applications", getLogoutService().getSsoApplicationsToLogout()) {
+            List<ApplicationEntity> ssoApplicationsToLogout = null;
+            synchronized (WicketUtil.getHttpSession()) {
+                ssoApplicationsToLogout = getLogoutService().getSsoApplicationsToLogout();
+            }
+
+            add(new ListView<ApplicationEntity>("applications", ssoApplicationsToLogout) {
 
                 private static final long serialVersionUID = 1L;
                 private boolean           logoutComplete;
@@ -169,7 +179,10 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                 protected void populateItem(ListItem<ApplicationEntity> item) {
 
                     ApplicationEntity application = item.getModelObject();
-                    LogoutState logoutState = getLogoutService().getSSoApplicationState(application);
+                    LogoutState logoutState = null;
+                    synchronized (WicketUtil.getHttpSession()) {
+                        logoutState = getLogoutService().getSSoApplicationState(application);
+                    }
 
                     String applicationName = application.getFriendlyName();
                     if (applicationName == null || applicationName.length() == 0) {
@@ -228,13 +241,13 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
         @Override
         protected void onBeforeRender() {
 
-            LOG.debug("logout");
-            if (getLogoutService().isPartial()) {
-                logoutButton.setModelObject(localize("interruptLogout"));
-            } else {
-                logoutButton.setModelObject(localize("completeLogout"));
+            synchronized (WicketUtil.getHttpSession()) {
+                if (getLogoutService().isPartial()) {
+                    logoutButton.setModelObject(localize("interruptLogout"));
+                } else {
+                    logoutButton.setModelObject(localize("completeLogout"));
+                }
             }
-            LOG.debug("logout clicked");
 
             super.onBeforeRender();
         }
@@ -243,6 +256,7 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
         protected void onSubmit() {
 
             try {
+                LOG.debug("logout submit");
                 LogoutExitServlet.logoutComplete(WicketUtil.getServletRequest(), WicketUtil.getServletResponse());
                 throw new AbortException();
             } catch (IOException e) {
