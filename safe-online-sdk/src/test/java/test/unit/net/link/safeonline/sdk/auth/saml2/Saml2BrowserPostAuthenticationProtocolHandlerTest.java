@@ -20,12 +20,9 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.Map;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +39,7 @@ import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.test.util.WebServiceTestUtils;
 
@@ -100,12 +98,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         webServiceTestUtils.setUp(port, "/safe-online-ws/sts");
 
         requestServletTestManager = new ServletTestManager();
-        requestServletTestManager.setUp(SamlRequestTestServlet.class, Collections.singletonMap("WsLocation",
-                webServiceTestUtils.getLocation()));
+        requestServletTestManager.setUp(SamlRequestTestServlet.class);
 
         responseServletTestManager = new ServletTestManager();
-        responseServletTestManager.setUp(SamlResponseTestServlet.class, Collections.singletonMap("WsLocation",
-                webServiceTestUtils.getLocation()));
+        responseServletTestManager.setUp(SamlResponseTestServlet.class);
     }
 
     @After
@@ -149,14 +145,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
         private static final long serialVersionUID = 1L;
 
-        private String            wsLocation;
-
-
-        @Override
-        public void init(ServletConfig config) {
-
-            wsLocation = config.getInitParameter("WsLocation");
-        }
 
         @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -169,14 +157,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
                 throw new ServletException("could not generate RSA key pair");
             }
 
-            Map<String, String> configParams = Collections.singletonMap("WsLocation", wsLocation);
             AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
                                                                                                        .createAuthenticationProtocolHandler(
                                                                                                                AuthenticationProtocol.SAML2_BROWSER_POST,
                                                                                                                "http://test.authn.service",
                                                                                                                "test-application", null,
-                                                                                                               keyPair, null, false,
-                                                                                                               configParams, request);
+                                                                                                               keyPair, null, false, null,
+                                                                                                               request);
             authenticationProtocolHandler.initiateAuthentication(request, response, "http://target", null, null, null);
         }
     }
@@ -187,14 +174,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
         private static final Log  srtLOG           = LogFactory.getLog(SamlResponseTestServlet.class);
 
-        private String            wsLocation;
-
-
-        @Override
-        public void init(ServletConfig config) {
-
-            wsLocation = config.getInitParameter("WsLocation");
-        }
 
         @SuppressWarnings("unchecked")
         @Override
@@ -214,14 +193,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
             } catch (Exception e) {
                 throw new ServletException("could not generate certificate");
             }
-            Map<String, String> configParams = Collections.singletonMap("WsLocation", wsLocation);
             AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
                                                                                                        .createAuthenticationProtocolHandler(
                                                                                                                AuthenticationProtocol.SAML2_BROWSER_POST,
                                                                                                                "http://test.authn.service",
                                                                                                                "test-application", null,
                                                                                                                keyPair, certificate, false,
-                                                                                                               configParams, request);
+                                                                                                               null, request);
             Saml2BrowserPostAuthenticationProtocolHandler saml2Handler = (Saml2BrowserPostAuthenticationProtocolHandler) authenticationProtocolHandler;
             try {
                 Field challengeField = Saml2BrowserPostAuthenticationProtocolHandler.class.getDeclaredField("challenge");
@@ -252,6 +230,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         LOG.debug("test doGet");
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(requestServletTestManager.getServletLocation());
+        SafeOnlineTestConfig.loadTest(requestServletTestManager, webServiceTestUtils);
 
         // operate
         int resultStatusCode = httpClient.executeMethod(getMethod);
@@ -286,6 +265,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         HttpClient httpClient = new HttpClient();
         String servletLocation = responseServletTestManager.getServletLocation();
         PostMethod postMethod = new PostMethod(servletLocation);
+        SafeOnlineTestConfig.loadTest(responseServletTestManager, webServiceTestUtils);
 
         InputStream xmlInputStream = Saml2BrowserPostAuthenticationProtocolHandlerTest.class.getResourceAsStream("/test-saml-response.xml");
         String xmlInputString = IOUtils.toString(xmlInputStream);

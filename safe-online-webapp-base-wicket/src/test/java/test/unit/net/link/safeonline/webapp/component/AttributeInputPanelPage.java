@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.webapp.component;
 
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.webapp.components.AttributeInputPanel;
+import net.link.safeonline.webapp.components.attribute.AttributeInputPanel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;

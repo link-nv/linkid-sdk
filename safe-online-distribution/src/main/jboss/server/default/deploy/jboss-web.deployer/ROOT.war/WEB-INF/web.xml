@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<display-name>Welcome to JBoss</display-name>
+	<description>
+		Welcome to JBoss
+  </description>
+	<servlet>
+		<servlet-name>Status Servlet</servlet-name>
+		<servlet-class>org.jboss.web.tomcat.service.StatusServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Status Servlet</servlet-name>
+		<url-pattern>/status</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<error-code>400</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>401</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>406</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>407</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>408</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>409</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>410</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>411</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>412</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>413</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>414</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>415</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>416</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>417</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>501</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>502</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>503</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>504</error-code>
+		<location>/error.html</location>
+	</error-page>
+</web-app>

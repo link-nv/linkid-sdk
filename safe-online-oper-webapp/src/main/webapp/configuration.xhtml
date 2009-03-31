@@ -3,7 +3,7 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:s="http://jboss.com/products/seam/taglib" xmlns:rich="http://richfaces.org/rich">
 	<body>
-		<ui:composition template="/WEB-INF/template.xhtml">
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
 			<ui:define name="topnav">
 				<ui:include src="/WEB-INF/incl/navigation.xhtml">
 					<ui:param name="page" value="configuration" />
@@ -23,8 +23,7 @@
 						<h2>
 							<h:outputText value="#{group.name}" />
 						</h2>
-						<ui:repeat id="config-data" var="item"
-							value="#{group.configItemsAsList}">
+						<ui:repeat id="config-data" var="item" value="#{group.configItems}">
 							<h:outputLabel for="value" value="#{item.name}" />
 
 							<h:selectOneMenu id="selectvalue" value="#{item.value}"

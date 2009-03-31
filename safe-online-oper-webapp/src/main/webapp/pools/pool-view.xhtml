@@ -1,75 +1,78 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="applications" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{selectedApplicationPool.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="applications" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{selectedApplicationPool.name}
+				</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			label="#{msgs.generic}">
-			<table class="inner">
-				<colgroup class="half" />
-				<colgroup />
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" label="#{msgs.generic}">
+					<table class="inner">
+						<colgroup class="half" />
+						<colgroup />
 
-				<tbody>
-					<tr>
-						<th>#{msgs.name}</th>
-						<td>#{selectedApplicationPool.name}</td>
-					</tr>
-					<tr>
-						<th>#{msgs.operatorApplicationPoolSsoTimeout}</th>
-						<td>#{selectedApplicationPool.ssoTimeout}</td>
-					</tr>
-				</tbody>
-			</table>
-		</rich:simpleTogglePanel>
+						<tbody>
+							<tr>
+								<th>#{msgs.name}</th>
+								<td>#{selectedApplicationPool.name}
+								</td>
+							</tr>
+							<tr>
+								<th>#{msgs.operatorApplicationPoolSsoTimeout}
+								</th>
+								<td>#{selectedApplicationPool.ssoTimeout}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			label="#{msgs.applications}">
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" label="#{msgs.applications}">
 
-			<h:dataTable value="#{operApplicationPoolElements}" var="item"
-				styleClass="inner">
-				<h:column>
-					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:outputText value="#{item.name}" />
-				</h:column>
-			</h:dataTable>
-		</rich:simpleTogglePanel>
+					<h:dataTable value="#{operApplicationPoolElements}"
+						var="item" styleClass="inner">
+						<h:column>
+							<f:facet name="header">#{msgs.name}</f:facet>
+							<h:outputText value="#{item.name}" />
+						</h:column>
+					</h:dataTable>
+				</rich:simpleTogglePanel>
 
-		<h:form>
-			<h:commandButton value="#{msgs.backaction}" id="back" action="back"
-				styleClass="submit" />
-			<h:commandButton action="#{operApplicationPool.edit}" id="edit"
-				value="#{msgs.editaction}" styleClass="submit" />
-		</h:form>
+				<h:form>
+					<h:commandButton value="#{msgs.backaction}" id="back"
+						action="back" styleClass="submit" />
+					<h:commandButton action="#{operApplicationPool.edit}"
+						id="edit" value="#{msgs.editaction}" styleClass="submit" />
+				</h:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/applications/applications.seam"
-					value="#{msgs.applications}" /></li>
-				<li><h:commandLink action="/owners/owners.seam"
-					value="#{msgs.owners}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/applications/applications.seam"
+								value="#{msgs.applications}" />
+						</li>
+						<li>
+							<h:commandLink action="/owners/owners.seam" value="#{msgs.owners}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

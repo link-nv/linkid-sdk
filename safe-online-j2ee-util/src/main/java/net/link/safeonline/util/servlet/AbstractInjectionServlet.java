@@ -8,14 +8,10 @@
 package net.link.safeonline.util.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
@@ -28,6 +24,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.In;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -72,6 +69,73 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         initInitParameters(config);
         initContextParameters(config);
         injectEjbs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        LOG.debug("servlet " + getClass() + " beginning service");
+        String endpoint = getWrapperEndpoint(request);
+        if (endpoint != null) {
+            HttpServletRequestEndpointWrapper wrappedRequest = new HttpServletRequestEndpointWrapper(request, endpoint);
+            HttpServletResponseEndpointWrapper wrappedResponse = new HttpServletResponseEndpointWrapper(response, endpoint);
+
+            LOG.debug("Wrapped request and response using endpoint: " + endpoint);
+            super.service(wrappedRequest, wrappedResponse);
+        }
+
+        else {
+            LOG.debug("No endpoint defined.  Not wrapping request and response.");
+            super.service(request, response);
+        }
+    }
+
+    /**
+     * <b>REQUEST AND RESPONSE WRAPPING</b>:
+     * 
+     * <p>
+     * When we're behind a proxy or load balancer, the servlet request URI that the container gives us points to this machine rather than
+     * the server that the request was actually sent to. This causes validation issues in OpenSAML and problems when redirecting to relative
+     * URIs.
+     * </p>
+     * 
+     * <p>
+     * <code>[User] >--[ https://olas.be/app/foo ]--> [Proxy] >--[ http://provider.com/olas/app/foo ]--> [OLAS]</code> <br>
+     * <code>[OLAS: redirect to bar] >--[ redirect: http://provider.com/olas/app/bar ]--> [Proxy] >--[ redirect: http://provider.com/olas/app/bar]--> [User]</code>
+     * <br>
+     * <code>[User] >--[ http://provider.com/olas/app/bar ]--> [Problem!]</code>
+     * </p>
+     * 
+     * <p>
+     * To solve this problem, we wrap the servlet request and response such that the request URI in the HttpServletRequest is the request
+     * URI of the client's request (the request to the proxy/load balancer), and such that sendRedirects with relative URIs are translated
+     * to absolute URIs using the client's request URI base.
+     * </p>
+     * 
+     * <p>
+     * However, we don't know what the client's request was. So instead we use the a base URI that we know the node is configured on. The
+     * default hostbase is configured in the {@link SafeOnlineConfig} file (see
+     * {@link SafeOnlineConfig#getApplicationEndpointFor(HttpServletRequest)}). If the base URI for your web application is different than
+     * what is configured there, you need to override this method and return the correct endpoint for your web application.
+     * </p>
+     * 
+     * @return The endpoint URL that the wrapper should use to replace the servlet request's requestURI and to calculate the absolute URL
+     *         for the servlet response's relative sendRedirects.
+     */
+    protected String getWrapperEndpoint(HttpServletRequest request) {
+
+        try {
+            return SafeOnlineConfig.getApplicationEndpointFor(request);
+        }
+
+        // Application not configured for request wrapping.
+        catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     @Override
@@ -248,13 +312,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                     continue;
                 }
                 String mappedName = ejb.mappedName();
-                if (null == mappedName)
-                    throw new ServletException(String.format("field %s.%s's @EJB requires mappedName attribute", getClass(), field));
-                LOG.debug("injecting: " + mappedName);
-
                 Class fieldType = field.getType();
                 if (false == fieldType.isInterface())
                     throw new ServletException(String.format("field %s.%s's type should be an interface", getClass(), field));
+                if (mappedName == null || mappedName.length() == 0) {
+                    mappedName = new FieldNamingStrategy().calculateName(fieldType);
+                }
+                if (mappedName == null || mappedName.length() == 0)
+                    throw new ServletException(String.format("field %s.%s's @EJB requires mappedName attribute", getClass(), field));
+                LOG.debug("injecting: " + mappedName);
+
                 try {
                     Object ejbRef = EjbUtils.getEJB(mappedName, fieldType);
                     field.setAccessible(true);
@@ -398,79 +465,5 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                 session.setAttribute(outName, value);
             }
         }
-    }
-
-    /**
-     * Redirects to the specified error page. The errorMessages entries contain as key the name of the error message attribute that will be
-     * pushed on the session. The attribute value will be looked up if a resource bundle is specified, else directly pushed onto the
-     * session.
-     * 
-     * @param request
-     * @param response
-     * @param errorPage
-     * @param resourceBundleName
-     * @param errorMessages
-     * @throws IOException
-     */
-    public void redirectToErrorPage(HttpServletRequest request, HttpServletResponse response, String errorPage, String resourceBundleName,
-                                    ErrorMessage... errorMessages)
-            throws IOException {
-
-        HttpSession session = request.getSession();
-        ResourceBundle resourceBundle = null;
-        if (null != resourceBundleName) {
-            Locale locale = request.getLocale();
-            try {
-                resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale, Thread.currentThread().getContextClassLoader());
-            } catch (MissingResourceException e) {
-                resourceBundle = null;
-            }
-        }
-        for (ErrorMessage errorMessage : errorMessages) {
-            if (null != resourceBundle) {
-                try {
-                    errorMessage.setMessage(resourceBundle.getString(errorMessage.getMessage()));
-                } catch (MissingResourceException e) {
-                    // not found
-                }
-            }
-        }
-        if (null == errorPage) {
-            /*
-             * If no error page specified, spit out a basic HTML page containing the error message.
-             */
-            writeBasicErrorPage(response, errorMessages);
-        } else {
-            for (ErrorMessage errorMessage : errorMessages) {
-                session.setAttribute(errorMessage.getName(), errorMessage.getMessage());
-            }
-            response.sendRedirect(errorPage);
-        }
-    }
-
-    private void writeBasicErrorPage(HttpServletResponse response, ErrorMessage... errorMessages)
-            throws IOException {
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        PrintWriter out = response.getWriter();
-        out.println("<html>");
-        {
-            out.println("<head><title>Error</title></head>");
-            out.println("<body>");
-            {
-                out.println("<h1>Error(s)</h1>");
-                out.println("<p>");
-                {
-                    for (ErrorMessage errorMessage : errorMessages) {
-                        out.println(errorMessage.getMessage() + "</br>");
-                    }
-                }
-                out.println("</p>");
-            }
-            out.println("</body>");
-        }
-        out.println("</html>");
-        out.close();
     }
 }

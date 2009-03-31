@@ -15,13 +15,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
+import net.link.safeonline.auth.servlet.LogoutEntryServlet;
 import net.link.safeonline.common.SafeOnlineCookies;
-import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
+import net.link.safeonline.util.servlet.BufferedServletResponseWrapper;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -87,11 +87,6 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             /*
              * This means that the servlet container found a matching session context for the requested session Id.
              */
-            HttpSession session = httpRequest.getSession();
-            Long applicationId = LoginManager.findApplication(session);
-            if (null != applicationId) {
-                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId.toString(), cookiePath, httpResponse);
-            }
             /*
              * Remove the possible timeout cookie, add entry cookie to prevent timing out again on first entry after a previous timeout.
              */
@@ -109,20 +104,23 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             return;
         }
 
+        // in case we are the authentication entry servlet or logout entry servlet, no timeout is needed, if session is invalid just
+        // create a new one and carry on
+        if (httpRequest.getServletPath().endsWith("/" + AuthnEntryServlet.SERVLET_PATH)
+                || httpRequest.getServletPath().endsWith("/" + LogoutEntryServlet.SERVLET_PATH)) {
+            httpRequest.getSession(true);
+            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, cookiePath, httpRequest, httpResponse);
+            addCookie(SafeOnlineCookies.ENTRY_COOKIE, "", cookiePath, httpRequest, httpResponse);
+            chain.doFilter(request, response);
+            return;
+        }
+
         /*
          * In this case no corresponding session context for the given requested session Id was found. This could be an indication that the
          * browser caused a timeout on the web application. We should redirect to the timeout path, add the timeout cookie to not get in an
          * infinite timeout redirect loop, and remove the entry cookie.
          */
         if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
-
-            if (httpRequest.getServletPath().endsWith("/" + AuthnEntryServlet.SERVLET_PATH)) {
-                // if entry servlet, dont timeout ...
-                httpRequest.getSession(true);
-                removeCookie(SafeOnlineCookies.ENTRY_COOKIE, cookiePath, httpRequest, httpResponse);
-                chain.doFilter(request, response);
-                return;
-            }
 
             LOG.debug("forwarding to timeout path: " + timeoutPath);
             addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", cookiePath, httpRequest, httpResponse);

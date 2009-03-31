@@ -17,9 +17,8 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -32,14 +31,11 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class LoginServlet extends AbstractInjectionServlet {
+public class LoginServlet extends AbstractLandingInjectionServlet {
 
     private static final long serialVersionUID = 1L;
 
     private static final Log  LOG              = LogFactory.getLog(LoginServlet.class);
-
-    @Init(name = "ServletEndpointUrl", optional = true)
-    private String            servletEndpointUrl;
 
     @Init(name = "ErrorPage", optional = true)
     private String            errorPage;
@@ -62,18 +58,7 @@ public class LoginServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        /**
-         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when
-         * opensaml is checking the destination field.
-         */
-        HttpServletRequestEndpointWrapper requestWrapper;
-        if (null != servletEndpointUrl) {
-            requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
-        } else {
-            requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
-        }
-
-        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(requestWrapper);
+        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(request);
         if (null == protocolHandler) {
             /*
              * The landing page can only be used for finalizing an ongoing authentication process. If no protocol handler is active then
@@ -81,26 +66,26 @@ public class LoginServlet extends AbstractInjectionServlet {
              */
             String msg = "no protocol handler active";
             LOG.error(msg);
-            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
 
             return;
         }
 
-        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(requestWrapper, response);
+        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(request, response);
         if (null == authenticationProtocolContext) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);
-            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
             return;
         }
 
         LOG.debug("username: " + authenticationProtocolContext.getUserId());
-        LoginManager.setUserId(authenticationProtocolContext.getUserId(), requestWrapper);
+        LoginManager.setUserId(authenticationProtocolContext.getUserId(), request);
         LOG.debug("authenticated device: " + authenticationProtocolContext.getAuthenticatedDevice());
-        LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), requestWrapper);
-        String target = AuthenticationProtocolManager.getTarget(requestWrapper);
+        LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), request);
+        String target = AuthenticationProtocolManager.getTarget(request);
         LOG.debug("target: " + target);
-        AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
+        AuthenticationProtocolManager.cleanupAuthenticationHandler(request);
 
         response.sendRedirect(target);
     }

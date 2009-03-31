@@ -1,46 +1,44 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:s="http://jboss.com/products/seam/taglib">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="devices" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.operatorEditDeviceClass}: #{selectedDeviceClass.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="devices" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.operatorEditDeviceClass}:
+					#{selectedDeviceClass.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<h:outputLabel for="contextclass"
-				value="#{msgs.authenticationContextClass}" />
-			<s:decorate>
-				<h:inputText id="contextclass"
-					value="#{operDeviceClass.authenticationContextClass}"
-					styleClass="label" />
-				<h:message for="contextclass" styleClass="error" />
-			</s:decorate>
+				<h:form>
+					<h:outputLabel for="contextclass"
+						value="#{msgs.authenticationContextClass}" />
+					<s:decorate>
+						<h:inputText id="contextclass"
+							value="#{operDeviceClass.authenticationContextClass}" styleClass="label" />
+						<h:message for="contextclass" styleClass="error" />
+					</s:decorate>
 
-			<h:messages styleClass="error" globalOnly="true" />
+					<h:messages styleClass="error" globalOnly="true" />
 
-			<h:outputLabel for="save" value="" />
-			<h:commandButton action="#{operDeviceClass.save}" id="save"
-				value="#{msgs.saveaction}" styleClass="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
-		</h:form>
+					<h:outputLabel for="save" value="" />
+					<h:commandButton action="#{operDeviceClass.save}"
+						id="save" value="#{msgs.saveaction}" styleClass="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+				</h:form>
 
-	</ui:define>
+			</ui:define>
 
-	<ui:define name="sidebar">
-	</ui:define>
-</ui:composition>
-</body>
+			<ui:define name="sidebar">
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

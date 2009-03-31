@@ -13,12 +13,12 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -26,27 +26,31 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.IndexColumn;
 
 
 @Entity
-@Table(name = "config_item")
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c") })
+@Table(name = "config_item", uniqueConstraints = @UniqueConstraint(columnNames = { "configGroup", "name" }))
+@NamedQueries( {
+        @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c"),
+        @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEMS, query = "FROM ConfigItemEntity c WHERE c.configGroup = :group"),
+        @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEM, query = "FROM ConfigItemEntity c WHERE c.configGroup.name = :groupName AND c.name = :name") })
 public class ConfigItemEntity implements Serializable {
 
-    private static final long           serialVersionUID      = 1L;
+    private static final long           serialVersionUID = 1L;
 
-    public static final String          QUERY_LIST_ALL        = "cie.list";
+    public static final String          QUERY_LIST_ALL   = "cie.list";
+    public static final String          QUERY_GET_ITEMS  = "cie.items";
+    public static final String          QUERY_GET_ITEM   = "cie.item";
 
-    public static final String          GROUP_COLUMN_NAME     = "configGroup";
-    public static final String          ITEM_NAME_COLUMN_NAME = "name";
-
-    private ConfigItemPK                pk;
+    private int                         id;
 
     private String                      name;
 
@@ -77,24 +81,23 @@ public class ConfigItemEntity implements Serializable {
         this.valueType = valueType;
         this.multipleChoice = multipleChoice;
         this.configGroup = configGroup;
-        pk = new ConfigItemPK(configGroup.getName(), name);
     }
 
-    @EmbeddedId
-    @AttributeOverrides( { @AttributeOverride(name = ConfigItemPK.PK_GROUP_NAME, column = @Column(name = GROUP_COLUMN_NAME)),
-            @AttributeOverride(name = ConfigItemPK.PK_NAME, column = @Column(name = ITEM_NAME_COLUMN_NAME)) })
-    public ConfigItemPK getPk() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public int getId() {
 
-        return pk;
+        return id;
     }
 
-    public void setPk(ConfigItemPK pk) {
+    public void setId(int id) {
 
-        this.pk = pk;
+        this.id = id;
     }
 
     @ManyToOne
-    @JoinColumn(name = GROUP_COLUMN_NAME, insertable = false, updatable = false)
+    @JoinColumn(name = "configGroup")
+    @IndexColumn(name = "configGroupIndex")
     public ConfigGroupEntity getConfigGroup() {
 
         return configGroup;
@@ -105,7 +108,7 @@ public class ConfigItemEntity implements Serializable {
         this.configGroup = configGroup;
     }
 
-    @Column(name = ITEM_NAME_COLUMN_NAME, insertable = false, updatable = false)
+    @Column(name = "name")
     public String getName() {
 
         return name;
@@ -179,7 +182,7 @@ public class ConfigItemEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", pk).toString();
+        return new ToStringBuilder(this).append("id", id).toString();
     }
 
     @Override
@@ -192,13 +195,13 @@ public class ConfigItemEntity implements Serializable {
         if (false == obj instanceof ConfigItemEntity)
             return false;
         ConfigItemEntity rhs = (ConfigItemEntity) obj;
-        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(pk).toHashCode();
+        return id;
     }
 
 
@@ -206,5 +209,11 @@ public class ConfigItemEntity implements Serializable {
 
         @QueryMethod(QUERY_LIST_ALL)
         List<ConfigItemEntity> listConfigItems();
+
+        @QueryMethod(QUERY_GET_ITEMS)
+        List<ConfigItemEntity> getConfigItems(@QueryParam("group") ConfigGroupEntity group);
+
+        @QueryMethod(value = QUERY_GET_ITEM, nullable = true)
+        ConfigItemEntity getConfigItem(@QueryParam("groupName") String groupName, @QueryParam("name") String name);
     }
 }

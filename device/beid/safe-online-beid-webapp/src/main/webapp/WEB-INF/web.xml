@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE webapp-configuration PUBLIC
+    "-//Webapp Configuration DTD//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd" [
+    <!ENTITY web-common-wicket SYSTEM "web-common-wicket.xml">
+    <!ENTITY web-error-codes SYSTEM "web-error-codes.xml"> ]>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
+
+	<display-name>Olas BeId Device Web Application</display-name>
+
+    <!-- Application Context Parameters -->
+	<context-param>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.beid.webapp.name}/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>CommercialName</param-name>
+		<param-value>${safe-online.commercial.name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ApplicationName</param-name>
+		<param-value>${safe-online.beid.webapp.name}</param-value>
+	</context-param>
+
+    <!-- Application Filter Definitions And Mappings -->
+	<filter>
+		<filter-name>WicketFilter</filter-name>
+		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+
+		<init-param>
+			<param-name>applicationClassName</param-name>
+			<param-value>net.link.safeonline.beid.webapp.BeIdApplication</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configuration</param-name>
+			<param-value>${wicket.configuration}</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>JAASLoginFilter</filter-name>
+		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
+
+		<init-param>
+			<param-name>LoginContextName</param-name>
+			<param-value>client-login</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>WicketFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+    <!-- Application Servlet Definitions And Mappings -->
+	<servlet>
+		<servlet-name>AuthLandingServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.DeviceAuthenticationLandingServlet</servlet-class>
+
+		<init-param>
+			<param-name>AuthenticationPath</param-name>
+			<param-value>beid.html</param-value>
+			<description> Path to where we redirect after successful handling SAML POST request. </description>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>beid_error?type=protocol</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.AuthenticationServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ExitServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.DeviceAuthenticationExitServlet</servlet-class>
+
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>beid_error?type=protocol</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<description>Entry point for device operation service.</description>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.DeviceOperationLandingServlet</servlet-class>
+
+		<init-param>
+			<param-name>RegistrationPath</param-name>
+			<param-value>_registration</param-value>
+		</init-param>
+		<init-param>
+			<param-name>RemovalPath</param-name>
+			<param-value>_removal</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DisablePath</param-name>
+			<param-value>_disabling</param-value>
+		</init-param>
+		<init-param>
+			<param-name>EnablePath</param-name>
+			<param-value>_enabling</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>beid_error?type=protocol</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>IdentityServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentityServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DeviceExitServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.DeviceOperationExitServlet</servlet-class>
+
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>beid_error?type=protocol</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>JavaVersionServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.JavaVersionServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>NoPkcs11Servlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.NoPkcs11Servlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>IdentityEnableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentityEnableServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>IdentificationServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentificationServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>IdentificationDataServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentificationDataServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>IdentificationExitServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentificationExitServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>HelpdeskServlet</servlet-name>
+		<servlet-class>net.link.safeonline.servlet.HelpdeskServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>RegisterServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.RegisterServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>RemoveServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.RemoveServlet</servlet-class>
+
+		<init-param>
+			<param-name>DeviceExitPath</param-name>
+			<param-value>_device_exit</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>DisableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.DisableServlet</servlet-class>
+
+		<init-param>
+			<param-name>DeviceExitPath</param-name>
+			<param-value>_device_exit</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>EnableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.EnableServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Style Servlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>AuthLandingServlet</servlet-name>
+		<url-pattern>/_auth</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<url-pattern>/_authentication</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ExitServlet</servlet-name>
+		<url-pattern>/_authentication_exit</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<url-pattern>/_device</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>IdentityServlet</servlet-name>
+		<url-pattern>/_identity</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeviceExitServlet</servlet-name>
+		<url-pattern>/_device_exit</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JavaVersionServlet</servlet-name>
+		<url-pattern>/_version</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>NoPkcs11Servlet</servlet-name>
+		<url-pattern>/_no_pkcs11</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>IdentityEnableServlet</servlet-name>
+		<url-pattern>/_identity_enable</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>IdentificationServlet</servlet-name>
+		<url-pattern>/_identification</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>IdentificationDataServlet</servlet-name>
+		<url-pattern>/_identification_data</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>IdentificationExitServlet</servlet-name>
+		<url-pattern>/_identification_exit</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>HelpdeskServlet</servlet-name>
+		<url-pattern>/_helpdesk</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RegisterServlet</servlet-name>
+		<url-pattern>/_registration</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RemoveServlet</servlet-name>
+		<url-pattern>/_removal</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DisableServlet</servlet-name>
+		<url-pattern>/_disabling</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>EnableServlet</servlet-name>
+		<url-pattern>/_enabling</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Style Servlet</servlet-name>
+		<url-pattern>/theme.css</url-pattern>
+	</servlet-mapping>
+
+	&web-common-wicket;
+
+	&web-error-codes;
+
+</web-app>

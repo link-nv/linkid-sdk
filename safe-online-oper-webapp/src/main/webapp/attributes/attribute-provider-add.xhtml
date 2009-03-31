@@ -1,46 +1,44 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="attributes" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.addAttributeProvider}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="attributes" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.addAttributeProvider}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
+				<h:form>
+					<f:facet name="aroundInvalidField">
+						<s:span styleClass="error" />
+					</f:facet>
 
-			<h:outputLabel for="typename" value="#{msgs.attributeName}" />
-			<h:inputText id="typename" value="#{selectedAttributeType.name}"
-				styleClass="label" disabled="true" />
+					<h:outputLabel for="typename" value="#{msgs.attributeName}" />
+					<h:inputText id="typename" value="#{selectedAttributeType.name}"
+						styleClass="label" disabled="true" />
 
-			<h:outputLabel for="application" value="#{msgs.application}" />
-			<h:selectOneMenu id="application" required="true" value="#{attributeProvider.application}" styleClass="label">
-				<f:selectItems value="#{attributeProvider.applicationList}" />
-			</h:selectOneMenu>
+					<h:outputLabel for="application" value="#{msgs.application}" />
+					<h:selectOneMenu id="application" required="true"
+						value="#{attributeProvider.application}" styleClass="label">
+						<f:selectItems value="#{attributeProvider.applicationList}" />
+					</h:selectOneMenu>
 
-			<h:messages styleClass="error" globalOnly="true" />
+					<h:messages styleClass="error" globalOnly="true" />
 
-			<h:outputLabel for="add" value="" />
-			<h:commandButton value="#{msgs.addaction}" id="add"
-				action="#{attributeProvider.add}" styleClass="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
-		</h:form>
+					<h:outputLabel for="add" value="" />
+					<h:commandButton value="#{msgs.addaction}" id="add"
+						action="#{attributeProvider.add}" styleClass="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+				</h:form>
 
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border">
+			<wicket:container wicket:id="navigation_panel">[Navigation
+				Panel]</wicket:container>
+		</wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<form wicket:id="attribute_add_form">
+				<span wicket:id="attribute_context">
+					<span wicket:id="attribute" />
+				</span>
+
+				<label>&nbsp;</label>
+				<wicket:enclosure>
+					<input wicket:id="add" type="submit" value="[Add]"
+						wicket:message="value:addaction" class="submit" />
+				</wicket:enclosure>
+				<wicket:enclosure>
+					<input wicket:id="save" type="submit" value="[Save]"
+						wicket:message="value:saveaction" class="submit" />
+				</wicket:enclosure>
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

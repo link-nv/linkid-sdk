@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<form wicket:id="register_form">
+
+                <wicket:enclosure child="pin">
+					<label>
+						<wicket:message key="pin">[PIN]</wicket:message>
+					</label>
+					<input wicket:id="pin" type="password" class="label" />
+					<div wicket:id="pin_feedback" class="error"></div>
+				</wicket:enclosure>
+
+				<wicket:enclosure child="pinConfirm">
+	                <label>
+						<wicket:message key="pinConfirm">[PIN Confirmation]</wicket:message>
+					</label>
+					<input wicket:id="pinConfirm" type="password" class="label" />
+					<div wicket:id="pinConfirm_feedback" class="error"></div>
+				</wicket:enclosure>
+
+                <div style="display: none; background: url('images/progress_m.gif') repeat-x; width: 300px; height: 18px; margin-bottom: 1em; text-align: center" class="bar">
+                    <img src="images/progress_r.gif" style="float: right; margin-right: -1px" />
+                    <img src="images/progress_l.gif" style="float: left; margin-left: -2px" />
+
+                    <wicket:message key="optionCommunicating">[Communicating with the Option Data Card]</wicket:message>
+                </div>
+
+				<label>&nbsp;</label>
+                <input wicket:id="register" type="submit" value="[Confirm]" onclick="return false;"
+					wicket:message="value:deviceRegister" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

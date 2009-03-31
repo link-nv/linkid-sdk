@@ -5,7 +5,7 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:rich="http://richfaces.org/rich">
 	<body>
-		<ui:composition template="/WEB-INF/template.xhtml">
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
 			<ui:define name="topnav">
 				<ui:include src="/WEB-INF/incl/navigation.xhtml">
 					<ui:param name="page" value="applications" />
@@ -52,6 +52,24 @@
 											<h:message for="friendlyname" styleClass="error" />
 										</s:decorate>
 									</td>
+								</tr>
+								<tr>
+
+									<th>
+										<h:outputText value="#{msgs.applicationOwner}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:selectOneMenu id="owner"
+												value="#{operApplication.applicationOwner}" required="true"
+												styleClass="label">
+												<f:selectItems value="#{availableApplicationOwners}" />
+											</h:selectOneMenu>
+										</s:decorate>
+										<h:message for="owner" styleClass="error" />
+									</td>
+
+
 								</tr>
 								<tr>
 									<th>

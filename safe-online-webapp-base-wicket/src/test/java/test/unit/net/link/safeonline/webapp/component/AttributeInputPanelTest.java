@@ -9,7 +9,7 @@ package test.unit.net.link.safeonline.webapp.component;
 import junit.framework.TestCase;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.webapp.components.AttributeInputPanel;
+import net.link.safeonline.webapp.components.attribute.AttributeInputPanel;
 
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.util.tester.FormTester;

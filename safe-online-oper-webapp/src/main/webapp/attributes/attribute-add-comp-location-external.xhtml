@@ -1,57 +1,54 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:tr="http://myfaces.apache.org/trinidad"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0" xmlns:tr="http://myfaces.apache.org/trinidad"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="attributes" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.addAttribute}: #{msgs.compounded}:
-		#{msgs.attributeLocation}: #{msgs.external}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="attributes" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.addAttribute}: #{msgs.compounded}:
+					#{msgs.attributeLocation}: #{msgs.external}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
+				<h:form>
 
-			<h:outputLabel for="plugin" value="#{msgs.attributePlugin}" />
+					<h:outputLabel for="plugin" value="#{msgs.attributePlugin}" />
 
-			<h:selectOneMenu id="plugin" value="#{addAttribute.plugin}"
-				required="true" styleClass="label">
-				<f:selectItems value="#{attributePlugins}" />
-			</h:selectOneMenu>
+					<h:selectOneMenu id="plugin" value="#{addAttribute.plugin}"
+						required="true" styleClass="label">
+						<f:selectItems value="#{attributePlugins}" />
+					</h:selectOneMenu>
 
-			<h:message for="plugin" styleClass="error" />
+					<h:message for="plugin" styleClass="error" />
 
-			<h:outputLabel for="config" value="#{msgs.configuration}" />
+					<h:outputLabel for="config" value="#{msgs.configuration}" />
 
-			<h:inputText id="config" value="#{addAttribute.pluginConfiguration}"
-				styleClass="label" />
+					<h:inputText id="config" value="#{addAttribute.pluginConfiguration}"
+						styleClass="label" />
 
-			<h:message for="config" styleClass="error" />
+					<h:message for="config" styleClass="error" />
 
-			<h:messages styleClass="error" globalOnly="true" />
+					<h:messages styleClass="error" globalOnly="true" />
 
-			<h:outputLabel for="add" value="" />
-			<h:commandButton value="#{msgs.previous}" id="previous"
-				action="previous" immediate="true" styleClass="submit" />
-			<h:commandButton value="#{msgs.addaction}" id="add"
-				action="#{addAttribute.add}" styleClass="submit" />
-			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+					<h:outputLabel for="add" value="" />
+					<h:commandButton value="#{msgs.previous}" id="previous"
+						action="previous" immediate="true" styleClass="submit" />
+					<h:commandButton value="#{msgs.addaction}" id="add"
+						action="#{addAttribute.add}" styleClass="submit" />
+					<h:commandButton action="#{addAttribute.cancel}"
+						id="cancel" value="#{msgs.cancelaction}" immediate="true"
+						styleClass="submit" />
 
-		</h:form>
+				</h:form>
 
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

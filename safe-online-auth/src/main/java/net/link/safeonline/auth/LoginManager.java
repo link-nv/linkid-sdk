@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.entity.DeviceEntity;
 
 import org.apache.commons.logging.Log;
@@ -30,9 +31,9 @@ public class LoginManager {
 
     public static final String USERID_ATTRIBUTE                    = "userId";
 
-    public static final String LOGIN_ATTRIBUTE                     = "LoginManager.loginName";
+    public static final String AUTHENTICATION_ASSERTION_ATTRIBUTE  = "LoginManager.authenticationAssertion";
 
-    public static final String AUTHENTICATION_DEVICE_ATTRIBUTE     = "LoginManager.authenticationDevice";
+    public static final String LOGIN_ATTRIBUTE                     = "LoginManager.loginName";
 
     public static final String REQUIRED_DEVICES_ATTRIBUTE          = "LoginManager.requiredDevices";
 
@@ -48,33 +49,15 @@ public class LoginManager {
         // empty
     }
 
-    public static void login(HttpSession session, String userId, DeviceEntity device) {
+    public static void login(HttpSession session, AuthenticationAssertion authenticationAssertion) {
 
-        if (null == userId)
-            throw new IllegalArgumentException("userId is null");
-        if (null == device)
-            throw new IllegalArgumentException("device is null");
-        session.setAttribute(USERID_ATTRIBUTE, userId);
-        setAuthenticationDevice(session, device);
-    }
-
-    private static void setAuthenticationDevice(HttpSession session, DeviceEntity device) {
-
-        session.setAttribute(AUTHENTICATION_DEVICE_ATTRIBUTE, device);
-    }
-
-    public static void relogin(HttpSession session, DeviceEntity device) {
-
-        String userId = getUserId(session);
-        // can be null, in case the device registration was combined with an
-        // olas user registration
-        DeviceEntity currentDevice = findAuthenticationDevice(session);
-        if (null == currentDevice) {
-            LOG.debug("login for " + userId + " with device " + device.getName());
-        } else {
-            LOG.debug("relogin for " + userId + " from device " + currentDevice.getName() + " to device " + device.getName());
-        }
-        setAuthenticationDevice(session, device);
+        if (null == authenticationAssertion)
+            throw new IllegalArgumentException("authentication assertion is null");
+        /**
+         * set user ID for {@link JAASLoginFilter}
+         */
+        session.setAttribute(USERID_ATTRIBUTE, authenticationAssertion.getSubject().getUserId());
+        session.setAttribute(AUTHENTICATION_ASSERTION_ATTRIBUTE, authenticationAssertion);
     }
 
     public static void setUserId(HttpSession session, String userId) {
@@ -91,6 +74,18 @@ public class LoginManager {
         return userId;
     }
 
+    public static boolean isLoggedIn(HttpSession session) {
+
+        String userId = findUserId(session);
+        return null != userId;
+    }
+
+    public static String findUserId(HttpSession session) {
+
+        String userId = (String) session.getAttribute(USERID_ATTRIBUTE);
+        return userId;
+    }
+
     public static void setLogin(HttpSession session, String loginName) {
 
         LOG.debug("set loginName: " + loginName);
@@ -103,32 +98,6 @@ public class LoginManager {
         if (null == loginName)
             throw new IllegalStateException("loginName session attribute is not present");
         return loginName;
-    }
-
-    public static DeviceEntity getAuthenticationDevice(HttpSession session) {
-
-        DeviceEntity authenticationDevice = findAuthenticationDevice(session);
-        if (null == authenticationDevice)
-            throw new IllegalStateException("authenticationDevice session attribute is not present");
-        return authenticationDevice;
-    }
-
-    public static DeviceEntity findAuthenticationDevice(HttpSession session) {
-
-        DeviceEntity authenticationDevice = (DeviceEntity) session.getAttribute(AUTHENTICATION_DEVICE_ATTRIBUTE);
-        return authenticationDevice;
-    }
-
-    public static boolean isLoggedIn(HttpSession session) {
-
-        String userId = findUserId(session);
-        return null != userId;
-    }
-
-    public static String findUserId(HttpSession session) {
-
-        String userId = (String) session.getAttribute(USERID_ATTRIBUTE);
-        return userId;
     }
 
     public static void setApplicationId(HttpSession session, long applicationId) {

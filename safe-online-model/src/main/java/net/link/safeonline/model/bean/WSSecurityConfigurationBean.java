@@ -83,7 +83,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
         }
         if (PkiResult.VALID != result) {
             try {
-                result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate);
+                result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN, certificate);
                 if (PkiResult.VALID == result)
                     return false;
             } catch (TrustDomainNotFoundException e) {

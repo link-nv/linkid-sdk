@@ -21,6 +21,7 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -85,7 +86,7 @@ public class ProtocolHandlerManager {
      * @throws ProtocolException
      *             in case of a protocol error.
      */
-    public static ProtocolContext handleRequest(HttpServletRequest request)
+    public static ProtocolContext handleAuthnRequest(HttpServletRequest request)
             throws ProtocolException {
 
         String reqLang = request.getParameter("Language");
@@ -99,7 +100,7 @@ public class ProtocolHandlerManager {
             LOG.debug("trying protocol handler: " + protocolHandler.getClass().getSimpleName());
             ProtocolContext protocolContext;
             try {
-                protocolContext = protocolHandler.handleRequest(request, language, color, minimal);
+                protocolContext = protocolHandler.handleAuthnRequest(request, language, color, minimal);
             } catch (ProtocolException e) {
                 String protocolName = protocolHandler.getName();
                 e.setProtocolName(protocolName);
@@ -118,14 +119,57 @@ public class ProtocolHandlerManager {
     }
 
     /**
-     * Handles the authentication response according to the authentication protocol by which the current authentication procedure was
+     * Handles a device authentication response according to the authentication protocol by which the current authentication procedure was
+     * initiated. The method returns the authentication assertion <code>null</code> if authentication failed or was canceled.
+     * 
+     * @param request
+     * @throws ProtocolException
+     * 
+     */
+    public static AuthenticationAssertion handleDeviceAuthnResponse(HttpServletRequest request)
+            throws ProtocolException {
+
+        String protocolId = (String) request.getSession().getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
+        if (null == protocolId)
+            throw new ProtocolException("incorrect request handling detected");
+        ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
+        if (null == protocolHandler)
+            throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
+
+        return protocolHandler.handleDeviceAuthnResponse(request);
+    }
+
+    /**
+     * Handles a device registration response according to the authentication protocol by which the current authentication procedure was
+     * initiated. The method returns the {@link AuthenticationAssertion} or <code>null</code> if authentication failed or was canceled.
+     * 
+     * @param request
+     * @throws ProtocolException
+     * 
+     */
+    public static AuthenticationAssertion handleDeviceRegistrationResponse(HttpServletRequest request)
+            throws ProtocolException {
+
+        String protocolId = (String) request.getSession().getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
+        if (null == protocolId)
+            throw new ProtocolException("incorrect request handling detected");
+        ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
+        if (null == protocolHandler)
+            throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
+
+        return protocolHandler.handleDeviceRegistrationResponse(request);
+
+    }
+
+    /**
+     * Sends an authentication response according to the authentication protocol by which the current authentication procedure was
      * initiated.
      * 
      * @param session
      * @param response
      * @throws ProtocolException
      */
-    public static void authnResponse(HttpSession session, HttpServletResponse response)
+    public static void sendAuthnResponse(HttpSession session, HttpServletResponse response)
             throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
@@ -136,7 +180,7 @@ public class ProtocolHandlerManager {
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
 
         try {
-            protocolHandler.authnResponse(session, response);
+            protocolHandler.sendAuthnResponse(session, response);
         } catch (ProtocolException e) {
             String protocolName = protocolHandler.getName();
             e.setProtocolName(protocolName);
@@ -223,7 +267,7 @@ public class ProtocolHandlerManager {
      * @param response
      * @throws ProtocolException
      */
-    public static void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
+    public static void sendLogoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
             throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
@@ -234,7 +278,7 @@ public class ProtocolHandlerManager {
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
 
         try {
-            protocolHandler.logoutRequest(application, session, response);
+            protocolHandler.sendLogoutRequest(application, session, response);
         } catch (ProtocolException e) {
             String protocolName = protocolHandler.getName();
             e.setProtocolName(protocolName);
@@ -243,15 +287,14 @@ public class ProtocolHandlerManager {
     }
 
     /**
-     * Handles the logout response according to the authentication protocol by which the current logout procedure was initiated.
+     * Sends a logout response according to the authentication protocol by which the current logout procedure was initiated.
      * 
-     * @param partialLogout
      * @param target
      * @param session
      * @param response
      * @throws ProtocolException
      */
-    public static void logoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse response)
+    public static void sendLogoutResponse(String target, HttpSession session, HttpServletResponse response)
             throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
@@ -262,7 +305,7 @@ public class ProtocolHandlerManager {
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
 
         try {
-            protocolHandler.logoutResponse(partialLogout, target, session, response);
+            protocolHandler.sendLogoutResponse(target, session, response);
         } catch (ProtocolException e) {
             String protocolName = protocolHandler.getName();
             e.setProtocolName(protocolName);

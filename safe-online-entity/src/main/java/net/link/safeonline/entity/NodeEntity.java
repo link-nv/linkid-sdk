@@ -142,24 +142,6 @@ public class NodeEntity implements Serializable {
         return String.format("%s://%s:%d", protocol, hostname, protocol.equals("http")? port: sslPort);
     }
 
-    /**
-     * Gives back the location of this OLAS node ( using HTTP protocol - no SSL )
-     */
-    @Transient
-    public String getHTTPLocation() {
-
-        return String.format("http://%s:%d", hostname, port);
-    }
-
-    /**
-     * Gives back the location of this OLAS node ( using HTTPS protocol - SSL )
-     */
-    @Transient
-    public String getHTTPSLocation() {
-
-        return String.format("https://%s:%d", hostname, sslPort);
-    }
-
     @Column(unique = true)
     public String getCertificateSubject() {
 

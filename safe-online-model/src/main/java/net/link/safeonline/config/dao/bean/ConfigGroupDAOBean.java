@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -38,6 +40,7 @@ public class ConfigGroupDAOBean implements ConfigGroupDAO {
         queryObject = QueryObjectFactory.createQueryObject(entityManager, ConfigGroupEntity.QueryInterface.class);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public ConfigGroupEntity addConfigGroup(String name) {
 
         ConfigGroupEntity configGroup = new ConfigGroupEntity(name);
@@ -57,7 +60,7 @@ public class ConfigGroupDAOBean implements ConfigGroupDAO {
 
     public ConfigGroupEntity findConfigGroup(String name) {
 
-        return entityManager.find(ConfigGroupEntity.class, name);
+        return queryObject.getConfigGroup(name);
     }
 
     public List<ConfigGroupEntity> listConfigGroups() {

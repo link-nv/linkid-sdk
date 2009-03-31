@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.entity.ApplicationEntity;
 
 
@@ -33,27 +34,54 @@ import net.link.safeonline.entity.ApplicationEntity;
 public interface ProtocolHandler {
 
     /**
-     * Request handle method. The protocol handler should return a filled in protocol context if it could handle the authentication request.
-     * If the handler cannot handle the authentication request then it should return <code>null</code>. A {@link ProtocolException} should
-     * be thrown in case this handler can handle the authentication request but the request itself violates the authentication protocol
-     * supported by this handler.
+     * Authentication Request handle method. The protocol handler should return a filled in protocol context if it could handle the
+     * authentication request. If the handler cannot handle the authentication request then it should return <code>null</code>. A
+     * {@link ProtocolException} should be thrown in case this handler can handle the authentication request but the request itself violates
+     * the authentication protocol supported by this handler.
      * 
-     * @param authnRequest
+     * @param request
      * @return the protocol context or <code>null</code>.
      * @throws ProtocolException
      *             in case the authentication request violates the authentication protocol supported by this handler.
      */
-    ProtocolContext handleRequest(HttpServletRequest authnRequest, Locale language, Integer color, Boolean minimal)
+    ProtocolContext handleAuthnRequest(HttpServletRequest request, Locale language, Integer color, Boolean minimal)
+            throws ProtocolException;
+
+    /**
+     * Device authentication response handle method. The protocol handler should return the authentication assertion if successful or
+     * <code>null</code> if the authentication was canceled. A {@link ProtocolException} should be thrown in case this handler can handle
+     * the authentication request but the request itself violates the authentication protocol supported by this handler.
+     * 
+     * @param request
+     * @return the authentication user's ID or <code>null</code>.
+     * @throws ProtocolException
+     *             in case the authentication request violates the authentication protocol supported by this handler.
+     */
+    AuthenticationAssertion handleDeviceAuthnResponse(HttpServletRequest request)
+            throws ProtocolException;
+
+    /**
+     * Device registration response handle method. The protocol handler should return authentication assertion (
+     * {@link AuthenticationAssertion} or <code>null</code> if the authentication was canceled. A {@link ProtocolException} should be thrown
+     * in case this handler can handle the authentication request but the request itself violates the authentication protocol supported by
+     * this handler.
+     * 
+     * @param request
+     * @return the authentication assertion or <code>null</code>.
+     * @throws ProtocolException
+     *             in case the authentication request violates the authentication protocol supported by this handler.
+     */
+    AuthenticationAssertion handleDeviceRegistrationResponse(HttpServletRequest request)
             throws ProtocolException;
 
     /**
      * Performs the authentication response according to the protocol supported by the handler that implements this interface.
      * 
      * @param session
-     * @param authnResponse
+     * @param response
      * @throws ProtocolException
      */
-    void authnResponse(HttpSession session, HttpServletResponse authnResponse)
+    void sendAuthnResponse(HttpSession session, HttpServletResponse response)
             throws ProtocolException;
 
     /**
@@ -61,12 +89,12 @@ public interface ProtocolHandler {
      * request. If the handler cannot handle the logout request then it should return <code>null</code>. A {@link ProtocolException} should
      * be thrown in case this handler can handle the logout request but the request itself violates the protocol supported by this handler.
      * 
-     * @param logoutRequest
+     * @param request
      * @return the protocol context or <code>null</code>.
      * @throws ProtocolException
      *             in case the logout request violates the logout protocol supported by this handler.
      */
-    LogoutProtocolContext handleLogoutRequest(HttpServletRequest logoutRequest)
+    LogoutProtocolContext handleLogoutRequest(HttpServletRequest request)
             throws ProtocolException;
 
     /**
@@ -74,7 +102,7 @@ public interface ProtocolHandler {
      * {@link ProtocolException} should be thrown in case a violation against the protocol was detected. Returns null if the logout response
      * did not have status SUCCESS.
      */
-    String handleLogoutResponse(HttpServletRequest logoutResponse)
+    String handleLogoutResponse(HttpServletRequest response)
             throws ProtocolException;
 
     /**
@@ -85,7 +113,7 @@ public interface ProtocolHandler {
      * @param response
      * @throws ProtocolException
      */
-    void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
+    void sendLogoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
             throws ProtocolException;
 
     /**
@@ -94,10 +122,10 @@ public interface ProtocolHandler {
      * @param partialLogout
      * @param target
      * @param session
-     * @param logoutResponse
+     * @param response
      * @throws ProtocolException
      */
-    void logoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse logoutResponse)
+    void sendLogoutResponse(String target, HttpSession session, HttpServletResponse response)
             throws ProtocolException;
 
     /**

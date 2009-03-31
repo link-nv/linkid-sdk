@@ -45,7 +45,9 @@ import com.sun.xml.ws.client.ClientTransportException;
  */
 public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor implements NameIdentifierMappingClient {
 
-    private static final Log                LOG = LogFactory.getLog(NameIdentifierMappingClientImpl.class);
+    private static final long               serialVersionUID = 1L;
+
+    private static final Log                LOG              = LogFactory.getLog(NameIdentifierMappingClientImpl.class);
 
     private final NameIdentifierMappingPort port;
 

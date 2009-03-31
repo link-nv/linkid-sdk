@@ -1,21 +1,25 @@
 package net.link.safeonline.data;
 
+import java.io.Serializable;
+
 import net.link.safeonline.entity.DeviceEntity;
 
 
-public class DeviceRegistrationDO {
+public class DeviceRegistrationDO implements Serializable {
 
-    private DeviceEntity device;
+    private static final long serialVersionUID = 1L;
 
-    private String       friendlyName;
+    private DeviceEntity      device;
 
-    private String       id;
+    private String            friendlyName;
 
-    private AttributeDO  attribute;
+    private String            id;
 
-    private boolean      disabled;
+    private AttributeDO       attribute;
 
-    private long         attributeIndex;
+    private boolean           disabled;
+
+    private long              attributeIndex;
 
 
     public DeviceRegistrationDO(DeviceEntity device, String friendlyName, String id, AttributeDO attribute, boolean disabled) {

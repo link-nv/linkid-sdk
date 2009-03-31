@@ -7,29 +7,33 @@
 
 package test.unit.net.link.safeonline.pkix.dao.bean;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 
-public class TrustDomainDAOBeanTest extends TestCase {
+public class TrustDomainDAOBeanTest {
 
     private TrustDomainDAO    testedInstance;
 
     private EntityTestManager entityTestManager;
 
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
             throws Exception {
-
-        super.setUp();
 
         entityTestManager = new EntityTestManager();
         entityTestManager.setUp(TrustDomainEntity.class);
@@ -38,14 +42,14 @@ public class TrustDomainDAOBeanTest extends TestCase {
                 entityTestManager.getEntityManager());
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
             throws Exception {
 
         entityTestManager.tearDown();
-        super.tearDown();
     }
 
+    @Test
     public void testAddAndRemoveTrustDomain()
             throws Exception {
 

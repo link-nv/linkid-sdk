@@ -8,8 +8,6 @@ package net.link.safeonline.sdk.ws;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
@@ -35,20 +33,17 @@ import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
  */
 public abstract class ServiceFactory {
 
-    protected abstract AttributeClient _getAttributeService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry);
+    protected abstract AttributeClient _getAttributeService(PrivateKeyEntry privateKeyEntry);
 
-    protected abstract DataClient _getDataService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry);
+    protected abstract DataClient _getDataService(PrivateKeyEntry privateKeyEntry);
 
-    protected abstract NameIdentifierMappingClient _getIdMappingService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry);
+    protected abstract NameIdentifierMappingClient _getIdMappingService(PrivateKeyEntry privateKeyEntry);
 
-    protected abstract SecurityTokenServiceClient _getStsService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry);
+    protected abstract SecurityTokenServiceClient _getStsService(PrivateKeyEntry privateKeyEntry);
 
-    protected abstract NotificationConsumerClient _getNotificationConsumerService(HttpServletRequest httpRequest,
-                                                                                  PrivateKeyEntry privateKeyEntry);
+    protected abstract NotificationConsumerClient _getNotificationConsumerService(PrivateKeyEntry privateKeyEntry);
 
-    protected abstract NotificationProducerClient _getNotificationProducerService(HttpServletRequest httpRequest,
-                                                                                  PrivateKeyEntry privateKeyEntry);
+    protected abstract NotificationProducerClient _getNotificationProducerService(PrivateKeyEntry privateKeyEntry);
 
-    protected abstract NotificationSubscriptionManagerClient _getNotificationSubscriptionService(HttpServletRequest httpRequest,
-                                                                                                 PrivateKeyEntry privateKeyEntry);
+    protected abstract NotificationSubscriptionManagerClient _getNotificationSubscriptionService(PrivateKeyEntry privateKeyEntry);
 }

@@ -17,35 +17,37 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.LogoutService;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseUtil;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
-import net.link.safeonline.sdk.auth.saml2.SamlRequestSecurityPolicyResolver;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.common.SAMLObject;
-import org.opensaml.common.binding.BasicSAMLMessageContext;
-import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.LogoutRequest;
-import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
+import org.opensaml.saml2.core.LogoutResponse;
+import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.security.SecurityException;
 
 
 /**
@@ -73,65 +75,151 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getName() {
 
         return NAME;
     }
 
-    public ProtocolContext handleRequest(HttpServletRequest authnRequest, Locale language, Integer color, Boolean minimal)
+    /**
+     * {@inheritDoc}
+     */
+    public ProtocolContext handleAuthnRequest(HttpServletRequest request, Locale language, Integer color, Boolean minimal)
             throws ProtocolException {
 
-        LOG.debug("request method: " + authnRequest.getMethod());
-        if (false == "POST".equals(authnRequest.getMethod()))
+        LOG.debug("request method: " + request.getMethod());
+        if (false == "POST".equals(request.getMethod()))
             return null;
         LOG.debug("POST request");
         LOG.debug("Language parameter: " + language);
 
-        String encodedSamlRequest = authnRequest.getParameter("SAMLRequest");
-        if (null == encodedSamlRequest)
-            return null;
-        LOG.debug("SAMLRequest parameter found");
-
-        BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(authnRequest));
-
-        messageContext.setSecurityPolicyResolver(new SamlRequestSecurityPolicyResolver());
-
-        HTTPPostDecoder decoder = new HTTPPostDecoder();
+        AuthnRequest authnRequest;
         try {
-            decoder.decode(messageContext);
-        } catch (MessageDecodingException e) {
-            LOG.debug("SAML message decoding error: " + e.getMessage());
-            throw new ProtocolException("SAML message decoding error");
-        } catch (SecurityPolicyException e) {
-            LOG.debug("security policy error: " + e.getMessage());
-            throw new ProtocolException("security policy error");
-        } catch (SecurityException e) {
-            LOG.debug("security error: " + e.getMessage());
-            throw new ProtocolException("security error");
+            authnRequest = RequestUtil.getAuthnRequest(request);
+        } catch (ServletException e) {
+            throw new ProtocolException(e.getMessage(), e);
         }
 
-        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof AuthnRequest)
-            throw new ProtocolException("SAML message not an authentication request message");
-        AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
-
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(authnRequest.getSession());
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
         try {
-            return authenticationService.initialize(language, color, minimal, samlAuthnRequest);
+            return authenticationService.initialize(language, color, minimal, authnRequest);
         } catch (TrustDomainNotFoundException e) {
             LOG.debug("trust domain not found: " + e.getMessage());
-            throw new ProtocolException("Trust domain not found");
+            throw new ProtocolException("Trust domain not found", e);
         } catch (AuthenticationInitializationException e) {
             LOG.debug("authentication intialization error: " + e.getMessage());
-            throw new ProtocolException("authentication intialization error: " + e.getMessage());
+            throw new ProtocolException("authentication intialization error: " + e.getMessage(), e);
         } catch (ApplicationNotFoundException e) {
             LOG.debug("application not found: " + e.getMessage());
-            throw new ProtocolException("application not found");
+            throw new ProtocolException("application not found", e);
+        } catch (SignatureValidationException e) {
+            LOG.debug("signature validation error: " + e.getMessage());
+            throw new ProtocolException("signature validation error", e);
         }
     }
 
-    public void authnResponse(HttpSession session, HttpServletResponse authnResponse)
+    /**
+     * {@inheritDoc}
+     */
+    public AuthenticationAssertion handleDeviceAuthnResponse(HttpServletRequest request)
+            throws ProtocolException {
+
+        LOG.debug("request method: " + request.getMethod());
+        if (false == "POST".equals(request.getMethod()))
+            return null;
+        LOG.debug("POST request");
+
+        Response response;
+        try {
+            response = ResponseUtil.getAuthnResponse(request);
+        } catch (ServletException e) {
+            throw new ProtocolException(e.getMessage(), e);
+        }
+
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
+        try {
+            return authenticationService.authenticate(response);
+        } catch (TrustDomainNotFoundException e) {
+            LOG.debug("trust domain not found: " + e.getMessage());
+            throw new ProtocolException("Trust domain not found", e);
+        } catch (ApplicationNotFoundException e) {
+            LOG.debug("application not found: " + e.getMessage());
+            throw new ProtocolException("application not found", e);
+        } catch (SignatureValidationException e) {
+            LOG.debug("signature validation error: " + e.getMessage());
+            throw new ProtocolException("signature validation error", e);
+        } catch (SubjectNotFoundException e) {
+            LOG.debug("subject not found: " + e.getMessage());
+            throw new ProtocolException("subject not found", e);
+        } catch (NodeNotFoundException e) {
+            LOG.debug("node not found: " + e.getMessage());
+            throw new ProtocolException("node not found", e);
+        } catch (NodeMappingNotFoundException e) {
+            LOG.debug("node mapping not found: " + e.getMessage());
+            throw new ProtocolException("node mapping not found", e);
+        } catch (DeviceNotFoundException e) {
+            LOG.debug("device not found: " + e.getMessage());
+            throw new ProtocolException("device not found", e);
+        } catch (ServletException e) {
+            LOG.debug("error: " + e.getMessage());
+            throw new ProtocolException("error: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public AuthenticationAssertion handleDeviceRegistrationResponse(HttpServletRequest request)
+            throws ProtocolException {
+
+        LOG.debug("request method: " + request.getMethod());
+        if (false == "POST".equals(request.getMethod()))
+            return null;
+        LOG.debug("POST request");
+
+        DeviceOperationResponse response;
+        try {
+            response = DeviceOperationResponseUtil.getDeviceOperationResponse(request);
+        } catch (ServletException e) {
+            throw new ProtocolException(e.getMessage(), e);
+        }
+
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
+        try {
+            return authenticationService.register(response);
+        } catch (TrustDomainNotFoundException e) {
+            LOG.debug("trust domain not found: " + e.getMessage());
+            throw new ProtocolException("Trust domain not found", e);
+        } catch (ApplicationNotFoundException e) {
+            LOG.debug("application not found: " + e.getMessage());
+            throw new ProtocolException("application not found", e);
+        } catch (SignatureValidationException e) {
+            LOG.debug("signature validation error: " + e.getMessage());
+            throw new ProtocolException("signature validation error", e);
+        } catch (SubjectNotFoundException e) {
+            LOG.debug("subject not found: " + e.getMessage());
+            throw new ProtocolException("subject not found", e);
+        } catch (NodeNotFoundException e) {
+            LOG.debug("node not found: " + e.getMessage());
+            throw new ProtocolException("node not found", e);
+        } catch (NodeMappingNotFoundException e) {
+            LOG.debug("node mapping not found: " + e.getMessage());
+            throw new ProtocolException("node mapping not found", e);
+        } catch (DeviceNotFoundException e) {
+            LOG.debug("device not found: " + e.getMessage());
+            throw new ProtocolException("device not found", e);
+        } catch (ServletException e) {
+            LOG.debug("error: " + e.getMessage());
+            throw new ProtocolException("error: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void sendAuthnResponse(HttpSession session, HttpServletResponse authnResponse)
             throws ProtocolException {
 
         String target = LoginManager.getTarget(session);
@@ -158,50 +246,31 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         }
     }
 
-    public LogoutProtocolContext handleLogoutRequest(HttpServletRequest logoutRequest)
+    /**
+     * {@inheritDoc}
+     */
+    public LogoutProtocolContext handleLogoutRequest(HttpServletRequest request)
             throws ProtocolException {
 
-        LOG.debug("request method: " + logoutRequest.getMethod());
-        if (false == "POST".equals(logoutRequest.getMethod()))
+        LOG.debug("request method: " + request.getMethod());
+        if (false == "POST".equals(request.getMethod()))
             return null;
         LOG.debug("POST request");
 
-        String encodedSamlRequest = logoutRequest.getParameter("SAMLRequest");
-        if (null == encodedSamlRequest)
-            return null;
-        LOG.debug("SAMLRequest parameter found");
-
-        BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(logoutRequest));
-
-        messageContext.setSecurityPolicyResolver(new SamlRequestSecurityPolicyResolver());
-
-        HTTPPostDecoder decoder = new HTTPPostDecoder();
+        LogoutRequest logoutRequest;
         try {
-            decoder.decode(messageContext);
-        } catch (MessageDecodingException e) {
-            LOG.debug("SAML message decoding error: " + e.getMessage());
-            throw new ProtocolException("SAML message decoding error");
-        } catch (SecurityPolicyException e) {
-            LOG.debug("security policy error: " + e.getMessage());
-            throw new ProtocolException("security policy error");
-        } catch (SecurityException e) {
-            LOG.debug("security error: " + e.getMessage());
-            throw new ProtocolException("security error");
+            logoutRequest = RequestUtil.getLogoutRequest(request);
+        } catch (ServletException e) {
+            throw new ProtocolException(e.getMessage(), e);
         }
 
-        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof LogoutRequest)
-            throw new ProtocolException("SAML message not a logout request message");
-        LogoutRequest samlLogoutRequest = (LogoutRequest) samlMessage;
-
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(logoutRequest.getSession());
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
         try {
-            return authenticationService.initialize(samlLogoutRequest);
+            return logoutService.initialize(logoutRequest);
         } catch (TrustDomainNotFoundException e) {
             LOG.debug("trust domain not found: " + e.getMessage());
             throw new ProtocolException("Trust domain not found");
-        } catch (AuthenticationInitializationException e) {
+        } catch (SignatureValidationException e) {
             LOG.debug("authentication intialization error: " + e.getMessage());
             throw new ProtocolException("authentication intialization error: " + e.getMessage());
         } catch (ApplicationNotFoundException e) {
@@ -210,24 +279,44 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         } catch (SubjectNotFoundException e) {
             LOG.debug("subject not found: " + e.getMessage());
             throw new ProtocolException("subject not found");
-
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public String handleLogoutResponse(HttpServletRequest httpRequest)
+    public String handleLogoutResponse(HttpServletRequest request)
             throws ProtocolException {
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(httpRequest.getSession());
+        LOG.debug("request method: " + request.getMethod());
+        if (false == "POST".equals(request.getMethod()))
+            return null;
+        LOG.debug("POST request");
+
+        LogoutResponse logoutResponse;
+        try {
+            logoutResponse = ResponseUtil.getLogoutResponse(request);
+        } catch (ServletException e) {
+            throw new ProtocolException(e.getMessage(), e);
+        }
+
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
         String applicationName;
         try {
-            applicationName = authenticationService.handleLogoutResponse(httpRequest);
+            applicationName = logoutService.handleLogoutResponse(logoutResponse);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
         } catch (ServletException e) {
             throw new ProtocolException(e.getMessage());
+        } catch (TrustDomainNotFoundException e) {
+            LOG.debug("trust domain not found: " + e.getMessage());
+            throw new ProtocolException("Trust domain not found");
+        } catch (SignatureValidationException e) {
+            LOG.debug("authentication intialization error: " + e.getMessage());
+            throw new ProtocolException("authentication intialization error: " + e.getMessage());
+        } catch (ApplicationNotFoundException e) {
+            LOG.debug("application not found: " + e.getMessage());
+            throw new ProtocolException("application not found");
         }
         LOG.debug("application: " + applicationName);
         return applicationName;
@@ -236,15 +325,15 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     /**
      * {@inheritDoc}
      */
-    public void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
+    public void sendLogoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
             throws ProtocolException {
 
         String target = application.getSsoLogoutUrl().toString();
 
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(session);
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(session);
         String encodedSamlLogoutRequestToken;
         try {
-            encodedSamlLogoutRequestToken = authenticationService.getLogoutRequest(application);
+            encodedSamlLogoutRequestToken = logoutService.getLogoutRequest(application);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
         } catch (SubscriptionNotFoundException e) {
@@ -268,12 +357,12 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     /**
      * {@inheritDoc}
      */
-    public void logoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse logoutResponse)
+    public void sendLogoutResponse(String target, HttpSession session, HttpServletResponse logoutResponse)
             throws ProtocolException {
 
         String encodedSamlLogoutResponseToken;
         try {
-            encodedSamlLogoutResponseToken = AuthenticationServiceManager.finalizeLogout(partialLogout, session);
+            encodedSamlLogoutResponseToken = LogoutServiceManager.finalizeLogout(session);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
         }
@@ -281,7 +370,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlLogoutResponseToken, templateResourceName, target, logoutResponse, true);
+            ResponseUtil.sendResponse(encodedSamlLogoutResponseToken, templateResourceName, target, logoutResponse, false);
         } catch (ServletException e) {
             throw new ProtocolException(e.getMessage());
         } catch (IOException e) {
@@ -289,5 +378,4 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         }
 
     }
-
 }

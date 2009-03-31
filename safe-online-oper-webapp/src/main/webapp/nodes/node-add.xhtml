@@ -1,119 +1,149 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.addOlasNode}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.addOlasNode}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form enctype="multipart/form-data">
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
+				<h:form enctype="multipart/form-data">
+					<f:facet name="aroundInvalidField">
+						<s:span styleClass="error" />
+					</f:facet>
 
-			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				label="#{msgs.generic}">
-				<table class="inner">
-					<colgroup class="third" />
-					<colgroup />
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" label="#{msgs.generic}">
+						<table class="inner">
+							<colgroup class="third" />
+							<colgroup />
 
-					<tbody>
-						<tr>
-							<th><h:outputText value="#{msgs.name}" /></th>
-							<td><s:decorate>
-								<h:inputText id="name" value="#{operNode.name}" required="true"
-									styleClass="label" />
-							</s:decorate> <h:message for="name" styleClass="error" /></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.hostname}" /></th>
-							<td><s:decorate>
-								<h:inputText id="hostname" value="#{operNode.hostname}"
-									styleClass="label" />
-							</s:decorate></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.protocol}" /></th>
-							<td><s:decorate>
-								<h:selectOneMenu id="protocol" value="#{operNode.protocol}"
-									styleClass="label">
-									<f:selectItems value="#{operProtocolList}" />
-								</h:selectOneMenu>
-							</s:decorate></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.port}" /></th>
-							<td><s:decorate>
-								<h:inputText id="port" value="#{operNode.port}"
-									styleClass="label" />
-							</s:decorate></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.sslPort}" /></th>
-							<td><s:decorate>
-								<h:inputText id="sslPort" value="#{operNode.sslPort}"
-									styleClass="label" />
-							</s:decorate></td>
-						</tr>
-					</tbody>
-				</table>
-			</rich:simpleTogglePanel>
+							<tbody>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.name}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="name" value="#{operNode.name}"
+												required="true" styleClass="label" />
+										</s:decorate>
+										<h:message for="name" styleClass="error" />
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.hostname}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="hostname" value="#{operNode.hostname}"
+												styleClass="label" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.protocol}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:selectOneMenu id="protocol" value="#{operNode.protocol}"
+												styleClass="label">
+												<f:selectItems value="#{operProtocolList}" />
+											</h:selectOneMenu>
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.port}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="port" value="#{operNode.port}"
+												styleClass="label" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.sslPort}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="sslPort" value="#{operNode.sslPort}"
+												styleClass="label" />
+										</s:decorate>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</rich:simpleTogglePanel>
 
-			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				label="#{msgs.certificate}">
-				<table class="inner">
-					<colgroup class="third" />
-					<colgroup />
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" label="#{msgs.certificate}">
+						<table class="inner">
+							<colgroup class="third" />
+							<colgroup />
 
-					<tbody>
-						<tr>
-							<th><h:outputText value="#{msgs.certificate}" /></th>
-							<td><s:decorate>
-								<t:inputFileUpload id="certificate" styleClass="label"
-									value="#{operNode.certificateFile}" />
-							</s:decorate> <h:message for="certificate" styleClass="error" /></td>
-						</tr>
-					</tbody>
-				</table>
-			</rich:simpleTogglePanel>
+							<tbody>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.certificate}" />
+									</th>
+									<td>
+										<s:decorate>
+											<t:inputFileUpload id="certificate"
+												styleClass="label" value="#{operNode.certificateFile}" />
+										</s:decorate>
+										<h:message for="certificate" styleClass="error" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</rich:simpleTogglePanel>
 
-			<h:messages styleClass="error" globalOnly="true" />
+					<h:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton action="#{operNode.add}" id="add"
-				value="#{msgs.addaction}" styleClass="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
-		</h:form>
-	</ui:define>
+					<h:commandButton action="#{operNode.add}" id="add"
+						value="#{msgs.addaction}" styleClass="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+				</h:form>
+			</ui:define>
 
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/pkix/pkix.seam"
-					value="#{msgs.PKIX}" /></li>
-				<li><h:commandLink action="/usage/usage-agreements.seam"
-					value="#{msgs.usageAgreementOLAS}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/configuration.seam"
+								value="#{msgs.operatorGeneralConfiguration}" />
+						</li>
+						<li>
+							<h:commandLink action="/pkix/pkix.seam" value="#{msgs.PKIX}" />
+						</li>
+						<li>
+							<h:commandLink action="/usage/usage-agreements.seam"
+								value="#{msgs.usageAgreementOLAS}" />
+						</li>
+						<li>
+							<h:commandLink action="/notifications/notifications.seam"
+								value="#{msgs.operatorNotifications}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

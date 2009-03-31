@@ -84,6 +84,7 @@ public class ErrorComponentFeedbackLabel extends Label {
             } else {
                 setDefaultModel(new Model<Serializable>(component.getFeedbackMessage().getMessage()));
             }
+            component.getFeedbackMessage().markRendered();
         } else {
             setDefaultModel(null);
         }

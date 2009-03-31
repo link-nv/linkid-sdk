@@ -1,0 +1,62 @@
+#! /usr/bin/env bash
+# ___________________________________________________________________________ #
+#																			 #
+#	   SwitchDB -- Change which DBMS to use for our the web application's DS. #
+#																			 #
+#																			 #
+#	Licensed under the Apache License, Version 2.0 (the "License");		  #
+#	you may not use this file except in compliance with the License.		 #
+#	You may obtain a copy of the License at								  #
+#																			 #
+#		http://www.apache.org/licenses/LICENSE-2.0						   #
+#																			 #
+#	Unless required by applicable law or agreed to in writing, software	  #
+#	distributed under the License is distributed on an "AS IS" BASIS,		#
+#	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. #
+#	See the License for the specific language governing permissions and	  #
+#	limitations under the License.										   #
+# ___________________________________________________________________________ #
+#																			 #
+#																			 #
+# Copyright 2009, lhunath													 #
+#   * http://lhunath.lyndir.com											   #
+#   * Maarten Billemont.													  #
+#																			 #
+scripts="${0%/*}"; [[ $scripts = /* ]] || scripts=$PWD/$scripts
+distribution=$(cd "$scripts/.."; echo "${PWD##*/}")
+source "$scripts/bashlib"
+
+# Check whether the distribution is valid.
+cd "$scripts/../jboss/server/default/deploy" || { emit -r "Invalid distribution: '$distribution'."; exit 1; }
+
+# Find and read in configuration of our datasource.
+dbconfigfile=( !(jms)-ds.xml )
+[[ $dbconfigfile ]] || { emit -r "No database configuration found for '$distribution'."; exit 1; }
+dbconfig=$(perl -we 'open(INPUT, "<-"); read(INPUT, $_, -s INPUT); s/(<!--.*?-->)?//sg and print $_' < "$dbconfigfile")
+jdbcUrl=$(sed -n 's/.*\(jdbc:[^< ]*\).*/\1/p' <<< "$dbconfig")
+IFS=':/' read _ dbms _ _ host port db <<< "$jdbcUrl"
+
+# Bail if some required attributes couldn't be parsed in.
+if [[ ! $dbms ]]; then
+	emit -r "No data source configuration found."
+	exit 1
+fi
+if [[ ! $jdbcUrl ]]; then
+	emit -r "No (valid) JDBC connection url found in '$dbconfig'."
+	exit 1
+fi
+
+# Switch configuration files over to use the chosen DBMS
+emit "Hibernate Persistence Properties" --
+    sed -e '/^[^#].*Dialect$/ s/^/#/' < "$scripts/../jboss/server/default/deploy/ejb3.deployer/META-INF/persistence.properties" | \
+        perl -pe "/(?i)${dbms%db}\d*Dialect$/ and s/^##*//" > ".$$" && \
+    mv ".$$" "$scripts/../jboss/server/default/deploy/ejb3.deployer/META-INF/persistence.properties"
+emit -$? || exit
+
+emit "JBoss Messaging Persistence Service" --
+    (
+        cd "$scripts/../jboss/server/default/deploy/jboss-messaging.sar/" && \
+        rm "persistence-service.xml" && \
+        ln -s "${dbms%db}-persistence-service.xml.choice" "persistence-service.xml"
+    )
+emit -$? || exit

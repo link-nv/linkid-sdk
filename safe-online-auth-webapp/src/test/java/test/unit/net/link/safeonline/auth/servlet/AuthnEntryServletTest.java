@@ -15,7 +15,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -26,10 +29,11 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
-import net.link.safeonline.auth.webapp.FirstTimePage;
-import net.link.safeonline.auth.webapp.UnsupportedProtocolPage;
+import net.link.safeonline.auth.webapp.pages.FirstTimePage;
+import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -37,11 +41,13 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -53,6 +59,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
 import org.easymock.EasyMock;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,15 +68,13 @@ import org.opensaml.saml2.core.AuthnRequest;
 
 public class AuthnEntryServletTest {
 
-    private static final Log                 LOG                = LogFactory.getLog(AuthnEntryServletTest.class);
+    private static final Log                 LOG        = LogFactory.getLog(AuthnEntryServletTest.class);
 
     private ServletTestManager               authnEntryServletTestManager;
 
-    private String                           loginUrl           = "login";
+    private String                           loginPath  = "login";
 
-    private String                           servletEndpointUrl = "http://test.auth/servlet";
-
-    private String                           cookiePath         = "/test-path/";
+    private String                           cookiePath = "/test-path/";
 
     private JndiTestUtils                    jndiTestUtils;
 
@@ -108,13 +113,13 @@ public class AuthnEntryServletTest {
 
         authnEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LoginUrl", loginUrl);
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
-        initParams.put("CookiePath", cookiePath);
+        initParams.put(AuthnEntryServlet.LOGIN_PATH, loginPath);
+        initParams.put(AuthnEntryServlet.COOKIE_PATH, cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
 
         authnEntryServletTestManager.setUp(AuthnEntryServlet.class, initParams, null, null, initialSessionAttributes);
+        SafeOnlineTestConfig.loadTest(authnEntryServletTestManager);
 
         mockObjects = new Object[] { mockApplicationAuthenticationService, mockPkiValidator, mockSamlAuthorityService,
                 mockDevicePolicyService, mockAuthenticationService };
@@ -164,8 +169,8 @@ public class AuthnEntryServletTest {
         long applicationId = 1234567890;
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
-                assertionConsumerService, servletEndpointUrl, null, null, false);
+        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, servletLocation, null, null, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
@@ -201,6 +206,7 @@ public class AuthnEntryServletTest {
         assertEquals(assertionConsumerService, target);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void saml2AuthenticationProtocolSingleSignOn()
             throws Exception {
@@ -214,11 +220,12 @@ public class AuthnEntryServletTest {
         long applicationId = 1234567890;
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
-                assertionConsumerService, servletEndpointUrl, null, null, true);
+        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, servletLocation, null, null, true);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 
         String userId = UUID.randomUUID().toString();
+        SubjectEntity subject = new SubjectEntity(userId);
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PKI_DEVICE_CLASS,
                 SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
         DeviceEntity device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null, null);
@@ -228,17 +235,19 @@ public class AuthnEntryServletTest {
         postMethod.addRequestHeader("Cookie", SafeOnlineCookies.DEFLOWERED_COOKIE + "=true");
         postMethod.addRequestHeader("Cookie", SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName + "=value");
 
+        AuthenticationAssertion authenticationAssertion = new AuthenticationAssertion(subject);
+        authenticationAssertion.addAuthentication(new DateTime(), device);
+
         // expectations
         expect(
                 mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
                         (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
                 new ProtocolContext(applicationId, applicationName, applicationName, assertionConsumerService, null, null, null, null));
-        expect(mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
-        expect(mockAuthenticationService.getSsoCookie()).andStubReturn(
-                new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName, "value"));
-        expect(mockAuthenticationService.getUserId()).andStubReturn(userId);
-        expect(mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
-        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
+        expect(mockAuthenticationService.getAuthenticationState()).andReturn(AuthenticationState.INITIALIZED).times(2);
+        expect(mockAuthenticationService.login((List<Cookie>) EasyMock.anyObject())).andReturn(
+                Collections.singletonList(authenticationAssertion));
+        expect(mockAuthenticationService.getInvalidCookies()).andReturn(new LinkedList<Cookie>());
+        expect(mockAuthenticationService.getSsoCookies()).andReturn(new LinkedList<Cookie>());
 
         // prepare
         replay(mockObjects);
@@ -253,7 +262,7 @@ public class AuthnEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(loginUrl));
+        assertTrue(location.endsWith(loginPath));
         long resultApplicationId = (Long) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
         assertEquals(applicationId, resultApplicationId);
         String resultApplicationName = (String) authnEntryServletTestManager
@@ -263,8 +272,8 @@ public class AuthnEntryServletTest {
         assertEquals(assertionConsumerService, target);
         String resultUserId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
-        DeviceEntity resultDevice = (DeviceEntity) authnEntryServletTestManager
-                                                                               .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
-        assertEquals(device, resultDevice);
+        AuthenticationAssertion resultAuthenticationAssertion = (AuthenticationAssertion) authnEntryServletTestManager
+                                                                                                                      .getSessionAttribute(LoginManager.AUTHENTICATION_ASSERTION_ATTRIBUTE);
+        assertEquals(authenticationAssertion, resultAuthenticationAssertion);
     }
 }

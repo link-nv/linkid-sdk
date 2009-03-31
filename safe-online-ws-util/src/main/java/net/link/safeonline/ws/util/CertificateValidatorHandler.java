@@ -103,7 +103,7 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
         }
         if (PkiResult.VALID != result) {
             try {
-                result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate);
+                result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN, certificate);
                 setCertificateDomain(CertificateDomain.NODE, context);
             } catch (TrustDomainNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("olas trust domain not found", "FailedAuthentication");

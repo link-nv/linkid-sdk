@@ -1,87 +1,100 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.operatorTrustDomain}: #{selectedTrustDomain.name}</h1>
-		<h2>#{msgs.operatorTrustPoint}:
-		#{selectedTrustPoint.pk.subjectName}</h2>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.operatorTrustDomain}:
+					#{selectedTrustDomain.name}</h1>
+				<h2>#{msgs.operatorTrustPoint}:
+					#{selectedTrustPoint.pk.subjectName}</h2>
+			</ui:define>
+			<ui:define name="content">
 
-        <table class="inner">
-            <colgroup class="half" />
-            <colgroup />
+				<table class="inner">
+					<colgroup class="half" />
+					<colgroup />
 
-            <tbody>
-                <tr>
-                    <th>#{msgs.miscSubject}:</th>
-                    <td>#{selectedTrustPoint.pk.subjectName}</td>
-                </tr>
-                <tr>
-                    <th>#{msgs.miscIssuer}:</th>
-                    <td>#{selectedTrustPoint.issuerName}</td>
-                </tr>
-                <tr>
-                    <th>#{msgs.miscVersion}:</th>
-                    <td>#{selectedTrustPoint.certificate.version}</td>
-                </tr>
-                <tr>
-                    <th>#{msgs.miscNotBefore}:</th>
-                    <td>#{selectedTrustPoint.certificate.notBefore}</td>
-                </tr>
-                <tr>
-                    <th>#{msgs.miscNotAfter}:</th>
-                    <td>#{selectedTrustPoint.certificate.notAfter}</td>
-                </tr>
-                <tr>
-                    <th>#{msgs.miscSerialNumber}:</th>
-                    <td>#{selectedTrustPoint.certificate.serialNumber}</td>
-                </tr>
-                <tr>
-                    <th colspan="2">#{msgs.certificate}</th>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <h:outputText value="#{selectedTrustPoint.certificate}" styleClass="text block" />
-                    </td>
-                </tr>
-            </tbody>
-		</table>
+					<tbody>
+						<tr>
+							<th>#{msgs.miscSubject}:</th>
+							<td>#{selectedTrustPoint.pk.subjectName}
+							</td>
+						</tr>
+						<tr>
+							<th>#{msgs.miscIssuer}:</th>
+							<td>#{selectedTrustPoint.issuerName}
+							</td>
+						</tr>
+						<tr>
+							<th>#{msgs.miscVersion}:</th>
+							<td>#{selectedTrustPoint.certificate.version}
+							</td>
+						</tr>
+						<tr>
+							<th>#{msgs.miscNotBefore}:</th>
+							<td>#{selectedTrustPoint.certificate.notBefore}
+							</td>
+						</tr>
+						<tr>
+							<th>#{msgs.miscNotAfter}:</th>
+							<td>#{selectedTrustPoint.certificate.notAfter}
+							</td>
+						</tr>
+						<tr>
+							<th>#{msgs.miscSerialNumber}:</th>
+							<td>#{selectedTrustPoint.certificate.serialNumber}
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">#{msgs.certificate}</th>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<h:outputText value="#{selectedTrustPoint.certificate}"
+									styleClass="text block" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
 
-		<h:form>
-			<h:commandButton action="#{trustPoint.removeTrustPoint}" id="remove"
-				value="#{msgs.removeaction}" styleClass="submit" />
-			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" styleClass="submit" />
-		</h:form>
+				<h:form>
+					<h:commandButton action="#{trustPoint.removeTrustPoint}"
+						id="remove" value="#{msgs.removeaction}" styleClass="submit" />
+					<h:commandButton action="back" id="back"
+						value="#{msgs.backaction}" immediate="true" styleClass="submit" />
+				</h:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/usage/usage-agreements.seam"
-					value="#{msgs.usageAgreementOLAS}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/nodes/nodes.seam" value="#{msgs.operatorOlasNodes}" />
+						</li>
+						<li>
+							<h:commandLink action="/configuration.seam"
+								value="#{msgs.operatorGeneralConfiguration}" />
+						</li>
+						<li>
+							<h:commandLink action="/usage/usage-agreements.seam"
+								value="#{msgs.usageAgreementOLAS}" />
+						</li>
+						<li>
+							<h:commandLink action="/notifications/notifications.seam"
+								value="#{msgs.operatorNotifications}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

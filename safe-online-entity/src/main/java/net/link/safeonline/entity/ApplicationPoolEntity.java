@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.ApplicationPoolEntity.QUERY_WHERE_ALL;
+import static net.link.safeonline.entity.ApplicationPoolEntity.QUERY_WHERE_APP;
 import static net.link.safeonline.entity.ApplicationPoolEntity.QUERY_WHERE_APP1_APP2;
 
 import java.io.Serializable;
@@ -35,12 +36,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Table(name = "application_pool")
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationPoolEntity"),
+        @NamedQuery(name = QUERY_WHERE_APP, query = "SELECT pool FROM ApplicationPoolEntity pool "
+                + "WHERE :application MEMBER OF pool.applications"),
         @NamedQuery(name = QUERY_WHERE_APP1_APP2, query = "SELECT pool FROM ApplicationPoolEntity pool "
                 + "WHERE :application1 MEMBER OF pool.applications AND :application2 MEMBER OF pool.applications") })
 public class ApplicationPoolEntity implements Serializable {
 
     public static final String      QUERY_WHERE_ALL       = "app.pool.all";
-
+    public static final String      QUERY_WHERE_APP       = "app.pool.app";
     public static final String      QUERY_WHERE_APP1_APP2 = "app.pool.app1.app2";
 
     private static final long       serialVersionUID      = 1L;
@@ -130,6 +133,9 @@ public class ApplicationPoolEntity implements Serializable {
 
         @QueryMethod(QUERY_WHERE_ALL)
         List<ApplicationPoolEntity> listApplicationPools();
+
+        @QueryMethod(QUERY_WHERE_APP)
+        List<ApplicationPoolEntity> listApplicationPools(@QueryParam("application") ApplicationEntity application);
 
         @QueryMethod(QUERY_WHERE_APP1_APP2)
         List<ApplicationPoolEntity> listCommonApplicationPools(@QueryParam("application1") ApplicationEntity application1,

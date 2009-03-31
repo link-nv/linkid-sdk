@@ -22,21 +22,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.XMLConstants;
 
-import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.LogoutExitServlet;
-import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.authentication.service.AuthenticationState;
+import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -54,6 +53,7 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensaml.saml2.core.LogoutResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -61,21 +61,19 @@ import org.w3c.dom.Node;
 
 public class LogoutExitServletTest {
 
-    private static final Log      LOG                = LogFactory.getLog(LogoutExitServletTest.class);
+    private static final Log   LOG          = LogFactory.getLog(LogoutExitServletTest.class);
 
-    private ServletTestManager    logoutExitServletTestManager;
+    private ServletTestManager logoutExitServletTestManager;
 
-    private String                servletEndpointUrl = "http://test.auth/servlet";
+    private String             location;
 
-    private String                inResponseTo       = "test-in-response-to";
+    private String             inResponseTo = "test-in-response-to";
 
-    private String                target             = "http://test.target";
+    private JndiTestUtils      jndiTestUtils;
 
-    private JndiTestUtils         jndiTestUtils;
+    private LogoutService      mockLogoutService;
 
-    private AuthenticationService mockAuthenticationService;
-
-    private Object[]              mockObjects;
+    private Object[]           mockObjects;
 
 
     @Before
@@ -85,18 +83,19 @@ public class LogoutExitServletTest {
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
 
-        mockAuthenticationService = createMock(AuthenticationService.class);
+        mockLogoutService = createMock(LogoutService.class);
 
         logoutExitServletTestManager = new ServletTestManager();
-        Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("ServletEndpointUrl", servletEndpointUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
+        initialSessionAttributes.put(LogoutServiceManager.LOGOUT_SERVICE_ATTRIBUTE, mockLogoutService);
 
-        logoutExitServletTestManager.setUp(LogoutExitServlet.class, initParams, null, null, initialSessionAttributes);
+        logoutExitServletTestManager.setUp(LogoutExitServlet.class, null, null, null, initialSessionAttributes);
+        location = logoutExitServletTestManager.getServletLocation();
 
-        mockObjects = new Object[] { mockAuthenticationService };
+        mockObjects = new Object[] { mockLogoutService };
+
+        SafeOnlineTestConfig.loadTest(logoutExitServletTestManager);
     }
 
     @After
@@ -113,8 +112,7 @@ public class LogoutExitServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        String servletLocation = logoutExitServletTestManager.getServletLocation();
-        PostMethod postMethod = new PostMethod(servletLocation);
+        PostMethod postMethod = new PostMethod(location);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         String applicationName = "test-application-id";
@@ -125,21 +123,20 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair, target);
+        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair, location);
         String encodedSamlLogoutResponse = Base64.encode(samlLogoutResponse.getBytes());
 
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair,
-                servletEndpointUrl, null);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair, location, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedSamlLogoutResponse) };
         postMethod.setRequestBody(data);
 
         // expectations
-        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.LOGGING_OUT);
-        expect(mockAuthenticationService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject())).andStubReturn(applicationName);
-        expect(mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application2);
-        expect(mockAuthenticationService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
+        expect(mockLogoutService.handleLogoutResponse((LogoutResponse) EasyMock.anyObject())).andStubReturn(applicationName);
+        expect(mockLogoutService.findSsoApplicationToLogout()).andStubReturn(application2);
+        expect(mockLogoutService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
+        expect(mockLogoutService.isSequential()).andReturn(true);
 
         // prepare
         replay(mockObjects);
@@ -186,8 +183,7 @@ public class LogoutExitServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        String servletLocation = logoutExitServletTestManager.getServletLocation();
-        GetMethod getMethod = new GetMethod(servletLocation);
+        GetMethod getMethod = new GetMethod(location);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         String applicationName = "test-application-id";
@@ -197,14 +193,13 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair,
-                servletEndpointUrl, null);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair, location, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         // expectations
-        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
-        expect(mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application);
-        expect(mockAuthenticationService.getLogoutRequest(application)).andStubReturn(encodedSamlLogoutRequest);
+        expect(mockLogoutService.findSsoApplicationToLogout()).andStubReturn(application);
+        expect(mockLogoutService.getLogoutRequest(application)).andStubReturn(encodedSamlLogoutRequest);
+        mockLogoutService.setSequential(true);
 
         // prepare
         replay(mockObjects);

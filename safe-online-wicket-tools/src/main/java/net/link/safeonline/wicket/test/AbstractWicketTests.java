@@ -12,7 +12,6 @@ import java.util.Locale;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServlet;
 
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -21,6 +20,9 @@ import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,7 +69,7 @@ public abstract class AbstractWicketTests {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
     }
 
     @Before
@@ -99,14 +101,16 @@ public abstract class AbstractWicketTests {
         // Initialize our dummy web container and set our dummy authentication protocol as the one to use.
         wicket = new WicketTester(getApplication());
         MockServletContext wicketContext = (MockServletContext) wicket.getServletSession().getServletContext();
-        wicketContext.addInitParameter(AuthenticationProtocolManager.LOGOUT_LANDING_PAGE_INIT_PARAM, "");
-        wicketContext.addInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.LOGOUT_SERVICE_URL_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.TARGET_BASE_URL_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, getClass().toString());
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, AuthenticationProtocol.UNIT_TEST.name());
+        wicketContext.addInitParameter(AuthenticationProtocolManager.LOGOUT_LANDING_PAGE_INIT_PARAM, "/");
+        wicketContext.addInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM, "/");
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.LOGOUT_SERVICE_PATH_INIT_PARAM, "/");
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTH_SERVICE_PATH_CONTEXT_PARAM, "/");
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, getClass().toString());
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, AuthenticationProtocol.UNIT_TEST.name());
+        wicketContext.addInitParameter(SafeOnlineConfig.WEBAPP_PATH_CONTEXT_PARAM, "/");
         wicket.processRequestCycle();
+
+        SafeOnlineTestConfig.loadTestApp("http://127.0.0.1", "https://127.0.0.1", "https://127.0.0.1/olas-auth/", "https://127.0.0.1");
     }
 
     @After

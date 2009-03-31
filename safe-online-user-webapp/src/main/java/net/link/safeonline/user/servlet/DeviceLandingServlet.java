@@ -17,9 +17,9 @@ import net.link.safeonline.authentication.exception.NodeMappingNotFoundException
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
-import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.auth.servlet.AbstractLandingInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -35,7 +35,11 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class DeviceLandingServlet extends AbstractInjectionServlet {
+public class DeviceLandingServlet extends AbstractLandingInjectionServlet {
+
+    public static final String DEVICES_PAGE                   = "DevicesPage";
+    public static final String ERROR_PAGE                     = "ErrorPage";
+    public static final String RESOURCE_BUNDLE                = "ResourceBundle";
 
     private static final long  serialVersionUID               = 1L;
 
@@ -43,16 +47,13 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
     public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-    @Init(name = "DevicesPage")
+    @Init(name = DEVICES_PAGE)
     private String             devicesPage;
 
-    @Init(name = "ServletEndpointUrl")
-    private String             servletEndpointUrl;
-
-    @Init(name = "ErrorPage", optional = true)
+    @Init(name = ERROR_PAGE, optional = true)
     private String             errorPage;
 
-    @Init(name = "ResourceBundle", optional = true)
+    @Init(name = RESOURCE_BUNDLE, optional = true)
     private String             resourceBundleName;
 
 
@@ -62,42 +63,36 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
         LOG.debug("doPost");
 
-        /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
-         * checking the destination field.
-         */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
-
-        DeviceOperationService deviceOperationService = (DeviceOperationService) requestWrapper.getSession().getAttribute(
+        DeviceOperationService deviceOperationService = (DeviceOperationService) request.getSession().getAttribute(
                 DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
         if (null == deviceOperationService) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         }
 
         try {
-            deviceOperationService.finalize(requestWrapper);
+            deviceOperationService.finalize(request);
         } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
         } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         }
 
         // remove the device operation service from the HttpSession
-        requestWrapper.getSession().removeAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+        request.getSession().removeAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
 
         response.sendRedirect(devicesPage);
     }

@@ -240,16 +240,26 @@ public class AttributeDO implements Serializable, Cloneable {
 
         switch (type) {
             case BOOLEAN:
-                return booleanValue.toString();
+                if (null != booleanValue)
+                    return booleanValue.toString();
+                return null;
             case DATE:
-                return dateValue.toString();
+                if (null != dateValue)
+                    return dateValue.toString();
+                return null;
             case DOUBLE:
-                return doubleValue.toString();
+                if (null != doubleValue)
+                    return doubleValue.toString();
+                return null;
             case INTEGER:
-                return integerValue.toString();
+                if (null != integerValue)
+                    return integerValue.toString();
+                return null;
             case STRING:
             case COMPOUNDED:
-                return stringValue;
+                if (null != stringValue)
+                    return stringValue;
+                return null;
             default:
                 throw new EJBException("unsupported data type: " + type);
         }
@@ -449,6 +459,15 @@ public class AttributeDO implements Serializable, Cloneable {
         AttributeDO rhs = (AttributeDO) obj;
 
         return name.equals(rhs.getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return name.hashCode();
     }
 
     /**

@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<form wicket:id="request_otp_form">
+
+				<label>
+					<wicket:message key="mobileNumber">[Mobile]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="mobile" type="text" class="label" />
+				</div>
+				<div wicket:id="mobile_feedback" class="error"></div>
+
+				<label>&nbsp;</label>
+				<input wicket:id="request_otp" type="submit" value="[Request Token]"
+					wicket:message="value:mobileRequestOTP" class="submit" />
+				<input wicket:id="request_cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="request_feedback" class="error"></div>
+			</form>
+
+			<form wicket:id="update_form">
+
+				<label>
+					<wicket:message key="mobileOTP">[Mobile Token]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="otp" type="text" class="label" />
+				</div>
+				<div wicket:id="otp_feedback" class="error"></div>
+
+				<label>
+					<wicket:message key="mobileOldPin">[Old Mobile Pin]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="oldpin" type="password" class="label" />
+				</div>
+				<div wicket:id="oldpin_feedback" class="error" />
+
+				<label>
+					<wicket:message key="mobilePin">[Mobile Pin]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="pin1" type="password" class="label" />
+				</div>
+				<div wicket:id="pin1_feedback" class="error" />
+
+				<label>
+					<wicket:message key="mobilePinRepeat">[Mobile Pin Repeat]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="pin2" type="password" class="label" />
+				</div>
+				<div wicket:id="pin2_feedback" class="error" />
+
+				<label>&nbsp;</label>
+				<input wicket:id="save" type="submit" value="[Save]"
+					wicket:message="value:saveaction" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

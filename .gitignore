@@ -1,22 +1,27 @@
 # OS X
 /.com.apple.timemachine.supported
 /.fseventsd
+.DS_Store
 
 # Maven2 Relocated Local Repository for Lin.k artifacts.
 /.m2-repo
 
 # Eclipse
-/*/.settings
-/*/.project
-/*/.classpath
+.settings
+.project
+.classpath
 /*/eclipse
+/siemens/*/eclipse
+/demo/*/eclipse
+/device/*/*/eclipse
 
 # IntelliJ
-/*/*.iml
-/*.iml
-/*.ipr
-/*.iws
+*.iml
+*.ipr
+*.iws
 
 # Compiled
-/target
 /*/target
+/siemens/*/target
+/demo/*/target
+/device/*/*/target

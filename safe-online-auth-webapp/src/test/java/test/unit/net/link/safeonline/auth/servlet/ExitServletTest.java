@@ -36,15 +36,16 @@ import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.ExitServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
+import net.link.safeonline.device.sdk.auth.saml2.response.AuthnResponseFactory;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.beid.BeIdConstants;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.codec.binary.Base64;
@@ -132,7 +133,6 @@ public class ExitServletTest {
         initialSessionAttributes.put(LoginManager.TARGET_ATTRIBUTE, target);
         initialSessionAttributes.put(LoginManager.APPLICATION_ID_ATTRIBUTE, applicationId);
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
-        initialSessionAttributes.put(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, device);
 
         exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 
@@ -140,6 +140,8 @@ public class ExitServletTest {
                 device.getAuthenticationContextClass(), nodeKeyPair, validity, target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
         expect(mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
+
+        SafeOnlineTestConfig.loadTest(exitServletTestManager);
 
     }
 

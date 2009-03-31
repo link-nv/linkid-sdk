@@ -34,10 +34,10 @@ import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
-import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
-import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseUtil;
+import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequestFactory;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseUtil;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.NodeEntity;
@@ -152,8 +152,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         }
 
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(), nodeUserId,
-                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName, id,
-                attributeValue);
+                nodeKeyStore.getKeyPair(), serviceUrl, targetUrl, deviceOperation, challenge, deviceName,
+                Collections.singletonList(authenticatedDeviceName), id, attributeValue);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

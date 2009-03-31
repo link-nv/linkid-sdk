@@ -104,7 +104,7 @@ public class HelpPage extends TemplatePage {
                 @Override
                 public void onClick() {
 
-                    helpdeskId = HelpdeskLogger.persistContext(returnPage.getClassRelativePath(), WicketUtil.getHttpSession(getRequest()));
+                    helpdeskId = HelpdeskLogger.persistContext(returnPage.getClassRelativePath(), WicketUtil.getHttpSession());
 
                 }
 

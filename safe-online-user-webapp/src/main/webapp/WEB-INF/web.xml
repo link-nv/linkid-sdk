@@ -1,48 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE webapp-configuration PUBLIC
+    "-//Webapp Configuration DTD//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd" [
+    <!ENTITY web-common-wicket SYSTEM "web-common-wicket.xml">
+    <!ENTITY web-error-codes SYSTEM "web-error-codes.xml"> ]>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
+
 	<display-name>Olas User Web Application</display-name>
-	<security-constraint>
-		<display-name>Restrict Viewing XHTML Documents</display-name>
-		<web-resource-collection>
-			<web-resource-name>XHTML</web-resource-name>
-			<url-pattern>*.xhtml</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-		</auth-constraint>
-	</security-constraint>
-	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>
-			net.link.safeonline.webapp.filter.LogHttpSessionListener</listener-class>
-	</listener>
+
+    <!-- Application Context Parameters -->
 	<context-param>
-		<description>URL used to initiate a login process.</description>
-		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
+		<param-name>WebappPath</param-name>
+        <param-value>/${safe-online.user.webapp.name}/</param-value>
 	</context-param>
 	<context-param>
-		<description>URL used to initiate a single logout process.</description>
-		<param-name>LogoutServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry</param-value>
+		<description>Path used to initiate a login process.</description>
+		<param-name>AuthenticationServicePath</param-name>
+		<param-value>/entry</param-value>
 	</context-param>
 	<context-param>
-		<description>URL used to finalize a logout request sent by the
-			authentication webapp following a single logout process by another
-			application.</description>
-		<param-name>LogoutExitServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
+		<description>Path used to initiate a single logout process.</description>
+		<param-name>LogoutServicePath</param-name>
+		<param-value>/logoutentry</param-value>
+	</context-param>
+	<context-param>
+		<description>Path used to finalize a logout request sent by the authentication webapp following a single logout process by another application.</description>
+		<param-name>LogoutExitServicePath</param-name>
+		<param-value>/logoutexit</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for the remote device operations.</description>
-		<param-name>DeviceServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/device/landing</param-value>
+		<param-name>DeviceServicePath</param-name>
+		<param-value>/device-landing</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
@@ -69,114 +60,100 @@
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
-		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-		<param-value>client</param-value>
-	</context-param>
-	<context-param>
-		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-		<param-value>.xhtml</param-value>
-	</context-param>
-	<context-param>
-		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.jboss.seam.core.init.debug</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
-	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.auth.basename}</param-value>
-	</context-param>
-	<context-param>
 		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
-		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/login 
-		</param-value>
+		<param-value>/login</param-value>
 	</context-param>
 	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
-		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout 
-		</param-value>
+		<param-value>/logout</param-value>
 	</context-param>
-	<context-param>
-		<description>Url to redirect to after successful authentication</description>
-		<param-name>TargetBaseUrl</param-name>
-		<param-value>
-			${safe-online.host.basename}/${safe-online.user.webapp.name}/ 
-		</param-value>
-	</context-param>
+
+    <!-- Application Filter Definitions And Mappings -->
+	<filter>
+		<filter-name>WicketFilter</filter-name>
+		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+
+		<init-param>
+			<param-name>applicationClassName</param-name>
+			<param-value>net.link.safeonline.user.webapp.UserApplication</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configuration</param-name>
+			<param-value>${wicket.configuration}</param-value>
+		</init-param>
+	</filter>
 	<filter>
 		<filter-name>ExceptionFilter</filter-name>
 		<filter-class>net.link.safeonline.webapp.filter.ExceptionFilter</filter-class>
+
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/error.seam</param-value>
+			<param-value>/error</param-value>
 		</init-param>
 	</filter>
 	<filter>
 		<filter-name>TimeoutFilter</filter-name>
 		<filter-class>net.link.safeonline.webapp.filter.TimeoutFilter</filter-class>
+
 		<init-param>
 			<param-name>TimeoutPath</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/timeout.seam</param-value>
+			<param-value>/timeout</param-value>
 		</init-param>
-	</filter>
-	<filter>
-		<filter-name>AuthnResponseFilter</filter-name>
-		<filter-class>net.link.safeonline.sdk.auth.filter.AuthnResponseFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>ContainerLoginFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>Seam Filter</filter-name>
-		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
 	</filter>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
+
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
 		</init-param>
 		<init-param>
 			<param-name>LoginPath</param-name>
-			<param-value>/${safe-online.user.webapp.name}/main.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/main</param-value>
 		</init-param>
 		<init-param>
 			<param-name>UnauthenticatedPath.1</param-name>
-			<param-value>/${safe-online.user.webapp.name}/language.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/theme.css</param-value>
 		</init-param>
 		<init-param>
 			<param-name>UnauthenticatedPath.2</param-name>
-			<param-value>/${safe-online.user.webapp.name}/protocol-error.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/language</param-value>
 		</init-param>
 		<init-param>
 			<param-name>UnauthenticatedPath.3</param-name>
-			<param-value>/${safe-online.user.webapp.name}/error.seam</param-value>
+			<param-value>/${safe-online.user.webapp.name}/protocol-error</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnauthenticatedPath.4</param-name>
+			<param-value>/${safe-online.user.webapp.name}/error</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnauthenticatedPath.5</param-name>
+			<param-value>/${safe-online.user.webapp.name}/login</param-value>
 		</init-param>
 	</filter>
-	<filter>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
-	</filter>
+
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/device-landing</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>WicketFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
 	<filter-mapping>
 		<filter-name>ExceptionFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
@@ -184,95 +161,74 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/device/landing</url-pattern>
+		<url-pattern>/device-landing</url-pattern>
 	</filter-mapping>
-	<filter-mapping>
-		<filter-name>AuthnResponseFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>/device/landing</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Seam Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>ContainerLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
+
+    <!-- Application Event Listeners -->
+	<listener>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>net.link.safeonline.webapp.filter.LogHttpSessionListener</listener-class>
+	</listener>
+
+    <!-- Application Servlet Definitions And Mappings -->
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>net.link.safeonline.sdk.auth.servlet.LoginServlet</servlet-class>
+
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
-		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml response.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/login 
-			</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
 		<servlet-name>LogoutServlet</servlet-name>
 		<servlet-class>net.link.safeonline.sdk.auth.servlet.LogoutServlet</servlet-class>
+
 		<init-param>
-			<param-name>LogoutUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/userlogout 
-			</param-value>
+			<param-name>LogoutPath</param-name>
+			<param-value>/userlogout</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
-		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml response.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout 
-			</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
 		<servlet-name>UserLogoutServlet</servlet-name>
-		<servlet-class>net.link.safeonline.webapp.resources.LogoutServlet</servlet-class>
+		<servlet-class>net.link.safeonline.webapp.resources.DefaultLogoutServlet</servlet-class>
+
 		<init-param>
-			<param-name>LogoutExitUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout 
-			</param-value>
+			<param-name>LogoutExitPath</param-name>
+			<param-value>/logout</param-value>
 		</init-param>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.seam</url-pattern>
-	</servlet-mapping>
+	<servlet>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<servlet-class>net.link.safeonline.user.servlet.DeviceLandingServlet</servlet-class>
+
+		<init-param>
+			<param-name>DevicesPage</param-name>
+			<param-value>/device/devices.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>device-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceBundle</param-name>
+			<param-value>messages.webapp</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>Style Servlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
@@ -285,45 +241,28 @@
 		<servlet-name>UserLogoutServlet</servlet-name>
 		<url-pattern>/userlogout</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>net.link.safeonline.user.servlet.DeviceLandingServlet</servlet-class>
-		<init-param>
-			<param-name>DevicesPage</param-name>
-			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/device/devices.seam</param-value>
-		</init-param>
-		<init-param>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
-			<param-name>ServletEndpointUrl</param-name>
-			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/device/landing 
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ErrorPage</param-name>
-			<param-value>device-error.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ResourceBundle</param-name>
-			<param-value>messages.webapp</param-value>
-		</init-param>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<url-pattern>/device/landing</url-pattern>
+		<url-pattern>/device-landing</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>Style Servlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>
 		<url-pattern>/theme.css</url-pattern>
 	</servlet-mapping>
-	<session-config>
-		<session-timeout>${sessionTimeout}</session-timeout>
-	</session-config>
+
+    <!-- Application Security Configuration -->
+	<security-constraint>
+		<display-name>Restrict Viewing XHTML Documents</display-name>
+
+		<web-resource-collection>
+			<web-resource-name>XHTML</web-resource-name>
+			<url-pattern>*.xhtml</url-pattern>
+		</web-resource-collection>
+        <auth-constraint />
+	</security-constraint>
+
+	&web-common-wicket;
+
+	&web-error-codes;
+
 </web-app>

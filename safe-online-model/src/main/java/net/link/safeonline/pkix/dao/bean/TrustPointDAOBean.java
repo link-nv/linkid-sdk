@@ -51,6 +51,7 @@ public class TrustPointDAOBean implements TrustPointDAO {
         LOG.debug("add trust point to domain: " + trustDomain.getName() + " with subject " + certificate.getSubjectX500Principal());
         TrustPointEntity trustPoint = new TrustPointEntity(trustDomain, certificate);
         entityManager.persist(trustPoint);
+        entityManager.flush(); // https://jira.jboss.org/jira/browse/JBPORTAL-983?focusedCommentId=12352050#action_12352050
     }
 
     public List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain) {
@@ -86,5 +87,11 @@ public class TrustPointDAOBean implements TrustPointDAO {
 
         LOG.debug("get trust points with certificate subject: " + certificateSubject);
         return queryObject.listTrustPoints(certificateSubject);
+    }
+
+    public void setEncodedCert(TrustPointEntity trustPoint, byte[] encodedCert) {
+
+        trustPoint.setEncodedCert(encodedCert);
+        entityManager.flush(); // https://jira.jboss.org/jira/browse/JBPORTAL-983?focusedCommentId=12352050#action_12352050
     }
 }

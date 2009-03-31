@@ -1,67 +1,71 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.operatorAddNotificationSubscription}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.operatorAddNotificationSubscription}
+				</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
+				<h:form>
+					<f:facet name="aroundInvalidField">
+						<s:span styleClass="error" />
+					</f:facet>
 
-			<h:outputLabel for="location" value="#{msgs.location}" />
-			<s:decorate>
-				<h:inputText id="location" value="#{operNotification.address}"
-					required="true" styleClass="label" />
-			</s:decorate>
-			<h:message for="location" styleClass="error" />
+					<h:outputLabel for="location" value="#{msgs.location}" />
+					<s:decorate>
+						<h:inputText id="location" value="#{operNotification.address}"
+							required="true" styleClass="label" />
+					</s:decorate>
+					<h:message for="location" styleClass="error" />
 
-			<h:outputLabel for="consumer" value="#{msgs.consumer}" />
+					<h:outputLabel for="consumer" value="#{msgs.consumer}" />
 
-			<h:selectOneMenu id="consumer" value="#{operNotification.consumer}"
-				styleClass="label">
-				<f:selectItems value="#{consumers}" />
-			</h:selectOneMenu>
+					<h:selectOneMenu id="consumer" value="#{operNotification.consumer}"
+						styleClass="label">
+						<f:selectItems value="#{consumers}" />
+					</h:selectOneMenu>
 
-			<h:messages styleClass="error" globalOnly="true" />
+					<h:messages styleClass="error" globalOnly="true" />
 
-            <h:outputLabel for="add" value="" />
-			<h:commandButton action="#{operNotification.addSubscription}"
-				id="add" value="#{msgs.addaction}" styleClass="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
-		</h:form>
-	</ui:define>
+					<h:outputLabel for="add" value="" />
+					<h:commandButton action="#{operNotification.addSubscription}"
+						id="add" value="#{msgs.addaction}" styleClass="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+				</h:form>
+			</ui:define>
 
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/pkix/pkix.seam"
-					value="#{msgs.PKIX}" /></li>
-				<li><h:commandLink action="/usage/usage-agreements.seam"
-					value="#{msgs.usageAgreementOLAS}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/nodes/nodes.seam" value="#{msgs.operatorOlasNodes}" />
+						</li>
+						<li>
+							<h:commandLink action="/configuration.seam"
+								value="#{msgs.operatorGeneralConfiguration}" />
+						</li>
+						<li>
+							<h:commandLink action="/pkix/pkix.seam" value="#{msgs.PKIX}" />
+						</li>
+						<li>
+							<h:commandLink action="/usage/usage-agreements.seam"
+								value="#{msgs.usageAgreementOLAS}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

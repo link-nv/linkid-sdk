@@ -23,12 +23,12 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
-import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.oper.keystore.OperKeyStore;
 import net.link.safeonline.owner.keystore.OwnerKeyStore;
 import net.link.safeonline.user.keystore.UserKeyStore;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -55,11 +55,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
         // Load OLAS configuration.
         ResourceBundle properties = ResourceBundle.getBundle("config");
-        String protocol = properties.getString("olas.host.protocol");
-        String protocolssl = properties.getString("olas.host.protocol.ssl");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
         String userWebappName = properties.getString("olas.user.webapp.name");
         String operWebappName = properties.getString("olas.oper.webapp.name");
         String ownerWebappName = properties.getString("olas.owner.webapp.name");
@@ -71,33 +66,53 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         configureDevices();
 
         // Add some initial users.
-        users.add(SafeOnlineConstants.ADMIN_LOGIN);
-        users.add(SafeOnlineConstants.OWNER_LOGIN);
+        adminUsers.add(SafeOnlineConstants.ADMIN_LOGIN);
         applicationOwnersAndLogin.put(SafeOnlineConstants.OWNER_LOGIN, SafeOnlineConstants.OWNER_LOGIN);
 
         // Add the core applications.
+        operatorApplicationName = SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME;
+        userApplicationName = SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME;
+        ownerApplicationName = SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME;
+        helpdeskApplicationName = SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME;
+
         X509Certificate userCert = (X509Certificate) UserKeyStore.getPrivateKeyEntry().getCertificate();
         X509Certificate operCert = (X509Certificate) OperKeyStore.getPrivateKeyEntry().getCertificate();
         X509Certificate ownerCert = (X509Certificate) OwnerKeyStore.getPrivateKeyEntry().getCertificate();
         X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStore.getPrivateKeyEntry().getCertificate();
 
         try {
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-                    "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/" + userWebappName),
-                    getLogo("/logo.jpg"), false, false, userCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + userWebappName + "/logout")));
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, "owner",
-                    "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/" + operWebappName),
-                    getLogo("/logo.jpg"), false, false, operCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + operWebappName + "/logout")));
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, "owner",
-                    "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname, hostport, "/" + ownerWebappName),
-                    getLogo("/logo.jpg"), false, false, ownerCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + ownerWebappName + "/logout")));
-            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, "owner",
-                    "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/" + helpdeskWebappName),
-                    getLogo("/logo.jpg"), false, false, helpdeskCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
-                            hostportssl, "/" + helpdeskWebappName + "/logout")));
+            URL userApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(), SafeOnlineConfig.nodePort(), "/"
+                    + userWebappName);
+            URL userSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + userWebappName + "/logout");
+
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline User Web Application.", //
+                    userApplicationUrl, getLogo("/logo.png"), false, false, userCert, false, IdScopeType.USER, true, userSSOLogoutUrl));
+
+            URL operApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(), SafeOnlineConfig.nodePort(), "/"
+                    + operWebappName);
+            URL operSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + operWebappName + "/logout");
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline Operator Web Application.", operApplicationUrl, getLogo("/logo.png"),
+                    false, false, operCert, false, IdScopeType.USER, true, operSSOLogoutUrl));
+
+            URL ownerApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(), SafeOnlineConfig.nodePort(),
+                    "/" + ownerWebappName);
+            URL ownerSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + ownerWebappName + "/logout");
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline Application Owner Web Application.", ownerApplicationUrl,
+                    getLogo("/logo.png"), false, false, ownerCert, false, IdScopeType.USER, true, ownerSSOLogoutUrl));
+
+            URL helpdeskApplicationUrl = new URL(SafeOnlineConfig.nodeProtocol(), SafeOnlineConfig.nodeHost(), SafeOnlineConfig.nodePort(),
+                    "/" + helpdeskWebappName);
+            URL helpdeskSSOLogoutUrl = new URL(SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                    SafeOnlineConfig.nodePortSecure(), "/" + helpdeskWebappName + "/logout");
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+                    SafeOnlineConstants.OWNER_LOGIN, "The SafeOnline Helpdesk Web Application.", helpdeskApplicationUrl,
+                    getLogo("/logo.png"), false, false, helpdeskCert, false, IdScopeType.USER, true, helpdeskSSOLogoutUrl));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed Application URL exception: " + e.getMessage());
         }
@@ -106,18 +121,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         trustedCertificates.put(operCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         trustedCertificates.put(ownerCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         trustedCertificates.put(helpdeskCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
-                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
-                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME));
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
-                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME));
-
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
-                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
-                SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
 
         // add available notification topics
         notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
@@ -130,17 +133,11 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
-        String nodeName = properties.getString("olas.node.name");
-        String sslprotocol = properties.getString("olas.host.protocol.ssl");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-
         SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate());
-        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(SafeOnlineConfig.nodeName(), SafeOnlineConfig.nodeProtocolSecure(), SafeOnlineConfig.nodeHost(),
+                SafeOnlineConfig.nodePort(), SafeOnlineConfig.nodePortSecure(), nodeKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN);
     }
 
     private void configureAttributeTypes() {

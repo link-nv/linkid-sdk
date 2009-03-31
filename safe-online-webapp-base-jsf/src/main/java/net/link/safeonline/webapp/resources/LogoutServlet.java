@@ -41,12 +41,14 @@ import org.jboss.seam.web.Session;
  */
 public class LogoutServlet extends AbstractInjectionServlet {
 
-    private static final long serialVersionUID = 1L;
+    public static final String LOGOUT_EXIT_PATH = "LogoutExitPath";
 
-    private static final Log  LOG              = LogFactory.getLog(LogoutServlet.class);
+    private static final long  serialVersionUID = 1L;
 
-    @Init(name = "LogoutExitUrl")
-    private String            logoutExitUrl;
+    private static final Log   LOG              = LogFactory.getLog(LogoutServlet.class);
+
+    @Init(name = LOGOUT_EXIT_PATH)
+    private String             logoutExitPath;
 
 
     @Override
@@ -61,7 +63,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
             Session.getInstance().invalidate();
         }
 
-        response.sendRedirect(logoutExitUrl);
+        response.sendRedirect(logoutExitPath);
 
     }
 

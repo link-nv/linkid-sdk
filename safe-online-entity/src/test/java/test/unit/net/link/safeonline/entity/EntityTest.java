@@ -27,6 +27,7 @@ import java.util.UUID;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
 import net.link.safeonline.entity.ApplicationEntity;
@@ -960,10 +961,12 @@ public class EntityTest {
 
         // verify
         entityManager = entityTestManager.refreshEntityManager();
-        ConfigGroupEntity resultGroup = entityManager.find(ConfigGroupEntity.class, groupName);
+        ConfigGroupEntity resultGroup = (ConfigGroupEntity) entityManager.createNamedQuery(ConfigGroupEntity.QUERY_GET_GROUP).setParameter(
+                "name", groupName).getSingleResult();
         assertNotNull(resultGroup);
-        assertEquals(1, resultGroup.getConfigItems().size());
-        Iterator<ConfigItemEntity> it = resultGroup.getConfigItems().iterator();
+        @SuppressWarnings("unchecked")
+        Iterator<ConfigItemEntity> it = entityManager.createNamedQuery(ConfigItemEntity.QUERY_GET_ITEMS).setParameter("group", resultGroup)
+                                                     .getResultList().iterator();
         assertTrue(it.hasNext());
         ConfigItemEntity resultItem = it.next();
         assertEquals(item, resultItem);
@@ -975,15 +978,19 @@ public class EntityTest {
         entityManager.remove(resultItem);
         entityManager.remove(resultItem.getValues().get(0));
         entityManager.remove(resultItem.getValues().get(1));
-        resultGroup.getConfigItems().remove(0);
         entityManager.flush();
         entityManager.remove(resultGroup);
         entityManager.flush();
 
         // verify
         entityManager = entityTestManager.refreshEntityManager();
-        resultGroup = entityManager.find(ConfigGroupEntity.class, groupName);
-        assertNull(resultGroup);
+        try {
+            resultGroup = (ConfigGroupEntity) entityManager.createNamedQuery(ConfigGroupEntity.QUERY_GET_GROUP).setParameter("name",
+                    groupName).getSingleResult();
+            fail();
+        } catch (NoResultException e) {
+            // expected.
+        }
     }
 
     @Test

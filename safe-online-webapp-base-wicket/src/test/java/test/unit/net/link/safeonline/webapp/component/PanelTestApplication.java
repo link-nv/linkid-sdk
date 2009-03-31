@@ -37,4 +37,14 @@ public class PanelTestApplication extends OlasApplication {
 
         return AttributeInputPanelPage.class;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean jaasLogin() {
+
+        return false;
+    }
+
 }

@@ -10,7 +10,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Lin.k N.V.</name>
@@ -145,63 +145,6 @@
 			</modules>
 		</profile>
 
-		<!-- DATA SOURCE TYPE PROFILES -->
-		<!-- Profile to enable Hypersonic SQL as DS -->
-		<profile>
-			<id>ds:hsql</id>
-			<properties>
-				<safe-online.data.source.type>hsql
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:hsqldb:.
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>org.hibernate.dialect.HSQLDialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
-		<!-- Profile to enable MySQL as DS -->
-		<profile>
-			<id>ds:mysql</id>
-			<properties>
-				<safe-online.data.source.type>mysql
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:mysql://localhost:3306/safeonline
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>org.hibernate.dialect.MySQLDialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
-		<!-- Profile to enable PostGreSQL as DS -->
-		<profile>
-			<id>ds:postgresql</id>
-			<properties>
-				<safe-online.data.source.type>postgresql
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>
-					jdbc:postgresql://localhost:5432/safeonline
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>
-					org.hibernate.dialect.PostgreSQLDialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
-		<!-- Profile to enable Oracle as DS -->
-		<profile>
-			<id>ds:oracle</id>
-			<properties>
-				<safe-online.data.source.type>oracle
-				</safe-online.data.source.type>
-				<safe-online.data.source.uri>
-					jdbc:oracle:thin:@localhost:1521:safeonline
-				</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>
-					net.link.safeonline.hibernate.dialect.Oracle11Dialect
-				</safe-online.data.source.dialect>
-			</properties>
-		</profile>
-
 		<!-- DISTRIBUTION PROFILES -->
 		<!-- Profile to build base distribution -->
 		<profile>
@@ -222,7 +165,6 @@
 
 				<log.level>INFO</log.level>
 				<debug.mode>false</debug.mode>
-				<safe-online.show.sql>false</safe-online.show.sql>
 				<wicket.configuration>DEPLOYMENT</wicket.configuration>
 				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
 				<safe-online.hibernate.hbm2ddl.auto>validate
@@ -362,107 +304,26 @@
 				<defaultCronExpression>0 0 0 1 1 ?</defaultCronExpression>
 
 				<!-- WEBAPP NAMES -->
-				<safe-online.demo.app.webapp.name>demo
-				</safe-online.demo.app.webapp.name>
-				<safe-online.demo.prescription.webapp.name>demo-prescription
-				</safe-online.demo.prescription.webapp.name>
 				<safe-online.demo.bank.webapp.name>ebank
 				</safe-online.demo.bank.webapp.name>
 				<safe-online.demo.cinema.webapp.name>cinema
 				</safe-online.demo.cinema.webapp.name>
-				<safe-online.demo.lawyer.webapp.name>demo-lawyer
-				</safe-online.demo.lawyer.webapp.name>
-				<safe-online.demo.mandate.webapp.name>demo-mandate
-				</safe-online.demo.mandate.webapp.name>
 				<safe-online.demo.payment.webapp.name>epayment
 				</safe-online.demo.payment.webapp.name>
-				<safe-online.demo.ticket.webapp.name>eticket
-				</safe-online.demo.ticket.webapp.name>
 				<safe-online.demo.ws.webapp.name>safe-online-demo-ws
 				</safe-online.demo.ws.webapp.name>
 
-				<safe-online.demo.app.webapp.url>demo
-				</safe-online.demo.app.webapp.url>
-				<safe-online.demo.prescription.webapp.url>demo-prescription
-				</safe-online.demo.prescription.webapp.url>
 				<safe-online.demo.bank.webapp.url>demo-bank
 				</safe-online.demo.bank.webapp.url>
 				<safe-online.demo.cinema.webapp.url>demo-cinema
 				</safe-online.demo.cinema.webapp.url>
-				<safe-online.demo.lawyer.webapp.url>demo-lawyer
-				</safe-online.demo.lawyer.webapp.url>
-				<safe-online.demo.mandate.webapp.url>demo-mandate
-				</safe-online.demo.mandate.webapp.url>
 				<safe-online.demo.payment.webapp.url>demo-payment
 				</safe-online.demo.payment.webapp.url>
-				<safe-online.demo.ticket.webapp.url>demo-ticket
-				</safe-online.demo.ticket.webapp.url>
 				<safe-online.demo.ws.webapp.url>safe-online-demo-ws
 				</safe-online.demo.ws.webapp.url>
 			</properties>
 			<modules>
-				<!-- DEMO CORE -->
-				<module>safe-online-model-demo-client
-				</module>
-				<module>safe-online-model-demo</module>
-				<module>safe-online-demo-sql-ddl</module>
-				<module>safe-online-demo-deploy</module>
-				<module>safe-online-demo-applet</module>
-				<module>safe-online-demo-webapp</module>
-				<module>safe-online-demo-startup-runtime
-				</module>
-				<module>safe-online-demo-keystore</module>
-				<module>safe-online-demo-remote-service
-				</module>
-				<module>safe-online-demo-notification-consumer-ws-impl
-				</module>
-				<module>safe-online-demo-ws-runtime
-				</module>
-				<module>safe-online-demo-ws-model</module>
-
-				<!-- DEMO APPLICATIONS -->
-				<module>safe-online-demo-ticket-webapp
-				</module>
-				<module>safe-online-demo-ticket</module>
-				<module>safe-online-demo-ticket-keystore
-				</module>
-				<module>safe-online-demo-payment</module>
-				<module>safe-online-demo-payment-webapp
-				</module>
-				<module>safe-online-demo-payment-keystore
-				</module>
-				<module>safe-online-demo-lawyer</module>
-				<module>safe-online-demo-lawyer-webapp
-				</module>
-				<module>safe-online-demo-lawyer-service
-				</module>
-				<module>safe-online-demo-lawyer-keystore
-				</module>
-				<module>safe-online-demo-prescription
-				</module>
-				<module>safe-online-demo-prescription-webapp
-				</module>
-				<module>safe-online-demo-prescription-service
-				</module>
-				<module>safe-online-demo-prescription-keystore
-				</module>
-				<module>safe-online-demo-mandate</module>
-				<module>safe-online-demo-mandate-webapp
-				</module>
-				<module>safe-online-demo-mandate-service
-				</module>
-				<module>safe-online-demo-mandate-keystore
-				</module>
-				<module>safe-online-demo-cinema</module>
-				<module>safe-online-demo-cinema-webapp
-				</module>
-				<module>safe-online-demo-cinema-keystore
-				</module>
-				<module>safe-online-demo-bank</module>
-				<module>safe-online-demo-bank-webapp
-				</module>
-				<module>safe-online-demo-bank-keystore
-				</module>
+				<module>demo</module>
 			</modules>
 		</profile>
 
@@ -473,14 +334,6 @@
 				<safe-online.option.webapp.name>olas-option
 				</safe-online.option.webapp.name>
 			</properties>
-			<modules>
-				<module>safe-online-option-startup-runtime</module>
-				<module>safe-online-option-webapp</module>
-				<module>safe-online-option-deploy</module>
-				<module>safe-online-model-option-client
-				</module>
-				<module>safe-online-model-option</module>
-			</modules>
 		</profile>
 
 		<!-- Profile that creates an SDK package -->
@@ -524,148 +377,11 @@
 			distribution
 		-->
 		<profile>
-			<id>dep:siemens</id>
+			<id>sub:siemens</id>
 			<modules>
-				<module>siemens-metro-acceptance-ws-impl
-				</module>
-				<module>siemens-metro-acceptance-ws-runtime
-				</module>
-				<module>siemens-auth-ws-acceptance-console
-				</module>
-				<module>siemens-auth-ws-acceptance-console-package
-				</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws
-				</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws-impl
-				</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws-runtime
-				</module>
-				<module>siemens-metro-distribution
-				</module>
+				<module>siemens</module>
 			</modules>
 		</profile>
-
-		<!-- HOST SELECTION PROFILES -->
-		<!-- Profile for deploying on the Option OLAS server -->
-		<profile>
-			<id>host:option</id>
-			<properties>
-				<safe-online.host.name>option.olas.be
-				</safe-online.host.name>
-
-				<safe-online.data.source.user>olasoption
-				</safe-online.data.source.user>
-				<safe-online.data.source.pass>380464ce4c61ebcc2fb9
-				</safe-online.data.source.pass>
-				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on the Demo OLAS server -->
-		<profile>
-			<id>host:demo</id>
-			<properties>
-				<safe-online.distribution>base</safe-online.distribution>
-				<safe-online.host.name>demo.olas.be
-				</safe-online.host.name>
-
-				<safe-online.data.source.user>olasdemo
-				</safe-online.data.source.user>
-				<safe-online.data.source.pass>1abb9f16a7ba974a6cf1
-				</safe-online.data.source.pass>
-
-				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-				<safe-online.host.port:insecure>80</safe-online.host.port:insecure>
-				<safe-online.host.port:secure>443</safe-online.host.port:secure>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on Encap server -->
-		<profile>
-			<id>host:encap</id>
-			<properties>
-				<safe-online.host.name>test.encap.no
-				</safe-online.host.name>
-
-				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-test-10 -->
-		<profile>
-			<id>host:buildserver</id>
-			<properties>
-				<safe-online.host.name>buildserver
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-test-10 -->
-		<profile>
-			<id>host:sebeco-test-10</id>
-			<properties>
-				<safe-online.host.name>sebeco-test-10
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-10 -->
-		<profile>
-			<id>host:sebeco-dev-10</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-10
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-11 -->
-		<profile>
-			<id>host:sebeco-dev-11</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-11
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-12 -->
-		<profile>
-			<id>host:sebeco-dev-12</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-12
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-13 -->
-		<profile>
-			<id>host:sebeco-dev-13</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-13
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on sebeco-dev-22 -->
-		<profile>
-			<id>host:sebeco-dev-22</id>
-			<properties>
-				<safe-online.host.name>sebeco-dev-22
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
-		<!-- Profile for deploying on Wim's Laptop -->
-		<profile>
-			<id>host:wim</id>
-			<properties>
-				<safe-online.host.name>192.168.5.11
-				</safe-online.host.name>
-			</properties>
-		</profile>
-
 
 		<!-- CONFIGURATION PROFILES -->
 		<!--
@@ -689,6 +405,8 @@
 				<debug.mode>true</debug.mode>
 				<safe-online.show.sql>true</safe-online.show.sql>
 				<safe-online.batch.size>0</safe-online.batch.size>
+				<safe-online.hibernate.reflection.optimizer>false
+				</safe-online.hibernate.reflection.optimizer>
 			</properties>
 		</profile>
 
@@ -737,6 +455,8 @@
 		</safe-online.data.source.pass>
 		<safe-online.hibernate.hbm2ddl.auto>update
 		</safe-online.hibernate.hbm2ddl.auto>
+		<safe-online.hibernate.reflection.optimizer>true
+		</safe-online.hibernate.reflection.optimizer>
 
 		<safe-online.host.name>localhost</safe-online.host.name>
 		<safe-online.node.name>olas-${safe-online.host.name}
@@ -791,8 +511,6 @@
 		</safe-online.otpoversms.auth.ws.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-		<safe-online.version>${pom.version}
-		</safe-online.version>
 		<bcel.version>5.1</bcel.version>
 		<bsf.version>2.4.0</bsf.version>
 		<bsh.version>1.3.0</bsh.version>
@@ -919,13 +637,10 @@
 		<jcommon.version>1.0.9</jcommon.version>
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
-		<wicket.version>1.4-so1</wicket.version>
-		<wicket-javaee.version>1.1-safe-online
-		</wicket-javaee.version>
-		<wicketstuff-annotation.version>1.1
-		</wicketstuff-annotation.version>
-		<wicket-datetime.version>1.4-so1
-		</wicket-datetime.version>
+		<wicket.version>1.4-rc2</wicket.version>
+		<wicket-javaee.version>1.1-safe-online</wicket-javaee.version>
+		<wicketstuff-annotation.version>1.1</wicketstuff-annotation.version>
+		<wicket-datetime.version>1.4-rc2</wicket-datetime.version>
 		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
@@ -941,25 +656,30 @@
 		<velocity.version>1.5</velocity.version>
 		<xercesImpl.version>2.9.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
-		<maven-eclipse-plugin.version>2.5.1</maven-eclipse-plugin.version>
+		<maven-eclipse-plugin.version>2.5.1
+		</maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
-		<netbeans-freeform-maven-plugin.version>2.1-SNAPSHOT</netbeans-freeform-maven-plugin.version>
+		<netbeans-freeform-maven-plugin.version>2.1-SNAPSHOT
+		</netbeans-freeform-maven-plugin.version>
 		<javafxrt.version>1531</javafxrt.version>
 		<swing-layout.version>1.0.2</swing-layout.version>
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
 		<kaptcha.version>2.3</kaptcha.version>
-		<mysql-connector-java.version>5.1.5</mysql-connector-java.version>
+		<mysql-connector-java.version>5.1.5
+		</mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
-		<maven-jdocbook-plugin.version>2.1.1</maven-jdocbook-plugin.version>
+		<maven-jdocbook-plugin.version>2.1.1
+		</maven-jdocbook-plugin.version>
 		<maven-javadoc-plugin.version>2.4</maven-javadoc-plugin.version>
 		<maven-sources-plugin.version>2.0.4
 		</maven-sources-plugin.version>
 		<axis.version>1.4</axis.version>
 		<axis-jaxrpc.version>1.3</axis-jaxrpc.version>
-		<axistools-maven-plugin.version>1.1</axistools-maven-plugin.version>
+		<axistools-maven-plugin.version>1.1
+		</axistools-maven-plugin.version>
 		<jgoodies-forms.version>1.1.0</jgoodies-forms.version>
 		<jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 		<jtidy.version>r8-20060801</jtidy.version>
@@ -1017,13 +737,8 @@
 		<module>safe-online-saml-authn-context
 		</module>
 		<module>safe-online-saml-common</module>
+		<module>safe-online-model-node</module>
 		<module>safe-online-node-keystore</module>
-		<!--
-			TODO: Remove the following. Only here because of a test dependency in
-			s-o-model.
-		-->
-		<module>safe-online-beid-pkcs11-applet
-		</module>
 
 		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base-olas
@@ -1035,9 +750,7 @@
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-wicket-tools</module>
 		<module>safe-online-taglib</module>
-		<module>safe-online-user</module>
 		<module>safe-online-user-webapp</module>
-		<module>safe-online-user-service</module>
 		<module>safe-online-user-keystore</module>
 		<module>safe-online-oper</module>
 		<module>safe-online-oper-webapp</module>
@@ -1056,7 +769,6 @@
 		</module>
 		<module>safe-online-auth</module>
 		<module>safe-online-auth-webapp</module>
-		<module>safe-online-auth-service</module>
 		<module>safe-online-applet-common</module>
 
 		<!-- CORE WEB SERVICES -->
@@ -1091,52 +803,12 @@
 		<module>safe-online-auth-ws-impl</module>
 
 		<!-- EXTERNAL DEVICES -->
-		<module>safe-online-model-beid-client
-		</module>
-		<module>safe-online-model-beid</module>
-		<module>safe-online-model-encap-client
-		</module>
-		<module>safe-online-model-encap</module>
-		<module>safe-online-model-digipass-client
-		</module>
-		<module>safe-online-model-digipass</module>
-		<module>safe-online-encap-ws</module>
-		<module>safe-online-encap-ws-impl</module>
-		<module>safe-online-encap-sdk</module>
-		<module>safe-online-encap-ws-runtime</module>
-		<module>safe-online-encap-webapp</module>
-		<module>safe-online-encap-startup-runtime
-		</module>
-		<module>safe-online-encap-auth-ws-impl
-		</module>
-		<module>safe-online-encap-auth-ws-runtime
-		</module>
-		<module>safe-online-encap-deploy</module>
-		<module>safe-online-digipass-startup-runtime</module>
-		<module>safe-online-digipass-deploy</module>
-		<module>safe-online-digipass-webapp</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet
 		</module>
 		<module>safe-online-java-version-applet-package
 		</module>
 		<module>safe-online-pkcs11-sc</module>
-		<module>safe-online-pkcs11-sc-beid</module>
-		<!--module>safe-online-beid-pkcs11-applet</module-->
-		<module>safe-online-beid-pkcs11-applet-package
-		</module>
-		<module>safe-online-beid-pcsc-applet
-		</module>
-		<module>safe-online-beid-pcsc-applet-package
-		</module>
-		<module>safe-online-beid-startup-runtime
-		</module>
-		<module>safe-online-beid-auth-ws-impl
-		</module>
-		<module>safe-online-beid-auth-ws-runtime
-		</module>
-		<module>safe-online-beid-deploy</module>
-		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-attrplugin-template-bundle
@@ -1150,47 +822,10 @@
 		</module>
 		<module>safe-online-sms-clickatell-bundle
 		</module>
-		<module>safe-online-model-password-client
-		</module>
-		<module>safe-online-model-password</module>
-		<module>safe-online-password-startup-runtime</module>
-		<module>safe-online-password-webapp</module>
-		<module>safe-online-password-deploy</module>
+		<module>device</module>
 		<module>safe-online-device-auth-ws</module>
 		<module>safe-online-device-auth-ws-util
 		</module>
-		<module>safe-online-password-auth-ws-impl
-		</module>
-		<module>safe-online-password-auth-ws-runtime
-		</module>
-		<module>safe-online-model-otpoversms-client
-		</module>
-		<module>safe-online-model-otpoversms
-		</module>
-		<module>safe-online-otpoversms-startup-runtime
-		</module>
-		<module>safe-online-otpoversms-webapp
-		</module>
-		<module>safe-online-otpoversms-deploy
-		</module>
-		<module>safe-online-otpoversms-auth-ws-impl
-		</module>
-		<module>safe-online-otpoversms-auth-ws-runtime
-		</module>
-
-		<module>siemens-attrplugin-acceptance-bundle
-		</module>
-		<module>siemens-metro-acceptance-ws
-		</module>
-		<module>siemens-attrplugin-acceptance-metro-bundle
-		</module>
-		<module>siemens-sms-ws</module>
-		<module>siemens-sms-ws-impl
-		</module>
-		<module>siemens-sms-ws-runtime
-		</module>
-		<module>siemens-sms-sdk</module>
-		<module>siemens-sms-bundle</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -1629,7 +1264,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-as
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>provided</scope>
 				<type>pom</type>
 			</dependency>
@@ -1637,21 +1272,21 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-jsf
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-saml
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-test
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>test</scope>
 				<type>pom</type>
 			</dependency>
@@ -1659,7 +1294,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-olas
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
@@ -1667,7 +1302,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-option
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
@@ -1675,14 +1310,14 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-jsf
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-sql-ddl</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>provided</scope>
 				<type>jar</type>
 			</dependency>
@@ -1690,7 +1325,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-demo-sql-ddl
 				</artifactId>
-				<version>${safe-online.version}</version>
+                <version>1.4-SNAPSHOT</version>
 				<scope>provided</scope>
 				<type>jar</type>
 			</dependency>

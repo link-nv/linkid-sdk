@@ -7,15 +7,14 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.Local;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineService;
-import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -27,28 +26,28 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
-import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
-import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.LogoutRequest;
+import org.opensaml.saml2.core.Response;
 
 
 /**
  * Authentication service interface. This service allows the authentication web application to authenticate users. The bean behind this
  * interface is stateful. This means that a certain method invocation pattern must be respected. First the method
- * {@link #initialize(Locale, Integer, Boolean, AuthnRequest)} must be invoked. Then the method {@link #authenticate(HttpServletRequest)}
- * must be invoked. After this the method {@link #commitAuthentication(String)} must be invoked and finally
- * {@link #finalizeAuthentication()}. In case the authentication process needs to be aborted one should invoke {@link #abort()} .
+ * {@link #initialize(Locale, Integer, Boolean, AuthnRequest)} must be invoked. Then the method {@link #authenticate(Response)} must be
+ * invoked. After this the method {@link #commitAuthentication(String)} must be invoked and finally {@link #finalizeAuthentication()}. In
+ * case the authentication process needs to be aborted one should invoke {@link #abort()} .
  * 
  * @author fcorneli
  */
@@ -77,7 +76,7 @@ public interface AuthenticationService extends SafeOnlineService {
     /**
      * Commits the authentication.
      * 
-     * Calling this method is only valid after a call to {@link #authenticate(HttpServletRequest)}.
+     * Calling this method is only valid after a call to {@link #authenticate(Response)}.
      * 
      * @param language
      * 
@@ -118,13 +117,6 @@ public interface AuthenticationService extends SafeOnlineService {
     void abort();
 
     /**
-     * Gives back the user Id of the user that we're trying to authenticate. Calling this method in only valid after a call to
-     * {@link #authenticate(String, String)}.
-     * 
-     */
-    String getUserId();
-
-    /**
      * Gives back the username of the user that we're trying to authenticate. Calling this method is only valid after a call to
      * {@link #authenticate(String, String)}.
      * 
@@ -137,18 +129,20 @@ public interface AuthenticationService extends SafeOnlineService {
      * 
      * Calling this method is only valid after a call to {@link #redirectAuthentication(String, String, String)}.
      * 
-     * Returns the user ID of the authenticated user.
+     * Returns the authentication assertion containing the subject and authenticated device(s).
      * 
-     * 
-     * 
+     * @throws {@linkSignatureValidationException}
+     * @throws {@linkTrustDomainNotFoundException}
+     * @throws {@linkApplicationNotFoundException}
      * @throws {@link DeviceNotFoundException}
      * @throws {@link NodeMappingNotFoundException}
      * @throws {@link ServletException}
      * @throws {@link NodeNotFoundException}
      * @throws {@link SubjectNotFoundException}
      */
-    String authenticate(HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
+    AuthenticationAssertion authenticate(Response response)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
+            SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
 
     /**
      * Initializes an authentication process. Validates the incoming authentication request and stores the application, device policy and
@@ -161,9 +155,11 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws AuthenticationInitializationException
      * @throws ApplicationNotFoundException
      * @throws TrustDomainNotFoundException
+     * @throws SignatureValidationException
      */
     ProtocolContext initialize(Locale language, Integer color, Boolean minimal, AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException;
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SignatureValidationException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
@@ -201,33 +197,26 @@ public interface AuthenticationService extends SafeOnlineService {
      * Gives back the used authentication device.
      * 
      */
-    DeviceEntity getAuthenticationDevice();
+    DeviceEntity getRegisteredDevice();
 
     /**
-     * Gives back the Single Sign-On Cookie.
+     * Attempts to login, given a set of Single Sign On Cookies.
      * 
+     * @return list of valid single sign on assertions or <code>null</code> if not successful. The list of invalid cookies can be retrieved
+     *         with {@link #getInvalidCookies()}.
      */
-    Cookie getSsoCookie();
+    List<AuthenticationAssertion> login(List<Cookie> ssoCookies);
 
     /**
-     * Returns whether the specified cookie allows the user to use single sign-on for the current application.
+     * Gives back the list of new/update SSO cookies.
      * 
-     * @throws ApplicationNotFoundException
-     * @throws InvalidCookieException
-     * @throws DevicePolicyException
-     * @throws EmptyDevicePolicyException
      */
-    boolean checkSsoCookie(Cookie ssoCookie)
-            throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException, DevicePolicyException;
+    List<Cookie> getSsoCookies();
 
     /**
-     * Returns whether the specified cookie is ok for logout. Meaning all applications specified in the cookie have to be logged out.
-     * 
-     * @throws ApplicationNotFoundException
-     * @throws InvalidCookieException
+     * Returns list of invalid ( expired, ... ) SSO cookies.
      */
-    boolean checkSsoCookieForLogout(Cookie ssoCookie)
-            throws ApplicationNotFoundException, InvalidCookieException;
+    List<Cookie> getInvalidCookies();
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
@@ -257,64 +246,12 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws NodeNotFoundException
      * @throws DeviceNotFoundException
      * @throws SubjectNotFoundException
-     * 
-     */
-    String register(HttpServletRequest request)
-            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
-
-    /**
-     * Initializes a logout process. Validates the incoming logout request and stores the application.
-     * 
-     * @param samlLogoutRequest
+     * @throws SignatureValidationException
      * @throws TrustDomainNotFoundException
      * @throws ApplicationNotFoundException
-     * @throws AuthenticationInitializationException
-     * @throws SubjectNotFoundException
-     */
-    LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
-            SubjectNotFoundException;
-
-    /**
-     * Returns the next Application to logout. Returns <code>null</code> if none.
-     */
-    ApplicationEntity findSsoApplicationToLogout();
-
-    /**
-     * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent to the application.
-     * 
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
-     * 
-     * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
-     * @throws NodeNotFoundException
      * 
      */
-    String getLogoutRequest(ApplicationEntity application)
-            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException;
-
-    /**
-     * Validates the returned SAML logout response message. Returns the application name if successful or <code>null</code> if the response
-     * did not have status successful.
-     * 
-     * Calling this method is only valid after a call to {@link #getLogoutRequest(ApplicationEntity)}.
-     * 
-     * @throws ServletException
-     * @throws NodeNotFoundException
-     */
-    String handleLogoutResponse(HttpServletRequest httpRequest)
-            throws ServletException, NodeNotFoundException;
-
-    /**
-     * Finalizes a logout process by constructing an encoded SAML logout response to be sent to the application.
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
-     * 
-     * @param partialLogout
-     * 
-     * @throws NodeNotFoundException
-     */
-    String finalizeLogout(boolean partialLogout)
-            throws NodeNotFoundException;
+    AuthenticationAssertion register(DeviceOperationResponse response)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
+            SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
 }

@@ -1,34 +1,38 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="content">
-		<p><h:outputFormat value="#{msgs.introMessage}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat></p>
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<c:choose>
-					<c:when test="#{userId == null}">
-						<li><h:commandLink action="#{login.login}" id="login"
-							value="#{msgs.loginaction}" /></li>
-					</c:when>
-					<c:otherwise>
-						<li><h:commandLink action="#{login.logout}" id="logout"
-							value="#{msgs.logout}" /></li>
-					</c:otherwise>
-				</c:choose>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+	<body>
+		<ui:composition template="/WEB-INF/incl/owner-template.xhtml">
+			<ui:define name="content">
+				<p>
+					<h:outputFormat value="#{msgs.introMessage}">
+						<f:param value="#{initParam['CommercialName']}" />
+					</h:outputFormat>
+				</p>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<c:choose>
+							<c:when test="#{userId == null}">
+								<li>
+									<h:commandLink action="#{ownerLogin.login}" id="login"
+										value="#{msgs.loginaction}" />
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li>
+									<h:commandLink action="#{ownerLogin.logout}" id="logout"
+										value="#{msgs.logout}" />
+								</li>
+							</c:otherwise>
+						</c:choose>
 
-			</ul>
-			<p>#{msgs.helpMain}</p>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+					</ul>
+					<p>#{msgs.helpMain}</p>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

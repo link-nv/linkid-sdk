@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URL;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
@@ -74,6 +75,7 @@ import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -118,6 +120,7 @@ public class IdentityServiceBeanTest {
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
+        SafeOnlineTestConfig.loadTestNode(new URL("http://127.0.0.1/"));
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
         systemStartable.postStart();
@@ -149,11 +152,11 @@ public class IdentityServiceBeanTest {
         SubjectEntity subject = userRegistrationService.registerUser(login);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         userRegistrationService.registerUser(applicationOwnerLogin);
         applicationService.registerApplicationOwner("test-application-owner-name", applicationOwnerLogin);
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-global-operator", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-global-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         attributeTypeService.add(new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false, false));
         attributeTypeService.add(new AttributeTypeEntity("test-attribute-type-2", DatatypeType.STRING, false, false));
         attributeTypeService.add(new AttributeTypeEntity("test-attribute-type-3", DatatypeType.STRING, false, false));
@@ -165,7 +168,7 @@ public class IdentityServiceBeanTest {
                 null, identity, false, false, false, null);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
         subscriptionService.subscribe(testApplication.getId());
 
         EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");

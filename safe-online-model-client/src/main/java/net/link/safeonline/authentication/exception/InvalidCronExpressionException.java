@@ -15,4 +15,9 @@ public class InvalidCronExpressionException extends SafeOnlineException {
 
     private static final long serialVersionUID = 1L;
 
+
+    public InvalidCronExpressionException(Throwable cause) {
+
+        super(cause);
+    }
 }

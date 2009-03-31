@@ -1,65 +1,68 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="maintenance" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.edittask}: #{selectedTask.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="maintenance" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.edittask}: #{selectedTask.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-            <table>
-                <colgroup class="half" />
-                <colgroup />
+				<h:form>
+					<table>
+						<colgroup class="half" />
+						<colgroup />
 
-                <tbody>
-                    <tr>
-                        <th>#{msgs.name}:</th>
-                        <td>#{selectedTask.name}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.jndiname}:</th>
-                        <td>#{selectedTask.jndiName}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.scheduling}</th>
-                        <td><h:selectOneMenu id="scheduling" styleClass="label"
-                            value="#{selectedTask.scheduling.name}">
-                            <f:selectItems value="#{selectSchedulingList}" />
-                        </h:selectOneMenu></td>
-                    </tr>
-                </tbody>
-			</table>
+						<tbody>
+							<tr>
+								<th>#{msgs.name}:</th>
+								<td>#{selectedTask.name}</td>
+							</tr>
+							<tr>
+								<th>#{msgs.jndiname}:</th>
+								<td>#{selectedTask.jndiName}</td>
+							</tr>
+							<tr>
+								<th>#{msgs.scheduling}</th>
+								<td>
+									<h:selectOneMenu id="scheduling" styleClass="label"
+										value="#{selectedTask.scheduling.name}">
+										<f:selectItems value="#{selectSchedulingList}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
-			<h:commandButton action="#{scheduling.saveTask}" id="saveTask"
-				value="#{msgs.saveaction}" styleClass="submit" />
-			<h:commandButton action="#{scheduling.taskView}" id="back"
-				value="#{msgs.backaction}" immediate="true" styleClass="submit" />
+					<h:commandButton action="#{scheduling.saveTask}"
+						id="saveTask" value="#{msgs.saveaction}" styleClass="submit" />
+					<h:commandButton action="#{scheduling.taskView}"
+						id="back" value="#{msgs.backaction}" immediate="true" styleClass="submit" />
 
-		</h:form>
+				</h:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/audit/audit.seam"
-					value="#{msgs.audit}" /></li>
-				<li><h:commandLink action="/user/main.seam"
-					value="#{msgs.operatorUserManagement}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/audit/audit.seam" value="#{msgs.audit}" />
+						</li>
+						<li>
+							<h:commandLink action="/user/main.seam"
+								value="#{msgs.operatorUserManagement}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

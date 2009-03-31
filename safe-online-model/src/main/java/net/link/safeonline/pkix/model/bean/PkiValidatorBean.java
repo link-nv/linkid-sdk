@@ -107,6 +107,9 @@ public class PkiValidatorBean implements PkiValidator {
         List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(trustDomain);
         HashMap<TrustPointPK, TrustPointEntity> trustPointMap = new HashMap<TrustPointPK, TrustPointEntity>();
         for (TrustPointEntity trustPoint : trustPoints) {
+            LOG.debug("added trust point: " + trustPoint.getPk().getDomain());
+            LOG.debug("added trust point: " + trustPoint.getPk().getSubjectName());
+            LOG.debug("added trust point: " + trustPoint.getPk().getKeyId());
             trustPointMap.put(trustPoint.getPk(), trustPoint);
         }
 
@@ -117,16 +120,14 @@ public class PkiValidatorBean implements PkiValidator {
         X509Certificate currentRootCertificate = certificate;
         while (true) {
             byte[] authorityKeyIdentifierData = currentRootCertificate.getExtensionValue(X509Extensions.AuthorityKeyIdentifier.getId());
-            String keyId;
+            TrustPointPK trustPointPK;
             if (null == authorityKeyIdentifierData) {
                 /*
-                 * PKIX RFC allows this for the root CA certificate.
+                 * PKIX RFC allows this for a self-signed CA certificate.
                  */
                 LOG.warn("certificate has no authority key identifier extension");
-                /*
-                 * NULL is not allowed for persistence.
-                 */
-                keyId = "";
+                LOG.debug("treating certificate as self-signed");
+                trustPointPK = new TrustPointPK(trustDomain, currentRootCertificate);
             } else {
                 AuthorityKeyIdentifierStructure authorityKeyIdentifierStructure;
                 try {
@@ -135,12 +136,14 @@ public class PkiValidatorBean implements PkiValidator {
                     LOG.error("error parsing authority key identifier structure");
                     break;
                 }
-                keyId = new String(Hex.encodeHex(authorityKeyIdentifierStructure.getKeyIdentifier()));
+
+                String keyId = new String(Hex.encodeHex(authorityKeyIdentifierStructure.getKeyIdentifier()));
+                String issuer = currentRootCertificate.getIssuerX500Principal().getName();
+                LOG.debug("issuer: " + issuer);
+                LOG.debug("keyId: " + keyId);
+                trustPointPK = new TrustPointPK(trustDomain, issuer, keyId);
             }
-            String issuer = currentRootCertificate.getIssuerX500Principal().getName();
-            LOG.debug("issuer: " + issuer);
-            LOG.debug("keyId: " + keyId);
-            TrustPointPK trustPointPK = new TrustPointPK(trustDomain, issuer, keyId);
+
             TrustPointEntity matchingTrustPoint = trustPointMap.get(trustPointPK);
             if (null == matchingTrustPoint) {
                 LOG.debug("no matching trust point found");
@@ -187,7 +190,7 @@ public class PkiValidatorBean implements PkiValidator {
                 return checkValidityResult;
             if (false == verifySignature(trustPointCertificate, issuerPublicKey))
                 return PkiResult.INVALID;
-            if (false == verifyConstraints(trustPointCertificate)) {
+            if (false == verifyConstraints(trustPointCertificate, certificate)) {
                 LOG.debug("verify constraints did not pass");
                 return PkiResult.INVALID;
             }
@@ -220,9 +223,9 @@ public class PkiValidatorBean implements PkiValidator {
             return PkiResult.INVALID;
     }
 
-    private boolean verifyConstraints(X509Certificate certificate) {
+    private boolean verifyConstraints(X509Certificate trustedCertificate, X509Certificate certificate) {
 
-        byte[] basicConstraintsValue = certificate.getExtensionValue(X509Extensions.BasicConstraints.getId());
+        byte[] basicConstraintsValue = trustedCertificate.getExtensionValue(X509Extensions.BasicConstraints.getId());
         if (null == basicConstraintsValue) {
             LOG.debug("no basic contraints extension present");
             /*
@@ -243,7 +246,7 @@ public class PkiValidatorBean implements PkiValidator {
         }
         ASN1Sequence basicConstraintsSequence = (ASN1Sequence) basicConstraintsDecoded;
         BasicConstraints basicConstraints = new BasicConstraints(basicConstraintsSequence);
-        if (false == basicConstraints.isCA()) {
+        if (false == basicConstraints.isCA() && !trustedCertificate.equals(certificate)) {
             LOG.debug("basic contraints says not a CA");
             return false;
         }

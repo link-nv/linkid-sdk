@@ -10,6 +10,10 @@ package test.unit.net.link.safeonline.pkix.model.bean;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -26,7 +30,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.TestCase;
 import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
@@ -49,9 +52,12 @@ import org.bouncycastle.ocsp.OCSPRespGenerator;
 import org.bouncycastle.ocsp.Req;
 import org.bouncycastle.util.encoders.Hex;
 import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class OcspValidatorBeanTest extends TestCase {
+public class OcspValidatorBeanTest {
 
     private OcspValidatorBean   testedInstance;
 
@@ -68,11 +74,9 @@ public class OcspValidatorBeanTest extends TestCase {
     private Object[]            mockObjects;
 
 
-    @Override
+    @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         testedInstance = new OcspValidatorBean();
 
@@ -88,8 +92,8 @@ public class OcspValidatorBeanTest extends TestCase {
         KeyPair ocspResponderKeyPair = PkiTestUtils.generateKeyPair();
 
         TestOcspResponderServlet.certificate = PkiTestUtils.generateCertificate(ocspResponderKeyPair.getPublic(), "CN=TestOCSPResponder",
-                caKeyPair.getPrivate(), caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(
-                        caCertificate.getNotAfter()), null, false, false, null);
+                caKeyPair.getPrivate(), caCertificate, new DateTime(caCertificate.getNotBefore()),
+                new DateTime(caCertificate.getNotAfter()), null, true, false, false, null);
         TestOcspResponderServlet.privateKey = ocspResponderKeyPair.getPrivate();
 
         TestOcspResponderServlet.called = false;
@@ -99,15 +103,14 @@ public class OcspValidatorBeanTest extends TestCase {
         EJBTestUtils.inject(testedInstance, mockResourceAuditLogger);
     }
 
-    @Override
+    @After
     public void tearDown()
             throws Exception {
 
         servletTestManager.tearDown();
-
-        super.tearDown();
     }
 
+    @Test
     public void testGetOcspUri()
             throws Exception {
 
@@ -122,6 +125,7 @@ public class OcspValidatorBeanTest extends TestCase {
         assertEquals(testOcspUri, resultOcspUri);
     }
 
+    @Test
     public void testGetOcspUriGivesNullOnMissingOcspAccessLocation()
             throws Exception {
 
@@ -135,6 +139,7 @@ public class OcspValidatorBeanTest extends TestCase {
         assertNull(resultOcspUri);
     }
 
+    @Test
     public void testPerformOcspCheckFailsIfOcspResponderIsDown()
             throws Exception {
 
@@ -157,6 +162,7 @@ public class OcspValidatorBeanTest extends TestCase {
         assertFalse(result);
     }
 
+    @Test
     public void testPerformOcspCheckFailsIfOcspResponderDoesNotExist()
             throws Exception {
 
@@ -171,14 +177,15 @@ public class OcspValidatorBeanTest extends TestCase {
         assertFalse(result);
     }
 
+    @Test
     public void testPerformOcspCheck()
             throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", caKeyPair.getPrivate(),
-                caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(caCertificate.getNotAfter()), null,
-                false, false, ocspUri);
+                caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(caCertificate.getNotAfter()), null, true, false,
+                false, ocspUri);
 
         // operate
         boolean result = testedInstance.performOcspCheck(certificate, caCertificate);

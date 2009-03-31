@@ -7,30 +7,36 @@
 
 package test.unit.net.link.safeonline.pkix.dao.bean;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import javax.persistence.EntityManager;
 
-import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 
-public class CachedOcspResponseDAOBeanTest extends TestCase {
+public class CachedOcspResponseDAOBeanTest {
 
     private EntityTestManager         entityTestManager;
 
     private CachedOcspResponseDAOBean testedInstance;
 
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
             throws Exception {
 
-        super.setUp();
         entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
@@ -41,14 +47,14 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
                 entityTestManager.getEntityManager());
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
             throws Exception {
 
         entityTestManager.tearDown();
-        super.tearDown();
     }
 
+    @Test
     public void testAddRemoveCachedOcspResponse()
             throws Exception {
 
@@ -64,6 +70,7 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
         testedInstance.addCachedOcspResponse(key, result, null);
     }
 
+    @Test
     public void testClearOcspCacheExpired() {
 
         TrustDomainEntity trustDomainExpired = new TrustDomainEntity("trustdomainExpired", true, 0);

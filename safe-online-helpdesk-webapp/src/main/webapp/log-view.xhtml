@@ -1,98 +1,93 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-    xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="log" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.helpdeskContext} : #{context.id}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/incl/helpdesk-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="log" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.helpdeskContext} : #{context.id}
+				</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<rich:dataTable id="helpdesk-log-data" var="item"
-				value="#{helpdeskLogList}" rows="15" preserveDataModel="false"
-				rowClasses="listingTable_Row1,listingTable_Row2">
+				<h:form>
+					<rich:dataTable id="helpdesk-log-data" var="item"
+						value="#{helpdeskLogList}" rows="15" preserveDataModel="false"
+						rowClasses="listingTable_Row1,listingTable_Row2">
 
-				<h:column>
-					<f:facet name="header">#{msgs.level}</f:facet>
-					<h:outputText value="#{item.logLevel}"
-						rendered="#{item.logLevel == 'INFO'}" />
-					<h:outputText value="#{item.logLevel}"
-						style="background-color: red"
-						rendered="#{item.logLevel == 'ERROR'}" />
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.level}</f:facet>
+							<h:outputText value="#{item.logLevel}" rendered="#{item.logLevel == 'INFO'}" />
+							<h:outputText value="#{item.logLevel}" style="background-color: red"
+								rendered="#{item.logLevel == 'ERROR'}" />
+						</h:column>
 
-				<h:column>
-					<f:facet name="header">#{msgs.time}</f:facet>
-					<h:outputLabel value="#{item.time}">
-						<f:convertDateTime type="both" timeStyle="medium"
-							dateStyle="short" />
-					</h:outputLabel>
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.user}</f:facet>
-					#{item.principal}
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.time}</f:facet>
+							<h:outputLabel value="#{item.time}">
+								<f:convertDateTime type="both" timeStyle="medium"
+									dateStyle="short" />
+							</h:outputLabel>
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.user}</f:facet>
+							#{item.principal}
+						</h:column>
 
-				<h:column>
-					<f:facet name="header">#{msgs.message}</f:facet>
-					<h:outputText value="#{item.message}"
-						rendered="#{item.logLevel == 'INFO'}" />
-					<h:outputText value="#{item.message}" style="background-color: red"
-						rendered="#{item.logLevel == 'ERROR'}" />
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.message}</f:facet>
+							<h:outputText value="#{item.message}" rendered="#{item.logLevel == 'INFO'}" />
+							<h:outputText value="#{item.message}" style="background-color: red"
+								rendered="#{item.logLevel == 'ERROR'}" />
+						</h:column>
 
-				<f:facet name="footer">
-					<rich:datascroller for="helpdesk-log-data" pageIndexVar="pageIndex"
-						pagesVar="pages" fastControls="hide">
-						<f:facet name="first">
-							<h:graphicImage value="/images/icons/control_start.png" />
+						<f:facet name="footer">
+							<rich:datascroller for="helpdesk-log-data"
+								pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+								<f:facet name="first">
+									<h:graphicImage value="/images/icons/control_start.png" />
+								</f:facet>
+								<f:facet name="first_disabled">
+									<h:graphicImage value="/images/icons/control_start.png" />
+								</f:facet>
+								<f:facet name="previous">
+									<h:graphicImage value="/images/icons/control_rewind.png" />
+								</f:facet>
+								<f:facet name="previous_disabled">
+									<h:graphicImage value="/images/icons/control_rewind.png" />
+								</f:facet>
+								<f:facet name="pages">
+									<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+								</f:facet>
+								<f:facet name="next">
+									<h:graphicImage value="/images/icons/control_fastforward.png" />
+								</f:facet>
+								<f:facet name="next_disabled">
+									<h:graphicImage value="/images/icons/control_fastforward.png" />
+								</f:facet>
+								<f:facet name="last">
+									<h:graphicImage value="/images/icons/control_end.png" />
+								</f:facet>
+								<f:facet name="last_disabled">
+									<h:graphicImage value="/images/icons/control_end.png" />
+								</f:facet>
+							</rich:datascroller>
 						</f:facet>
-						<f:facet name="first_disabled">
-							<h:graphicImage value="/images/icons/control_start.png" />
-						</f:facet>
-						<f:facet name="previous">
-							<h:graphicImage value="/images/icons/control_rewind.png" />
-						</f:facet>
-						<f:facet name="previous_disabled">
-							<h:graphicImage value="/images/icons/control_rewind.png" />
-						</f:facet>
-						<f:facet name="pages">
-							<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
-						</f:facet>
-						<f:facet name="next">
-							<h:graphicImage value="/images/icons/control_fastforward.png" />
-						</f:facet>
-						<f:facet name="next_disabled">
-							<h:graphicImage value="/images/icons/control_fastforward.png" />
-						</f:facet>
-						<f:facet name="last">
-							<h:graphicImage value="/images/icons/control_end.png" />
-						</f:facet>
-						<f:facet name="last_disabled">
-							<h:graphicImage value="/images/icons/control_end.png" />
-						</f:facet>
-					</rich:datascroller>
-				</f:facet>
 
-			</rich:dataTable>
+					</rich:dataTable>
 
-		</h:form>
+				</h:form>
 
 
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>
 

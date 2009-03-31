@@ -18,18 +18,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
-import net.link.safeonline.auth.webapp.GlobalConfirmationPage;
-import net.link.safeonline.auth.webapp.IdentityConfirmationPage;
-import net.link.safeonline.auth.webapp.IdentityUnavailablePage;
-import net.link.safeonline.auth.webapp.MissingAttributesPage;
-import net.link.safeonline.auth.webapp.RegisterDevicePage;
-import net.link.safeonline.auth.webapp.SubscriptionPage;
+import net.link.safeonline.auth.webapp.pages.GlobalConfirmationPage;
+import net.link.safeonline.auth.webapp.pages.IdentityConfirmationPage;
+import net.link.safeonline.auth.webapp.pages.IdentityUnavailablePage;
+import net.link.safeonline.auth.webapp.pages.MissingAttributesPage;
+import net.link.safeonline.auth.webapp.pages.RegisterDevicePage;
+import net.link.safeonline.auth.webapp.pages.SubscriptionPage;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -37,8 +38,8 @@ import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.In;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class LoginServlet extends AbstractInjectionServlet {
+public class LoginServlet extends AbstractNodeInjectionServlet {
 
     private static final long     serialVersionUID = 1L;
 
@@ -73,8 +74,8 @@ public class LoginServlet extends AbstractInjectionServlet {
     @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService usageAgreementService;
 
-    @In(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE)
-    DeviceEntity                  device;
+    @In(LoginManager.AUTHENTICATION_ASSERTION_ATTRIBUTE)
+    AuthenticationAssertion       authenticationAssertion;
 
     @In(LoginManager.APPLICATION_ID_ATTRIBUTE)
     long                          applicationId;
@@ -216,8 +217,11 @@ public class LoginServlet extends AbstractInjectionServlet {
         } catch (EmptyDevicePolicyException e) {
             throw new ServletException("empty device policy");
         }
-        if (devicePolicy.contains(device))
-            return true;
+
+        for (DeviceEntity device : authenticationAssertion.getDevices()) {
+            if (devicePolicy.contains(device))
+                return true;
+        }
         return false;
     }
 

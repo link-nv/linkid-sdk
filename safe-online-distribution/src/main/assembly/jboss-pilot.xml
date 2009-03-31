@@ -38,14 +38,8 @@
 
         <!-- The DS configuration                           -> /jboss/server/default/deploy -->
 		<file>
-            <source>target/files/resources/${safe-online.data.source.type}-safe-online-ds.xml</source>
+            <source>target/files/resources/safe-online-ds.xml</source>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</file>
-
-        <!-- The JBoss Messaging DS configuration           -> /jboss/server/default/deploy/jboss-messaging.sar -->
-		<file>
-            <source>target/classes/jboss/server/default/deploy/jboss-messaging.sar/${safe-online.data.source.type}-persistence-service.xml</source>
-			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
 		</file>
 
 	</files>
@@ -56,6 +50,7 @@
 		<fileSet>
 			<directory>target/files/jboss-${jboss.version}</directory>
 			<outputDirectory>jboss</outputDirectory>
+
 			<excludes>
 				<exclude>**/jboss-saaj.jar</exclude>
 				<exclude>server/all/**</exclude>
@@ -112,6 +107,7 @@
 		<fileSet>
 			<directory>target/files/jboss-${jboss.version}/server/default/deploy/jms</directory>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+
 			<includes>
 				<include>jms-ra.rar</include>
 			</includes>
@@ -119,6 +115,7 @@
 		<fileSet>
 			<directory>target/files/jboss-${jboss.version}</directory>
 			<outputDirectory>jboss</outputDirectory>
+
 			<includes>
 				<include>client/jbossall-client.jar</include>
 			</includes>
@@ -126,6 +123,7 @@
 		<!--fileSet>
 			<directory>target/files/jboss-${jboss.version}</directory>
 			<outputDirectory>jboss</outputDirectory>
+
 			<includes>
 				<include>bin/run.sh</include>
 				<include>bin/shutdown.sh</include>
@@ -135,6 +133,7 @@
 		<fileSet>
 			<directory>target/classes/scripts</directory>
 			<outputDirectory>scripts</outputDirectory>
+
 			<fileMode>0500</fileMode>
 		</fileSet>
 
@@ -144,51 +143,67 @@
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 
-        <!-- External JBoss-Messaging (not the default DS)  -> /jboss/server/default/deploy -->
+        <!-- External JBoss-Messaging (except persistence)  -> /jboss/server/default/deploy -->
 		<fileSet>
 			<directory>target/files</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+
 			<excludes>
 				<exclude>jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
 			</excludes>
 			<includes>
 				<include>jboss-messaging.sar/**</include>
 			</includes>
-			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+
+        <!-- The JBoss Messaging DS configuration           -> /jboss/server/default/deploy/jboss-messaging.sar -->
+		<fileSet>
+            <directory>target/classes/jboss/server/default/deploy/jboss-messaging.sar</directory>
+			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
+
+            <includes>
+                <include>persistence-service.xml</include>
+                <include>*-persistence-service.xml.choice</include>
+            </includes>
 		</fileSet>
 
         <!-- External JBoss-Messaging lib                   -> /jboss/server/default/lib -->
 		<fileSet>
 			<directory>target/files/jboss-messaging-${jboss-messaging.version}</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+
 			<includes>
 				<include>jboss-messaging.jar</include>
 			</includes>
-			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 
 		<!-- This artifact's custom JBoss configuration     -> /jboss -->
 		<fileSet>
 			<directory>target/classes/jboss</directory>
+			<outputDirectory>jboss</outputDirectory>
+
 			<excludes>
                 <exclude>server/default/deploy/jboss-messaging.sar/*-persistence-service.xml</exclude>
 			</excludes>
-			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 
         <!-- OSGI Support -->
 		<fileSet>
 			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+
 			<excludes>
 				<exclude>safe-online*</exclude>
 				<exclude>org.apache.felix.fileinstall*</exclude>
 			</excludes>
-			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 		<fileSet>
 			<directory>target/dependency</directory>
+			<outputDirectory>jboss/osgi/autostart</outputDirectory>
+
 			<includes>
 				<include>org.apache.felix.fileinstall*</include>
 			</includes>
-			<outputDirectory>jboss/osgi/autostart</outputDirectory>
 		</fileSet>
 		<fileSet>
 			<directory>target/classes/osgi</directory>

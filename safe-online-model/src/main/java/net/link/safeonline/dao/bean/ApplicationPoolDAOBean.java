@@ -86,4 +86,10 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
         return applicationPools;
     }
 
+    public List<ApplicationPoolEntity> listApplicationPools(ApplicationEntity application) {
+
+        List<ApplicationPoolEntity> applicationPools = queryObject.listApplicationPools(application);
+        return applicationPools;
+    }
+
 }
