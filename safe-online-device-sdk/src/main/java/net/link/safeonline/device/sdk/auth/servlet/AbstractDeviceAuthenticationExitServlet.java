@@ -17,6 +17,7 @@ import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationFinalizationException;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 
@@ -50,14 +51,14 @@ public abstract class AbstractDeviceAuthenticationExitServlet extends AbstractIn
             /*
              * If no protocol handler is active at this point then something must be going wrong here.
              */
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage("No protocol handler is active"));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage("No protocol handler is active"));
             return;
 
         }
         try {
             handler.finalizeAuthentication(request, response);
         } catch (AuthenticationFinalizationException e) {
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
         }
     }
 }

@@ -12,6 +12,8 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.security.KeyPair;
@@ -19,7 +21,6 @@ import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
@@ -33,9 +34,11 @@ import net.link.safeonline.test.util.PkiTestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class PkiValidatorBeanTest extends TestCase {
+public class PkiValidatorBeanTest {
 
     private static final Log    LOG = LogFactory.getLog(PkiValidatorBeanTest.class);
 
@@ -48,11 +51,9 @@ public class PkiValidatorBeanTest extends TestCase {
     private URI                 ocspUri;
 
 
-    @Override
+    @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         testedInstance = new PkiValidatorBean();
 
@@ -65,6 +66,7 @@ public class PkiValidatorBeanTest extends TestCase {
         EJBTestUtils.init(testedInstance);
     }
 
+    @Test
     public void testValidateCertificateOnEmptyTrustDomainFails()
             throws Exception {
 
@@ -89,6 +91,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.INVALID, result);
     }
 
+    @Test
     public void testValidateNullCertificateThrowsIllegalArgumentException()
             throws Exception {
 
@@ -101,6 +104,7 @@ public class PkiValidatorBeanTest extends TestCase {
         }
     }
 
+    @Test
     public void testValidateCertificate()
             throws Exception {
 
@@ -142,6 +146,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
+    @Test
     public void testValidateTrustPointCertificate()
             throws Exception {
 
@@ -177,6 +182,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
+    @Test
     public void testValidateCertificateFailsIfOCSPRevokes()
             throws Exception {
 
@@ -216,6 +222,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.REVOKED, result);
     }
 
+    @Test
     public void testValidateCertificateRootCaAndInterCa()
             throws Exception {
 
@@ -262,6 +269,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
+    @Test
     public void testValidationFailsIfTrustPointIsNotCA()
             throws Exception {
 
@@ -309,6 +317,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.INVALID, result);
     }
 
+    @Test
     public void testValidateCertificateIfRootIsNotSelfSignedFails()
             throws Exception {
 
@@ -346,6 +355,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.INVALID, result);
     }
 
+    @Test
     public void testValidateSelfSignedCertificateNoAuthorityKeyIdentifier()
             throws Exception {
 
@@ -382,6 +392,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
+    @Test
     public void testValidateSelfSignedCertificateNoCA()
             throws Exception {
 
@@ -418,6 +429,7 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
+    @Test
     public void testValidateSelfSignedCertificateNotTrusted()
             throws Exception {
 
@@ -456,5 +468,4 @@ public class PkiValidatorBeanTest extends TestCase {
 
         assertEquals(PkiResult.INVALID, result);
     }
-
 }

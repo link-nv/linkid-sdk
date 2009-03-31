@@ -70,7 +70,7 @@ public class RegistrationPage extends TemplatePage {
         getSidebar(localize("helpRegisterOtpOverSms"));
 
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getDeviceOperation().equals(
+        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).getDeviceOperation().equals(
                 DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
 
@@ -112,7 +112,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("request otp for mobile " + mobile);
 
                     try {
@@ -125,23 +125,23 @@ public class RegistrationPage extends TemplatePage {
 
                     catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "request: failed to send otp" + mobile.getObject(),
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "request: failed to send otp" + mobile.getObject(),
                                 LogLevelType.ERROR);
                         mobile.setObject(null);
                         return;
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "request: failed to send otp" + mobile.getObject(),
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "request: failed to send otp" + mobile.getObject(),
                                 LogLevelType.ERROR);
                         mobile.setObject(null);
                         return;
                     } catch (SubjectNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "request: mobile has no registered subject: "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "request: mobile has no registered subject: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "request: mobile isn't registered: "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "request: mobile isn't registered: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
                     }
                 }
@@ -156,7 +156,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setSuccess(false);
                     exit();
                 }
 
@@ -231,7 +231,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
                     try {
@@ -246,7 +246,7 @@ public class RegistrationPage extends TemplatePage {
 
                     catch (DeviceAuthenticationException e) {
                         otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(),
                                 "mobile otp: verification failed for mobile " + mobile, LogLevelType.ERROR);
                     }
                 }
@@ -260,7 +260,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setSuccess(false);
                     exit();
                 }
 
@@ -295,7 +295,7 @@ public class RegistrationPage extends TemplatePage {
 
     public void exit() {
 
-        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setValidity(
                 samlAuthorityService.getAuthnAssertionValidity());
         throw new RedirectToUrlException("deviceexit");
     }

@@ -29,6 +29,7 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.SafeOnlineConfig;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Context;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -50,6 +51,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutServlet extends AbstractLandingInjectionServlet {
 
+    public static final String                 LOGOUT_PATH            = "LogoutPath";
+    public static final String                 ERROR_PAGE             = "ErrorPage";
+
     private static final long                  serialVersionUID       = 1L;
 
     private static final Log                   LOG                    = LogFactory.getLog(LogoutServlet.class);
@@ -58,10 +62,10 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
 
     public static final String                 INVALIDATE_SESSION     = "OLAS:Invalidated";
 
-    @Init(name = "LogoutPath")
+    @Init(name = LOGOUT_PATH)
     private String                             logoutPath;
 
-    @Init(name = "ErrorPage", optional = true)
+    @Init(name = ERROR_PAGE, optional = true)
     private String                             errorPage;
 
     @Context(name = SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM)
@@ -151,7 +155,7 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
                 if (null == protocolHandler) {
                     String msg = "no protocol handler active";
                     LOG.error(msg);
-                    redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
+                    ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
                     return;
                 }
 
@@ -190,7 +194,7 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
             if (null == logoutUserId) {
                 String msg = "invalid logout request";
                 LOG.error(msg);
-                redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
+                ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
                 return;
             }
 
@@ -205,7 +209,7 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
             if (!logoutUserId.equals(userId)) {
                 String msg = "trying to logout a different user";
                 LOG.error(msg);
-                redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
+                ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
                 return;
             }
 
@@ -220,7 +224,7 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
         if (false == logoutSuccess) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
             return;
         }
 

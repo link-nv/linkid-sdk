@@ -157,7 +157,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     protocolContext.setSuccess(false);
                     protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 

@@ -42,7 +42,7 @@ public class LogoutServletTest extends TestCase {
         super.setUp();
 
         servletTestManager = new ServletTestManager();
-        servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitPath", logoutExitPath), null, null,
+        servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap(LogoutServlet.LOGOUT_EXIT_PATH, logoutExitPath), null, null,
                 Collections.singletonMap(LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
         servletLocation = servletTestManager.getServletLocation();
         SafeOnlineTestConfig.loadTest(servletTestManager);

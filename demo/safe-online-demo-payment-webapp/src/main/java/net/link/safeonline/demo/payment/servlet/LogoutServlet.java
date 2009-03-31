@@ -37,12 +37,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutServlet extends AbstractInjectionServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final String LOGOUT_EXIT_PATH = "LogoutExitPath";
 
-    private static final Log  LOG              = LogFactory.getLog(LogoutServlet.class);
+    private static final long   serialVersionUID = 1L;
 
-    @Init(name = "LogoutExitPath")
-    private String            logoutExitPath;
+    private static final Log    LOG              = LogFactory.getLog(LogoutServlet.class);
+
+    @Init(name = LOGOUT_EXIT_PATH)
+    private String              logoutExitPath;
 
 
     @Override

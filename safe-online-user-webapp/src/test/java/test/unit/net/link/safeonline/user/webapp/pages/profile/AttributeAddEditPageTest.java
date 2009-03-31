@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -21,6 +20,7 @@ import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.user.webapp.pages.profile.AttributeAddEditPage;
 import net.link.safeonline.user.webapp.pages.profile.ProfilePage;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.components.attribute.AttributeInputPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 
@@ -50,7 +50,7 @@ public class AttributeAddEditPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockSubjectService = createMock(SubjectService.class);
         mockIdentityService = createMock(IdentityService.class);

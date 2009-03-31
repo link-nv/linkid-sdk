@@ -54,7 +54,7 @@ public class RegistrationPage extends AppletPage {
 
         // Our content.
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getDeviceOperation().equals(
+        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).getDeviceOperation().equals(
                 DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
     }
@@ -99,7 +99,7 @@ public class RegistrationPage extends AppletPage {
     @Override
     protected void cancel() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         protocolContext.setSuccess(false);
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 

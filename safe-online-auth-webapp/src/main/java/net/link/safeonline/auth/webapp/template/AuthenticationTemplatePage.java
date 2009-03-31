@@ -29,7 +29,7 @@ public abstract class AuthenticationTemplatePage extends TemplatePage {
 
     protected String findApplicationUrl() {
 
-        Cookie[] cookies = WicketUtil.toServletRequest(getRequest()).getCookies();
+        Cookie[] cookies = WicketUtil.getServletRequest().getCookies();
         try {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(SafeOnlineCookies.APPLICATION_COOKIE)) {
@@ -45,7 +45,7 @@ public abstract class AuthenticationTemplatePage extends TemplatePage {
             return null;
         } finally {
             LOG.debug("removing entry and timeout cookie");
-            HttpServletResponse response = WicketUtil.toServletResponse(getResponse());
+            HttpServletResponse response = WicketUtil.getServletResponse();
             removeCookie(SafeOnlineCookies.APPLICATION_COOKIE, response);
             removeCookie(SafeOnlineCookies.ENTRY_COOKIE, response);
             removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, response);

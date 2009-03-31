@@ -326,9 +326,9 @@ public class DevicesPage extends UserTemplatePage {
 
         try {
             String registrationURL = devicePolicyService.getRegistrationURL(deviceEntry.getDevice().getName());
-            DeviceOperationUtils.redirect(WicketUtil.toServletRequest(getRequest()), WicketUtil.toServletResponse(getResponse()),
-                    registrationURL, DeviceOperationType.REGISTER, deviceEntry.getDevice().getName(),
-                    LoginManager.getAuthenticatedDevice(WicketUtil.toServletRequest(getRequest())), subject.getUserId(), null, null);
+            DeviceOperationUtils.redirect(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(), registrationURL,
+                    DeviceOperationType.REGISTER, deviceEntry.getDevice().getName(),
+                    LoginManager.getAuthenticatedDevice(WicketUtil.getServletRequest()), subject.getUserId(), null, null);
         } catch (DeviceNotFoundException e) {
             error(localize("errorDeviceNotFound"));
             return;
@@ -374,10 +374,9 @@ public class DevicesPage extends UserTemplatePage {
         }
 
         try {
-            DeviceOperationUtils.redirect(WicketUtil.toServletRequest(getRequest()), WicketUtil.toServletResponse(getResponse()), url,
-                    operation, deviceRegistration.getDevice().getName(),
-                    LoginManager.getAuthenticatedDevice(WicketUtil.toServletRequest(getRequest())), subject.getUserId(),
-                    deviceRegistration.getId(), deviceRegistration.getAttribute());
+            DeviceOperationUtils.redirect(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(), url, operation,
+                    deviceRegistration.getDevice().getName(), LoginManager.getAuthenticatedDevice(WicketUtil.getServletRequest()),
+                    subject.getUserId(), deviceRegistration.getId(), deviceRegistration.getAttribute());
         } catch (ServletException e) {
             error(localize("errorMessage"));
             return;

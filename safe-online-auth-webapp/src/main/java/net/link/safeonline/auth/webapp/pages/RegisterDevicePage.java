@@ -70,7 +70,7 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
 
     public RegisterDevicePage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         devices = new LinkedList<DeviceDO>();
         List<DeviceEntity> deviceEntities;
         try {
@@ -101,7 +101,7 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -187,9 +187,8 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), registrationURL, deviceName,
-                                    LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
+                            AuthenticationUtils.redirect(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(), getLocale(),
+                                    registrationURL, deviceName, LoginManager.getUserId(WicketUtil.getHttpSession()));
 
                         }
 

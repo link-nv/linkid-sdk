@@ -15,7 +15,6 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
@@ -26,6 +25,7 @@ import net.link.safeonline.sdk.test.DummyNameIdentifierMappingClient;
 import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.template.TemplatePage;
 
 import org.apache.wicket.markup.html.form.Form;
@@ -59,7 +59,7 @@ public class AuthenticationPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         mockPasswordDeviceService = createMock(PasswordDeviceService.class);

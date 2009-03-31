@@ -155,7 +155,7 @@ import org.opensaml.xml.validation.ValidationException;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 
-    private static final Log                    LOG                                  = LogFactory.getLog(AuthenticationServiceBean.class);
+    static final Log                            LOG                                  = LogFactory.getLog(AuthenticationServiceBean.class);
 
     private static final SafeOnlineNodeKeyStore nodeKeyStore                         = new SafeOnlineNodeKeyStore();
 
@@ -683,23 +683,29 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         public String getValue() {
 
-            String ssoApplicationsValue = "";
+            StringBuffer ssoApplicationsValue = new StringBuffer();
             for (ApplicationEntity ssoApplication : ssoApplications) {
-                ssoApplicationsValue += ssoApplication.getName() + ",";
+                ssoApplicationsValue.append(ssoApplication.getName()).append(',');
             }
-            if (ssoApplicationsValue.endsWith(",")) {
-                ssoApplicationsValue = ssoApplicationsValue.substring(0, ssoApplicationsValue.length() - 1);
+            if (ssoApplicationsValue.length() > 0) {
+                ssoApplicationsValue.deleteCharAt(ssoApplicationsValue.length() - 1);
             }
 
-            return SUBJECT_FIELD + "=" + subject.getUserId() + ";" + APPLICATION_FIELD + "=" + application.getName() + ";" + DEVICE_FIELD
-                    + "=" + device.getName() + ";" + TIME_FIELD + "=" + time.toString() + ";" + SSO_APPLICATIONS_FIELD + "="
-                    + ssoApplicationsValue;
+            return String.format("%s=%s;%s=%s;%s=%s;%s=%s;%s=%s", //
+                    SUBJECT_FIELD, subject.getUserId(), //
+                    APPLICATION_FIELD, application.getName(), // 
+                    DEVICE_FIELD, device.getName(), //
+                    TIME_FIELD, time.toString(), //
+                    SSO_APPLICATIONS_FIELD, ssoApplicationsValue);
         }
 
         public void addSsoApplication(ApplicationEntity ssoApplication) {
 
             if (!(ssoApplications.contains(ssoApplication) || ssoApplication.equals(application))) {
+                LOG.debug("adding sso application: " + ssoApplication);
                 ssoApplications.add(ssoApplication);
+            } else {
+                LOG.debug("not adding sso application: " + ssoApplication + "; already present.");
             }
         }
     }

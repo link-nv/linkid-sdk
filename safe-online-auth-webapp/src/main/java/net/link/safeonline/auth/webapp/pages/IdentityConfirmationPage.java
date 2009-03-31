@@ -54,7 +54,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
 
     public IdentityConfirmationPage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         getSidebar(localize("helpIdentityConfirmation"));
 
@@ -91,7 +91,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
                 attributeItem.add(new Label(NAME_ID, name));
 
                 Image dataMiningImage = new Image(DATAMINING_IMAGE_ID, "override");
-                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
+                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                         + "/images/icons/accept.png"));
                 dataMiningImage.setVisible(attributeItem.getModelObject().isDataMining());
                 attributeItem.add(dataMiningImage);
@@ -109,7 +109,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -134,7 +134,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     try {
                         identityService.confirmIdentity(protocolContext.getApplicationId());
                     } catch (SubscriptionNotFoundException e) {

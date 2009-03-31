@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.SubscriptionService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -21,6 +20,7 @@ import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.user.webapp.pages.applications.ApplicationsPage;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.components.CustomPagingNavigator;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -50,7 +50,7 @@ public class ApplicationsPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockSubscriptionService = createMock(SubscriptionService.class);
         jndiTestUtils.bindComponent(SubscriptionService.class, mockSubscriptionService);

@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -65,7 +66,7 @@ public class LoginServlet extends AbstractLandingInjectionServlet {
              */
             String msg = "no protocol handler active";
             LOG.error(msg);
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
 
             return;
         }
@@ -74,7 +75,7 @@ public class LoginServlet extends AbstractLandingInjectionServlet {
         if (null == authenticationProtocolContext) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(msg));
             return;
         }
 

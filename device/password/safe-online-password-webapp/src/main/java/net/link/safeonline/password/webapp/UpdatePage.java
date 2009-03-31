@@ -62,7 +62,7 @@ public class UpdatePage extends TemplatePage {
 
     public UpdatePage() {
 
-        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         getHeader();
         getSidebar(localize("helpPasswordChange"));
@@ -136,19 +136,19 @@ public class UpdatePage extends TemplatePage {
 
                     catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "update: subject not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {
                         oldpasswordField.error(getLocalizer().getString("errorOldPasswordNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: device not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "register: device not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorOldPasswordNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "update: device not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
                         password1Field.error(getLocalizer().getString("errorDeviceDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device disabled",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "update: device disabled",
                                 LogLevelType.ERROR);
                     }
                 }

@@ -66,7 +66,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
     @Override
     protected void onOlasAuthenticated() {
 
-        String olasId = WicketUtil.findOlasId(getRequest());
+        String olasId = WicketUtil.findOlasId();
         PaymentUserEntity user = userService.getUser(olasId);
 
         PaymentSession.get().setUser(userService.updateUser(user));

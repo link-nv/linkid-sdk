@@ -40,12 +40,14 @@ public class LogoutServiceManager implements HttpSessionListener {
 
     public static void bindLogoutService(HttpSession session) {
 
+        LOG.debug("bindlogoutservice");
         LogoutService logoutService = EjbUtils.getEJB(LogoutService.JNDI_BINDING, LogoutService.class);
         session.setAttribute(LOGOUT_SERVICE_ATTRIBUTE, logoutService);
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
 
+        LOG.debug("session destroyed");
         HttpSession session = event.getSession();
 
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
@@ -83,9 +85,11 @@ public class LogoutServiceManager implements HttpSessionListener {
      */
     public static LogoutService getLogoutService(HttpSession session) {
 
+        LOG.debug("looking up logout service");
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");
+
         return logoutService;
     }
 
@@ -95,18 +99,18 @@ public class LogoutServiceManager implements HttpSessionListener {
      * This method will return an encoded SAML logout response token which should be communicated to the application the user is logging out
      * for.
      * 
-     * @param partialLogout
      * @param session
      * @throws NodeNotFoundException
      */
-    public static String finalizeLogout(boolean partialLogout, HttpSession session)
+    public static String finalizeLogout(HttpSession session)
             throws NodeNotFoundException {
 
+        LOG.debug("finalizeLogout");
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");
         try {
-            return logoutService.finalizeLogout(partialLogout);
+            return logoutService.finalizeLogout();
         } finally {
             /*
              * No matter what happens, we don't want the sessionDestroyed method to call abort on our finished logout service instance.
@@ -122,6 +126,7 @@ public class LogoutServiceManager implements HttpSessionListener {
      */
     public static void abort(HttpSession session) {
 
+        LOG.debug("abort");
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");

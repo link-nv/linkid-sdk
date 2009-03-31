@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.digipass.webapp.MainPage;
 import net.link.safeonline.digipass.webapp.RegisterPage;
@@ -29,6 +28,7 @@ import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.template.TemplatePage;
 
 import org.apache.wicket.markup.html.form.Form;
@@ -57,7 +57,7 @@ public class RemovePageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockDigipassDeviceService = createMock(DigipassDeviceService.class);
         mockKeyService = createMock(KeyService.class);

@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.test.util.DummyLoginModule;
@@ -19,6 +18,7 @@ import net.link.safeonline.user.webapp.pages.account.AccountPage;
 import net.link.safeonline.user.webapp.pages.account.HistoryPage;
 import net.link.safeonline.user.webapp.pages.account.RemovePage;
 import net.link.safeonline.user.webapp.pages.account.UsagePage;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.components.CustomPagingNavigator;
 import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -47,7 +47,7 @@ public class HistoryPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockIdentityService = createMock(IdentityService.class);
         jndiTestUtils.bindComponent(IdentityService.class, mockIdentityService);

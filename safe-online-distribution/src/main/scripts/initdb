@@ -32,7 +32,7 @@ cd "$scripts/../jboss/server/default/deploy" || { emit -r "Invalid distribution:
 # Find and read in configuration of our datasource.
 dbconfigfile=( !(jms)-ds.xml )
 [[ $dbconfigfile ]] || { emit -r "No database configuration found for '$distribution'."; exit 1; }
-dbconfig=$(perl -we 'open(INPUT, "<-"); read(INPUT, $_, -s INPUT); s/<!--.*?-->//sg and print $_' < "$dbconfigfile")
+dbconfig=$(perl -we 'open(INPUT, "<-"); read(INPUT, $_, -s INPUT); s/(<!--.*?-->)?//sg and print $_' < "$dbconfigfile")
 jdbcUrl=$(sed -n 's/.*\(jdbc:[^< ]*\).*/\1/p' <<< "$dbconfig")
 IFS=':/' read _ dbms _ _ host port db <<< "$jdbcUrl"
 read user < <(sed -n '/<user-name>/ s/.*<user-name> *\([^ <]*\).*/\1/p' <<< "$dbconfig")

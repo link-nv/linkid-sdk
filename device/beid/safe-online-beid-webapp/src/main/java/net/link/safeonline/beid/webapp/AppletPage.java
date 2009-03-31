@@ -49,16 +49,16 @@ public abstract class AppletPage extends TemplatePage {
                       String smartCardConfig, String servletPath, String targetPath, String helpdeskEventPath, String helpPath,
                       String noPkcs11Path) {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         String operation = null;
         String language = getLocale().getLanguage();
         String javaVersion = isPkcs11(parameters)? "1.5": "1.6";
-        String sessionId = WicketUtil.getHttpSession(getRequest()).getId();
+        String sessionId = WicketUtil.getHttpSession().getId();
         String userId = protocolContext == null? null: protocolContext.getSubject();
-        Object applicationId = WicketUtil.getHttpSession(getRequest()).getAttribute(DeviceManager.APPLICATION_ID_SESSION_ATTRIBUTE);
+        Object applicationId = WicketUtil.getHttpSession().getAttribute(DeviceManager.APPLICATION_ID_SESSION_ATTRIBUTE);
         try {
-            operation = DeviceOperationManager.getOperation(WicketUtil.getHttpSession(getRequest()));
+            operation = DeviceOperationManager.getOperation(WicketUtil.getHttpSession());
         } catch (ServletException e) {
             // No operation found.
         }

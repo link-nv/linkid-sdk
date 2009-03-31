@@ -87,7 +87,7 @@ public class NewUserPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -124,8 +124,8 @@ public class NewUserPage extends AuthenticationTemplatePage {
             add(new ErrorComponentFeedbackLabel("captcha_feedback", captchaField));
 
             final Image captchaImage = new Image(CAPTCHA_IMAGE_ID, "override");
-            captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
-                    + "/captcha.jpg?cacheid=" + Math.random() * 1000000));
+            captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath() + "/captcha.jpg?cacheid="
+                    + Math.random() * 1000000));
             captchaImage.setOutputMarkupId(true);
             add(captchaImage);
 
@@ -137,7 +137,7 @@ public class NewUserPage extends AuthenticationTemplatePage {
                 @Override
                 public void onClick(AjaxRequestTarget target) {
 
-                    captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
+                    captchaImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                             + "/captcha.jpg?cacheid=" + Math.random() * 1000000));
                     target.addComponent(captchaImage);
                 }
@@ -155,7 +155,7 @@ public class NewUserPage extends AuthenticationTemplatePage {
 
                     HelpdeskLogger.add("account creation: login=" + login, LogLevelType.INFO);
 
-                    String validCaptcha = (String) WicketUtil.getHttpSession(getRequest()).getAttribute(
+                    String validCaptcha = (String) WicketUtil.getHttpSession().getAttribute(
                             com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
 
                     LOG.debug("valid captcha: " + validCaptcha);
@@ -189,8 +189,8 @@ public class NewUserPage extends AuthenticationTemplatePage {
                         return;
                     }
 
-                    LoginManager.setUserId(WicketUtil.getHttpSession(getRequest()), subject.getUserId());
-                    LoginManager.setLogin(WicketUtil.getHttpSession(getRequest()), login.getObject());
+                    LoginManager.setUserId(WicketUtil.getHttpSession(), subject.getUserId());
+                    LoginManager.setLogin(WicketUtil.getHttpSession(), login.getObject());
 
                     throw new RestartResponseException(new NewUserDevicePage());
 

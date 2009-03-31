@@ -37,12 +37,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DefaultLogoutServlet extends AbstractInjectionServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final String LOGOUT_EXIT_PATH = "LogoutExitPath";
 
-    private static final Log  LOG              = LogFactory.getLog(DefaultLogoutServlet.class);
+    private static final long   serialVersionUID = 1L;
 
-    @Init(name = "LogoutExitUrl")
-    private String            logoutExitUrl;
+    private static final Log    LOG              = LogFactory.getLog(DefaultLogoutServlet.class);
+
+    @Init(name = LOGOUT_EXIT_PATH)
+    private String              logoutExitPath;
 
 
     @Override
@@ -52,7 +54,7 @@ public class DefaultLogoutServlet extends AbstractInjectionServlet {
         LOG.debug("invoke get");
 
         LoginManager.invalidateSession(request);
-        response.sendRedirect(logoutExitUrl);
+        response.sendRedirect(logoutExitPath);
 
     }
 }

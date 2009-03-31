@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.DatatypeType;
@@ -24,6 +23,7 @@ import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.user.webapp.pages.devices.DevicesPage;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.components.attribute.AttributeOutputPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 
@@ -54,7 +54,7 @@ public class DevicesPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockDevicePolicyService = createMock(DevicePolicyService.class);
         mockDeviceService = createMock(DeviceService.class);

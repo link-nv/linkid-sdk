@@ -4,7 +4,7 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.common;
+package net.link.safeonline.util.ee;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
 
 
 /**
- * <h2>{@link OlasNamingStrategy}<br>
+ * <h2>{@link FieldNamingStrategy}<br>
  * <sub>Pull the JNDI binding of EJB service classes out of their class descriptions.</sub></h2>
  * 
  * <p>
@@ -29,7 +29,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
  * 
  * @author lhunath
  */
-public class OlasNamingStrategy implements NamingStrategy, Serializable {
+public class FieldNamingStrategy implements NamingStrategy, Serializable {
 
     private static final long serialVersionUID = 1L;
 

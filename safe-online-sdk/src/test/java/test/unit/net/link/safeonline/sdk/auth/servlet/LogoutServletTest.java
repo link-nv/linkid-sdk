@@ -125,8 +125,8 @@ public class LogoutServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LogoutPath", logoutPath);
-        initParams.put("ErrorPage", errorPage);
+        initParams.put(LogoutServlet.LOGOUT_PATH, logoutPath);
+        initParams.put(LogoutServlet.ERROR_PAGE, errorPage);
         initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM, logoutExitServicePath);
         initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, applicationName);
         initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);

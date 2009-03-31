@@ -18,7 +18,7 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-import net.link.safeonline.common.NamingStrategy;
+import net.link.safeonline.util.ee.NamingStrategy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

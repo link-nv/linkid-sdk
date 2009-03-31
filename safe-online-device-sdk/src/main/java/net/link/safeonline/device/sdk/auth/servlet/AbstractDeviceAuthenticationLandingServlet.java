@@ -23,6 +23,7 @@ import net.link.safeonline.device.sdk.exception.AuthenticationInitializationExce
 import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -90,7 +91,7 @@ public abstract class AbstractDeviceAuthenticationLandingServlet extends Abstrac
             handler.init(getIssuer(), nodeKeyStore.getCertificate(), nodeKeyStore.getKeyPair());
             handler.initAuthentication(request);
         } catch (AuthenticationInitializationException e) {
-            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
+            ServletUtils.redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
             return;
         }
         response.sendRedirect(authenticationPath);

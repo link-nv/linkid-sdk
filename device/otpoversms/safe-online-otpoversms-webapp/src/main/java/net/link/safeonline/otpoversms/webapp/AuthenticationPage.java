@@ -83,7 +83,7 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                AuthenticationContext.getAuthenticationContext(WicketUtil.getHttpSession(getRequest())).setUsedDevice(
+                AuthenticationContext.getAuthenticationContext(WicketUtil.getHttpSession()).setUsedDevice(
                         OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
                 exit();
             }
@@ -92,7 +92,7 @@ public class AuthenticationPage extends TemplatePage {
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
         String title = localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
-                WicketUtil.getHttpSession(getRequest())).getApplication());
+                WicketUtil.getHttpSession()).getApplication());
         getContent().add(new Label("title", title));
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(new VerifyOtpForm(VERIFY_OTP_FORM_ID));
@@ -143,21 +143,21 @@ public class AuthenticationPage extends TemplatePage {
 
                     catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to " + mobile.getObject(),
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "login: failed to send otp to " + mobile.getObject(),
                                 LogLevelType.ERROR);
                         mobile.setObject(null);
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to " + mobile.getObject(),
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "login: failed to send otp to " + mobile.getObject(),
                                 LogLevelType.ERROR);
                         mobile.setObject(null);
                     } catch (SubjectNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile has no registered subject: "
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(), "login: mobile has no registered subject: "
                                 + mobile.getObject(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()),
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(),
                                 "login: mobile isn't registered: " + mobile.getObject(), LogLevelType.ERROR);
                     }
                 }
@@ -306,7 +306,7 @@ public class AuthenticationPage extends TemplatePage {
         try {
             AuthenticationContext authenticationContext = AuthenticationContext
                                                                                .getAuthenticationContext(WicketUtil
-                                                                                                                   .getHttpSession(getRequest()));
+                                                                                                                   .getHttpSession());
             authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
             authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
             authenticationContext.setUsedDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
