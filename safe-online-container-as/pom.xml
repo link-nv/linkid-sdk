@@ -103,7 +103,7 @@
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
-			<artifactId>jsr1.3-p1-SNAPSHOT_api</artifactId>
+			<artifactId>jsr173_api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.jws</groupId>
