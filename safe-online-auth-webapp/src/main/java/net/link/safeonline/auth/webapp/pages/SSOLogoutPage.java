@@ -29,9 +29,11 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.AbstractHeaderContributor;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -60,6 +62,23 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
 
 
     public SSOLogoutPage() {
+
+        add(new WebMarkupContainer("noScriptRedirect") {
+
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            protected void onComponentTag(ComponentTag tag) {
+
+                String logoutExitServletPath = WicketUtil.getHttpSession().getServletContext().getInitParameter(
+                        LogoutExitServlet.PATH_CONTEXT_PARAM);
+
+                tag.put("content", String.format("1; URL=%s", logoutExitServletPath));
+
+                super.onComponentTag(tag);
+            }
+        });
 
         getSidebar(localize("helpSSOLogout"));
 

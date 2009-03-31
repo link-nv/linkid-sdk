@@ -12,12 +12,12 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -28,8 +28,11 @@ import net.link.safeonline.pkix.model.bean.CachedOcspValidatorBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.junit.Before;
+import org.junit.Test;
 
-public class CachedOcspValidatorBeanTest extends TestCase {
+
+public class CachedOcspValidatorBeanTest {
 
     private CachedOcspValidatorBean testedInstance;
 
@@ -38,11 +41,9 @@ public class CachedOcspValidatorBeanTest extends TestCase {
     private OcspValidator           mockOcspValidatorBean;
 
 
-    @Override
+    @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         testedInstance = new CachedOcspValidatorBean();
 
@@ -54,13 +55,7 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         EJBTestUtils.init(testedInstance);
     }
 
-    @Override
-    public void tearDown()
-            throws Exception {
-
-        super.tearDown();
-    }
-
+    @Test
     public void testValid()
             throws Exception {
 
@@ -99,6 +94,7 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.GOOD, secondLookup);
     }
 
+    @Test
     public void testRevoked()
             throws Exception {
 
@@ -137,6 +133,7 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.REVOKED, secondLookup);
     }
 
+    @Test
     public void testFailed()
             throws Exception {
 
@@ -169,6 +166,7 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.FAILED, secondLookup);
     }
 
+    @Test
     public void testExpiredValid()
             throws Exception {
 
@@ -209,6 +207,7 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.GOOD, secondLookup);
     }
 
+    @Test
     public void testExpiredRevoked()
             throws Exception {
 
@@ -248,5 +247,4 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.REVOKED, firstLookup);
         assertEquals(OcspResult.REVOKED, secondLookup);
     }
-
 }

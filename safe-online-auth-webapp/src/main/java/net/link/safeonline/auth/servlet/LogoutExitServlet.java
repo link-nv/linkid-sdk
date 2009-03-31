@@ -58,11 +58,11 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
+
         // If an applicationId is given as a GET parameter, send logout request to that application.
         if (applicationId != null) {
             try {
-                LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
-
                 synchronized (request.getSession()) {
                     ApplicationEntity application = logoutService.getSsoApplicationToLogout(Long.parseLong(applicationId));
                     logoutApplication(request, response, application);
@@ -79,12 +79,17 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
         }
 
         // If that failed, or no applicationId was specified, fall back to a sequential logout.
+        synchronized (request.getSession()) {
+            logoutService.setSequential(true);
+        }
         logoutNextSsoApplication(request, response);
     }
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
 
         LOG.debug("handle logout response");
         try {
@@ -98,8 +103,12 @@ public class LogoutExitServlet extends AbstractNodeInjectionServlet {
             return;
         }
 
-        // TODO: Only continue sequential logout if we're not doing parallel logout.
-        // logoutNextSsoApplication(request, response);
+        // If we're doing a sequential logout, continue on with the next SSO application now; otherwise, end.
+        synchronized (request.getSession()) {
+            if (logoutService.isSequential()) {
+                logoutNextSsoApplication(request, response);
+            }
+        }
     }
 
     /**

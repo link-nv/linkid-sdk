@@ -136,4 +136,15 @@ public interface LogoutService extends SafeOnlineService {
      * @return <code>true</code>: Not all applications have successfully completed their logout process.
      */
     public boolean isPartial();
+
+    /**
+     * @param sequential
+     *            <code>true</code>: The logout sequence has been initiated as a sequential (not parallel!) operation.
+     */
+    void setSequential(boolean sequential);
+
+    /**
+     * @return <code>true</code>: The logout sequence is being performed as a sequential (not parallel!) operation.
+     */
+    boolean isSequential();
 }

@@ -24,6 +24,7 @@ import javax.servlet.http.Cookie;
 import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.servlet.LogoutEntryServlet;
 import net.link.safeonline.auth.servlet.LogoutExitServlet;
+import net.link.safeonline.auth.webapp.pages.SSOLogoutPage;
 import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.service.LogoutService;
@@ -160,6 +161,6 @@ public class LogoutEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(logoutExitPath));
+        assertTrue(location.endsWith(SSOLogoutPage.PATH));
     }
 }
