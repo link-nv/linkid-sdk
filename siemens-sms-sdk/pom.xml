@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.3-p1-SNAPSHOT</version>
+		<version>1.3</version>
 	</parent>
 
 	<name>Siemens SMS SDK</name>
@@ -17,7 +17,7 @@
 
 	<groupId>net.lin-k.safe-online.siemens</groupId>
 	<artifactId>siemens-sms-sdk</artifactId>
-	<version>1.3-p1-SNAPSHOT</version>
+	<version>1.3</version>
 	<packaging>jar</packaging>
 
 
@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online.siemens</groupId>
 			<artifactId>siemens-sms-ws</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 		</dependency>
 
         <!-- Specific Dependencies: External -->

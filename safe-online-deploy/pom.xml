@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.3-p1-SNAPSHOT</version>
+		<version>1.3</version>
 	</parent>
 
 	<name>SafeOnline Deploy</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-deploy</artifactId>
-	<version>1.3-p1-SNAPSHOT</version>
+	<version>1.3</version>
 	<packaging>ear</packaging>
 
 	<build>
@@ -184,7 +184,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup-runtime
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -192,27 +192,27 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup-runtime
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-runtime</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-runtime</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-ws-runtime
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -220,14 +220,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-ws-runtime
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-user-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -235,14 +235,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-user-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-helpdesk-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -250,14 +250,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-helpdesk-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-oper-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -265,14 +265,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-oper-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-owner-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -280,14 +280,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-owner-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -295,7 +295,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-webapp
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>zip</type>
 		</dependency>
 
@@ -303,17 +303,17 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-cli</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>ejb</type>
 		</dependency>
 		<!--
@@ -323,20 +323,20 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-entity</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-keystore-util</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-node-keystore
 			</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<type>ejb</type>
 		</dependency>
 		<!--
@@ -346,7 +346,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-service</artifactId>
-			<version>1.3-p1-SNAPSHOT</version>
+			<version>1.3</version>
 			<scope>runtime</scope>
 			<type>sar</type>
 		</dependency>
