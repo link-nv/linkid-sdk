@@ -76,6 +76,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
     public static final String                 LANGUAGE_SESSION_PARAM = "Language";
 
+    public static final String                 SESSION_SESSION_PARAM  = "Session";
+
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
     @Init(name = SafeOnlineLoginUtils.AUTH_SERVICE_PATH_CONTEXT_PARAM)
@@ -226,8 +228,13 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
             language = (Locale) request.getAttribute(LANGUAGE_SESSION_PARAM);
         }
 
+        String session = null;
+        if (null != request.getAttribute(SESSION_SESSION_PARAM)) {
+            session = (String) request.getAttribute(SESSION_SESSION_PARAM);
+        }
+
         AuthenticationProtocolManager.initiateAuthentication(request, response, targetUrl, skipLandingPage, language, authColor,
-                authMinimal);
+                authMinimal, session);
     }
 
     public void destroy() {

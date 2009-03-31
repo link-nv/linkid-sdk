@@ -39,11 +39,13 @@ import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationPoolDAO;
 import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.SessionTrackingDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
@@ -92,6 +94,9 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     public static final String            SECURITY_MESSAGE_INVALID_APPLICATION      = SECURITY_MESSAGE_INVALID_COOKIE
                                                                                             + ": Invalid application: ";
 
+    public static final String            SSO_ID_COOKIE_NAME                        = SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX
+                                                                                            + ".SSO-ID";
+
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     SecurityAuditLogger                   securityAuditLogger;
 
@@ -107,9 +112,14 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     DeviceDAO                             deviceDAO;
 
+    @EJB(mappedName = SessionTrackingDAO.JNDI_BINDING)
+    SessionTrackingDAO                    sessionTrackingDAO;
+
     private SingleSignOnState             singleSignOnState;
 
     private boolean                       forceAuthentication;
+
+    private String                        session;
 
     private List<ApplicationPoolEntity>   applicationPools;
 
@@ -118,6 +128,8 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     private Set<DeviceEntity>             deviceRestriction;
 
     private List<SingleSignOn>            ssoItems;
+
+    private Cookie                        ssoIdCookie;
 
     private List<Cookie>                  invalidCookies;
 
@@ -159,7 +171,8 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     /**
      * {@inheritDoc}
      */
-    public void initialize(boolean forceAuthn, List<String> audiences, ApplicationEntity application, Set<DeviceEntity> devices) {
+    public void initialize(boolean forceAuthn, String sessionInfo, List<String> audiences, ApplicationEntity application,
+                           Set<DeviceEntity> devices) {
 
         checkState(SingleSignOnState.INIT);
 
@@ -167,6 +180,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
          * Safe the state in this stateful session bean.
          */
         forceAuthentication = forceAuthn;
+        session = sessionInfo;
         authenticatingApplication = application;
         deviceRestriction = devices;
         applicationPools = new LinkedList<ApplicationPoolEntity>();
@@ -226,13 +240,18 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
          * Parse SSO cookies
          */
         for (Cookie ssoCookie : ssoCookies) {
-            try {
-                ssoItems.add(new SingleSignOn(ssoCookie));
-            } catch (InvalidCookieException e) {
-                LOG.debug("Invalid cookie " + ssoCookie.getName() + " marked for removal");
-                ssoCookie.setMaxAge(0);
-                ssoCookie.setValue("");
-                invalidCookies.add(ssoCookie);
+            if (ssoCookie.getName().equals(SSO_ID_COOKIE_NAME)) {
+                LOG.debug("found existing SSO-ID cookie");
+                ssoIdCookie = ssoCookie;
+            } else {
+                try {
+                    ssoItems.add(new SingleSignOn(ssoCookie));
+                } catch (InvalidCookieException e) {
+                    LOG.debug("Invalid cookie " + ssoCookie.getName() + " marked for removal");
+                    ssoCookie.setMaxAge(0);
+                    ssoCookie.setValue("");
+                    invalidCookies.add(ssoCookie);
+                }
             }
         }
         if (ssoItems.isEmpty()) {
@@ -278,6 +297,22 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
          */
         for (SingleSignOn sso : ssoItems) {
             sso.addSsoApplication(authenticatingApplication);
+
+            // TODO: check if tracking, if so update/add tracker
+            if (null != session) {
+                // create SSO-ID cookie if not yet created
+                if (null == ssoIdCookie) {
+                    ssoIdCookie = new Cookie(SSO_ID_COOKIE_NAME, UUID.randomUUID().toString());
+                    ssoIdCookie.setMaxAge(-1);
+                }
+                String ssoId = ssoIdCookie.getValue();
+
+                SessionTrackingEntity tracker = sessionTrackingDAO.findTracker(authenticatingApplication, session, ssoId,
+                        sso.applicationPool);
+                if (null == tracker) {
+                    tracker = sessionTrackingDAO.addTracker(authenticatingApplication, session, ssoId, sso.applicationPool);
+                }
+            }
         }
 
         /*
@@ -384,6 +419,9 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
         List<Cookie> cookies = new LinkedList<Cookie>();
         for (SingleSignOn sso : ssoItems) {
             cookies.add(sso.ssoCookie);
+        }
+        if (null != ssoIdCookie) {
+            cookies.add(ssoIdCookie);
         }
         return cookies;
     }

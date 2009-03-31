@@ -237,12 +237,12 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
+                assertionConsumerService, destinationUrl, null, null, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
-        mockSingleSignOnService.initialize(true, new LinkedList<String>(), application, null);
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
@@ -286,12 +286,12 @@ public class AuthenticationServiceBeanTest {
         authnDevices.add(passwordDevice);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, devices, false);
+                assertionConsumerService, destinationUrl, null, devices, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
-        mockSingleSignOnService.initialize(true, new LinkedList<String>(), application, Collections.singleton(passwordDevice));
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, Collections.singleton(passwordDevice));
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
@@ -332,7 +332,7 @@ public class AuthenticationServiceBeanTest {
         X509Certificate foobarCert = PkiTestUtils.generateSelfSignedCertificate(foobarKeyPair, "CN=TestApplication");
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
+                assertionConsumerService, destinationUrl, null, null, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -371,7 +371,7 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
+                assertionConsumerService, destinationUrl, null, null, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -414,12 +414,12 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
+                assertionConsumerService, destinationUrl, null, null, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
-        mockSingleSignOnService.initialize(true, new LinkedList<String>(), application, null);
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
@@ -597,12 +597,12 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
+                assertionConsumerService, destinationUrl, null, null, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
-        mockSingleSignOnService.initialize(true, new LinkedList<String>(), application, null);
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
@@ -702,12 +702,12 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
+                assertionConsumerService, destinationUrl, null, null, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
-        mockSingleSignOnService.initialize(true, new LinkedList<String>(), application, null);
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
@@ -808,12 +808,12 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
+                assertionConsumerService, destinationUrl, null, null, false, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
-        mockSingleSignOnService.initialize(true, new LinkedList<String>(), application, null);
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
@@ -911,10 +911,48 @@ public class AuthenticationServiceBeanTest {
         assertEquals(subject, assertion.getSubject());
         assertEquals(1, assertion.getAuthentications().size());
         assertTrue(assertion.getAuthentications().values().contains(device));
+    }
 
-        // reset
-        reset(mockObjects);
+    @Test
+    public void initializeWithSessionInfo()
+            throws Exception {
 
+        // setup
+        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
+        String applicationName = "test-application-id";
+        long applicationId = 1234567890;
+        String assertionConsumerService = "http://test.assertion.consumer.service";
+        String destinationUrl = "http://test.destination.url";
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
+        String session = UUID.randomUUID().toString();
+
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, false, session);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
+
+        // expectations
+        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
+        mockSingleSignOnService.initialize(true, session, new LinkedList<String>(), application, null);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+
+        // verify
+        verify(mockObjects);
+
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
     }
 
     private AuthnRequest getAuthnRequest(String encodedAuthnRequest)

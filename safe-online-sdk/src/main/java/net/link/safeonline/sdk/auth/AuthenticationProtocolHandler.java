@@ -64,11 +64,13 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @param minimal
      *            <code>true</code>: OLAS will make its pages smaller by hiding header/footer images so it is more suitable to be used in an
      *            IFrame, for example.
+     * @param session
+     *            optional session info used if an application wishes to track the session
      * @throws IOException
      * @throws ServletException
      */
     public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, Locale language,
-                                       Integer color, Boolean minimal)
+                                       Integer color, Boolean minimal, String session)
             throws IOException, ServletException;
 
     /**

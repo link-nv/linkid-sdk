@@ -99,7 +99,7 @@ public class AuthenticationProtocolManager {
      * 
      * <p>
      * NOTE: This method uses the request URL as the target URL, doesn't set any language/color/minimal preferences, and continues with
-     * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, boolean, Locale, Integer, Boolean)}.
+     * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, boolean, Locale, Integer, Boolean, String)}.
      * </p>
      * 
      * @param request
@@ -111,7 +111,7 @@ public class AuthenticationProtocolManager {
             throws IOException, ServletException {
 
         String target = request.getRequestURL().toString();
-        initiateAuthentication(request, response, target, false, null, null, null);
+        initiateAuthentication(request, response, target, false, null, null, null, null);
     }
 
     /**
@@ -121,10 +121,11 @@ public class AuthenticationProtocolManager {
      *            The URL where the user will be sent to after authentication has completed. If this is not an absolute URI, it will be made
      *            absolute using the web application's base URL. If <code>null</code>, the web application's base URL will be used.
      * 
-     * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)
+     * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean,
+     *      String)
      */
     public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target,
-                                              boolean skipLandingPage, Locale language, Integer color, Boolean minimal)
+                                              boolean skipLandingPage, Locale language, Integer color, Boolean minimal, String session)
             throws IOException, ServletException {
 
         // Figure out the target and landing page URLs.
@@ -147,10 +148,10 @@ public class AuthenticationProtocolManager {
         if (null != landingPage && !skipLandingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(targetUrl, request);
-            protocolHandler.initiateAuthentication(request, response, landingPage, language, color, minimal);
+            protocolHandler.initiateAuthentication(request, response, landingPage, language, color, minimal, session);
         } else {
             clearTarget(request);
-            protocolHandler.initiateAuthentication(request, response, targetUrl, language, color, minimal);
+            protocolHandler.initiateAuthentication(request, response, targetUrl, language, color, minimal, session);
         }
     }
 

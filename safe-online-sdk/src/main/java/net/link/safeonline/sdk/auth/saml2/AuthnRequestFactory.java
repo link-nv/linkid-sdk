@@ -12,14 +12,21 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.saml.common.Saml2Util;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfo;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfoBuilder;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfoMarshaller;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfoUnmarshaller;
 
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.common.Extensions;
 import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnContextClassRef;
@@ -28,6 +35,7 @@ import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.RequestedAuthnContext;
+import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 
 
@@ -57,6 +65,8 @@ public class AuthnRequestFactory {
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
         try {
             DefaultBootstrap.bootstrap();
+            Configuration.registerObjectProvider(SessionInfo.DEFAULT_ELEMENT_NAME, new SessionInfoBuilder(), new SessionInfoMarshaller(),
+                    new SessionInfoUnmarshaller(), null);
         } catch (ConfigurationException e) {
             throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
@@ -81,10 +91,14 @@ public class AuthnRequestFactory {
      *            the optional challenge (output variable).
      * @param devices
      *            the optional list of allowed authentication devices.
+     * @param ssoEnabled
+     *            marks whether single sign on is enabled for this authentication or not
+     * @param session
+     *            optional session info, marks application wishes to track this session
      */
     public static String createAuthnRequest(String issuerName, List<String> audiences, String applicationFriendlyName,
                                             KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
-                                            Challenge<String> challenge, Set<String> devices, boolean ssoEnabled) {
+                                            Challenge<String> challenge, Set<String> devices, boolean ssoEnabled, String session) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -154,6 +168,16 @@ public class AuthnRequestFactory {
                 audience.setAudienceURI(audienceName);
             }
             request.setConditions(conditions);
+        }
+
+        // add session info
+        if (null != session) {
+            QName extensionsQName = new QName(SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX);
+            Extensions extensions = Saml2Util.buildXMLObject(Extensions.class, extensionsQName);
+            SessionInfo sessionInfo = Saml2Util.buildXMLObject(SessionInfo.class, SessionInfo.DEFAULT_ELEMENT_NAME);
+            sessionInfo.setSession(session);
+            request.setExtensions(extensions);
+            request.getExtensions().getUnknownXMLObjects().add(sessionInfo);
         }
 
         return Saml2Util.sign(request, signerKeyPair);

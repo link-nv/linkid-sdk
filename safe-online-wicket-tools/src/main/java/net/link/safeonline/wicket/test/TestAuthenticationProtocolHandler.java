@@ -97,7 +97,7 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
      * {@inheritDoc}
      */
     public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, Locale language,
-                                       Integer color, Boolean minimal)
+                                       Integer color, Boolean minimal, String session)
             throws IOException, ServletException {
 
         LOG.info("Initiated Authentication; invoking LoginServlet with target: " + targetUrl);

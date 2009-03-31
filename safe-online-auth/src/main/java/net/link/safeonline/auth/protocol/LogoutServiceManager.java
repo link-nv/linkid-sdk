@@ -75,8 +75,8 @@ public class LogoutServiceManager implements HttpSessionListener {
     /**
      * Gives back the logout service instance associated with the given HTTP session. Later on we could limit the usage of this method to
      * certain states on the logout service. It is clear that this method should not be used to finalize the logout service via
-     * {@link LogoutService#finalizeLogout(boolean)} or {@link LogoutService#abort()}. These operations should be performed via this logout
-     * service manager class.
+     * {@link LogoutService#finalizeLogout()} or {@link LogoutService#abort()}. These operations should be performed via this logout service
+     * manager class.
      * 
      * @param session
      */
@@ -94,11 +94,10 @@ public class LogoutServiceManager implements HttpSessionListener {
      * This method will return an encoded SAML logout response token which should be communicated to the application the user is logging out
      * for.
      * 
-     * @param partialLogout
      * @param session
      * @throws NodeNotFoundException
      */
-    public static String finalizeLogout(boolean partialLogout, HttpSession session)
+    public static String finalizeLogout(HttpSession session)
             throws NodeNotFoundException {
 
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);

@@ -163,7 +163,7 @@ public class SafeOnlineLoginUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     public static String login(String target) {
 
@@ -175,12 +175,12 @@ public class SafeOnlineLoginUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
     public static String login(String target, boolean skipLandingPage) {
 
-        return login(target, skipLandingPage, null, null, null);
+        return login(target, skipLandingPage, null, null, null, null);
     }
 
     /**
@@ -188,17 +188,17 @@ public class SafeOnlineLoginUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
-    public static String login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal) {
+    public static String login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal, String session) {
 
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
             ExternalContext externalContext = context.getExternalContext();
 
-            login(target, skipLandingPage, language, color, minimal, (HttpServletRequest) externalContext.getRequest(),
+            login(target, skipLandingPage, language, color, minimal, session, (HttpServletRequest) externalContext.getRequest(),
                     (HttpServletResponse) externalContext.getResponse());
 
             return null;
@@ -216,11 +216,11 @@ public class SafeOnlineLoginUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     public static void login(String target, HttpServletRequest request, HttpServletResponse response) {
 
-        login(target, null, null, null, request, response);
+        login(target, null, null, null, null, request, response);
     }
 
     /**
@@ -228,12 +228,12 @@ public class SafeOnlineLoginUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
-    public static void login(String target, Locale language, Integer color, Boolean minimal, HttpServletRequest request,
+    public static void login(String target, Locale language, Integer color, Boolean minimal, String session, HttpServletRequest request,
                              HttpServletResponse response) {
 
-        login(target, false, language, color, minimal, request, response);
+        login(target, false, language, color, minimal, session, request, response);
     }
 
     /**
@@ -269,7 +269,7 @@ public class SafeOnlineLoginUtils {
      * @param minimal
      *            The value to override {@link SafeOnlineAppConstants#MINIMAL_CONTEXT_PARAM} with. <code>null</code> prevents overriding.
      */
-    public static void login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal,
+    public static void login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal, String session,
                              HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, String> config = new HashMap<String, String>();
@@ -360,7 +360,7 @@ public class SafeOnlineLoginUtils {
         // Initiate the authentication.
         try {
             AuthenticationProtocolManager.initiateAuthentication(request, response, targetUrl, skipLandingPage, language, authColor,
-                    authMinimal);
+                    authMinimal, session);
             LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);

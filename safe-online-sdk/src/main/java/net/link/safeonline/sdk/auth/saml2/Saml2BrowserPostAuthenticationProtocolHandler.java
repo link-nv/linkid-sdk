@@ -169,13 +169,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     }
 
     public void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String targetUrl, Locale language,
-                                       Integer color, Boolean minimal)
+                                       Integer color, Boolean minimal, String session)
             throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
         Set<String> devices = getDevices(request);
         String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, null, applicationFriendlyName,
-                applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices, ssoEnabled);
+                applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices, ssoEnabled, session);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

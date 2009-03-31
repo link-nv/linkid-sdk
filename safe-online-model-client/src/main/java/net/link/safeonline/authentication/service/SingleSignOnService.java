@@ -52,12 +52,15 @@ public interface SingleSignOnService extends SafeOnlineService {
      * Initialize the single sign on procedure, given a list of application pool names, application authenticating against and device
      * restriction.
      * 
+     * @param forceAuthn
+     * @param session
+     *            optional session info, used to mark application wishes to track this session.
      * @param audiences
      *            the list of application pool names.
      * @param devices
      * @param application
      */
-    void initialize(boolean forceAuthn, List<String> audiences, ApplicationEntity application, Set<DeviceEntity> devices);
+    void initialize(boolean forceAuthn, String session, List<String> audiences, ApplicationEntity application, Set<DeviceEntity> devices);
 
     /**
      * Attempts to login, given a set of Single Sign On Cookies.

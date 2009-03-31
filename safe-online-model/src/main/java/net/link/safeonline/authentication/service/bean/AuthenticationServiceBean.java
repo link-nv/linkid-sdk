@@ -98,6 +98,7 @@ import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfo;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -123,6 +124,7 @@ import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
@@ -320,8 +322,22 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 }
             }
         }
+
+        String session = null;
+        if (null != samlAuthnRequest.getExtensions()) {
+            if (null != samlAuthnRequest.getExtensions().getUnknownXMLObjects(SessionInfo.DEFAULT_ELEMENT_NAME)) {
+                List<XMLObject> sessionInfos = samlAuthnRequest.getExtensions().getUnknownXMLObjects(SessionInfo.DEFAULT_ELEMENT_NAME);
+                if (sessionInfos.size() > 1) {
+                    LOG.error("only 1 sesssion info element supported");
+                    throw new AuthenticationInitializationException("Only 1 session info element supported");
+                }
+                session = ((SessionInfo) sessionInfos.get(0)).getSession();
+                LOG.debug("session tracking is on: " + session);
+            }
+        }
+
         ssoService = EjbUtils.getEJB(SingleSignOnService.JNDI_BINDING, SingleSignOnService.class);
-        ssoService.initialize(forceAuthn, audienceList, application, devices);
+        ssoService.initialize(forceAuthn, session, audienceList, application, devices);
 
         /*
          * Safe the state in this stateful session bean.

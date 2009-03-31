@@ -49,3 +49,4 @@
 <mapping class="net.link.safeonline.entity.ApplicationScopeIdEntity" />
 <mapping class="net.link.safeonline.entity.NodeMappingEntity" />
 <mapping class="net.link.safeonline.entity.notification.NotificationMessageEntity" />
+<mapping class="net.link.safeonline.entity.sessiontracking.SessionTrackingEntity" />

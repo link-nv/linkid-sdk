@@ -30,6 +30,7 @@ public class OlasLoginLink extends OlasAuthLink {
     private static final long serialVersionUID = 1L;
     private Integer           color;
     private Boolean           minimal;
+    private String            session;
 
 
     public OlasLoginLink(String id) {
@@ -42,12 +43,13 @@ public class OlasLoginLink extends OlasAuthLink {
         super(id, target);
     }
 
-    public OlasLoginLink(String id, Class<? extends Page> target, Integer color, Boolean minimal) {
+    public OlasLoginLink(String id, Class<? extends Page> target, Integer color, Boolean minimal, String session) {
 
         super(id, target);
 
         this.color = color;
         this.minimal = minimal;
+        this.session = session;
     }
 
     /**
@@ -69,12 +71,21 @@ public class OlasLoginLink extends OlasAuthLink {
     }
 
     /**
+     * @param session
+     *            optional session parameter marking the application wishes to track the session.
+     */
+    public void setSession(String session) {
+
+        this.session = session;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
 
-        SafeOnlineLoginUtils.login(target, Session.exists()? Session.get().getLocale(): request.getLocale(), color, minimal,
+        SafeOnlineLoginUtils.login(target, Session.exists()? Session.get().getLocale(): request.getLocale(), color, minimal, session,
                 request, response);
     }
 }
