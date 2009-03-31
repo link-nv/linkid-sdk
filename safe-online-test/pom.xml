@@ -109,7 +109,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
 			<artifactId>safe-online-pkcs11-sc-beid
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -143,7 +143,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
 			<artifactId>safe-online-model-beid-client
 			</artifactId>
 			<version>1.4-SNAPSHOT</version>
@@ -173,13 +173,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
 			<artifactId>safe-online-beid-pkcs11-applet</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
 			<artifactId>safe-online-beid-pcsc-applet</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<scope>test</scope>

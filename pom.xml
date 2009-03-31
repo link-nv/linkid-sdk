@@ -334,15 +334,6 @@
 				<safe-online.option.webapp.name>olas-option
 				</safe-online.option.webapp.name>
 			</properties>
-			<modules>
-				<module>safe-online-option-startup-runtime
-				</module>
-				<module>safe-online-option-webapp</module>
-				<module>safe-online-option-deploy</module>
-				<module>safe-online-model-option-client
-				</module>
-				<module>safe-online-model-option</module>
-			</modules>
 		</profile>
 
 		<!-- Profile that creates an SDK package -->
@@ -748,12 +739,6 @@
 		<module>safe-online-saml-common</module>
 		<module>safe-online-model-node</module>
 		<module>safe-online-node-keystore</module>
-		<!--
-			TODO: Remove the following. Only here because of a test dependency in
-			s-o-model.
-		-->
-		<module>safe-online-beid-pkcs11-applet
-		</module>
 
 		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base-olas
@@ -818,56 +803,12 @@
 		<module>safe-online-auth-ws-impl</module>
 
 		<!-- EXTERNAL DEVICES -->
-		<module>safe-online-model-beid-client
-		</module>
-		<module>safe-online-model-beid</module>
-		<module>safe-online-model-encap-client
-		</module>
-		<module>safe-online-model-encap</module>
-		<module>safe-online-model-digipass-client
-		</module>
-		<module>safe-online-model-digipass</module>
-		<module>safe-online-encap-ws</module>
-		<module>safe-online-encap-ws-impl</module>
-		<module>safe-online-encap-sdk</module>
-		<module>safe-online-encap-ws-runtime
-		</module>
-		<module>safe-online-encap-webapp</module>
-		<module>safe-online-encap-startup-runtime
-		</module>
-		<module>safe-online-encap-auth-ws-impl
-		</module>
-		<module>safe-online-encap-auth-ws-runtime
-		</module>
-		<module>safe-online-encap-deploy</module>
-		<module>safe-online-digipass-startup-runtime
-		</module>
-		<module>safe-online-digipass-deploy
-		</module>
-		<module>safe-online-digipass-webapp
-		</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet
 		</module>
 		<module>safe-online-java-version-applet-package
 		</module>
 		<module>safe-online-pkcs11-sc</module>
-		<module>safe-online-pkcs11-sc-beid</module>
-		<!--module>safe-online-beid-pkcs11-applet</module-->
-		<module>safe-online-beid-pkcs11-applet-package
-		</module>
-		<module>safe-online-beid-pcsc-applet
-		</module>
-		<module>safe-online-beid-pcsc-applet-package
-		</module>
-		<module>safe-online-beid-startup-runtime
-		</module>
-		<module>safe-online-beid-auth-ws-impl
-		</module>
-		<module>safe-online-beid-auth-ws-runtime
-		</module>
-		<module>safe-online-beid-deploy</module>
-		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-attrplugin-template-bundle
@@ -881,35 +822,9 @@
 		</module>
 		<module>safe-online-sms-clickatell-bundle
 		</module>
-		<module>safe-online-model-password-client
-		</module>
-		<module>safe-online-model-password</module>
-		<module>safe-online-password-startup-runtime
-		</module>
-		<module>safe-online-password-webapp
-		</module>
-		<module>safe-online-password-deploy
-		</module>
+		<module>device</module>
 		<module>safe-online-device-auth-ws</module>
 		<module>safe-online-device-auth-ws-util
-		</module>
-		<module>safe-online-password-auth-ws-impl
-		</module>
-		<module>safe-online-password-auth-ws-runtime
-		</module>
-		<module>safe-online-model-otpoversms-client
-		</module>
-		<module>safe-online-model-otpoversms
-		</module>
-		<module>safe-online-otpoversms-startup-runtime
-		</module>
-		<module>safe-online-otpoversms-webapp
-		</module>
-		<module>safe-online-otpoversms-deploy
-		</module>
-		<module>safe-online-otpoversms-auth-ws-impl
-		</module>
-		<module>safe-online-otpoversms-auth-ws-runtime
 		</module>
 	</modules>
 

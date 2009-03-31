@@ -277,13 +277,13 @@
 			<type>zip</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>ear</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
 			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
@@ -405,61 +405,61 @@
                 <!-- TODO: These dependencies really belong in s-o-demo-deploy, not here.
                      Can't figure out how to make maven-ear-plugin to ignore them for packaging though. -->
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.beid</groupId>
                     <artifactId>safe-online-beid-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.beid</groupId>
                     <artifactId>safe-online-beid-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.digipass</groupId>
                     <artifactId>safe-online-digipass-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.digipass</groupId>
                     <artifactId>safe-online-digipass-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.encap</groupId>
                     <artifactId>safe-online-encap-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.encap</groupId>
                     <artifactId>safe-online-encap-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.password</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.password</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.otpoversms</groupId>
                     <artifactId>safe-online-otpoversms-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.otpoversms</groupId>
                     <artifactId>safe-online-otpoversms-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>
@@ -525,13 +525,13 @@
 
             <dependencies>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.option</groupId>
                     <artifactId>safe-online-option-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
-                    <groupId>net.lin-k.safe-online</groupId>
+                    <groupId>net.lin-k.safe-online.device.option</groupId>
                     <artifactId>safe-online-option-deploy</artifactId>
                     <version>1.4-SNAPSHOT</version>
                     <type>zip</type>

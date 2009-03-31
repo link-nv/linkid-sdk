@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.lin-k.safe-online.device</groupId>
+		<artifactId>beid</artifactId>
+		<version>1.4-SNAPSHOT</version>
+	</parent>
+
+	<name>SafeOnline Beid Deploy</name>
+	<description>
+		SafeOnline Deployable Beid Application Package.
+	</description>
+
+	<groupId>net.lin-k.safe-online.device.beid</groupId>
+	<artifactId>safe-online-beid-deploy</artifactId>
+	<version>1.4-SNAPSHOT</version>
+	<packaging>ear</packaging>
+
+	<build>
+		<finalName>SafeOnlineBeid</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<configuration>
+					<version>5</version>
+					<jboss>
+						<version>4</version>
+					</jboss>
+					<defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+					<modules>
+						<webModule>
+							<groupId>net.lin-k.safe-online.device.beid</groupId>
+							<artifactId>safe-online-beid-startup-runtime
+							</artifactId>
+						</webModule>
+						<webModule>
+							<groupId>net.lin-k.safe-online.device.beid</groupId>
+							<artifactId>safe-online-beid-auth-ws-runtime
+							</artifactId>
+							<contextRoot>/${safe-online.beid.auth.ws.webapp.name}
+							</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>net.lin-k.safe-online.device.beid</groupId>
+							<artifactId>safe-online-beid-webapp
+							</artifactId>
+							<contextRoot>/${safe-online.beid.webapp.name}
+							</contextRoot>
+						</webModule>
+					</modules>
+
+					<!--
+						Exlude ZIPs. They only serve to force the deps of wars/sars to
+						become transitive.
+					-->
+					<artifactTypeMappings>
+						<artifactTypeMapping type="zip" mapping="jar" />
+					</artifactTypeMappings>
+
+					<excludes>
+						<exclude>
+							<groupId>^(?!net.lin-k\.).*$</groupId>
+							<artifactId>^(?!jsf-impl).*$</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<configuration>
+					<container>
+						<containerId>jboss4x</containerId>
+						<type>remote</type>
+					</container>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
+		<dependency>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-beid-webapp
+			</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<scope>provided</scope>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-beid-webapp
+			</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-beid-startup-runtime
+			</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<scope>provided</scope>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-beid-startup-runtime
+			</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-beid-auth-ws-runtime
+			</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<scope>provided</scope>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-beid-auth-ws-runtime
+			</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+
+		<!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
+			<artifactId>safe-online-model-beid</artifactId>
+			<version>1.4-SNAPSHOT</version>
+			<type>ejb</type>
+		</dependency>
+
+	</dependencies>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
+</project>
