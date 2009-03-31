@@ -66,8 +66,8 @@
 					<instructions>
 						<Export-Package>net.link.safeonline.siemens.acceptance.attributepull.*</Export-Package>
 						<Import-Package>
-							net.link.safeonline.osgi; version="[1.3-p2-SNAPSHOT, 1.3-p1]",
-							net.link.safeonline.osgi.plugin; version="[1.3-p2-SNAPSHOT, 1.3-p1]",
+							net.link.safeonline.osgi; version="[1.3-p2, 1.3-p1]",
+							net.link.safeonline.osgi.plugin; version="[1.3-p2, 1.3-p1]",
 							org.osgi.framework,
 							javax.net.ssl,
 							javax.crypto,
