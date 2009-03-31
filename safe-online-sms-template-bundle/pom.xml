@@ -68,9 +68,9 @@
 						<Export-Package>net.link.safeonline.osgi.sms.template.*
 						</Export-Package>
 						<Import-Package>
-							net.link.safeonline.osgi; version="[1.3-p1-SNAPSHOT, 1.3-p1-SNAPSHOT]",
-							net.link.safeonline.osgi.exception; version="[1.3-p1-SNAPSHOT, 1.3-p1-SNAPSHOT]",
-							net.link.safeonline.osgi.sms; version="[1.3-p1-SNAPSHOT, 1.3-p1-SNAPSHOT]",
+							net.link.safeonline.osgi; version="[1.3-p1, 1.3-p1]",
+							net.link.safeonline.osgi.exception; version="[1.3-p1, 1.3-p1]",
+							net.link.safeonline.osgi.sms; version="[1.3-p1, 1.3-p1]",
 							org.osgi.framework, org.osgi.service.log; version="[1.0.1,1.0.1]",
 							!*
 						</Import-Package>
