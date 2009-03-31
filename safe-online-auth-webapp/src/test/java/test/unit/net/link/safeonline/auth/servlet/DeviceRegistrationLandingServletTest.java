@@ -78,6 +78,8 @@ public class DeviceRegistrationLandingServletTest {
 
     private String                loginPath          = "login";
 
+    private String                cookiePath         = "/test-path/";
+
     String                        userId             = UUID.randomUUID().toString();
 
     private AuthenticationService mockAuthenticationService;
@@ -108,6 +110,7 @@ public class DeviceRegistrationLandingServletTest {
         initParams.put(DeviceRegistrationLandingServlet.NEW_USER_DEVICE_PATH, newUserDevicePath);
         initParams.put(DeviceRegistrationLandingServlet.LOGIN_PATH, loginPath);
         initParams.put(DeviceRegistrationLandingServlet.DEVICE_ERROR_PATH, deviceErrorPath);
+        initParams.put(DeviceRegistrationLandingServlet.COOKIE_PATH, cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);

@@ -243,9 +243,11 @@ public class AuthnEntryServletTest {
                 mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
                         (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
                 new ProtocolContext(applicationId, applicationName, applicationName, assertionConsumerService, null, null, null, null));
+        expect(mockAuthenticationService.getAuthenticationState()).andReturn(AuthenticationState.INITIALIZED).times(2);
         expect(mockAuthenticationService.login((List<Cookie>) EasyMock.anyObject())).andReturn(
                 Collections.singletonList(authenticationAssertion));
         expect(mockAuthenticationService.getInvalidCookies()).andReturn(new LinkedList<Cookie>());
+        expect(mockAuthenticationService.getSsoCookies()).andReturn(new LinkedList<Cookie>());
 
         // prepare
         replay(mockObjects);

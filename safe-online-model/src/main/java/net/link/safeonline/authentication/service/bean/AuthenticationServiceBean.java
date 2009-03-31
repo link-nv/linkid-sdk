@@ -419,9 +419,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Challenge<String> challenge = new Challenge<String>();
 
+        List<String> devicesList = null;
+        if (null != authenticationAssertion) {
+            devicesList = authenticationAssertion.getDevicesList();
+        }
+
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(), nodeUserId,
                 nodeKeyStore.getKeyPair(), registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge,
-                deviceName, authenticationAssertion.getDevicesList(), null, null);
+                deviceName, devicesList, null, null);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

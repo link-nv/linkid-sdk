@@ -78,6 +78,8 @@ public class DeviceAuthnLandingServletTest {
 
     private String                tryAnotherDevicePath = "try-another-device";
 
+    private String                cookiePath           = "/test-path/";
+
     private AuthenticationService mockAuthenticationService;
 
     private SubjectService        mockSubjectService;
@@ -105,6 +107,7 @@ public class DeviceAuthnLandingServletTest {
         initParams.put(DeviceAuthnLandingServlet.LOGIN_PATH, loginPath);
         initParams.put(DeviceAuthnLandingServlet.TRY_ANOTHER_DEVICE_PATH, tryAnotherDevicePath);
         initParams.put(DeviceAuthnLandingServlet.DEVICE_ERROR_PATH, deviceErrorPath);
+        initParams.put(DeviceAuthnLandingServlet.COOKIE_PATH, cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);

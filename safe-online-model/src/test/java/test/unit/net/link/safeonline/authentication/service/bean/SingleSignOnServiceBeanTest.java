@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URL;
 import java.security.Security;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -416,8 +417,7 @@ public class SingleSignOnServiceBeanTest {
         DeviceEntity cookieDevice = new DeviceEntity();
         cookieDevice.setName("test-cookie-device-name");
         List<Cookie> cookies = new LinkedList<Cookie>();
-        Cookie cookie = getSsoCookie(subject, applicationPool, cookieApplication, cookieDevice);
-        cookies.add(cookie);
+        cookies.add(getSsoCookie(subject, applicationPool, cookieApplication, cookieDevice));
 
         // expectations
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
@@ -497,12 +497,85 @@ public class SingleSignOnServiceBeanTest {
         assertEquals(0, testedInstance.getInvalidCookies().size());
     }
 
+    @Test
+    public void testGetApplicationToLogout()
+            throws Exception {
+
+        // setup
+        SubjectEntity subject = new SubjectEntity(UUID.randomUUID().toString());
+
+        ApplicationPoolEntity applicationPool = new ApplicationPoolEntity("test-application-pool", ssoTimeout);
+
+        ApplicationEntity application = new ApplicationEntity();
+        application.setId(1L);
+        application.setSsoEnabled(true);
+
+        DeviceEntity device = new DeviceEntity();
+        device.setName("test-device-name");
+
+        List<ApplicationEntity> ssoApplications = new LinkedList<ApplicationEntity>();
+        ApplicationEntity ssoApplication1 = new ApplicationEntity();
+        ssoApplication1.setId(2L);
+        ssoApplication1.setSsoLogoutUrl(new URL("http", "test", "foo"));
+        ApplicationEntity ssoApplication2 = new ApplicationEntity();
+        ssoApplication2.setId(3L);
+        ssoApplication2.setSsoLogoutUrl(new URL("http", "test", "foo"));
+        ApplicationEntity ssoApplication3 = new ApplicationEntity();
+        ssoApplication3.setId(4L);
+        ssoApplication3.setSsoLogoutUrl(new URL("http", "test", "foo"));
+        ssoApplications.add(ssoApplication1);
+        ssoApplications.add(ssoApplication2);
+        ssoApplications.add(ssoApplication3);
+
+        List<Cookie> cookies = new LinkedList<Cookie>();
+        cookies.add(getSsoCookie(subject, applicationPool, application, device, ssoApplications));
+
+        // expectations
+        expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);
+        expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
+        expect(mockApplicationDAO.findApplication(application.getId())).andReturn(application);
+        expect(mockDeviceDAO.findDevice(device.getName())).andReturn(device);
+        expect(mockApplicationDAO.findApplication(ssoApplication1.getId())).andReturn(ssoApplication1);
+        expect(mockApplicationDAO.findApplication(ssoApplication2.getId())).andReturn(ssoApplication2);
+        expect(mockApplicationDAO.findApplication(ssoApplication3.getId())).andReturn(ssoApplication3);
+
+        // replay
+        replay(mockObjects);
+
+        // operate
+        List<ApplicationEntity> resultApplications = testedInstance.getApplicationsToLogout(application, cookies);
+
+        // verify
+        verify(mockObjects);
+
+        assertNotNull(resultApplications);
+        assertEquals(3, resultApplications.size());
+        assertEquals(0, testedInstance.getInvalidCookies().size());
+        for (ApplicationEntity resultApplication : resultApplications) {
+            assertTrue(resultApplication.equals(ssoApplication1) || resultApplication.equals(ssoApplication2)
+                    || resultApplication.equals(ssoApplication3));
+        }
+    }
+
     private Cookie getSsoCookie(SubjectEntity subject, ApplicationPoolEntity applicationPool, ApplicationEntity application,
                                 DeviceEntity device)
             throws Exception {
 
         DateTime now = new DateTime();
         SingleSignOn sso = testedInstance.new SingleSignOn(subject, applicationPool, application, device, now);
+        sso.setCookie();
+        return sso.ssoCookie;
+    }
+
+    private Cookie getSsoCookie(SubjectEntity subject, ApplicationPoolEntity applicationPool, ApplicationEntity application,
+                                DeviceEntity device, List<ApplicationEntity> ssoApplications)
+            throws Exception {
+
+        DateTime now = new DateTime();
+        SingleSignOn sso = testedInstance.new SingleSignOn(subject, applicationPool, application, device, now);
+        for (ApplicationEntity ssoApplication : ssoApplications) {
+            sso.addSsoApplication(ssoApplication);
+        }
         sso.setCookie();
         return sso.ssoCookie;
     }
