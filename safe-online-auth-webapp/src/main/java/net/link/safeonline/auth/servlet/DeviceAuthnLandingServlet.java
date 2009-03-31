@@ -10,6 +10,7 @@ package net.link.safeonline.auth.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +19,7 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -58,6 +60,8 @@ public class DeviceAuthnLandingServlet extends AbstractNodeInjectionServlet {
      */
     public static final String DEVICE_ERROR_PATH              = "DeviceErrorPath";
 
+    public static final String COOKIE_PATH                    = "CookiePath";
+
     public static final String RESOURCE_BASE                  = "messages.webapp";
 
     public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
@@ -71,6 +75,9 @@ public class DeviceAuthnLandingServlet extends AbstractNodeInjectionServlet {
     @Init(name = DEVICE_ERROR_PATH)
     private String             deviceErrorPath;
 
+    @Init(name = COOKIE_PATH)
+    private String             cookiePath;
+
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
@@ -79,9 +86,9 @@ public class DeviceAuthnLandingServlet extends AbstractNodeInjectionServlet {
         /**
          * Authenticate
          */
-        String userId;
+        AuthenticationAssertion authenticationAssertion;
         try {
-            userId = ProtocolHandlerManager.handleDeviceAuthnResponse(request);
+            authenticationAssertion = ProtocolHandlerManager.handleDeviceAuthnResponse(request);
         } catch (ProtocolException e) {
             ServletUtils.redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
                     e.getMessage()));
@@ -89,14 +96,14 @@ public class DeviceAuthnLandingServlet extends AbstractNodeInjectionServlet {
         }
 
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
-        if (null == userId && authenticationService.getAuthenticationState().equals(AuthenticationState.REDIRECTED)) {
+        if (null == authenticationAssertion && authenticationService.getAuthenticationState().equals(AuthenticationState.REDIRECTED)) {
             /*
              * Authentication failed but user requested to try another device
              */
             HelpdeskLogger.add(request.getSession(), "authentication failed, request to try another device", LogLevelType.ERROR);
 
             response.sendRedirect(tryAnotherDevicePath);
-        } else if (null == userId) {
+        } else if (null == authenticationAssertion) {
             /*
              * Authentication failed, redirect to start page
              */
@@ -108,16 +115,18 @@ public class DeviceAuthnLandingServlet extends AbstractNodeInjectionServlet {
             /*
              * Authentication success, redirect to login servlet
              */
-            LoginManager.login(request.getSession(), userId, authenticationService.getAuthenticationDevice());
+            LoginManager.login(request.getSession(), authenticationAssertion);
 
-            HelpdeskLogger.add(request.getSession(), "logged in successfully with device: "
-                    + authenticationService.getAuthenticationDevice().getName(), LogLevelType.INFO);
+            HelpdeskLogger.add(request.getSession(), "logged in successfully with device: " + authenticationAssertion.getDevicesString(),
+                    LogLevelType.INFO);
 
             /*
-             * Set SSO Cookie
+             * Set / update SSO Cookies
              */
-            if (null != authenticationService.getSsoCookie()) {
-                response.addCookie(authenticationService.getSsoCookie());
+            for (Cookie ssoCookie : authenticationService.getSsoCookies()) {
+                ssoCookie.setPath(cookiePath);
+                LOG.debug("sso cookie value: " + ssoCookie.getValue());
+                response.addCookie(ssoCookie);
             }
 
             response.sendRedirect(loginPath);

@@ -8,6 +8,8 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -22,8 +24,6 @@ import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
 import net.link.safeonline.auth.webapp.pages.SSOLogoutPage;
 import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
@@ -110,29 +110,26 @@ public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
         session.setAttribute(LogoutExitServlet.LOGOUT_TARGET_ATTRIBUTE, logoutProtocolContext.getTarget());
 
         /*
-         * Check Single Sign-On Cookies and send logout requests to the authenticated applications
+         * Check Single Sign-On
          */
-        LogoutService logoutService = LogoutServiceManager.getLogoutService(session);
+        LogoutService logoutService = LogoutServiceManager.getLogoutService(request.getSession());
         Cookie[] cookies = request.getCookies();
-        if (null != cookies) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
-                    try {
-                        logoutService.checkSsoCookieForLogout(cookie);
-                    }
-
-                    catch (ApplicationNotFoundException e) {
-                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
-                    } catch (InvalidCookieException e) {
-                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
-                    }
-
-                    finally {
-                        // Applications that need to be logged out are stored in the AuthenticationService
-                        removeCookie(cookie.getName(), response);
-                    }
-                }
+        List<Cookie> ssoCookies = new LinkedList<Cookie>();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
+                LOG.debug("sso cookie found: " + cookie.getValue());
+                ssoCookies.add(cookie);
             }
+        }
+        if (!ssoCookies.isEmpty()) {
+            logoutService.logout(ssoCookies);
+
+            // remove the invalid cookies
+            for (Cookie invalidCookie : logoutService.getInvalidCookies()) {
+                invalidCookie.setPath(cookiePath);
+                response.addCookie(invalidCookie);
+            }
+
         }
 
         response.sendRedirect(SSOLogoutPage.PATH);
@@ -149,13 +146,5 @@ public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
         LogoutServiceManager.bindLogoutService(session);
 
         return session;
-    }
-
-    private void removeCookie(String name, HttpServletResponse response) {
-
-        Cookie cookie = new Cookie(name, "");
-        cookie.setMaxAge(0);
-        cookie.setPath(cookiePath);
-        response.addCookie(cookie);
     }
 }

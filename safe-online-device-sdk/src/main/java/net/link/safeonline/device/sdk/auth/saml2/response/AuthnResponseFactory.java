@@ -9,6 +9,8 @@ package net.link.safeonline.device.sdk.auth.saml2.response;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.saml.common.Saml2Util;
@@ -61,12 +63,13 @@ public class AuthnResponseFactory {
     public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName, String subjectName,
                                             String samlName, KeyPair signerKeyPair, int validity, String target) {
 
-        return createAuthResponse(inResponseTo, audienceName, issuerName, subjectName, samlName, signerKeyPair, validity, target,
-                new DateTime());
+        Map<DateTime, String> authentications = new HashMap<DateTime, String>();
+        authentications.put(new DateTime(), samlName);
+        return createAuthResponse(inResponseTo, audienceName, issuerName, subjectName, signerKeyPair, validity, target, authentications);
     }
 
     public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName, String subjectName,
-                                            String samlName, KeyPair signerKeyPair, int validity, String target, DateTime authenticationDate) {
+                                            KeyPair signerKeyPair, int validity, String target, Map<DateTime, String> authentications) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -104,8 +107,8 @@ public class AuthnResponseFactory {
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
-        Assertion assertion = Saml2Util.getAssertion(inResponseTo, audienceName, subjectName, issuerName, samlName, validity, target,
-                authenticationDate, Saml2SubjectConfirmationMethod.BEARER, null);
+        Assertion assertion = Saml2Util.getAssertion(inResponseTo, audienceName, subjectName, issuerName, validity, target,
+                authentications, Saml2SubjectConfirmationMethod.BEARER, null);
         response.getAssertions().add(assertion);
 
         return Saml2Util.sign(response, signerKeyPair);

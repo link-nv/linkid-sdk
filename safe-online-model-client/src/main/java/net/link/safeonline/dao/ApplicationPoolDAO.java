@@ -62,6 +62,8 @@ public interface ApplicationPoolDAO extends SafeOnlineService {
      */
     List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1, ApplicationEntity application2);
 
+    List<ApplicationPoolEntity> listApplicationPools(ApplicationEntity application);
+
     void removeApplicationPool(ApplicationPoolEntity applicationPool);
 
 }

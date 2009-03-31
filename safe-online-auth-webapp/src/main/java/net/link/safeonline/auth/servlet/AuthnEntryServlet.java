@@ -8,6 +8,8 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -23,12 +25,10 @@ import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
 import net.link.safeonline.auth.webapp.pages.FirstTimePage;
 import net.link.safeonline.auth.webapp.pages.MainPage;
+import net.link.safeonline.auth.webapp.pages.SelectUserPage;
 import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.ProtocolContext;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.DevicePolicyException;
-import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
-import net.link.safeonline.authentication.exception.InvalidCookieException;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
@@ -167,39 +167,43 @@ public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
          */
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
         Cookie[] cookies = request.getCookies();
-        boolean validSso = false;
-        if (null != cookies) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
-                    try {
-                        if (authenticationService.checkSsoCookie(cookie)) {
-                            // Valid Single Sign-On, cookie needs update as this application is added to list of single
-                            // sign-on applications
-                            validSso = true;
-                            cookie.setValue(authenticationService.getSsoCookie().getValue());
-                            cookie.setPath(cookiePath);
-                            response.addCookie(cookie);
-                        }
-                    } catch (ApplicationNotFoundException e) {
-                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
-                        removeCookie(cookie.getName(), response);
-                    } catch (InvalidCookieException e) {
-                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
-                        removeCookie(cookie.getName(), response);
-                    } catch (EmptyDevicePolicyException e) {
-                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
-                        removeCookie(cookie.getName(), response);
-                    } catch (DevicePolicyException e) {
-                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
-                        removeCookie(cookie.getName(), response);
-                    }
-                }
+        List<Cookie> ssoCookies = new LinkedList<Cookie>();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
+                LOG.debug("sso cookie found: " + cookie.getValue());
+                ssoCookies.add(cookie);
             }
         }
-        if (validSso) {
-            LoginManager.login(request.getSession(), authenticationService.getUserId(), authenticationService.getAuthenticationDevice());
-            response.sendRedirect(loginPath);
-            return;
+        if (!ssoCookies.isEmpty()) {
+            List<AuthenticationAssertion> authenticationAssertions = authenticationService.login(ssoCookies);
+            // first remove the invalid cookies
+            for (Cookie invalidCookie : authenticationService.getInvalidCookies()) {
+                invalidCookie.setPath(cookiePath);
+                response.addCookie(invalidCookie);
+            }
+
+            if (null != authenticationAssertions) {
+                if (authenticationAssertions.size() > 1) {
+                    // multiple users, go to select user page
+                    LOG.debug("multiple users found, redirecting to select user page");
+                    response.sendRedirect(SelectUserPage.PATH);
+                    return;
+                }
+                // valid SSO, log in
+                LoginManager.login(session, authenticationAssertions.get(0));
+
+                /*
+                 * Set / update SSO Cookies
+                 */
+                for (Cookie ssoCookie : authenticationService.getSsoCookies()) {
+                    ssoCookie.setPath(cookiePath);
+                    LOG.debug("sso cookie value: " + ssoCookie.getValue());
+                    response.addCookie(ssoCookie);
+                }
+
+                response.sendRedirect(loginPath);
+                return;
+            }
         }
 
         response.sendRedirect(MainPage.PATH);
@@ -216,14 +220,6 @@ public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
         AuthenticationServiceManager.bindAuthenticationService(session);
 
         return session;
-    }
-
-    private void removeCookie(String name, HttpServletResponse response) {
-
-        Cookie cookie = new Cookie(name, "");
-        cookie.setMaxAge(0);
-        cookie.setPath(cookiePath);
-        response.addCookie(cookie);
     }
 
     private boolean isFirstTime(HttpServletRequest request, HttpServletResponse response) {

@@ -16,9 +16,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
@@ -26,12 +28,14 @@ import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseFactory;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -48,6 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
 import org.easymock.EasyMock;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,6 +77,8 @@ public class DeviceRegistrationLandingServletTest {
     private String                newUserDevicePath  = "new-user-device";
 
     private String                loginPath          = "login";
+
+    private String                cookiePath         = "/test-path/";
 
     String                        userId             = UUID.randomUUID().toString();
 
@@ -103,6 +110,7 @@ public class DeviceRegistrationLandingServletTest {
         initParams.put(DeviceRegistrationLandingServlet.NEW_USER_DEVICE_PATH, newUserDevicePath);
         initParams.put(DeviceRegistrationLandingServlet.LOGIN_PATH, loginPath);
         initParams.put(DeviceRegistrationLandingServlet.DEVICE_ERROR_PATH, deviceErrorPath);
+        initParams.put(DeviceRegistrationLandingServlet.COOKIE_PATH, cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
@@ -217,7 +225,10 @@ public class DeviceRegistrationLandingServletTest {
             throws Exception {
 
         // setup
+        SubjectEntity subject = new SubjectEntity(userId);
         DeviceEntity device = new DeviceEntity();
+        AuthenticationAssertion authenticationAssertion = new AuthenticationAssertion(subject);
+        authenticationAssertion.addAuthentication(new DateTime(), device);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         String applicationName = "test-application-id";
@@ -231,10 +242,10 @@ public class DeviceRegistrationLandingServletTest {
 
         // expectations
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
-        expect(mockAuthenticationService.register((DeviceOperationResponse) EasyMock.anyObject())).andStubReturn(userId);
-        expect(mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
+        expect(mockAuthenticationService.register((DeviceOperationResponse) EasyMock.anyObject())).andStubReturn(authenticationAssertion);
+        expect(mockAuthenticationService.getRegisteredDevice()).andStubReturn(device);
         expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
-        expect(mockAuthenticationService.getSsoCookie()).andStubReturn(null);
+        expect(mockAuthenticationService.getSsoCookies()).andStubReturn(new LinkedList<Cookie>());
 
         // prepare
         replay(mockObjects);
@@ -252,8 +263,8 @@ public class DeviceRegistrationLandingServletTest {
         assertTrue(resultLocation.endsWith(loginPath));
         String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
-
-        DeviceEntity resultDevice = (DeviceEntity) servletTestManager.getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
-        assertEquals(device, resultDevice);
+        AuthenticationAssertion resultAuthenticationAssertion = (AuthenticationAssertion) servletTestManager
+                                                                                                            .getSessionAttribute(LoginManager.AUTHENTICATION_ASSERTION_ATTRIBUTE);
+        assertEquals(authenticationAssertion, resultAuthenticationAssertion);
     }
 }

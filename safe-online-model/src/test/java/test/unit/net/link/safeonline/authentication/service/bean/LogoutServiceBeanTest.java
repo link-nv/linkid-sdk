@@ -21,13 +21,11 @@ import java.util.Collections;
 import java.util.UUID;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.authentication.service.bean.LogoutServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -60,13 +58,9 @@ public class LogoutServiceBeanTest {
 
     private Object[]                         mockObjects;
 
-    private DeviceDAO                        mockDeviceDAO;
-
     private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
     private PkiValidator                     mockPkiValidator;
-
-    private SecurityAuditLogger              mockSecurityAuditLogger;
 
     private UserIdMappingService             mockUserIdMappingService;
 
@@ -92,25 +86,19 @@ public class LogoutServiceBeanTest {
         mockApplicationDAO = createMock(ApplicationDAO.class);
         EJBTestUtils.inject(testedInstance, mockApplicationDAO);
 
-        mockDeviceDAO = createMock(DeviceDAO.class);
-        EJBTestUtils.inject(testedInstance, mockDeviceDAO);
-
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
         EJBTestUtils.inject(testedInstance, mockApplicationAuthenticationService);
 
         mockPkiValidator = createMock(PkiValidator.class);
         EJBTestUtils.inject(testedInstance, mockPkiValidator);
 
-        mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
-        EJBTestUtils.inject(testedInstance, mockSecurityAuditLogger);
-
         mockUserIdMappingService = createMock(UserIdMappingService.class);
         EJBTestUtils.inject(testedInstance, mockUserIdMappingService);
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockDeviceDAO, mockApplicationAuthenticationService,
-                mockPkiValidator, mockSecurityAuditLogger, mockUserIdMappingService };
+        mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockApplicationAuthenticationService, mockPkiValidator,
+                mockUserIdMappingService };
     }
 
     @Test

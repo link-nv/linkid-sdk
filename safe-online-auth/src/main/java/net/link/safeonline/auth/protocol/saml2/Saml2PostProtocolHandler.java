@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
@@ -122,7 +123,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     /**
      * {@inheritDoc}
      */
-    public String handleDeviceAuthnResponse(HttpServletRequest request)
+    public AuthenticationAssertion handleDeviceAuthnResponse(HttpServletRequest request)
             throws ProtocolException {
 
         LOG.debug("request method: " + request.getMethod());
@@ -170,7 +171,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     /**
      * {@inheritDoc}
      */
-    public String handleDeviceRegistrationResponse(HttpServletRequest request)
+    public AuthenticationAssertion handleDeviceRegistrationResponse(HttpServletRequest request)
             throws ProtocolException {
 
         LOG.debug("request method: " + request.getMethod());

@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.device.sdk.operation.saml2.request;
 
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDevice;
+
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.impl.RequestAbstractTypeUnmarshaller;
 import org.opensaml.xml.XMLObject;
@@ -43,8 +45,6 @@ public class DeviceOperationRequestUnmarshaller extends RequestAbstractTypeUnmar
             req.setServiceURL(attribute.getValue());
         } else if (attribute.getLocalName().equals(DeviceOperationRequest.DEVICE_ATTRIB_NAME)) {
             req.setDevice(attribute.getValue());
-        } else if (attribute.getLocalName().equals(DeviceOperationRequest.AUTHENTICATED_DEVICE_ATTRIB_NAME)) {
-            req.setAuthenticatedDevice(attribute.getValue());
         } else if (attribute.getLocalName().equals(DeviceOperationRequest.ATTRIBUTE_ID_ATTRIB_NAME)) {
             req.setAttributeId(attribute.getValue());
         } else if (attribute.getLocalName().equals(DeviceOperationRequest.ATTRIBUTE_ATTRIB_NAME)) {
@@ -62,6 +62,8 @@ public class DeviceOperationRequestUnmarshaller extends RequestAbstractTypeUnmar
 
         if (childSAMLObject instanceof Subject) {
             req.setSubject((Subject) childSAMLObject);
+        } else if (childSAMLObject instanceof AuthenticatedDevice) {
+            req.getAuthenticatedDevices().add((AuthenticatedDevice) childSAMLObject);
         } else {
             super.processChildElement(parentSAMLObject, childSAMLObject);
         }

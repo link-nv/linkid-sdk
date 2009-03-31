@@ -16,7 +16,6 @@ import javax.servlet.http.Cookie;
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -54,15 +53,6 @@ public interface LogoutService extends SafeOnlineService {
     void abort();
 
     /**
-     * Returns whether the specified cookie is ok for logout. Meaning all applications specified in the cookie have to be logged out.
-     * 
-     * @throws ApplicationNotFoundException
-     * @throws InvalidCookieException
-     */
-    boolean checkSsoCookieForLogout(Cookie ssoCookie)
-            throws ApplicationNotFoundException, InvalidCookieException;
-
-    /**
      * Initializes a logout process. Validates the incoming logout request and stores the application.
      * 
      * @param samlLogoutRequest
@@ -90,6 +80,18 @@ public interface LogoutService extends SafeOnlineService {
      *         all applications have been processed.
      */
     ApplicationEntity findSsoApplicationToLogout();
+
+    /**
+     * Checks the given list of SSO cookies and extract all applications that need to be logged out.
+     * 
+     * @param ssoCookies
+     */
+    void logout(List<Cookie> ssoCookies);
+
+    /**
+     * Returns list of invalid sso cookie ( expired, ... )
+     */
+    List<Cookie> getInvalidCookies();
 
     /**
      * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent to the application.

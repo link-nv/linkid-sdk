@@ -11,6 +11,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -183,8 +185,8 @@ public class Saml2Util {
         return result;
     }
 
-    public static Assertion getAssertion(String inResponseTo, String audienceName, String subjectName, String issuerName, String samlName,
-                                         int validity, String target, DateTime authenticationDate,
+    public static Assertion getAssertion(String inResponseTo, String audienceName, String subjectName, String issuerName, int validity,
+                                         String target, Map<DateTime, String> authentications,
                                          Saml2SubjectConfirmationMethod subjectConfirmationMethod, PublicKey publicKey) {
 
         DateTime now = new DateTime();
@@ -251,16 +253,21 @@ public class Saml2Util {
         subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
         subjectConfirmations.add(subjectConfirmation);
 
-        AuthnStatement authnStatement = Saml2Util.buildXMLObject(AuthnStatement.class, AuthnStatement.DEFAULT_ELEMENT_NAME);
-        assertion.getAuthnStatements().add(authnStatement);
-        authnStatement.setAuthnInstant(authenticationDate);
-        AuthnContext authnContext = Saml2Util.buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
-        authnStatement.setAuthnContext(authnContext);
+        for (Entry<DateTime, String> authentication : authentications.entrySet()) {
+            DateTime authenticationDate = authentication.getKey();
+            String authenticationClassRef = authentication.getValue();
 
-        AuthnContextClassRef authnContextClassRef = Saml2Util.buildXMLObject(AuthnContextClassRef.class,
-                AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-        authnContext.setAuthnContextClassRef(authnContextClassRef);
-        authnContextClassRef.setAuthnContextClassRef(samlName);
+            AuthnStatement authnStatement = Saml2Util.buildXMLObject(AuthnStatement.class, AuthnStatement.DEFAULT_ELEMENT_NAME);
+            assertion.getAuthnStatements().add(authnStatement);
+            authnStatement.setAuthnInstant(authenticationDate);
+            AuthnContext authnContext = Saml2Util.buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
+            authnStatement.setAuthnContext(authnContext);
+
+            AuthnContextClassRef authnContextClassRef = Saml2Util.buildXMLObject(AuthnContextClassRef.class,
+                    AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+            authnContext.setAuthnContextClassRef(authnContextClassRef);
+            authnContextClassRef.setAuthnContextClassRef(authenticationClassRef);
+        }
 
         return assertion;
     }

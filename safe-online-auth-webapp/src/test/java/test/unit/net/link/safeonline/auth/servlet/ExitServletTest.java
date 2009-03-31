@@ -133,7 +133,6 @@ public class ExitServletTest {
         initialSessionAttributes.put(LoginManager.TARGET_ATTRIBUTE, target);
         initialSessionAttributes.put(LoginManager.APPLICATION_ID_ATTRIBUTE, applicationId);
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
-        initialSessionAttributes.put(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, device);
 
         exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 

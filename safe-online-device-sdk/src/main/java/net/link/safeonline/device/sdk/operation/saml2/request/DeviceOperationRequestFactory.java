@@ -9,11 +9,18 @@ package net.link.safeonline.device.sdk.operation.saml2.request;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import net.link.safeonline.device.sdk.operation.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDevice;
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDeviceBuilder;
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDeviceMarshaller;
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDeviceUnmarshaller;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.saml.common.Saml2Util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
@@ -38,6 +45,9 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class DeviceOperationRequestFactory {
 
+    private static final Log LOG = LogFactory.getLog(DeviceOperationRequestFactory.class);
+
+
     private DeviceOperationRequestFactory() {
 
         // empty
@@ -54,6 +64,8 @@ public class DeviceOperationRequestFactory {
             DefaultBootstrap.bootstrap();
             Configuration.registerObjectProvider(DeviceOperationRequest.DEFAULT_ELEMENT_NAME, new DeviceOperationRequestBuilder(),
                     new DeviceOperationRequestMarshaller(), new DeviceOperationRequestUnmarshaller(), null);
+            Configuration.registerObjectProvider(AuthenticatedDevice.DEFAULT_ELEMENT_NAME, new AuthenticatedDeviceBuilder(),
+                    new AuthenticatedDeviceMarshaller(), new AuthenticatedDeviceUnmarshaller(), null);
         } catch (ConfigurationException e) {
             throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
@@ -87,7 +99,7 @@ public class DeviceOperationRequestFactory {
      */
     public static String createDeviceOperationRequest(String issuerName, String subjectName, KeyPair signerKeyPair, String serviceURL,
                                                       String destinationURL, DeviceOperationType deviceOperation,
-                                                      Challenge<String> challenge, String device, String authenticatedDevice,
+                                                      Challenge<String> challenge, String device, List<String> authenticatedDevices,
                                                       String attributeId, String attribute) {
 
         if (null == signerKeyPair)
@@ -135,9 +147,19 @@ public class DeviceOperationRequestFactory {
         request.setDestination(destinationURL);
         request.setDeviceOperation(deviceOperation.name());
         request.setDevice(device);
-        request.setAuthenticatedDevice(authenticatedDevice);
         request.setAttributeId(attributeId);
         request.setAttribute(attribute);
+
+        LOG.debug("add authenticated devices");
+        if (null != authenticatedDevices && !authenticatedDevices.isEmpty()) {
+            for (String authenticatedDeviceName : authenticatedDevices) {
+                AuthenticatedDevice authenticatedDevice = Saml2Util.buildXMLObject(AuthenticatedDevice.class,
+                        AuthenticatedDevice.DEFAULT_ELEMENT_NAME);
+                authenticatedDevice.setDevice(authenticatedDeviceName);
+                request.getAuthenticatedDevices().add(authenticatedDevice);
+                LOG.debug("add authenticated device: " + authenticatedDeviceName);
+            }
+        }
 
         return Saml2Util.sign(request, signerKeyPair);
     }

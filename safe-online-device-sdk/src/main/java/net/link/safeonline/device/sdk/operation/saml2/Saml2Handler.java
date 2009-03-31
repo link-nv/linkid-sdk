@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
 import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequest;
 import net.link.safeonline.device.sdk.operation.saml2.request.DeviceOperationRequestUtil;
+import net.link.safeonline.device.sdk.operation.saml2.request.device.AuthenticatedDevice;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -124,8 +127,11 @@ public class Saml2Handler implements Serializable {
         String device = deviceOperationRequest.getDevice();
         LOG.debug("device: " + device);
 
-        String authenticatedDevice = deviceOperationRequest.getAuthenticatedDevice();
-        LOG.debug("authenticated device: " + authenticatedDevice);
+        List<String> authenticatedDevices = new LinkedList<String>();
+        for (AuthenticatedDevice authenticatedDevice : deviceOperationRequest.getAuthenticatedDevices()) {
+            authenticatedDevices.add(authenticatedDevice.getDevice());
+            LOG.debug("authenticated device: " + authenticatedDevice.getDevice());
+        }
 
         DeviceOperationType deviceOperation = DeviceOperationType.valueOf(deviceOperationRequest.getDeviceOperation());
         LOG.debug("device operation: " + deviceOperation);
@@ -148,7 +154,7 @@ public class Saml2Handler implements Serializable {
         protocolContext.setTargetUrl(serviceURL);
         protocolContext.setInResponseTo(deviceOperationRequestId);
         protocolContext.setDevice(device);
-        protocolContext.setAuthenticatedDevice(authenticatedDevice);
+        protocolContext.setAuthenticatedDevices(authenticatedDevices);
         protocolContext.setSubject(userId);
         protocolContext.setNodeName(nodeName);
         protocolContext.setDeviceOperation(deviceOperation);
@@ -157,7 +163,7 @@ public class Saml2Handler implements Serializable {
 
         DeviceOperationManager.setUserId(userId, request);
         DeviceOperationManager.setOperation(deviceOperation.name(), request);
-        DeviceOperationManager.setAuthenticatedDevice(authenticatedDevice, request);
+        DeviceOperationManager.setAuthenticatedDevices(authenticatedDevices, request);
         DeviceOperationManager.setAttributeId(attributeId, request);
 
         return deviceOperation;

@@ -45,8 +45,8 @@ public class JavaVersionServletTest {
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(JavaVersionServlet.class);
         location = servletTestManager.getServletLocation();
-        SafeOnlineTestConfig.loadTest(servletTestManager);
 
+        SafeOnlineTestConfig.loadTest(servletTestManager);
     }
 
     @After

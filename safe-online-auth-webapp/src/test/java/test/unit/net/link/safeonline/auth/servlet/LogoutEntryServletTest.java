@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -123,6 +125,7 @@ public class LogoutEntryServletTest {
         assertTrue(location.endsWith(UnsupportedProtocolPage.PATH));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void saml2LogoutProtocol()
             throws Exception {
@@ -146,7 +149,8 @@ public class LogoutEntryServletTest {
         // expectations
         expect(mockLogoutService.initialize((LogoutRequest) EasyMock.anyObject())).andStubReturn(
                 new LogoutProtocolContext(applicationName, servletLocation));
-        expect(mockLogoutService.checkSsoCookieForLogout((Cookie) EasyMock.anyObject())).andStubReturn(true);
+        mockLogoutService.logout((List<Cookie>) EasyMock.anyObject());
+        expect(mockLogoutService.getInvalidCookies()).andReturn(new LinkedList<Cookie>());
 
         // prepare
         replay(mockObjects);

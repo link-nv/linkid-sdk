@@ -72,7 +72,6 @@ public class ExportServletTest extends TestCase {
         mockObjects = new Object[] { mockStatisticService };
 
         SafeOnlineTestConfig.loadTest(servletTestManager);
-
     }
 
     @Override
