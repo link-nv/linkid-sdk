@@ -169,6 +169,6 @@ emit "Setting up project-specific configurations" --
             #    "
             #fi
         )
-    done < <(find . -type f -name .settings)
+    done < <(find . -type d -name .settings)
 
 emit -$result
