@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border">
+			<wicket:container wicket:id="navigation_panel">[Navigation
+				Panel]</wicket:container>
+		</wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<table>
+				<thead>
+					<tr>
+						<th>
+							<wicket:message key="when">[When]</wicket:message>
+						</th>
+						<th>
+							<wicket:message key="event">[Event]</wicket:message>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr wicket:id="history">
+						<td>
+							<span wicket:id="when">[When]</span>
+						</td>
+						<td>
+							<span wicket:id="message">[Message]</span>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr class="navigator-table-footer-tr">
+						<td colspan="2" scope="colgroup" class="navigator-table-footer-td">
+							<span wicket:id="navigator" class="navigator-table-footer-span">[Navigator]
+							</span>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+
+		</wicket:container>
+
+	</body>
+</html>

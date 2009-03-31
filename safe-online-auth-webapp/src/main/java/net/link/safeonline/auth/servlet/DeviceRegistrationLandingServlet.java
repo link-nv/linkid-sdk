@@ -15,16 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
-import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.auth.protocol.ProtocolException;
+import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
-import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -40,7 +37,28 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
+public class DeviceRegistrationLandingServlet extends AbstractNodeInjectionServlet {
+
+    /**
+     * PATH within the authentication web application where the authentication pipeline continues after the user has been successfully
+     * logged in. <i>[required]</i>
+     */
+    public static final String LOGIN_PATH                     = "LoginPath";
+
+    /**
+     * 
+     */
+    public static final String REGISTER_DEVICE_PATH           = "RegisterDevicePath";
+
+    /**
+     * 
+     */
+    public static final String NEW_USER_DEVICE_PATH           = "NewUserDevicePath";
+
+    /**
+     * PATH within the authentication web application to redirect to when a protocol error occurs. <i>[required]</i>
+     */
+    public static final String DEVICE_ERROR_PATH              = "DeviceErrorPath";
 
     private static final long  serialVersionUID               = 1L;
 
@@ -50,20 +68,17 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
     public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-    @Init(name = "LoginUrl")
-    private String             loginUrl;
+    @Init(name = LOGIN_PATH)
+    private String             loginPath;
 
-    @Init(name = "RegisterDeviceUrl")
-    private String             registerDeviceUrl;
+    @Init(name = REGISTER_DEVICE_PATH)
+    private String             registerDevicePath;
 
-    @Init(name = "NewUserDeviceUrl")
-    private String             newUserDeviceUrl;
+    @Init(name = NEW_USER_DEVICE_PATH)
+    private String             newUserDevicePath;
 
-    @Init(name = "ServletEndpointUrl")
-    private String             servletEndpointUrl;
-
-    @Init(name = "DeviceErrorUrl")
-    private String             deviceErrorUrl;
+    @Init(name = DEVICE_ERROR_PATH)
+    private String             deviceErrorPath;
 
 
     @Override
@@ -73,60 +88,40 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
         LOG.debug("doPost");
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
-         * checking the destination field.
+         * Register
          */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
-
-        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(requestWrapper.getSession());
         String userId;
         try {
-            userId = authenticationService.register(requestWrapper);
-        } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
-            return;
-        } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
-            return;
-        } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
-            return;
-        } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
-                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            userId = ProtocolHandlerManager.handleDeviceRegistrationResponse(request);
+        } catch (ProtocolException e) {
+            redirectToErrorPage(request, response, deviceErrorPath, RESOURCE_BASE, new ErrorMessage(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                    e.getMessage()));
             return;
         }
+
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
         if (null == userId) {
-            /*
-             * Registration failed, redirect to register-device or new-user-device
-             */
-            HelpdeskLogger.add(requestWrapper.getSession(), "registration failed", LogLevelType.ERROR);
+            /* Registration failed, redirect to register-device or new-user-device */
+            HelpdeskLogger.add(request.getSession(), "registration failed", LogLevelType.ERROR);
             if (authenticationService.getAuthenticationState().equals(AuthenticationState.USER_AUTHENTICATED)) {
-                response.sendRedirect(registerDeviceUrl);
+                response.sendRedirect(registerDevicePath);
             } else {
-                response.sendRedirect(newUserDeviceUrl);
+                response.sendRedirect(newUserDevicePath);
             }
 
         } else {
-            /*
-             * Registration ok, redirect to login servlet
-             */
-            LoginManager.relogin(requestWrapper.getSession(), authenticationService.getAuthenticationDevice());
-            HelpdeskLogger.add(requestWrapper.getSession(), "successfully registered device: "
-                    + authenticationService.getAuthenticationDevice(), LogLevelType.INFO);
+            /* Registration OK, redirect to login servlet */
+            LoginManager.relogin(request.getSession(), authenticationService.getAuthenticationDevice());
+            HelpdeskLogger.add(request.getSession(), "successfully registered device: " + authenticationService.getAuthenticationDevice(),
+                    LogLevelType.INFO);
 
-            /*
-             * Set SSO Cookie
-             */
+            /* Set SSO Cookie */
             Cookie ssoCookie = authenticationService.getSsoCookie();
             if (null != ssoCookie) {
                 response.addCookie(ssoCookie);
             }
 
-            response.sendRedirect(loginUrl);
+            response.sendRedirect(loginPath);
         }
     }
 }

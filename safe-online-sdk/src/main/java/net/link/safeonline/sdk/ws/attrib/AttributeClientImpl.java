@@ -62,7 +62,9 @@ import com.sun.xml.ws.client.ClientTransportException;
  */
 public class AttributeClientImpl extends AbstractMessageAccessor implements AttributeClient {
 
-    private static final Log        LOG = LogFactory.getLog(AttributeClientImpl.class);
+    private static final long       serialVersionUID = 1L;
+
+    private static final Log        LOG              = LogFactory.getLog(AttributeClientImpl.class);
 
     private final SAMLAttributePort port;
 

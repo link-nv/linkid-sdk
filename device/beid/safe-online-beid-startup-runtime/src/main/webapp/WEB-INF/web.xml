@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
+
+	<display-name>SafeOnline BeID Startup</display-name>
+
+    <!-- Application Context Parameters -->
+	<context-param>
+		<description>The JNDI prefix used by startable components.</description>
+		<param-name>StartableJndiPrefix</param-name>
+		<param-value>SafeOnlineBeid/startup</param-value>
+	</context-param>
+
+    <!-- Application Event Listeners -->
+	<listener>
+		<listener-class>net.link.safeonline.listener.StartupServletContextListener</listener-class>
+	</listener>
+
+</web-app>

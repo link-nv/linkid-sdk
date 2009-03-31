@@ -1,63 +1,76 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.operatorEditTrustDomain}: #{selectedTrustDomain.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.operatorEditTrustDomain}:
+					#{selectedTrustDomain.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-            <table>
-                <colgroup class="half" />
-                <colgroup />
+				<h:form>
+					<table>
+						<colgroup class="half" />
+						<colgroup />
 
-                <tbody>
-                    <tr>
-                        <th><h:outputText value="#{msgs.operatorPerformOCSPCheck}" /></th>
-                        <td><h:selectBooleanCheckbox id="performOcspCheck"
-                                value="#{editTrustDomain.performOcspCheck}" /></td>
-                    </tr>
-                    <tr>
-                        <th><h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" /></th>
-                        <td><h:inputText id="ocspCacheTimeOutMillis"
-                                value="#{editTrustDomain.ocspCacheTimeOutMillis}" required="true" /></td>
-                    </tr>
-                </tbody>
-            </table>
+						<tbody>
+							<tr>
+								<th>
+									<h:outputText value="#{msgs.operatorPerformOCSPCheck}" />
+								</th>
+								<td>
+									<h:selectBooleanCheckbox id="performOcspCheck"
+										value="#{editTrustDomain.performOcspCheck}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" />
+								</th>
+								<td>
+									<h:inputText id="ocspCacheTimeOutMillis"
+										value="#{editTrustDomain.ocspCacheTimeOutMillis}" required="true" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
-			<h:commandButton action="#{editTrustDomain.save}" id="save"
-				value="#{msgs.saveaction}" styleClass="submit" />
-			<h:commandButton action="#{editTrustDomain.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" styleClass="submit" />
-		</h:form>
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/usage/usage-agreements.seam"
-					value="#{msgs.usageAgreementOLAS}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+					<h:commandButton action="#{editTrustDomain.save}"
+						id="save" value="#{msgs.saveaction}" styleClass="submit" />
+					<h:commandButton action="#{editTrustDomain.cancel}"
+						id="cancel" value="#{msgs.cancelaction}" styleClass="submit" />
+				</h:form>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/nodes/nodes.seam" value="#{msgs.operatorOlasNodes}" />
+						</li>
+						<li>
+							<h:commandLink action="/configuration.seam"
+								value="#{msgs.operatorGeneralConfiguration}" />
+						</li>
+						<li>
+							<h:commandLink action="/usage/usage-agreements.seam"
+								value="#{msgs.usageAgreementOLAS}" />
+						</li>
+						<li>
+							<h:commandLink action="/notifications/notifications.seam"
+								value="#{msgs.operatorNotifications}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

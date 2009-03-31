@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.lin-k.safe-online</groupId>
+		<artifactId>device</artifactId>
+		<version>1.4-SNAPSHOT</version>
+	</parent>
+
+	<!-- PROJECT METADATA -->
+	<name>SafeOnline Beid Device</name>
+	<groupId>net.lin-k.safe-online.device</groupId>
+	<artifactId>beid</artifactId>
+	<version>1.4-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>safe-online-model-beid</module>
+		<module>safe-online-model-beid-client</module>
+		<module>safe-online-beid-auth-ws-impl</module>
+		<module>safe-online-beid-auth-ws-runtime</module>
+		<module>safe-online-beid-webapp</module>
+		<module>safe-online-beid-startup-runtime</module>
+		<module>safe-online-beid-deploy</module>
+		<module>safe-online-beid-pcsc-applet</module>
+		<module>safe-online-beid-pcsc-applet-package</module>
+		<module>safe-online-beid-pkcs11-applet</module>
+		<module>safe-online-beid-pkcs11-applet-package</module>
+		<module>safe-online-pkcs11-sc-beid</module>
+	</modules>
+
+</project>

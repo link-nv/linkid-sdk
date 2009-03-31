@@ -145,13 +145,19 @@ public class JAASLoginFilter implements Filter {
             }
             String requestPath = request.getContextPath() + request.getServletPath();
             if (null != loginPath && !loginPath.equals(requestPath) && !unauthenticatedPaths.contains(requestPath)) {
-                LOG.debug("redirect to " + loginPath);
+                LOG.debug("redirect to " + loginPath + ", requestPath: " + requestPath);
                 session.setAttribute(REDIRECTED_SESSION_ATTRIBUTE, true);
                 response.sendRedirect(loginPath);
                 return false;
             }
             return true;
         }
+        login(request, loginContextName, userId);
+        return true;
+    }
+
+    public static void login(HttpServletRequest request, String loginContextName, String userId) {
+
         UsernamePasswordHandler handler = new UsernamePasswordHandler(userId, null);
         try {
             LoginContext loginContext = new LoginContext(loginContextName, handler);
@@ -161,10 +167,10 @@ public class JAASLoginFilter implements Filter {
         } catch (LoginException e) {
             LOG.error("login error: " + e.getMessage(), e);
         }
-        return true;
+
     }
 
-    private void logout(ServletRequest request) {
+    public static void logout(ServletRequest request) {
 
         LoginContext loginContext = (LoginContext) request.getAttribute(JAAS_LOGIN_CONTEXT_SESSION_ATTRIB);
         if (loginContext == null)
@@ -181,7 +187,7 @@ public class JAASLoginFilter implements Filter {
     public static final String FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME = "FlushJBossCredentialCache";
 
 
-    private void processFlushJBossCredentialCache(HttpServletRequest request)
+    public static void processFlushJBossCredentialCache(HttpServletRequest request)
             throws ServletException {
 
         HttpSession session = request.getSession(false);
@@ -207,7 +213,7 @@ public class JAASLoginFilter implements Filter {
         }
     }
 
-    private void flushCredentialCache(String login, String securityDomain) {
+    public static void flushCredentialCache(String login, String securityDomain) {
 
         LOG.debug("flush credential cache for " + login + " on security domain " + securityDomain);
         Principal user = new SimplePrincipal(login);

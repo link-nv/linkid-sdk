@@ -1,39 +1,49 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.configuration}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.configuration}</h1>
-	</ui:define>
-	<ui:define name="content">
+				<h2>#{msgs.operatorOlasNodes}</h2>
+				<p>
+					#{msgs.operatorOlasNodesInfo}
+					<a href="./nodes/nodes.seam">#{msgs.clickHere}</a>
+				</p>
 
-		<h2>#{msgs.operatorOlasNodes}</h2>
-		<p>#{msgs.operatorOlasNodesInfo} <a href="./nodes/nodes.seam">#{msgs.clickHere}</a></p>
+				<h2>#{msgs.operatorGeneralConfiguration}
+				</h2>
+				<p>
+					#{msgs.operatorGeneralConfigurationInfo}
+					<a href="./configuration.seam">#{msgs.clickHere}</a>
+				</p>
 
-		<h2>#{msgs.operatorGeneralConfiguration}</h2>
-		<p>#{msgs.operatorGeneralConfigurationInfo} <a
-			href="./configuration.seam">#{msgs.clickHere}</a></p>
+				<h2>#{msgs.PKIX}</h2>
+				<p>
+					#{msgs.operatorPKIXInfo}
+					<a href="./pkix/pkix.seam">#{msgs.clickHere}</a>
+				</p>
 
-		<h2>#{msgs.PKIX}</h2>
-		<p>#{msgs.operatorPKIXInfo} <a href="./pkix/pkix.seam">#{msgs.clickHere}</a></p>
+				<h2>#{msgs.usageAgreementOLAS}</h2>
+				<p>
+					#{msgs.operatorUsageAgreementInfo}
+					<a href="./usage/usage-agreements.seam">#{msgs.clickHere}</a>
+				</p>
 
-		<h2>#{msgs.usageAgreementOLAS}</h2>
-		<p>#{msgs.operatorUsageAgreementInfo} <a
-			href="./usage/usage-agreements.seam">#{msgs.clickHere}</a></p>
-
-		<h2>#{msgs.operatorNotifications}</h2>
-		<p>#{msgs.operatorNotificationsInfo} <a
-			href="./notifications/notifications.seam">#{msgs.clickHere}</a></p>
-	</ui:define>
-</ui:composition>
-</body>
+				<h2>#{msgs.operatorNotifications}</h2>
+				<p>
+					#{msgs.operatorNotificationsInfo}
+					<a href="./notifications/notifications.seam">#{msgs.clickHere}</a>
+				</p>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

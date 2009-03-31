@@ -38,12 +38,6 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 
     public void sessionCreated(HttpSessionEvent event) {
 
-        /*
-         * When the HTTP session starts we assign it an authentication service instance.
-         */
-
-        HttpSession session = event.getSession();
-        bindAuthenticationService(session);
     }
 
     public static void bindAuthenticationService(HttpSession session) {
@@ -121,33 +115,6 @@ public class AuthenticationServiceManager implements HttpSessionListener {
             throw new IllegalStateException("authentication service instance not present");
         try {
             return authenticationService.finalizeAuthentication();
-        } finally {
-            /*
-             * No matter what happens, we don't want the sessionDestroyed method to call abort on our finished authentication service
-             * instance.
-             */
-            session.removeAttribute(AUTH_SERVICE_ATTRIBUTE);
-        }
-    }
-
-    /**
-     * Finalizes the logout process.
-     * 
-     * This method will return an encoded SAML logout response token which should be communicated to the application the user is logging out
-     * for.
-     * 
-     * @param partialLogout
-     * @param session
-     * @throws NodeNotFoundException
-     */
-    public static String finalizeLogout(boolean partialLogout, HttpSession session)
-            throws NodeNotFoundException {
-
-        AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService)
-            throw new IllegalStateException("authentication service instance not present");
-        try {
-            return authenticationService.finalizeLogout(partialLogout);
         } finally {
             /*
              * No matter what happens, we don't want the sessionDestroyed method to call abort on our finished authentication service

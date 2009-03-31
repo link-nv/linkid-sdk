@@ -18,12 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
-import net.link.safeonline.auth.webapp.GlobalConfirmationPage;
-import net.link.safeonline.auth.webapp.IdentityConfirmationPage;
-import net.link.safeonline.auth.webapp.IdentityUnavailablePage;
-import net.link.safeonline.auth.webapp.MissingAttributesPage;
-import net.link.safeonline.auth.webapp.RegisterDevicePage;
-import net.link.safeonline.auth.webapp.SubscriptionPage;
+import net.link.safeonline.auth.webapp.pages.GlobalConfirmationPage;
+import net.link.safeonline.auth.webapp.pages.IdentityConfirmationPage;
+import net.link.safeonline.auth.webapp.pages.IdentityUnavailablePage;
+import net.link.safeonline.auth.webapp.pages.MissingAttributesPage;
+import net.link.safeonline.auth.webapp.pages.RegisterDevicePage;
+import net.link.safeonline.auth.webapp.pages.SubscriptionPage;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -37,8 +37,8 @@ import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.In;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +53,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class LoginServlet extends AbstractInjectionServlet {
+public class LoginServlet extends AbstractNodeInjectionServlet {
 
     private static final long     serialVersionUID = 1L;
 

@@ -1,53 +1,50 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:tr="http://myfaces.apache.org/trinidad"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:tr="http://myfaces.apache.org/trinidad" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template-root.xhtml">
 
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="attributes" />
-		</ui:include>
-	</ui:define>
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="attributes" />
+				</ui:include>
+			</ui:define>
 
-	<ui:define name="top_content">
-		<h1>#{msgs.addAttribute}: #{msgs.compounded}</h1>
-	</ui:define>
-	<ui:define name="content">
+			<ui:define name="top_content">
+				<h1>#{msgs.addAttribute}: #{msgs.compounded}
+				</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<rich:listShuttle
-				sourceValue="#{addAttribute.sourceMemberAttributes}"
-				targetValue="#{addAttribute.targetMemberAttributes}" var="item"
-				sourceCaptionLabel="#{msgs.availableAttributes}:"
-				targetCaptionLabel="#{msgs.memberAttributes}:"
-				converter="net.link.safeonline.converter.AttributeTypeConverter">
+				<h:form>
+					<rich:listShuttle sourceValue="#{addAttribute.sourceMemberAttributes}"
+						targetValue="#{addAttribute.targetMemberAttributes}" var="item"
+						sourceCaptionLabel="#{msgs.availableAttributes}:"
+						targetCaptionLabel="#{msgs.memberAttributes}:"
+						converter="net.link.safeonline.converter.AttributeTypeConverter">
 
-				<rich:column>
-					<h:outputText value="#{item.name}" />
-				</rich:column>
-			</rich:listShuttle>
+						<rich:column>
+							<h:outputText value="#{item.name}" />
+						</rich:column>
+					</rich:listShuttle>
 
-			<h:messages styleClass="error" globalOnly="true" />
+					<h:messages styleClass="error" globalOnly="true" />
 
-			<rich:spacer height="10" />
-			<h:commandButton value="#{msgs.previous}" id="previous"
-				action="previous" immediate="true" styleClass="submit" />
-			<h:commandButton value="#{msgs.next}" id="next"
-				action="#{addAttribute.membersNext}" styleClass="submit" />
-			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+					<rich:spacer height="10" />
+					<h:commandButton value="#{msgs.previous}" id="previous"
+						action="previous" immediate="true" styleClass="submit" />
+					<h:commandButton value="#{msgs.next}" id="next"
+						action="#{addAttribute.membersNext}" styleClass="submit" />
+					<h:commandButton action="#{addAttribute.cancel}"
+						id="cancel" value="#{msgs.cancelaction}" immediate="true"
+						styleClass="submit" />
 
-		</h:form>
+				</h:form>
 
-	</ui:define>
+			</ui:define>
 
-</ui:composition>
-</body>
+		</ui:composition>
+	</body>
 
 </html>

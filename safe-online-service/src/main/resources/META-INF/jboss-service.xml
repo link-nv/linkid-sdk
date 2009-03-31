@@ -41,19 +41,6 @@
 	</mbean>
 
 	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
-		name="safeonline:service=DeviceDynamicLoginConfig">
-		<attribute name="AuthConfig">
-			META-INF/safe-online-device-login-config.xml
-		</attribute>
-		<depends optional-attribute-name="LoginConfigService">
-			jboss.security:service=XMLLoginConfig
-		</depends>
-		<depends optional-attribute-name="SecurityManagerService">
-			jboss.security:service=JaasSecurityManager
-		</depends>
-	</mbean>
-
-	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
 		name="safeonline:service=NodeDynamicLoginConfig">
 		<attribute name="AuthConfig">
 			META-INF/safe-online-node-login-config.xml

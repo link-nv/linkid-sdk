@@ -22,7 +22,6 @@
 #   * http://lhunath.lyndir.com											   #
 #   * Maarten Billemont.													  #
 #																			 #
-source "${0%/*}/bashlib"													  #
 scripts="${0%/*}"; [[ $scripts = /* ]] || scripts=$PWD/$scripts
 distribution=$(cd "$scripts/.."; echo "${PWD##*/}")
 source "$scripts/bashlib"
@@ -31,12 +30,13 @@ source "$scripts/bashlib"
 cd "$scripts/../jboss/server/default/deploy" || { emit -r "Invalid distribution: '$distribution'."; exit 1; }
 
 # Find and read in configuration of our datasource.
-dbconfig=( !(jms)-ds.xml )
-[[ $dbconfig ]] || { emit -r "No database configuration found for '$distribution'."; exit 1; }
-jdbcUrl=$(sed -n 's/.*\(jdbc:[^< ]*\).*/\1/p' "$dbconfig")
+dbconfigfile=( !(jms)-ds.xml )
+[[ $dbconfigfile ]] || { emit -r "No database configuration found for '$distribution'."; exit 1; }
+dbconfig=$(perl -we 'open(INPUT, "<-"); read(INPUT, $_, -s INPUT); s/<!--.*?-->//sg and print $_' < "$dbconfigfile")
+jdbcUrl=$(sed -n 's/.*\(jdbc:[^< ]*\).*/\1/p' <<< "$dbconfig")
 IFS=':/' read _ dbms _ _ host port db <<< "$jdbcUrl"
-read user < <(sed -n '/<user-name>/ s/.*<user-name> *\([^ <]*\).*/\1/p' "$dbconfig")
-read pass < <(sed -n '/<password>/ s/.*<password> *\([^ <]*\).*/\1/p' "$dbconfig")
+read user < <(sed -n '/<user-name>/ s/.*<user-name> *\([^ <]*\).*/\1/p' <<< "$dbconfig")
+read pass < <(sed -n '/<password>/ s/.*<password> *\([^ <]*\).*/\1/p' <<< "$dbconfig")
 
 # Bail if some required attributes couldn't be parsed in.
 if [[ ! $dbms ]]; then
@@ -44,11 +44,11 @@ if [[ ! $dbms ]]; then
 	exit 1
 fi
 if [[ ! $jdbcUrl ]]; then
-	emit -r "No (valid) JDBC connection url found in '$dbconfig'."
+	emit -r "No (valid) JDBC connection url found in '$dbconfigfile'."
 	exit 1
 fi
 if [[ ! $user || ! $pass ]]; then
-	emit -r "No username and/or password found in '$dbconfig'."
+	emit -r "No username and/or password found in '$dbconfigfile'."
 	exit 1
 fi
 

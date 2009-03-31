@@ -9,7 +9,7 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 	<name>SafeOnline Template Attribute Plugin OSGI bundle</name>
 	<description>
@@ -19,7 +19,7 @@
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-attrplugin-template-bundle
 	</artifactId>
-	<version>1.3</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<build>
@@ -71,9 +71,9 @@
 						<Export-Package>net.link.safeonline.osgi.plugin.template
 						</Export-Package>
 						<Import-Package>
-							net.link.safeonline.osgi; version="[1.3, 1.3]",
-							net.link.safeonline.osgi.exception; version="[1.3, 1.3]",
-							net.link.safeonline.osgi.plugin; version="[1.3, 1.3]",
+							net.link.safeonline.osgi; version="[1.4, 1.4]",
+							net.link.safeonline.osgi.exception; version="[1.4, 1.4]",
+							net.link.safeonline.osgi.plugin; version="[1.4, 1.4]",
 							org.osgi.framework,
 							!*
 						</Import-Package>
@@ -117,13 +117,13 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-osgi</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-osgi-plugin
 			</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 
 

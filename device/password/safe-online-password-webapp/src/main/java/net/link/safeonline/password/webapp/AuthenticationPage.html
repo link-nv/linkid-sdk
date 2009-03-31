@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<wicket:container wicket:id="progress">[Progress Panel]</wicket:container>
+
+
+            <h2 wicket:id="title">[Password Authentication: Authenticating
+                for Application]
+            </h2>
+
+			<form wicket:id="authentication_form">
+
+				<label>
+					<wicket:message key="login">[Login Name]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="loginName" type="text" class="label" />
+				</div>
+				<div wicket:id="loginName_feedback" class="error"></div>
+
+				<label>
+					<wicket:message key="password">[Password]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="password" type="password" class="label" />
+				</div>
+				<div wicket:id="password_feedback" class="error"></div>
+
+				<label>&nbsp;</label>
+				<input wicket:id="login" type="submit" value="[Login]"
+					wicket:message="value:loginaction" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

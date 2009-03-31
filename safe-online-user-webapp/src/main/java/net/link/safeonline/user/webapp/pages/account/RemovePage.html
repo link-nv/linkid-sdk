@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border">
+			<wicket:container wicket:id="navigation_panel">[Navigation
+				Panel]</wicket:container>
+		</wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<p>
+				<wicket:message key="removeAccountQuestion">[Remove Account ?]</wicket:message>
+			</p>
+
+			<form wicket:id="remove_form">
+
+				<input wicket:id="remove" type="submit" value="[Remove]"
+					wicket:message="value:removeaction" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+
+		</wicket:container>
+
+	</body>
+</html>

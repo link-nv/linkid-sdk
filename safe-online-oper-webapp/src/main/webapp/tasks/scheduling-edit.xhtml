@@ -1,53 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="maintenance" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.editscheduling}: #{selectedScheduling.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="maintenance" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.editscheduling}:
+					#{selectedScheduling.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
 
 
-		<h:form>
+				<h:form>
 
-			<h:outputLabel for="name" value="#{msgs.name}" />
-			<h:inputText id="name" value="#{selectedScheduling.name}"
-				required="true" styleClass="label" />
+					<h:outputLabel for="name" value="#{msgs.name}" />
+					<h:inputText id="name" value="#{selectedScheduling.name}"
+						required="true" styleClass="label" />
 
-			<h:outputLabel for="cron" value="#{msgs.cron}" />
-			<h:inputText id="cron" value="#{selectedScheduling.cronExpression}"
-				required="true" styleClass="label" />
+					<h:outputLabel for="cron" value="#{msgs.cron}" />
+					<h:inputText id="cron" value="#{selectedScheduling.cronExpression}"
+						required="true" styleClass="label" />
 
-			<h:outputLabel for="savescheduling" value="" />
-			<h:commandButton action="#{scheduling.saveScheduling}"
-				id="savescheduling" value="#{msgs.saveaction}" styleClass="submit" />
-			<h:commandButton action="#{scheduling.schedulingView}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
-		</h:form>
+					<h:outputLabel for="savescheduling" value="" />
+					<h:commandButton action="#{scheduling.saveScheduling}"
+						id="savescheduling" value="#{msgs.saveaction}" styleClass="submit" />
+					<h:commandButton action="#{scheduling.schedulingView}"
+						id="cancel" value="#{msgs.cancelaction}" immediate="true"
+						styleClass="submit" />
+				</h:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/audit/audit.seam"
-					value="#{msgs.audit}" /></li>
-				<li><h:commandLink action="/user/main.seam"
-					value="#{msgs.operatorUserManagement}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/audit/audit.seam" value="#{msgs.audit}" />
+						</li>
+						<li>
+							<h:commandLink action="/user/main.seam"
+								value="#{msgs.operatorUserManagement}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

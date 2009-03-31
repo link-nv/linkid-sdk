@@ -1,53 +1,60 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:a4j="http://richfaces.org/a4j"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.usageAgreementVersion}:
-		#{selectedUsageAgreementText.usageAgreementVersion}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.usageAgreementVersion}:
+					#{selectedUsageAgreementText.usageAgreementVersion}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-        <table>
-            <tr>
-                <th><h:outputText value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
-            </tr>
-            <tr>
-                <td class="center text usage block">#{selectedUsageAgreementText.text}</td>
-            </tr>
-        </table>
+				<table>
+					<tr>
+						<th>
+							<h:outputText
+								value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
+						</th>
+					</tr>
+					<tr>
+						<td class="center text usage block">#{selectedUsageAgreementText.text}
+						</td>
+					</tr>
+				</table>
 
-		<a4j:form>
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
-				styleClass="submit" />
-		</a4j:form>
+				<a4j:form>
+					<a4j:commandButton value="#{msgs.backaction}"
+						action="back" id="back" styleClass="submit" />
+				</a4j:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/pkix/pkix.seam"
-					value="#{msgs.PKIX}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/nodes/nodes.seam" value="#{msgs.operatorOlasNodes}" />
+						</li>
+						<li>
+							<h:commandLink action="/configuration.seam"
+								value="#{msgs.operatorGeneralConfiguration}" />
+						</li>
+						<li>
+							<h:commandLink action="/pkix/pkix.seam" value="#{msgs.PKIX}" />
+						</li>
+						<li>
+							<h:commandLink action="/notifications/notifications.seam"
+								value="#{msgs.operatorNotifications}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

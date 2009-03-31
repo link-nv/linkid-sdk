@@ -19,14 +19,16 @@
 						<wicket:message key="chooseLanguage">[Choose language]
 						</wicket:message>
 					</a>
-					<a wicket:id="logout" href="#">
-						<wicket:message key="logout">[Logout]
-						</wicket:message>
-					</a>
-
-					<wicket:body />
-
+					<wicket:enclosure child="logout">
+						&nbsp;|&nbsp;
+						<a wicket:id="logout" href="#">
+							<wicket:message key="logout">[Logout]
+							</wicket:message>
+						</a>
+					</wicket:enclosure>
 				</div>
+
+				<wicket:body />
 			</div>
 		</wicket:border>
 	</body>

@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
 
@@ -33,9 +31,7 @@ import org.apache.wicket.markup.html.WebPage;
  */
 public abstract class WicketPage extends WebPage {
 
-    public transient final Log  LOG             = LogFactory.getLog(getClass());
-
-    private FocusOnLoad         focusOnLoad;
+    private FocusOnReady        focusOnReady;
 
     // %[argument_index$][flags][width][.precision][t]conversion
     private static final String formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
@@ -116,12 +112,12 @@ public abstract class WicketPage extends WebPage {
      */
     public void focus(final String path) {
 
-        if (focusOnLoad == null) {
-            add(focusOnLoad = new FocusOnLoad(path));
+        if (focusOnReady == null) {
+            add(focusOnReady = new FocusOnReady(path));
         }
 
         else {
-            focusOnLoad.setPath(path);
+            focusOnReady.setPath(path);
         }
     }
 }

@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.common;
 
+import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +29,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
  * 
  * @author lhunath
  */
-public class OlasNamingStrategy implements NamingStrategy {
+public class OlasNamingStrategy implements NamingStrategy, Serializable {
 
     private static final long serialVersionUID = 1L;
 

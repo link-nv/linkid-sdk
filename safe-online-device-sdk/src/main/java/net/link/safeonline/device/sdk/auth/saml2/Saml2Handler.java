@@ -13,7 +13,6 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -22,12 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.device.sdk.auth.saml2.response.AuthnResponseFactory;
 import net.link.safeonline.device.sdk.exception.AuthenticationFinalizationException;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
+import net.link.safeonline.util.servlet.SafeOnlineConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,23 +51,21 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class Saml2Handler implements Serializable {
 
-    private static final long  serialVersionUID               = 1L;
+    private static final long   serialVersionUID               = 1L;
 
-    private static final Log   LOG                            = LogFactory.getLog(Saml2Handler.class);
+    private static final Log    LOG                            = LogFactory.getLog(Saml2Handler.class);
 
-    public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
+    private static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
-    private HttpSession        session;
+    private HttpSession         session;
 
-    private String             wsLocation;
+    private String              issuer;
 
-    private String             issuer;
+    private KeyPair             applicationKeyPair;
 
-    private KeyPair            applicationKeyPair;
+    private X509Certificate     applicationCertificate;
 
-    private X509Certificate    applicationCertificate;
-
-    public static final String SAML2_HANDLER                  = Saml2Handler.class.getName() + ".SAML2_HANDLER";
+    public static final String  SAML2_HANDLER                  = Saml2Handler.class.getName() + ".SAML2_HANDLER";
 
     static {
         /*
@@ -104,16 +102,11 @@ public class Saml2Handler implements Serializable {
         return instance;
     }
 
-    public void init(Map<String, String> configParams, String newIssuer, X509Certificate newApplicationCertificate,
-                     KeyPair newApplicationKeyPair)
-            throws AuthenticationInitializationException {
+    public void init(String newIssuer, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair) {
 
-        wsLocation = configParams.get("WsLocation");
         issuer = newIssuer;
         applicationCertificate = newApplicationCertificate;
         applicationKeyPair = newApplicationKeyPair;
-        if (null == wsLocation)
-            throw new AuthenticationInitializationException("Missing WS Location ( \"WsLocation\" )");
     }
 
     public void initAuthentication(HttpServletRequest request)
@@ -121,7 +114,7 @@ public class Saml2Handler implements Serializable {
 
         AuthnRequest samlAuthnRequest;
         try {
-            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, wsLocation, applicationCertificate,
+            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, SafeOnlineConfig.wsbase(), applicationCertificate,
                     applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new AuthenticationInitializationException(e.getMessage());
@@ -179,6 +172,9 @@ public class Saml2Handler implements Serializable {
         AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request.getSession());
         String usedDevice = authenticationContext.getUsedDevice();
         String userId = authenticationContext.getUserId();
+
+        LOG.debug("userId: " + userId);
+
         String applicationId = authenticationContext.getApplication();
         String target = authenticationContext.getTargetUrl();
         String inResponseTo = authenticationContext.getInResponseTo();

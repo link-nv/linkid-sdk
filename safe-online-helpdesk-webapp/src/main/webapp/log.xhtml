@@ -1,125 +1,120 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
-    xmlns:s="http://jboss.com/products/seam/taglib">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="log" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.helpdeskLogs}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich" xmlns:s="http://jboss.com/products/seam/taglib">
+	<body>
+		<ui:composition template="/WEB-INF/incl/helpdesk-template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="log" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.helpdeskLogs}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form>
-			<f:facet name="aroundInvalidField">
-				<s:span />
-			</f:facet>
+				<h:form>
+					<f:facet name="aroundInvalidField">
+						<s:span />
+					</f:facet>
 
-            <table>
-                <colgroup class="half" />
-                <colgroup />
+					<table>
+						<colgroup class="half" />
+						<colgroup />
 
-                <tr>
-                    <th>#{msgs.helpdeskId}</th>
-                    <td>
-                        <s:decorate id="decorateSearchId">
-                            <h:inputText value="#{helpdeskLog.searchId}" id="searchId"
-                                validator="#{helpdeskLog.validateId}" required="true" />
-                        </s:decorate>
-                        <rich:suggestionbox for="decorateSearchId:searchId"
-                            suggestionAction="#{helpdeskLog.autocomplete}" var="searchIdInput">
-                            <h:column>
-                                <h:outputText value="#{searchIdInput}" />
-                            </h:column>
-                        </rich:suggestionbox>
-                        <h:messages styleClass="error" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="center">
-                        <h:commandLink action="#{helpdeskLog.search}" id="search"
-                            value="#{msgs.searchAction}" />
-                    </td>
-                </tr>
-			</table>
-		</h:form>
+						<tr>
+							<th>#{msgs.helpdeskId}</th>
+							<td>
+								<s:decorate id="decorateSearchId">
+									<h:inputText value="#{helpdeskLog.searchId}" id="searchId"
+										validator="#{helpdeskLog.validateId}" required="true" />
+								</s:decorate>
+								<rich:suggestionbox for="decorateSearchId:searchId"
+									suggestionAction="#{helpdeskLog.autocomplete}" var="searchIdInput">
+									<h:column>
+										<h:outputText value="#{searchIdInput}" />
+									</h:column>
+								</rich:suggestionbox>
+								<h:messages styleClass="error" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="center">
+								<h:commandLink action="#{helpdeskLog.search}" id="search"
+									value="#{msgs.searchAction}" />
+							</td>
+						</tr>
+					</table>
+				</h:form>
 
 
-		<h:form>
-			<rich:dataTable id="helpdesk-context-data" var="item"
-				value="#{helpdeskContextList}" rows="10" preserveDataModel="false"
-			
-				rowClasses="listingTable_Row1,listingTable_Row2">
+				<h:form>
+					<rich:dataTable id="helpdesk-context-data" var="item"
+						value="#{helpdeskContextList}" rows="10" preserveDataModel="false"
 
-				<h:column>
-					<f:facet name="header">#{msgs.helpdeskContext}</f:facet>
-					<h:outputLabel value="#{item.id}" />
-				</h:column>
+						rowClasses="listingTable_Row1,listingTable_Row2">
 
-				<h:column>
-					<f:facet name="header">#{msgs.location}</f:facet>
-					<h:outputLabel value="#{item.location}" />
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.helpdeskContext}</f:facet>
+							<h:outputLabel value="#{item.id}" />
+						</h:column>
 
-				<h:column>
-					<f:facet name="header">#{msgs.viewaction}</f:facet>
-					<h:commandLink value="#{msgs.viewaction}"
-						action="#{helpdeskLog.view}" />
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.location}</f:facet>
+							<h:outputLabel value="#{item.location}" />
+						</h:column>
 
-				<h:column>
-					<f:facet name="header">#{msgs.removeaction}</f:facet>
-					<h:commandLink value="#{msgs.removeaction}"
-						action="#{helpdeskLog.removeLog}" />
-				</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.viewaction}</f:facet>
+							<h:commandLink value="#{msgs.viewaction}" action="#{helpdeskLog.view}" />
+						</h:column>
 
-				<f:facet name="footer">
-					<rich:datascroller for="helpdesk-context-data"
-						pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
-						<f:facet name="first">
-							<h:graphicImage value="/images/icons/control_start.png" />
+						<h:column>
+							<f:facet name="header">#{msgs.removeaction}</f:facet>
+							<h:commandLink value="#{msgs.removeaction}" action="#{helpdeskLog.removeLog}" />
+						</h:column>
+
+						<f:facet name="footer">
+							<rich:datascroller for="helpdesk-context-data"
+								pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+								<f:facet name="first">
+									<h:graphicImage value="/images/icons/control_start.png" />
+								</f:facet>
+								<f:facet name="first_disabled">
+									<h:graphicImage value="/images/icons/control_start.png" />
+								</f:facet>
+								<f:facet name="previous">
+									<h:graphicImage value="/images/icons/control_rewind.png" />
+								</f:facet>
+								<f:facet name="previous_disabled">
+									<h:graphicImage value="/images/icons/control_rewind.png" />
+								</f:facet>
+								<f:facet name="pages">
+									<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+								</f:facet>
+								<f:facet name="next">
+									<h:graphicImage value="/images/icons/control_fastforward.png" />
+								</f:facet>
+								<f:facet name="next_disabled">
+									<h:graphicImage value="/images/icons/control_fastforward.png" />
+								</f:facet>
+								<f:facet name="last">
+									<h:graphicImage value="/images/icons/control_end.png" />
+								</f:facet>
+								<f:facet name="last_disabled">
+									<h:graphicImage value="/images/icons/control_end.png" />
+								</f:facet>
+							</rich:datascroller>
 						</f:facet>
-						<f:facet name="first_disabled">
-							<h:graphicImage value="/images/icons/control_start.png" />
-						</f:facet>
-						<f:facet name="previous">
-							<h:graphicImage value="/images/icons/control_rewind.png" />
-						</f:facet>
-						<f:facet name="previous_disabled">
-							<h:graphicImage value="/images/icons/control_rewind.png" />
-						</f:facet>
-						<f:facet name="pages">
-							<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
-						</f:facet>
-						<f:facet name="next">
-							<h:graphicImage value="/images/icons/control_fastforward.png" />
-						</f:facet>
-						<f:facet name="next_disabled">
-							<h:graphicImage value="/images/icons/control_fastforward.png" />
-						</f:facet>
-						<f:facet name="last">
-							<h:graphicImage value="/images/icons/control_end.png" />
-						</f:facet>
-						<f:facet name="last_disabled">
-							<h:graphicImage value="/images/icons/control_end.png" />
-						</f:facet>
-					</rich:datascroller>
-				</f:facet>
-			</rich:dataTable>
+					</rich:dataTable>
 
-		</h:form>
+				</h:form>
 
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>
 

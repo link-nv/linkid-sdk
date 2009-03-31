@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE datasources
+        PUBLIC "-//JBoss//DTD JBOSS JCA Config 1.5//EN"
+        "http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">
+<datasources>
+	<local-tx-datasource>
+		<jndi-name>${safe-online.data.source}</jndi-name>
+
+        <connection-url>jdbc:hsqldb:.</connection-url>
+        <driver-class>org.hsqldb.jdbcDriver</driver-class>
+
+        <!--
+        <connection-url>jdbc:mysql://localhost:3306/safeonline</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+
+        <connection-url>jdbc:oracle:thin:@localhost:1521:safeonline</connection-url>
+		<driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
+
+        <connection-url>jdbc:postgresql://localhost:5432/safeonline</connection-url>
+        <driver-class>org.postgresql.Driver</driver-class>
+        -->
+
+		<user-name>${safe-online.data.source.user}</user-name>
+        <password>${safe-online.data.source.pass}</password>
+
+		<transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
+        <min-pool-size>5</min-pool-size>
+		<max-pool-size>200</max-pool-size>
+
+		<metadata>
+            <type-mapping>Hypersonic SQL</type-mapping>
+            <!--
+			<type-mapping>mySQL</type-mapping>
+			<type-mapping>Oracle9i</type-mapping>
+			<type-mapping>PostgreSQL</type-mapping>
+            -->
+		</metadata>
+
+        <!-- BEGIN: Hypersonic only
+        -->
+		<user-name>sa</user-name>
+		<password></password>
+
+        <security-domain>HsqlDbRealm</security-domain>
+        <depends>jboss:service=Hypersonic,database=localDB</depends>
+
+        <idle-timeout-minutes>0</idle-timeout-minutes>
+        <prepared-statement-cache-size>32</prepared-statement-cache-size>
+        <!-- END: Hypersonic only. -->
+
+	</local-tx-datasource>
+
+    <!-- BEGIN: Hypersonic Standalone mode
+    --> 
+    <mbean code="org.jboss.jdbc.HypersonicDatabase" 
+        name="jboss:service=Hypersonic,database=localDB">
+        <attribute name="Database">localDB</attribute>
+        <attribute name="InProcessMode">true</attribute>
+    </mbean>
+    <!-- END: Hypersonic Standalone mode -->
+
+</datasources>

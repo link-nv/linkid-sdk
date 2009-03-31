@@ -703,6 +703,109 @@ table.rich-shuttle-body table {
 }
 
 
+/* ==================================================================
+ * Section: Wicket Toggle Border
+ */
+div.toggle-panel {
+	background-color: white;
+	background-repeat: no-repeat;
+	border-bottom-color: rgb(196, 192, 185);
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-left-color: rgb(196, 192, 185);
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-right-color: rgb(196, 192, 185);
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-top-color: rgb(196, 192, 185);
+	border-top-style: solid;
+	border-top-width: 1px;
+	display: block;
+	padding-bottom: 1px;
+	padding-left: 1px;
+	padding-right: 1px;
+	padding-top: 1px;
+	width: 568px;
+}
+
+div.toggle-header {
+    background-color: rgb(212, 207, 199);
+    background-repeat: repeat-x;
+    border-color: rgb(212, 207, 199);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(212, 207, 199);
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: rgb(212, 207, 199);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: rgb(212, 207, 199);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-right-color: rgb(212, 207, 199);
+    display: block;
+    font-weight: bold;
+    font-family: Arial;
+    font-size: 11px;
+    color:  black;
+    width: 562px;
+	padding-bottom: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+}
+
+div.toggle-header-marker {
+	display: block;
+	float: right;
+}
+
+div.toggle-body {
+	background-color: white;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+}
+
+/* ==================================================================
+ * Section: Wicket Table Navigator
+ */
+tr.navigator-table-footer-tr {
+	background-color: rgb(204, 204, 204);
+	vertical-align: middle;
+	text-align: center;
+}
+td.navigator-table-footer-td {
+	border-bottom-color: rgb(196, 192, 201);
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-left-color: black;
+	border-left-style: none;
+	border-left-width: 0px;
+	border-right-color: rgb(196, 192, 201);
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-top-color: black;
+	border-top-style: none;
+	border-top-width: 0px;
+	color: black;
+	display: table-cell;
+	font-family: Arial;
+	font-size: 11px;
+}
+span.navigator-table-footer-span span {
+	text-align: center;
+}
+span.navigator-table-footer-span span em img {
+        vertical-align: middle;
+}       
+span.navigator-table-footer-span span span em span {
+        vertical-align: middle;
+}
+
 
 /* ==================================================================
  * Section: Browser Hacks

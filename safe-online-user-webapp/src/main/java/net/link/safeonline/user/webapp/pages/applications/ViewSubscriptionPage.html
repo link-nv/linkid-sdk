@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border">
+			<wicket:container wicket:id="navigation_panel">[Navigation
+				Panel]</wicket:container>
+		</wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<wicket:container wicket:id="information_header">
+				<div wicket:id="information_body" class="toggle-body">
+
+					<table class="inner">
+						<colgroup class="half" />
+						<colgroup />
+
+						<tbody>
+							<tr>
+								<th>
+									<wicket:message key="name">[Name]</wicket:message>
+								</th>
+								<td>
+									<span wicket:id="name">[Application Name]</span>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<wicket:message key="userOwner">[User Owner]</wicket:message>
+								</th>
+								<td>
+									<span wicket:id="owner_name">[Owner Name]</span>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<wicket:message key="description">[Description]</wicket:message>
+								</th>
+								<td>
+									<span wicket:id="description" class="text">[Description
+										text]</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+
+				</div>
+			</wicket:container>
+
+			<wicket:enclosure child="usage_agreement_header">
+				<wicket:container wicket:id="usage_agreement_header">
+					<div wicket:id="usage_agreement_body" class="toggle-body">
+						<div wicket:id="usage_agreement" class="text block" />
+					</div>
+				</wicket:container>
+			</wicket:enclosure>
+
+			<wicket:enclosure child="identity_header">
+				<wicket:container wicket:id="identity_header">
+					<div wicket:id="identity_body" class="toggle-body">
+
+						<table class="inner">
+							<tr>
+								<th>
+									<wicket:message key="attributeName">[Attribute Name]</wicket:message>
+								</th>
+								<th>
+									<wicket:message key="dataMining">[Data Mining]</wicket:message>
+								</th>
+							</tr>
+
+							<span wicket:id="identity_attributes">
+								<tr>
+									<td>
+										<span wicket:id="identity_attribute_name">[Attribute Name]</span>
+									</td>
+									<td width="1">
+										<img wicket:id="data_mining_image" />
+									</td>
+								</tr>
+							</span>
+						</table>
+
+					</div>
+				</wicket:container>
+			</wicket:enclosure>
+
+			<form wicket:id="back_form">
+				<input wicket:id="back" type="submit" value="[Back]"
+					wicket:message="value:backaction" class="submit" />
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

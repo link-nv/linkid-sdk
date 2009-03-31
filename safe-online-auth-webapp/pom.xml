@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Authentication Web Application</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-auth-webapp</artifactId>
-	<version>1.3</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<build>
@@ -104,12 +104,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-as
 			</artifactId>
+            <version>1.4-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-saml
 			</artifactId>
+            <version>1.4-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
@@ -117,17 +119,9 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-auth-service
-			</artifactId>
-			<version>1.3</version>
-			<scope>runtime</scope>
-			<type>sar</type>
 		</dependency>
 
 		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
@@ -142,51 +136,45 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-base-${safe-online.branding}
 			</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 			<type>zip</type>
 		</dependency>
 
 		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-node-keystore
-			</artifactId>
-			<version>1.3</version>
+			<artifactId>safe-online-model-node</artifactId>
+			<version>1.4-SNAPSHOT</version>
+            <type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-common
 			</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-wicket-tools
 			</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-base-wicket
 			</artifactId>
-			<version>1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-taglib</artifactId>
-			<version>1.3</version>
-			<scope>runtime</scope>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-client
 			</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 			<type>ejb-client</type>
 		</dependency>
 
@@ -201,16 +189,16 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-test
 			</artifactId>
+            <version>1.4-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
+			<groupId>net.lin-k.safe-online.device.beid</groupId>
 			<artifactId>safe-online-model-beid-client
 			</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<reporting>

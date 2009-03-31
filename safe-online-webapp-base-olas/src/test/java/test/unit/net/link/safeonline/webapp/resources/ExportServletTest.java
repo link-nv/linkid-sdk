@@ -24,6 +24,7 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.service.StatisticService;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.SafeOnlineTestConfig;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.webapp.resources.ExportServlet;
 
@@ -69,6 +70,9 @@ public class ExportServletTest extends TestCase {
         servletLocation = servletTestManager.getServletLocation();
 
         mockObjects = new Object[] { mockStatisticService };
+
+        SafeOnlineTestConfig.loadTest(servletTestManager);
+
     }
 
     @Override

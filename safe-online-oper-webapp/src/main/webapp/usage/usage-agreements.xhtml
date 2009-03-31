@@ -1,233 +1,242 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:a4j="http://richfaces.org/a4j"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib" xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.usageAgreement}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/incl/oper-template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.usageAgreement}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<a4j:outputPanel id="usagePanel">
+				<a4j:outputPanel id="usagePanel">
 
-			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				label="#{msgs.version}: #{msgs.draft}"
-				rendered="#{!empty globalUsageAgreement.draftUsageAgreement}">
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" label="#{msgs.version}: #{msgs.draft}"
+						rendered="#{!empty globalUsageAgreement.draftUsageAgreement}">
 
-                <a4j:form id="editDraftForm" reRender="usagePanel,actionForm"
-                    rendered="#{globalDraftUsageAgreementsTexts.size > 0}"
-					ajaxSubmit="true">
-					<table class="inner">
-						<colgroup class="half" />
-						<colgroup />
+						<a4j:form id="editDraftForm" reRender="usagePanel,actionForm"
+							rendered="#{globalDraftUsageAgreementsTexts.size > 0}"
+							ajaxSubmit="true">
+							<table class="inner">
+								<colgroup class="half" />
+								<colgroup />
 
-						<tbody>
-							<tr>
-								<th colspan="2">#{msgs.actions}</th>
-							</tr>
-							<tr class="center">
-								<td><a4j:commandLink value="#{msgs.releaseaction}"
-                                    action="#{globalUsageAgreement.releaseDraft}" /></td>
-								<td><a4j:commandLink value="#{msgs.removeaction}"
-									action="#{globalUsageAgreement.removeDraft}" /></td>
-							</tr>
-						</tbody>
-					</table>
-				</a4j:form>
+								<tbody>
+									<tr>
+										<th colspan="2">#{msgs.actions}</th>
+									</tr>
+									<tr class="center">
+										<td>
+											<a4j:commandLink value="#{msgs.releaseaction}"
+												action="#{globalUsageAgreement.releaseDraft}" />
+										</td>
+										<td>
+											<a4j:commandLink value="#{msgs.removeaction}"
+												action="#{globalUsageAgreement.removeDraft}" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</a4j:form>
 
-				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
-					ajaxSubmit="true">
-					<rich:dataTable id="draft-text-data" var="item"
-						value="#{globalDraftUsageAgreementsTexts}" rows="10"
-						styleClass="inner"
-						rowClasses="listingTable_Row1,listingTable_Row2">
-						<h:column>
-							<a4j:commandLink id="view-draft-text"
-								value="#{msgs.language}: #{item.language}"
-								action="#{globalUsageAgreement.viewDraftText}" />
-						</h:column>
-						<h:column>
-							<a4j:commandLink id="edit-draft-text" value="#{msgs.editaction}"
-								action="#{globalUsageAgreement.editDraftText}" />
-						</h:column>
-						<h:column>
-							<a4j:commandLink id="remove-draft-text"
-								value="#{msgs.removeaction}"
-								action="#{globalUsageAgreement.removeDraftText}" />
-						</h:column>
+						<a4j:form id="editDraftTextsForm" reRender="usagePanel"
+							ajaxSubmit="true">
+							<rich:dataTable id="draft-text-data" var="item"
+								value="#{globalDraftUsageAgreementsTexts}" rows="10" styleClass="inner"
+								rowClasses="listingTable_Row1,listingTable_Row2">
+								<h:column>
+									<a4j:commandLink id="view-draft-text"
+										value="#{msgs.language}: #{item.language}" action="#{globalUsageAgreement.viewDraftText}" />
+								</h:column>
+								<h:column>
+									<a4j:commandLink id="edit-draft-text" value="#{msgs.editaction}"
+										action="#{globalUsageAgreement.editDraftText}" />
+								</h:column>
+								<h:column>
+									<a4j:commandLink id="remove-draft-text" value="#{msgs.removeaction}"
+										action="#{globalUsageAgreement.removeDraftText}" />
+								</h:column>
 
-						<f:facet name="footer">
-							<rich:datascroller for="draft-text-data" pageIndexVar="pageIndex"
-								pagesVar="pages" fastControls="hide">
-								<f:facet name="first">
-									<h:graphicImage value="/images/icons/control_start.png" />
+								<f:facet name="footer">
+									<rich:datascroller for="draft-text-data"
+										pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+										<f:facet name="first">
+											<h:graphicImage value="/images/icons/control_start.png" />
+										</f:facet>
+										<f:facet name="first_disabled">
+											<h:graphicImage value="/images/icons/control_start.png" />
+										</f:facet>
+										<f:facet name="previous">
+											<h:graphicImage value="/images/icons/control_rewind.png" />
+										</f:facet>
+										<f:facet name="previous_disabled">
+											<h:graphicImage value="/images/icons/control_rewind.png" />
+										</f:facet>
+										<f:facet name="pages">
+											<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+										</f:facet>
+										<f:facet name="next">
+											<h:graphicImage value="/images/icons/control_fastforward.png" />
+										</f:facet>
+										<f:facet name="next_disabled">
+											<h:graphicImage value="/images/icons/control_fastforward.png" />
+										</f:facet>
+										<f:facet name="last">
+											<h:graphicImage value="/images/icons/control_end.png" />
+										</f:facet>
+										<f:facet name="last_disabled">
+											<h:graphicImage value="/images/icons/control_end.png" />
+										</f:facet>
+									</rich:datascroller>
 								</f:facet>
-								<f:facet name="first_disabled">
-									<h:graphicImage value="/images/icons/control_start.png" />
-								</f:facet>
-								<f:facet name="previous">
-									<h:graphicImage value="/images/icons/control_rewind.png" />
-								</f:facet>
-								<f:facet name="previous_disabled">
-									<h:graphicImage value="/images/icons/control_rewind.png" />
-								</f:facet>
-								<f:facet name="pages">
-									<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
-								</f:facet>
-								<f:facet name="next">
-									<h:graphicImage value="/images/icons/control_fastforward.png" />
-								</f:facet>
-								<f:facet name="next_disabled">
-									<h:graphicImage value="/images/icons/control_fastforward.png" />
-								</f:facet>
-								<f:facet name="last">
-									<h:graphicImage value="/images/icons/control_end.png" />
-								</f:facet>
-								<f:facet name="last_disabled">
-									<h:graphicImage value="/images/icons/control_end.png" />
-								</f:facet>
-							</rich:datascroller>
-						</f:facet>
-					</rich:dataTable>
-				</a4j:form>
+							</rich:dataTable>
+						</a4j:form>
 
-				<h:form id="addDraftLanguageForm">
-					<table class="inner">
-						<colgroup class="third" />
-						<colgroup />
-						<colgroup class="small" />
+						<h:form id="addDraftLanguageForm">
+							<table class="inner">
+								<colgroup class="third" />
+								<colgroup />
+								<colgroup class="small" />
 
-						<tr>
-							<th><h:outputText value="#{msgs.language}" /></th>
-							<td><s:decorate>
-								<h:inputText id="language"
-									value="#{globalUsageAgreement.language}" required="true"
-									styleClass="label" />
-								<rich:suggestionbox for="language"
-									suggestionAction="#{globalUsageAgreement.autocompleteLanguage}"
-									var="languageInput" selfRendered="true">
-									<h:outputText value="#{languageInput}" />
-								</rich:suggestionbox>
-							</s:decorate><h:message for="language" styleClass="error" /></td>
-							<td><h:commandLink value="#{msgs.addaction}"
-								styleClass="center" action="#{globalUsageAgreement.addText}" /></td>
-						</tr>
-					</table>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.language}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="language"
+												value="#{globalUsageAgreement.language}" required="true"
+												styleClass="label" />
+											<rich:suggestionbox for="language"
+												suggestionAction="#{globalUsageAgreement.autocompleteLanguage}"
+												var="languageInput" selfRendered="true">
+												<h:outputText value="#{languageInput}" />
+											</rich:suggestionbox>
+										</s:decorate>
+										<h:message for="language" styleClass="error" />
+									</td>
+									<td>
+										<h:commandLink value="#{msgs.addaction}"
+											styleClass="center" action="#{globalUsageAgreement.addText}" />
+									</td>
+								</tr>
+							</table>
+						</h:form>
+					</rich:simpleTogglePanel>
+
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth"
+						label="#{msgs.version}: #{globalUsageAgreement.currentUsageAgreement.usageAgreementVersion}"
+						rendered="#{!empty globalUsageAgreement.currentUsageAgreement}">
+
+						<a4j:form id="editCurrentsForm" reRender="usagePanel"
+							ajaxSubmit="true" rendered="#{empty globalUsageAgreement.draftUsageAgreement}">
+
+							<table class="inner">
+								<colgroup />
+
+								<tbody>
+									<tr>
+										<th>#{msgs.actions}</th>
+									</tr>
+									<tr class="center">
+										<td>
+											<a4j:commandLink id="edit-agreement" value="#{msgs.editaction}"
+												action="#{globalUsageAgreement.createUsageAgreement}" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</a4j:form>
+
+						<a4j:form id="editCurrentForm" reRender="usagePanel"
+							ajaxSubmit="true">
+
+							<rich:dataTable id="current-text-data" var="item"
+								value="#{globalCurrentUsageAgreementsTexts}" rows="10"
+								styleClass="inner " rowClasses="listingTable_Row1,listingTable_Row2">
+								<h:column>
+									<a4j:commandLink id="edit-current-text"
+										value="#{msgs.language}: #{item.language}" action="#{globalUsageAgreement.viewCurrentText}" />
+								</h:column>
+								<h:column>
+									<a4j:commandLink id="view-current-text" value="#{msgs.editaction}"
+										action="#{globalUsageAgreement.editCurrentText}" />
+								</h:column>
+
+								<f:facet name="footer">
+									<rich:datascroller for="current-text-data"
+										pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+										<f:facet name="first">
+											<h:graphicImage value="/images/icons/control_start.png" />
+										</f:facet>
+										<f:facet name="first_disabled">
+											<h:graphicImage value="/images/icons/control_start.png" />
+										</f:facet>
+										<f:facet name="previous">
+											<h:graphicImage value="/images/icons/control_rewind.png" />
+										</f:facet>
+										<f:facet name="previous_disabled">
+											<h:graphicImage value="/images/icons/control_rewind.png" />
+										</f:facet>
+										<f:facet name="pages">
+											<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+										</f:facet>
+										<f:facet name="next">
+											<h:graphicImage value="/images/icons/control_fastforward.png" />
+										</f:facet>
+										<f:facet name="next_disabled">
+											<h:graphicImage value="/images/icons/control_fastforward.png" />
+										</f:facet>
+										<f:facet name="last">
+											<h:graphicImage value="/images/icons/control_end.png" />
+										</f:facet>
+										<f:facet name="last_disabled">
+											<h:graphicImage value="/images/icons/control_end.png" />
+										</f:facet>
+									</rich:datascroller>
+								</f:facet>
+							</rich:dataTable>
+						</a4j:form>
+					</rich:simpleTogglePanel>
+
+				</a4j:outputPanel>
+
+				<h:form id="actionForm">
+					<h:commandButton id="create-agreement" value="#{msgs.createaction}"
+						action="#{globalUsageAgreement.createUsageAgreement}"
+						rendered="#{empty globalUsageAgreement.currentUsageAgreement and empty globalUsageAgreement.draftUsageAgreement}"
+						class="submit" />
 				</h:form>
-			</rich:simpleTogglePanel>
 
-			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				label="#{msgs.version}: #{globalUsageAgreement.currentUsageAgreement.usageAgreementVersion}"
-				rendered="#{!empty globalUsageAgreement.currentUsageAgreement}">
-
-				<a4j:form id="editCurrentsForm" reRender="usagePanel"
-					ajaxSubmit="true"
-					rendered="#{empty globalUsageAgreement.draftUsageAgreement}">
-
-					<table class="inner">
-						<colgroup />
-
-						<tbody>
-							<tr>
-								<th>#{msgs.actions}</th>
-							</tr>
-							<tr class="center">
-								<td><a4j:commandLink id="edit-agreement"
-									value="#{msgs.editaction}"
-									action="#{globalUsageAgreement.createUsageAgreement}" /></td>
-							</tr>
-						</tbody>
-					</table>
-				</a4j:form>
-
-				<a4j:form id="editCurrentForm" reRender="usagePanel"
-					ajaxSubmit="true">
-
-					<rich:dataTable id="current-text-data" var="item"
-						value="#{globalCurrentUsageAgreementsTexts}" rows="10"
-						styleClass="inner "
-						rowClasses="listingTable_Row1,listingTable_Row2">
-						<h:column>
-							<a4j:commandLink id="edit-current-text"
-								value="#{msgs.language}: #{item.language}"
-								action="#{globalUsageAgreement.viewCurrentText}" />
-						</h:column>
-						<h:column>
-							<a4j:commandLink id="view-current-text"
-								value="#{msgs.editaction}"
-								action="#{globalUsageAgreement.editCurrentText}" />
-						</h:column>
-
-						<f:facet name="footer">
-							<rich:datascroller for="current-text-data"
-								pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
-								<f:facet name="first">
-									<h:graphicImage value="/images/icons/control_start.png" />
-								</f:facet>
-								<f:facet name="first_disabled">
-									<h:graphicImage value="/images/icons/control_start.png" />
-								</f:facet>
-								<f:facet name="previous">
-									<h:graphicImage value="/images/icons/control_rewind.png" />
-								</f:facet>
-								<f:facet name="previous_disabled">
-									<h:graphicImage value="/images/icons/control_rewind.png" />
-								</f:facet>
-								<f:facet name="pages">
-									<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
-								</f:facet>
-								<f:facet name="next">
-									<h:graphicImage value="/images/icons/control_fastforward.png" />
-								</f:facet>
-								<f:facet name="next_disabled">
-									<h:graphicImage value="/images/icons/control_fastforward.png" />
-								</f:facet>
-								<f:facet name="last">
-									<h:graphicImage value="/images/icons/control_end.png" />
-								</f:facet>
-								<f:facet name="last_disabled">
-									<h:graphicImage value="/images/icons/control_end.png" />
-								</f:facet>
-							</rich:datascroller>
-						</f:facet>
-					</rich:dataTable>
-				</a4j:form>
-			</rich:simpleTogglePanel>
-
-		</a4j:outputPanel>
-
-		<h:form id="actionForm">
-			<h:commandButton id="create-agreement" value="#{msgs.createaction}"
-				action="#{globalUsageAgreement.createUsageAgreement}"
-				rendered="#{empty globalUsageAgreement.currentUsageAgreement and empty globalUsageAgreement.draftUsageAgreement}"
-				class="submit" />
-		</h:form>
-
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/pkix/pkix.seam"
-					value="#{msgs.PKIX}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/nodes/nodes.seam" value="#{msgs.operatorOlasNodes}" />
+						</li>
+						<li>
+							<h:commandLink action="/configuration.seam"
+								value="#{msgs.operatorGeneralConfiguration}" />
+						</li>
+						<li>
+							<h:commandLink action="/pkix/pkix.seam" value="#{msgs.PKIX}" />
+						</li>
+						<li>
+							<h:commandLink action="/notifications/notifications.seam"
+								value="#{msgs.operatorNotifications}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

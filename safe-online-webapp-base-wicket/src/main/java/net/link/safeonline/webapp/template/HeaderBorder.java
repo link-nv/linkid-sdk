@@ -1,10 +1,9 @@
 package net.link.safeonline.webapp.template;
 
-import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.webapp.common.LanguagePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OlasLogoutLink;
 
-import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
@@ -20,13 +19,13 @@ public class HeaderBorder extends Border {
     private static final long serialVersionUID = 1L;
 
 
-    public HeaderBorder(final String id, final Page page) {
+    public HeaderBorder(final String id, final TemplatePage page) {
 
         this(id, page, false);
 
     }
 
-    public HeaderBorder(final String id, final Page page, final boolean logoutEnabled) {
+    public HeaderBorder(final String id, final TemplatePage page, final boolean logoutEnabled) {
 
         super(id);
 
@@ -65,22 +64,6 @@ public class HeaderBorder extends Border {
         });
 
         // logout link
-        add(new Link<String>("logout") {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public boolean isVisible() {
-
-                return logoutEnabled && null != LoginManager.findUserId(WicketUtil.toServletRequest(getRequest()));
-            }
-        });
+        add(new OlasLogoutLink("logout", getApplication().getHomePage()).setVisible(logoutEnabled));
     }
 }

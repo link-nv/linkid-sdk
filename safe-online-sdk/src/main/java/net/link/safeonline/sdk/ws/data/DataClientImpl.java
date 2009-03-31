@@ -72,7 +72,9 @@ import com.sun.xml.ws.client.ClientTransportException;
  */
 public class DataClientImpl extends AbstractMessageAccessor implements DataClient {
 
-    private static final Log                  LOG = LogFactory.getLog(DataClientImpl.class);
+    private static final long                 serialVersionUID = 1L;
+
+    private static final Log                  LOG              = LogFactory.getLog(DataClientImpl.class);
 
     private final DataServicePort             port;
 
