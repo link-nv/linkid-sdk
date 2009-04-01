@@ -9,19 +9,24 @@ package net.link.safeonline.entity.sessiontracking;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -43,15 +48,24 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 
 @Entity
-@Table(name = "session_tracker")
+@Table(name = "session_tracker", uniqueConstraints = @UniqueConstraint(columnNames = { SessionTrackingEntity.APPLICATION_COLUMN_NAME,
+        SessionTrackingEntity.SESSION_COLUMN_NAME, SessionTrackingEntity.SSO_ID_COLUMN_NAME,
+        SessionTrackingEntity.APPLICATION_POOL_COLUMN_NAME }))
+@NamedQueries( { @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE, query = "SELECT tracker " + "FROM SessionTrackingEntity AS tracker "
+        + "WHERE tracker.application = :application AND tracker.session = :session AND tracker.ssoId = :ssoId "
+        + "AND tracker.applicationPool = :applicationPool") })
 public class SessionTrackingEntity implements Serializable {
 
     private static final long     serialVersionUID             = 1L;
 
-    private static final String   APPLICATION_COLUMN_NAME      = "application";
-    private static final String   APPLICATION_POOL_COLUMN_NAME = "applicationPool";
+    public static final String    QUERY_WHERE                  = "tracker.where";
 
-    private SessionTrackingPK      pk;
+    public static final String    APPLICATION_COLUMN_NAME      = "application";
+    public static final String    SESSION_COLUMN_NAME          = "session";
+    public static final String    SSO_ID_COLUMN_NAME           = "ssoId";
+    public static final String    APPLICATION_POOL_COLUMN_NAME = "applicationPool";
+
+    private long                  id;
 
     private ApplicationEntity     application;
 
@@ -76,26 +90,22 @@ public class SessionTrackingEntity implements Serializable {
         this.ssoId = ssoId;
         this.applicationPool = applicationPool;
         timestamp = new Date();
-
-        pk = new SessionTrackingPK(application.getId(), session, ssoId, applicationPool.getName());
     }
 
-    @EmbeddedId
-    @AttributeOverrides( {
-            @AttributeOverride(name = SessionTrackingPK.APPLICATION_ID_COLUMN, column = @Column(name = APPLICATION_COLUMN_NAME)),
-            @AttributeOverride(name = SessionTrackingPK.APPLICATION_POOL_NAME_COLUMN, column = @Column(name = APPLICATION_POOL_COLUMN_NAME)) })
-    public SessionTrackingPK getPk() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-        return pk;
+        return id;
     }
 
-    public void setPk(SessionTrackingPK pk) {
+    public void setId(long id) {
 
-        this.pk = pk;
+        this.id = id;
     }
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
+    @JoinColumn(name = APPLICATION_COLUMN_NAME)
     public ApplicationEntity getApplication() {
 
         return application;
@@ -106,6 +116,7 @@ public class SessionTrackingEntity implements Serializable {
         this.application = application;
     }
 
+    @Column(name = SESSION_COLUMN_NAME)
     public String getSession() {
 
         return session;
@@ -116,6 +127,7 @@ public class SessionTrackingEntity implements Serializable {
         this.session = session;
     }
 
+    @Column(name = SSO_ID_COLUMN_NAME)
     public String getSsoId() {
 
         return ssoId;
@@ -127,7 +139,7 @@ public class SessionTrackingEntity implements Serializable {
     }
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = APPLICATION_POOL_COLUMN_NAME, insertable = false, updatable = false)
+    @JoinColumn(name = APPLICATION_POOL_COLUMN_NAME)
     public ApplicationPoolEntity getApplicationPool() {
 
         return applicationPool;
@@ -150,33 +162,16 @@ public class SessionTrackingEntity implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj)
-            return true;
-        if (false == obj instanceof SessionTrackingEntity)
-            return false;
-
-        SessionTrackingEntity rhs = (SessionTrackingEntity) obj;
-        return pk.equals(rhs.pk);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-
-        return pk.hashCode();
-    }
-
-    @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", pk).append("timestamp", timestamp.toString()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", id).append("timestamp", timestamp.toString()).toString();
     }
 
 
     public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_WHERE, nullable = true)
+        SessionTrackingEntity find(@QueryParam("application") ApplicationEntity application, @QueryParam("session") String session,
+                                   @QueryParam("ssoId") String ssoId, @QueryParam("applicationPool") ApplicationPoolEntity applicationPool);
     }
 }

@@ -166,7 +166,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
                                             byte[] applicationLogo, byte[] encodedCertificate,
                                             List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
                                             boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled,
-                                            URL ssoLogoutUrl)
+                                            URL ssoLogoutUrl, Long sessionTimeout)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException {
 
@@ -191,6 +191,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         application.setSsoEnabled(ssoEnabled);
 
         application.setSsoLogoutUrl(ssoLogoutUrl);
+
+        application.setSessionTimeout(sessionTimeout);
 
         setInitialApplicationIdentity(initialApplicationIdentityAttributes, application);
 
@@ -567,6 +569,17 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(applicationOwnerName);
 
         getApplication(applicationId).setApplicationOwner(applicationOwner);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateSessionTimeout(long applicationId, Long sessionTimeout)
+            throws ApplicationNotFoundException {
+
+        getApplication(applicationId).setSessionTimeout(sessionTimeout);
 
     }
 }

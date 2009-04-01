@@ -202,7 +202,7 @@ public class ApplicationServiceBeanTest {
         initialIdentity.add(new IdentityAttributeTypeDO(NAME_ATTRIBUTE));
 
         applicationService.addApplication(testApplicationName, testApplicationFriendlyName, testApplicationOwnerName, null, false,
-                IdScopeType.USER, null, null, null, initialIdentity, false, false, false, null);
+                IdScopeType.USER, null, null, null, initialIdentity, false, false, false, null, 0L);
         ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
@@ -246,7 +246,7 @@ public class ApplicationServiceBeanTest {
         initialIdentity.add(new IdentityAttributeTypeDO(NAME_ATTRIBUTE));
 
         applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false, IdScopeType.USER, null, null,
-                null, initialIdentity, false, false, false, null);
+                null, initialIdentity, false, false, false, null, 0L);
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
@@ -296,7 +296,7 @@ public class ApplicationServiceBeanTest {
         initialIdentity.add(new IdentityAttributeTypeDO(NAME_ATTRIBUTE));
 
         applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false, IdScopeType.USER, null, null,
-                null, initialIdentity, false, false, false, null);
+                null, initialIdentity, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,

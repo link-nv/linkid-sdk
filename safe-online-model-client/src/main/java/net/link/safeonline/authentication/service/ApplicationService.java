@@ -93,6 +93,8 @@ public interface ApplicationService extends SafeOnlineService {
      *            whether or not this application allows Single Sign-On
      * @param ssoLogoutUrl
      *            single sign-on logout URL, where logout requests will be sent to
+     * @param sessionTimeout
+     *            session timeout used by session tracking
      * @return The newly added application entity.
      * @throws ExistingApplicationException
      * @throws ApplicationOwnerNotFoundException
@@ -102,7 +104,8 @@ public interface ApplicationService extends SafeOnlineService {
     ApplicationEntity addApplication(String name, String friendlyName, String applicationOwnerName, String description,
                                      boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo,
                                      byte[] encodedCertificate, List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
-                                     boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
+                                     boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl,
+                                     Long sessionTimeout)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException;
 
@@ -305,4 +308,12 @@ public interface ApplicationService extends SafeOnlineService {
      */
     void updateApplicationOwner(long applicationId, String applicationOwner)
             throws ApplicationNotFoundException, ApplicationOwnerNotFoundException;
+
+    /**
+     * Updates the applications session timeout, used by session tracking
+     * 
+     * @throws ApplicationNotFoundException
+     */
+    void updateSessionTimeout(long applicationId, Long sessionTimeout)
+            throws ApplicationNotFoundException;
 }

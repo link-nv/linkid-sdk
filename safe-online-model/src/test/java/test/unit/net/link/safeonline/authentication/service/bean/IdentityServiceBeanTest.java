@@ -165,7 +165,7 @@ public class IdentityServiceBeanTest {
         identity.add(new IdentityAttributeTypeDO("test-attribute-type", true, false));
         identity.add(new IdentityAttributeTypeDO("test-attribute-type-2", true, true));
         applicationService.addApplication(applicationName, null, "test-application-owner-name", null, false, IdScopeType.USER, null, null,
-                null, identity, false, false, false, null);
+                null, identity, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
@@ -255,7 +255,7 @@ public class IdentityServiceBeanTest {
 
         applicationService.addApplication(applicationName, null, "test-application-owner-name", null, false, IdScopeType.USER, null, null,
                 null, Collections.singletonList(new IdentityAttributeTypeDO("test-compounded-type", true, false)), false, false, false,
-                null);
+                null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
@@ -304,7 +304,7 @@ public class IdentityServiceBeanTest {
         userRegistrationService.registerUser(applicationOwnerLogin);
         applicationService.registerApplicationOwner("test-application-owner-name", applicationOwnerLogin);
         applicationService.addApplication(applicationName, null, "test-application-owner-name", null, false, IdScopeType.USER, null, null,
-                null, new LinkedList<IdentityAttributeTypeDO>(), false, false, false, null);
+                null, new LinkedList<IdentityAttributeTypeDO>(), false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
@@ -456,7 +456,7 @@ public class IdentityServiceBeanTest {
         List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(compoundedAttributeName, true, false));
         applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, IdScopeType.USER, null, null, null,
-                initialApplicationIdentityAttributes, false, false, false, null);
+                initialApplicationIdentityAttributes, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         // operate: subscribe user to application
@@ -574,7 +574,7 @@ public class IdentityServiceBeanTest {
         List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(compoundedAttributeName, true, false));
         applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, IdScopeType.USER, null, null, null,
-                initialApplicationIdentityAttributes, false, false, false, null);
+                initialApplicationIdentityAttributes, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         // operate: subscribe user to application
@@ -942,7 +942,7 @@ public class IdentityServiceBeanTest {
         List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(attributeName, true, false));
         applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, IdScopeType.USER, null, null, null,
-                initialApplicationIdentityAttributes, false, false, false, null);
+                initialApplicationIdentityAttributes, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         // operate: subscribe user to application
@@ -1025,7 +1025,7 @@ public class IdentityServiceBeanTest {
         List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(compoundedAttributeName, true, false));
         applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, IdScopeType.USER, null, null, null,
-                initialApplicationIdentityAttributes, false, false, false, null);
+                initialApplicationIdentityAttributes, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         // operate: subscribe user to application
@@ -1261,7 +1261,7 @@ public class IdentityServiceBeanTest {
         List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(compoundedAttributeName, true, false));
         applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, IdScopeType.USER, null, null, null,
-                initialApplicationIdentityAttributes, false, false, false, null);
+                initialApplicationIdentityAttributes, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         // operate: subscribe user to application

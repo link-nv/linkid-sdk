@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,8 @@ import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
+import net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity;
 import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.service.SubjectService;
@@ -297,22 +300,6 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
          */
         for (SingleSignOn sso : ssoItems) {
             sso.addSsoApplication(authenticatingApplication);
-
-            // TODO: check if tracking, if so update/add tracker
-            if (null != session) {
-                // create SSO-ID cookie if not yet created
-                if (null == ssoIdCookie) {
-                    ssoIdCookie = new Cookie(SSO_ID_COOKIE_NAME, UUID.randomUUID().toString());
-                    ssoIdCookie.setMaxAge(-1);
-                }
-                String ssoId = ssoIdCookie.getValue();
-
-                SessionTrackingEntity tracker = sessionTrackingDAO.findTracker(authenticatingApplication, session, ssoId,
-                        sso.applicationPool);
-                if (null == tracker) {
-                    tracker = sessionTrackingDAO.addTracker(authenticatingApplication, session, ssoId, sso.applicationPool);
-                }
-            }
         }
 
         /*
@@ -374,23 +361,24 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
              * Create SSO cookie for each application pool
              */
             createCookies(subject, authenticationDevice, authenticationTime);
-            return;
-        }
-
-        /*
-         * Go over each sso cookie, see if user/device matches, if so update time, not found => create for each pool
-         */
-        boolean found = false;
-        for (SingleSignOn sso : ssoItems) {
-            if (sso.subject.equals(subject) && sso.device.equals(authenticationDevice)) {
-                found = true;
-                sso.time = authenticationTime;
-                sso.setCookie();
+        } else {
+            /*
+             * Go over each sso cookie, see if user/device matches, if so update time, not found => create for each pool
+             */
+            boolean found = false;
+            for (SingleSignOn sso : ssoItems) {
+                if (sso.subject.equals(subject) && sso.device.equals(authenticationDevice)) {
+                    found = true;
+                    sso.time = authenticationTime;
+                    sso.setCookie();
+                }
+            }
+            if (!found) {
+                createCookies(subject, authenticationDevice, authenticationTime);
             }
         }
-        if (!found) {
-            createCookies(subject, authenticationDevice, authenticationTime);
-        }
+
+        updateSessionTracker();
     }
 
     private void createCookies(SubjectEntity subject, DeviceEntity authenticationDevice, DateTime authenticationTime) {
@@ -495,6 +483,8 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
             /*
              * Only 1 user
              */
+            updateSessionTracker();
+
             singleSignOnState = SingleSignOnState.SUCCESS;
         }
         return authenticationAssertions;
@@ -507,6 +497,40 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                 return ssoAssertion;
         }
         return null;
+    }
+
+    private void updateSessionTracker() {
+
+        for (SingleSignOn sso : ssoItems) {
+            // session not null: application session needs to be tracked
+            if (null != session) {
+                // create SSO-ID cookie if not yet created
+                if (null == ssoIdCookie) {
+                    ssoIdCookie = new Cookie(SSO_ID_COOKIE_NAME, UUID.randomUUID().toString());
+                    ssoIdCookie.setMaxAge(-1);
+                }
+                String ssoId = ssoIdCookie.getValue();
+
+                SessionTrackingEntity tracker = sessionTrackingDAO.findTracker(authenticatingApplication, session, ssoId,
+                        sso.applicationPool);
+                if (null == tracker) {
+                    tracker = sessionTrackingDAO.addTracker(authenticatingApplication, session, ssoId, sso.applicationPool);
+                } else {
+                    tracker.setTimestamp(new Date());
+                }
+
+                /*
+                 * Update / add authentication statements
+                 */
+                SessionAssertionEntity assertion = sessionTrackingDAO.findAssertion(ssoId, sso.applicationPool);
+                if (null == assertion) {
+                    assertion = sessionTrackingDAO.addAssertion(ssoId, sso.applicationPool);
+                }
+                assertion.setSubject(sso.subject);
+                SessionAuthnStatementEntity authnStatement = sessionTrackingDAO.addAuthnStatement(assertion, sso.time, sso.device);
+                assertion.getStatements().add(authnStatement);
+            }
+        }
     }
 
 

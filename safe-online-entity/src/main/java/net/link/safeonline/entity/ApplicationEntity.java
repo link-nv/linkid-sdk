@@ -109,6 +109,8 @@ public class ApplicationEntity implements Serializable {
 
     private URL                         ssoLogoutUrl;
 
+    private long                        sessionTimeout;
+
     private List<ApplicationPoolEntity> applicationPools;
 
 
@@ -440,6 +442,22 @@ public class ApplicationEntity implements Serializable {
     public void setSsoLogoutUrl(URL ssoLogoutUrl) {
 
         this.ssoLogoutUrl = ssoLogoutUrl;
+    }
+
+    /**
+     * Returns the session timeout for an application used by session tracking
+     */
+    public long getSessionTimeout() {
+
+        return sessionTimeout;
+    }
+
+    /**
+     * Sets the session timeout for an application used by session tracking
+     */
+    public void setSessionTimeout(long sessionTimeout) {
+
+        this.sessionTimeout = sessionTimeout;
     }
 
     @Override

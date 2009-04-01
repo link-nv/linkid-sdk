@@ -34,16 +34,21 @@ import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationPoolDAO;
 import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.SessionTrackingDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
+import net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity;
+import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.easymock.EasyMock;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -80,6 +85,8 @@ public class SingleSignOnServiceBeanTest {
 
     private DeviceDAO              mockDeviceDAO;
 
+    private SessionTrackingDAO     mockSessionTrackingDAO;
+
     private Long                   ssoTimeout = 1000L * 60 * 5;
 
 
@@ -113,9 +120,13 @@ public class SingleSignOnServiceBeanTest {
         mockDeviceDAO = createMock(DeviceDAO.class);
         EJBTestUtils.inject(testedInstance, mockDeviceDAO);
 
+        mockSessionTrackingDAO = createMock(SessionTrackingDAO.class);
+        EJBTestUtils.inject(testedInstance, mockSessionTrackingDAO);
+
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockSecurityAuditLogger, mockSubjectService, mockApplicationPoolDAO, mockApplicationDAO, mockDeviceDAO };
+        mockObjects = new Object[] { mockSecurityAuditLogger, mockSubjectService, mockApplicationPoolDAO, mockApplicationDAO,
+                mockDeviceDAO, mockSessionTrackingDAO };
     }
 
     @Test
@@ -469,12 +480,29 @@ public class SingleSignOnServiceBeanTest {
         List<Cookie> cookies = new LinkedList<Cookie>();
         cookies.add(getSsoCookie(subject, applicationPool, cookieApplication, cookieDevice));
 
+        SessionTrackingEntity tracker = new SessionTrackingEntity();
+        SessionAssertionEntity sessionAssertion = new SessionAssertionEntity();
+        sessionAssertion.setStatements(new LinkedList<SessionAuthnStatementEntity>());
+        SessionAuthnStatementEntity sessionStatement = new SessionAuthnStatementEntity();
+
         // expectations
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
         expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);
         expect(mockApplicationPoolDAO.findApplicationPool(applicationPool.getName())).andReturn(applicationPool);
         expect(mockApplicationDAO.findApplication(cookieApplication.getId())).andReturn(cookieApplication);
         expect(mockDeviceDAO.findDevice(cookieDevice.getName())).andReturn(cookieDevice);
+        expect(
+                mockSessionTrackingDAO.findTracker(EasyMock.eq(application), EasyMock.eq(session), (String) EasyMock.anyObject(),
+                        EasyMock.eq(applicationPool))).andReturn(null);
+        expect(
+                mockSessionTrackingDAO.addTracker(EasyMock.eq(application), EasyMock.eq(session), (String) EasyMock.anyObject(),
+                        EasyMock.eq(applicationPool))).andReturn(tracker);
+        expect(mockSessionTrackingDAO.findAssertion((String) EasyMock.anyObject(), EasyMock.eq(applicationPool))).andReturn(null);
+        expect(mockSessionTrackingDAO.addAssertion((String) EasyMock.anyObject(), EasyMock.eq(applicationPool)))
+                                                                                                                .andReturn(sessionAssertion);
+        expect(
+                mockSessionTrackingDAO.addAuthnStatement(EasyMock.eq(sessionAssertion), (DateTime) EasyMock.anyObject(),
+                        EasyMock.eq(cookieDevice))).andReturn(sessionStatement);
 
         // replay
         replay(mockObjects);

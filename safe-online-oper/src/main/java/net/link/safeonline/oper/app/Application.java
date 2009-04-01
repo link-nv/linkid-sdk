@@ -120,6 +120,10 @@ public interface Application {
 
     void setSsoLogoutUrl(String ssoLogoutUrl);
 
+    Long getSessionTimeout();
+
+    void setSessionTimeout(Long sessionTimeout);
+
     /*
      * Actions.
      */

@@ -36,7 +36,8 @@
 <mapping class="net.link.safeonline.entity.audit.AccessAuditEntity" />
 <mapping class="net.link.safeonline.entity.audit.SecurityAuditEntity" />
 <mapping class="net.link.safeonline.entity.audit.ResourceAuditEntity" />
-<mapping class="net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity" />
+<mapping
+	class="net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity" />
 <mapping class="net.link.safeonline.entity.helpdesk.HelpdeskContextEntity" />
 <mapping class="net.link.safeonline.entity.helpdesk.HelpdeskEventEntity" />
 <mapping class="net.link.safeonline.entity.MetadataEntity" />
@@ -44,9 +45,17 @@
 <mapping class="net.link.safeonline.entity.UsageAgreementTextEntity" />
 <mapping class="net.link.safeonline.entity.GlobalUsageAgreementEntity" />
 <mapping class="net.link.safeonline.entity.NodeEntity" />
-<mapping class="net.link.safeonline.entity.notification.EndpointReferenceEntity" />
-<mapping class="net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity" />
+<mapping
+	class="net.link.safeonline.entity.notification.EndpointReferenceEntity" />
+<mapping
+	class="net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity" />
 <mapping class="net.link.safeonline.entity.ApplicationScopeIdEntity" />
 <mapping class="net.link.safeonline.entity.NodeMappingEntity" />
-<mapping class="net.link.safeonline.entity.notification.NotificationMessageEntity" />
-<mapping class="net.link.safeonline.entity.sessiontracking.SessionTrackingEntity" />
+<mapping
+	class="net.link.safeonline.entity.notification.NotificationMessageEntity" />
+<mapping
+	class="net.link.safeonline.entity.sessiontracking.SessionTrackingEntity" />
+<mapping
+	class="net.link.safeonline.entity.sessiontracking.SessionAssertionEntity" />
+<mapping
+	class="net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity" />

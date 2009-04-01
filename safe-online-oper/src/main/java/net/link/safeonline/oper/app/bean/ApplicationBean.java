@@ -151,6 +151,8 @@ public class ApplicationBean implements Application {
 
     private String                     ssoLogoutUrl;
 
+    private Long                       sessionTimeout;
+
     @SuppressWarnings("unused")
     @Out
     private long                       numberOfSubscriptions;
@@ -197,6 +199,7 @@ public class ApplicationBean implements Application {
         applicationOwner = null;
         skipMessageIntegrityCheck = false;
         ssoLogoutUrl = null;
+        sessionTimeout = null;
     }
 
 
@@ -254,6 +257,7 @@ public class ApplicationBean implements Application {
         if (null != ssoLogoutUrl) {
             LOG.debug("sso logout url: " + ssoLogoutUrl);
         }
+        LOG.debug("session timeout: " + sessionTimeout);
 
         URL newApplicationUrl = null;
         byte[] newApplicationLogo = null;
@@ -319,7 +323,7 @@ public class ApplicationBean implements Application {
             }
             applicationService.addApplication(name, friendlyName, applicationOwner, description, idmapping,
                     IdScopeType.valueOf(applicationIdScope), newApplicationUrl, newApplicationLogo, encodedCertificate,
-                    tempIdentityAttributes, skipMessageIntegrityCheck, deviceRestriction, ssoEnabled, newSsoLogoutUrl);
+                    tempIdentityAttributes, skipMessageIntegrityCheck, deviceRestriction, ssoEnabled, newSsoLogoutUrl, sessionTimeout);
 
         } catch (ExistingApplicationException e) {
             LOG.debug("application already exists: " + name);
@@ -493,6 +497,17 @@ public class ApplicationBean implements Application {
     public void setSsoLogoutUrl(String ssoLogoutUrl) {
 
         this.ssoLogoutUrl = ssoLogoutUrl;
+    }
+
+    public Long getSessionTimeout() {
+
+        return sessionTimeout;
+
+    }
+
+    public void setSessionTimeout(Long sessionTimeout) {
+
+        this.sessionTimeout = sessionTimeout;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -669,6 +684,7 @@ public class ApplicationBean implements Application {
         applicationService.setSkipMessageIntegrityCheck(applicationId, skipMessageIntegrityCheck);
         applicationService.setSsoEnabled(applicationId, ssoEnabled);
         applicationService.updateSsoLogoutUrl(applicationId, newSsoLogoutUrl);
+        applicationService.updateSessionTimeout(applicationId, sessionTimeout);
 
         // device restriction
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
@@ -737,6 +753,8 @@ public class ApplicationBean implements Application {
         if (null != selectedApplication.getSsoLogoutUrl()) {
             ssoLogoutUrl = selectedApplication.getSsoLogoutUrl().toExternalForm();
         }
+
+        sessionTimeout = selectedApplication.getSessionTimeout();
 
         return "edit";
     }
