@@ -71,9 +71,9 @@
 						<Export-Package>net.link.safeonline.osgi.plugin.template
 						</Export-Package>
 						<Import-Package>
-							net.link.safeonline.osgi; version="[1.4, 1.4]",
-							net.link.safeonline.osgi.exception; version="[1.4, 1.4]",
-							net.link.safeonline.osgi.plugin; version="[1.4, 1.4]",
+							net.link.safeonline.osgi; version="[${safe-online.release.version}, ${safe-online.release.version}]",
+							net.link.safeonline.osgi.exception; version="[${safe-online.release.version}, ${safe-online.release.version}]",
+							net.link.safeonline.osgi.plugin; version="[${safe-online.release.version}, ${safe-online.release.version}]",
 							org.osgi.framework,
 							!*
 						</Import-Package>
