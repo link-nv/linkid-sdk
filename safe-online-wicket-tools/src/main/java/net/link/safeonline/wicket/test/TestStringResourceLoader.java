@@ -47,7 +47,5 @@ public class TestStringResourceLoader implements IStringResourceLoader {
     private String getStringResource(@SuppressWarnings("unused") String key, @SuppressWarnings("unused") Locale locale) {
 
         return key;
-
     }
-
 }

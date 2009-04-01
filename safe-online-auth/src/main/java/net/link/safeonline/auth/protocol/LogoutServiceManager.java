@@ -77,8 +77,8 @@ public class LogoutServiceManager implements HttpSessionListener {
     /**
      * Gives back the logout service instance associated with the given HTTP session. Later on we could limit the usage of this method to
      * certain states on the logout service. It is clear that this method should not be used to finalize the logout service via
-     * {@link LogoutService#finalizeLogout(boolean)} or {@link LogoutService#abort()}. These operations should be performed via this logout
-     * service manager class.
+     * {@link LogoutService#finalizeLogout()} or {@link LogoutService#abort()}. These operations should be performed via this logout service
+     * manager class.
      * 
      * @param session
      */

@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.util.ee;
 
+import java.io.Serializable;
+
+
 /**
  * <h2>{@link NamingStrategy}<br>
  * <sub>Strategy which resolves the JNDI name of the given type.</sub></h2>
@@ -16,7 +19,7 @@ package net.link.safeonline.util.ee;
  * 
  * @author lhunath
  */
-public interface NamingStrategy {
+public interface NamingStrategy extends Serializable {
 
     public String calculateName(Class<?> ejbType);
 }

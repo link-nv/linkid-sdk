@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.util.ee;
 
-import java.io.Serializable;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
@@ -29,7 +27,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
  * 
  * @author lhunath
  */
-public class FieldNamingStrategy implements NamingStrategy, Serializable {
+public class FieldNamingStrategy implements NamingStrategy {
 
     private static final long serialVersionUID = 1L;
 

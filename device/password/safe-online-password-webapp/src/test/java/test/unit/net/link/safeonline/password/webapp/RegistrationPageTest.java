@@ -18,6 +18,7 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
 
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.After;
@@ -140,7 +141,7 @@ public class RegistrationPageTest {
         verify(mockPasswordDeviceService, mockSamlAuthorityService);
 
         wicket.assertRenderedPage(RegistrationPage.class);
-        wicket.assertErrorMessages(new String[] { RegistrationPage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
+        wicket.assertErrorMessages(new String[] { EqualPasswordInputValidator.class.getSimpleName() });
 
     }
 
