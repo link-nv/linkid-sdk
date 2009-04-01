@@ -193,9 +193,7 @@ public class OSGIStartableBean implements OSGIStartable {
 
         // Load OLAS version
         ResourceBundle properties = ResourceBundle.getBundle("config");
-        String version = properties.getString("olas.version");
-        // remove '-SNAPSHOT' or NumberFormatException will be thrown
-        version = version.replaceAll("-SNAPSHOT", "");
+        String version = properties.getString("olas.release.version");
 
         // Add the OLAS service packages to be exported from the class path via the system bundle.
         systemPackages += "net.link.safeonline.osgi; version=" + version + ", ";
