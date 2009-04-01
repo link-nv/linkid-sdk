@@ -511,6 +511,8 @@
 		</safe-online.otpoversms.auth.ws.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
+		<safe-online.release.version>1.4</safe-online.release.version>
+        <safe-online.version>${safe-online.release.version}-SNAPSHOT</safe-online.version>
 		<bcel.version>5.1</bcel.version>
 		<bsf.version>2.4.0</bsf.version>
 		<bsh.version>1.3.0</bsh.version>
