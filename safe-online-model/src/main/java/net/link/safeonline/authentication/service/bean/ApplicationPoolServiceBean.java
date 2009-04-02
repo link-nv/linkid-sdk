@@ -29,13 +29,14 @@ import net.link.safeonline.authentication.service.ApplicationPoolServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationPoolDAO;
+import net.link.safeonline.dao.SessionTrackingDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -59,6 +60,9 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
 
     @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO     applicationDAO;
+
+    @EJB(mappedName = SessionTrackingDAO.JNDI_BINDING)
+    private SessionTrackingDAO sessionTrackingDAO;
 
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -102,9 +106,8 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
         LOG.debug("remove application pool: " + name);
         ApplicationPoolEntity applicationPool = applicationPoolDAO.getApplicationPool(name);
 
-        /*
-         * TODO: Remove the application pools from the applications
-         */
+        sessionTrackingDAO.removeTrackers(applicationPool);
+
         applicationPoolDAO.removeApplicationPool(applicationPool);
     }
 

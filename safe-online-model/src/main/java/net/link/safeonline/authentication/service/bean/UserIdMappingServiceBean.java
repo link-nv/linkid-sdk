@@ -99,6 +99,12 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
         LOG.debug("findUserId: " + applicationId + ", " + applicationUserId);
         ApplicationEntity application = applicationDAO.getApplication(applicationId);
+        return findUserId(application, applicationUserId);
+    }
+
+    public String findUserId(ApplicationEntity application, String applicationUserId) {
+
+        LOG.debug("findUserId: " + application.getName() + ", " + applicationUserId);
         IdScopeType idScope = application.getIdScope();
         if (IdScopeType.USER == idScope)
             return applicationUserId;

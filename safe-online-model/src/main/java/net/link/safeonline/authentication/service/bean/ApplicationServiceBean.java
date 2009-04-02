@@ -49,6 +49,7 @@ import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.SessionTrackingDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
@@ -133,6 +134,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
     @EJB(mappedName = EndpointReferenceDAO.JNDI_BINDING)
     private EndpointReferenceDAO       endpointReferenceDAO;
+
+    @EJB(mappedName = SessionTrackingDAO.JNDI_BINDING)
+    private SessionTrackingDAO         sessionTrackingDAO;
 
     @EJB(mappedName = ApplicationIdentityManager.JNDI_BINDING)
     private ApplicationIdentityManager applicationIdentityService;
@@ -272,6 +276,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         usageAgreementDAO.removeUsageAgreements(application);
 
         allowedDeviceDAO.deleteAllowedDevices(application);
+
+        sessionTrackingDAO.removeTrackers(application);
 
         applicationOwnerDAO.removeApplication(application);
 

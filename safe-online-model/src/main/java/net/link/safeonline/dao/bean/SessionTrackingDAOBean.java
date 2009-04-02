@@ -7,6 +7,9 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,6 +20,7 @@ import net.link.safeonline.dao.SessionTrackingDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
 import net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity;
 import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
@@ -32,13 +36,14 @@ import org.joda.time.DateTime;
 @LocalBinding(jndiBinding = SessionTrackingDAO.JNDI_BINDING)
 public class SessionTrackingDAOBean implements SessionTrackingDAO {
 
-    private static final Log                      LOG = LogFactory.getLog(SessionTrackingDAOBean.class);
+    private static final Log                           LOG = LogFactory.getLog(SessionTrackingDAOBean.class);
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-    private EntityManager                         entityManager;
+    private EntityManager                              entityManager;
 
-    private SessionTrackingEntity.QueryInterface  queryObject;
-    private SessionAssertionEntity.QueryInterface assertionQueryObject;
+    private SessionTrackingEntity.QueryInterface       queryObject;
+    private SessionAssertionEntity.QueryInterface      assertionQueryObject;
+    private SessionAuthnStatementEntity.QueryInterface statementQueryObject;
 
 
     @PostConstruct
@@ -46,6 +51,7 @@ public class SessionTrackingDAOBean implements SessionTrackingDAO {
 
         queryObject = QueryObjectFactory.createQueryObject(entityManager, SessionTrackingEntity.QueryInterface.class);
         assertionQueryObject = QueryObjectFactory.createQueryObject(entityManager, SessionAssertionEntity.QueryInterface.class);
+        statementQueryObject = QueryObjectFactory.createQueryObject(entityManager, SessionAuthnStatementEntity.QueryInterface.class);
     }
 
     /**
@@ -103,5 +109,103 @@ public class SessionTrackingDAOBean implements SessionTrackingDAO {
         LOG.debug("find session assertion: ssoId=" + ssoId + " applicationPool=" + applicationPool.getName());
         SessionAssertionEntity assertion = assertionQueryObject.find(ssoId, applicationPool);
         return assertion;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearExpired() {
+
+        LOG.debug("clear expired session trackers");
+        List<SessionTrackingEntity> trackers = queryObject.listSessionTrackers();
+        for (SessionTrackingEntity tracker : trackers) {
+            Date now = new Date(System.currentTimeMillis());
+            Date expiration = new Date(tracker.getTimestamp().getTime() + tracker.getApplication().getSessionTimeout());
+            if (now.after(expiration)) {
+                // expired
+                removeTracker(tracker);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeAssertions(SubjectEntity subject) {
+
+        LOG.debug("remove sesssion assertions containing subject: " + subject.toString());
+
+        List<SessionAssertionEntity> assertions = assertionQueryObject.listAssertions(subject);
+        for (SessionAssertionEntity assertion : assertions) {
+            removeStatements(assertion);
+            entityManager.flush();
+            entityManager.remove(assertion);
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeStatements(SessionAssertionEntity assertion) {
+
+        LOG.debug("remove session statements from assertion: " + assertion.toString());
+        List<SessionAuthnStatementEntity> statements = statementQueryObject.listStatements(assertion);
+        for (SessionAuthnStatementEntity statement : statements) {
+            LOG.debug("remove session authn statement: " + statement.toString());
+            /*
+             * Manage relationship
+             */
+            assertion.getStatements().remove(statement);
+            /*
+             * Remove from database
+             */
+            entityManager.remove(statement);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeTrackers(ApplicationEntity application) {
+
+        LOG.debug("remove session trackers for application: " + application.toString());
+        List<SessionTrackingEntity> trackers = queryObject.listSessionTrackers(application);
+        for (SessionTrackingEntity tracker : trackers) {
+            removeTracker(tracker);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeTrackers(ApplicationPoolEntity applicationPool) {
+
+        LOG.debug("remove session trackers for application pool: " + applicationPool.getName());
+        List<SessionTrackingEntity> trackers = queryObject.listSessionTrackers(applicationPool);
+        for (SessionTrackingEntity tracker : trackers) {
+            removeTracker(tracker);
+        }
+    }
+
+    private void removeTracker(SessionTrackingEntity tracker) {
+
+        LOG.debug("remove session tracker: " + tracker.toString());
+        /*
+         * Lookup session assertion related to this tracker
+         */
+        SessionAssertionEntity assertion = assertionQueryObject.find(tracker.getSsoId(), tracker.getApplicationPool());
+        if (null != assertion) {
+            LOG.debug("remove session assertion: " + assertion.toString());
+
+            removeStatements(assertion);
+            entityManager.flush();
+            /*
+             * Remove from database
+             */
+            entityManager.remove(assertion);
+            entityManager.flush();
+            entityManager.remove(tracker);
+        }
     }
 }

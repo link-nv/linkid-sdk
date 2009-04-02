@@ -82,4 +82,11 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
         LOG.debug("getUserId: " + applicationId + ", " + applicationUserId);
         return userIdMappingService.findUserId(applicationId, applicationUserId);
     }
+
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public String findUserId(ApplicationEntity application, String applicationUserId) {
+
+        LOG.debug("getUserId: " + application.getName() + ", " + applicationUserId);
+        return userIdMappingService.findUserId(application, applicationUserId);
+    }
 }

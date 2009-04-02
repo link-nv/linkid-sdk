@@ -35,6 +35,7 @@ import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.NodeDAOBean;
 import net.link.safeonline.dao.bean.NodeMappingDAOBean;
+import net.link.safeonline.dao.bean.SessionTrackingDAOBean;
 import net.link.safeonline.dao.bean.StatisticDAOBean;
 import net.link.safeonline.dao.bean.StatisticDataPointDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
@@ -81,6 +82,9 @@ import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
+import net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity;
+import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
@@ -148,7 +152,7 @@ public class SafeOnlineTestContainer {
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class, NotificationConsumerServiceBean.class,
             EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class, OSGIStartableBean.class, AttributeCacheDAOBean.class,
             ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class, NodeAuthenticationServiceBean.class,
-            AttributeTypeServiceBean.class     };
+            AttributeTypeServiceBean.class, SessionTrackingDAOBean.class };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class,
             AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class, TrustDomainEntity.class,
@@ -161,5 +165,5 @@ public class SafeOnlineTestContainer {
             UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class, NodeEntity.class, NodeMappingEntity.class,
             StatisticEntity.class, StatisticDataPointEntity.class, EndpointReferenceEntity.class,
             NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class, AttributeCacheEntity.class,
-            ApplicationPoolEntity.class        };
+            ApplicationPoolEntity.class, SessionTrackingEntity.class, SessionAssertionEntity.class, SessionAuthnStatementEntity.class };
 }

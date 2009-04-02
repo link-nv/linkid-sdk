@@ -14,6 +14,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.entity.ApplicationEntity;
 
 
 /**
@@ -49,4 +50,12 @@ public interface ApplicationIdentifierMappingService extends SafeOnlineService {
      */
     String findUserId(long applicationId, String applicationUserId)
             throws ApplicationNotFoundException;
+
+    /**
+     * Returns the global OLAS user ID using the application's id scope. Returns null if not found.
+     * 
+     * @param application
+     * @param applicationUserId
+     */
+    String findUserId(ApplicationEntity application, String applicationUserId);
 }

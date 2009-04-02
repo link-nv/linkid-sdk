@@ -8,6 +8,7 @@ package net.link.safeonline.entity.sessiontracking;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,14 +52,23 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @Table(name = "session_tracker", uniqueConstraints = @UniqueConstraint(columnNames = { SessionTrackingEntity.APPLICATION_COLUMN_NAME,
         SessionTrackingEntity.SESSION_COLUMN_NAME, SessionTrackingEntity.SSO_ID_COLUMN_NAME,
         SessionTrackingEntity.APPLICATION_POOL_COLUMN_NAME }))
-@NamedQueries( { @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE, query = "SELECT tracker " + "FROM SessionTrackingEntity AS tracker "
-        + "WHERE tracker.application = :application AND tracker.session = :session AND tracker.ssoId = :ssoId "
-        + "AND tracker.applicationPool = :applicationPool") })
+@NamedQueries( {
+        @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE, query = "SELECT tracker " + "FROM SessionTrackingEntity AS tracker "
+                + "WHERE tracker.application = :application AND tracker.session = :session AND tracker.ssoId = :ssoId "
+                + "AND tracker.applicationPool = :applicationPool"),
+        @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE_ALL, query = "FROM SessionTrackingEntity"),
+        @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE_APPLICATION, query = "SELECT tracker FROM SessionTrackingEntity AS tracker "
+                + "WHERE tracker.application = :application"),
+        @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE_APPLICATION_POOL, query = "SELECT tracker FROM SessionTrackingEntity AS tracker "
+                + "WHERE tracker.applicationPool = :applicationPool") })
 public class SessionTrackingEntity implements Serializable {
 
     private static final long     serialVersionUID             = 1L;
 
     public static final String    QUERY_WHERE                  = "tracker.where";
+    public static final String    QUERY_WHERE_ALL              = "tracker.where.all";
+    public static final String    QUERY_WHERE_APPLICATION      = "tracker.where.app";
+    public static final String    QUERY_WHERE_APPLICATION_POOL = "tracker.where.apppool";
 
     public static final String    APPLICATION_COLUMN_NAME      = "application";
     public static final String    SESSION_COLUMN_NAME          = "session";
@@ -89,7 +99,7 @@ public class SessionTrackingEntity implements Serializable {
         this.session = session;
         this.ssoId = ssoId;
         this.applicationPool = applicationPool;
-        timestamp = new Date();
+        timestamp = new Date(System.currentTimeMillis());
     }
 
     @Id
@@ -162,6 +172,27 @@ public class SessionTrackingEntity implements Serializable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (false == obj instanceof SessionTrackingEntity)
+            return false;
+
+        SessionTrackingEntity rhs = (SessionTrackingEntity) obj;
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return (int) id;
+    }
+
+    @Override
     public String toString() {
 
         return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", id).append("timestamp", timestamp.toString()).toString();
@@ -173,5 +204,14 @@ public class SessionTrackingEntity implements Serializable {
         @QueryMethod(value = QUERY_WHERE, nullable = true)
         SessionTrackingEntity find(@QueryParam("application") ApplicationEntity application, @QueryParam("session") String session,
                                    @QueryParam("ssoId") String ssoId, @QueryParam("applicationPool") ApplicationPoolEntity applicationPool);
+
+        @QueryMethod(value = QUERY_WHERE_ALL)
+        List<SessionTrackingEntity> listSessionTrackers();
+
+        @QueryMethod(value = QUERY_WHERE_APPLICATION)
+        List<SessionTrackingEntity> listSessionTrackers(@QueryParam("application") ApplicationEntity application);
+
+        @QueryMethod(value = QUERY_WHERE_APPLICATION_POOL)
+        List<SessionTrackingEntity> listSessionTrackers(@QueryParam("applicationPool") ApplicationPoolEntity applicationPool);
     }
 }

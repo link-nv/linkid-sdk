@@ -49,13 +49,17 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @Entity
 @Table(name = "session_assertion", uniqueConstraints = @UniqueConstraint(columnNames = { SessionAssertionEntity.SSO_ID_COLUMN_NAME,
         SessionAssertionEntity.APPLICATION_POOL_COLUMN_NAME }))
-@NamedQueries( { @NamedQuery(name = SessionAssertionEntity.QUERY_WHERE, query = "SELECT assertion FROM SessionAssertionEntity AS assertion "
-        + "WHERE assertion.ssoId = :ssoId AND assertion.applicationPool = :applicationPool") })
+@NamedQueries( {
+        @NamedQuery(name = SessionAssertionEntity.QUERY_WHERE, query = "SELECT assertion FROM SessionAssertionEntity AS assertion "
+                + "WHERE assertion.ssoId = :ssoId AND assertion.applicationPool = :applicationPool"),
+        @NamedQuery(name = SessionAssertionEntity.QUERY_WHERE_SUBJECT, query = "SELECT assertion FROM SessionAssertionEntity AS assertion "
+                + "WHERE assertion.subject = :subject") })
 public class SessionAssertionEntity implements Serializable {
 
     private static final long                 serialVersionUID             = 1L;
 
     public static final String                QUERY_WHERE                  = "assertion.where";
+    public static final String                QUERY_WHERE_SUBJECT          = "assertion.where.subject";
 
     public static final String                SSO_ID_COLUMN_NAME           = "ssoId";
     public static final String                APPLICATION_POOL_COLUMN_NAME = "applicationPool";
@@ -141,6 +145,27 @@ public class SessionAssertionEntity implements Serializable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (false == obj instanceof SessionAssertionEntity)
+            return false;
+
+        SessionAssertionEntity rhs = (SessionAssertionEntity) obj;
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return (int) id;
+    }
+
+    @Override
     public String toString() {
 
         return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", id).append("applicationPool", applicationPool.getName())
@@ -152,5 +177,8 @@ public class SessionAssertionEntity implements Serializable {
 
         @QueryMethod(value = QUERY_WHERE, nullable = true)
         SessionAssertionEntity find(@QueryParam("ssoId") String ssoId, @QueryParam("applicationPool") ApplicationPoolEntity applicationPool);
+
+        @QueryMethod(value = QUERY_WHERE_SUBJECT)
+        List<SessionAssertionEntity> listAssertions(@QueryParam("subject") SubjectEntity subject);
     }
 }

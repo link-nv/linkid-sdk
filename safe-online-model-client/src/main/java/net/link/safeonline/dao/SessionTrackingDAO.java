@@ -13,6 +13,7 @@ import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
 import net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity;
 import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
@@ -58,4 +59,29 @@ public interface SessionTrackingDAO extends SafeOnlineService {
      * @param assertion
      */
     SessionAuthnStatementEntity addAuthnStatement(SessionAssertionEntity assertion, DateTime time, DeviceEntity device);
+
+    /**
+     * TODO
+     */
+    void clearExpired();
+
+    /**
+     * TODO
+     */
+    void removeAssertions(SubjectEntity subject);
+
+    /**
+     * TODO
+     */
+    void removeStatements(SessionAssertionEntity assertion);
+
+    /**
+     * TODO
+     */
+    void removeTrackers(ApplicationEntity application);
+
+    /**
+     * TODO
+     */
+    void removeTrackers(ApplicationPoolEntity applicationPool);
 }

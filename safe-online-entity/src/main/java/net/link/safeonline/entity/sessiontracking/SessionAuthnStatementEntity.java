@@ -8,6 +8,7 @@ package net.link.safeonline.entity.sessiontracking;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,11 +16,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 
 /**
@@ -38,9 +43,13 @@ import net.link.safeonline.entity.DeviceEntity;
  */
 @Entity
 @Table(name = "session_authn_statement")
+@NamedQueries( { @NamedQuery(name = SessionAuthnStatementEntity.QUERY_WHERE_ASSERTION, query = "SELECT statement "
+        + "FROM SessionAuthnStatementEntity AS statement " + "WHERE statement.assertion = :assertion") })
 public class SessionAuthnStatementEntity implements Serializable {
 
     private static final long      serialVersionUID              = 1L;
+
+    public static final String     QUERY_WHERE_ASSERTION         = "stat.q.ass";
 
     public static final String     DEVICE_COLUMN_NAME            = "device";
     public static final String     SESSION_ASSERTION_COLUMN_NAME = "assertion";
@@ -114,7 +123,31 @@ public class SessionAuthnStatementEntity implements Serializable {
         this.device = device;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (false == obj instanceof SessionAuthnStatementEntity)
+            return false;
+
+        SessionAuthnStatementEntity rhs = (SessionAuthnStatementEntity) obj;
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return (int) id;
+    }
+
 
     public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_WHERE_ASSERTION)
+        List<SessionAuthnStatementEntity> listStatements(@QueryParam("assertion") SessionAssertionEntity assertion);
     }
 }
