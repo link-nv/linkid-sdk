@@ -19,7 +19,6 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
@@ -51,9 +50,12 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
 
+    /**
+     * {@inheritDoc}
+     */
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public String getApplicationUserId(String username)
-            throws PermissionDeniedException, ApplicationNotFoundException, SubscriptionNotFoundException, SubjectNotFoundException {
+            throws PermissionDeniedException, ApplicationNotFoundException, SubjectNotFoundException {
 
         LOG.debug("getUserId: " + username);
         checkPermission();
@@ -61,9 +63,22 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
         SubjectEntity subject = subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, username);
         if (null == subject)
             throw new SubjectNotFoundException();
-        String userId = userIdMappingService.getApplicationUserId(application.getId(), subject.getUserId());
-        LOG.debug("userId: " + userId);
-        return userId;
+        String applicationUserId = userIdMappingService.getApplicationUserId(application, subject);
+        LOG.debug("application user ID: " + applicationUserId);
+        return applicationUserId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public String getApplicationUserId(SubjectEntity subject) {
+
+        LOG.debug("getUserId: " + subject.getUserId());
+        ApplicationEntity application = applicationManager.getCallerApplication();
+        String applicationUserId = userIdMappingService.getApplicationUserId(application, subject);
+        LOG.debug("application user ID: " + applicationUserId);
+        return applicationUserId;
     }
 
     private void checkPermission()
@@ -75,6 +90,9 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
             throw new PermissionDeniedException("application not allowed to use the identifier mapping service");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public String findUserId(long applicationId, String applicationUserId)
             throws ApplicationNotFoundException {
@@ -83,6 +101,9 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
         return userIdMappingService.findUserId(applicationId, applicationUserId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public String findUserId(ApplicationEntity application, String applicationUserId) {
 

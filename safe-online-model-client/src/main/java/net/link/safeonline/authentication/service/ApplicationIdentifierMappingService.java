@@ -13,8 +13,9 @@ import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.SubjectEntity;
+import oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingService;
 
 
 /**
@@ -30,16 +31,22 @@ public interface ApplicationIdentifierMappingService extends SafeOnlineService {
 
 
     /**
-     * Returns the subject's user id using the application's id scope.
+     * Returns the subject's user ID using the application's id scope. This method will check if the application has permission to access
+     * the {@link NameIdentifierMappingService}.
      * 
      * @param username
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
      * @throws SubjectNotFoundException
      */
     String getApplicationUserId(String username)
-            throws PermissionDeniedException, ApplicationNotFoundException, SubscriptionNotFoundException, SubjectNotFoundException;
+            throws PermissionDeniedException, ApplicationNotFoundException, SubjectNotFoundException;
+
+    /**
+     * Returns the subject's user ID using the application's id scope. This method will <b>NOT</b> check if the application has permission
+     * to access {@link NameIdentifierMappingService}.
+     */
+    String getApplicationUserId(SubjectEntity subject);
 
     /**
      * Returns the global OLAS user ID using the application's id scope. Returns null if not found.

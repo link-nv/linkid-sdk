@@ -29,7 +29,6 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.authentication.service.LogoutServiceRemote;
@@ -264,7 +263,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
      * {@inheritDoc}
      */
     public String getLogoutRequest(ApplicationEntity application)
-            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException {
+            throws ApplicationNotFoundException, NodeNotFoundException {
 
         LOG.debug("get logout request for " + application.getName());
         LogoutState applicationState = ssoApplicationStates.get(application);
@@ -274,7 +273,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
             throw new IllegalStateException("this application is not in the initialized phase (already being/been logged out?)");
 
         NodeEntity localNode = nodeAuthenticationService.getLocalNode();
-        String userId = userIdMappingService.getApplicationUserId(application.getId(), authenticatedSubject.getUserId());
+        String userId = userIdMappingService.getApplicationUserId(application, authenticatedSubject);
 
         Challenge<String> expectedLogoutChallenge = new Challenge<String>();
 

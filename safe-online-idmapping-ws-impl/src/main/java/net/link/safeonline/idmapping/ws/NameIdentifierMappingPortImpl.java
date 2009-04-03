@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.NodeIdentifierMappingService;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
@@ -130,10 +129,6 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
             }
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-            return response;
-        } catch (SubscriptionNotFoundException e) {
-            LOG.debug("subscription not found: " + username);
             NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
             return response;
         } catch (ApplicationNotFoundException e) {

@@ -114,6 +114,15 @@ public class SessionTrackingDAOBean implements SessionTrackingDAO {
     /**
      * {@inheritDoc}
      */
+    public SessionAssertionEntity findAssertion(SessionTrackingEntity tracker) {
+
+        LOG.debug("find session assertion from tracker: " + tracker.toString());
+        return findAssertion(tracker.getSsoId(), tracker.getApplicationPool());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void clearExpired() {
 
         LOG.debug("clear expired session trackers");
@@ -188,6 +197,25 @@ public class SessionTrackingDAOBean implements SessionTrackingDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public List<SessionTrackingEntity> listTrackers(ApplicationEntity application, String session, ApplicationPoolEntity applicationPool) {
+
+        LOG.debug("list session trackers for application=" + application.getName() + " session=" + session + " pool="
+                + applicationPool.getName());
+        return queryObject.listSessionTrackers(application, session, applicationPool);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<SessionTrackingEntity> listTrackers(ApplicationEntity application, String session) {
+
+        LOG.debug("list session trackers for application=" + application.getName() + " session=" + session);
+        return queryObject.listSessionTrackers(application, session);
+    }
+
     private void removeTracker(SessionTrackingEntity tracker) {
 
         LOG.debug("remove session tracker: " + tracker.toString());
@@ -208,4 +236,5 @@ public class SessionTrackingDAOBean implements SessionTrackingDAO {
             entityManager.remove(tracker);
         }
     }
+
 }

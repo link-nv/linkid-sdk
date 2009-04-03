@@ -43,4 +43,9 @@
 		interface="net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerPort"
 		service="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerService"
 		port="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerPort" />
+	<endpoint name="SafeOnline-Session-WS"
+		implementation="net.link.safeonline.session.ws.SessionTrackingPortImpl"
+		url-pattern="/session" interface="net.lin_k.safe_online.session.SessionTrackingPort"
+		service="{urn:net:lin-k:safe-online:session}SessionTrackingService"
+		port="{urn:net:lin-k:safe-online:session}SessionTrackingPort" />
 </endpoints>

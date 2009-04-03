@@ -11,6 +11,9 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.authentication.exception.ApplicationPoolNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
 
 
 /**
@@ -43,7 +46,10 @@ public interface SessionTrackingService extends SafeOnlineService {
      *            optional subject ID, as in application user ID
      * @param applicationPools
      *            optional list of application pool names
+     * @throws SubjectNotFoundException
+     * @throws ApplicationPoolNotFoundException
      */
-    void getAssertions(String session, String applicationUserId, List<String> applicationPools);
+    List<SessionAssertionEntity> getAssertions(String session, String applicationUserId, List<String> applicationPoolNames)
+            throws SubjectNotFoundException, ApplicationPoolNotFoundException;
 
 }

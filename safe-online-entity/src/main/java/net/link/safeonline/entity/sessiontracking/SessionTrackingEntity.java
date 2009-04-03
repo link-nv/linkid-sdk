@@ -60,20 +60,26 @@ import org.apache.commons.lang.builder.ToStringStyle;
         @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE_APPLICATION, query = "SELECT tracker FROM SessionTrackingEntity AS tracker "
                 + "WHERE tracker.application = :application"),
         @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE_APPLICATION_POOL, query = "SELECT tracker FROM SessionTrackingEntity AS tracker "
-                + "WHERE tracker.applicationPool = :applicationPool") })
+                + "WHERE tracker.applicationPool = :applicationPool"),
+        @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE_SESSION_APP_AND_POOL, query = "SELECT tracker FROM SessionTrackingEntity AS tracker "
+                + "WHERE tracker.application = :application AND tracker.session = :session AND tracker.applicationPool = :applicationPool"),
+        @NamedQuery(name = SessionTrackingEntity.QUERY_WHERE_SESSION_APP, query = "SELECT tracker FROM SessionTrackingEntity AS tracker "
+                + "WHERE tracker.application = :application AND tracker.session = :session") })
 public class SessionTrackingEntity implements Serializable {
 
-    private static final long     serialVersionUID             = 1L;
+    private static final long     serialVersionUID                 = 1L;
 
-    public static final String    QUERY_WHERE                  = "tracker.where";
-    public static final String    QUERY_WHERE_ALL              = "tracker.where.all";
-    public static final String    QUERY_WHERE_APPLICATION      = "tracker.where.app";
-    public static final String    QUERY_WHERE_APPLICATION_POOL = "tracker.where.apppool";
+    public static final String    QUERY_WHERE                      = "tracker.where";
+    public static final String    QUERY_WHERE_ALL                  = "tracker.where.all";
+    public static final String    QUERY_WHERE_APPLICATION          = "tracker.where.app";
+    public static final String    QUERY_WHERE_APPLICATION_POOL     = "tracker.where.apppool";
+    public static final String    QUERY_WHERE_SESSION_APP_AND_POOL = "tracker.where.app.ses.pool";
+    public static final String    QUERY_WHERE_SESSION_APP          = "tracker.where.app.ses";
 
-    public static final String    APPLICATION_COLUMN_NAME      = "application";
-    public static final String    SESSION_COLUMN_NAME          = "session";
-    public static final String    SSO_ID_COLUMN_NAME           = "ssoId";
-    public static final String    APPLICATION_POOL_COLUMN_NAME = "applicationPool";
+    public static final String    APPLICATION_COLUMN_NAME          = "application";
+    public static final String    SESSION_COLUMN_NAME              = "session";
+    public static final String    SSO_ID_COLUMN_NAME               = "ssoId";
+    public static final String    APPLICATION_POOL_COLUMN_NAME     = "applicationPool";
 
     private long                  id;
 
@@ -213,5 +219,14 @@ public class SessionTrackingEntity implements Serializable {
 
         @QueryMethod(value = QUERY_WHERE_APPLICATION_POOL)
         List<SessionTrackingEntity> listSessionTrackers(@QueryParam("applicationPool") ApplicationPoolEntity applicationPool);
+
+        @QueryMethod(value = QUERY_WHERE_SESSION_APP_AND_POOL)
+        List<SessionTrackingEntity> listSessionTrackers(@QueryParam("application") ApplicationEntity application,
+                                                        @QueryParam("session") String session,
+                                                        @QueryParam("applicationPool") ApplicationPoolEntity applicationPool);
+
+        @QueryMethod(value = QUERY_WHERE_SESSION_APP)
+        List<SessionTrackingEntity> listSessionTrackers(@QueryParam("application") ApplicationEntity application,
+                                                        @QueryParam("session") String session);
     }
 }

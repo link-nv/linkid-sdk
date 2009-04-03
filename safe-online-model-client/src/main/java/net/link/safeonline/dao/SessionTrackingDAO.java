@@ -7,6 +7,8 @@
 
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.SafeOnlineService;
@@ -51,6 +53,11 @@ public interface SessionTrackingDAO extends SafeOnlineService {
     /**
      * TODO
      */
+    SessionAssertionEntity findAssertion(SessionTrackingEntity tracker);
+
+    /**
+     * TODO
+     */
     SessionAssertionEntity addAssertion(String ssoId, ApplicationPoolEntity applicationPool);
 
     /**
@@ -84,4 +91,15 @@ public interface SessionTrackingDAO extends SafeOnlineService {
      * TODO
      */
     void removeTrackers(ApplicationPoolEntity applicationPool);
+
+    /**
+     * TODO
+     */
+    List<SessionTrackingEntity> listTrackers(ApplicationEntity application, String session, ApplicationPoolEntity applicationPool);
+
+    /**
+     * TODO
+     */
+    List<SessionTrackingEntity> listTrackers(ApplicationEntity application, String session);
+
 }

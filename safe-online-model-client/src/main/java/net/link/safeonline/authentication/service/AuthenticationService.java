@@ -181,11 +181,11 @@ public interface AuthenticationService extends SafeOnlineService {
      * 
      * @throws NodeNotFoundException
      * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
+     * @throws SubjectNotFoundException
      * 
      */
     String finalizeAuthentication()
-            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException;
+            throws NodeNotFoundException, ApplicationNotFoundException, SubjectNotFoundException;
 
     /**
      * Gives back the current authentication state.

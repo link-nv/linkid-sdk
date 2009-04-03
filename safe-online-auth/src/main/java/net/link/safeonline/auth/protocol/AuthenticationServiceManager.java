@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSessionListener;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -105,10 +105,10 @@ public class AuthenticationServiceManager implements HttpSessionListener {
      * @param session
      * @throws NodeNotFoundException
      * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
+     * @throws SubjectNotFoundException
      */
     public static String finalizeAuthentication(HttpSession session)
-            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
+            throws NodeNotFoundException, ApplicationNotFoundException, SubjectNotFoundException {
 
         AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
         if (null == authenticationService)

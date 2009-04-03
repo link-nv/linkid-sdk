@@ -748,7 +748,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      */
     @Remove
     public String finalizeAuthentication()
-            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
+            throws NodeNotFoundException, ApplicationNotFoundException, SubjectNotFoundException {
 
         LOG.debug("finalize authentication");
         if (authenticationState != COMMITTED)

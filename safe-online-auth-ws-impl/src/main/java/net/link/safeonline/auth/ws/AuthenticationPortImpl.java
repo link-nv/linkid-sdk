@@ -1158,11 +1158,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         try {
             getApplication();
-
-            return userIdMappingService.getApplicationUserId(application.getId(), authenticatedSubject.getUserId());
-        } catch (SubscriptionNotFoundException e) {
-            LOG.error("subscription not found for " + applicationName);
-            throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
+            return userIdMappingService.getApplicationUserId(application, authenticatedSubject);
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());

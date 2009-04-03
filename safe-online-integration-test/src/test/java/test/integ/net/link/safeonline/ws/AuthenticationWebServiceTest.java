@@ -234,7 +234,7 @@ public class AuthenticationWebServiceTest {
                                                 .asList(new IdentityAttributeTypeDO[] {
                                                         new IdentityAttributeTypeDO(testSingleStringAttributeName),
                                                         new IdentityAttributeTypeDO(testCompoundAttributeName) }), false, false, false,
-                null);
+                null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: get instance of stateful authentication web service

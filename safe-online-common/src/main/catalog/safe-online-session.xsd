@@ -30,7 +30,7 @@
 	<element name="SessionTrackingResponse" type="tns:SessionTrackingResponseType" />
 	<complexType name="SessionTrackingResponseType">
 		<sequence>
-			<element ref="tns:Assertion" minOccurs="0" />
+			<element ref="tns:Assertions" minOccurs="0" maxOccurs="unbounded" />
 			<element ref="tns:Status" />
 		</sequence>
 	</complexType>
@@ -41,7 +41,7 @@
 		<attribute name="Message" type="string" />
 	</complexType>
 
-	<element name="Assertion" type="tns:AssertionType" />
+	<element name="Assertions" type="tns:AssertionType" />
 	<complexType name="AssertionType">
 		<sequence>
 			<element ref="tns:AuthnStatement" minOccurs="1" maxOccurs="unbounded" />

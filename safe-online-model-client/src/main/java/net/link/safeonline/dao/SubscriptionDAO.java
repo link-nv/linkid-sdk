@@ -37,7 +37,7 @@ public interface SubscriptionDAO extends SafeOnlineService {
     SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application)
             throws SubscriptionNotFoundException;
 
-    void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application);
+    SubscriptionEntity addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application);
 
     void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application,
                          String subscriptionUserId);

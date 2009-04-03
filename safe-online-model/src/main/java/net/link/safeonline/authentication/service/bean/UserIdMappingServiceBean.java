@@ -11,7 +11,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationScopeIdDAO;
@@ -60,21 +60,27 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
 
     public String getApplicationUserId(long applicationId, String userId)
-            throws ApplicationNotFoundException, SubscriptionNotFoundException {
+            throws ApplicationNotFoundException, SubjectNotFoundException {
 
         ApplicationEntity application = applicationDAO.getApplication(applicationId);
-        IdScopeType idScope = application.getIdScope();
-        if (IdScopeType.USER == idScope)
-            return userId;
-        else if (IdScopeType.SUBSCRIPTION == idScope)
-            return getSubscriptionScopeId(application, userId);
-        else
-            return getApplicationScopeId(application, userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
+        return getApplicationUserId(application, subject);
     }
 
-    private String getApplicationScopeId(ApplicationEntity application, String userId) {
+    public String getApplicationUserId(ApplicationEntity application, SubjectEntity subject) {
 
-        SubjectEntity subject = subjectService.findSubject(userId);
+        IdScopeType idScope = application.getIdScope();
+        if (IdScopeType.USER == idScope)
+            return subject.getUserId();
+        else if (IdScopeType.SUBSCRIPTION == idScope)
+            return getSubscriptionScopeId(application, subject);
+        else
+            return getApplicationScopeId(application, subject);
+
+    }
+
+    private String getApplicationScopeId(ApplicationEntity application, SubjectEntity subject) {
+
         ApplicationScopeIdEntity subjectApplicationScopeId = applicationScopeIdDAO.findApplicationScopeId(subject, application);
         if (null == subjectApplicationScopeId) {
             subjectApplicationScopeId = applicationScopeIdDAO.addApplicationScopeId(subject, application);
@@ -82,14 +88,11 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
         return subjectApplicationScopeId.getId();
     }
 
-    private String getSubscriptionScopeId(ApplicationEntity application, String userId)
-            throws SubscriptionNotFoundException {
+    private String getSubscriptionScopeId(ApplicationEntity application, SubjectEntity subject) {
 
-        SubjectEntity subject = subjectService.findSubject(userId);
         SubscriptionEntity subscription = subscriptionDAO.findSubscription(subject, application);
         if (null == subscription) {
-            subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, subject, application);
-            subscription = subscriptionDAO.getSubscription(subject, application);
+            subscription = subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, subject, application);
         }
         return subscription.getSubscriptionUserId();
     }
