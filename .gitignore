@@ -21,6 +21,7 @@
 *.iws
 
 # Compiled
+target
 /*/target
 /siemens/*/target
 /demo/*/target
