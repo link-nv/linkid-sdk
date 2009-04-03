@@ -14,6 +14,7 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClient;
 import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClient;
 import net.link.safeonline.sdk.ws.notification.subscription.manager.NotificationSubscriptionManagerClient;
+import net.link.safeonline.sdk.ws.session.SessionTrackingClient;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
 
 
@@ -46,4 +47,6 @@ public abstract class ServiceFactory {
     protected abstract NotificationProducerClient _getNotificationProducerService(PrivateKeyEntry privateKeyEntry);
 
     protected abstract NotificationSubscriptionManagerClient _getNotificationSubscriptionService(PrivateKeyEntry privateKeyEntry);
+
+    protected abstract SessionTrackingClient _getSessionTrackingService(PrivateKeyEntry privateKeyEntry);
 }

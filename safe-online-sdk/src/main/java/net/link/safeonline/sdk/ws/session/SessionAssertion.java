@@ -40,7 +40,7 @@ public class SessionAssertion {
     public SessionAssertion(AssertionType assertion) {
 
         subject = assertion.getSubject();
-        applicationPool = assertion.getSubject();
+        applicationPool = assertion.getApplicationPool();
         authentications = new HashMap<Date, String>();
         for (AuthnStatementType statement : assertion.getAuthnStatement()) {
             authentications.put(statement.getTime().toGregorianCalendar().getTime(), statement.getDevice());

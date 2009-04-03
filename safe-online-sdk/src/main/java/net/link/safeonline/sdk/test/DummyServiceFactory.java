@@ -17,6 +17,7 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClient;
 import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClient;
 import net.link.safeonline.sdk.ws.notification.subscription.manager.NotificationSubscriptionManagerClient;
+import net.link.safeonline.sdk.ws.session.SessionTrackingClient;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
 
 
@@ -119,6 +120,15 @@ public class DummyServiceFactory extends ServiceFactory {
      */
     @Override
     protected SecurityTokenServiceClient _getStsService(PrivateKeyEntry privateKeyEntry) {
+
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected SessionTrackingClient _getSessionTrackingService(PrivateKeyEntry privateKeyEntry) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }

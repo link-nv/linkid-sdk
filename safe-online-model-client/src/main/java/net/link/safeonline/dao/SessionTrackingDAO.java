@@ -35,71 +35,35 @@ public interface SessionTrackingDAO extends SafeOnlineService {
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SessionTrackingDAOBean/local";
 
 
-    /**
-     * TODO
-     */
     SessionTrackingEntity findTracker(ApplicationEntity application, String session, String ssoId, ApplicationPoolEntity applicationPool);
 
-    /**
-     * TODO
-     */
     SessionTrackingEntity addTracker(ApplicationEntity application, String session, String ssoId, ApplicationPoolEntity applicationPool);
 
-    /**
-     * TODO
-     */
     SessionAssertionEntity findAssertion(String ssoId, ApplicationPoolEntity applicationPool);
 
-    /**
-     * TODO
-     */
     SessionAssertionEntity findAssertion(SessionTrackingEntity tracker);
 
-    /**
-     * TODO
-     */
     SessionAssertionEntity addAssertion(String ssoId, ApplicationPoolEntity applicationPool);
 
-    /**
-     * TODO
-     * 
-     * @param assertion
-     */
     SessionAuthnStatementEntity addAuthnStatement(SessionAssertionEntity assertion, DateTime time, DeviceEntity device);
 
     /**
-     * TODO
+     * Clears all expired session trackers and the session assertions related to these.
      */
     void clearExpired();
 
-    /**
-     * TODO
-     */
     void removeAssertions(SubjectEntity subject);
 
-    /**
-     * TODO
-     */
     void removeStatements(SessionAssertionEntity assertion);
 
-    /**
-     * TODO
-     */
     void removeTrackers(ApplicationEntity application);
 
-    /**
-     * TODO
-     */
     void removeTrackers(ApplicationPoolEntity applicationPool);
 
-    /**
-     * TODO
-     */
     List<SessionTrackingEntity> listTrackers(ApplicationEntity application, String session, ApplicationPoolEntity applicationPool);
 
-    /**
-     * TODO
-     */
     List<SessionTrackingEntity> listTrackers(ApplicationEntity application, String session);
+
+    List<SessionAuthnStatementEntity> listStatements(SessionAssertionEntity assertion);
 
 }

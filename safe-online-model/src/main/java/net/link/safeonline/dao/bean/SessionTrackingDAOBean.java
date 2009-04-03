@@ -216,6 +216,16 @@ public class SessionTrackingDAOBean implements SessionTrackingDAO {
         return queryObject.listSessionTrackers(application, session);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public List<SessionAuthnStatementEntity> listStatements(SessionAssertionEntity assertion) {
+
+        LOG.debug("list session authn statements for assertion : " + assertion.toString());
+        return statementQueryObject.listStatements(assertion);
+
+    }
+
     private void removeTracker(SessionTrackingEntity tracker) {
 
         LOG.debug("remove session tracker: " + tracker.toString());

@@ -22,6 +22,8 @@ import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClie
 import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClientImpl;
 import net.link.safeonline.sdk.ws.notification.subscription.manager.NotificationSubscriptionManagerClient;
 import net.link.safeonline.sdk.ws.notification.subscription.manager.NotificationSubscriptionManagerClientImpl;
+import net.link.safeonline.sdk.ws.session.SessionTrackingClient;
+import net.link.safeonline.sdk.ws.session.SessionTrackingClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.util.servlet.SafeOnlineConfig;
@@ -190,5 +192,24 @@ public class OlasServiceFactory extends ServiceFactory {
 
         // Create the attribute service client.
         return new NotificationSubscriptionManagerClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
+    }
+
+    /**
+     * Retrieve a proxy to the OLAS session tracking web service.
+     */
+    public static SessionTrackingClient getSessionTrackingService(PrivateKeyEntry privateKeyEntry) {
+
+        return getInstance()._getSessionTrackingService(privateKeyEntry);
+    }
+
+    @Override
+    protected SessionTrackingClient _getSessionTrackingService(PrivateKeyEntry privateKeyEntry) {
+
+        // Find the key and certificate of the application.
+        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+
+        // Create the attribute service client.
+        return new SessionTrackingClientImpl(SafeOnlineConfig.wsbase(), certificate, privateKey);
     }
 }

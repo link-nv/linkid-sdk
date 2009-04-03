@@ -35,7 +35,7 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 
 /**
- * <h2>{@link SessionClientImpl}<br>
+ * <h2>{@link SessionTrackingClientImpl}<br>
  * <sub>[in short] (TODO).</sub></h2>
  * 
  * <p>
@@ -48,11 +48,11 @@ import com.sun.xml.ws.client.ClientTransportException;
  * 
  * @author wvdhaute
  */
-public class SessionClientImpl extends AbstractMessageAccessor implements SessionClient {
+public class SessionTrackingClientImpl extends AbstractMessageAccessor implements SessionTrackingClient {
 
     private static final long         serialVersionUID = 1L;
 
-    private static final Log          LOG              = LogFactory.getLog(SessionClientImpl.class);
+    private static final Log          LOG              = LogFactory.getLog(SessionTrackingClientImpl.class);
 
     private final SessionTrackingPort port;
 
@@ -69,7 +69,7 @@ public class SessionClientImpl extends AbstractMessageAccessor implements Sessio
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public SessionClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
+    public SessionTrackingClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         SessionTrackingService service = SessionTrackingServiceFactory.newInstance();
         port = service.getSessionTrackingPort();

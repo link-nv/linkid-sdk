@@ -15,7 +15,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 
 /**
- * <h2>{@link SessionClient}<br>
+ * <h2>{@link SessionTrackingClient}<br>
  * <sub>[in short] (TODO).</sub></h2>
  * 
  * <p>
@@ -29,7 +29,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
  * 
  * @author wvdhaute
  */
-public interface SessionClient extends MessageAccessor {
+public interface SessionTrackingClient extends MessageAccessor {
 
     /**
      * Returns list of session tracking assertions, given a required session field and optional subject / application pools.

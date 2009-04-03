@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -115,12 +116,19 @@ public class SessionTrackingServiceBean implements SessionTrackingService {
          */
         List<SessionAssertionEntity> assertions = new LinkedList<SessionAssertionEntity>();
         for (SessionTrackingEntity tracker : trackers) {
+
             SessionAssertionEntity assertion = sessionTrackingDAO.findAssertion(tracker);
             if (null != subject) {
                 if (!assertion.getSubject().equals(subject)) {
                     continue;
                 }
             }
+            LOG.debug("tracker old timestamp: " + tracker.getTimestamp().toString());
+            // Update timestamp for each tracker
+            tracker.setTimestamp(new Date());
+            LOG.debug("tracker new timestamp: " + tracker.getTimestamp().toString());
+
+            assertion.setStatements(sessionTrackingDAO.listStatements(assertion));
             assertions.add(assertion);
         }
 
