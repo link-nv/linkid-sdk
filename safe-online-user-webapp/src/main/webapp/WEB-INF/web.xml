@@ -166,12 +166,6 @@
 
     <!-- Application Event Listeners -->
 	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-	</listener>
-	<listener>
 		<listener-class>net.link.safeonline.webapp.filter.LogHttpSessionListener</listener-class>
 	</listener>
 
@@ -213,11 +207,11 @@
 
 		<init-param>
 			<param-name>DevicesPage</param-name>
-			<param-value>/device/devices.seam</param-value>
+			<param-value>/device_page</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>device-error.seam</param-value>
+			<param-value>device-error</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ResourceBundle</param-name>

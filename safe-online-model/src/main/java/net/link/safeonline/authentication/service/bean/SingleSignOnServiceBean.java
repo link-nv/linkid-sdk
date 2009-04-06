@@ -571,7 +571,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                     assertion = sessionTrackingDAO.addAssertion(ssoId, sso.applicationPool);
                 }
                 if (!sso.subject.equals(assertion.getSubject())) {
-                    sessionTrackingDAO.removeStatements(assertions);
+                    sessionTrackingDAO.removeStatements(assertion);
                 }
                 assertion.setSubject(sso.subject);
                 SessionAuthnStatementEntity authnStatement = sessionTrackingDAO.addAuthnStatement(assertion, sso.time, sso.device);
