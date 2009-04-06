@@ -290,6 +290,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
              * Set state
              */
             singleSignOnState = SingleSignOnState.FORCE_AUTHENTICATION;
+            ssoItems.clear();
 
             LOG.debug("force authentication");
             return null;
@@ -312,9 +313,38 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
     /**
      * {@inheritDoc}
      */
-    public List<ApplicationEntity> getApplicationsToLogout(ApplicationEntity application, List<Cookie> ssoCookies) {
+    public void selectUser(AuthenticationAssertion authenticationAssertion) {
+
+        List<SingleSignOn> newSsoItems = new LinkedList<SingleSignOn>();
+        for (SingleSignOn sso : ssoItems) {
+            if (sso.subject.equals(authenticationAssertion.getSubject())) {
+                newSsoItems.add(sso);
+            }
+        }
+        ssoItems = newSsoItems;
+
+        updateSessionTracker();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<ApplicationEntity> getApplicationsToLogout(String sessionInfo, ApplicationEntity application, List<Cookie> ssoCookies) {
 
         if (!application.isSsoEnabled())
+            return null;
+
+        session = sessionInfo;
+
+        /*
+         * Find SSO ID cookie
+         */
+        for (Cookie ssoCookie : ssoCookies) {
+            if (ssoCookie.getName().equals(SSO_ID_COOKIE_NAME)) {
+                ssoIdCookie = ssoCookie;
+            }
+        }
+        if (null == ssoIdCookie)
             return null;
 
         /*
@@ -323,9 +353,23 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
         List<ApplicationEntity> applicationsToLogout = new LinkedList<ApplicationEntity>();
         invalidCookies = new LinkedList<Cookie>();
         for (Cookie ssoCookie : ssoCookies) {
+            if (ssoCookie.getName().equals(SSO_ID_COOKIE_NAME)) {
+                continue;
+            }
             try {
                 SingleSignOn sso = new SingleSignOn(ssoCookie);
-                applicationsToLogout.addAll(sso.getApplicationsToLogout(application));
+                for (ApplicationEntity applicationToLogout : sso.getApplicationsToLogout(application)) {
+
+                    if (null != session) {
+                        SessionTrackingEntity tracker = sessionTrackingDAO.findTracker(applicationToLogout, session,
+                                ssoIdCookie.getValue(), sso.applicationPool);
+                        if (null == tracker) {
+                            continue;
+                        }
+                    }
+                    applicationsToLogout.add(applicationToLogout);
+
+                }
             } catch (InvalidCookieException e) {
                 LOG.debug("Invalid cookie " + ssoCookie.getName() + " marked for removal");
                 ssoCookie.setMaxAge(0);
@@ -525,6 +569,9 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                 SessionAssertionEntity assertion = sessionTrackingDAO.findAssertion(ssoId, sso.applicationPool);
                 if (null == assertion) {
                     assertion = sessionTrackingDAO.addAssertion(ssoId, sso.applicationPool);
+                }
+                if (!sso.subject.equals(assertion.getSubject())) {
+                    sessionTrackingDAO.removeStatements(assertions);
                 }
                 assertion.setSubject(sso.subject);
                 SessionAuthnStatementEntity authnStatement = sessionTrackingDAO.addAuthnStatement(assertion, sso.time, sso.device);

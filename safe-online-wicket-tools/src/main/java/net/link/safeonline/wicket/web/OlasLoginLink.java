@@ -30,7 +30,6 @@ public class OlasLoginLink extends OlasAuthLink {
     private static final long serialVersionUID = 1L;
     private Integer           color;
     private Boolean           minimal;
-    private String            session;
 
 
     public OlasLoginLink(String id) {
@@ -68,15 +67,6 @@ public class OlasLoginLink extends OlasAuthLink {
     public void setMinimal(Boolean minimal) {
 
         this.minimal = minimal;
-    }
-
-    /**
-     * @param session
-     *            optional session parameter marking the application wishes to track the session.
-     */
-    public void setSession(String session) {
-
-        this.session = session;
     }
 
     /**

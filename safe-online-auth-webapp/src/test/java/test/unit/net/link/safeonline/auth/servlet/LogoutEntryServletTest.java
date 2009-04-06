@@ -137,7 +137,7 @@ public class LogoutEntryServletTest {
         String applicationName = "test-application-id";
         String userId = UUID.randomUUID().toString();
         String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair, servletLocation,
-                null);
+                null, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlLogoutRequest) };

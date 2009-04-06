@@ -208,10 +208,12 @@ public class AuthenticationProtocolManager {
      * @param request
      * @param response
      * @param subjectName
+     * @param session
      * @throws IOException
      * @throws ServletException
      */
-    public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName)
+    public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName,
+                                      String session)
             throws IOException, ServletException {
 
         // Figure out the target and landing page URLs.
@@ -231,10 +233,10 @@ public class AuthenticationProtocolManager {
         if (null != landingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(target, request);
-            protocolHandler.initiateLogout(request, response, landingPage, subjectName);
+            protocolHandler.initiateLogout(request, response, landingPage, subjectName, session);
         } else {
             clearTarget(request);
-            protocolHandler.initiateLogout(request, response, target, subjectName);
+            protocolHandler.initiateLogout(request, response, target, subjectName, session);
         }
     }
 

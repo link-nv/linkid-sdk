@@ -38,6 +38,7 @@ public abstract class OlasAuthLink extends Link<Object> {
     Log                       LOG              = LogFactory.getLog(getClass());
     String                    requestTarget;
     boolean                   login;
+    String                    session;
 
 
     public OlasAuthLink(String id) {
@@ -52,6 +53,15 @@ public abstract class OlasAuthLink extends Link<Object> {
         if (target != null) {
             requestTarget = RequestCycle.get().urlFor(target, null).toString();
         }
+    }
+
+    /**
+     * @param session
+     *            optional session parameter marking the application wishes to track the session.
+     */
+    public void setSession(String session) {
+
+        this.session = session;
     }
 
     @Override

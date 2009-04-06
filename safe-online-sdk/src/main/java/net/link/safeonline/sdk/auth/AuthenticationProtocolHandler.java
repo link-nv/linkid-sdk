@@ -93,11 +93,12 @@ public interface AuthenticationProtocolHandler extends Serializable {
      *            the optional target URL. If omitted the request URL will be used as target URL.
      * @param subjectName
      *            the subject ID
+     * @param session
      * 
      * @throws IOException
      * @throws ServletException
      */
-    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
+    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName, String session)
             throws IOException, ServletException;
 
     /**

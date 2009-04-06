@@ -7,42 +7,34 @@
 
 package net.link.safeonline.auth.webapp.pages;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.auth.AuthenticationUtils;
-import net.link.safeonline.auth.webapp.DeviceDO;
+import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.auth.servlet.LoginServlet;
 import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
 import net.link.safeonline.authentication.ProtocolContext;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
-import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationAssertion;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
-import net.link.safeonline.webapp.template.SideLink;
-import net.link.safeonline.webapp.template.SidebarBorder;
-import net.link.safeonline.wicket.tools.RedirectResponseException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.IRequestTarget;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
@@ -50,76 +42,38 @@ import org.apache.wicket.model.Model;
 
 public class SelectUserPage extends AuthenticationTemplatePage {
 
-    static final Log           LOG                        = LogFactory.getLog(SelectUserPage.class);
+    static final Log           LOG              = LogFactory.getLog(SelectUserPage.class);
 
-    private static final long  serialVersionUID           = 1L;
+    private static final long  serialVersionUID = 1L;
 
-    public static final String PATH                       = "select-user";
+    public static final String PATH             = "select-user";
 
-    public static final String NEW_USER_LINK_ID           = "new_user";
-    public static final String TRY_ANOTHER_DEVICE_LINK_ID = "try_another_device";
+    public static final String SELECT_FORM_ID   = "select_form";
+    public static final String USER_GROUP_ID    = "userGroup";
+    public static final String USERS_ID         = "users";
+    public static final String USER_NAME_ID     = "userName";
+    public static final String USER_RADIO_ID    = "userRadio";
 
-    public static final String MAIN_FORM_ID               = "main_form";
-    public static final String DEVICE_GROUP_ID            = "deviceGroup";
-    public static final String DEVICES_ID                 = "devices";
-    public static final String NEXT_BUTTON_ID             = "next";
+    public static final String NEXT_BUTTON_ID   = "next";
+    public static final String CANCEL_BUTTON_ID = "cancel";
 
-    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
-    DevicePolicyService        devicePolicyService;
-
-    List<DeviceDO>             devices;
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
+    SubjectService             subjectService;
 
 
     public SelectUserPage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-        devices = new LinkedList<DeviceDO>();
-        List<DeviceEntity> deviceEntities;
-        try {
-            deviceEntities = devicePolicyService.getDevicePolicy(protocolContext.getApplicationId(), protocolContext.getRequiredDevices());
-        } catch (ApplicationNotFoundException e) {
-            error(localize("errorApplicationNotFound"));
-            return;
-        } catch (EmptyDevicePolicyException e) {
-            error(localize("errorEmptyDevicePolicy"));
-            return;
-        }
-        for (DeviceEntity deviceEntity : deviceEntities) {
-            String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
-            devices.add(new DeviceDO(deviceEntity, friendlyName));
-        }
+        List<AuthenticationAssertion> authenticationAssertions = LoginManager
+                                                                             .getAuthenticationAssertions(WicketUtil
+                                                                                                                    .getHttpSession(getRequest()));
 
-        Link<String> newUserLink = new Link<String>(SidebarBorder.LINK_ID) {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                throw new RestartResponseException(new NewUserPage());
-            }
-        };
-        Link<String> tryAnotherDeviceLink = new Link<String>(SidebarBorder.LINK_ID) {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                throw new RestartResponseException(new AllDevicesPage());
-            }
-        };
-
-        getSidebar(localize("helpAuthenticationMain"), new SideLink(newUserLink, localize("newUser")), new SideLink(tryAnotherDeviceLink,
-                localize("tryAnotherDevice")));
+        getSidebar(localize("helpSelectUser"));
 
         getHeader();
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.select));
 
-        getContent().add(new MainForm(MAIN_FORM_ID));
+        getContent().add(new SelectForm(SELECT_FORM_ID, authenticationAssertions));
 
     }
 
@@ -135,40 +89,44 @@ public class SelectUserPage extends AuthenticationTemplatePage {
     }
 
 
-    class MainForm extends Form<String> {
+    class SelectForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long      serialVersionUID = 1L;
 
-        Model<DeviceDO>           device;
+        Model<AuthenticationAssertion> authenticationAssertion;
 
 
         @SuppressWarnings("unchecked")
-        public MainForm(String id) {
+        public SelectForm(String id, List<AuthenticationAssertion> authenticationAssertions) {
 
             super(id);
             setMarkupId(id);
 
-            final RadioGroup<DeviceDO> deviceGroup = new RadioGroup(DEVICE_GROUP_ID, device = new Model<DeviceDO>());
-            deviceGroup.setRequired(true);
-            add(deviceGroup);
-            add(new ErrorComponentFeedbackLabel("device_feedback", deviceGroup, new Model<String>(localize("errorDeviceSelection"))));
+            final RadioGroup<AuthenticationAssertion> userGroup = new RadioGroup(USER_GROUP_ID,
+                    authenticationAssertion = new Model<AuthenticationAssertion>());
+            userGroup.setRequired(true);
+            add(userGroup);
+            add(new ErrorComponentFeedbackLabel("user_feedback", userGroup, new Model<String>(localize("errorUserSelection"))));
 
-            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, devices) {
+            ListView<AuthenticationAssertion> userView = new ListView<AuthenticationAssertion>(USERS_ID, authenticationAssertions) {
 
                 private static final long serialVersionUID = 1L;
 
 
                 @Override
-                protected void populateItem(final ListItem<DeviceDO> deviceItem) {
+                protected void populateItem(final ListItem<AuthenticationAssertion> item) {
 
-                    Radio deviceRadio = new Radio("radio", deviceItem.getModel());
-                    deviceRadio.setLabel(new Model<String>(deviceItem.getModelObject().getFriendlyName()));
-                    deviceItem.add(new SimpleFormComponentLabel("name", deviceRadio));
-                    deviceItem.add(deviceRadio);
+                    Radio userRadio = new Radio(USER_RADIO_ID, item.getModel());
+
+                    AuthenticationAssertion assertion = item.getModelObject();
+                    String username = subjectService.getSubjectLogin(assertion.getSubject().getUserId());
+                    userRadio.setLabel(new Model<String>(username));
+                    item.add(new SimpleFormComponentLabel(USER_NAME_ID, userRadio));
+                    item.add(userRadio);
                 }
 
             };
-            deviceGroup.add(deviceView);
+            userGroup.add(userView);
 
             add(new Button(NEXT_BUTTON_ID) {
 
@@ -178,43 +136,43 @@ public class SelectUserPage extends AuthenticationTemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    final String deviceName = device.getObject().getDevice().getName();
-                    LOG.debug("next: " + deviceName);
+                    String username = subjectService.getSubjectLogin(authenticationAssertion.getObject().getSubject().getUserId());
+                    LOG.debug("next: " + username);
 
-                    HelpdeskLogger.add("selected authentication device: " + deviceName, LogLevelType.INFO);
+                    HelpdeskLogger.add("selected user: " + username, LogLevelType.INFO);
 
-                    final String authenticationPath;
+                    AuthenticationService authenticationService = AuthenticationServiceManager
+                                                                                              .getAuthenticationService(WicketUtil
+                                                                                                                                  .getHttpSession(getRequest()));
                     try {
-                        authenticationPath = devicePolicyService.getAuthenticationURL(deviceName);
-                    } catch (DeviceNotFoundException e) {
-                        MainForm.this.error(localize("errorDeviceNotFound"));
+                        authenticationService.selectUser(authenticationAssertion.getObject().getSubject());
+                    } catch (SubjectNotFoundException e) {
+                        LOG.error("Subject not found", e);
+                        SelectForm.this.error("errorSubjectNotFound");
                         return;
                     }
-                    LOG.debug("authenticationPath: " + authenticationPath);
 
-                    String requestPath = WicketUtil.toServletRequest(getRequest()).getRequestURL().toString();
-                    if (!requestPath.endsWith(PATH)) {
-                        requestPath += PATH;
-                    }
-                    final String finalRequestPath = requestPath;
+                    LoginManager.login(WicketUtil.getHttpSession(getRequest()), authenticationAssertion.getObject());
 
-                    throw new RedirectResponseException(new IRequestTarget() {
-
-                        public void detach(RequestCycle requestCycle) {
-
-                        }
-
-                        public void respond(RequestCycle requestCycle) {
-
-                            AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), finalRequestPath, authenticationPath,
-                                    deviceName);
-
-                        }
-
-                    });
+                    getResponse().redirect(LoginServlet.SERVLET_PATH);
+                    setRedirect(false);
 
                 }
+            });
+
+            add(new Button(CANCEL_BUTTON_ID) {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public void onSubmit() {
+
+                    LOG.debug("cancel");
+
+                    setResponsePage(MainPage.class);
+                }
+
             });
 
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));

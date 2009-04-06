@@ -7,8 +7,6 @@
 
 package net.link.safeonline.user.webapp.pages;
 
-import java.util.UUID;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +52,8 @@ public class MainPage extends UserTemplatePage {
 
             {
                 // XXX: session tracking ON
-                String session = UUID.randomUUID().toString();
+                // String session = UUID.randomUUID().toString();
+                String session = "test-session";
                 setSession(session);
                 UserSession.get().setSession(session);
             }
@@ -76,7 +75,19 @@ public class MainPage extends UserTemplatePage {
 
         };
 
-        OlasLogoutLink logoutLink = new OlasLogoutLink(SidebarBorder.LINK_ID, MainPage.class);
+        OlasLogoutLink logoutLink = new OlasLogoutLink(SidebarBorder.LINK_ID, MainPage.class) {
+
+            private static final long serialVersionUID = 1L;
+
+            {
+                // XXX: session tracking ON
+                // String session = UUID.randomUUID().toString();
+                String session = "test-session";
+                setSession(session);
+                UserSession.get().setSession(session);
+            }
+
+        };
 
         if (OLASSession.get().isUserSet()) {
             getSidebar(localize("helpMain"), false, new SideLink(logoutLink, localize("logout")));

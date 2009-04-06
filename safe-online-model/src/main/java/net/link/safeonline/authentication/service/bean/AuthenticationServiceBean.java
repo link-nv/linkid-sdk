@@ -148,6 +148,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private static final SafeOnlineNodeKeyStore nodeKeyStore          = new SafeOnlineNodeKeyStore();
 
+    private List<AuthenticationAssertion>       authenticationAssertions;
+
     private AuthenticationAssertion             authenticationAssertion;
 
     private DeviceEntity                        registeredDevice;
@@ -557,10 +559,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      */
     public List<AuthenticationAssertion> login(List<Cookie> ssoCookies) {
 
-        List<AuthenticationAssertion> authenticationAssertions = ssoService.signOn(ssoCookies);
+        authenticationAssertions = ssoService.signOn(ssoCookies);
         if (null != authenticationAssertions && !authenticationAssertions.isEmpty() && authenticationAssertions.size() == 1) {
             /*
-             * Safe the state in this stateful session bean.
+             * Save the state in this stateful session bean.
              */
             authenticationState = USER_AUTHENTICATED;
             authenticationAssertion = authenticationAssertions.get(0);
@@ -571,6 +573,31 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         return authenticationAssertions;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void selectUser(SubjectEntity subject)
+            throws SubjectNotFoundException {
+
+        for (AuthenticationAssertion assertion : authenticationAssertions) {
+            if (assertion.getSubject().equals(subject)) {
+                /*
+                 * Selected user found
+                 */
+                authenticationState = USER_AUTHENTICATED;
+                authenticationAssertion = assertion;
+
+                ssoService.selectUser(authenticationAssertion);
+
+                LOG.debug("single sign-on: selected user " + authenticationAssertion.getSubject().getUserId() + " using devices: "
+                        + authenticationAssertion.getDevicesString());
+                return;
+            }
+        }
+
+        throw new SubjectNotFoundException();
     }
 
     /**

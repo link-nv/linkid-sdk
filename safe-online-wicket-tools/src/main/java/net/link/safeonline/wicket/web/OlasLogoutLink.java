@@ -50,12 +50,13 @@ public class OlasLogoutLink extends OlasAuthLink {
     @Override
     protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
 
+        boolean redirected = false;
         if (LoginManager.isAuthenticated(request)) {
             LOG.debug("Logout delegated to OLAS with target: " + target);
-            SafeOnlineLoginUtils.logout(target, request, response);
+            redirected = SafeOnlineLoginUtils.logout(target, session, request, response);
         }
 
-        else {
+        if (!redirected) {
             LOG.debug("Logout handeled locally; invalidating session.");
             // Technically, the Wicket session, being on the HTTP session doesn't need to be invalidated manually.
             // However, inside Unit tests, just invalidating the MockHttpSession doesn't seem to be enough.

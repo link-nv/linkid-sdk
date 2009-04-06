@@ -631,7 +631,7 @@ public class SingleSignOnServiceBeanTest {
         replay(mockObjects);
 
         // operate
-        List<ApplicationEntity> resultApplications = testedInstance.getApplicationsToLogout(application, cookies);
+        List<ApplicationEntity> resultApplications = testedInstance.getApplicationsToLogout(null, application, cookies);
 
         // verify
         verify(mockObjects);

@@ -10,16 +10,25 @@ package net.link.safeonline.sdk.auth.saml2;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 
+import javax.xml.namespace.QName;
+
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.saml.common.Saml2Util;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfo;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfoBuilder;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfoMarshaller;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfoUnmarshaller;
 
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.common.Extensions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.NameID;
+import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 
 
@@ -49,6 +58,8 @@ public class LogoutRequestFactory {
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
         try {
             DefaultBootstrap.bootstrap();
+            Configuration.registerObjectProvider(SessionInfo.DEFAULT_ELEMENT_NAME, new SessionInfoBuilder(), new SessionInfoMarshaller(),
+                    new SessionInfoUnmarshaller(), null);
         } catch (ConfigurationException e) {
             throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
@@ -66,9 +77,11 @@ public class LogoutRequestFactory {
      *            the optional location of the destination IdP.
      * @param challenge
      *            the optional challenge (output variable).
+     * @param session
+     *            the optional SSO session
      */
     public static String createLogoutRequest(String subjectName, String issuerName, KeyPair signerKeyPair, String destinationURL,
-                                             Challenge<String> challenge) {
+                                             Challenge<String> challenge, String session) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -102,6 +115,16 @@ public class LogoutRequestFactory {
         nameID.setValue(subjectName);
         nameID.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:entity");
         request.setNameID(nameID);
+
+        // add session info
+        if (null != session) {
+            QName extensionsQName = new QName(SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX);
+            Extensions extensions = Saml2Util.buildXMLObject(Extensions.class, extensionsQName);
+            SessionInfo sessionInfo = Saml2Util.buildXMLObject(SessionInfo.class, SessionInfo.DEFAULT_ELEMENT_NAME);
+            sessionInfo.setSession(session);
+            request.setExtensions(extensions);
+            request.getExtensions().getUnknownXMLObjects().add(sessionInfo);
+        }
 
         return Saml2Util.sign(request, signerKeyPair);
     }

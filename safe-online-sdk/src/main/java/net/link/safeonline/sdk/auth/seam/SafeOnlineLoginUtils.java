@@ -372,16 +372,16 @@ public class SafeOnlineLoginUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #logout(String, String, HttpServletRequest, HttpServletResponse)
+     * @see #logout(String, String,String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
-    public static void logout(String subjectName, String target) {
+    public static boolean logout(String subjectName, String target) {
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
 
         try {
-            logout(subjectName, target, (HttpServletRequest) externalContext.getRequest(),
+            return logout(subjectName, target, null, (HttpServletRequest) externalContext.getRequest(),
                     (HttpServletResponse) externalContext.getResponse());
         }
 
@@ -397,14 +397,15 @@ public class SafeOnlineLoginUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #logout(String, String, HttpServletRequest, HttpServletResponse)
+     * @see #logout(String, String, String, HttpServletRequest, HttpServletResponse)
      */
-    public static void logout(String target, HttpServletRequest request, HttpServletResponse response) {
+    public static boolean logout(String target, String session, HttpServletRequest request, HttpServletResponse response) {
 
         try {
-            logout(LoginManager.getUserId(request), target, request, response);
+            return logout(LoginManager.getUserId(request), target, session, request, response);
         } catch (ServletException e) {
             LOG.warn("Couldn't find user id of logged in user; not logged in?", e);
+            return false;
         }
     }
 
@@ -433,8 +434,13 @@ public class SafeOnlineLoginUtils {
      * @param target
      *            The target to which to redirect to after successful logout. If not absolute, the web application's base URL will be
      *            prefixed to it.
+     * 
+     * @param session
+     *            The optional SSO session to logout
+     * 
+     * @return <code>true</code> if redirected successful, <code>false</code> if not redirected ( e.g. when SSO is disabled )
      */
-    public static void logout(String subjectName, String target, HttpServletRequest request, HttpServletResponse response) {
+    public static boolean logout(String subjectName, String target, String session, HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, String> config = new HashMap<String, String>();
         ServletContext context = request.getSession().getServletContext();
@@ -479,7 +485,7 @@ public class SafeOnlineLoginUtils {
         }
         LOG.debug("single sign-on enabled: " + ssoEnabled);
         if (false == ssoEnabled)
-            return;
+            return false;
 
         /* Load key data if provided. */
         KeyPair keyPair = null;
@@ -507,11 +513,13 @@ public class SafeOnlineLoginUtils {
                     + e.getMessage(), e);
         }
         try {
-            AuthenticationProtocolManager.initiateLogout(request, response, targetUrl, subjectName);
+            AuthenticationProtocolManager.initiateLogout(request, response, targetUrl, subjectName, session);
             LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate logout: " + e.getMessage(), e);
         }
+
+        return true;
     }
 
     /**

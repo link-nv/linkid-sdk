@@ -207,7 +207,7 @@ public class AuthenticationTest {
                     throws Exception {
 
                 applicationService.addApplication(applicationName, null, appOwnerName, null, false, IdScopeType.USER, null, null, null,
-                        null, false, false, false, null);
+                        null, false, false, false, null, null);
                 return null;
             }
         });

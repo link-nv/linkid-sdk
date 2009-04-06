@@ -216,12 +216,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     /**
      * {@inheritDoc}
      */
-    public void initiateLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, String subjectName)
+    public void initiateLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, String subjectName,
+                               String session)
             throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
         String samlRequestToken = LogoutRequestFactory.createLogoutRequest(subjectName, applicationName, applicationKeyPair,
-                authnServiceUrl, challenge);
+                authnServiceUrl, challenge, session);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

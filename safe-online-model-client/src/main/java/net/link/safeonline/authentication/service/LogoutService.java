@@ -16,6 +16,7 @@ import javax.servlet.http.Cookie;
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.LogoutInitializationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -59,9 +60,11 @@ public interface LogoutService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws SubjectNotFoundException
      * @throws SignatureValidationException
+     * @throws LogoutInitializationException
      */
     LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest)
-            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException;
+            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException,
+            LogoutInitializationException;
 
     /**
      * Checks the given list of SSO cookies and extract all applications that need to be logged out.

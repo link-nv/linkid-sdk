@@ -71,9 +71,16 @@ public interface SingleSignOnService extends SafeOnlineService {
     List<AuthenticationAssertion> signOn(List<Cookie> ssoCookies);
 
     /**
+     * Selects specific user in case multiple users were valid for Single Sign On.
+     */
+    void selectUser(AuthenticationAssertion authenticationAssertion);
+
+    /**
      * Investigates set of SSO cookies and extracts list of applications that will need to be logged out given a specified application that
      * started the logout.
      * 
+     * @param session
+     *            optional session info that specified restriction on applications to logot
      * @param application
      *            application that initiated the single logout process.
      * @param ssoCookies
@@ -81,7 +88,7 @@ public interface SingleSignOnService extends SafeOnlineService {
      * @return Returns list of applications to be logged out.
      * 
      */
-    List<ApplicationEntity> getApplicationsToLogout(ApplicationEntity application, List<Cookie> ssoCookies);
+    List<ApplicationEntity> getApplicationsToLogout(String session, ApplicationEntity application, List<Cookie> ssoCookies);
 
     /**
      * Returns list of invalid ( expired, ... ) SSO cookies.

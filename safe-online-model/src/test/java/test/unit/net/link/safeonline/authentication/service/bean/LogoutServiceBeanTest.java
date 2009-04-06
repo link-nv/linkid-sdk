@@ -122,7 +122,7 @@ public class LogoutServiceBeanTest {
         String destinationUrl = "http://test.destination.url";
 
         String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(applicationUserId, applicationName, applicationKeyPair,
-                destinationUrl, null);
+                destinationUrl, null, null);
         LogoutRequest logoutRequest = getLogoutRequest(encodedLogoutRequest);
 
         // expectations

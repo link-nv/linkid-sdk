@@ -552,7 +552,7 @@ public class SecurityTokenServicePortImplTest {
 
         Challenge<String> challenge = new Challenge<String>();
         String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, nodeKeyPair, destinationURL,
-                challenge);
+                challenge, null);
         Document doc = DomUtils.parseDocument(encodedLogoutRequest);
         return doc.getDocumentElement();
     }

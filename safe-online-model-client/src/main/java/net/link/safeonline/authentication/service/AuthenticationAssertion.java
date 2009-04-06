@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.authentication.service;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,7 +33,9 @@ import org.joda.time.DateTime;
  * 
  * @author wvdhaute
  */
-public class AuthenticationAssertion {
+public class AuthenticationAssertion implements Serializable {
+
+    private static final long           serialVersionUID = 1L;
 
     private SubjectEntity               subject;
 

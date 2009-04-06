@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -33,6 +34,8 @@ public class LoginManager {
 
     public static final String AUTHENTICATION_ASSERTION_ATTRIBUTE  = "LoginManager.authenticationAssertion";
 
+    public static final String AUTHENTICATION_ASSERTIONS_ATTRIBUTE = "LoginManager.authenticationAssertions";
+
     public static final String LOGIN_ATTRIBUTE                     = "LoginManager.loginName";
 
     public static final String REQUIRED_DEVICES_ATTRIBUTE          = "LoginManager.requiredDevices";
@@ -58,6 +61,21 @@ public class LoginManager {
          */
         session.setAttribute(USERID_ATTRIBUTE, authenticationAssertion.getSubject().getUserId());
         session.setAttribute(AUTHENTICATION_ASSERTION_ATTRIBUTE, authenticationAssertion);
+    }
+
+    public static void setAuthenticationAssertions(HttpSession session, List<AuthenticationAssertion> authenticationAssertions) {
+
+        if (null == authenticationAssertions)
+            throw new IllegalArgumentException("list of assertions is null");
+        session.setAttribute(AUTHENTICATION_ASSERTIONS_ATTRIBUTE, authenticationAssertions);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<AuthenticationAssertion> getAuthenticationAssertions(HttpSession session) {
+
+        if (null == session.getAttribute(AUTHENTICATION_ASSERTIONS_ATTRIBUTE))
+            throw new IllegalStateException("no authentication assertions present");
+        return (List<AuthenticationAssertion>) session.getAttribute(AUTHENTICATION_ASSERTIONS_ATTRIBUTE);
     }
 
     public static void setUserId(HttpSession session, String userId) {

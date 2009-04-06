@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.LogoutInitializationException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
@@ -278,6 +279,9 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         } catch (SubjectNotFoundException e) {
             LOG.debug("subject not found: " + e.getMessage());
             throw new ProtocolException("subject not found");
+        } catch (LogoutInitializationException e) {
+            LOG.debug("logout initialization error: " + e.getMessage());
+            throw new ProtocolException("logout initialization error");
         }
     }
 

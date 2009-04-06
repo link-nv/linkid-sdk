@@ -36,6 +36,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.opensaml.saml2.core.AuthnRequest;
@@ -254,4 +255,13 @@ public interface AuthenticationService extends SafeOnlineService {
     AuthenticationAssertion register(DeviceOperationResponse response)
             throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
             SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
+
+    /**
+     * Selects user in case Single Sign On resulted in multiple valid users.
+     * 
+     * @param subject
+     * @throws SubjectNotFoundException
+     */
+    void selectUser(SubjectEntity subject)
+            throws SubjectNotFoundException;
 }

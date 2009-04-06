@@ -119,7 +119,8 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     /**
      * {@inheritDoc}
      */
-    public void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
+    public void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName,
+                               String session)
             throws IOException, ServletException {
 
         LOG.info("Initiated Logout; invoking LogoutServlet with target: " + targetUrl);
