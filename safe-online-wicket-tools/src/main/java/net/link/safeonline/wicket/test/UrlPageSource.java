@@ -9,15 +9,12 @@ package net.link.safeonline.wicket.test;
 import org.apache.wicket.Page;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.util.tester.ITestPageSource;
+import org.apache.wicket.util.tester.WicketTester;
 
 
 /**
  * <h2>{@link UrlPageSource}<br>
- * <sub>[in short] (TODO).</sub></h2>
- * 
- * <p>
- * [description / usage].
- * </p>
+ * <sub>A page source for the {@link WicketTester} to test mount points.</sub></h2>
  * 
  * <p>
  * <i>Dec 16, 2008</i>
@@ -31,9 +28,6 @@ public class UrlPageSource implements ITestPageSource {
     private String            url;
 
 
-    /**
-     * TODO
-     */
     public UrlPageSource(String url) {
 
         this.url = url;

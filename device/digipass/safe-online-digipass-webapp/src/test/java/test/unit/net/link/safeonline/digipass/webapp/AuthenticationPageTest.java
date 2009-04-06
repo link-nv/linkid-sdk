@@ -122,7 +122,7 @@ public class AuthenticationPageTest {
         // prepare
         replay(mockDigipassDeviceService, mockSamlAuthorityService, mockNodeAuthenticationService);
 
-        // RegisterPage: Register digipass for user
+        // RegistrationPage: Register digipass for user
         FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);

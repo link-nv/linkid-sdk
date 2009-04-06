@@ -1,10 +1,9 @@
 package net.link.safeonline.demo.payment.webapp;
 
-import net.link.safeonline.wicket.web.OlasAuthRedirectPage;
+import net.link.safeonline.wicket.web.OlasLoginLink;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.link.PageLink;
 
 
 public class LoginPage extends LayoutPage {
@@ -12,15 +11,9 @@ public class LoginPage extends LayoutPage {
     private static final long serialVersionUID = 1L;
 
 
-    /**
-     * If the user is logged in; continue to the account overview page.
-     * 
-     * If not, show a link to the OLAS authentication service for logging the user in.
-     */
     public LoginPage() {
 
-        // HTML Components.
-        add(new PageLink<OlasAuthRedirectPage>("olasLoginLink", OlasAuthRedirectPage.class));
+        add(new OlasLoginLink("olasLoginLink"));
     }
 
     /**

@@ -3,6 +3,7 @@ package net.link.safeonline.demo.payment.webapp;
 import java.util.Arrays;
 import java.util.List;
 
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStore;
 import net.link.safeonline.demo.payment.webapp.AccountPage.AccountForm;
@@ -23,6 +24,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 
 
@@ -87,42 +89,51 @@ public class NewTransactionPage extends LayoutPage {
 
             super(id);
 
-            try {
-                PaymentUserEntity user = PaymentSession.get().getUser();
+            TextArea<String> descriptionField = new TextArea<String>("description", description = new Model<String>());
+            RadioChoice<String> visaField = new RadioChoice<String>("visa", visa = new Model<String>(),
+                    new AbstractReadOnlyModel<List<? extends String>>() {
 
-                List<String> visas;
-                visas = Arrays.asList(OlasServiceFactory.getAttributeService(DemoPaymentKeyStore.getPrivateKeyEntry()).getAttributeValue(
-                        user.getOlasId(), DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, String[].class));
+                        private static final long serialVersionUID = 1L;
 
-                TextArea<String> descriptionField = new TextArea<String>("description", description = new Model<String>());
-                RadioChoice<String> visaField = new RadioChoice<String>("visa", visa = new Model<String>(), visas);
-                visaField.setRequired(true);
-                TextField<String> targetField = new TextField<String>("target", target = new Model<String>());
-                targetField.setRequired(true);
-                TextField<String> amountField = new TextField<String>("amount", amount = new Model<String>());
-                amountField.setRequired(true);
 
-                if (PaymentSession.get().getService() != null) {
-                    description.setObject(PaymentSession.get().getService().getMessage());
-                    descriptionField.setEnabled(false);
-                    target.setObject(PaymentSession.get().getService().getRecipient());
-                    targetField.setEnabled(false);
-                    amount.setObject(String.valueOf(PaymentSession.get().getService().getAmount()));
-                    amountField.setEnabled(false);
-                }
+                        @Override
+                        public List<String> getObject() {
 
-                add(descriptionField, visaField, targetField, amountField);
+                            try {
+                                PaymentUserEntity user = PaymentSession.get().getUser();
+
+                                return Arrays.asList(OlasServiceFactory.getAttributeService(DemoPaymentKeyStore.getPrivateKeyEntry())
+                                                                       .getAttributeValue(user.getOlasId(),
+                                                                               DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, String[].class));
+                            }
+
+                            catch (AttributeNotFoundException e) {
+                                throw new InternalInconsistencyException("[BUG] VISA attribute not found for user.", e);
+                            } catch (RequestDeniedException e) {
+                                throw new InternalInconsistencyException("VISA attribute access denied.", e);
+                            } catch (WSClientTransportException e) {
+                                throw new RuntimeException("WS transport problem occurred.", e);
+                            } catch (AttributeUnavailableException e) {
+                                throw new RuntimeException("Attribute plugin service unavailable.", e);
+                            }
+                        }
+                    });
+            visaField.setRequired(true);
+            TextField<String> targetField = new TextField<String>("target", target = new Model<String>());
+            targetField.setRequired(true);
+            TextField<String> amountField = new TextField<String>("amount", amount = new Model<String>());
+            amountField.setRequired(true);
+
+            if (PaymentSession.get().getService() != null) {
+                description.setObject(PaymentSession.get().getService().getMessage());
+                descriptionField.setEnabled(false);
+                target.setObject(PaymentSession.get().getService().getRecipient());
+                targetField.setEnabled(false);
+                amount.setObject(String.valueOf(PaymentSession.get().getService().getAmount()));
+                amountField.setEnabled(false);
             }
 
-            catch (AttributeNotFoundException e) {
-                LOG.error("[BUG] VISA attribute not found for user.", e);
-            } catch (RequestDeniedException e) {
-                LOG.error("VISA attribute access denied.", e);
-            } catch (WSClientTransportException e) {
-                LOG.error("WS transport problem occurred.", e);
-            } catch (AttributeUnavailableException e) {
-                LOG.error("Attribute plugin service unavailable.", e);
-            }
+            add(descriptionField, visaField, targetField, amountField);
         }
 
         @Override
@@ -132,14 +143,14 @@ public class NewTransactionPage extends LayoutPage {
                 if (transactionService.createTransaction(PaymentSession.get().getUser(), visa.getObject(), description.getObject(),
                         target.getObject(), Double.parseDouble(amount.getObject())) != null) {
 
-                    if (PaymentSession.get().getService() != null) {
-                        String targetUrl = PaymentSession.get().getService().getTarget();
-                        PaymentSession.get().stopService();
+                    if (PaymentSession.get().getService() == null)
+                        throw new RestartResponseException(AccountPage.class);
 
-                        throw new RedirectToUrlException(targetUrl);
-                    }
+                    // This transaction was a service request; return to the request target.
+                    String targetUrl = PaymentSession.get().getService().getTarget();
+                    PaymentSession.get().stopService();
 
-                    throw new RestartResponseException(AccountPage.class);
+                    throw new RedirectToUrlException(targetUrl);
                 }
             }
 

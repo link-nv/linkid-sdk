@@ -16,7 +16,7 @@ import java.util.UUID;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.digipass.webapp.MainPage;
-import net.link.safeonline.digipass.webapp.RegisterPage;
+import net.link.safeonline.digipass.webapp.RegistrationPage;
 import net.link.safeonline.digipass.webapp.RemovePage;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
@@ -99,7 +99,7 @@ public class RemovePageTest {
         // MainPage: Verify.
         wicket.assertRenderedPage(MainPage.class);
 
-        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegistrationPage.class);
         wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove digipass
@@ -164,7 +164,7 @@ public class RemovePageTest {
         // MainPage: Verify.
         wicket.assertRenderedPage(MainPage.class);
 
-        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegistrationPage.class);
         wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove digipass
@@ -209,7 +209,7 @@ public class RemovePageTest {
         // MainPage: Verify.
         wicket.assertRenderedPage(MainPage.class);
 
-        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegistrationPage.class);
         wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove digipass

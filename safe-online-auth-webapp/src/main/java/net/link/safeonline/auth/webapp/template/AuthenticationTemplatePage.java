@@ -22,12 +22,7 @@ public abstract class AuthenticationTemplatePage extends TemplatePage {
     PublicApplicationService publicApplicationService;
 
 
-    public AuthenticationTemplatePage() {
-
-        super();
-    }
-
-    protected String findApplicationUrl() {
+    public String findApplicationUrl() {
 
         Cookie[] cookies = WicketUtil.getServletRequest().getCookies();
         try {
@@ -43,7 +38,9 @@ public abstract class AuthenticationTemplatePage extends TemplatePage {
                 }
             }
             return null;
-        } finally {
+        }
+
+        finally {
             LOG.debug("removing entry and timeout cookie");
             HttpServletResponse response = WicketUtil.getServletResponse();
             removeCookie(SafeOnlineCookies.APPLICATION_COOKIE, response);

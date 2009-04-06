@@ -40,8 +40,6 @@ public class DeviceErrorPage extends TemplatePage {
 
     public DeviceErrorPage() {
 
-        super();
-
         getHeader();
 
         getContent().add(

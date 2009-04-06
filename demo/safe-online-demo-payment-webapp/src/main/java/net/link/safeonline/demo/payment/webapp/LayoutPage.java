@@ -10,6 +10,7 @@ import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -39,6 +40,13 @@ public abstract class LayoutPage extends OlasApplicationPage {
      * This includes the title and the global ticket.
      */
     public LayoutPage() {
+
+        this(null);
+    }
+
+    public LayoutPage(PageParameters parameters) {
+
+        super(parameters);
 
         add(new Label("pageTitle", "Payment Demo Application"));
         add(new Label("headerTitle", getHeaderTitle()));

@@ -6,16 +6,13 @@
  */
 package net.link.safeonline.wicket.web;
 
-import net.link.safeonline.wicket.tools.WicketUtil;
-
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
 
 
 /**
@@ -44,71 +41,16 @@ public abstract class OlasApplicationPage extends WicketPage {
 
     static final Log LOG = LogFactory.getLog(OlasApplicationPage.class);
 
-    {
-        try {
-            // Check whether page requires forced logout.
-            if (getClass().isAnnotationPresent(ForceLogout.class))
-                throw new IllegalStateException("Page " + getClass() + " requires forced logout.");
 
-            // Check whether dealing with an OLAS Session
-            if (Session.get() instanceof OLASSession) {
+    public OlasApplicationPage() {
 
-                // Check whether OLAS user has changed.
-                String wicketOlasId = OLASSession.get().getUserOlasId();
-                if (WicketUtil.isOlasAuthenticated()) {
-                    if (wicketOlasId != null) {
-                        String currentOlasId = WicketUtil.findOlasId();
-                        if (!wicketOlasId.equals(currentOlasId))
-                            throw new IllegalStateException("User changed from " + wicketOlasId + " into " + currentOlasId);
-                    }
-
-                    // If just logged in using OLAS, let application create/push its user onto wicket session.
-                    if (!OLASSession.get().isUserSet()) {
-                        onOlasAuthenticated();
-                        postAuth();
-                    }
-                }
-
-                else if (wicketOlasId != null) {
-                    // No OLAS user on session, but wicket session says an OLAS user is logged in..
-                    // Either the application allowed an OLAS user to login without using OLAS (eg. demo-bank),
-                    // or the OLAS user logged itself out but the wicket session wasn't cleaned up properly.
-                    // In this latter case, the logged out user's privileges leak to the next user.
-                    // (TODO) Not sure what to do. (SOS-373)
-                }
-            }
-        }
-
-        catch (IllegalStateException e) {
-            // Log out the wicket session.
-            LOG.debug("[OlasWicketAuth] Logging out wicket session because: " + e.getMessage());
-            if (!OLASSession.get().logout()) {
-                // If application indicates logout failed; invalidate the session.
-
-                Session.get().invalidateNow();
-                throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
-            }
-        }
-
-        finally {
-            // Enforce page requirements for user authentication.
-            if (getClass().isAnnotationPresent(RequireLogin.class) && !OLASSession.get().isUserSet()) {
-                RequireLogin authAnnotation = getClass().getAnnotation(RequireLogin.class);
-                Class<? extends Page> loginPage = authAnnotation.loginPage();
-
-                if (!loginPage.equals(Page.class)) {
-                    LOG.debug("[OlasWicketAuth] auth required; redirecting unauthenticated user to " + loginPage + " for authentication.");
-
-                    OLASSession.get().setPostAuthenticationPage(getClass());
-                    throw new RestartResponseException(loginPage);
-                }
-
-                LOG.debug("[OlasWicketAuth] auth required; no login page specified for redirection: sending HTTP 401.");
-                throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
-            }
-        }
+        super();
     }
 
+    public OlasApplicationPage(PageParameters parameters) {
+
+        super(parameters);
+    }
 
     /**
      * If application created user successfully, perform post-authentication.

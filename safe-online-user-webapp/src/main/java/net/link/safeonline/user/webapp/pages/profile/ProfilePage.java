@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 @RequireLogin(loginPage = MainPage.class)
@@ -54,10 +55,12 @@ public class ProfilePage extends UserTemplatePage {
     public static final String ADD_LINK_ID            = "add";
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService     subjectService;
+    SubjectService             subjectService;
 
     @EJB(mappedName = IdentityService.JNDI_BINDING)
     IdentityService            identityService;
+
+    List<AttributeDO>          attributes;
 
 
     public ProfilePage() {
@@ -66,27 +69,42 @@ public class ProfilePage extends UserTemplatePage {
 
         getSidebar(localize("helpProfile"), false);
 
-        String username = subjectService.getSubjectLogin(UserSession.get().getUserId());
-        getContent().add(new Label(USERNAME_LABEL_ID, username));
+        getContent().add(new Label(USERNAME_LABEL_ID, new AbstractReadOnlyModel<String>() {
 
-        List<AttributeDO> attributes = null;
-        try {
-            attributes = identityService.listAttributes(getLocale());
-        } catch (AttributeTypeNotFoundException e) {
-            error(localize("errorAttributeTypeNotFound"));
-            return;
-        } catch (PermissionDeniedException e) {
-            error(localize("errorPermissionDenied"));
-            return;
-        } catch (ApplicationIdentityNotFoundException e) {
-            error(localize("errorApplicationIdentityNotFound"));
-            return;
-        }
-        final List<AttributeDO> attributeList = attributes;
+            private static final long serialVersionUID = 1L;
 
-        getContent().add(new Label(PROFILE_EMPTY_LABEL_ID, localize("profileEmpty")).setVisible(attributeList.isEmpty()));
 
-        getContent().add(new ListView<AttributeDO>(ATTRIBUTES_ID, attributeList) {
+            @Override
+            public String getObject() {
+
+                return subjectService.getSubjectLogin(UserSession.get().getUserId());
+            }
+
+        }));
+
+        getContent().add(new Label(PROFILE_EMPTY_LABEL_ID, localize("profileEmpty")) {
+
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public boolean isVisible() {
+
+                return attributes.isEmpty();
+            }
+        });
+
+        getContent().add(new ListView<AttributeDO>(ATTRIBUTES_ID, new AbstractReadOnlyModel<List<AttributeDO>>() {
+
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public List<AttributeDO> getObject() {
+
+                return attributes;
+            }
+        }) {
 
             private static final long serialVersionUID = 1L;
 
@@ -107,12 +125,8 @@ public class ProfilePage extends UserTemplatePage {
                     public void onClick() {
 
                         setResponsePage(new AttributeAddEditPage(attribute, false));
-
                     }
 
-                    /**
-                     * {@inheritDoc}
-                     */
                     @Override
                     public boolean isVisible() {
 
@@ -133,9 +147,6 @@ public class ProfilePage extends UserTemplatePage {
 
                     }
 
-                    /**
-                     * {@inheritDoc}
-                     */
                     @Override
                     public boolean isVisible() {
 
@@ -168,9 +179,6 @@ public class ProfilePage extends UserTemplatePage {
 
                     }
 
-                    /**
-                     * {@inheritDoc}
-                     */
                     @Override
                     public boolean isVisible() {
 
@@ -180,18 +188,37 @@ public class ProfilePage extends UserTemplatePage {
 
             }
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
             public boolean isVisible() {
 
-                return !attributeList.isEmpty();
+                return !attributes.isEmpty();
             }
 
         });
 
         getContent().add(new ErrorFeedbackPanel("feedback"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        try {
+            attributes = identityService.listAttributes(getLocale());
+        } catch (AttributeTypeNotFoundException e) {
+            error(localize("errorAttributeTypeNotFound"));
+            return;
+        } catch (PermissionDeniedException e) {
+            error(localize("errorPermissionDenied"));
+            return;
+        } catch (ApplicationIdentityNotFoundException e) {
+            error(localize("errorApplicationIdentityNotFound"));
+            return;
+        }
+
+        super.onBeforeRender();
     }
 
     /**

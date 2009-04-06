@@ -25,6 +25,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.util.template.PackagedTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
 
@@ -45,45 +46,58 @@ import org.apache.wicket.util.template.TextTemplate;
  */
 public abstract class AppletPage extends TemplatePage {
 
-    public AppletPage(PageParameters parameters, Class<? extends Applet> code, String archive, int width, int height,
-                      String smartCardConfig, String servletPath, String targetPath, String helpdeskEventPath, String helpPath,
-                      String noPkcs11Path) {
+    public AppletPage(PageParameters parameters, final Class<? extends Applet> code, final String archive, final int width,
+                      final int height, final String smartCardConfig, final String servletPath, final String targetPath,
+                      final String helpdeskEventPath, final String helpPath, final String noPkcs11Path) {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
+        super(parameters);
 
-        String operation = null;
-        String language = getLocale().getLanguage();
-        String javaVersion = isPkcs11(parameters)? "1.5": "1.6";
-        String sessionId = WicketUtil.getHttpSession().getId();
-        String userId = protocolContext == null? null: protocolContext.getSubject();
-        Object applicationId = WicketUtil.getHttpSession().getAttribute(DeviceManager.APPLICATION_ID_SESSION_ATTRIBUTE);
-        try {
-            operation = DeviceOperationManager.getOperation(WicketUtil.getHttpSession());
-        } catch (ServletException e) {
-            // No operation found.
-        }
+        Label deployJavaAppletLabel = new Label("deployJavaApplet", new AbstractReadOnlyModel<String>() {
 
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("name", code.getSimpleName());
-        variables.put("code", code.getCanonicalName().concat(".class"));
-        variables.put("archive", archive);
-        variables.put("width", width);
-        variables.put("height", height);
-        variables.put(RuntimeContext.PARAM_SMARTCARD_CONFIG, smartCardConfig);
-        variables.put(RuntimeContext.PARAM_SERVLET_PATH, servletPath);
-        variables.put(AppletBase.PARAM_TARGET_PATH, targetPath);
-        variables.put(AppletBase.PARAM_HELPDESK_EVENT_PATH, helpdeskEventPath);
-        variables.put(AppletBase.PARAM_HELP_PATH, helpPath);
-        variables.put(AppletControl.PARAM_NO_PCKS11_PATH, noPkcs11Path);
-        variables.put(AuthenticationApplet.PARAM_SESSION_ID, sessionId);
-        variables.put(AuthenticationApplet.PARAM_APPLICATION_ID, applicationId);
-        variables.put("userId", userId);
-        variables.put("operation", operation);
-        variables.put(AppletBase.PARAM_LANGUAGE, language);
-        variables.put("javaVersion", javaVersion);
+            private static final long serialVersionUID = 1L;
 
-        TextTemplate deployJavaApplet = new PackagedTextTemplate(getClass(), "deployJavaApplet.js");
-        Label deployJavaAppletLabel = new Label("deployJavaApplet", deployJavaApplet.asString(variables));
+
+            @Override
+            public String getObject() {
+
+                ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
+
+                String operation = null;
+                String language = getLocale().getLanguage();
+                String javaVersion = isPkcs11(getPageParameters())? "1.5": "1.6";
+                String sessionId = WicketUtil.getHttpSession().getId();
+                String userId = protocolContext == null? null: protocolContext.getSubject();
+                Object applicationId = WicketUtil.getHttpSession().getAttribute(DeviceManager.APPLICATION_ID_SESSION_ATTRIBUTE);
+                try {
+                    operation = DeviceOperationManager.getOperation(WicketUtil.getHttpSession());
+                } catch (ServletException e) {
+                    // No operation found.
+                }
+
+                Map<String, Object> variables = new HashMap<String, Object>();
+                variables.put("name", code.getSimpleName());
+                variables.put("code", code.getCanonicalName().concat(".class"));
+                variables.put("archive", archive);
+                variables.put("width", width);
+                variables.put("height", height);
+                variables.put(RuntimeContext.PARAM_SMARTCARD_CONFIG, smartCardConfig);
+                variables.put(RuntimeContext.PARAM_SERVLET_PATH, servletPath);
+                variables.put(AppletBase.PARAM_TARGET_PATH, targetPath);
+                variables.put(AppletBase.PARAM_HELPDESK_EVENT_PATH, helpdeskEventPath);
+                variables.put(AppletBase.PARAM_HELP_PATH, helpPath);
+                variables.put(AppletControl.PARAM_NO_PCKS11_PATH, noPkcs11Path);
+                variables.put(AuthenticationApplet.PARAM_SESSION_ID, sessionId);
+                variables.put(AuthenticationApplet.PARAM_APPLICATION_ID, applicationId);
+                variables.put("userId", userId);
+                variables.put("operation", operation);
+                variables.put(AppletBase.PARAM_LANGUAGE, language);
+                variables.put("javaVersion", javaVersion);
+
+                TextTemplate deployJavaApplet = new PackagedTextTemplate(getClass(), "deployJavaApplet.js");
+                return deployJavaApplet.asString(variables);
+            }
+        });
+
         deployJavaAppletLabel.setEscapeModelStrings(false);
         getContent().add(deployJavaAppletLabel);
 

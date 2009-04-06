@@ -44,9 +44,9 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class SafeOnlineLoginUtils {
+public class SafeOnlineAuthenticationUtils {
 
-    private static final Log                   LOG                                  = LogFactory.getLog(SafeOnlineLoginUtils.class);
+    private static final Log                   LOG                                  = LogFactory.getLog(SafeOnlineAuthenticationUtils.class);
 
     /**
      * PATH to the servlet within olas-auth that initiates the authentication. <i>[required]</i>
@@ -153,7 +153,7 @@ public class SafeOnlineLoginUtils {
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL               = AuthenticationProtocol.SAML2_BROWSER_POST;
 
 
-    private SafeOnlineLoginUtils() {
+    private SafeOnlineAuthenticationUtils() {
 
         // empty
     }

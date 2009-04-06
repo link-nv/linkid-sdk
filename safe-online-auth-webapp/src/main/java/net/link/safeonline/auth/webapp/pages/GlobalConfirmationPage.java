@@ -60,9 +60,6 @@ public class GlobalConfirmationPage extends AuthenticationTemplatePage {
             private static final long serialVersionUID = 1L;
 
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
             public boolean isVisible() {
 

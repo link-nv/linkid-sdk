@@ -137,7 +137,7 @@ public class UpdatePageTest {
         verify(mockPasswordDeviceService, mockHelpdeskManager);
 
         wicket.assertRenderedPage(UpdatePage.class);
-        wicket.assertErrorMessages(new String[] { UpdatePage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
+        wicket.assertErrorMessages(new String[] { "EqualPasswordInputValidator" });
 
     }
 }

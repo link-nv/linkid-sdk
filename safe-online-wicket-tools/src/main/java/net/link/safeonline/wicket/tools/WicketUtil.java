@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.util.ee.FieldNamingStrategy;
+import net.link.safeonline.wicket.web.OlasPageAuthenticationListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -100,6 +101,7 @@ public abstract class WicketUtil {
                 inject(component);
             }
         });
+        application.addPreComponentOnBeforeRenderListener(new OlasPageAuthenticationListener());
     }
 
     /**

@@ -13,6 +13,7 @@ import net.link.safeonline.wicket.tools.RedirectResponseException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Application;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
@@ -22,7 +23,7 @@ import org.apache.wicket.protocol.http.WebResponse;
 
 
 /**
- * <h2>{@link OlasAuthLink}<br>
+ * <h2>{@link AbstractOlasAuthLink}<br>
  * <sub>A link that uses the OLAS SDK to log a user in through the OLAS authentication services.</sub></h2>
  * 
  * <p>
@@ -31,27 +32,35 @@ import org.apache.wicket.protocol.http.WebResponse;
  * 
  * @author lhunath
  */
-public abstract class OlasAuthLink extends Link<Object> {
+public abstract class AbstractOlasAuthLink extends Link<Object> implements OlasAuthDelegate {
 
     private static final long serialVersionUID = 1L;
 
     Log                       LOG              = LogFactory.getLog(getClass());
-    String                    requestTarget;
+    Class<? extends Page>     requestTarget;
     boolean                   login;
 
+    OlasAuthDelegate          delegate;
 
-    public OlasAuthLink(String id) {
+
+    public AbstractOlasAuthLink(String id) {
 
         this(id, null);
     }
 
-    public OlasAuthLink(String id, Class<? extends Page> target) {
+    /**
+     * @param target
+     *            The {@link Page} to return to after the OLAS delegation. <code>null</code>: Use the application's homepage.
+     */
+    public AbstractOlasAuthLink(String id, Class<? extends Page> target) {
 
         super(id);
 
         if (target != null) {
-            requestTarget = RequestCycle.get().urlFor(target, null).toString();
+            requestTarget = target;
         }
+
+        delegate = this;
     }
 
     @Override
@@ -67,25 +76,12 @@ public abstract class OlasAuthLink extends Link<Object> {
 
                 HttpServletRequest request = ((WebRequest) requestCycle.getRequest()).getHttpServletRequest();
                 HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
-
-                // Where do we go to after the whole operation?
-                String target = requestTarget;
-                if (target == null) {
-                    target = request.getServletPath();
-                }
+                Class<? extends Page> target = requestTarget == null? Application.get().getHomePage(): requestTarget;
 
                 // The SDK does the rest.
-                delegate(target, request, response);
+                delegate.delegate(target, request, response);
             }
         });
 
     }
-
-    /**
-     * Override this method to implement or delegate the actual OLAS operation.
-     * 
-     * @param target
-     *            The URL-encoded location that we request to end up after this whole operation.
-     */
-    protected abstract void delegate(String target, HttpServletRequest request, HttpServletResponse response);
 }

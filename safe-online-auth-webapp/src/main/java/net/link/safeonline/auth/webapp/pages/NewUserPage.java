@@ -88,8 +88,7 @@ public class NewUserPage extends AuthenticationTemplatePage {
     protected String getPageTitle() {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
-        String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
-        return title;
+        return localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
     }
 
 

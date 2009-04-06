@@ -32,8 +32,6 @@ public class NotFoundPage extends TemplatePage {
 
     public NotFoundPage() {
 
-        super();
-
         getHeader();
 
     }

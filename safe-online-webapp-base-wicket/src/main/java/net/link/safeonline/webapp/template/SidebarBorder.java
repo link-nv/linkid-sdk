@@ -1,11 +1,11 @@
 package net.link.safeonline.webapp.template;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import net.link.safeonline.webapp.common.HelpPage;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RestartResponseException;
@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 public class SidebarBorder extends Border {
@@ -31,25 +32,45 @@ public class SidebarBorder extends Border {
 
     public static final String HELP_MESSAGE_ID  = "help_message";
 
+    protected List<SideLink>   sideLinks;
 
-    public SidebarBorder(String id, String helpMessage, final boolean showHelpdeskLink, final SideLink... links) {
+
+    public SidebarBorder(String id, String helpMessage, final boolean showHelpdeskLink) {
 
         super(id);
+        sideLinks = new LinkedList<SideLink>();
 
         add(new WebMarkupContainer(SIDE_LINKS_ID) {
 
             private static final long serialVersionUID = 1L;
 
             {
-
-                final List<SideLink> linkList = new LinkedList<SideLink>();
-                CollectionUtils.addAll(linkList, links);
-
                 add(new HelpLink(HELP_LINK_ID, showHelpdeskLink));
-                add(new ListView<SideLink>(LINKS_ID, linkList) {
+                add(new ListView<SideLink>(LINKS_ID, new AbstractReadOnlyModel<List<SideLink>>() {
 
                     private static final long serialVersionUID = 1L;
 
+
+                    @Override
+                    public List<SideLink> getObject() {
+
+                        return sideLinks;
+                    }
+                }) {
+
+                    private static final long serialVersionUID = 1L;
+
+
+                    /**
+                     * {@inheritDoc}
+                     */
+                    @Override
+                    protected void onBeforeRender() {
+
+                        setVisible(!sideLinks.isEmpty());
+
+                        super.onBeforeRender();
+                    }
 
                     @Override
                     protected void populateItem(ListItem<SideLink> item) {
@@ -60,33 +81,26 @@ public class SidebarBorder extends Border {
                             link.getLink().add(new Label(LINK_MESSAGE_ID, link.getLinkMessage()));
                         }
                     }
-
-                    /**
-                     * {@inheritDoc}
-                     */
-                    @Override
-                    public boolean isVisible() {
-
-                        return !linkList.isEmpty();
-                    }
-
                 });
-
             }
 
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
-            public boolean isVisible() {
+            protected void onBeforeRender() {
 
-                return showHelpdeskLink || links.length > 0;
+                setVisible(showHelpdeskLink || !sideLinks.isEmpty());
+
+                super.onBeforeRender();
             }
-
         });
 
         add(new Label(HELP_MESSAGE_ID, helpMessage));
+    }
+
+    public void setLinks(SideLink... links) {
+
+        sideLinks.clear();
+        sideLinks.addAll(Arrays.asList(links));
     }
 
 

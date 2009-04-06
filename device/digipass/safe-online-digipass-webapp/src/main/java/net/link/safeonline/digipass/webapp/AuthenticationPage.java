@@ -86,8 +86,8 @@ public class AuthenticationPage extends TemplatePage {
 
                 AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest().getSession()).setUsedDevice(
                         DigipassConstants.DIGIPASS_DEVICE_ID);
-                exit();
 
+                exit();
             }
         };
         getSidebar(localize("helpDigipassAuthentication"), new SideLink(tryAnotherDeviceLink, localize("tryAnotherDevice")));
@@ -158,8 +158,8 @@ public class AuthenticationPage extends TemplatePage {
                         HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "login failed: " + login, LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
-                        HelpdeskLogger
-                                      .add(WicketUtil.getServletRequest().getSession(), "Digipass device not registered", LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "Digipass device not registered",
+                                LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "login: subject not found for " + login,

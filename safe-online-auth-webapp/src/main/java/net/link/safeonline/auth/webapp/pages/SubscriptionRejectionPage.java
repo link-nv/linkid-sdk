@@ -23,8 +23,6 @@ public class SubscriptionRejectionPage extends AuthenticationTemplatePage {
 
     public SubscriptionRejectionPage() {
 
-        final String applicationUrl = findApplicationUrl();
-
         getHeader();
 
         getContent().add(new Link<String>(MAIN_LINK_ID) {
@@ -35,7 +33,7 @@ public class SubscriptionRejectionPage extends AuthenticationTemplatePage {
             @Override
             public void onClick() {
 
-                getResponse().redirect(applicationUrl);
+                getResponse().redirect(findApplicationUrl());
                 setRedirect(false);
             }
 
@@ -45,7 +43,7 @@ public class SubscriptionRejectionPage extends AuthenticationTemplatePage {
             @Override
             public boolean isVisible() {
 
-                return null != applicationUrl;
+                return null != findApplicationUrl();
             }
         });
 
@@ -58,8 +56,7 @@ public class SubscriptionRejectionPage extends AuthenticationTemplatePage {
     protected String getPageTitle() {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
-        String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
-        return title;
+        return localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
     }
 
 }

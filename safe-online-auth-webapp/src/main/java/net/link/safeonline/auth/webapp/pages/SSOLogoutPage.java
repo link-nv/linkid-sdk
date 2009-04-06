@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.time.Duration;
 
@@ -175,12 +176,19 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                 }
             });
 
-            List<ApplicationEntity> ssoApplicationsToLogout = null;
-            synchronized (WicketUtil.getHttpSession()) {
-                ssoApplicationsToLogout = getLogoutService().getSsoApplicationsToLogout();
-            }
+            add(new ListView<ApplicationEntity>("applications", new AbstractReadOnlyModel<List<ApplicationEntity>>() {
 
-            add(new ListView<ApplicationEntity>("applications", ssoApplicationsToLogout) {
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<ApplicationEntity> getObject() {
+
+                    synchronized (WicketUtil.getHttpSession()) {
+                        return getLogoutService().getSsoApplicationsToLogout();
+                    }
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 

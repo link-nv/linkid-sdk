@@ -31,35 +31,34 @@ import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 public class SubscriptionPage extends AuthenticationTemplatePage {
 
-    static final Log           LOG                     = LogFactory.getLog(SubscriptionPage.class);
+    static final Log              LOG                     = LogFactory.getLog(SubscriptionPage.class);
 
-    private static final long  serialVersionUID        = 1L;
+    private static final long     serialVersionUID        = 1L;
 
-    public static final String PATH                    = "subscription";
+    public static final String    PATH                    = "subscription";
 
-    public static final String USAGE_AGREEMENT_TEXT_ID = "usageAgreementText";
+    public static final String    USAGE_AGREEMENT_TEXT_ID = "usageAgreementText";
 
-    public static final String SUBSCRIPTION_FORM_ID    = "subscription_form";
-    public static final String CONFIRM_BUTTON_ID       = "confirm";
-    public static final String SUBSCRIBE_BUTTON_ID     = "subscribe";
-    public static final String REJECT_BUTTON_ID        = "reject";
+    public static final String    SUBSCRIPTION_FORM_ID    = "subscription_form";
+    public static final String    CONFIRM_BUTTON_ID       = "confirm";
+    public static final String    SUBSCRIBE_BUTTON_ID     = "subscribe";
+    public static final String    REJECT_BUTTON_ID        = "reject";
 
     @EJB(mappedName = SubscriptionService.JNDI_BINDING)
-    SubscriptionService        subscriptionService;
+    SubscriptionService           subscriptionService;
 
     @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
-    UsageAgreementService      usageAgreementService;
+    UsageAgreementService         usageAgreementService;
 
-    String                     text;
+    AbstractReadOnlyModel<String> text;
 
 
     public SubscriptionPage() {
-
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         getSidebar(localize("helpSubscriptionConfirm"));
 
@@ -67,13 +66,25 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.agreements));
 
-        try {
-            text = usageAgreementService.getUsageAgreementText(protocolContext.getApplicationId(), getLocale().getLanguage());
-        } catch (ApplicationNotFoundException e) {
-            error(localize("errorApplicationNotFound"));
-            return;
-        }
-        getContent().add(new Label(USAGE_AGREEMENT_TEXT_ID, text) {
+        getContent().add(new Label(USAGE_AGREEMENT_TEXT_ID, text = new AbstractReadOnlyModel<String>() {
+
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public String getObject() {
+
+                ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
+
+                try {
+                    return usageAgreementService.getUsageAgreementText(protocolContext.getApplicationId(), getLocale().getLanguage());
+                } catch (ApplicationNotFoundException e) {
+                    error(localize("errorApplicationNotFound"));
+                    return null;
+                }
+            }
+
+        }) {
 
             private static final long serialVersionUID = 1L;
 
@@ -84,7 +95,7 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
             @Override
             public boolean isVisible() {
 
-                return null != text;
+                return null != text.getObject();
             }
         });
 
@@ -99,8 +110,7 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
     protected String getPageTitle() {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
-        String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
-        return title;
+        return localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
     }
 
 
@@ -124,16 +134,12 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
                 public void onSubmit() {
 
                     subscribe();
-
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 @Override
                 public boolean isVisible() {
 
-                    return null != text;
+                    return null != text.getObject();
                 }
             });
 
@@ -142,22 +148,16 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
                 private static final long serialVersionUID = 1L;
 
 
-                /**
-                 * {@inheritDoc}
-                 */
                 @Override
                 public void onSubmit() {
 
                     subscribe();
                 }
 
-                /**
-                 * {@inheritDoc}
-                 */
                 @Override
                 public boolean isVisible() {
 
-                    return null == text;
+                    return null == text.getObject();
                 }
 
             });
@@ -171,7 +171,6 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
                 public void onSubmit() {
 
                     throw new RestartResponseException(new SubscriptionRejectionPage());
-
                 }
             });
 
@@ -214,5 +213,4 @@ public class SubscriptionPage extends AuthenticationTemplatePage {
         getResponse().redirect(LoginServlet.SERVLET_PATH);
         setRedirect(false);
     }
-
 }

@@ -23,8 +23,6 @@ public class TimeoutPage extends AuthenticationTemplatePage {
 
     public TimeoutPage() {
 
-        final String applicationUrl = findApplicationUrl();
-
         getHeader();
 
         getContent().add(new Link<String>(MAIN_LINK_ID) {
@@ -35,7 +33,7 @@ public class TimeoutPage extends AuthenticationTemplatePage {
             @Override
             public void onClick() {
 
-                getResponse().redirect(applicationUrl);
+                getResponse().redirect(findApplicationUrl());
                 setRedirect(false);
             }
 
@@ -45,7 +43,7 @@ public class TimeoutPage extends AuthenticationTemplatePage {
             @Override
             public boolean isVisible() {
 
-                return null != applicationUrl;
+                return null != findApplicationUrl();
             }
         });
 

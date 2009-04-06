@@ -26,7 +26,7 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineAuthenticationUtils;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.SafeOnlineConfig;
 import net.link.safeonline.util.servlet.ServletUtils;
@@ -68,30 +68,30 @@ public class LogoutServlet extends AbstractLandingInjectionServlet {
     @Init(name = ERROR_PAGE, optional = true)
     private String                             errorPage;
 
-    @Context(name = SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM)
+    @Context(name = SafeOnlineAuthenticationUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM)
     private String                             logoutExitServicePath;
 
-    @Context(name = SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM)
+    @Context(name = SafeOnlineAuthenticationUtils.APPLICATION_NAME_CONTEXT_PARAM)
     private String                             applicationName;
 
-    @Context(name = SafeOnlineLoginUtils.APPLICATION_FRIENDLY_NAME_INIT_PARAM, optional = true)
+    @Context(name = SafeOnlineAuthenticationUtils.APPLICATION_FRIENDLY_NAME_INIT_PARAM, optional = true)
     private String                             applicationFriendlyName;
 
-    @Context(name = SafeOnlineLoginUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, optional = true)
+    @Context(name = SafeOnlineAuthenticationUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, optional = true)
     private String                             authenticationProtocolString;
 
     private AuthenticationProtocol             authenticationProtocol;
 
-    @Context(name = SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, optional = true)
+    @Context(name = SafeOnlineAuthenticationUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, optional = true)
     private String                             p12KeyStoreResourceName;
 
-    @Context(name = SafeOnlineLoginUtils.KEY_STORE_FILE_CONTEXT_PARAM, optional = true)
+    @Context(name = SafeOnlineAuthenticationUtils.KEY_STORE_FILE_CONTEXT_PARAM, optional = true)
     private String                             p12KeyStoreFileName;
 
-    @Context(name = SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM)
+    @Context(name = SafeOnlineAuthenticationUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM)
     private String                             keyStorePassword;
 
-    @Context(name = SafeOnlineLoginUtils.KEY_STORE_TYPE_CONTEXT_PARAM, defaultValue = "pkcs12")
+    @Context(name = SafeOnlineAuthenticationUtils.KEY_STORE_TYPE_CONTEXT_PARAM, defaultValue = "pkcs12")
     private String                             keyStoreType;
 
     private KeyPair                            applicationKeyPair;

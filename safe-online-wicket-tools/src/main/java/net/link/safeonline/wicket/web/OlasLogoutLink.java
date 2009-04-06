@@ -6,15 +6,15 @@
  */
 package net.link.safeonline.wicket.web;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineAuthenticationUtils;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RequestCycle;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.Session;
 
 
@@ -29,7 +29,7 @@ import org.apache.wicket.Session;
  * 
  * @author lhunath
  */
-public class OlasLogoutLink extends OlasAuthLink {
+public class OlasLogoutLink extends AbstractOlasAuthLink {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,28 +47,20 @@ public class OlasLogoutLink extends OlasAuthLink {
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
+    public void delegate(Class<? extends Page> target, HttpServletRequest request, HttpServletResponse response) {
 
         if (LoginManager.isAuthenticated(request)) {
-            LOG.debug("Logout delegated to OLAS with target: " + target);
-            SafeOnlineLoginUtils.logout(target, request, response);
+            String targetUrl = RequestCycle.get().urlFor(target, null).toString();
+            LOG.debug("Logout delegated to OLAS with target: " + targetUrl);
+
+            SafeOnlineAuthenticationUtils.logout(targetUrl, request, response);
         }
 
         else {
             LOG.debug("Logout handeled locally; invalidating session.");
-            // Technically, the Wicket session, being on the HTTP session doesn't need to be invalidated manually.
-            // However, inside Unit tests, just invalidating the MockHttpSession doesn't seem to be enough.
-            if (Session.exists()) {
-                Session.get().invalidate();
-            }
-            request.getSession().invalidate();
+            Session.get().invalidateNow();
 
-            try {
-                response.sendRedirect(target);
-            } catch (IOException e) {
-                LOG.error("couldn't redirect to target after logout.", e);
-            }
+            throw new RestartResponseException(target);
         }
     }
 }

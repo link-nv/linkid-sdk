@@ -33,8 +33,6 @@ public abstract class UserTemplatePage extends TemplatePage {
 
     public UserTemplatePage(NavigationPanel.Panel panel) {
 
-        super();
-
         getHeader(OLASSession.get().isUserSet()).add(new NavigationPanel(NAVIGATION_ID, panel));
 
     }

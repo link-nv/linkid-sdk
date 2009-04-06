@@ -75,6 +75,6 @@ public class HttpServletResponseEndpointWrapper extends HttpServletResponseWrapp
         String absoluteLocation = requestBaseUri.resolve(locationUri).toASCIIString();
         LOG.debug("Redirect request to '" + location + "'; resolved into: " + absoluteLocation);
 
-        super.sendRedirect(absoluteLocation);
+        super.sendRedirect(location);
     }
 }

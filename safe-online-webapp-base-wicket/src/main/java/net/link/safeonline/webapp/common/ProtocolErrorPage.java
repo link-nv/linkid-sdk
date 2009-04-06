@@ -33,8 +33,6 @@ public class ProtocolErrorPage extends TemplatePage {
 
     public ProtocolErrorPage() {
 
-        super();
-
         getHeader();
 
         String errorMessage = (String) WicketUtil.getServletRequest().getSession().getAttribute("ErrorMessage");

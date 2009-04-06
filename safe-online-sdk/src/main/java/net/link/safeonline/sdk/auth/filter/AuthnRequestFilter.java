@@ -30,7 +30,7 @@ import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
-import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineAuthenticationUtils;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
 import net.link.safeonline.util.servlet.SafeOnlineConfig;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -49,15 +49,15 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <ul>
- * <li>{@link SafeOnlineLoginUtils#AUTH_SERVICE_PATH_CONTEXT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#APPLICATION_NAME_CONTEXT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#AUTHN_PROTOCOL_CONTEXT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#TARGET_INIT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#KEY_STORE_RESOURCE_CONTEXT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#KEY_STORE_FILE_CONTEXT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#KEY_STORE_TYPE_CONTEXT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#KEY_STORE_PASSWORD_CONTEXT_PARAM}</li>
- * <li>{@link SafeOnlineLoginUtils#SINGLE_SIGN_ON_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#AUTH_SERVICE_PATH_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#APPLICATION_NAME_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#AUTHN_PROTOCOL_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#TARGET_INIT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#KEY_STORE_RESOURCE_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#KEY_STORE_FILE_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#KEY_STORE_TYPE_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#KEY_STORE_PASSWORD_CONTEXT_PARAM}</li>
+ * <li>{@link SafeOnlineAuthenticationUtils#SINGLE_SIGN_ON_CONTEXT_PARAM}</li>
  * <li>{@link SafeOnlineAppConstants#COLOR_CONTEXT_PARAM}</li>
  * <li>{@link SafeOnlineAppConstants#MINIMAL_CONTEXT_PARAM}</li>
  * </ul>
@@ -78,42 +78,42 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
-    @Init(name = SafeOnlineLoginUtils.AUTH_SERVICE_PATH_CONTEXT_PARAM)
+    @Init(name = SafeOnlineAuthenticationUtils.AUTH_SERVICE_PATH_CONTEXT_PARAM)
     private String                             authenticationServicePath;
 
-    @Init(name = SafeOnlineLoginUtils.TARGET_INIT_PARAM, optional = true, checkContext = false)
+    @Init(name = SafeOnlineAuthenticationUtils.TARGET_INIT_PARAM, optional = true, checkContext = false)
     private String                             target;
 
     private String                             targetUrl;
 
-    @Init(name = SafeOnlineLoginUtils.SKIP_LANDING_PAGE_INIT_PARAM, optional = true, checkContext = false)
+    @Init(name = SafeOnlineAuthenticationUtils.SKIP_LANDING_PAGE_INIT_PARAM, optional = true, checkContext = false)
     private String                             skipLandingPageString;
     private boolean                            skipLandingPage;
 
-    @Init(name = SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM)
+    @Init(name = SafeOnlineAuthenticationUtils.APPLICATION_NAME_CONTEXT_PARAM)
     private String                             applicationName;
 
-    @Init(name = SafeOnlineLoginUtils.APPLICATION_FRIENDLY_NAME_INIT_PARAM, optional = true)
+    @Init(name = SafeOnlineAuthenticationUtils.APPLICATION_FRIENDLY_NAME_INIT_PARAM, optional = true)
     private String                             applicationFriendlyName;
 
-    @Init(name = SafeOnlineLoginUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, optional = true)
+    @Init(name = SafeOnlineAuthenticationUtils.AUTHN_PROTOCOL_CONTEXT_PARAM, optional = true)
     private String                             authenticationProtocolString;
 
     private AuthenticationProtocol             authenticationProtocol;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, optional = true)
+    @Init(name = SafeOnlineAuthenticationUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, optional = true)
     private String                             p12KeyStoreResourceName;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_FILE_CONTEXT_PARAM, optional = true)
+    @Init(name = SafeOnlineAuthenticationUtils.KEY_STORE_FILE_CONTEXT_PARAM, optional = true)
     private String                             p12KeyStoreFileName;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM)
+    @Init(name = SafeOnlineAuthenticationUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM)
     private String                             keyStorePassword;
 
-    @Init(name = SafeOnlineLoginUtils.KEY_STORE_TYPE_CONTEXT_PARAM, defaultValue = "pkcs12")
+    @Init(name = SafeOnlineAuthenticationUtils.KEY_STORE_TYPE_CONTEXT_PARAM, defaultValue = "pkcs12")
     private String                             keyStoreType;
 
-    @Init(name = SafeOnlineLoginUtils.SINGLE_SIGN_ON_CONTEXT_PARAM, optional = true)
+    @Init(name = SafeOnlineAuthenticationUtils.SINGLE_SIGN_ON_CONTEXT_PARAM, optional = true)
     private String                             ssoEnabledString;
     private boolean                            ssoEnabled;
 

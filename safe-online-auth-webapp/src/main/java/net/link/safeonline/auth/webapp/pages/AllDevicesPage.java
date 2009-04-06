@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 
 
@@ -68,13 +69,6 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
 
     public AllDevicesPage() {
 
-        devices = new LinkedList<DeviceDO>();
-        List<DeviceEntity> deviceEntities = devicePolicyService.getDevices();
-        for (DeviceEntity deviceEntity : deviceEntities) {
-            String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
-            devices.add(new DeviceDO(deviceEntity, friendlyName));
-        }
-
         Link<String> newUserLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
@@ -83,7 +77,7 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
             @Override
             public void onClick() {
 
-                throw new RestartResponseException(new NewUserPage());
+                throw new RestartResponseException(NewUserPage.class);
             }
         };
         getSidebar(localize("helpAllDevices"), new SideLink(newUserLink, localize("newUser")));
@@ -92,6 +86,22 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
 
         getContent().add(new MainForm(ALL_DEVICES_FORM_ID));
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        devices = new LinkedList<DeviceDO>();
+        List<DeviceEntity> deviceEntities = devicePolicyService.getDevices();
+        for (DeviceEntity deviceEntity : deviceEntities) {
+            String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
+            devices.add(new DeviceDO(deviceEntity, friendlyName));
+        }
+
+        super.onBeforeRender();
     }
 
     /**
@@ -124,7 +134,17 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
             add(deviceGroup);
             add(new ErrorComponentFeedbackLabel("device_feedback", deviceGroup, new Model<String>(localize("errorDeviceSelection"))));
 
-            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, devices) {
+            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, new AbstractReadOnlyModel<List<DeviceDO>>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<DeviceDO> getObject() {
+
+                    return devices;
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -179,11 +199,8 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
 
                             AuthenticationUtils.redirectAuthentication(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(),
                                     getLocale(), finalRequestPath, authenticationPath, deviceName);
-
                         }
-
                     });
-
                 }
             });
 

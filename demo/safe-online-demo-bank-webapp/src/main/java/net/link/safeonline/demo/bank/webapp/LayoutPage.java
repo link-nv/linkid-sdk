@@ -49,6 +49,13 @@ public abstract class LayoutPage extends OlasApplicationPage {
         add(globalFeedback = new FeedbackPanel("globalFeedback"));
 
         add(new UserInfo("user"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
 
         // Support linking bank user to olas user.
         if (BankSession.isLinking() && WicketUtil.isOlasAuthenticated()) {
@@ -67,13 +74,6 @@ public abstract class LayoutPage extends OlasApplicationPage {
                 BankSession.get().setLinkingUser(null);
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onBeforeRender() {
 
         globalFeedback.setVisible(globalFeedback.anyErrorMessage());
 

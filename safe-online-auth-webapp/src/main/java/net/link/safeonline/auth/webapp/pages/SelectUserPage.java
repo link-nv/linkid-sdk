@@ -45,6 +45,7 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 
 
@@ -71,23 +72,6 @@ public class SelectUserPage extends AuthenticationTemplatePage {
 
 
     public SelectUserPage() {
-
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
-        devices = new LinkedList<DeviceDO>();
-        List<DeviceEntity> deviceEntities;
-        try {
-            deviceEntities = devicePolicyService.getDevicePolicy(protocolContext.getApplicationId(), protocolContext.getRequiredDevices());
-        } catch (ApplicationNotFoundException e) {
-            error(localize("errorApplicationNotFound"));
-            return;
-        } catch (EmptyDevicePolicyException e) {
-            error(localize("errorEmptyDevicePolicy"));
-            return;
-        }
-        for (DeviceEntity deviceEntity : deviceEntities) {
-            String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
-            devices.add(new DeviceDO(deviceEntity, friendlyName));
-        }
 
         Link<String> newUserLink = new Link<String>(SidebarBorder.LINK_ID) {
 
@@ -120,7 +104,32 @@ public class SelectUserPage extends AuthenticationTemplatePage {
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.select));
 
         getContent().add(new MainForm(MAIN_FORM_ID));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
+        devices = new LinkedList<DeviceDO>();
+        List<DeviceEntity> deviceEntities;
+        try {
+            deviceEntities = devicePolicyService.getDevicePolicy(protocolContext.getApplicationId(), protocolContext.getRequiredDevices());
+        } catch (ApplicationNotFoundException e) {
+            error(localize("errorApplicationNotFound"));
+            return;
+        } catch (EmptyDevicePolicyException e) {
+            error(localize("errorEmptyDevicePolicy"));
+            return;
+        }
+        for (DeviceEntity deviceEntity : deviceEntities) {
+            String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
+            devices.add(new DeviceDO(deviceEntity, friendlyName));
+        }
+
+        super.onBeforeRender();
     }
 
     /**
@@ -153,7 +162,17 @@ public class SelectUserPage extends AuthenticationTemplatePage {
             add(deviceGroup);
             add(new ErrorComponentFeedbackLabel("device_feedback", deviceGroup, new Model<String>(localize("errorDeviceSelection"))));
 
-            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, devices) {
+            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, new AbstractReadOnlyModel<List<DeviceDO>>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<DeviceDO> getObject() {
+
+                    return devices;
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -206,9 +225,8 @@ public class SelectUserPage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirectAuthentication(WicketUtil.getServletRequest(),
-                                    WicketUtil.getServletResponse(), getLocale(), finalRequestPath, authenticationPath,
-                                    deviceName);
+                            AuthenticationUtils.redirectAuthentication(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(),
+                                    getLocale(), finalRequestPath, authenticationPath, deviceName);
 
                         }
 

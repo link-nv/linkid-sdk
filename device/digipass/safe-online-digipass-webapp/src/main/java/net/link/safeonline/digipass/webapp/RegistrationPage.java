@@ -33,9 +33,9 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.StringValidator;
 
 
-public class RegisterPage extends TemplatePage {
+public class RegistrationPage extends TemplatePage {
 
-    static final Log           LOG                   = LogFactory.getLog(RegisterPage.class);
+    static final Log           LOG                   = LogFactory.getLog(RegistrationPage.class);
 
     private static final long  serialVersionUID      = 1L;
 
@@ -53,7 +53,7 @@ public class RegisterPage extends TemplatePage {
     DigipassDeviceService      digipassDeviceService;
 
 
-    public RegisterPage() {
+    public RegistrationPage() {
 
         getHeader();
         getSidebar(localize("helpRegisterDigipass"));
