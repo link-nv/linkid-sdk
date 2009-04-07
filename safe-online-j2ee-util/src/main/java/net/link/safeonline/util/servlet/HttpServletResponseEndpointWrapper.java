@@ -56,7 +56,6 @@ public class HttpServletResponseEndpointWrapper extends HttpServletResponseWrapp
         catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
-
     }
 
     /**
@@ -75,6 +74,6 @@ public class HttpServletResponseEndpointWrapper extends HttpServletResponseWrapp
         String absoluteLocation = requestBaseUri.resolve(locationUri).toASCIIString();
         LOG.debug("Redirect request to '" + location + "'; resolved into: " + absoluteLocation);
 
-        super.sendRedirect(location);
+        super.sendRedirect(absoluteLocation);
     }
 }

@@ -68,6 +68,7 @@ public class MainPage extends UserTemplatePage {
         };
 
         String commercialName = WicketUtil.getServletRequest().getSession().getServletContext().getInitParameter("CommercialName");
+        getSidebar(localize("helpMain"), false);
         getContent().add(
                 new Label(INTRO_MESSAGE_ID, new StringResourceModel("introMessage", this, new Model<MainPage>(this),
                         new Object[] { commercialName })));
