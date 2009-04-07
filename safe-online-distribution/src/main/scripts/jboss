@@ -212,7 +212,6 @@ echo ""
 
 "$JAVA" $JAVA_OPTS \
  -Djava.endorsed.dirs="$JBOSS_ENDORSED_DIRS" \
- -Dhostname="$HOSTNAME" \
  -classpath "$JBOSS_CLASSPATH" \
  org.jboss.Main -b $BIND_ADDRESS &
 
