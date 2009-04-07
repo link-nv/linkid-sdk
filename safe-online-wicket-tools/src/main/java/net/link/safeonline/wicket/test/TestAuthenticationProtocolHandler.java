@@ -88,7 +88,7 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
      * {@inheritDoc}
      */
     public void init(String authnServiceUrl, String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                     X509Certificate applicationCertificate, boolean ssoEnabled, Map<String, String> configParams) {
+                     X509Certificate applicationCertificate, boolean forceAuthentication, Map<String, String> configParams) {
 
         /* Nothing to initialize. */
     }

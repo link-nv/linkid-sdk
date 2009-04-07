@@ -27,9 +27,10 @@ import org.apache.wicket.Session;
  */
 public class OlasLoginLink extends OlasAuthLink {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID    = 1L;
     private Integer           color;
     private Boolean           minimal;
+    private Boolean           forceAuthentication = true;
 
 
     public OlasLoginLink(String id) {
@@ -42,12 +43,14 @@ public class OlasLoginLink extends OlasAuthLink {
         super(id, target);
     }
 
-    public OlasLoginLink(String id, Class<? extends Page> target, Integer color, Boolean minimal, String session) {
+    public OlasLoginLink(String id, Class<? extends Page> target, Integer color, Boolean minimal, Boolean forceAuthentication,
+                         String session) {
 
         super(id, target);
 
         this.color = color;
         this.minimal = minimal;
+        this.forceAuthentication = forceAuthentication;
         this.session = session;
     }
 
@@ -70,12 +73,20 @@ public class OlasLoginLink extends OlasAuthLink {
     }
 
     /**
+     * @param forceAuthentication
+     */
+    public void setForceAuthentication(Boolean forceAuthentication) {
+
+        this.forceAuthentication = forceAuthentication;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
 
-        SafeOnlineLoginUtils.login(target, Session.exists()? Session.get().getLocale(): request.getLocale(), color, minimal, session,
-                request, response);
+        SafeOnlineLoginUtils.login(target, Session.exists()? Session.get().getLocale(): request.getLocale(), color, minimal,
+                forceAuthentication, session, request, response);
     }
 }

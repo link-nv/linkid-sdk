@@ -163,7 +163,7 @@ public class SafeOnlineLoginUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     public static String login(String target) {
 
@@ -175,12 +175,12 @@ public class SafeOnlineLoginUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
     public static String login(String target, boolean skipLandingPage) {
 
-        return login(target, skipLandingPage, null, null, null, null);
+        return login(target, skipLandingPage, null, null, null, null, null);
     }
 
     /**
@@ -188,18 +188,19 @@ public class SafeOnlineLoginUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
-    public static String login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal, String session) {
+    public static String login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal,
+                               Boolean forceAuthentication, String session) {
 
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
             ExternalContext externalContext = context.getExternalContext();
 
-            login(target, skipLandingPage, language, color, minimal, session, (HttpServletRequest) externalContext.getRequest(),
-                    (HttpServletResponse) externalContext.getResponse());
+            login(target, skipLandingPage, language, color, minimal, forceAuthentication, session,
+                    (HttpServletRequest) externalContext.getRequest(), (HttpServletResponse) externalContext.getResponse());
 
             return null;
         }
@@ -216,11 +217,11 @@ public class SafeOnlineLoginUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     public static void login(String target, HttpServletRequest request, HttpServletResponse response) {
 
-        login(target, null, null, null, null, request, response);
+        login(target, null, null, null, null, null, request, response);
     }
 
     /**
@@ -228,12 +229,12 @@ public class SafeOnlineLoginUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, String, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
-    public static void login(String target, Locale language, Integer color, Boolean minimal, String session, HttpServletRequest request,
-                             HttpServletResponse response) {
+    public static void login(String target, Locale language, Integer color, Boolean minimal, Boolean forceAuthentication, String session,
+                             HttpServletRequest request, HttpServletResponse response) {
 
-        login(target, false, language, color, minimal, session, request, response);
+        login(target, false, language, color, minimal, forceAuthentication, session, request, response);
     }
 
     /**
@@ -268,9 +269,11 @@ public class SafeOnlineLoginUtils {
      *            The 24-bit color override {@link SafeOnlineAppConstants#COLOR_CONTEXT_PARAM} with. <code>null</code> prevents overriding.
      * @param minimal
      *            The value to override {@link SafeOnlineAppConstants#MINIMAL_CONTEXT_PARAM} with. <code>null</code> prevents overriding.
+     * @param forceAuthentication
+     *            Force an authentication and do not allow SSO for this particular login ( even tho the application can be SSO enabled )
      */
-    public static void login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal, String session,
-                             HttpServletRequest request, HttpServletResponse response) {
+    public static void login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal,
+                             Boolean forceAuthentication, String session, HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, String> config = new HashMap<String, String>();
         ServletContext context = request.getSession().getServletContext();
@@ -334,7 +337,7 @@ public class SafeOnlineLoginUtils {
         /* Initialize and execute the authentication protocol. */
         try {
             AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, authenticationServicePath,
-                    applicationName, applicationFriendlyName, keyPair, certificate, ssoEnabled, config, request);
+                    applicationName, applicationFriendlyName, keyPair, certificate, forceAuthentication, config, request);
             LOG.debug("initialized protocol");
         } catch (ServletException e) {
             throw new RuntimeException("could not init authentication protocol handler: " + authenticationProtocol + "; original message: "

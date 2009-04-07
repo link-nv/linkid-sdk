@@ -42,13 +42,13 @@ public interface AuthenticationProtocolHandler extends Serializable {
      *            the application RSA key pair used to sign the authentication request.
      * @param applicationCertificate
      *            the application certificate used to sign the WS-Security signatures.
-     * @param ssoEnabled
-     *            whether single sign-on can be used or not
+     * @param forceAuthentication
+     *            whether authentication should be forced and SSO ignored ( even if application is SSO enabled )
      * @param configParams
      *            additional specific authentication protocol configuration parameters.
      */
     void init(String authnServiceUrl, String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-              X509Certificate applicationCertificate, boolean ssoEnabled, Map<String, String> configParams);
+              X509Certificate applicationCertificate, boolean forceAuthentication, Map<String, String> configParams);
 
     /**
      * Initiates the authentication request towards the SafeOnline authentication web application.

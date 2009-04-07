@@ -7,17 +7,6 @@
 
 package net.link.safeonline.user.webapp.pages;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import net.link.safeonline.sdk.exception.ApplicationPoolNotFoundException;
-import net.link.safeonline.sdk.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.ws.OlasServiceFactory;
-import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.session.SessionAssertion;
-import net.link.safeonline.user.keystore.UserKeyStore;
-import net.link.safeonline.user.webapp.UserSession;
 import net.link.safeonline.user.webapp.pages.account.AccountPage;
 import net.link.safeonline.user.webapp.pages.applications.ApplicationsPage;
 import net.link.safeonline.user.webapp.pages.devices.DevicesPage;
@@ -54,24 +43,6 @@ public class OverviewPage extends UserTemplatePage {
         getContent().add(new PageLink<String>(APPLICATIONS_LINK_ID, ApplicationsPage.class));
         getContent().add(new PageLink<String>(DEVICES_LINK_ID, DevicesPage.class));
         getContent().add(new PageLink<String>(ACCOUNT_LINK_ID, AccountPage.class));
-
-        try {
-            List<SessionAssertion> assertions = OlasServiceFactory.getSessionTrackingService(UserKeyStore.getPrivateKeyEntry())
-                                                                  .getAssertions(UserSession.get().getSession(),
-                                                                          UserSession.get().getUserId(), null);
-            for (SessionAssertion assertion : assertions) {
-                LOG.debug("assertion: subject=" + assertion.getSubject() + " pool=" + assertion.getApplicationPool());
-                for (Map.Entry<Date, String> authenticationEntry : assertion.getAuthentications().entrySet()) {
-                    LOG.debug("  * authentication: time=" + authenticationEntry.getKey() + " device=" + authenticationEntry.getValue());
-                }
-            }
-        } catch (WSClientTransportException e) {
-            LOG.error("[TODO]", e);
-        } catch (ApplicationPoolNotFoundException e) {
-            LOG.error("[TODO]", e);
-        } catch (SubjectNotFoundException e) {
-            LOG.error("[TODO]", e);
-        }
 
     }
 

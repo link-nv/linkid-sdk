@@ -259,7 +259,8 @@ public class AuthenticationProtocolManager {
                                                                                     String applicationFriendlyName,
                                                                                     KeyPair applicationKeyPair,
                                                                                     X509Certificate applicationCertificate,
-                                                                                    boolean ssoEnabled, Map<String, String> inConfigParams,
+                                                                                    boolean forceAuthentication,
+                                                                                    Map<String, String> inConfigParams,
                                                                                     HttpServletRequest httpRequest)
             throws ServletException {
 
@@ -290,7 +291,7 @@ public class AuthenticationProtocolManager {
             throw new ServletException("could not load the protocol handler: " + authnProtocolHandlerClass.getName());
         }
         protocolHandler.init(authnServiceUrl, applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate,
-                ssoEnabled, configParams);
+                forceAuthentication, configParams);
 
         /*
          * We save the stateful protocol handler into the HTTP session as attribute.

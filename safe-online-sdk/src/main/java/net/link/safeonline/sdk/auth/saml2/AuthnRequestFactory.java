@@ -91,14 +91,14 @@ public class AuthnRequestFactory {
      *            the optional challenge (output variable).
      * @param devices
      *            the optional list of allowed authentication devices.
-     * @param ssoEnabled
-     *            marks whether single sign on is enabled for this authentication or not
+     * @param forceAuthentication
+     *            whether authentication should be forced and SSO ignore
      * @param session
      *            optional session info, marks application wishes to track this session
      */
     public static String createAuthnRequest(String issuerName, List<String> audiences, String applicationFriendlyName,
                                             KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
-                                            Challenge<String> challenge, Set<String> devices, boolean ssoEnabled, String session) {
+                                            Challenge<String> challenge, Set<String> devices, boolean forceAuthentication, String session) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -107,7 +107,7 @@ public class AuthnRequestFactory {
 
         AuthnRequest request = Saml2Util.buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
 
-        request.setForceAuthn(!ssoEnabled);
+        request.setForceAuthn(forceAuthentication);
         SecureRandomIdentifierGenerator idGenerator;
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
