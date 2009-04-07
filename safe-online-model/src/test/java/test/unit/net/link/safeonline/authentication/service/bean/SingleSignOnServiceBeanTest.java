@@ -482,6 +482,7 @@ public class SingleSignOnServiceBeanTest {
 
         SessionTrackingEntity tracker = new SessionTrackingEntity();
         SessionAssertionEntity sessionAssertion = new SessionAssertionEntity();
+        sessionAssertion.setApplicationPool(applicationPool);
         sessionAssertion.setStatements(new LinkedList<SessionAuthnStatementEntity>());
         SessionAuthnStatementEntity sessionStatement = new SessionAuthnStatementEntity();
 
@@ -500,6 +501,7 @@ public class SingleSignOnServiceBeanTest {
         expect(mockSessionTrackingDAO.findAssertion((String) EasyMock.anyObject(), EasyMock.eq(applicationPool))).andReturn(null);
         expect(mockSessionTrackingDAO.addAssertion((String) EasyMock.anyObject(), EasyMock.eq(applicationPool)))
                                                                                                                 .andReturn(sessionAssertion);
+        mockSessionTrackingDAO.removeStatements(sessionAssertion);
         expect(
                 mockSessionTrackingDAO.addAuthnStatement(EasyMock.eq(sessionAssertion), (DateTime) EasyMock.anyObject(),
                         EasyMock.eq(cookieDevice))).andReturn(sessionStatement);
@@ -615,8 +617,11 @@ public class SingleSignOnServiceBeanTest {
         ssoApplications.add(ssoApplication2);
         ssoApplications.add(ssoApplication3);
 
+        String ssoId = UUID.randomUUID().toString();
+
         List<Cookie> cookies = new LinkedList<Cookie>();
         cookies.add(getSsoCookie(subject, applicationPool, application, device, ssoApplications));
+        cookies.add(new Cookie(SingleSignOnServiceBean.SSO_ID_COOKIE_NAME, ssoId));
 
         // expectations
         expect(mockSubjectService.findSubject(subject.getUserId())).andReturn(subject);

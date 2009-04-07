@@ -237,7 +237,7 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, null);
+                assertionConsumerService, destinationUrl, null, null, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -286,7 +286,7 @@ public class AuthenticationServiceBeanTest {
         authnDevices.add(passwordDevice);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, devices, false, null);
+                assertionConsumerService, destinationUrl, null, devices, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -332,7 +332,7 @@ public class AuthenticationServiceBeanTest {
         X509Certificate foobarCert = PkiTestUtils.generateSelfSignedCertificate(foobarKeyPair, "CN=TestApplication");
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, null);
+                assertionConsumerService, destinationUrl, null, null, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -371,7 +371,7 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, null);
+                assertionConsumerService, destinationUrl, null, null, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -414,7 +414,7 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, null);
+                assertionConsumerService, destinationUrl, null, null, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -597,7 +597,7 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, null);
+                assertionConsumerService, destinationUrl, null, null, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -702,7 +702,7 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, null);
+                assertionConsumerService, destinationUrl, null, null, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -808,7 +808,7 @@ public class AuthenticationServiceBeanTest {
         application.setId(applicationId);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, null);
+                assertionConsumerService, destinationUrl, null, null, true, null);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
@@ -931,7 +931,7 @@ public class AuthenticationServiceBeanTest {
         String session = UUID.randomUUID().toString();
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false, session);
+                assertionConsumerService, destinationUrl, null, null, true, session);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
