@@ -43,13 +43,13 @@ namespace safe_online_sdk_dotnet.test.cs
 				new IdMappingClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
 				                        TestConstants.olasCertPath);
 			String userId = idMappingClient.getUserId(TestConstants.testLogin);
-			Console.WriteLine("admin userId: " + userId);
+			Console.WriteLine(TestConstants.testLogin + " userId: " + userId);
 
 			AttributeClient attributeClient = 
 				new AttributeClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
 				                        TestConstants.olasCertPath);
 			string loginName = attributeClient.getAttributeValue<string>(userId, TestConstants.loginAttribute);
-			Console.WriteLine("admin loginName: " + loginName);
+			Console.WriteLine(TestConstants.testLogin+ " loginName: " + loginName);
 			Assert.AreEqual(TestConstants.testLogin, loginName);
 		}
 		
@@ -60,7 +60,7 @@ namespace safe_online_sdk_dotnet.test.cs
 				new IdMappingClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
 				                        TestConstants.olasCertPath);
 			String userId = idMappingClient.getUserId(TestConstants.testLogin);
-			Console.WriteLine("admin userId: " + userId);
+			Console.WriteLine(TestConstants.testLogin + " userId: " + userId);
 
 			AttributeClient attributeClient =
 				new AttributeClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
@@ -78,7 +78,7 @@ namespace safe_online_sdk_dotnet.test.cs
 				new IdMappingClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
 				                        TestConstants.olasCertPath);
 			String userId = idMappingClient.getUserId(TestConstants.testLogin);
-			Console.WriteLine("admin userId: " + userId);
+			Console.WriteLine(TestConstants.testLogin+" userId: " + userId);
 
 			AttributeClient attributeClient =
 				new AttributeClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword,
@@ -96,7 +96,7 @@ namespace safe_online_sdk_dotnet.test.cs
 				new IdMappingClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
 				                        TestConstants.olasCertPath);
 			String userId = idMappingClient.getUserId(TestConstants.testLogin);
-			Console.WriteLine("admin userId: " + userId);
+			Console.WriteLine(TestConstants.testLogin+" userId: " + userId);
 
 			AttributeClient attributeClient =
 				new AttributeClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
@@ -118,7 +118,7 @@ namespace safe_online_sdk_dotnet.test.cs
 				new IdMappingClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
 				                        TestConstants.olasCertPath);
 			String userId = idMappingClient.getUserId(TestConstants.testLogin);
-			Console.WriteLine("admin userId: " + userId);
+			Console.WriteLine(TestConstants.testLogin+" userId: " + userId);
 
 			AttributeClient attributeClient =
 				new AttributeClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
@@ -152,7 +152,7 @@ namespace safe_online_sdk_dotnet.test.cs
 				new IdMappingClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
 				                        TestConstants.olasCertPath);
 			String userId = idMappingClient.getUserId(TestConstants.testLogin);
-			Console.WriteLine("admin userId: " + userId);
+			Console.WriteLine(TestConstants.testLogin+" userId: " + userId);
 
 			AttributeClient attributeClient =
 				new AttributeClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 

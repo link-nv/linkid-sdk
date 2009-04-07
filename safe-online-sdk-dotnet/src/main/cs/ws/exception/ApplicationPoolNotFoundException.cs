@@ -1,8 +1,8 @@
 /*
  * Created by SharpDevelop.
  * User: devel
- * Date: 23/12/2008
- * Time: 14:52
+ * Date: 6/04/2009
+ * Time: 16:41
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
@@ -11,17 +11,17 @@ using System;
 namespace safe_online_sdk_dotnet
 {
 	/// <summary>
-	/// Description of AttributeNotFoundException.
+	/// Description of ApplicationPoolNotFoundException.
 	/// </summary>
-	public class AttributeNotFoundException : System.Exception
+	public class ApplicationPoolNotFoundException : System.Exception
 	{
 		private string messsage;
 		
-		public AttributeNotFoundException()
+		public ApplicationPoolNotFoundException()
 		{
 		}
 		
-		public AttributeNotFoundException(string message) {
+		public ApplicationPoolNotFoundException(string message) {
 			this.messsage = message;
 		}
 		
@@ -30,7 +30,7 @@ namespace safe_online_sdk_dotnet
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="context"></param>
-		protected AttributeNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {
+		protected ApplicationPoolNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {
 		}
 		
 		public string getMessage() {

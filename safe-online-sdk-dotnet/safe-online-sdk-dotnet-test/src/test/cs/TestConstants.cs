@@ -19,17 +19,17 @@ namespace safe_online_sdk_dotnet_test.test.cs
 		public static readonly string testPfxPassword = "secret";
 		public static readonly string testCrtPath = workDir + "\\test.crt";
 		
-		public static readonly string olasCertPath = workDir + "\\olas.crt";
+		public static readonly string olasCertPath = workDir + "\\sign.crt";
 					
-		public static readonly string olasHost = "demo.olas.be";
-		public static readonly string wsLocation = olasHost + ":443";
+		public static readonly string olasHost = "sebeco-dev-22";
+		public static readonly string wsLocation = olasHost + ":8443";
 		public static readonly string olasAuthEntry = "https://" + wsLocation + "/olas-auth/entry";
 		
 		public static readonly string localhost = "10.0.2.15";
 		
 		public static readonly string loginAttribute = "urn:net:lin-k:safe-online:attribute:login";
-
-		public static readonly string testLogin = "admin";
+		
+		public static readonly string testLogin = "wvdhaute";
 		
 		public static readonly string testMultiStringAttribute = "urn:test:multi:string";
 		public static readonly string testMultiDateAttribute = "urn:test:multi:date";

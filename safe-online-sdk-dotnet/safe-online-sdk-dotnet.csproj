@@ -49,6 +49,7 @@
     <Compile Include="src\main\cs\ws\attrib\AttributeClient.cs" />
     <Compile Include="src\main\cs\ws\attrib\AttributeClientImpl.cs" />
     <Compile Include="src\main\cs\ws\data\DataServiceConstants.cs" />
+    <Compile Include="src\main\cs\ws\exception\ApplicationPoolNotFoundException.cs" />
     <Compile Include="src\main\cs\ws\exception\AttributeNotFoundException.cs" />
     <Compile Include="src\main\cs\ws\exception\AttributeUnavailableException.cs" />
     <Compile Include="src\main\cs\ws\exception\RequestDeniedException.cs" />
@@ -74,6 +75,9 @@
     <Compile Include="src\main\cs\ws\OlasBinding.cs" />
     <Compile Include="src\main\cs\ws\ping\PingClient.cs" />
     <Compile Include="src\main\cs\ws\ping\PingClientImpl.cs" />
+    <Compile Include="src\main\cs\ws\session\SessionAssertion.cs" />
+    <Compile Include="src\main\cs\ws\session\SessionTrackingClient.cs" />
+    <Compile Include="src\main\cs\ws\session\SessionTrackingClientImpl.cs" />
     <Compile Include="src\main\cs\ws\sts\TrustDomainType.cs" />
     <Compile Include="src\main\cs\ws\sts\STSClient.cs" />
     <Compile Include="src\main\cs\ws\sts\STSClientImpl.cs" />
@@ -111,6 +115,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="target\services\SafeOnlineSessionTrackingWebService.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="src\main\cs\AssemblyInfo.cs" />
     <None Include="src\main\resources\*" />
     <None Include="src\main\resources\attrib-ws\*" />
@@ -119,6 +127,7 @@
     <None Include="src\main\resources\ping-ws\*" />
     <None Include="src\main\resources\idmapping-ws\*" />
     <None Include="src\main\resources\notification-ws\*" />
+    <None Include="src\main\resources\session-ws\*" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src" />
@@ -130,6 +139,7 @@
     <Folder Include="src\main\cs\ws\attrib" />
     <Folder Include="src\main\cs\ws\idmapping" />
     <Folder Include="src\main\cs\ws\exception" />
+    <Folder Include="src\main\cs\ws\session" />
     <Folder Include="src\main\cs\ws\notification" />
     <Folder Include="src\main\cs\ws\ping" />
     <Folder Include="src\main\cs\ws\sts" />
@@ -145,5 +155,6 @@
     <Exec Command="svcutil /namespace:*,NotificationConsumerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-consumer.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
     <Exec Command="svcutil /namespace:*,NotificationProducerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-producer.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
     <Exec Command="svcutil /namespace:*,NotificationSubscriptionManagerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-subscription-manager.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
+    <Exec Command="svcutil /namespace:*,SessionWSNameSpace /directory:target\services src\main\resources\session-ws\safe-online-session.wsdl src\main\resources\session-ws\safe-online-session.xsd" />
   </Target>
 </Project>

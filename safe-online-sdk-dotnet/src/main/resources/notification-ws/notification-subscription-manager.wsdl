@@ -67,8 +67,8 @@
 
 	<wsdl:portType name="NotificationSubscriptionManagerPort">
 		<wsdl:operation name="Unsubscribe">
-			<wsdl:input name="UnsubscribeRequest" message="tns:UnsubscribeRequestMessage" />
-			<wsdl:output name="UnsubscribeResponse" message="tns:UnsubscribeResponseMessage" />
+			<wsdl:input message="tns:UnsubscribeRequestMessage" />
+			<wsdl:output message="tns:UnsubscribeResponseMessage" />
 		</wsdl:operation>
 	</wsdl:portType>
 
@@ -76,9 +76,9 @@
 
 	<wsdl:binding name="NotificationSubscriptionManagerSoapBinding"
 		type="tns:NotificationSubscriptionManagerPort">
-		<soap:binding style="document"
-			transport="http://schemas.xmlsoap.org/soap/http" />
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
 		<wsdl:operation name="Unsubscribe">
+			<soap:operation soapAction="Unsubscribe" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
