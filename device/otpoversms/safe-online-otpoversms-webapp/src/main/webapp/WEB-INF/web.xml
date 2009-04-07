@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE webapp-configuration PUBLIC
-    "-//Webapp Configuration DTD//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd" [
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd" [
     <!ENTITY web-common-wicket SYSTEM "web-common-wicket.xml">
     <!ENTITY web-error-codes SYSTEM "web-error-codes.xml"> ]>
+
 <web-app>
 
 	<display-name>Olas OTP over SMS Device Web Application</display-name>
