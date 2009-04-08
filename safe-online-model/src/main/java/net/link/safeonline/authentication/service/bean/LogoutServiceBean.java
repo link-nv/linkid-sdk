@@ -224,6 +224,11 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
         logoutApplication = application;
         expectedChallengeId = samlAuthnRequestId;
+        if (null == application.getSsoLogoutUrl()) {
+            String errorMessage = "want to use single logout but application " + application.getName() + " has no logout url";
+            LOG.error(errorMessage);
+            throw new LogoutInitializationException(errorMessage);
+        }
         expectedTarget = application.getSsoLogoutUrl().toString();
         authenticatedSubject = subject;
 
