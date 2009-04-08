@@ -254,6 +254,15 @@
 						</tr>
 						<tr>
 							<th>
+								<h:outputText value="#{msgs.accessControlWSAuthenticationService}" />
+							</th>
+							<td>
+								<h:selectBooleanCheckbox id="wsauth"
+									disabled="true" value="#{selectedApplication.wsAuthenticationAllowed}" />
+							</td>
+						</tr>
+						<tr>
+							<th>
 								<h:outputText value="#{msgs.basicHttpBindingOverSSL}" />
 							</th>
 							<td>

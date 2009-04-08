@@ -153,7 +153,7 @@ public class SessionTrackingServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-        ApplicationEntity testApplication = applicationService.addApplication(testApplicationName, null, "owner", null, false,
+        ApplicationEntity testApplication = applicationService.addApplication(testApplicationName, null, "owner", null, false, false,
                 IdScopeType.USER, null, null, null, null, false, false, false, null, 0L);
 
         ApplicationPoolService applicationPoolService = EJBTestUtils.newInstance(ApplicationPoolServiceBean.class,

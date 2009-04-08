@@ -97,6 +97,10 @@ public interface Application {
 
     void setIdmapping(boolean idmapping);
 
+    boolean isWsAuthentication();
+
+    void setWsAuthentication(boolean wsAuthentication);
+
     String getUsageAgreement()
             throws ApplicationNotFoundException;
 

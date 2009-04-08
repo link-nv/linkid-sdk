@@ -141,6 +141,8 @@ public class ApplicationBean implements Application {
 
     private boolean                    idmapping;
 
+    private boolean                    wsAuthentication;
+
     private String                     applicationIdScope;
 
     private boolean                    skipMessageIntegrityCheck;
@@ -151,7 +153,7 @@ public class ApplicationBean implements Application {
 
     private String                     ssoLogoutUrl;
 
-    private Long                       sessionTimeout;
+    private long                       sessionTimeout;
 
     @SuppressWarnings("unused")
     @Out
@@ -199,7 +201,6 @@ public class ApplicationBean implements Application {
         applicationOwner = null;
         skipMessageIntegrityCheck = false;
         ssoLogoutUrl = null;
-        sessionTimeout = null;
     }
 
 
@@ -321,7 +322,7 @@ public class ApplicationBean implements Application {
             } else {
                 encodedCertificate = null;
             }
-            applicationService.addApplication(name, friendlyName, applicationOwner, description, idmapping,
+            applicationService.addApplication(name, friendlyName, applicationOwner, description, idmapping, wsAuthentication,
                     IdScopeType.valueOf(applicationIdScope), newApplicationUrl, newApplicationLogo, encodedCertificate,
                     tempIdentityAttributes, skipMessageIntegrityCheck, deviceRestriction, ssoEnabled, newSsoLogoutUrl, sessionTimeout);
 
@@ -447,6 +448,16 @@ public class ApplicationBean implements Application {
     public void setIdmapping(boolean idmapping) {
 
         this.idmapping = idmapping;
+    }
+
+    public boolean isWsAuthentication() {
+
+        return wsAuthentication;
+    }
+
+    public void setWsAuthentication(boolean wsAuthentication) {
+
+        this.wsAuthentication = wsAuthentication;
     }
 
     public String getApplicationIdScope() {
@@ -678,6 +689,7 @@ public class ApplicationBean implements Application {
             applicationService.updateApplicationLogo(applicationId, newApplicationLogo);
         }
         applicationService.setIdentifierMappingServiceAccess(applicationId, idmapping);
+        applicationService.setWSAuthenticationServiceAccess(applicationId, wsAuthentication);
         if (null != applicationIdScope) {
             applicationService.setIdScope(applicationId, IdScopeType.valueOf(applicationIdScope));
         }
@@ -739,6 +751,8 @@ public class ApplicationBean implements Application {
             applicationLogo = selectedApplication.getApplicationLogo();
         }
         idmapping = selectedApplication.isIdentifierMappingAllowed();
+
+        wsAuthentication = selectedApplication.isWsAuthenticationAllowed();
 
         skipMessageIntegrityCheck = selectedApplication.isSkipMessageIntegrityCheck();
 

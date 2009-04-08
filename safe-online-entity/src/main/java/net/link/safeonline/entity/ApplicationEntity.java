@@ -101,6 +101,8 @@ public class ApplicationEntity implements Serializable {
 
     private boolean                     identifierMappingAllowed;
 
+    private boolean                     wsAuthenticationAllowed;
+
     private IdScopeType                 idScope;
 
     private boolean                     skipMessageIntegrityCheck;
@@ -373,6 +375,20 @@ public class ApplicationEntity implements Serializable {
     public void setIdentifierMappingAllowed(boolean identifierMappingAllowed) {
 
         this.identifierMappingAllowed = identifierMappingAllowed;
+    }
+
+    /**
+     * The ws authentication allowed field is used for access control over the WS authentication service.
+     * 
+     */
+    public boolean isWsAuthenticationAllowed() {
+
+        return wsAuthenticationAllowed;
+    }
+
+    public void setWsAuthenticationAllowed(boolean wsAuthenticationAllowed) {
+
+        this.wsAuthenticationAllowed = wsAuthenticationAllowed;
     }
 
     /**

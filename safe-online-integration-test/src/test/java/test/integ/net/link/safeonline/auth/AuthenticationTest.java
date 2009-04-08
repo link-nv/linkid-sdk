@@ -104,8 +104,8 @@ public class AuthenticationTest {
             public Object run()
                     throws Exception {
 
-                applicationService.addApplication(applicationName, null, appOwnerName, null, false, IdScopeType.USER, null, null, null,
-                        null, false, false, false, null, null);
+                applicationService.addApplication(applicationName, null, appOwnerName, null, false, false, IdScopeType.USER, null, null,
+                        null, null, false, false, false, null, null);
                 return null;
             }
         });
@@ -145,8 +145,8 @@ public class AuthenticationTest {
         final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
         applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
 
-        applicationService.addApplication(applicationName, null, appOwnerName, null, false, IdScopeType.USER, null, null, null, null,
-                false, false, false, null, 0L);
+        applicationService.addApplication(applicationName, null, appOwnerName, null, false, false, IdScopeType.USER, null, null, null,
+                null, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         String userLogin = "login-" + UUID.randomUUID().toString();
@@ -230,8 +230,8 @@ public class AuthenticationTest {
         applicationService.registerApplicationOwner(appOwnerName, login);
 
         String applicationName = "application-" + UUID.randomUUID().toString();
-        applicationService.addApplication(applicationName, null, appOwnerName, null, false, IdScopeType.USER, null, null, null, null,
-                false, false, false, null, 0L);
+        applicationService.addApplication(applicationName, null, appOwnerName, null, false, false, IdScopeType.USER, null, null, null,
+                null, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
@@ -276,8 +276,8 @@ public class AuthenticationTest {
 
         // operate: create application
         String applicationName = "application-" + UUID.randomUUID().toString();
-        applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, IdScopeType.USER, null, null, null,
-                null, false, false, false, null, 0L);
+        applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, false, IdScopeType.USER, null, null,
+                null, null, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         // operate: change application description via application owner

@@ -166,11 +166,11 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public ApplicationEntity addApplication(String name, String friendlyName, String applicationOwnerName, String description,
-                                            boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl,
-                                            byte[] applicationLogo, byte[] encodedCertificate,
+                                            boolean idMappingServiceAccess, boolean wsAuthenticationServiceAccess, IdScopeType idScope,
+                                            URL applicationUrl, byte[] applicationLogo, byte[] encodedCertificate,
                                             List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
                                             boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled,
-                                            URL ssoLogoutUrl, Long sessionTimeout)
+                                            URL ssoLogoutUrl, long sessionTimeout)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException {
 
@@ -185,6 +185,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
                 applicationLogo, certificate);
 
         application.setIdentifierMappingAllowed(idMappingServiceAccess);
+
+        application.setWsAuthenticationAllowed(wsAuthenticationServiceAccess);
 
         application.setIdScope(idScope);
 
@@ -502,6 +504,13 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
             throws ApplicationNotFoundException {
 
         getApplication(applicationId).setIdentifierMappingAllowed(access);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void setWSAuthenticationServiceAccess(long applicationId, boolean access)
+            throws ApplicationNotFoundException {
+
+        getApplication(applicationId).setWsAuthenticationAllowed(access);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

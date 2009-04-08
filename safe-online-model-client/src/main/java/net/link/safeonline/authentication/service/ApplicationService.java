@@ -82,6 +82,7 @@ public interface ApplicationService extends SafeOnlineService {
      * @param applicationOwnerName
      * @param description
      * @param idMappingServiceAccess
+     * @param wsAuthenticationServiceAccess
      * @param idScope
      * @param encodedCertificate
      *            the optional application certificate.
@@ -102,10 +103,10 @@ public interface ApplicationService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      */
     ApplicationEntity addApplication(String name, String friendlyName, String applicationOwnerName, String description,
-                                     boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo,
-                                     byte[] encodedCertificate, List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
-                                     boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl,
-                                     Long sessionTimeout)
+                                     boolean idMappingServiceAccess, boolean wsAuthenticationServiceAccess, IdScopeType idScope,
+                                     URL applicationUrl, byte[] newApplicationLogo, byte[] encodedCertificate,
+                                     List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
+                                     boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl, long sessionTimeout)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException;
 
@@ -239,6 +240,16 @@ public interface ApplicationService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      */
     void setIdentifierMappingServiceAccess(long applicationId, boolean access)
+            throws ApplicationNotFoundException;
+
+    /**
+     * Set the application's permission to use the ws authentication service.
+     * 
+     * @param applicationId
+     * @param access
+     * @throws ApplicationNotFoundException
+     */
+    void setWSAuthenticationServiceAccess(long applicationId, boolean access)
             throws ApplicationNotFoundException;
 
     /**
