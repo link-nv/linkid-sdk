@@ -35,6 +35,7 @@ import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -105,7 +106,7 @@ public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
         try {
             protocolContext = ProtocolHandlerManager.handleAuthnRequest(request);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;

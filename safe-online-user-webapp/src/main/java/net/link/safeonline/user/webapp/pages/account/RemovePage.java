@@ -94,7 +94,7 @@ public class RemovePage extends UserTemplatePage {
                         return;
                     }
                     removeLoginCookie();
-                    LoginManager.setUserId(null, WicketUtil.toServletRequest(getRequest()));
+                    LoginManager.setUserId(null, WicketUtil.getServletRequest());
                     UserSession.get().setUserId(null);
                     setResponsePage(MainPage.class);
                 }
@@ -141,8 +141,8 @@ public class RemovePage extends UserTemplatePage {
     void removeLoginCookie() {
 
         Cookie loginCookie = new Cookie(SafeOnlineCookies.LOGIN_COOKIE, "");
-        loginCookie.setPath(WicketUtil.toServletRequest(getRequest()).getContextPath());
+        loginCookie.setPath(WicketUtil.getServletRequest().getContextPath());
         loginCookie.setMaxAge(0);
-        WicketUtil.toServletResponse(getResponse()).addCookie(loginCookie);
+        WicketUtil.getServletResponse().addCookie(loginCookie);
     }
 }

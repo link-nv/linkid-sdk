@@ -32,7 +32,7 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
-import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineAuthenticationUtils;
 import net.link.safeonline.sdk.auth.servlet.LogoutServlet;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
@@ -125,12 +125,12 @@ public class LogoutServletTest {
 
         servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LogoutPath", logoutPath);
-        initParams.put("ErrorPage", errorPage);
-        initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM, logoutExitServicePath);
-        initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_CONTEXT_PARAM, applicationName);
-        initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
-        initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");
+        initParams.put(LogoutServlet.LOGOUT_PATH, logoutPath);
+        initParams.put(LogoutServlet.ERROR_PAGE, errorPage);
+        initParams.put(SafeOnlineAuthenticationUtils.LOGOUT_EXIT_SERVICE_PATH_INIT_PARAM, logoutExitServicePath);
+        initParams.put(SafeOnlineAuthenticationUtils.APPLICATION_NAME_CONTEXT_PARAM, applicationName);
+        initParams.put(SafeOnlineAuthenticationUtils.KEY_STORE_RESOURCE_CONTEXT_PARAM, p12ResourceName);
+        initParams.put(SafeOnlineAuthenticationUtils.KEY_STORE_PASSWORD_CONTEXT_PARAM, "secret");
 
         servletTestManager.setUp(LogoutServlet.class, initParams, null, null, null);
         location = servletTestManager.getServletLocation();

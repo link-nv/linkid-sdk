@@ -32,6 +32,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 public class IdentityConfirmationPage extends AuthenticationTemplatePage {
@@ -54,29 +55,38 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
 
     public IdentityConfirmationPage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-
         getSidebar(localize("helpIdentityConfirmation"));
 
         getHeader();
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.attributes));
 
-        List<AttributeDO> confirmationList;
-        try {
-            confirmationList = identityService.listIdentityAttributesToConfirm(protocolContext.getApplicationId(), getLocale());
-        } catch (SubscriptionNotFoundException e) {
-            error(localize("errorSubscriptionNotFound"));
-            return;
-        } catch (ApplicationNotFoundException e) {
-            error(localize("errorApplicationNotFound"));
-            return;
-        } catch (ApplicationIdentityNotFoundException e) {
-            error(localize("errorApplicationIdentityNotFound"));
-            return;
-        }
+        getContent().add(new ListView<AttributeDO>(IDENTITY_CONFIRMATION_LIST_ID, new AbstractReadOnlyModel<List<AttributeDO>>() {
 
-        getContent().add(new ListView<AttributeDO>(IDENTITY_CONFIRMATION_LIST_ID, confirmationList) {
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public List<AttributeDO> getObject() {
+
+                ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
+
+                try {
+                    return identityService.listIdentityAttributesToConfirm(protocolContext.getApplicationId(), getLocale());
+                }
+
+                catch (SubscriptionNotFoundException e) {
+                    error(localize("errorSubscriptionNotFound"));
+                    throw new RuntimeException(e);
+                } catch (ApplicationNotFoundException e) {
+                    error(localize("errorApplicationNotFound"));
+                    throw new RuntimeException(e);
+                } catch (ApplicationIdentityNotFoundException e) {
+                    error(localize("errorApplicationIdentityNotFound"));
+                    throw new RuntimeException(e);
+                }
+            }
+        }) {
 
             private static final long serialVersionUID = 1L;
 
@@ -91,7 +101,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
                 attributeItem.add(new Label(NAME_ID, name));
 
                 Image dataMiningImage = new Image(DATAMINING_IMAGE_ID, "override");
-                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.toServletRequest(getRequest()).getContextPath()
+                dataMiningImage.add(new SimpleAttributeModifier("src", WicketUtil.getServletRequest().getContextPath()
                         + "/images/icons/accept.png"));
                 dataMiningImage.setVisible(attributeItem.getModelObject().isDataMining());
                 attributeItem.add(dataMiningImage);
@@ -109,9 +119,8 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-        String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
-        return title;
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
+        return localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
     }
 
 
@@ -134,7 +143,7 @@ public class IdentityConfirmationPage extends AuthenticationTemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     try {
                         identityService.confirmIdentity(protocolContext.getApplicationId());
                     } catch (SubscriptionNotFoundException e) {

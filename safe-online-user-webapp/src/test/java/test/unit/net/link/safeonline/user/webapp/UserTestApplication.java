@@ -25,6 +25,5 @@ public class UserTestApplication extends UserApplication {
         super.init();
 
         getResourceSettings().addStringResourceLoader(new TestStringResourceLoader());
-
     }
 }

@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 /**
@@ -73,8 +74,17 @@ public class TicketPage extends LayoutPage {
 
             super(id);
 
-            final List<CinemaTicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
-            add(ticketList = new ListView<CinemaTicketEntity>("list", data) {
+            add(ticketList = new ListView<CinemaTicketEntity>("list", new AbstractReadOnlyModel<List<CinemaTicketEntity>>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<CinemaTicketEntity> getObject() {
+
+                    return TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 

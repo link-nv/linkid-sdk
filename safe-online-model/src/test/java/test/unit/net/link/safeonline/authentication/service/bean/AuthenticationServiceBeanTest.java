@@ -48,7 +48,6 @@ import net.link.safeonline.authentication.service.SingleSignOnService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
@@ -81,6 +80,7 @@ import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 
 import org.apache.xml.security.utils.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -147,7 +147,7 @@ public class AuthenticationServiceBeanTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockSubjectService = createMock(SubjectService.class);
         EJBTestUtils.inject(testedInstance, mockSubjectService);

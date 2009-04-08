@@ -21,12 +21,21 @@ public class OlasAuthPage extends LayoutPage {
      */
     public OlasAuthPage() {
 
-        // If logged in, let the LoginPage handle where to go.
-        if (WicketUtil.isOlasAuthenticated(getRequest()))
-            throw new RestartResponseException(LoginPage.class);
-
         // HTML Components.
         add(new InlineFrame("olasFrame", PageMap.forName("olasFrame"), OlasAuthRedirectPage.class));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        // If logged in, let the LoginPage handle where to go.
+        if (WicketUtil.isOlasAuthenticated())
+            throw new RestartResponseException(LoginPage.class);
+
+        super.onBeforeRender();
     }
 
     /**

@@ -4,7 +4,10 @@
  * Copyright 2006-2009 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.common;
+package net.link.safeonline.util.ee;
+
+import java.io.Serializable;
+
 
 /**
  * <h2>{@link NamingStrategy}<br>
@@ -16,7 +19,7 @@ package net.link.safeonline.common;
  * 
  * @author lhunath
  */
-public interface NamingStrategy {
+public interface NamingStrategy extends Serializable {
 
     public String calculateName(Class<?> ejbType);
 }

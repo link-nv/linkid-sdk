@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.ejb.EJB;
 import javax.persistence.PersistenceUnit;
 
-import net.link.safeonline.common.NamingStrategy;
+import net.link.safeonline.util.ee.NamingStrategy;
 
 import org.apache.wicket.injection.IFieldValueFactory;
 import org.apache.wicket.proxy.IProxyTargetLocator;

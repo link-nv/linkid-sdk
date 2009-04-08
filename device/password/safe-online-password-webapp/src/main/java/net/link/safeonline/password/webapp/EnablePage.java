@@ -93,7 +93,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+                    ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
                     LOG.debug("enable password for " + protocolContext.getSubject());
 
                     try {
@@ -105,15 +105,15 @@ public class EnablePage extends TemplatePage {
 
                     catch (SubjectNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: subject not found",
                                 LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {
                         passwordField.error(getLocalizer().getString("errorPasswordNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: permission denied: "
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: permission denied: "
                                 + e.getMessage(), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         passwordField.error(getLocalizer().getString("errorPasswordNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device not found",
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "enable: device not found",
                                 LogLevelType.ERROR);
                     }
                 }
@@ -127,7 +127,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setSuccess(false);
+                    ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setSuccess(false);
                     exit();
                 }
 
@@ -142,7 +142,7 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).setValidity(
+        ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).setValidity(
                 samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);

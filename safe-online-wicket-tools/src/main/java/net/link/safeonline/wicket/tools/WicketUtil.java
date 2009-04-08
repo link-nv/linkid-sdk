@@ -16,13 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
+import net.link.safeonline.wicket.web.OlasPageAuthenticationListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.Request;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.injection.ComponentInjector;
 import org.apache.wicket.injection.ConfigurableInjector;
@@ -87,7 +89,7 @@ public abstract class WicketUtil {
     /**
      * Add an injector to the given Wicket web application that will resolve fields with the {@link EJB} annotation.
      * 
-     * @see OlasNamingStrategy
+     * @see FieldNamingStrategy
      */
     public static void addInjector(WebApplication application) {
 
@@ -99,6 +101,7 @@ public abstract class WicketUtil {
                 inject(component);
             }
         });
+        application.addPreComponentOnBeforeRenderListener(new OlasPageAuthenticationListener());
     }
 
     /**
@@ -107,50 +110,50 @@ public abstract class WicketUtil {
     public static void inject(Object injectee) {
 
         if (eeInjector == null) {
-            eeInjector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+            eeInjector = new AnnotJavaEEInjector(new FieldNamingStrategy());
         }
 
         eeInjector.inject(injectee);
     }
 
     /**
-     * Get the {@link HttpServletRequest} contained in the given Wicket {@link Request}.
+     * Get the {@link HttpServletRequest} contained in the active Wicket {@link Request}.
      */
-    public static HttpServletRequest toServletRequest(Request request) {
+    public static HttpServletRequest getServletRequest() {
 
-        return ((WebRequest) request).getHttpServletRequest();
+        return ((WebRequest) RequestCycle.get().getRequest()).getHttpServletRequest();
     }
 
     /**
-     * Get the {@link HttpServletResponse} contained in the given Wicket {@link Response}.
+     * Get the {@link HttpServletResponse} contained in the active Wicket {@link Response}.
      */
-    public static HttpServletResponse toServletResponse(Response response) {
+    public static HttpServletResponse getServletResponse() {
 
-        return ((WebResponse) response).getHttpServletResponse();
+        return ((WebResponse) RequestCycle.get().getResponse()).getHttpServletResponse();
     }
 
     /**
-     * Get the {@link HttpSession} contained in the given Wicket {@link Request}.
+     * Get the {@link HttpSession} contained in the active Wicket {@link Request}.
      */
-    public static HttpSession getHttpSession(Request request) {
+    public static HttpSession getHttpSession() {
 
-        return toServletRequest(request).getSession();
+        return getServletRequest().getSession();
     }
 
     /**
      * @return <code>true</code> if the user is authenticated by the OLAS SDK framework.
      */
-    public static boolean isOlasAuthenticated(Request request) {
+    public static boolean isOlasAuthenticated() {
 
-        return LoginManager.isAuthenticated(toServletRequest(request));
+        return LoginManager.isAuthenticated(getServletRequest());
     }
 
     /**
      * @return The OLAS userId that the current user has authenticated himself with or <code>null</code> if the user isn't authenticated yet
      *         (through OLAS).
      */
-    public static String findOlasId(Request request) {
+    public static String findOlasId() {
 
-        return LoginManager.findUserId(toServletRequest(request));
+        return LoginManager.findUserId(getServletRequest());
     }
 }

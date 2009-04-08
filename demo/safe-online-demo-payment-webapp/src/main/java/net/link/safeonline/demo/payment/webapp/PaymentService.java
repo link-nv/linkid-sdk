@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.demo.payment.webapp;
 
+import java.io.Serializable;
+
+
 /**
  * <h2>{@link PaymentService}<br>
  * <sub>A Payment Service Request.</sub></h2>
@@ -21,12 +24,14 @@ package net.link.safeonline.demo.payment.webapp;
  * 
  * @author lhunath
  */
-public class PaymentService {
+public class PaymentService implements Serializable {
 
-    private String recipient;
-    private Double amount;
-    private String message;
-    private String target;
+    private static final long serialVersionUID = 1L;
+
+    private String            recipient;
+    private Double            amount;
+    private String            message;
+    private String            target;
 
 
     /**

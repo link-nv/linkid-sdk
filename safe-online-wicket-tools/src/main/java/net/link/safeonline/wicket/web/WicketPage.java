@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 
 
@@ -37,6 +38,16 @@ public abstract class WicketPage extends WebPage {
     private static final String formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
     private static Pattern      fsPattern       = Pattern.compile(formatSpecifier);
 
+
+    public WicketPage() {
+
+        super();
+    }
+
+    public WicketPage(PageParameters parameters) {
+
+        super(parameters);
+    }
 
     /**
      * Note: You can use this method with a single argument, too. This will cause the first argument (format) to be evaluated as a

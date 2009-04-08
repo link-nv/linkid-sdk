@@ -20,8 +20,8 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
 import net.link.safeonline.auth.servlet.LogoutEntryServlet;
 import net.link.safeonline.common.SafeOnlineCookies;
-import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
+import net.link.safeonline.util.servlet.BufferedServletResponseWrapper;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;

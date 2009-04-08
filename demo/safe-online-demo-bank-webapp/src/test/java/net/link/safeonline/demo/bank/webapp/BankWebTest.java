@@ -24,10 +24,7 @@ import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
-import org.apache.wicket.AbortException;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -115,24 +112,19 @@ public class BankWebTest extends AbstractWicketTests {
      * We end up on the {@link AccountPage}.
      */
     @Test
-    public void testOlasLogin() {
+    public void testOlasLogin()
+            throws Exception {
 
         // LoginPage: Verify.
-        wicket.processRequestCycle();
         wicket.assertRenderedPage(LoginPage.class);
         wicket.assertPageLink("olasLoginLink", OlasAuthPage.class);
 
         // LoginPage: Click to login with digipass.
         wicket.clickLink("olasLoginLink");
+        mockOLASLoginLink();
 
-        wicket.assertComponent("olasFrame", InlineFrame.class);
-        InlineFrame olasFrame = (InlineFrame) wicket.getLastRenderedPage().get("olasFrame");
-        try {
-            olasFrame.onLinkClicked();
-        } catch (AbortException e) {
-            RequestCycle.get().request(RequestCycle.get().getRequestTarget());
-            wicket.processRequestCycle();
-        }
+        // Let the inline frame load.
+        wicket.processRequestCycle();
 
         // AccountPage: Verify && we've logged in successfully.
         assertTrue("Not logged in.", //
@@ -152,13 +144,15 @@ public class BankWebTest extends AbstractWicketTests {
      * We end up on the {@link LoginPage}.
      */
     @Test
-    public void testLogout() {
+    public void testLogout()
+            throws Exception {
 
         // Login using OLAS.
         testOlasLogin();
 
         // AccountPage: Verify.
         wicket.assertComponent("user:logout", OlasLogoutLink.class);
+        mockOLASLogoutLink();
 
         // AccountPage: Log out.
         wicket.clickLink("user:logout");
@@ -193,7 +187,8 @@ public class BankWebTest extends AbstractWicketTests {
      * We end up on the {@link AccountPage}.
      */
     @Test
-    public void testNewAccount() {
+    public void testNewAccount()
+            throws Exception {
 
         // Test data.
         String testAccountName = "Test Account";
@@ -330,7 +325,8 @@ public class BankWebTest extends AbstractWicketTests {
      * Log out.<br>
      */
     @Test
-    public void testLinking() {
+    public void testLinking()
+            throws Exception {
 
         // Test Data.
         List<String> testAccountCodes = Arrays.asList(InitializationService.digipassUser_AccountCodes);
@@ -343,15 +339,10 @@ public class BankWebTest extends AbstractWicketTests {
 
         // AccountPage: Click to link our account to OLAS.
         wicket.clickLink("user:pageLink");
+        mockOLASLoginLink();
 
-        wicket.assertComponent("olasFrame", InlineFrame.class);
-        InlineFrame olasFrame = (InlineFrame) wicket.getLastRenderedPage().get("olasFrame");
-        try {
-            olasFrame.onLinkClicked();
-        } catch (AbortException e) {
-            RequestCycle.get().request(RequestCycle.get().getRequestTarget());
-            wicket.processRequestCycle();
-        }
+        // Let the inline frame load.
+        wicket.processRequestCycle();
 
         // AccountPage: Verify && old accounts still there.
         wicket.assertRenderedPage(AccountPage.class);
@@ -370,6 +361,7 @@ public class BankWebTest extends AbstractWicketTests {
                 testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
 
         // AccountPage: Click to log out.
+        mockOLASLogoutLink();
         wicket.clickLink("user:logout");
 
         // LoginPage: Verify && logout successful.
@@ -419,6 +411,7 @@ public class BankWebTest extends AbstractWicketTests {
                 testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
 
         // AccountPage: Click to log out.
+        mockOLASLogoutLink();
         wicket.clickLink("user:logout");
 
         // LoginPage: Verify && logout successful.

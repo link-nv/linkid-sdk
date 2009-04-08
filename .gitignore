@@ -1,6 +1,7 @@
 # OS X
 /.com.apple.timemachine.supported
 /.fseventsd
+.DS_Store
 
 # Maven2 Relocated Local Repository for Lin.k artifacts.
 /.m2-repo
@@ -20,6 +21,7 @@
 *.iws
 
 # Compiled
+/target
 /*/target
 /siemens/*/target
 /demo/*/target

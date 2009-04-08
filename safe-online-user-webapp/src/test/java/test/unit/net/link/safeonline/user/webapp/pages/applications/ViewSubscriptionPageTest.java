@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -23,6 +22,7 @@ import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.user.webapp.pages.applications.ViewSubscriptionPage;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.components.toggle.ToggleHeader;
 import net.link.safeonline.webapp.template.TemplatePage;
 
@@ -52,7 +52,7 @@ public class ViewSubscriptionPageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockUsageAgreementService = createMock(UsageAgreementService.class);
         mockIdentityService = createMock(IdentityService.class);

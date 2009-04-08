@@ -46,7 +46,6 @@ public class UserApplication extends OlasApplication {
         mountBookmarkablePage(DeviceErrorPage.PATH, DeviceErrorPage.class);
 
         getApplicationSettings().setPageExpiredErrorPage(TimeoutPage.class);
-
     }
 
     /**

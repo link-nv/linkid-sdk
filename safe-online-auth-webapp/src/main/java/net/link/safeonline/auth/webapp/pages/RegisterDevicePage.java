@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 
 
@@ -70,7 +71,21 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
 
     public RegisterDevicePage() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        getSidebar(localize("helpRegisterDevice"));
+
+        getHeader();
+
+        getContent().add(new RegisterDeviceForm(REGISTER_DEVICE_FORM_ID));
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         devices = new LinkedList<DeviceDO>();
         List<DeviceEntity> deviceEntities;
         try {
@@ -87,12 +102,7 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
             devices.add(new DeviceDO(deviceEntity, friendlyName));
         }
 
-        getSidebar(localize("helpRegisterDevice"));
-
-        getHeader();
-
-        getContent().add(new RegisterDeviceForm(REGISTER_DEVICE_FORM_ID));
-
+        super.onBeforeRender();
     }
 
     /**
@@ -101,7 +111,7 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -125,7 +135,17 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
             add(deviceGroup);
             add(new ErrorComponentFeedbackLabel("device_feedback", deviceGroup, new Model<String>(localize("errorDeviceSelection"))));
 
-            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, devices) {
+            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, new AbstractReadOnlyModel<List<DeviceDO>>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<DeviceDO> getObject() {
+
+                    return devices;
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -187,9 +207,8 @@ public class RegisterDevicePage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), registrationURL, deviceName,
-                                    LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
+                            AuthenticationUtils.redirect(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(), getLocale(),
+                                    registrationURL, deviceName, LoginManager.getUserId(WicketUtil.getHttpSession()));
 
                         }
 

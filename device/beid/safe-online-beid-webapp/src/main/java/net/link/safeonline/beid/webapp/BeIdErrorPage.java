@@ -125,9 +125,9 @@ public class BeIdErrorPage extends TemplatePage {
 
     void cancel() {
 
-        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
-                getRequest()).getSession());
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest()
+                                                                                                               .getSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
 
         if (authenticationContext != null && authenticationContext.getApplication() != null
                 && authenticationContext.getApplication().length() > 0) {

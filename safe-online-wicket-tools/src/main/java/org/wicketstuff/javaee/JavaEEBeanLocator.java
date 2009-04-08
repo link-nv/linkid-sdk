@@ -19,7 +19,7 @@ package org.wicketstuff.javaee;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import net.link.safeonline.common.NamingStrategy;
+import net.link.safeonline.util.ee.NamingStrategy;
 
 import org.apache.wicket.proxy.IProxyTargetLocator;
 

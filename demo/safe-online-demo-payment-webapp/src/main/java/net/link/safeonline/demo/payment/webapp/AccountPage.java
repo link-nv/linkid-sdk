@@ -1,5 +1,7 @@
 package net.link.safeonline.demo.payment.webapp;
 
+import java.util.List;
+
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.RequireLogin;
@@ -9,6 +11,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 /**
@@ -68,7 +71,17 @@ public class AccountPage extends LayoutPage {
             super(id);
 
             /* Transactions List. */
-            add(new ListView<PaymentEntity>("transactionList", transactionService.getAllTransactions(PaymentSession.get().getUser())) {
+            add(new ListView<PaymentEntity>("transactionList", new AbstractReadOnlyModel<List<PaymentEntity>>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<PaymentEntity> getObject() {
+
+                    return transactionService.getAllTransactions(PaymentSession.get().getUser());
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 

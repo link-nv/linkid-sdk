@@ -24,7 +24,8 @@ public class PasswordTestApplication extends PasswordApplication {
 
         super.init();
 
+        // https://issues.apache.org/jira/browse/WICKET-2199
+        getResourceSettings().getStringResourceLoaders().clear();
         getResourceSettings().addStringResourceLoader(new TestStringResourceLoader());
-
     }
 }

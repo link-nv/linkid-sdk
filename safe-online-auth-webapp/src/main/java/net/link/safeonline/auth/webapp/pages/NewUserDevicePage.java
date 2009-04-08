@@ -40,6 +40,7 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 
 
@@ -66,6 +67,24 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
 
     public NewUserDevicePage() {
 
+        getSidebar(localize("helpNewUserDevice"));
+
+        getHeader();
+
+        getContent().add(new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.initial));
+
+        String loginLabel = localize("%l: %s", "login", LoginManager.getLogin(WicketUtil.getHttpSession()));
+        getContent().add(new Label(LOGIN_LABEL_ID, loginLabel));
+
+        getContent().add(new NewUserDeviceForm(NEW_USER_DEVICE_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
         devices = new LinkedList<DeviceDO>();
         List<DeviceEntity> deviceEntities = devicePolicyService.getDevices();
         for (DeviceEntity deviceEntity : deviceEntities) {
@@ -73,17 +92,7 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
             devices.add(new DeviceDO(deviceEntity, friendlyName));
         }
 
-        getSidebar(localize("helpNewUserDevice"));
-
-        getHeader();
-
-        getContent().add(new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.initial));
-
-        String loginLabel = localize("%l: %s", "login", LoginManager.getLogin(WicketUtil.getHttpSession(getRequest())));
-        getContent().add(new Label(LOGIN_LABEL_ID, loginLabel));
-
-        getContent().add(new NewUserDeviceForm(NEW_USER_DEVICE_FORM_ID));
-
+        super.onBeforeRender();
     }
 
     /**
@@ -114,7 +123,17 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
             add(deviceGroup);
             add(new ErrorComponentFeedbackLabel("device_feedback", deviceGroup, new Model<String>(localize("errorDeviceSelection"))));
 
-            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, devices) {
+            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, new AbstractReadOnlyModel<List<DeviceDO>>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<DeviceDO> getObject() {
+
+                    return devices;
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -161,12 +180,10 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirect(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), registrationURL, deviceName,
-                                    LoginManager.getUserId(WicketUtil.getHttpSession(getRequest())));
+                            AuthenticationUtils.redirect(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(), getLocale(),
+                                    registrationURL, deviceName, LoginManager.getUserId(WicketUtil.getHttpSession()));
 
                         }
-
                     });
                 }
             });
@@ -174,5 +191,4 @@ public class NewUserDevicePage extends AuthenticationTemplatePage {
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
         }
     }
-
 }

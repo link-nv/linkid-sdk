@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.LoginBase;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineAuthenticationUtils;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.seam.annotations.Destroy;
@@ -80,7 +80,7 @@ public class LoginBaseBean implements LoginBase {
          * The login cookie is used to help in detecting an application level session timeout.
          */
         addLoginCookie();
-        return SafeOnlineLoginUtils.login("overview.seam", false, localeSelector.getLocale(), null, false, false, null);
+        return SafeOnlineAuthenticationUtils.login("overview.seam", false, localeSelector.getLocale(), null, false, false, null);
     }
 
     public String logout() {
@@ -88,7 +88,7 @@ public class LoginBaseBean implements LoginBase {
         log.debug("logout");
         String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         removeLoginCookie();
-        SafeOnlineLoginUtils.logout(userId, "main.seam");
+        SafeOnlineAuthenticationUtils.logout(userId, "main.seam");
         return "success";
     }
 

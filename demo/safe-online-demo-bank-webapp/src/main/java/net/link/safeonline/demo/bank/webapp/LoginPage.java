@@ -17,13 +17,22 @@ public class LoginPage extends LayoutPage {
      */
     public LoginPage() {
 
+        // HTML Components.
+        add(new PageLink<OlasAuthPage>("olasLoginLink", OlasAuthPage.class));
+        add(new PageLink<DigipassLoginPage>("digipassLoginLink", DigipassLoginPage.class));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
         // If logged in, send user to the ticket history page.
         if (BankSession.get().isUserSet())
             throw new RestartResponseException(AccountPage.class);
 
-        // HTML Components.
-        add(new PageLink<OlasAuthPage>("olasLoginLink", OlasAuthPage.class));
-        add(new PageLink<DigipassLoginPage>("digipassLoginLink", DigipassLoginPage.class));
+        super.onBeforeRender();
     }
 
     /**

@@ -18,7 +18,7 @@ import net.link.safeonline.sdk.test.DummyAttributeClient;
 import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.OlasAuthRedirectPage;
+import net.link.safeonline.wicket.web.OlasLoginLink;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.PageParameters;
@@ -50,12 +50,13 @@ public class PaymentWebTest extends AbstractWicketTests {
      * We end up on the {@link AccountPage}.
      */
     @Test
-    public void testOlasLogin() {
+    public void testLogin()
+            throws Exception {
 
         // LoginPage: Verify.
-        wicket.processRequestCycle();
         wicket.assertRenderedPage(LoginPage.class);
-        wicket.assertPageLink("olasLoginLink", OlasAuthRedirectPage.class);
+        wicket.assertComponent("olasLoginLink", OlasLoginLink.class);
+        mockOLASLoginLink();
 
         // LoginPage: Click to login with digipass.
         wicket.clickLink("olasLoginLink");
@@ -78,13 +79,15 @@ public class PaymentWebTest extends AbstractWicketTests {
      * We end up on the {@link LoginPage}.
      */
     @Test
-    public void testLogout() {
+    public void testLogout()
+            throws Exception {
 
         // Login using OLAS.
-        testOlasLogin();
+        testLogin();
 
         // AccountPage: Verify.
         wicket.assertComponent("user:logout", OlasLogoutLink.class);
+        mockOLASLogoutLink();
 
         // AccountPage: Log out.
         wicket.clickLink("user:logout");
@@ -105,7 +108,8 @@ public class PaymentWebTest extends AbstractWicketTests {
      * We end up on the {@link AccountPage}.
      */
     @Test
-    public void testNewTransaction() {
+    public void testNewTransaction()
+            throws Exception {
 
         // Test Data.
         String testDescription = "Test Transaction";
@@ -117,7 +121,7 @@ public class PaymentWebTest extends AbstractWicketTests {
         DummyAttributeClient.setAttribute(getOLASUserId(), DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, testVisas);
 
         // Login using Digipass.
-        testOlasLogin();
+        testLogin();
 
         // AccountPage: Verify.
         wicket.assertPageLink("account:newTransaction", NewTransactionPage.class);
@@ -182,7 +186,8 @@ public class PaymentWebTest extends AbstractWicketTests {
      * We end up on the {@link AccountPage}.
      */
     @Test
-    public void testNewService() {
+    public void testNewService()
+            throws Exception {
 
         // Test Data.
         String testDescription = "Test Transaction Request";
@@ -195,11 +200,13 @@ public class PaymentWebTest extends AbstractWicketTests {
 
         // Requesting application redirects to our service page.
         wicket.startPage(NewServicePage.class, new PageParameters(String.format("recipient=%s,amount=%.2f,message=%s,target=%s",
-                testTarget, testAmount, testDescription, "")));
+                testTarget, testAmount, testDescription, "?")));
 
         // NewServicePage: Verify.
         wicket.assertRenderedPage(NewServicePage.class);
         wicket.assertComponent("newService", Form.class);
+        mockOLASLoginLink();
+
         String sampleServiceTarget = wicket.getComponentFromLastRenderedPage("newService:target").getDefaultModelObjectAsString();
         String sampleServiceFormattedAmount = wicket.getComponentFromLastRenderedPage("newService:amount").getDefaultModelObjectAsString();
         String sampleServiceDescription = wicket.getComponentFromLastRenderedPage("newService:description").getDefaultModelObjectAsString();
@@ -245,7 +252,7 @@ public class PaymentWebTest extends AbstractWicketTests {
         newTransaction.submit();
 
         // AccountPage: Verify && transaction created successfully.
-        wicket.assertRenderedPage(AccountPage.class);
+        wicket.startPage(AccountPage.class);
         wicket.assertComponent("account:transactionList", ListView.class);
 
         // - Find the transaction in the account's transactions list.

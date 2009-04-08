@@ -32,8 +32,6 @@ public class ErrorPage extends TemplatePage {
 
     public ErrorPage() {
 
-        super();
-
         getHeader();
     }
 

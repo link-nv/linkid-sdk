@@ -8,7 +8,6 @@ import static org.easymock.EasyMock.verify;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.service.UsageAgreementService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -19,6 +18,7 @@ import net.link.safeonline.user.webapp.pages.account.AccountPage;
 import net.link.safeonline.user.webapp.pages.account.HistoryPage;
 import net.link.safeonline.user.webapp.pages.account.RemovePage;
 import net.link.safeonline.user.webapp.pages.account.UsagePage;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.webapp.template.TemplatePage;
 
@@ -46,7 +46,7 @@ public class UsagePageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockUsageAgreementService = createMock(UsageAgreementService.class);
         jndiTestUtils.bindComponent(UsageAgreementService.class, mockUsageAgreementService);

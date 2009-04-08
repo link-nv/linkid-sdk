@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 /**
@@ -72,17 +73,29 @@ public class AccountPage extends LayoutPage {
 
             super(id);
 
-            final List<BankAccountEntity> accounts = userService.getAccounts(BankSession.get().getUser());
-
             /* Accounts List. */
-            add(new ListView<BankAccountEntity>("accountList", accounts) {
+            add(new ListView<BankAccountEntity>("accountList", new AbstractReadOnlyModel<List<BankAccountEntity>>() {
 
                 private static final long serialVersionUID = 1L;
 
-                {
-                    setVisible(!accounts.isEmpty());
-                }
 
+                @Override
+                public List<BankAccountEntity> getObject() {
+
+                    return userService.getAccounts(BankSession.get().getUser());
+                }
+            }) {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                protected void onBeforeRender() {
+
+                    setVisible(!getModelObject().isEmpty());
+
+                    super.onBeforeRender();
+                }
 
                 @Override
                 protected void populateItem(ListItem<BankAccountEntity> accountItem) {
@@ -94,14 +107,29 @@ public class AccountPage extends LayoutPage {
                     accountItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, account.getAmount())));
 
                     /* Transactions List. */
-                    accountItem.add(new ListView<BankTransactionEntity>("transactionList", transactionService.getAllTransactions(account)) {
+                    accountItem.add(new ListView<BankTransactionEntity>("transactionList",
+                            new AbstractReadOnlyModel<List<BankTransactionEntity>>() {
+
+                                private static final long serialVersionUID = 1L;
+
+
+                                @Override
+                                public java.util.List<BankTransactionEntity> getObject() {
+
+                                    return transactionService.getAllTransactions(account);
+                                }
+                            }) {
 
                         private static final long serialVersionUID = 1L;
 
-                        {
-                            setVisible(!accounts.isEmpty());
-                        }
 
+                        @Override
+                        protected void onBeforeRender() {
+
+                            setVisible(!getModelObject().isEmpty());
+
+                            super.onBeforeRender();
+                        }
 
                         @Override
                         protected void populateItem(ListItem<BankTransactionEntity> transactionItem) {
@@ -149,10 +177,6 @@ public class AccountPage extends LayoutPage {
 
             private static final long serialVersionUID = 1L;
 
-            {
-                setVisible(BankSession.get().getUser().getOlasId() == null);
-            }
-
 
             @Override
             public void onClick() {
@@ -160,6 +184,17 @@ public class AccountPage extends LayoutPage {
                 BankSession.get().setLinkingUser(BankSession.get().getUser());
 
                 super.onClick();
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            protected void onBeforeRender() {
+
+                setVisible(BankSession.get().getUser().getOlasId() == null);
+
+                super.onBeforeRender();
             }
         };
     }

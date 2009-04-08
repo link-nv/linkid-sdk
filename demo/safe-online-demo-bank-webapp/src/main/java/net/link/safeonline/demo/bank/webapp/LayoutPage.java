@@ -49,12 +49,19 @@ public abstract class LayoutPage extends OlasApplicationPage {
         add(globalFeedback = new FeedbackPanel("globalFeedback"));
 
         add(new UserInfo("user"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
 
         // Support linking bank user to olas user.
-        if (BankSession.isLinking() && WicketUtil.isOlasAuthenticated(getRequest())) {
+        if (BankSession.isLinking() && WicketUtil.isOlasAuthenticated()) {
             try {
                 BankUserEntity user = BankSession.get().getUser();
-                String olasId = WicketUtil.findOlasId(getRequest());
+                String olasId = WicketUtil.findOlasId();
 
                 BankSession.get().setUser(userService.linkOLASUser(user, olasId));
             }
@@ -67,13 +74,6 @@ public abstract class LayoutPage extends OlasApplicationPage {
                 BankSession.get().setLinkingUser(null);
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onBeforeRender() {
 
         globalFeedback.setVisible(globalFeedback.anyErrorMessage());
 
@@ -86,7 +86,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
     @Override
     protected void onOlasAuthenticated() {
 
-        String olasId = WicketUtil.findOlasId(getRequest());
+        String olasId = WicketUtil.findOlasId();
         BankUserEntity user = userService.getOLASUser(olasId);
 
         BankSession.get().setUser(userService.updateUser(user));

@@ -107,7 +107,7 @@ public class LayoutPage extends OlasApplicationPage {
     @Override
     protected void onOlasAuthenticated() {
 
-        String olasId = WicketUtil.findOlasId(getRequest());
+        String olasId = WicketUtil.findOlasId();
         CinemaUserEntity user = userService.getUser(olasId);
 
         CinemaSession.get().setUser(userService.updateUser(user));

@@ -34,8 +34,8 @@ public class DeviceErrorPage extends AuthenticationTemplatePage {
 
         String deviceErrorMessage = localize("errorMessage");
 
-        if (null != WicketUtil.getHttpSession(getRequest()).getAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE)) {
-            deviceErrorMessage = (String) WicketUtil.getHttpSession(getRequest()).getAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE);
+        if (null != WicketUtil.getHttpSession().getAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE)) {
+            deviceErrorMessage = (String) WicketUtil.getHttpSession().getAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE);
         }
 
         getContent().add(new Label(DEVICE_ERROR_MESSAGE_LABEL_ID, deviceErrorMessage));

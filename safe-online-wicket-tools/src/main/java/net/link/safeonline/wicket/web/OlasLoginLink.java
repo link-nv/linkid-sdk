@@ -6,12 +6,15 @@
  */
 package net.link.safeonline.wicket.web;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineAuthenticationUtils;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
 
 
@@ -25,7 +28,7 @@ import org.apache.wicket.Session;
  * 
  * @author lhunath
  */
-public class OlasLoginLink extends OlasAuthLink {
+public class OlasLoginLink extends AbstractOlasAuthLink {
 
     private static final long serialVersionUID    = 1L;
     private Integer           color;
@@ -83,10 +86,11 @@ public class OlasLoginLink extends OlasAuthLink {
     /**
      * {@inheritDoc}
      */
-    @Override
-    protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
+    public void delegate(Class<? extends Page> target, HttpServletRequest request, HttpServletResponse response) {
 
-        SafeOnlineLoginUtils.login(target, Session.exists()? Session.get().getLocale(): request.getLocale(), color, minimal,
-                forceAuthentication, session, request, response);
+        String targetUrl = RequestCycle.get().urlFor(target, null).toString();
+        Locale locale = Session.exists()? Session.get().getLocale(): request.getLocale();
+
+        SafeOnlineAuthenticationUtils.login(targetUrl, locale, color, minimal, forceAuthentication, session, request, response);
     }
 }

@@ -7,6 +7,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasApplicationPage;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
 
@@ -24,8 +25,15 @@ public abstract class TemplatePage extends OlasApplicationPage {
 
     public TemplatePage() {
 
+        this(null);
+    }
+
+    public TemplatePage(PageParameters parameters) {
+
+        super(parameters);
+
         // If minimal session attribute is set, add minimal.css style sheet.
-        HttpSession httpSession = WicketUtil.getHttpSession(getRequest());
+        HttpSession httpSession = WicketUtil.getHttpSession();
         Object minimalAttribute = httpSession.getAttribute(SafeOnlineAppConstants.MINIMAL_SESSION_ATTRIBUTE);
         boolean isMinimal = Boolean.parseBoolean(String.valueOf(minimalAttribute));
         if (isMinimal) {
@@ -98,7 +106,9 @@ public abstract class TemplatePage extends OlasApplicationPage {
     public SidebarBorder getSidebar(String helpMessage, boolean showHelpdeskLink, SideLink... links) {
 
         if (null == sidebarBorder) {
-            sidebarBorder = new SidebarBorder(SIDEBAR_ID, helpMessage, showHelpdeskLink, links);
+            sidebarBorder = new SidebarBorder(SIDEBAR_ID, helpMessage, showHelpdeskLink);
+            sidebarBorder.setLinks(links);
+
             contentBorder.add(sidebarBorder);
         }
 

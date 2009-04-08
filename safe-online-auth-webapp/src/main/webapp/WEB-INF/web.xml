@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE webapp-configuration PUBLIC
-    "-//Webapp Configuration DTD//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd" [
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd" [
     <!ENTITY web-common-wicket SYSTEM "web-common-wicket.xml">
     <!ENTITY web-error-codes SYSTEM "web-error-codes.xml"> ]>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-	version="2.4">
+<web-app>
 
 	<display-name>Olas Authentication Web Application</display-name>
 
@@ -40,6 +36,10 @@
 		<param-name>ApplicationName</param-name>
 		<param-value>${safe-online.auth.webapp.name}</param-value>
 	</context-param>
+    <context-param>
+        <param-name>LogoutExitPath</param-name>
+        <param-value>/logoutexit</param-value>
+    </context-param>
 
 	<!-- Application Filter Definitions And Mappings -->
 	<filter>
@@ -181,10 +181,6 @@
 		<servlet-name>LogoutEntryServlet</servlet-name>
 		<servlet-class>net.link.safeonline.auth.servlet.LogoutEntryServlet</servlet-class>
 
-		<init-param>
-			<param-name>LogoutExitPath</param-name>
-			<param-value>/logoutexit</param-value>
-		</init-param>
 		<init-param>
 			<param-name>CookiePath</param-name>
 			<param-value>/${safe-online.auth.webapp.name}</param-value>

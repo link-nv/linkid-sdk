@@ -19,7 +19,6 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.digipass.webapp.AuthenticationPage;
 import net.link.safeonline.entity.NodeEntity;
@@ -32,6 +31,7 @@ import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.template.TemplatePage;
 
 import org.apache.wicket.markup.html.form.Form;
@@ -64,7 +64,7 @@ public class AuthenticationPageTest {
             throws Exception {
 
         jndiTestUtils = new JndiTestUtils();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
         jndiTestUtils.setUp();
 
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
@@ -122,7 +122,7 @@ public class AuthenticationPageTest {
         // prepare
         replay(mockDigipassDeviceService, mockSamlAuthorityService, mockNodeAuthenticationService);
 
-        // RegisterPage: Register digipass for user
+        // RegistrationPage: Register digipass for user
         FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);

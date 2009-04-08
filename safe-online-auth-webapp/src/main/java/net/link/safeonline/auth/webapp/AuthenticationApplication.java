@@ -19,6 +19,7 @@ import net.link.safeonline.auth.webapp.pages.MainPage;
 import net.link.safeonline.auth.webapp.pages.MissingAttributesPage;
 import net.link.safeonline.auth.webapp.pages.NewUserDevicePage;
 import net.link.safeonline.auth.webapp.pages.RegisterDevicePage;
+import net.link.safeonline.auth.webapp.pages.SSOLogoutPage;
 import net.link.safeonline.auth.webapp.pages.SelectUserPage;
 import net.link.safeonline.auth.webapp.pages.SubscriptionPage;
 import net.link.safeonline.auth.webapp.pages.TimeoutPage;
@@ -55,6 +56,7 @@ public class AuthenticationApplication extends OlasApplication {
         mountBookmarkablePage(IdentityConfirmationPage.PATH, IdentityConfirmationPage.class);
         mountBookmarkablePage(IdentityUnavailablePage.PATH, IdentityUnavailablePage.class);
         mountBookmarkablePage(MissingAttributesPage.PATH, MissingAttributesPage.class);
+        mountBookmarkablePage(SSOLogoutPage.PATH, SSOLogoutPage.class);
 
         getApplicationSettings().setPageExpiredErrorPage(TimeoutPage.class);
 

@@ -21,12 +21,14 @@ import net.link.safeonline.auth.protocol.LogoutServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.webapp.pages.AuthenticationProtocolErrorPage;
+import net.link.safeonline.auth.webapp.pages.SSOLogoutPage;
 import net.link.safeonline.auth.webapp.pages.UnsupportedProtocolPage;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.model.node.util.AbstractNodeInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.ServletUtils;
 import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -55,7 +57,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
 
-    public static final String LOGOUT_EXIT_PATH = "LogoutExitPath";
     public static final String COOKIE_PATH      = "CookiePath";
 
     private static final long  serialVersionUID = 1L;
@@ -63,9 +64,6 @@ public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
     private static final Log   LOG              = LogFactory.getLog(LogoutEntryServlet.class);
 
     public static final String SERVLET_PATH     = "logoutentry";
-
-    @Init(name = LOGOUT_EXIT_PATH)
-    private String             logoutExitPath;
 
     @Init(name = COOKIE_PATH)
     private String             cookiePath;
@@ -95,7 +93,7 @@ public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
         try {
             logoutProtocolContext = ProtocolHandlerManager.handleLogoutRequest(request);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
+            ServletUtils.redirectToErrorPage(request, response, AuthenticationProtocolErrorPage.PATH, null, new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
                     AuthenticationProtocolErrorPage.PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
@@ -134,7 +132,7 @@ public class LogoutEntryServlet extends AbstractNodeInjectionServlet {
 
         }
 
-        response.sendRedirect(logoutExitPath);
+        response.sendRedirect(SSOLogoutPage.PATH);
     }
 
     /**

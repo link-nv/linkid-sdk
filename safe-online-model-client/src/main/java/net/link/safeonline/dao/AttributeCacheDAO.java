@@ -30,7 +30,9 @@ public interface AttributeCacheDAO extends SafeOnlineService {
 
 
     /**
-     * TODO
+     * @param subject
+     * @param attributeType
+     * @return List all cached attributes for specified subject and attribute type
      */
     List<AttributeCacheEntity> listAttributes(SubjectEntity subject, AttributeTypeEntity attributeType);
 

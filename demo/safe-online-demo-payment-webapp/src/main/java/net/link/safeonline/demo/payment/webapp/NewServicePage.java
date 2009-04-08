@@ -10,6 +10,7 @@ import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 /**
@@ -34,6 +35,7 @@ import org.apache.wicket.markup.html.link.Link;
 public class NewServicePage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
+    PaymentService            service;
 
 
     /**
@@ -41,13 +43,25 @@ public class NewServicePage extends LayoutPage {
      * 
      * If not logged in, redirects back to the {@link LoginPage}.
      */
-    public NewServicePage(PageParameters parameters) {
+    public NewServicePage(@SuppressWarnings("unused") PageParameters parameters) {
 
-        PaymentSession.get().startService(
-                new PaymentService(parameters.getString("recipient"), parameters.getDouble("amount"), parameters.getString("message"),
-                        parameters.getString("target")));
+        super(parameters);
 
         add(new ServiceForm("newService"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        if (getPageParameters().getString("recipient") != null) {
+            service = new PaymentService(getPageParameters().getString("recipient"), getPageParameters().getDouble("amount"),
+                    getPageParameters().getString("message"), getPageParameters().getString("target"));
+        }
+
+        super.onBeforeRender();
     }
 
 
@@ -68,21 +82,56 @@ public class NewServicePage extends LayoutPage {
     class ServiceForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
+        private OlasLoginLink     loginLink;
 
 
         public ServiceForm(String id) {
 
             super(id);
 
-            add(new Label("description", PaymentSession.get().getService().getMessage()));
-            add(new Label("target", PaymentSession.get().getService().getRecipient()));
-            add(new Label("amount", WicketUtil.format(PaymentSession.CURRENCY, PaymentSession.get().getService().getAmount())));
+            add(new Label("description", new AbstractReadOnlyModel<String>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public String getObject() {
+
+                    return service.getMessage();
+                }
+            }));
+            add(new Label("target", new AbstractReadOnlyModel<String>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public String getObject() {
+
+                    return service.getRecipient();
+                }
+            }));
+            add(new Label("amount", new AbstractReadOnlyModel<String>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public String getObject() {
+
+                    return WicketUtil.format(PaymentSession.CURRENCY, service.getAmount());
+                }
+            }));
+
+            add(loginLink = new OlasLoginLink("olasLogin", NewTransactionPage.class));
+            loginLink.setVisibilityAllowed(false);
         }
 
         @Override
         protected void onSubmit() {
 
-            new OlasLoginLink("olasLogin", NewTransactionPage.class).onClick();
+            PaymentSession.get().startService(service);
+            loginLink.onClick();
         }
     }
 

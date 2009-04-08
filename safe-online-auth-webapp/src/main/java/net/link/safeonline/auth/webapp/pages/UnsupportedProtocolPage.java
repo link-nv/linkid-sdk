@@ -9,6 +9,7 @@ package net.link.safeonline.auth.webapp.pages;
 
 import net.link.safeonline.auth.webapp.template.AuthenticationTemplatePage;
 
+
 public class UnsupportedProtocolPage extends AuthenticationTemplatePage {
 
     private static final long  serialVersionUID = 1L;
@@ -19,7 +20,6 @@ public class UnsupportedProtocolPage extends AuthenticationTemplatePage {
     public UnsupportedProtocolPage() {
 
         getHeader();
-
     }
 
     /**

@@ -39,12 +39,14 @@ public class LogoutServiceManager implements HttpSessionListener {
 
     public static void bindLogoutService(HttpSession session) {
 
+        LOG.debug("bindlogoutservice");
         LogoutService logoutService = EjbUtils.getEJB(LogoutService.JNDI_BINDING, LogoutService.class);
         session.setAttribute(LOGOUT_SERVICE_ATTRIBUTE, logoutService);
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
 
+        LOG.debug("session destroyed");
         HttpSession session = event.getSession();
 
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
@@ -82,9 +84,11 @@ public class LogoutServiceManager implements HttpSessionListener {
      */
     public static LogoutService getLogoutService(HttpSession session) {
 
+        LOG.debug("looking up logout service");
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");
+
         return logoutService;
     }
 
@@ -100,6 +104,7 @@ public class LogoutServiceManager implements HttpSessionListener {
     public static String finalizeLogout(HttpSession session)
             throws NodeNotFoundException {
 
+        LOG.debug("finalizeLogout");
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");
@@ -120,6 +125,7 @@ public class LogoutServiceManager implements HttpSessionListener {
      */
     public static void abort(HttpSession session) {
 
+        LOG.debug("abort");
         LogoutService logoutService = (LogoutService) session.getAttribute(LOGOUT_SERVICE_ATTRIBUTE);
         if (null == logoutService)
             throw new IllegalStateException("logout service instance not present");

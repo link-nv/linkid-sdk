@@ -37,10 +37,12 @@ import org.apache.wicket.RedirectToUrlException;
  */
 public class RegistrationPage extends AppletPage {
 
-    private static final long serialVersionUID = 1L;
+    private static final long         serialVersionUID = 1L;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    SamlAuthorityService      samlAuthorityService;
+    SamlAuthorityService              samlAuthorityService;
+
+    private ProgressRegistrationPanel progress;
 
 
     public RegistrationPage(PageParameters parameters) {
@@ -53,10 +55,20 @@ public class RegistrationPage extends AppletPage {
         getSidebar(localize("helpExtractIdentity"));
 
         // Our content.
-        ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest())).getDeviceOperation().equals(
-                DeviceOperationType.NEW_ACCOUNT_REGISTER));
+        progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
         getContent().add(progress);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        progress.setVisible(ProtocolContext.getProtocolContext(WicketUtil.getHttpSession()).getDeviceOperation().equals(
+                DeviceOperationType.NEW_ACCOUNT_REGISTER));
+
+        super.onBeforeRender();
     }
 
     /**
@@ -99,7 +111,7 @@ public class RegistrationPage extends AppletPage {
     @Override
     protected void cancel() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         protocolContext.setSuccess(false);
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 

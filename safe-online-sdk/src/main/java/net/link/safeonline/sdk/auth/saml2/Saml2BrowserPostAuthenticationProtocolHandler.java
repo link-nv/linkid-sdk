@@ -233,7 +233,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        RequestUtil.sendRequest(authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse, true);
+        RequestUtil.sendRequest(authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse, false);
     }
 
     /**
@@ -288,6 +288,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, authnServiceUrl, response, true);
+        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, authnServiceUrl, response, false);
     }
 }

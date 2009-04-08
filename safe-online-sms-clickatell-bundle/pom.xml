@@ -50,7 +50,6 @@
 							!org.apache.bsf, javax.xml.namespace,
 							*
 						</Import-Package>
-						-->
 						<Bundle-Activator>
 							net.link.safeonline.sms.clickatell.osgi.ClickatellSmsServiceActivator
 						</Bundle-Activator>

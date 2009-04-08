@@ -7,6 +7,8 @@
 
 package test.unit.net.link.safeonline.validation;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,7 +19,6 @@ import java.util.Map;
 
 import javax.interceptor.InvocationContext;
 
-import junit.framework.TestCase;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.ValidatorAnnotation;
 import net.link.safeonline.validation.validator.Validator;
@@ -25,18 +26,18 @@ import net.link.safeonline.validation.validator.ValidatorResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 
-public class InputValidationTest extends TestCase {
+public class InputValidationTest {
 
     private InputValidation testedInstance;
 
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
             throws Exception {
-
-        super.setUp();
 
         testedInstance = new InputValidation();
     }
@@ -86,6 +87,7 @@ public class InputValidationTest extends TestCase {
         throw new IllegalArgumentException("no method found with name: " + methodName);
     }
 
+    @Test
     public void testInvoke()
             throws Exception {
 

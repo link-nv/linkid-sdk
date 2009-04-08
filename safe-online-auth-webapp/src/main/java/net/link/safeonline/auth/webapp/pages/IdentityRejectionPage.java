@@ -23,8 +23,6 @@ public class IdentityRejectionPage extends AuthenticationTemplatePage {
 
     public IdentityRejectionPage() {
 
-        final String applicationUrl = findApplicationUrl();
-
         getHeader();
 
         getContent().add(new Link<String>(MAIN_LINK_ID) {
@@ -35,7 +33,7 @@ public class IdentityRejectionPage extends AuthenticationTemplatePage {
             @Override
             public void onClick() {
 
-                getResponse().redirect(applicationUrl);
+                getResponse().redirect(findApplicationUrl());
                 setRedirect(false);
             }
 
@@ -45,7 +43,7 @@ public class IdentityRejectionPage extends AuthenticationTemplatePage {
             @Override
             public boolean isVisible() {
 
-                return null != applicationUrl;
+                return null != findApplicationUrl();
             }
         });
 
@@ -57,9 +55,8 @@ public class IdentityRejectionPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-        String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
-        return title;
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
+        return localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
     }
 
 }

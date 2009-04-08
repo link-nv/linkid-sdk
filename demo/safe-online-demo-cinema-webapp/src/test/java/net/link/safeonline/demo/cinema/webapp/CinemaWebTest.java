@@ -43,7 +43,7 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.test.DummyServiceFactory;
 import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.OlasAuthLink;
+import net.link.safeonline.wicket.web.OlasLoginLink;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.Session;
@@ -75,12 +75,13 @@ public class CinemaWebTest extends AbstractWicketTests {
      * We end up on the {@link TicketPage}.
      */
     @Test
-    public void testLogin() {
+    public void testLogin()
+            throws Exception {
 
         // LoginPage: Verify.
-        wicket.processRequestCycle();
         wicket.assertRenderedPage(LoginPage.class);
-        wicket.assertComponent("loginLink", OlasAuthLink.class);
+        wicket.assertComponent("loginLink", OlasLoginLink.class);
+        mockOLASLoginLink();
 
         // LoginPage: Click to login with digipass.
         wicket.clickLink("loginLink");
@@ -99,13 +100,15 @@ public class CinemaWebTest extends AbstractWicketTests {
      * We end up on the {@link LoginPage}.
      */
     @Test
-    public void testLogout() {
+    public void testLogout()
+            throws Exception {
 
         // Login using OLAS.
         testLogin();
 
         // TicketPage: Verify.
         wicket.assertComponent("user:logout", OlasLogoutLink.class);
+        mockOLASLogoutLink();
 
         // TicketPage: Log out.
         wicket.clickLink("user:logout");
@@ -127,7 +130,8 @@ public class CinemaWebTest extends AbstractWicketTests {
      * We end up on the {@link TicketPage}.
      */
     @Test
-    public void testNewTicket() {
+    public void testNewTicket()
+            throws Exception {
 
         // Test data.
         int filmIndex = 0, theatreIndex = 0, roomIndex = 0, timeIndex = 0;

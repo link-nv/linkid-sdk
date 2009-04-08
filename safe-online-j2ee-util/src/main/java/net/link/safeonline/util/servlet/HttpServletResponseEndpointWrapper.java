@@ -56,7 +56,6 @@ public class HttpServletResponseEndpointWrapper extends HttpServletResponseWrapp
         catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
-
     }
 
     /**

@@ -82,7 +82,7 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession()).setUsedDevice(
+                AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest().getSession()).setUsedDevice(
                         PasswordConstants.PASSWORD_DEVICE_ID);
                 exit();
             }
@@ -91,7 +91,7 @@ public class AuthenticationPage extends TemplatePage {
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
         String title = localize("%l %s", "authenticatingFor", AuthenticationContext.getAuthenticationContext(
-                WicketUtil.toServletRequest(getRequest()).getSession()).getApplication());
+                WicketUtil.getServletRequest().getSession()).getApplication());
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
@@ -152,29 +152,26 @@ public class AuthenticationPage extends TemplatePage {
                         passwordDeviceService.authenticate(userId, password.getObject());
                         login(userId);
 
-                        HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
+                        HelpdeskLogger.clear(WicketUtil.getServletRequest().getSession());
                     }
 
                     catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login: subject not found for " + login,
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "login: subject not found for " + login,
                                 LogLevelType.ERROR);
                     } catch (PermissionDeniedException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(),
                                 "Failed to contact OLAS to retrieve device mapping for " + login, LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Password Device is disabled",
-                                LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "Password Device is disabled", LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Password Device not found",
-                                LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "Password Device not found", LogLevelType.ERROR);
                     } catch (DeviceAuthenticationException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: " + login,
-                                LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.getServletRequest().getSession(), "login failed: " + login, LogLevelType.ERROR);
                     }
                 }
 
@@ -222,8 +219,8 @@ public class AuthenticationPage extends TemplatePage {
     public void login(String userId) {
 
         try {
-            AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(
-                    getRequest()).getSession());
+            AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getServletRequest()
+                                                                                                                   .getSession());
             authenticationContext.setIssuer(nodeAuthenticationService.getLocalNode().getName());
             authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
             authenticationContext.setUsedDevice(PasswordConstants.PASSWORD_DEVICE_ID);

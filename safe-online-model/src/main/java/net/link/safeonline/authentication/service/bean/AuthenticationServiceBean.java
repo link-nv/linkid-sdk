@@ -143,7 +143,7 @@ import org.opensaml.xml.validation.ValidationException;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 
-    private static final Log                    LOG                   = LogFactory.getLog(AuthenticationServiceBean.class);
+    static final Log                    LOG                           = LogFactory.getLog(AuthenticationServiceBean.class);
 
     private static final SafeOnlineNodeKeyStore nodeKeyStore          = new SafeOnlineNodeKeyStore();
 

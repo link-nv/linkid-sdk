@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 
 
@@ -68,13 +69,6 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
 
     public AllDevicesPage() {
 
-        devices = new LinkedList<DeviceDO>();
-        List<DeviceEntity> deviceEntities = devicePolicyService.getDevices();
-        for (DeviceEntity deviceEntity : deviceEntities) {
-            String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
-            devices.add(new DeviceDO(deviceEntity, friendlyName));
-        }
-
         Link<String> newUserLink = new Link<String>(SidebarBorder.LINK_ID) {
 
             private static final long serialVersionUID = 1L;
@@ -83,7 +77,7 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
             @Override
             public void onClick() {
 
-                throw new RestartResponseException(new NewUserPage());
+                throw new RestartResponseException(NewUserPage.class);
             }
         };
         getSidebar(localize("helpAllDevices"), new SideLink(newUserLink, localize("newUser")));
@@ -98,9 +92,25 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
      * {@inheritDoc}
      */
     @Override
+    protected void onBeforeRender() {
+
+        devices = new LinkedList<DeviceDO>();
+        List<DeviceEntity> deviceEntities = devicePolicyService.getDevices();
+        for (DeviceEntity deviceEntity : deviceEntities) {
+            String friendlyName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), getLocale());
+            devices.add(new DeviceDO(deviceEntity, friendlyName));
+        }
+
+        super.onBeforeRender();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -124,7 +134,17 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
             add(deviceGroup);
             add(new ErrorComponentFeedbackLabel("device_feedback", deviceGroup, new Model<String>(localize("errorDeviceSelection"))));
 
-            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, devices) {
+            ListView<DeviceDO> deviceView = new ListView<DeviceDO>(DEVICES_ID, new AbstractReadOnlyModel<List<DeviceDO>>() {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public List<DeviceDO> getObject() {
+
+                    return devices;
+                }
+            }) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -163,7 +183,7 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
                     }
                     LOG.debug("authenticationPath: " + authenticationPath);
 
-                    String requestPath = WicketUtil.toServletRequest(getRequest()).getRequestURL().toString();
+                    String requestPath = WicketUtil.getServletRequest().getRequestURL().toString();
                     if (!requestPath.endsWith(PATH)) {
                         requestPath += PATH;
                     }
@@ -177,14 +197,10 @@ public class AllDevicesPage extends AuthenticationTemplatePage {
 
                         public void respond(RequestCycle requestCycle) {
 
-                            AuthenticationUtils.redirectAuthentication(WicketUtil.toServletRequest(getRequest()),
-                                    WicketUtil.toServletResponse(getResponse()), getLocale(), finalRequestPath, authenticationPath,
-                                    deviceName);
-
+                            AuthenticationUtils.redirectAuthentication(WicketUtil.getServletRequest(), WicketUtil.getServletResponse(),
+                                    getLocale(), finalRequestPath, authenticationPath, deviceName);
                         }
-
                     });
-
                 }
             });
 

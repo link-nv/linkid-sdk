@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -121,12 +122,35 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
     private SingleSignOnService                       ssoService;
 
+    private boolean                                   sequential;
+
 
     @PostConstruct
     public void postConstruct() {
 
         ssoApplicationStates = new HashMap<ApplicationEntity, LogoutState>();
         ssoApplicationChallenges = new HashMap<ApplicationEntity, Challenge<String>>();
+    }
+
+    @PreDestroy
+    public void preDestroyCallback() {
+
+        if (null != ssoService) {
+            ssoService.abort();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Remove
+    public void abort() {
+
+        LOG.debug("abort");
+        authenticatedSubject = null;
+        logoutApplication = null;
+        expectedChallengeId = null;
+        expectedTarget = null;
     }
 
     /**
@@ -137,12 +161,31 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         return ssoApplicationStates.get(application);
     }
 
-    @PreDestroy
-    public void preDestroyCallback() {
+    /**
+     * {@inheritDoc}
+     */
+    public List<ApplicationEntity> getSsoApplicationsToLogout() {
 
-        if (null != ssoService) {
-            ssoService.abort();
-        }
+        List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
+        for (Map.Entry<ApplicationEntity, LogoutState> ssoApplicationState : ssoApplicationStates.entrySet())
+            if (LogoutState.INITIALIZED.equals(ssoApplicationState.getValue())) {
+                applications.add(ssoApplicationState.getKey());
+            }
+
+        return applications;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ApplicationEntity getSsoApplicationToLogout(long applicationId)
+            throws ApplicationNotFoundException {
+
+        for (ApplicationEntity application : ssoApplicationStates.keySet())
+            if (application.getId() == applicationId)
+                return application;
+
+        throw new ApplicationNotFoundException();
     }
 
     /**
@@ -159,20 +202,10 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
             }
 
         if (nextApplication != null) {
-            ssoApplicationStates.put(nextApplication, LogoutState.INITIALIZED);
+            ssoApplicationStates.put(nextApplication, LogoutState.INITIATED);
         }
 
         return nextApplication;
-    }
-
-    @Remove
-    public void abort() {
-
-        LOG.debug("abort");
-        authenticatedSubject = null;
-        logoutApplication = null;
-        expectedChallengeId = null;
-        expectedTarget = null;
     }
 
     /**
@@ -184,20 +217,13 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
         Issuer issuer = logoutRequest.getIssuer();
         String issuerName = issuer.getValue();
-        LOG.debug("issuer: " + issuerName);
         ApplicationEntity application = applicationDAO.getApplication(issuerName);
+        LOG.debug("initialize logout for application: " + application.getName());
 
-        List<X509Certificate> certificates = applicationAuthenticationService.getCertificates(issuerName);
-
-        boolean validSignature = false;
-        for (X509Certificate certificate : certificates) {
-            validSignature = validateSignature(certificate, logoutRequest.getSignature());
-            if (validSignature) {
-                break;
-            }
-        }
-        if (!validSignature)
-            throw new SignatureValidationException("signature validation error");
+        // Validate signature.
+        for (X509Certificate certificate : applicationAuthenticationService.getCertificates(issuerName))
+            if (!validateSignature(certificate, logoutRequest.getSignature()))
+                throw new SignatureValidationException("signature validation error");
 
         String samlAuthnRequestId = logoutRequest.getID();
         LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
@@ -233,7 +259,6 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         authenticatedSubject = subject;
 
         return new LogoutProtocolContext(application.getName(), expectedTarget);
-
     }
 
     /**
@@ -270,13 +295,13 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
         PkiResult certificateValid = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
                 certificate);
-
         if (PkiResult.VALID != certificateValid)
             return false;
 
         BasicX509Credential basicX509Credential = new BasicX509Credential();
         basicX509Credential.setPublicKey(certificate.getPublicKey());
         SignatureValidator signatureValidator = new SignatureValidator(basicX509Credential);
+
         try {
             signatureValidator.validate(signature);
         } catch (ValidationException e) {
@@ -334,10 +359,9 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
             throw new IllegalStateException("Received a logout response from an application that's not in the logging_out state.");
 
         // Validate signature.
-        for (X509Certificate certificate : applicationAuthenticationService.getCertificates(issuerName)) {
+        for (X509Certificate certificate : applicationAuthenticationService.getCertificates(issuerName))
             if (!validateSignature(certificate, logoutResponse.getSignature()))
                 throw new SignatureValidationException("signature validation error");
-        }
 
         // Validate challenge ID.
         if (!logoutResponse.getInResponseTo().equals(ssoApplicationChallenges.get(application).getValue()))
@@ -357,6 +381,9 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         return application.getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Remove
     public String finalizeLogout()
             throws NodeNotFoundException {
@@ -378,5 +405,21 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
                 return true;
 
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSequential() {
+
+        return sequential;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSequential(boolean sequential) {
+
+        this.sequential = sequential;
     }
 }

@@ -16,7 +16,7 @@ public class MainPage extends TemplatePage {
     public MainPage() {
 
         getHeader();
-        getContent().add(new PageLink<RegisterPage>(REGISTER_ID, RegisterPage.class));
+        getContent().add(new PageLink<RegistrationPage>(REGISTER_ID, RegistrationPage.class));
         getContent().add(new PageLink<RemovePage>(REMOVE_ID, RemovePage.class));
     }
 

@@ -10,6 +10,7 @@ import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -40,6 +41,13 @@ public abstract class LayoutPage extends OlasApplicationPage {
      */
     public LayoutPage() {
 
+        this(null);
+    }
+
+    public LayoutPage(PageParameters parameters) {
+
+        super(parameters);
+
         add(new Label("pageTitle", "Payment Demo Application"));
         add(new Label("headerTitle", getHeaderTitle()));
         add(globalFeedback = new FeedbackPanel("globalFeedback"));
@@ -66,7 +74,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
     @Override
     protected void onOlasAuthenticated() {
 
-        String olasId = WicketUtil.findOlasId(getRequest());
+        String olasId = WicketUtil.findOlasId();
         PaymentUserEntity user = userService.getUser(olasId);
 
         PaymentSession.get().setUser(userService.updateUser(user));

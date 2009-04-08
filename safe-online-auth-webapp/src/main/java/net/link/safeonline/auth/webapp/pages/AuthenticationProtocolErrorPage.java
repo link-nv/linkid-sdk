@@ -33,11 +33,11 @@ public class AuthenticationProtocolErrorPage extends AuthenticationTemplatePage 
         String protocolName = localize("errorMessage");
         String protocolErrorMessage = localize("errorMessage");
 
-        if (null != WicketUtil.getHttpSession(getRequest()).getAttribute(PROTOCOL_NAME_ATTRIBUTE)) {
-            protocolName = (String) WicketUtil.getHttpSession(getRequest()).getAttribute(PROTOCOL_NAME_ATTRIBUTE);
+        if (null != WicketUtil.getHttpSession().getAttribute(PROTOCOL_NAME_ATTRIBUTE)) {
+            protocolName = (String) WicketUtil.getHttpSession().getAttribute(PROTOCOL_NAME_ATTRIBUTE);
         }
-        if (null != WicketUtil.getHttpSession(getRequest()).getAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE)) {
-            protocolErrorMessage = (String) WicketUtil.getHttpSession(getRequest()).getAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE);
+        if (null != WicketUtil.getHttpSession().getAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE)) {
+            protocolErrorMessage = (String) WicketUtil.getHttpSession().getAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE);
         }
 
         getContent().add(new Label(PROTOCOL_NAME_LABEL_ID, protocolName));

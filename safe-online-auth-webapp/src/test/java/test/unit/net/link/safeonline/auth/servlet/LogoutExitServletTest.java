@@ -137,6 +137,7 @@ public class LogoutExitServletTest {
         expect(mockLogoutService.handleLogoutResponse((LogoutResponse) EasyMock.anyObject())).andStubReturn(applicationName);
         expect(mockLogoutService.findSsoApplicationToLogout()).andStubReturn(application2);
         expect(mockLogoutService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
+        expect(mockLogoutService.isSequential()).andReturn(true);
 
         // prepare
         replay(mockObjects);
@@ -200,6 +201,7 @@ public class LogoutExitServletTest {
         // expectations
         expect(mockLogoutService.findSsoApplicationToLogout()).andStubReturn(application);
         expect(mockLogoutService.getLogoutRequest(application)).andStubReturn(encodedSamlLogoutRequest);
+        mockLogoutService.setSequential(true);
 
         // prepare
         replay(mockObjects);

@@ -67,6 +67,23 @@ public interface LogoutService extends SafeOnlineService {
             LogoutInitializationException;
 
     /**
+     * @return A list of applications to logout. Returns an empty list if there are none.
+     */
+    List<ApplicationEntity> getSsoApplicationsToLogout();
+
+    /**
+     * @return The application from the SSO logout application list that has the given application ID.
+     */
+    ApplicationEntity getSsoApplicationToLogout(long applicationId)
+            throws ApplicationNotFoundException;
+
+    /**
+     * @return An application to send the logout request to when we're doing sequential logout instead of parallel. <code>null</code> means
+     *         all applications have been processed.
+     */
+    ApplicationEntity findSsoApplicationToLogout();
+
+    /**
      * Checks the given list of SSO cookies and extract all applications that need to be logged out.
      * 
      * @param ssoCookies
@@ -77,11 +94,6 @@ public interface LogoutService extends SafeOnlineService {
      * Returns list of invalid sso cookie ( expired, ... )
      */
     List<Cookie> getInvalidCookies();
-
-    /**
-     * Returns the next Application to logout. Returns <code>null</code> if none.
-     */
-    ApplicationEntity findSsoApplicationToLogout();
 
     /**
      * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent to the application.
@@ -122,4 +134,20 @@ public interface LogoutService extends SafeOnlineService {
      */
     String finalizeLogout()
             throws NodeNotFoundException;
+
+    /**
+     * @return <code>true</code>: Not all applications have successfully completed their logout process.
+     */
+    public boolean isPartial();
+
+    /**
+     * @param sequential
+     *            <code>true</code>: The logout sequence has been initiated as a sequential (not parallel!) operation.
+     */
+    void setSequential(boolean sequential);
+
+    /**
+     * @return <code>true</code>: The logout sequence is being performed as a sequential (not parallel!) operation.
+     */
+    boolean isSequential();
 }

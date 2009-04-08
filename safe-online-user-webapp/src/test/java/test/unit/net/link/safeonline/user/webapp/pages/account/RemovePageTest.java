@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNull;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.service.AccountService;
-import net.link.safeonline.common.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
@@ -18,6 +17,7 @@ import net.link.safeonline.user.webapp.pages.account.AccountPage;
 import net.link.safeonline.user.webapp.pages.account.HistoryPage;
 import net.link.safeonline.user.webapp.pages.account.RemovePage;
 import net.link.safeonline.user.webapp.pages.account.UsagePage;
+import net.link.safeonline.util.ee.FieldNamingStrategy;
 import net.link.safeonline.webapp.template.SidebarBorder;
 import net.link.safeonline.webapp.template.TemplatePage;
 
@@ -46,7 +46,7 @@ public class RemovePageTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy(new OlasNamingStrategy());
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
         mockAccountService = createMock(AccountService.class);
         jndiTestUtils.bindComponent(AccountService.class, mockAccountService);

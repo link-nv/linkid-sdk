@@ -63,9 +63,7 @@ public class SelectUserPage extends AuthenticationTemplatePage {
 
     public SelectUserPage() {
 
-        List<AuthenticationAssertion> authenticationAssertions = LoginManager
-                                                                             .getAuthenticationAssertions(WicketUtil
-                                                                                                                    .getHttpSession(getRequest()));
+        List<AuthenticationAssertion> authenticationAssertions = LoginManager.getAuthenticationAssertions(WicketUtil.getHttpSession());
 
         getSidebar(localize("helpSelectUser"));
 
@@ -74,7 +72,15 @@ public class SelectUserPage extends AuthenticationTemplatePage {
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.select));
 
         getContent().add(new SelectForm(SELECT_FORM_ID, authenticationAssertions));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        super.onBeforeRender();
     }
 
     /**
@@ -83,7 +89,7 @@ public class SelectUserPage extends AuthenticationTemplatePage {
     @Override
     protected String getPageTitle() {
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession());
         String title = localize("%l: %s", "authenticatingFor", protocolContext.getApplicationFriendlyName());
         return title;
     }
@@ -143,7 +149,7 @@ public class SelectUserPage extends AuthenticationTemplatePage {
 
                     AuthenticationService authenticationService = AuthenticationServiceManager
                                                                                               .getAuthenticationService(WicketUtil
-                                                                                                                                  .getHttpSession(getRequest()));
+                                                                                                                                  .getHttpSession());
                     try {
                         authenticationService.selectUser(authenticationAssertion.getObject().getSubject());
                     } catch (SubjectNotFoundException e) {
@@ -152,7 +158,7 @@ public class SelectUserPage extends AuthenticationTemplatePage {
                         return;
                     }
 
-                    LoginManager.login(WicketUtil.getHttpSession(getRequest()), authenticationAssertion.getObject());
+                    LoginManager.login(WicketUtil.getHttpSession(), authenticationAssertion.getObject());
 
                     getResponse().redirect(LoginServlet.SERVLET_PATH);
                     setRedirect(false);

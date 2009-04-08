@@ -33,8 +33,6 @@ public abstract class UserTemplatePage extends TemplatePage {
 
     public UserTemplatePage(NavigationPanel.Panel panel) {
 
-        super();
-
         getHeader(OLASSession.get().isUserSet()).add(new NavigationPanel(NAVIGATION_ID, panel));
 
     }
@@ -45,7 +43,7 @@ public abstract class UserTemplatePage extends TemplatePage {
     @Override
     protected void onOlasAuthenticated() {
 
-        String olasId = WicketUtil.findOlasId(getRequest());
+        String olasId = WicketUtil.findOlasId();
         UserSession.get().setUserId(olasId);
     }
 }

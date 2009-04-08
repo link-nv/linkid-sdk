@@ -73,7 +73,7 @@ fi
 # Symlink jks and properties files from Maven's target directory into the eclipse build directory.
 if (( binFix )); then
 	emit "Symlinking Maven-created files into eclipse's bin directory" --
-		for d in */eclipse; do
+		while read d; do
 			cd "$d" && {
 				echo +"$d" > "$spinPipe"
 				
@@ -85,7 +85,7 @@ if (( binFix )); then
                 fi
 			}
 			cd - > /dev/null
-		done
+        done < <(find . -type d -name eclipse)
 	emit -$?
 fi
 
@@ -95,7 +95,7 @@ if (( jarFix )); then
 	emit "Converting JAR dependencies on safe-online projects to source dependencies" --
 		echo +"ejb-clients" > "$spinPipe"
 
-		cps=(.[c]lasspath */.classpath)
+        IFS=$'\n' read -a cps < <(find . -type f -name .classpath)
 		for cp in "${cps[@]}"; do
 			ed -s "$cp" &>/dev/null <<-END
 				H
@@ -106,12 +106,12 @@ if (( jarFix )); then
 			END
 		done
 
-		for pp in .[c]lasspath "${cps[@]}"; do
+		for pp in "${cps[@]}"; do
 			[[ $pp = */* ]] \
 				&& echo +"${pp%/*}" > "$spinPipe" \
 				|| echo +"${PWD##*/}" > "$spinPipe"
 
-			IFS=$'\n' srcs=($(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)); unset IFS
+			IFS=$'\n' read srcs < <(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)
 			while read -r; do
 				line=$REPLY
 
@@ -137,7 +137,7 @@ fi
 emit "Setting up project-specific configurations" --
 
 	result=0
-	for p in .[s]ettings */.settings; do
+	while read p; do
 		[[ $pp = */* ]] \
 			&& echo +"${p%/*}" > "$spinPipe" \
 			|| echo +"${PWD##*/}" > "$spinPipe"
@@ -169,6 +169,6 @@ emit "Setting up project-specific configurations" --
             #    "
             #fi
         )
-	done
+    done < <(find . -type d -name .settings)
 
 emit -$result

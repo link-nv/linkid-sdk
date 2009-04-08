@@ -11,6 +11,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
@@ -18,25 +19,25 @@ import java.security.cert.X509Certificate;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import junit.framework.TestCase;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.junit.Before;
+import org.junit.Test;
 
-public class PkiProviderManagerBeanTest extends TestCase {
+
+public class PkiProviderManagerBeanTest {
 
     private PkiProviderManagerBean testedInstance;
 
     private PkiProvider            mockPkiProvider;
 
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
             throws Exception {
-
-        super.setUp();
 
         System.setProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.shiftone.ooc.InitialContextFactoryImpl");
 
@@ -51,6 +52,7 @@ public class PkiProviderManagerBeanTest extends TestCase {
         EJBTestUtils.init(testedInstance);
     }
 
+    @Test
     public void testFindTrustDomain()
             throws Exception {
 
