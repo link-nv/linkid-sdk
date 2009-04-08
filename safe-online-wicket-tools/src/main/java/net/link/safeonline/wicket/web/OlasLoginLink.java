@@ -30,7 +30,7 @@ public class OlasLoginLink extends OlasAuthLink {
     private static final long serialVersionUID    = 1L;
     private Integer           color;
     private Boolean           minimal;
-    private Boolean           forceAuthentication = true;
+    private Boolean           forceAuthentication = false;
 
 
     public OlasLoginLink(String id) {

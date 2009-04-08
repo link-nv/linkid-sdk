@@ -331,6 +331,8 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
      */
     public List<ApplicationEntity> getApplicationsToLogout(String sessionInfo, ApplicationEntity application, List<Cookie> ssoCookies) {
 
+        invalidCookies = new LinkedList<Cookie>();
+
         if (!application.isSsoEnabled())
             return null;
 
@@ -344,14 +346,11 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                 ssoIdCookie = ssoCookie;
             }
         }
-        if (null == ssoIdCookie)
-            return null;
 
         /*
          * Parse SSO cookies
          */
         List<ApplicationEntity> applicationsToLogout = new LinkedList<ApplicationEntity>();
-        invalidCookies = new LinkedList<Cookie>();
         for (Cookie ssoCookie : ssoCookies) {
             if (ssoCookie.getName().equals(SSO_ID_COOKIE_NAME)) {
                 continue;
@@ -360,7 +359,7 @@ public class SingleSignOnServiceBean implements SingleSignOnService {
                 SingleSignOn sso = new SingleSignOn(ssoCookie);
                 for (ApplicationEntity applicationToLogout : sso.getApplicationsToLogout(application)) {
 
-                    if (null != session) {
+                    if (null != session && null != ssoIdCookie) {
                         SessionTrackingEntity tracker = sessionTrackingDAO.findTracker(applicationToLogout, session,
                                 ssoIdCookie.getValue(), sso.applicationPool);
                         if (null == tracker) {

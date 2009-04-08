@@ -242,9 +242,11 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         ssoService = EjbUtils.getEJB(SingleSignOnService.JNDI_BINDING, SingleSignOnService.class);
 
         List<ApplicationEntity> applicationsToLogout = ssoService.getApplicationsToLogout(session, logoutApplication, ssoCookies);
-        for (ApplicationEntity application : applicationsToLogout) {
-            LOG.debug("add application " + application.getName() + " for logout");
-            ssoApplicationStates.put(application, LogoutState.INITIALIZED);
+        if (null != applicationsToLogout) {
+            for (ApplicationEntity application : applicationsToLogout) {
+                LOG.debug("add application " + application.getName() + " for logout");
+                ssoApplicationStates.put(application, LogoutState.INITIALIZED);
+            }
         }
 
         LOG.debug("found " + ssoApplicationStates.size() + " applications to logout");
