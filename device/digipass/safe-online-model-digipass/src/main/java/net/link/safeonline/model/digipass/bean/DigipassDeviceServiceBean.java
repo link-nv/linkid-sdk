@@ -16,10 +16,12 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -64,6 +66,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @LocalBinding(jndiBinding = DigipassDeviceService.JNDI_BINDING)
+@Interceptors(AuditContextManager.class)
 public class DigipassDeviceServiceBean implements DigipassDeviceService, DigipassDeviceServiceRemote {
 
     private static final Log                 LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);

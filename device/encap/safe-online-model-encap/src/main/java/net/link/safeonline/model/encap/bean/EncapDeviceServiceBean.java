@@ -16,10 +16,12 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.PostActivate;
 import javax.ejb.Stateful;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -62,6 +64,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateful
 @LocalBinding(jndiBinding = EncapDeviceService.JNDI_BINDING)
+@Interceptors(AuditContextManager.class)
 public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceServiceRemote {
 
     private static final Log                 LOG = LogFactory.getLog(EncapDeviceServiceBean.class);

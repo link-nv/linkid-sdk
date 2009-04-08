@@ -11,10 +11,12 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -45,6 +47,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @Stateless
 @LocalBinding(jndiBinding = PasswordDeviceService.JNDI_BINDING)
 @RemoteBinding(jndiBinding = PasswordDeviceServiceRemote.JNDI_BINDING)
+@Interceptors(AuditContextManager.class)
 public class PasswordDeviceServiceBean implements PasswordDeviceService, PasswordDeviceServiceRemote {
 
     private final static Log    LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);

@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -62,7 +63,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @Stateful
 @LocalBinding(jndiBinding = OtpOverSmsDeviceService.JNDI_BINDING)
 @RemoteBinding(jndiBinding = OtpOverSmsDeviceServiceRemote.JNDI_BINDING)
-@Interceptors( { ConfigurationInterceptor.class, ResourceAuditLoggerInterceptor.class })
+@Interceptors( { ConfigurationInterceptor.class, ResourceAuditLoggerInterceptor.class, AuditContextManager.class })
 @Configurable
 public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, OtpOverSmsDeviceServiceRemote {
 
