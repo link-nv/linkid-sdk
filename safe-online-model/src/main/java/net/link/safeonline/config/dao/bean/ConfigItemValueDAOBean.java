@@ -55,13 +55,14 @@ public class ConfigItemValueDAOBean implements ConfigItemValueDAO {
          * Manage relationships.
          */
         configItemValue.getConfigItem().setValues(listConfigItemValues(configItemValue.getConfigItem()));
-        configItemValue.getConfigItem().getValues().remove(configItemValue);
-        configItemValue.getConfigItem().setValueIndex(0);
+        int idx = configItemValue.getConfigItem().getValues().indexOf(configItemValue);
+        ConfigItemValueEntity configItemValueEntity = configItemValue.getConfigItem().getValues().get(idx);
+        configItemValue.getConfigItem().getValues().remove(idx);
 
         /*
          * Remove from database.
          */
-        entityManager.remove(configItemValue);
+        entityManager.remove(configItemValueEntity);
     }
 
     public void saveConfigItemValue(ConfigItemValueEntity configItemValue) {

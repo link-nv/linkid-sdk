@@ -173,6 +173,12 @@ public class ConfigurationManagerBean implements ConfigurationManager {
         for (ConfigItemValueEntity configItemValue : configItem.getValues()) {
             if (configItemValue.getValue().equals(stringValue)) {
                 LOG.debug("remove item value: " + stringValue);
+                if (configItem.getValueIndex() > 0) {
+                    configItem.setValueIndex(configItem.getValueIndex() - 1);
+                } else {
+                    configItem.setValueIndex(0);
+                }
+                configItemDAO.saveConfigItem(configItem);
                 configItemValueDAO.removeConfigItemValue(configItemValue);
             }
         }

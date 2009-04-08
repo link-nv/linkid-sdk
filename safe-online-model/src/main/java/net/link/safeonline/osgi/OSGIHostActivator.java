@@ -128,6 +128,10 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
                 removeSmsService(service.getClass().getName());
             }
             event.getServiceReference().getBundle().getBundleContext().ungetService(event.getServiceReference());
+        } else {
+            Object service = event.getServiceReference().getBundle().getBundleContext().getService(event.getServiceReference());
+            LOG.debug("event of type: " + event.getType() + " logged ( " + ServiceEvent.MODIFIED + " )");
+            LOG.debug("service = " + service.getClass().getName());
         }
 
     }
