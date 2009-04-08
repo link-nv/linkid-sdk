@@ -26,21 +26,21 @@ import net.link.safeonline.authentication.exception.AttributeProviderNotFoundExc
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
 import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
-import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -72,9 +72,9 @@ import org.jboss.seam.faces.FacesMessages;
  */
 public class ErrorMessageInterceptor {
 
-    private static final Log LOG           = LogFactory.getLog(ErrorMessageInterceptor.class);
+    private static final Log     LOG           = LogFactory.getLog(ErrorMessageInterceptor.class);
 
-    private ErrorHandle[]    defaultErrors = { new ErrorHandle(AlreadySubscribedException.class, "errorAlreadySubscribed"),
+    private static ErrorHandle[] defaultErrors = { new ErrorHandle(AlreadySubscribedException.class, "errorAlreadySubscribed"),
             new ErrorHandle(ApplicationNotFoundException.class, "errorApplicationNotFound"),
             new ErrorHandle(ApplicationOwnerNotFoundException.class, "errorApplicationOwnerNotFound"),
             new ErrorHandle(ApplicationIdentityNotFoundException.class, "errorApplicationIdentityNotFound"),
@@ -124,7 +124,7 @@ public class ErrorMessageInterceptor {
         return null;
     }
 
-    private void handleException(Exception e, InvocationContext invocationContext) {
+    private static void handleException(Exception e, InvocationContext invocationContext) {
 
         // try the method error handling annotation
         Method method = invocationContext.getMethod();
@@ -153,7 +153,7 @@ public class ErrorMessageInterceptor {
         return;
     }
 
-    private boolean handleError(ErrorHandling errorHandling, Exception e) {
+    private static boolean handleError(ErrorHandling errorHandling, Exception e) {
 
         for (Error error : errorHandling.value()) {
             if (e.getClass().equals(error.exceptionClass())) {
@@ -169,7 +169,7 @@ public class ErrorMessageInterceptor {
         return false;
     }
 
-    private boolean handleError(Exception e) {
+    private static boolean handleError(Exception e) {
 
         for (ErrorHandle error : defaultErrors) {
             if (e.getClass().equals(error.exceptionClass)) {

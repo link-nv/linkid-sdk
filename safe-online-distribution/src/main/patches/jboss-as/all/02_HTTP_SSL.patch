@@ -11,7 +11,7 @@
 -         enableLookups="false" redirectPort="8443" acceptCount="100"
 +         emptySessionPath="false" protocol="HTTP/1.1"
 +         enableLookups="false" redirectPort="8443" acceptCount="100"
-+         proxyName="localhost" proxyPort="8080"
++         proxyName="${hostname}" proxyPort="8080"
           connectionTimeout="20000" disableUploadTimeout="true" />
  
      <!-- Define a SSL HTTP/1.1 Connector on port 8443
@@ -26,7 +26,7 @@
 -               clientAuth="false" sslProtocol="TLS" />
 -    -->
 +               protocol="HTTP/1.1" SSLEnabled="true" clientAuth="false" sslProtocol="TLS"
-+               proxyName="localhost" proxyPort="8443"
++               proxyName="${hostname}" proxyPort="8443"
 +               keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"
 +               keystorePass="secret" /> 
  

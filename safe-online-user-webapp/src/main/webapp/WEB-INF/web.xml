@@ -203,7 +203,7 @@
 
 		<init-param>
 			<param-name>DevicesPage</param-name>
-			<param-value>/device_page</param-value>
+			<param-value>device_page</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>

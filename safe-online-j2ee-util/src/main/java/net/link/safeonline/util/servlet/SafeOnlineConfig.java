@@ -8,7 +8,12 @@ package net.link.safeonline.util.servlet;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,6 +65,38 @@ public class SafeOnlineConfig extends Properties {
      */
     public static final String        WEBAPP_PATH_CONTEXT_PARAM = "WebappPath";
 
+    static Pattern                    propertyPattern           = Pattern.compile("\\$\\{([^\\}]*)\\}");
+
+
+    static String filter(String data) {
+
+        Map<Integer, Integer> ends = new TreeMap<Integer, Integer>();
+        Map<Integer, String> replacements = new TreeMap<Integer, String>();
+
+        Matcher matcher = propertyPattern.matcher(data);
+        while (matcher.find()) {
+            String property = matcher.group(1);
+
+            ends.put(matcher.start(), matcher.end());
+            replacements.put(matcher.start(), System.getProperty(property, ""));
+        }
+
+        StringBuffer filteredData = new StringBuffer(data);
+        for (Integer key : new TreeSet<Integer>(replacements.keySet()).descendingSet()) {
+            filteredData.replace(key, ends.get(key), replacements.get(key));
+        }
+
+        return filteredData.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getProperty(String key) {
+
+        return filter(super.getProperty(key));
+    }
 
     /**
      * Property that defines the name of this OLAS node.

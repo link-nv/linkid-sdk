@@ -63,21 +63,10 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
 
     public SSOLogoutPage() {
 
-        // Link in case there is no JS.
-        add(new Link<String>("noScriptLogout") {
+        getSidebar(localize("helpSSOLogout"));
 
-            private static final long serialVersionUID = 1L;
+        getHeader();
 
-
-            @Override
-            public void onClick() {
-
-                String logoutExitServletPath = WicketUtil.getHttpSession().getServletContext().getInitParameter(
-                        LogoutExitServlet.PATH_CONTEXT_PARAM);
-
-                throw new RedirectToUrlException(logoutExitServletPath);
-            }
-        });
         // JS that unhides the JS-specific part.
         add(new AbstractHeaderContributor() {
 
@@ -100,10 +89,21 @@ public class SSOLogoutPage extends AuthenticationTemplatePage {
                 } };
             }
         });
+        // Link in case there is no JS.
+        getContent().add(new Link<String>("noScriptLogout") {
 
-        getSidebar(localize("helpSSOLogout"));
+            private static final long serialVersionUID = 1L;
 
-        getHeader();
+
+            @Override
+            public void onClick() {
+
+                String logoutExitServletPath = WicketUtil.getHttpSession().getServletContext().getInitParameter(
+                        LogoutExitServlet.PATH_CONTEXT_PARAM);
+
+                throw new RedirectToUrlException(logoutExitServletPath);
+            }
+        });
 
         getContent().add(new LogoutForm(LOGOUT_FORM));
 
