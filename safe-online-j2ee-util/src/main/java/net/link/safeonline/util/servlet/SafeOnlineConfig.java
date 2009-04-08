@@ -74,7 +74,6 @@ public class SafeOnlineConfig extends Properties {
         Map<Integer, String> replacements = new TreeMap<Integer, String>();
 
         Matcher matcher = propertyPattern.matcher(data);
-        System.getProperties().list(System.err);
         while (matcher.find()) {
             String property = matcher.group(1);
 

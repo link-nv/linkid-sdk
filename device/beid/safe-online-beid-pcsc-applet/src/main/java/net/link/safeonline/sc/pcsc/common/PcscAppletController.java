@@ -77,7 +77,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
         try {
             card = openCard();
         } catch (NoReaderException e) {
-            showPath("error?type=reader");
+            // FIXME: Hard-coded path to a page in BeId.
+            showPath("beid_error?type=reader");
             return;
         }
         if (null == card)

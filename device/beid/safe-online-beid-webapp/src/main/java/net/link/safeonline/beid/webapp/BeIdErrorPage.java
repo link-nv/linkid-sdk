@@ -46,10 +46,8 @@ import org.apache.wicket.markup.html.link.Link;
  */
 public class BeIdErrorPage extends TemplatePage {
 
-    public static final String PATH = "beid_error";
-
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    SamlAuthorityService       samlAuthorityService;
+    SamlAuthorityService samlAuthorityService;
 
 
     public BeIdErrorPage(PageParameters parameters) {
@@ -61,6 +59,7 @@ public class BeIdErrorPage extends TemplatePage {
         String type = parameters.getString(TYPE_PARAMETER);
         String errorTitle = localize("%l", "protocolError");
         String errorMessage = localize("%l", "errorMessage");
+
         if (BAD_PLATFORM.getTypeValue().equalsIgnoreCase(type)) {
             errorTitle = localize("%l", "platformUnsupported");
             errorMessage = localize("%l", "platformUnsupportedInfo");
