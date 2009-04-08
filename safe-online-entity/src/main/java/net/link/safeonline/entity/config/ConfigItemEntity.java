@@ -40,7 +40,7 @@ import org.hibernate.annotations.IndexColumn;
 @Table(name = "config_item", uniqueConstraints = @UniqueConstraint(columnNames = { "configGroup", "name" }))
 @NamedQueries( {
         @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c"),
-        @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEMS, query = "FROM ConfigItemEntity c WHERE c.configGroup = :group"),
+        @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEMS, query = "FROM ConfigItemEntity c WHERE c.configGroup = :group ORDER BY name"),
         @NamedQuery(name = ConfigItemEntity.QUERY_GET_ITEM, query = "FROM ConfigItemEntity c WHERE c.configGroup.name = :groupName AND c.name = :name") })
 public class ConfigItemEntity implements Serializable {
 
