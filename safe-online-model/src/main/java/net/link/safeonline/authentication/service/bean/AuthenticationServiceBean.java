@@ -46,7 +46,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -611,31 +610,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     /**
      * {@inheritDoc}
      */
-    public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
-
-        /*
-         * SubjectEntity subject = this.passwordDeviceService.authenticate(loginName, password); if (null == subject) return false;
-         * DeviceEntity device = this.deviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-         */
-
-        /*
-         * Safe the state in this stateful session bean.
-         */
-        /*
-         * this.authenticationState = USER_AUTHENTICATED; this.authenticatedSubject = subject; this.authenticationDevice = device;
-         * this.authenticationDate = new DateTime();
-         */
-
-        /*
-         * Communicate that the authentication process can continue.
-         */
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public AuthenticationAssertion register(@NotNull DeviceOperationResponse response)
             throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
             SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException {
@@ -940,17 +914,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Safe the state in this stateful session bean.
          */
         authenticationState = COMMITTED;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getUsername() {
-
-        if (authenticationState != USER_AUTHENTICATED && authenticationState != COMMITTED)
-            throw new IllegalStateException("call authenticate first");
-
-        return subjectService.getSubjectLogin(authenticationAssertion.getSubject().getUserId());
     }
 
     /**
