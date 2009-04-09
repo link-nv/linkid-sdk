@@ -9,6 +9,8 @@ package net.link.safeonline.encap.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
@@ -179,7 +181,6 @@ public class AuthenticationPage extends TemplatePage {
         private Button                               cancelButton;
 
 
-        @SuppressWarnings("unchecked")
         public AuthenticationForm(String id, final String mobileValue) {
 
             super(id);
@@ -316,7 +317,15 @@ public class AuthenticationPage extends TemplatePage {
                         AuthenticationForm.this.error(localize("errorDeviceRegistrationNotFound"));
                         HelpdeskLogger.add(localize("device not registered: %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
-                    }
+                    } catch (AttributeTypeNotFoundException e) {
+                        AuthenticationForm.this.error(localize("errorAttributeTypeNotFound"));
+                        HelpdeskLogger.add(localize("Attribute type not found: %s", e.getMessage()), //
+                                LogLevelType.ERROR);
+					} catch (AttributeNotFoundException e) {
+                        AuthenticationForm.this.error(localize("errorAttributeNotFound"));
+                        HelpdeskLogger.add(localize("Attribute not found: %s", e.getMessage()), //
+                                LogLevelType.ERROR);
+					}
                 }
             };
 
