@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptors;
 import javax.interceptor.InvocationContext;
 import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
@@ -39,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
+@Interceptors(AuditContextManager.class)
 public class AccessAuditLogger {
 
     private static final Log LOG = LogFactory.getLog(AccessAuditLogger.class);

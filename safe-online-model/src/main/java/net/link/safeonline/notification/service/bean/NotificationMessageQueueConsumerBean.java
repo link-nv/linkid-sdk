@@ -9,10 +9,12 @@ package net.link.safeonline.notification.service.bean;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
+import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.entity.audit.ResourceLevelType;
@@ -50,6 +52,7 @@ import org.apache.commons.logging.LogFactory;
         @ActivationConfigProperty(propertyName = "destination", propertyValue = NotificationConstants.NOTIFICATIONS_QUEUE_NAME),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
         @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "2") })
+@Interceptors(AuditContextManager.class)
 public class NotificationMessageQueueConsumerBean implements MessageListener {
 
     private static final Log       LOG = LogFactory.getLog(NotificationMessageQueueConsumerBean.class);
@@ -108,8 +111,7 @@ public class NotificationMessageQueueConsumerBean implements MessageListener {
         /*
          * If persisted, remove so we do not send it again
          */
-        NotificationMessageEntity notificationMessageEntity = notificationMessageDAO.findNotificationMessage(notificationMessage,
-                consumer);
+        NotificationMessageEntity notificationMessageEntity = notificationMessageDAO.findNotificationMessage(notificationMessage, consumer);
         if (null != notificationMessageEntity) {
             notificationMessageDAO.removeNotificationMessage(notificationMessageEntity);
         }

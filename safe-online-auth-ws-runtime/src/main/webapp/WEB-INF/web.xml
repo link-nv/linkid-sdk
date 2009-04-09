@@ -6,7 +6,16 @@
 	<display-name>SafeOnline Authentication Web Service Runtime</display-name>
 
     <!-- Application Filter Definitions And Mappings -->
-	<!--  ${safe-online.profiling.filter} -->
+    <filter>
+        <filter-name>AuditContextFilter</filter-name>
+        <filter-class>net.link.safeonline.audit.AuditContextFilter</filter-class>
+    </filter>
+	<!-- ${safe-online.profiling.filter} -->
+
+    <filter-mapping>
+        <filter-name>AuditContextFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <!-- Application Event Listeners -->
 	<listener>

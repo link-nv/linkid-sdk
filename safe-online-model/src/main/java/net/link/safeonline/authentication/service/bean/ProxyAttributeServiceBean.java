@@ -18,7 +18,9 @@ import javax.ejb.PostActivate;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -70,6 +72,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @Stateless
 @LocalBinding(jndiBinding = ProxyAttributeService.JNDI_BINDING)
 @RemoteBinding(jndiBinding = ProxyAttributeServiceRemote.JNDI_BINDING)
+@Interceptors(AuditContextManager.class)
 public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAttributeServiceRemote {
 
     private static final Log                 LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);

@@ -9,6 +9,7 @@ package net.link.safeonline.audit;
 
 import javax.ejb.EJB;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptors;
 import javax.interceptor.InvocationContext;
 
 import net.link.safeonline.authentication.exception.SafeOnlineSecurityException;
@@ -20,6 +21,7 @@ import net.link.safeonline.authentication.exception.SafeOnlineSecurityException;
  * @author wvdhaute
  * 
  */
+@Interceptors(AuditContextManager.class)
 public class SecurityAuditLoggerInterceptor {
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)

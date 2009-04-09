@@ -5,9 +5,6 @@
 
 	<display-name>SafeOnline Demo Web Service Runtime</display-name>
 
-    <!-- Application Filter Definitions And Mappings -->
-	<!--  ${safe-online.profiling.filter} -->
-
     <!-- Application Event Listeners -->
 	<listener>
 		<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>

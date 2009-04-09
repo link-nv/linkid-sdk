@@ -10,10 +10,12 @@ package net.link.safeonline.audit.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptors;
 import javax.interceptor.InvocationContext;
 import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.AuditContextPolicyContextHandler;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
@@ -29,6 +31,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @LocalBinding(jndiBinding = SecurityAuditLogger.JNDI_BINDING)
+@Interceptors(AuditContextManager.class)
 public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 
     @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)

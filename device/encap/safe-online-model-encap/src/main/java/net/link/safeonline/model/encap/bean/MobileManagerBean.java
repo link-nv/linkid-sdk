@@ -7,6 +7,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.common.Configurable;
@@ -26,7 +27,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @LocalBinding(jndiBinding = MobileManager.JNDI_BINDING)
-@Interceptors(ConfigurationInterceptor.class)
+@Interceptors( { AuditContextManager.class, ConfigurationInterceptor.class })
 @Configurable
 public class MobileManagerBean implements MobileManager {
 

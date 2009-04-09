@@ -8,8 +8,10 @@ package net.link.safeonline.util.servlet;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -81,8 +83,11 @@ public class SafeOnlineConfig extends Properties {
             replacements.put(matcher.start(), System.getProperty(property, ""));
         }
 
+        SortedSet<Integer> reverseKeys = new TreeSet<Integer>(Collections.reverseOrder());
+        reverseKeys.addAll(replacements.keySet());
+
         StringBuffer filteredData = new StringBuffer(data);
-        for (Integer key : new TreeSet<Integer>(replacements.keySet()).descendingSet()) {
+        for (Integer key : reverseKeys) {
             filteredData.replace(key, ends.get(key), replacements.get(key));
         }
 

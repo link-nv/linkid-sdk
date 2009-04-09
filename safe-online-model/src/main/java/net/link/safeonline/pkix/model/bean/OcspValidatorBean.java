@@ -31,7 +31,9 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
@@ -73,6 +75,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = OcspValidator.JNDI_BINDING)
+@Interceptors(AuditContextManager.class)
 public class OcspValidatorBean implements OcspValidator {
 
     private static final Log LOG = LogFactory.getLog(OcspValidatorBean.class);
