@@ -923,6 +923,21 @@
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-resource.xhtml</from-view-id>
 		<navigation-case>
+			<from-outcome>view-security</from-outcome>
+			<to-view-id>/audit/audit-view-security.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-resource</from-outcome>
+			<to-view-id>/audit/audit-view-resource.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-audit</from-outcome>
+			<to-view-id>/audit/audit-view-audit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 			<redirect />
@@ -930,6 +945,21 @@
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-security.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>view-security</from-outcome>
+			<to-view-id>/audit/audit-view-security.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-resource</from-outcome>
+			<to-view-id>/audit/audit-view-resource.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-audit</from-outcome>
+			<to-view-id>/audit/audit-view-audit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
@@ -969,6 +999,21 @@
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-audit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>view-security</from-outcome>
+			<to-view-id>/audit/audit-view-security.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-resource</from-outcome>
+			<to-view-id>/audit/audit-view-resource.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-audit</from-outcome>
+			<to-view-id>/audit/audit-view-audit.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
