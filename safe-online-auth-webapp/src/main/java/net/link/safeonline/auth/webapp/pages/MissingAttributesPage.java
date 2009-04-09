@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth.webapp.pages;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -34,7 +35,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 
 
 public class MissingAttributesPage extends AuthenticationTemplatePage {
@@ -91,6 +91,9 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
 
         private static final long serialVersionUID = 1L;
 
+        List<AttributeDO>         missingAttributes;
+        List<AttributeDO>         optionalAttributes;
+
 
         @SuppressWarnings("unchecked")
         public MissingAttributesForm(String id) {
@@ -98,33 +101,13 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
             super(id);
             setMarkupId(id);
 
-            add(new ListView<AttributeDO>(MISSING_ATTRIBUTES_LIST_ID, new AbstractReadOnlyModel<List<AttributeDO>>() {
+            missingAttributes = getMissingAttributes();
+            final List<AttributeInputPanel> missingAttributePanels = new LinkedList<AttributeInputPanel>();
+            for (AttributeDO attribute : missingAttributes) {
+                missingAttributePanels.add(new AttributeInputPanel(MISSING_ATTRIBUTE_ID, attribute, true));
+            }
 
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public List<AttributeDO> getObject() {
-
-                    try {
-                        return identityService.listMissingAttributes(applicationId, getLocale());
-                    }
-
-                    catch (ApplicationNotFoundException e) {
-                        error(localize("errorApplicationNotFound"));
-                        return null;
-                    } catch (ApplicationIdentityNotFoundException e) {
-                        error(localize("errorApplicationIdentityNotFound"));
-                        return null;
-                    } catch (PermissionDeniedException e) {
-                        error(localize("errorPermissionDenied"));
-                        return null;
-                    } catch (AttributeTypeNotFoundException e) {
-                        error(localize("errorAttributeTypeNotFound"));
-                        return null;
-                    }
-                }
-            }) {
+            add(new ListView<AttributeDO>(MISSING_ATTRIBUTES_LIST_ID, missingAttributes) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -132,37 +115,18 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
                 @Override
                 protected void populateItem(final ListItem<AttributeDO> attributeItem) {
 
-                    attributeItem.add(new AttributeInputPanel(MISSING_ATTRIBUTE_ID, attributeItem.getModelObject(), true));
+                    attributeItem.add(missingAttributePanels.get(attributeItem.getIndex()));
                 }
 
             });
-            add(new ListView<AttributeDO>(OPTIONAL_ATTRIBUTES_LIST_ID, new AbstractReadOnlyModel<List<AttributeDO>>() {
 
-                private static final long serialVersionUID = 1L;
+            optionalAttributes = getOptionalAttributes();
+            final List<AttributeInputPanel> optionalAttributePanels = new LinkedList<AttributeInputPanel>();
+            for (AttributeDO attribute : optionalAttributes) {
+                optionalAttributePanels.add(new AttributeInputPanel(OPTIONAL_ATTRIBUTE_ID, attribute, true));
+            }
 
-
-                @Override
-                public List<AttributeDO> getObject() {
-
-                    try {
-                        return identityService.listOptionalAttributes(applicationId, getLocale());
-                    }
-
-                    catch (ApplicationNotFoundException e) {
-                        error(localize("errorApplicationNotFound"));
-                        return null;
-                    } catch (ApplicationIdentityNotFoundException e) {
-                        error(localize("errorApplicationIdentityNotFound"));
-                        return null;
-                    } catch (PermissionDeniedException e) {
-                        error(localize("errorPermissionDenied"));
-                        return null;
-                    } catch (AttributeTypeNotFoundException e) {
-                        error(localize("errorAttributeTypeNotFound"));
-                        return null;
-                    }
-                }
-            }) {
+            add(new ListView<AttributeDO>(OPTIONAL_ATTRIBUTES_LIST_ID, optionalAttributes) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -170,7 +134,7 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
                 @Override
                 protected void populateItem(final ListItem<AttributeDO> attributeItem) {
 
-                    attributeItem.add(new AttributeInputPanel(MISSING_ATTRIBUTE_ID, attributeItem.getModelObject(), true));
+                    attributeItem.add(optionalAttributePanels.get(attributeItem.getIndex()));
                 }
 
             });
@@ -183,52 +147,35 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    try {
-                        LOG.debug("save");
-                        for (AttributeDO attribute : identityService.listMissingAttributes(applicationId, getLocale())) {
-                            LOG.debug("required attribute to save: " + attribute);
-                            try {
-                                identityService.saveAttribute(attribute);
-                            } catch (PermissionDeniedException e) {
-                                LOG.debug("permission denied for attribute: " + attribute.getName());
-                                error(localize("errorPermissionDenied"));
-                                return;
-                            } catch (AttributeTypeNotFoundException e) {
-                                LOG.debug("attribute type not found: " + attribute.getName());
-                                error(localize("errorAttributeTypeNotFound"));
-                                return;
-                            }
-                        }
-                        for (AttributeDO attribute : identityService.listOptionalAttributes(applicationId, getLocale())) {
-                            LOG.debug("optional attribute to save: " + attribute);
-                            try {
-                                identityService.saveAttribute(attribute);
-                            } catch (PermissionDeniedException e) {
-                                LOG.debug("permission denied for attribute: " + attribute.getName());
-                                error(localize("errorPermissionDenied"));
-                                return;
-                            } catch (AttributeTypeNotFoundException e) {
-                                LOG.debug("attribute type not found: " + attribute.getName());
-                                error(localize("errorAttributeTypeNotFound"));
-                                return;
-                            }
+                    LOG.debug("save");
+                    for (AttributeDO attribute : missingAttributes) {
+                        LOG.debug("required attribute to save: " + attribute);
+                        try {
+                            identityService.saveAttribute(attribute);
+                        } catch (PermissionDeniedException e) {
+                            LOG.debug("permission denied for attribute: " + attribute.getName());
+                            error(localize("errorPermissionDenied"));
+                            return;
+                        } catch (AttributeTypeNotFoundException e) {
+                            LOG.debug("attribute type not found: " + attribute.getName());
+                            error(localize("errorAttributeTypeNotFound"));
+                            return;
                         }
                     }
-
-                    catch (ApplicationNotFoundException e) {
-                        error(localize("errorApplicationNotFound"));
-                        return;
-                    } catch (ApplicationIdentityNotFoundException e) {
-                        error(localize("errorApplicationIdentityNotFound"));
-                        return;
-                    } catch (PermissionDeniedException e) {
-                        error(localize("errorPermissionDenied"));
-                        return;
-                    } catch (AttributeTypeNotFoundException e) {
-                        error(localize("errorAttributeTypeNotFound"));
-                        return;
+                    for (AttributeDO attribute : optionalAttributes) {
+                        LOG.debug("optional attribute to save: " + attribute);
+                        try {
+                            identityService.saveAttribute(attribute);
+                        } catch (PermissionDeniedException e) {
+                            LOG.debug("permission denied for attribute: " + attribute.getName());
+                            error(localize("errorPermissionDenied"));
+                            return;
+                        } catch (AttributeTypeNotFoundException e) {
+                            LOG.debug("attribute type not found: " + attribute.getName());
+                            error(localize("errorAttributeTypeNotFound"));
+                            return;
+                        }
                     }
-
                     HelpdeskLogger.add("missing attributes saved for application: " + applicationFriendlyName, LogLevelType.INFO);
 
                     getResponse().redirect(LoginServlet.SERVLET_PATH);
@@ -237,6 +184,46 @@ public class MissingAttributesPage extends AuthenticationTemplatePage {
             });
 
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
+
+        }
+    }
+
+
+    List<AttributeDO> getMissingAttributes() {
+
+        try {
+            return identityService.listMissingAttributes(applicationId, getLocale());
+        } catch (ApplicationNotFoundException e) {
+            error(localize("errorApplicationNotFound"));
+            return null;
+        } catch (ApplicationIdentityNotFoundException e) {
+            error(localize("errorApplicationIdentityNotFound"));
+            return null;
+        } catch (PermissionDeniedException e) {
+            error(localize("errorPermissionDenied"));
+            return null;
+        } catch (AttributeTypeNotFoundException e) {
+            error(localize("errorAttributeTypeNotFound"));
+            return null;
+        }
+    }
+
+    List<AttributeDO> getOptionalAttributes() {
+
+        try {
+            return identityService.listOptionalAttributes(applicationId, getLocale());
+        } catch (ApplicationNotFoundException e) {
+            error(localize("errorApplicationNotFound"));
+            return null;
+        } catch (ApplicationIdentityNotFoundException e) {
+            error(localize("errorApplicationIdentityNotFound"));
+            return null;
+        } catch (PermissionDeniedException e) {
+            error(localize("errorPermissionDenied"));
+            return null;
+        } catch (AttributeTypeNotFoundException e) {
+            error(localize("errorAttributeTypeNotFound"));
+            return null;
         }
     }
 }

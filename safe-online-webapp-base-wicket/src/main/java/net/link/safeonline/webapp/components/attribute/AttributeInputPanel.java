@@ -9,6 +9,7 @@ package net.link.safeonline.webapp.components.attribute;
 import java.util.Date;
 
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.webapp.components.CustomRequiredTextField;
 import net.link.safeonline.webapp.components.DoubleTextField;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.IntegerTextField;
@@ -17,7 +18,6 @@ import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
@@ -39,8 +39,6 @@ import org.apache.wicket.model.Model;
 public class AttributeInputPanel extends Panel {
 
     private static final long  serialVersionUID      = 1L;
-
-    public static final String NAME_LABEL_ID         = "name";
 
     public static final String STRING_ID             = "string";
     public static final String STRING_NAME_LABEL_ID  = "string_name";
@@ -76,37 +74,36 @@ public class AttributeInputPanel extends Panel {
         if (null == name) {
             name = attribute.getName();
         }
-        // add(new Label(NAME_LABEL_ID, name));
 
-        TextField<String> stringField = new TextField<String>(STRING_ID, getStringModel());
+        CustomRequiredTextField<String> stringField = new CustomRequiredTextField<String>(STRING_ID, getStringModel());
         stringField.setVisible(false);
         stringField.setRequired(required);
+        stringField.setRequiredMessageKey("enterAValue");
         stringField.setEnabled(attribute.isEditable());
         stringField.setLabel(new Model<String>(name));
         add(new SimpleFormComponentLabel(STRING_NAME_LABEL_ID, stringField));
         add(stringField);
-        add(new ErrorComponentFeedbackLabel(STRING_FEEDBACK_ID, stringField, new Model<String>(
-                getLocalizer().getString("enterAValue", this))));
+        add(new ErrorComponentFeedbackLabel(STRING_FEEDBACK_ID, stringField));
 
         DoubleTextField doubleField = new DoubleTextField(DOUBLE_ID, getDoubleModel());
         doubleField.setVisible(false);
         doubleField.setRequired(required);
+        doubleField.setRequiredMessageKey("enterAValue");
         doubleField.setEnabled(attribute.isEditable());
         doubleField.setLabel(new Model<String>(name));
         add(new SimpleFormComponentLabel(DOUBLE_NAME_LABEL_ID, doubleField));
         add(doubleField);
-        add(new ErrorComponentFeedbackLabel(DOUBLE_FEEDBACK_ID, doubleField, new Model<String>(
-                getLocalizer().getString("enterAValue", this))));
+        add(new ErrorComponentFeedbackLabel(DOUBLE_FEEDBACK_ID, doubleField));
 
         IntegerTextField integerField = new IntegerTextField(INTEGER_ID, getIntegerModel());
         integerField.setVisible(false);
         integerField.setRequired(required);
+        integerField.setRequiredMessageKey("enterAValue");
         integerField.setEnabled(attribute.isEditable());
         integerField.setLabel(new Model<String>(name));
         add(new SimpleFormComponentLabel(INTEGER_NAME_LABEL_ID, integerField));
         add(integerField);
-        add(new ErrorComponentFeedbackLabel(INTEGER_FEEDBACK_ID, integerField, new Model<String>(getLocalizer().getString("enterAValue",
-                this))));
+        add(new ErrorComponentFeedbackLabel(INTEGER_FEEDBACK_ID, integerField));
 
         DateTextField dateField = new DateTextField(DATE_ID, getDateModel(), "dd/MM/yyyy");
         dateField.add(new DatePicker());

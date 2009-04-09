@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.webapp.components;
 
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.AbstractTextComponent.ITextFormatProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.convert.IConverter;
@@ -27,7 +26,7 @@ import org.apache.wicket.util.convert.converters.IntegerConverter;
  * 
  * @author wvdhaute
  */
-public class IntegerTextField extends TextField<Integer> implements ITextFormatProvider {
+public class IntegerTextField extends CustomRequiredTextField<Integer> implements ITextFormatProvider {
 
     private static final long serialVersionUID = 1L;
 
