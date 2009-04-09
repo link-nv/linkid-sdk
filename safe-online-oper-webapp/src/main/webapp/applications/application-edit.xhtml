@@ -133,6 +133,19 @@
 									</td>
 								</tr>
 
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.operatorSessionTimeout}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="sessionTimeout"
+												value="#{operApplication.sessionTimeout}" styleClass="label" />
+											<h:message for="sessionTimeout" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+
 							</tbody>
 						</table>
 					</rich:simpleTogglePanel>
@@ -217,6 +230,15 @@
 									<td>
 										<h:selectBooleanCheckbox id="idmapping"
 											value="#{operApplication.idmapping}" />
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.accessControlWSAuthenticationService}" />
+									</th>
+									<td>
+										<h:selectBooleanCheckbox id="wsauth"
+											value="#{operApplication.wsAuthentication}" />
 									</td>
 								</tr>
 								<tr>

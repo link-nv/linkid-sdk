@@ -141,7 +141,7 @@ public class DataWebServiceTest {
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
+                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -248,7 +248,7 @@ public class DataWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(TEST_COMP_NAME) }),
-                false, false, false, null);
+                false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -385,7 +385,7 @@ public class DataWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(attributeName) }),
-                false, false, false, null);
+                false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -468,7 +468,7 @@ public class DataWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(attributeName) }),
-                false, false, false, null);
+                false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -548,7 +548,7 @@ public class DataWebServiceTest {
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(attributeName) }),
-                false, false, false, null);
+                false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -641,7 +641,7 @@ public class DataWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(attributeName) }),
-                false, false, false, null);
+                false, false, false, null, 0L);
 
         // operate: add attribute provider
         AttributeProviderManagerService attributeProviderManagerService = getAttributeProviderManagerService(initialContext);

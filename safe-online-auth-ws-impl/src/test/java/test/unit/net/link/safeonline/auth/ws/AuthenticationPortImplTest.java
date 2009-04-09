@@ -87,6 +87,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.WSSecurityConfiguration;
+import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
@@ -95,6 +96,7 @@ import net.link.safeonline.sdk.ws.auth.Attribute;
 import net.link.safeonline.sdk.ws.auth.AuthenticationUtil;
 import net.link.safeonline.sdk.ws.auth.DataType;
 import net.link.safeonline.service.NodeMappingService;
+import net.link.safeonline.service.PublicApplicationService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
@@ -145,6 +147,7 @@ public class AuthenticationPortImplTest {
     private UserIdMappingService           mockUserIdMappingService;
     private KeyService                     mockKeyService;
     private ApplicationService             mockApplicationService;
+    private PublicApplicationService       mockPublicApplicationService;
 
     private Object[]                       mockObjects;
 
@@ -206,10 +209,12 @@ public class AuthenticationPortImplTest {
         checkOrder(mockKeyService, false);
         replay(mockKeyService);
         mockApplicationService = createMock(ApplicationService.class);
+        mockPublicApplicationService = createMock(PublicApplicationService.class);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockSamlAuthorityService,
                 mockDevicePolicyService, mockNodeAuthenticationService, mockNodeMappingService, mockSubjectService,
-                mockUsageAgreementService, mockSubscriptionService, mockIdentityService, mockUserIdMappingService, mockApplicationService };
+                mockUsageAgreementService, mockSubscriptionService, mockIdentityService, mockUserIdMappingService, mockApplicationService,
+                mockPublicApplicationService };
 
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
@@ -225,6 +230,7 @@ public class AuthenticationPortImplTest {
         jndiTestUtils.bindComponent(IdentityService.JNDI_BINDING, mockIdentityService);
         jndiTestUtils.bindComponent(UserIdMappingService.JNDI_BINDING, mockUserIdMappingService);
         jndiTestUtils.bindComponent(ApplicationService.JNDI_BINDING, mockApplicationService);
+        jndiTestUtils.bindComponent(PublicApplicationService.JNDI_BINDING, mockPublicApplicationService);
 
         expect(mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
         replay(mockWSAuthenticationService);
@@ -282,7 +288,9 @@ public class AuthenticationPortImplTest {
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
         ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
         ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
+        application.setWsAuthenticationAllowed(true);
         application.setId(testApplicationId);
+        PublicApplication publicApplication = new PublicApplication(application);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put("foo", "bar");
@@ -291,6 +299,7 @@ public class AuthenticationPortImplTest {
                 DeviceTestAuthenticationClientImpl.testDeviceName, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
+        expect(mockPublicApplicationService.findPublicApplication(testApplicationName)).andReturn(publicApplication);
         expect(mockApplicationService.getApplication(testApplicationName)).andStubReturn(application);
         expect(mockDevicePolicyService.getAuthenticationWSURL(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn("foo");
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
@@ -303,9 +312,8 @@ public class AuthenticationPortImplTest {
         expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(false);
-        expect(mockUserIdMappingService.getApplicationUserId(testApplicationId, DeviceTestAuthenticationClientImpl.testUserId))
-                                                                                                                               .andStubReturn(
-                                                                                                                                       DeviceTestAuthenticationClientImpl.testUserId);
+        expect(mockUserIdMappingService.getApplicationUserId(application, testSubject)).andStubReturn(
+                DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());
@@ -323,6 +331,45 @@ public class AuthenticationPortImplTest {
 
         verifySuccessFullAuthenticationResponse(response, DeviceTestAuthenticationClientImpl.testDeviceName, testSubject.getUserId(),
                 testpublicKey);
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testAuthenticateWSAuthenticationNotAllowed()
+            throws Exception {
+
+        // setup
+        SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
+        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
+        application.setWsAuthenticationAllowed(false);
+        application.setId(testApplicationId);
+        PublicApplication publicApplication = new PublicApplication(application);
+
+        Map<String, String> nameValuePairs = new HashMap<String, String>();
+        nameValuePairs.put("foo", "bar");
+
+        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(testApplicationName,
+                DeviceTestAuthenticationClientImpl.testDeviceName, testLanguage, nameValuePairs, testpublicKey);
+
+        // expectations
+        expect(mockPublicApplicationService.findPublicApplication(testApplicationName)).andReturn(publicApplication);
+        expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = clientPort.authenticate(request);
+
+        // verify
+        verify(mockObjects);
+        assertNotNull(response);
+        assertEquals(WSAuthenticationErrorCode.PERMISSION_DENIED.getErrorCode(), response.getStatus().getStatusCode().getValue());
 
         outputAuthenticationResponse(response);
     }
@@ -559,7 +606,9 @@ public class AuthenticationPortImplTest {
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
         ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
         ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
+        application.setWsAuthenticationAllowed(true);
         application.setId(testApplicationId);
+        PublicApplication publicApplication = new PublicApplication(application);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put("foo", "bar");
@@ -568,6 +617,7 @@ public class AuthenticationPortImplTest {
                 DeviceTestAuthenticationClientImpl.testDeviceName, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
+        expect(mockPublicApplicationService.findPublicApplication(testApplicationName)).andReturn(publicApplication);
         expect(mockApplicationService.getApplication(testApplicationName)).andStubReturn(application);
         expect(mockDevicePolicyService.getAuthenticationWSURL(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn("foo");
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
@@ -645,9 +695,8 @@ public class AuthenticationPortImplTest {
         expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(false);
-        expect(mockUserIdMappingService.getApplicationUserId(testApplicationId, DeviceTestAuthenticationClientImpl.testUserId))
-                                                                                                                               .andStubReturn(
-                                                                                                                                       DeviceTestAuthenticationClientImpl.testUserId);
+        expect(mockUserIdMappingService.getApplicationUserId(application, testSubject)).andStubReturn(
+                DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());
@@ -682,7 +731,9 @@ public class AuthenticationPortImplTest {
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
         ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
         ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
+        application.setWsAuthenticationAllowed(true);
         application.setId(testApplicationId);
+        PublicApplication publicApplication = new PublicApplication(application);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put("foo", "bar");
@@ -691,6 +742,7 @@ public class AuthenticationPortImplTest {
                 DeviceTestAuthenticationClientImpl.testDeviceName, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
+        expect(mockPublicApplicationService.findPublicApplication(testApplicationName)).andReturn(publicApplication);
         expect(mockApplicationService.getApplication(testApplicationName)).andStubReturn(application);
         expect(mockDevicePolicyService.getAuthenticationWSURL(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn("foo");
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
@@ -1001,9 +1053,8 @@ public class AuthenticationPortImplTest {
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(false);
-        expect(mockUserIdMappingService.getApplicationUserId(testApplicationId, DeviceTestAuthenticationClientImpl.testUserId))
-                                                                                                                               .andStubReturn(
-                                                                                                                                       DeviceTestAuthenticationClientImpl.testUserId);
+        expect(mockUserIdMappingService.getApplicationUserId(application, testSubject)).andStubReturn(
+                DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(nodeCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(nodeKeyPair.getPrivate());

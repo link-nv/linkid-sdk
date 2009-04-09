@@ -39,6 +39,7 @@ public abstract class AbstractOlasAuthLink extends Link<Object> implements OlasA
     Log                       LOG              = LogFactory.getLog(getClass());
     Class<? extends Page>     requestTarget;
     boolean                   login;
+    String                    session;
 
     OlasAuthDelegate          delegate;
 
@@ -61,6 +62,15 @@ public abstract class AbstractOlasAuthLink extends Link<Object> implements OlasA
         }
 
         delegate = this;
+    }
+
+    /**
+     * @param session
+     *            optional session parameter marking the application wishes to track the session.
+     */
+    public void setSession(String session) {
+
+        this.session = session;
     }
 
     @Override

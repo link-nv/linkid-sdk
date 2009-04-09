@@ -46,7 +46,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -98,6 +97,7 @@ import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfo;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -123,6 +123,7 @@ import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
@@ -145,6 +146,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     static final Log                    LOG                           = LogFactory.getLog(AuthenticationServiceBean.class);
 
     private static final SafeOnlineNodeKeyStore nodeKeyStore          = new SafeOnlineNodeKeyStore();
+
+    private List<AuthenticationAssertion>       authenticationAssertions;
 
     private AuthenticationAssertion             authenticationAssertion;
 
@@ -320,8 +323,22 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 }
             }
         }
+
+        String session = null;
+        if (null != samlAuthnRequest.getExtensions()) {
+            if (null != samlAuthnRequest.getExtensions().getUnknownXMLObjects(SessionInfo.DEFAULT_ELEMENT_NAME)) {
+                List<XMLObject> sessionInfos = samlAuthnRequest.getExtensions().getUnknownXMLObjects(SessionInfo.DEFAULT_ELEMENT_NAME);
+                if (sessionInfos.size() > 1) {
+                    LOG.error("only 1 sesssion info element supported");
+                    throw new AuthenticationInitializationException("Only 1 session info element supported");
+                }
+                session = ((SessionInfo) sessionInfos.get(0)).getSession();
+                LOG.debug("session tracking is on: " + session);
+            }
+        }
+
         ssoService = EjbUtils.getEJB(SingleSignOnService.JNDI_BINDING, SingleSignOnService.class);
-        ssoService.initialize(forceAuthn, audienceList, application, devices);
+        ssoService.initialize(forceAuthn, session, audienceList, application, devices);
 
         /*
          * Safe the state in this stateful session bean.
@@ -541,10 +558,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      */
     public List<AuthenticationAssertion> login(List<Cookie> ssoCookies) {
 
-        List<AuthenticationAssertion> authenticationAssertions = ssoService.signOn(ssoCookies);
+        authenticationAssertions = ssoService.signOn(ssoCookies);
         if (null != authenticationAssertions && !authenticationAssertions.isEmpty() && authenticationAssertions.size() == 1) {
             /*
-             * Safe the state in this stateful session bean.
+             * Save the state in this stateful session bean.
              */
             authenticationState = USER_AUTHENTICATED;
             authenticationAssertion = authenticationAssertions.get(0);
@@ -560,34 +577,34 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     /**
      * {@inheritDoc}
      */
-    public List<Cookie> getInvalidCookies() {
+    public void selectUser(SubjectEntity subject)
+            throws SubjectNotFoundException {
 
-        return ssoService.getInvalidCookies();
+        for (AuthenticationAssertion assertion : authenticationAssertions) {
+            if (assertion.getSubject().equals(subject)) {
+                /*
+                 * Selected user found
+                 */
+                authenticationState = USER_AUTHENTICATED;
+                authenticationAssertion = assertion;
+
+                ssoService.selectUser(authenticationAssertion);
+
+                LOG.debug("single sign-on: selected user " + authenticationAssertion.getSubject().getUserId() + " using devices: "
+                        + authenticationAssertion.getDevicesString());
+                return;
+            }
+        }
+
+        throw new SubjectNotFoundException();
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
+    public List<Cookie> getInvalidCookies() {
 
-        /*
-         * SubjectEntity subject = this.passwordDeviceService.authenticate(loginName, password); if (null == subject) return false;
-         * DeviceEntity device = this.deviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-         */
-
-        /*
-         * Safe the state in this stateful session bean.
-         */
-        /*
-         * this.authenticationState = USER_AUTHENTICATED; this.authenticatedSubject = subject; this.authenticationDevice = device;
-         * this.authenticationDate = new DateTime();
-         */
-
-        /*
-         * Communicate that the authentication process can continue.
-         */
-        return true;
+        return ssoService.getInvalidCookies();
     }
 
     /**
@@ -732,7 +749,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      */
     @Remove
     public String finalizeAuthentication()
-            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
+            throws NodeNotFoundException, ApplicationNotFoundException, SubjectNotFoundException {
 
         LOG.debug("finalize authentication");
         if (authenticationState != COMMITTED)
@@ -897,17 +914,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Safe the state in this stateful session bean.
          */
         authenticationState = COMMITTED;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getUsername() {
-
-        if (authenticationState != USER_AUTHENTICATED && authenticationState != COMMITTED)
-            throw new IllegalStateException("call authenticate first");
-
-        return subjectService.getSubjectLogin(authenticationAssertion.getSubject().getUserId());
     }
 
     /**

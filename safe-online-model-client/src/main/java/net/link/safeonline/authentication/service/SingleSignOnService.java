@@ -52,12 +52,15 @@ public interface SingleSignOnService extends SafeOnlineService {
      * Initialize the single sign on procedure, given a list of application pool names, application authenticating against and device
      * restriction.
      * 
+     * @param forceAuthn
+     * @param session
+     *            optional session info, used to mark application wishes to track this session.
      * @param audiences
      *            the list of application pool names.
      * @param devices
      * @param application
      */
-    void initialize(boolean forceAuthn, List<String> audiences, ApplicationEntity application, Set<DeviceEntity> devices);
+    void initialize(boolean forceAuthn, String session, List<String> audiences, ApplicationEntity application, Set<DeviceEntity> devices);
 
     /**
      * Attempts to login, given a set of Single Sign On Cookies.
@@ -68,9 +71,16 @@ public interface SingleSignOnService extends SafeOnlineService {
     List<AuthenticationAssertion> signOn(List<Cookie> ssoCookies);
 
     /**
+     * Selects specific user in case multiple users were valid for Single Sign On.
+     */
+    void selectUser(AuthenticationAssertion authenticationAssertion);
+
+    /**
      * Investigates set of SSO cookies and extracts list of applications that will need to be logged out given a specified application that
      * started the logout.
      * 
+     * @param session
+     *            optional session info that specified restriction on applications to logot
      * @param application
      *            application that initiated the single logout process.
      * @param ssoCookies
@@ -78,7 +88,7 @@ public interface SingleSignOnService extends SafeOnlineService {
      * @return Returns list of applications to be logged out.
      * 
      */
-    List<ApplicationEntity> getApplicationsToLogout(ApplicationEntity application, List<Cookie> ssoCookies);
+    List<ApplicationEntity> getApplicationsToLogout(String session, ApplicationEntity application, List<Cookie> ssoCookies);
 
     /**
      * Returns list of invalid ( expired, ... ) SSO cookies.

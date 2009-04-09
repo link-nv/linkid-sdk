@@ -74,8 +74,8 @@ namespace safe_online_sdk_dotnet_test.test.cs
 				Console.WriteLine("received: {0}", sBuffer);
 				if (sBuffer.Substring(0,3) == "GET" ) {
 					string encodedSamlRequest = this.saml2Util.generateEncodedSamlRequest(TestConstants.testCrtIssuerName,
-						TestConstants.testApplicationName, null, "http://" + TestConstants.localhost + ":8080", 
-						TestConstants.olasAuthEntry, null, false);
+					    TestConstants.testApplicationName, null, "http://"	+ TestConstants.localhost + ":8080", 
+					    TestConstants.olasAuthEntry , null, false);
 					byte[] msg = Encoding.ASCII.GetBytes("HTTP/1.0 200 OK" + "\r\n" +
 						"Content-type: text/html" + "\r\n" +
 						"Pragma: no-Cache" + "\r\n" +

@@ -59,10 +59,11 @@ public class LogoutRequestFactoryTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         Challenge<String> challenge = new Challenge<String>();
         String destinationURL = "https://test.idp.com/entry";
+        String session = "test-session-info";
 
         // operate
         long begin = System.currentTimeMillis();
-        String result = LogoutRequestFactory.createLogoutRequest(subjectName, applicationName, keyPair, destinationURL, challenge);
+        String result = LogoutRequestFactory.createLogoutRequest(subjectName, applicationName, keyPair, destinationURL, challenge, session);
         long end = System.currentTimeMillis();
 
         // verify
@@ -99,6 +100,11 @@ public class LogoutRequestFactoryTest {
         Node formatNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest/saml2:NameID/@Format", nsElement);
         assertNotNull(formatNode);
         assertEquals("urn:oasis:names:tc:SAML:2.0:nameid-format:entity", formatNode.getTextContent());
+
+        Node sessionInfoNode = XPathAPI.selectSingleNode(resultDocument,
+                "/samlp2:LogoutRequest/samlp2:Extensions/samlp2:SessionInfo/@Session", nsElement);
+        assertNotNull(sessionInfoNode);
+        assertEquals(session, sessionInfoNode.getTextContent());
 
         // verify signature
         NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");

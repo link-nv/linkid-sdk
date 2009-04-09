@@ -21,25 +21,27 @@
 				Panel]</wicket:container>
 
 			<h2>
-				<wicket:message key="selectDevice">[Select Device]</wicket:message>
+				<wicket:message key="selectUser">[Select User]</wicket:message>
 			</h2>
 
-			<form wicket:id="main_form">
+			<form wicket:id="select_form">
 
-				<span wicket:id="deviceGroup">
+				<span wicket:id="userGroup">
 
-					<span wicket:id="devices">
-						<label wicket:id="name">[Device Friendly Name]
+					<span wicket:id="users">
+						<label wicket:id="userName">[User Name]
 						</label>
-						<input type="radio" wicket:id="radio" class="tinylabel" />
+						<input type="radio" wicket:id="userRadio" class="tinylabel" />
 					</span>
 				</span>
-				<div wicket:id="device_feedback" class="error"></div>
+				<div wicket:id="user_feedback" class="error"></div>
 
 
 				<label>&nbsp;</label>
 				<input wicket:id="next" type="submit" value="[Next]"
 					wicket:message="value:next" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
 
 				<div wicket:id="feedback" class="error"></div>
 			</form>

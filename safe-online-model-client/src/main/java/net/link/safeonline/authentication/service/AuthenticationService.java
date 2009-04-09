@@ -21,7 +21,6 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -36,6 +35,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.device.sdk.operation.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.opensaml.saml2.core.AuthnRequest;
@@ -56,22 +56,6 @@ public interface AuthenticationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AuthenticationServiceBean/local";
 
-
-    /**
-     * Authenticates a user for a certain application. This method is used by the authentication web service. If <code>true</code> is
-     * returned the authentication process can proceed, else {@link #abort()} should be invoked.
-     * 
-     * @param applicationName
-     * @param loginName
-     * @param password
-     * @return <code>true</code> if the user was authenticated correctly, <code>false</code> otherwise.
-     * @throws SubjectNotFoundException
-     * @throws DeviceNotFoundException
-     *             in case the user did not configure the password device.
-     * @throws DeviceDisabledException
-     */
-    boolean authenticate(String loginName, String password)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException;
 
     /**
      * Commits the authentication.
@@ -115,13 +99,6 @@ public interface AuthenticationService extends SafeOnlineService {
      * Aborts the current authentication procedure.
      */
     void abort();
-
-    /**
-     * Gives back the username of the user that we're trying to authenticate. Calling this method is only valid after a call to
-     * {@link #authenticate(String, String)}.
-     * 
-     */
-    String getUsername();
 
     /**
      * Authenticates a user for a certain application. The method is used by the device landing servlet. The actual device authentication is
@@ -181,11 +158,11 @@ public interface AuthenticationService extends SafeOnlineService {
      * 
      * @throws NodeNotFoundException
      * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
+     * @throws SubjectNotFoundException
      * 
      */
     String finalizeAuthentication()
-            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException;
+            throws NodeNotFoundException, ApplicationNotFoundException, SubjectNotFoundException;
 
     /**
      * Gives back the current authentication state.
@@ -254,4 +231,13 @@ public interface AuthenticationService extends SafeOnlineService {
     AuthenticationAssertion register(DeviceOperationResponse response)
             throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException,
             SubjectNotFoundException, ApplicationNotFoundException, TrustDomainNotFoundException, SignatureValidationException;
+
+    /**
+     * Selects user in case Single Sign On resulted in multiple valid users.
+     * 
+     * @param subject
+     * @throws SubjectNotFoundException
+     */
+    void selectUser(SubjectEntity subject)
+            throws SubjectNotFoundException;
 }

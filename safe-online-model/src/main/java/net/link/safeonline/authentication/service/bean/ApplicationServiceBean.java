@@ -49,6 +49,7 @@ import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.SessionTrackingDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
@@ -134,6 +135,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     @EJB(mappedName = EndpointReferenceDAO.JNDI_BINDING)
     private EndpointReferenceDAO       endpointReferenceDAO;
 
+    @EJB(mappedName = SessionTrackingDAO.JNDI_BINDING)
+    private SessionTrackingDAO         sessionTrackingDAO;
+
     @EJB(mappedName = ApplicationIdentityManager.JNDI_BINDING)
     private ApplicationIdentityManager applicationIdentityService;
 
@@ -162,11 +166,11 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public ApplicationEntity addApplication(String name, String friendlyName, String applicationOwnerName, String description,
-                                            boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl,
-                                            byte[] applicationLogo, byte[] encodedCertificate,
+                                            boolean idMappingServiceAccess, boolean wsAuthenticationServiceAccess, IdScopeType idScope,
+                                            URL applicationUrl, byte[] applicationLogo, byte[] encodedCertificate,
                                             List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
                                             boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled,
-                                            URL ssoLogoutUrl)
+                                            URL ssoLogoutUrl, long sessionTimeout)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException {
 
@@ -182,6 +186,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         application.setIdentifierMappingAllowed(idMappingServiceAccess);
 
+        application.setWsAuthenticationAllowed(wsAuthenticationServiceAccess);
+
         application.setIdScope(idScope);
 
         application.setSkipMessageIntegrityCheck(skipMessageIntegrityCheck);
@@ -191,6 +197,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         application.setSsoEnabled(ssoEnabled);
 
         application.setSsoLogoutUrl(ssoLogoutUrl);
+
+        application.setSessionTimeout(sessionTimeout);
 
         setInitialApplicationIdentity(initialApplicationIdentityAttributes, application);
 
@@ -270,6 +278,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         usageAgreementDAO.removeUsageAgreements(application);
 
         allowedDeviceDAO.deleteAllowedDevices(application);
+
+        sessionTrackingDAO.removeTrackers(application);
 
         applicationOwnerDAO.removeApplication(application);
 
@@ -497,6 +507,13 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void setWSAuthenticationServiceAccess(long applicationId, boolean access)
+            throws ApplicationNotFoundException {
+
+        getApplication(applicationId).setWsAuthenticationAllowed(access);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void setIdScope(long applicationId, IdScopeType idScope)
             throws ApplicationNotFoundException {
 
@@ -567,6 +584,17 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(applicationOwnerName);
 
         getApplication(applicationId).setApplicationOwner(applicationOwner);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateSessionTimeout(long applicationId, Long sessionTimeout)
+            throws ApplicationNotFoundException {
+
+        getApplication(applicationId).setSessionTimeout(sessionTimeout);
 
     }
 }

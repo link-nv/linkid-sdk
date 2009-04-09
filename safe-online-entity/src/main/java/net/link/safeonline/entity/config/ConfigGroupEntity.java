@@ -20,8 +20,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
@@ -31,7 +31,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "config_group", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigGroupEntity c"),
+@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigGroupEntity c ORDER BY name"),
         @NamedQuery(name = QUERY_GET_GROUP, query = "FROM ConfigGroupEntity c WHERE c.name = :name") })
 public class ConfigGroupEntity implements Serializable {
 
@@ -45,7 +45,7 @@ public class ConfigGroupEntity implements Serializable {
     @Transient
     private List<ConfigItemEntity> configItems;
 
-    private int                id;
+    private int                    id;
 
 
     public ConfigGroupEntity() {

@@ -186,6 +186,7 @@ public class AuthnEntryServlet extends AbstractNodeInjectionServlet {
                 if (authenticationAssertions.size() > 1) {
                     // multiple users, go to select user page
                     LOG.debug("multiple users found, redirecting to select user page");
+                    LoginManager.setAuthenticationAssertions(session, authenticationAssertions);
                     response.sendRedirect(SelectUserPage.PATH);
                     return;
                 }

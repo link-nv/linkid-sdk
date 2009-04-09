@@ -99,7 +99,7 @@ public class AuthenticationProtocolManager {
      * 
      * <p>
      * NOTE: This method uses the request URL as the target URL, doesn't set any language/color/minimal preferences, and continues with
-     * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, boolean, Locale, Integer, Boolean)}.
+     * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, boolean, Locale, Integer, Boolean, String)}.
      * </p>
      * 
      * @param request
@@ -111,7 +111,7 @@ public class AuthenticationProtocolManager {
             throws IOException, ServletException {
 
         String target = request.getRequestURL().toString();
-        initiateAuthentication(request, response, target, false, null, null, null);
+        initiateAuthentication(request, response, target, false, null, null, null, null);
     }
 
     /**
@@ -121,10 +121,11 @@ public class AuthenticationProtocolManager {
      *            The URL where the user will be sent to after authentication has completed. If this is not an absolute URI, it will be made
      *            absolute using the web application's base URL. If <code>null</code>, the web application's base URL will be used.
      * 
-     * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)
+     * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean,
+     *      String)
      */
     public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target,
-                                              boolean skipLandingPage, Locale language, Integer color, Boolean minimal)
+                                              boolean skipLandingPage, Locale language, Integer color, Boolean minimal, String session)
             throws IOException, ServletException {
 
         // Figure out the target and landing page URLs.
@@ -147,10 +148,10 @@ public class AuthenticationProtocolManager {
         if (null != landingPage && !skipLandingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(targetUrl, request);
-            protocolHandler.initiateAuthentication(request, response, landingPage, language, color, minimal);
+            protocolHandler.initiateAuthentication(request, response, landingPage, language, color, minimal, session);
         } else {
             clearTarget(request);
-            protocolHandler.initiateAuthentication(request, response, targetUrl, language, color, minimal);
+            protocolHandler.initiateAuthentication(request, response, targetUrl, language, color, minimal, session);
         }
     }
 
@@ -207,10 +208,12 @@ public class AuthenticationProtocolManager {
      * @param request
      * @param response
      * @param subjectName
+     * @param session
      * @throws IOException
      * @throws ServletException
      */
-    public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName)
+    public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName,
+                                      String session)
             throws IOException, ServletException {
 
         // Figure out the target and landing page URLs.
@@ -230,10 +233,10 @@ public class AuthenticationProtocolManager {
         if (null != landingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(target, request);
-            protocolHandler.initiateLogout(request, response, landingPage, subjectName);
+            protocolHandler.initiateLogout(request, response, landingPage, subjectName, session);
         } else {
             clearTarget(request);
-            protocolHandler.initiateLogout(request, response, target, subjectName);
+            protocolHandler.initiateLogout(request, response, target, subjectName, session);
         }
     }
 
@@ -256,7 +259,8 @@ public class AuthenticationProtocolManager {
                                                                                     String applicationFriendlyName,
                                                                                     KeyPair applicationKeyPair,
                                                                                     X509Certificate applicationCertificate,
-                                                                                    boolean ssoEnabled, Map<String, String> inConfigParams,
+                                                                                    boolean forceAuthentication,
+                                                                                    Map<String, String> inConfigParams,
                                                                                     HttpServletRequest httpRequest)
             throws ServletException {
 
@@ -287,7 +291,7 @@ public class AuthenticationProtocolManager {
             throw new ServletException("could not load the protocol handler: " + authnProtocolHandlerClass.getName());
         }
         protocolHandler.init(authnServiceUrl, applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate,
-                ssoEnabled, configParams);
+                forceAuthentication, configParams);
 
         /*
          * We save the stateful protocol handler into the HTTP session as attribute.

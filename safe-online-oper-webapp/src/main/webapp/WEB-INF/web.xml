@@ -99,7 +99,7 @@
 
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>/error.seam</param-value>
+			<param-value>/${safe-online.oper.webapp.name}/error.seam</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -108,7 +108,7 @@
 
 		<init-param>
 			<param-name>TimeoutPath</param-name>
-			<param-value>/timeout.seam</param-value>
+			<param-value>/${safe-online.oper.webapp.name}/timeout.seam</param-value>
 		</init-param>
 	</filter>
 	<filter>

@@ -61,13 +61,15 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
         return subscription;
     }
 
-    public void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application) {
+    public SubscriptionEntity addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
+                                              ApplicationEntity application) {
 
         String subscriptionUserId = idGenerator.generateId();
         LOG.debug("add subscription for " + subject.getUserId() + " to " + application.getName() + "  subscriptionUserId = "
                 + subscriptionUserId);
         SubscriptionEntity subscription = new SubscriptionEntity(subscriptionOwnerType, subject, subscriptionUserId, application);
         entityManager.persist(subscription);
+        return subscription;
     }
 
     public void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application,

@@ -163,7 +163,7 @@ public class SafeOnlineAuthenticationUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     public static String login(String target) {
 
@@ -175,12 +175,12 @@ public class SafeOnlineAuthenticationUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
     public static String login(String target, boolean skipLandingPage) {
 
-        return login(target, skipLandingPage, null, null, null);
+        return login(target, skipLandingPage, null, null, null, null, null);
     }
 
     /**
@@ -188,18 +188,19 @@ public class SafeOnlineAuthenticationUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
-    public static String login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal) {
+    public static String login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal,
+                               Boolean forceAuthentication, String session) {
 
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
             ExternalContext externalContext = context.getExternalContext();
 
-            login(target, skipLandingPage, language, color, minimal, (HttpServletRequest) externalContext.getRequest(),
-                    (HttpServletResponse) externalContext.getResponse());
+            login(target, skipLandingPage, language, color, minimal, forceAuthentication, session,
+                    (HttpServletRequest) externalContext.getRequest(), (HttpServletResponse) externalContext.getResponse());
 
             return null;
         }
@@ -216,11 +217,11 @@ public class SafeOnlineAuthenticationUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
     public static void login(String target, HttpServletRequest request, HttpServletResponse response) {
 
-        login(target, null, null, null, request, response);
+        login(target, null, null, null, null, null, request, response);
     }
 
     /**
@@ -228,12 +229,12 @@ public class SafeOnlineAuthenticationUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #login(String, boolean, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
+     * @see #login(String, boolean, Locale, Integer, Boolean, Boolean, String, HttpServletRequest, HttpServletResponse)
      */
-    public static void login(String target, Locale language, Integer color, Boolean minimal, HttpServletRequest request,
-                             HttpServletResponse response) {
+    public static void login(String target, Locale language, Integer color, Boolean minimal, Boolean forceAuthentication, String session,
+                             HttpServletRequest request, HttpServletResponse response) {
 
-        login(target, false, language, color, minimal, request, response);
+        login(target, false, language, color, minimal, forceAuthentication, session, request, response);
     }
 
     /**
@@ -268,9 +269,11 @@ public class SafeOnlineAuthenticationUtils {
      *            The 24-bit color override {@link SafeOnlineAppConstants#COLOR_CONTEXT_PARAM} with. <code>null</code> prevents overriding.
      * @param minimal
      *            The value to override {@link SafeOnlineAppConstants#MINIMAL_CONTEXT_PARAM} with. <code>null</code> prevents overriding.
+     * @param forceAuthentication
+     *            Force an authentication and do not allow SSO for this particular login ( even tho the application can be SSO enabled )
      */
     public static void login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal,
-                             HttpServletRequest request, HttpServletResponse response) {
+                             Boolean forceAuthentication, String session, HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, String> config = new HashMap<String, String>();
         ServletContext context = request.getSession().getServletContext();
@@ -334,7 +337,7 @@ public class SafeOnlineAuthenticationUtils {
         /* Initialize and execute the authentication protocol. */
         try {
             AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, authenticationServicePath,
-                    applicationName, applicationFriendlyName, keyPair, certificate, ssoEnabled, config, request);
+                    applicationName, applicationFriendlyName, keyPair, certificate, forceAuthentication, config, request);
             LOG.debug("initialized protocol");
         } catch (ServletException e) {
             throw new RuntimeException("could not init authentication protocol handler: " + authenticationProtocol + "; original message: "
@@ -360,7 +363,7 @@ public class SafeOnlineAuthenticationUtils {
         // Initiate the authentication.
         try {
             AuthenticationProtocolManager.initiateAuthentication(request, response, targetUrl, skipLandingPage, language, authColor,
-                    authMinimal);
+                    authMinimal, session);
             LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);
@@ -372,16 +375,16 @@ public class SafeOnlineAuthenticationUtils {
      * <b>Note: ONLY use this method from the JSF framework.</b>
      * </p>
      * 
-     * @see #logout(String, String, HttpServletRequest, HttpServletResponse)
+     * @see #logout(String, String,String, HttpServletRequest, HttpServletResponse)
      */
     @SuppressWarnings("unchecked")
-    public static void logout(String subjectName, String target) {
+    public static boolean logout(String subjectName, String target) {
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
 
         try {
-            logout(subjectName, target, (HttpServletRequest) externalContext.getRequest(),
+            return logout(subjectName, target, null, (HttpServletRequest) externalContext.getRequest(),
                     (HttpServletResponse) externalContext.getResponse());
         }
 
@@ -397,14 +400,15 @@ public class SafeOnlineAuthenticationUtils {
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
      * 
-     * @see #logout(String, String, HttpServletRequest, HttpServletResponse)
+     * @see #logout(String, String, String, HttpServletRequest, HttpServletResponse)
      */
-    public static void logout(String target, HttpServletRequest request, HttpServletResponse response) {
+    public static boolean logout(String target, String session, HttpServletRequest request, HttpServletResponse response) {
 
         try {
-            logout(LoginManager.getUserId(request), target, request, response);
+            return logout(LoginManager.getUserId(request), target, session, request, response);
         } catch (ServletException e) {
             LOG.warn("Couldn't find user id of logged in user; not logged in?", e);
+            return false;
         }
     }
 
@@ -433,8 +437,13 @@ public class SafeOnlineAuthenticationUtils {
      * @param target
      *            The target to which to redirect to after successful logout. If not absolute, the web application's base URL will be
      *            prefixed to it.
+     * 
+     * @param session
+     *            The optional SSO session to logout
+     * 
+     * @return <code>true</code> if redirected successful, <code>false</code> if not redirected ( e.g. when SSO is disabled )
      */
-    public static void logout(String subjectName, String target, HttpServletRequest request, HttpServletResponse response) {
+    public static boolean logout(String subjectName, String target, String session, HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, String> config = new HashMap<String, String>();
         ServletContext context = request.getSession().getServletContext();
@@ -479,7 +488,7 @@ public class SafeOnlineAuthenticationUtils {
         }
         LOG.debug("single sign-on enabled: " + ssoEnabled);
         if (false == ssoEnabled)
-            return;
+            return false;
 
         /* Load key data if provided. */
         KeyPair keyPair = null;
@@ -507,11 +516,13 @@ public class SafeOnlineAuthenticationUtils {
                     + e.getMessage(), e);
         }
         try {
-            AuthenticationProtocolManager.initiateLogout(request, response, targetUrl, subjectName);
+            AuthenticationProtocolManager.initiateLogout(request, response, targetUrl, subjectName, session);
             LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate logout: " + e.getMessage(), e);
         }
+
+        return true;
     }
 
     /**

@@ -42,13 +42,13 @@ public interface AuthenticationProtocolHandler extends Serializable {
      *            the application RSA key pair used to sign the authentication request.
      * @param applicationCertificate
      *            the application certificate used to sign the WS-Security signatures.
-     * @param ssoEnabled
-     *            whether single sign-on can be used or not
+     * @param forceAuthentication
+     *            whether authentication should be forced and SSO ignored ( even if application is SSO enabled )
      * @param configParams
      *            additional specific authentication protocol configuration parameters.
      */
     void init(String authnServiceUrl, String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-              X509Certificate applicationCertificate, boolean ssoEnabled, Map<String, String> configParams);
+              X509Certificate applicationCertificate, boolean forceAuthentication, Map<String, String> configParams);
 
     /**
      * Initiates the authentication request towards the SafeOnline authentication web application.
@@ -64,11 +64,13 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @param minimal
      *            <code>true</code>: OLAS will make its pages smaller by hiding header/footer images so it is more suitable to be used in an
      *            IFrame, for example.
+     * @param session
+     *            optional session info used if an application wishes to track the session
      * @throws IOException
      * @throws ServletException
      */
     public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, Locale language,
-                                       Integer color, Boolean minimal)
+                                       Integer color, Boolean minimal, String session)
             throws IOException, ServletException;
 
     /**
@@ -91,11 +93,12 @@ public interface AuthenticationProtocolHandler extends Serializable {
      *            the optional target URL. If omitted the request URL will be used as target URL.
      * @param subjectName
      *            the subject ID
+     * @param session
      * 
      * @throws IOException
      * @throws ServletException
      */
-    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
+    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName, String session)
             throws IOException, ServletException;
 
     /**

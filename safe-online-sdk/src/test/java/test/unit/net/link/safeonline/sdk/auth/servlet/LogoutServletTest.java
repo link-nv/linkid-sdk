@@ -261,7 +261,7 @@ public class LogoutServletTest {
         // setup
         String userId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
@@ -288,7 +288,7 @@ public class LogoutServletTest {
         String userId = UUID.randomUUID().toString();
         String fooUserId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair, location, challenge, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, fooUserId);

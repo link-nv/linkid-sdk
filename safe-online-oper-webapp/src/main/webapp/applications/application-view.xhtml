@@ -75,6 +75,10 @@
 								</td>
 							</tr>
 							<tr>
+								<th>#{msgs.operatorSessionTimeout}</th>
+								<td>#{selectedApplication.sessionTimeout}</td>
+							</tr>
+							<tr>
 								<th>#{msgs.applicationLogo}</th>
 								<td class="center">
 									<h:graphicImage
@@ -246,6 +250,15 @@
 							<td>
 								<h:selectBooleanCheckbox id="idmap"
 									disabled="true" value="#{selectedApplication.identifierMappingAllowed}" />
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<h:outputText value="#{msgs.accessControlWSAuthenticationService}" />
+							</th>
+							<td>
+								<h:selectBooleanCheckbox id="wsauth"
+									disabled="true" value="#{selectedApplication.wsAuthenticationAllowed}" />
 							</td>
 						</tr>
 						<tr>

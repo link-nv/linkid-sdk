@@ -8,7 +8,6 @@
 package net.link.safeonline.notification.message.handler;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -56,13 +55,11 @@ public class UnsubscribeUserMessageHandler implements MessageHandler {
             try {
                 SubjectEntity subjectEntity = subjectService.getSubject(subject);
                 if (publicSubscriptionService.isSubscribed(subjectEntity, consumer.getApplication())) {
-                    String applicationUserId = userIdMappingService.getApplicationUserId(consumer.getApplication().getId(), subject);
+                    String applicationUserId = userIdMappingService.getApplicationUserId(consumer.getApplication(), subjectEntity);
                     return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content, consumer.getId());
                 }
                 return null;
             } catch (SubscriptionNotFoundException e) {
-                return null;
-            } catch (ApplicationNotFoundException e) {
                 return null;
             } catch (SubjectNotFoundException e) {
                 return null;

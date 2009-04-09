@@ -32,6 +32,8 @@ public class UserSession extends OLASSession {
 
     private String            userId           = null;
 
+    private String            session          = null;
+
 
     public UserSession(Request request) {
 
@@ -46,6 +48,16 @@ public class UserSession extends OLASSession {
     public String getUserId() {
 
         return userId;
+    }
+
+    public void setSession(String session) {
+
+        this.session = session;
+    }
+
+    public String getSession() {
+
+        return session;
     }
 
     /**

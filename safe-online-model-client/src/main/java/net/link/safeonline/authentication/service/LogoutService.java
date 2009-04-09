@@ -16,10 +16,10 @@ import javax.servlet.http.Cookie;
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.LogoutInitializationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
@@ -60,9 +60,11 @@ public interface LogoutService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws SubjectNotFoundException
      * @throws SignatureValidationException
+     * @throws LogoutInitializationException
      */
     LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest)
-            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException;
+            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException,
+            LogoutInitializationException;
 
     /**
      * @return A list of applications to logout. Returns an empty list if there are none.
@@ -100,12 +102,11 @@ public interface LogoutService extends SafeOnlineService {
      * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
      * 
      * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
      * @throws NodeNotFoundException
      * 
      */
     String getLogoutRequest(ApplicationEntity application)
-            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException;
+            throws ApplicationNotFoundException, NodeNotFoundException;
 
     /**
      * Validates the returned SAML logout response message. Returns the application name if successful or <code>null</code> if the response

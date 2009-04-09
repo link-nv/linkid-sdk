@@ -49,14 +49,14 @@ public class OlasLogoutLink extends AbstractOlasAuthLink {
      */
     public void delegate(Class<? extends Page> target, HttpServletRequest request, HttpServletResponse response) {
 
+        boolean redirected = false;
         if (LoginManager.isAuthenticated(request)) {
             String targetUrl = RequestCycle.get().urlFor(target, null).toString();
             LOG.debug("Logout delegated to OLAS with target: " + targetUrl);
-
-            SafeOnlineAuthenticationUtils.logout(targetUrl, request, response);
+            redirected = SafeOnlineAuthenticationUtils.logout(targetUrl, session, request, response);
         }
 
-        else {
+        if (!redirected) {
             LOG.debug("Logout handeled locally; invalidating session.");
             Session.get().invalidateNow();
 

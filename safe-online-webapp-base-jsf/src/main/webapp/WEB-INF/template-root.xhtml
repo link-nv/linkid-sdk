@@ -1,55 +1,49 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-    xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html">
-<f:view contentType="text/html">
-	<head>
-        <link rel="stylesheet" type="text/css"
-            href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
-        <link rel="stylesheet" type="text/css"
-            href="#{facesContext.externalContext.requestContextPath}/theme.css?applicationName=#{initParam['ApplicationName']}" />
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<f:view contentType="text/html">
+		<head>
+			<link rel="stylesheet" type="text/css"
+				href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
+			<link rel="stylesheet" type="text/css"
+				href="#{facesContext.externalContext.requestContextPath}/theme.css?applicationName=#{initParam['ApplicationName']}" />
 
-        <meta http-equiv="cache-control" content="no-cache" />
-        <title><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></title>
-	</head>
+			<meta http-equiv="cache-control" content="no-cache" />
+			<title>
+				<ui:insert name="title">#{initParam['CommercialName']}
+				</ui:insert>
+			</title>
+		</head>
 
-    <c:set var="bodyStyle" value="" />
-    <c:if test="${applicationMinimal}">
-        <c:set var="bodyStyle" value="minimal" />
-    </c:if>
-	<body class="${bodyStyle}">
-        <div id="c-header">
-            <div id="header">
-                <h:form>
-                    <h:commandLink action="#{language.entry}">
-                        <h:graphicImage
-                            value="/images/langs/#{facesContext.viewRoot.locale.language}.png" />
-                        #{msgs.chooseLanguage}
-                    </h:commandLink>
+		<c:set var="bodyStyle" value="" />
+		<c:if test="${applicationMinimal}">
+			<c:set var="bodyStyle" value="minimal" />
+		</c:if>
+		<body class="${bodyStyle}">
+			<div id="c-header">
+				<div id="header">
 
-                    <ui:insert name="logout" />
+					<ui:insert name="header" />
 
-                </h:form>
-            </div>
+				</div>
 
-            <f:subview rendered="#{userId != null}">
-                <ui:insert name="topnav" />
-            </f:subview>
-        </div>
+				<f:subview rendered="#{userId != null}">
+					<ui:insert name="topnav" />
+				</f:subview>
+			</div>
 
-        <div id="c-content">
-            <div id="content">
-                <ui:insert name="top_content" />
-                <ui:insert name="sidebox" />
-                <ui:insert name="content">Welcome to #{initParam['CommercialName']}.</ui:insert>
-            </div>
+			<div id="c-content">
+				<div id="content">
+					<ui:insert name="top_content" />
+					<ui:insert name="sidebox" />
+					<ui:insert name="content">Welcome to
+						#{initParam['CommercialName']}.</ui:insert>
+				</div>
 
-            <hr class="float_fix" />
-        </div>
+				<hr class="float_fix" />
+			</div>
 
-        <div id="footer">Copyright 2006-2009 - Lin.k NV</div>
-	</body>
-</f:view>
+			<div id="footer">Copyright 2006-2009 - Lin.k NV</div>
+		</body>
+	</f:view>
 </html>

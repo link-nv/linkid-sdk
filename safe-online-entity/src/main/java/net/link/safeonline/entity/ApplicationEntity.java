@@ -101,6 +101,8 @@ public class ApplicationEntity implements Serializable {
 
     private boolean                     identifierMappingAllowed;
 
+    private boolean                     wsAuthenticationAllowed;
+
     private IdScopeType                 idScope;
 
     private boolean                     skipMessageIntegrityCheck;
@@ -108,6 +110,8 @@ public class ApplicationEntity implements Serializable {
     private boolean                     ssoEnabled;
 
     private URL                         ssoLogoutUrl;
+
+    private long                        sessionTimeout;
 
     private List<ApplicationPoolEntity> applicationPools;
 
@@ -374,6 +378,20 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
+     * The ws authentication allowed field is used for access control over the WS authentication service.
+     * 
+     */
+    public boolean isWsAuthenticationAllowed() {
+
+        return wsAuthenticationAllowed;
+    }
+
+    public void setWsAuthenticationAllowed(boolean wsAuthenticationAllowed) {
+
+        this.wsAuthenticationAllowed = wsAuthenticationAllowed;
+    }
+
+    /**
      * The id scope field is used to determine which type of id should be returned to the caller application.
      * 
      */
@@ -440,6 +458,22 @@ public class ApplicationEntity implements Serializable {
     public void setSsoLogoutUrl(URL ssoLogoutUrl) {
 
         this.ssoLogoutUrl = ssoLogoutUrl;
+    }
+
+    /**
+     * Returns the session timeout for an application used by session tracking
+     */
+    public long getSessionTimeout() {
+
+        return sessionTimeout;
+    }
+
+    /**
+     * Sets the session timeout for an application used by session tracking
+     */
+    public void setSessionTimeout(long sessionTimeout) {
+
+        this.sessionTimeout = sessionTimeout;
     }
 
     @Override

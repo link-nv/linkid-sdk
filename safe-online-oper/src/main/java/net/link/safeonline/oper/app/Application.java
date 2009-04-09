@@ -97,6 +97,10 @@ public interface Application {
 
     void setIdmapping(boolean idmapping);
 
+    boolean isWsAuthentication();
+
+    void setWsAuthentication(boolean wsAuthentication);
+
     String getUsageAgreement()
             throws ApplicationNotFoundException;
 
@@ -119,6 +123,10 @@ public interface Application {
     String getSsoLogoutUrl();
 
     void setSsoLogoutUrl(String ssoLogoutUrl);
+
+    Long getSessionTimeout();
+
+    void setSessionTimeout(Long sessionTimeout);
 
     /*
      * Actions.

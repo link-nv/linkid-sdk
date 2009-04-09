@@ -134,8 +134,9 @@ public class AuthenticationServiceBeanTest {
     public static void oneTimeSetup()
             throws Exception {
 
-        if (null == Security.getProvider( BouncyCastleProvider.PROVIDER_NAME ))
-            Security.addProvider( new BouncyCastleProvider() );
+        if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
     }
 
     @Before
@@ -146,70 +147,70 @@ public class AuthenticationServiceBeanTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.setNamingStrategy( new FieldNamingStrategy() );
+        jndiTestUtils.setNamingStrategy(new FieldNamingStrategy());
 
-        mockSubjectService = createMock( SubjectService.class );
-        EJBTestUtils.inject( testedInstance, mockSubjectService );
+        mockSubjectService = createMock(SubjectService.class);
+        EJBTestUtils.inject(testedInstance, mockSubjectService);
 
-        mockApplicationDAO = createMock( ApplicationDAO.class );
-        EJBTestUtils.inject( testedInstance, mockApplicationDAO );
+        mockApplicationDAO = createMock(ApplicationDAO.class);
+        EJBTestUtils.inject(testedInstance, mockApplicationDAO);
 
-        mockSubscriptionDAO = createMock( SubscriptionDAO.class );
-        EJBTestUtils.inject( testedInstance, mockSubscriptionDAO );
+        mockSubscriptionDAO = createMock(SubscriptionDAO.class);
+        EJBTestUtils.inject(testedInstance, mockSubscriptionDAO);
 
-        mockHistoryDAO = createMock( HistoryDAO.class );
-        EJBTestUtils.inject( testedInstance, mockHistoryDAO );
+        mockHistoryDAO = createMock(HistoryDAO.class);
+        EJBTestUtils.inject(testedInstance, mockHistoryDAO);
 
-        mockStatisticDAO = createMock( StatisticDAO.class );
-        EJBTestUtils.inject( testedInstance, mockStatisticDAO );
+        mockStatisticDAO = createMock(StatisticDAO.class);
+        EJBTestUtils.inject(testedInstance, mockStatisticDAO);
 
-        mockStatisticDataPointDAO = createMock( StatisticDataPointDAO.class );
-        EJBTestUtils.inject( testedInstance, mockStatisticDataPointDAO );
+        mockStatisticDataPointDAO = createMock(StatisticDataPointDAO.class);
+        EJBTestUtils.inject(testedInstance, mockStatisticDataPointDAO);
 
-        mockDeviceDAO = createMock( DeviceDAO.class );
-        EJBTestUtils.inject( testedInstance, mockDeviceDAO );
+        mockDeviceDAO = createMock(DeviceDAO.class);
+        EJBTestUtils.inject(testedInstance, mockDeviceDAO);
 
-        mockApplicationAuthenticationService = createMock( ApplicationAuthenticationService.class );
-        EJBTestUtils.inject( testedInstance, mockApplicationAuthenticationService );
+        mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+        EJBTestUtils.inject(testedInstance, mockApplicationAuthenticationService);
 
-        mockNodeAuthenticationService = createMock( NodeAuthenticationService.class );
-        EJBTestUtils.inject( testedInstance, mockNodeAuthenticationService );
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        EJBTestUtils.inject(testedInstance, mockNodeAuthenticationService);
 
-        mockPkiValidator = createMock( PkiValidator.class );
-        EJBTestUtils.inject( testedInstance, mockPkiValidator );
+        mockPkiValidator = createMock(PkiValidator.class);
+        EJBTestUtils.inject(testedInstance, mockPkiValidator);
 
-        mockDevicePolicyService = createMock( DevicePolicyService.class );
-        EJBTestUtils.inject( testedInstance, mockDevicePolicyService );
+        mockDevicePolicyService = createMock(DevicePolicyService.class);
+        EJBTestUtils.inject(testedInstance, mockDevicePolicyService);
 
-        mockSecurityAuditLogger = createMock( SecurityAuditLogger.class );
-        EJBTestUtils.inject( testedInstance, mockSecurityAuditLogger );
+        mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+        EJBTestUtils.inject(testedInstance, mockSecurityAuditLogger);
 
-        mockUserIdMappingService = createMock( UserIdMappingService.class );
-        EJBTestUtils.inject( testedInstance, mockUserIdMappingService );
+        mockUserIdMappingService = createMock(UserIdMappingService.class);
+        EJBTestUtils.inject(testedInstance, mockUserIdMappingService);
 
-        mockIdentityService = createMock( IdentityService.class );
-        EJBTestUtils.inject( testedInstance, mockIdentityService );
+        mockIdentityService = createMock(IdentityService.class);
+        EJBTestUtils.inject(testedInstance, mockIdentityService);
 
-        mockUsageAgreementService = createMock( UsageAgreementService.class );
-        EJBTestUtils.inject( testedInstance, mockUsageAgreementService );
+        mockUsageAgreementService = createMock(UsageAgreementService.class);
+        EJBTestUtils.inject(testedInstance, mockUsageAgreementService);
 
-        mockSamlAuthorityService = createMock( SamlAuthorityService.class );
-        EJBTestUtils.inject( testedInstance, mockSamlAuthorityService );
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        EJBTestUtils.inject(testedInstance, mockSamlAuthorityService);
 
-        mockSingleSignOnService = createMock( SingleSignOnService.class );
+        mockSingleSignOnService = createMock(SingleSignOnService.class);
+        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
 
         nodeKeyPair = PkiTestUtils.generateKeyPair();
-        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate( nodeKeyPair, "CN=Test" );
-        mockKeyService = createMock( KeyService.class );
-        jndiTestUtils.bindComponent( KeyService.JNDI_BINDING, mockKeyService );
+        nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        mockKeyService = createMock(KeyService.class);
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
-        EJBTestUtils.init( testedInstance );
+        EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockSubscriptionDAO, mockHistoryDAO,
-                mockStatisticDAO, mockStatisticDataPointDAO, mockDeviceDAO, mockApplicationAuthenticationService,
-                mockNodeAuthenticationService, mockPkiValidator, mockDevicePolicyService, mockSecurityAuditLogger,
-                mockUserIdMappingService, mockIdentityService, mockUsageAgreementService, mockSamlAuthorityService,
-                mockKeyService, mockSingleSignOnService };
+        mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockSubscriptionDAO, mockHistoryDAO, mockStatisticDAO,
+                mockStatisticDataPointDAO, mockDeviceDAO, mockApplicationAuthenticationService, mockNodeAuthenticationService,
+                mockPkiValidator, mockDevicePolicyService, mockSecurityAuditLogger, mockUserIdMappingService, mockIdentityService,
+                mockUsageAgreementService, mockSamlAuthorityService, mockKeyService, mockSingleSignOnService };
     }
 
     @After
@@ -226,44 +227,38 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate( applicationKeyPair,
-                                                                                      "CN=TestApplication" );
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, null, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent( SingleSignOnService.JNDI_BINDING, mockSingleSignOnService );
-        mockSingleSignOnService.initialize( true, new LinkedList<String>(), application, null );
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( applicationCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      applicationCert ) ).andReturn( PkiResult.VALID );
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = testedInstance.initialize( null, null, null, authnRequest );
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( applicationName, protocolContext.getApplicationName() );
-        assertEquals( assertionConsumerService, protocolContext.getTarget() );
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
     }
 
     @Test
@@ -272,57 +267,49 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate( applicationKeyPair,
-                                                                                      "CN=TestApplication" );
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
         Set<String> devices = new HashSet<String>();
-        devices.add( SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS );
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        devices.add(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
         List<DeviceEntity> authnDevices = new LinkedList<DeviceEntity>();
-        DeviceEntity passwordDevice = new DeviceEntity( "test-password-device", new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS ),
-                null, null, null, null, null, null, null, null );
-        authnDevices.add( passwordDevice );
+        DeviceEntity passwordDevice = new DeviceEntity("test-password-device", new DeviceClassEntity(
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null, null);
+        authnDevices.add(passwordDevice);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, devices, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, devices, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent( SingleSignOnService.JNDI_BINDING, mockSingleSignOnService );
-        mockSingleSignOnService.initialize( true, new LinkedList<String>(), application,
-                                            Collections.singleton( passwordDevice ) );
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( applicationCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      applicationCert ) ).andReturn( PkiResult.VALID );
-        expect( mockDevicePolicyService.listDevices( SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS ) ).andReturn(
-                                                                                                                           authnDevices );
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, Collections.singleton(passwordDevice));
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
+        expect(mockDevicePolicyService.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS)).andReturn(authnDevices);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = testedInstance.initialize( null, null, null, authnRequest );
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( applicationName, protocolContext.getApplicationName() );
-        assertEquals( assertionConsumerService, protocolContext.getTarget() );
-        assertNotNull( protocolContext.getRequiredDevices() );
-        assertTrue( protocolContext.getRequiredDevices().contains( passwordDevice ) );
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
+        assertNotNull(protocolContext.getRequiredDevices());
+        assertTrue(protocolContext.getRequiredDevices().contains(passwordDevice));
     }
 
     @Test
@@ -335,34 +322,30 @@ public class AuthenticationServiceBeanTest {
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
         KeyPair foobarKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate foobarCert = PkiTestUtils.generateSelfSignedCertificate( foobarKeyPair, "CN=TestApplication" );
+        X509Certificate foobarCert = PkiTestUtils.generateSelfSignedCertificate(foobarKeyPair, "CN=TestApplication");
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, null, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( foobarCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      foobarCert ) ).andReturn( PkiResult.VALID );
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(foobarCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, foobarCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
         try {
-            testedInstance.initialize( null, null, null, authnRequest );
+            testedInstance.initialize(null, null, null, authnRequest);
         } catch (SignatureValidationException e) {
             // expected
             return;
@@ -376,37 +359,32 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate( applicationKeyPair,
-                                                                                      "CN=TestApplication" );
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, null, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( applicationCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      applicationCert ) ).andReturn( PkiResult.INVALID );
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.INVALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
         try {
-            testedInstance.initialize( null, null, null, authnRequest );
+            testedInstance.initialize(null, null, null, authnRequest);
         } catch (SignatureValidationException e) {
             // expected
             return;
@@ -424,130 +402,116 @@ public class AuthenticationServiceBeanTest {
          */
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate( applicationKeyPair,
-                                                                                      "CN=TestApplication" );
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, null, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent( SingleSignOnService.JNDI_BINDING, mockSingleSignOnService );
-        mockSingleSignOnService.initialize( true, new LinkedList<String>(), application, null );
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( applicationCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      applicationCert ) ).andReturn( PkiResult.VALID );
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = testedInstance.initialize( null, null, null, authnRequest );
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( applicationName, protocolContext.getApplicationName() );
-        assertEquals( assertionConsumerService, protocolContext.getTarget() );
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Redirect authentication
          */
         // setup
         NodeEntity localNode = new NodeEntity();
-        localNode.setName( "test-local-node" );
+        localNode.setName("test-local-node");
 
         String deviceName = "test-device-name";
         DeviceEntity device = new DeviceEntity();
-        device.setName( deviceName );
-        device.setLocation( localNode );
+        device.setName(deviceName);
+        device.setLocation(localNode);
 
         // expectations
-        expect( mockNodeAuthenticationService.getLocalNode() ).andReturn( localNode );
-        expect( mockKeyService.getPrivateKeyEntry( SafeOnlineNodeKeyStore.class ) ).andReturn(
-                                                                                               new PrivateKeyEntry(
-                                                                                                       nodeKeyPair.getPrivate(),
-                                                                                                       new Certificate[] { nodeCertificate } ) ).times(
-                                                                                                                                                        2 );
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(localNode);
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        String encodedDeviceAuthenticationRequest = testedInstance.redirectAuthentication( "test-auth-service-url",
-                                                                                           "target-url", deviceName );
-        AuthnRequest deviceAuthnRequest = getAuthnRequest( new String(
-                Base64.decode( encodedDeviceAuthenticationRequest ) ) );
+        String encodedDeviceAuthenticationRequest = testedInstance
+                                                                  .redirectAuthentication("test-auth-service-url", "target-url", deviceName);
+        AuthnRequest deviceAuthnRequest = getAuthnRequest(new String(Base64.decode(encodedDeviceAuthenticationRequest)));
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertNotNull( encodedDeviceAuthenticationRequest );
+        assertNotNull(encodedDeviceAuthenticationRequest);
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Authenticate successful
          */
         // setup
         String userId = UUID.randomUUID().toString();
-        SubjectEntity subject = new SubjectEntity( userId );
+        SubjectEntity subject = new SubjectEntity(userId);
         DateTime authenticationTime = new DateTime();
         Map<DateTime, String> authentications = new HashMap<DateTime, String>();
-        authentications.put( authenticationTime, deviceName );
+        authentications.put(authenticationTime, deviceName);
 
-        String encodedResponse = AuthnResponseFactory.createAuthResponse( deviceAuthnRequest.getID(), applicationName,
-                                                                          localNode.getName(), userId, nodeKeyPair,
-                                                                          Integer.MAX_VALUE, "test-target",
-                                                                          authentications );
-        Response response = getResponse( encodedResponse );
+        String encodedResponse = AuthnResponseFactory.createAuthResponse(deviceAuthnRequest.getID(), applicationName, localNode.getName(),
+                userId, nodeKeyPair, Integer.MAX_VALUE, "test-target", authentications);
+        Response response = getResponse(encodedResponse);
 
         // expectations
-        expect( mockNodeAuthenticationService.getCertificates( localNode.getName() ) ).andReturn(
-                                                                                                  Collections.singletonList( nodeCertificate ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN,
-                                                      nodeCertificate ) ).andReturn( PkiResult.VALID );
-        expect( mockDeviceDAO.getDevice( deviceName ) ).andReturn( device );
-        expect( mockNodeAuthenticationService.getLocalNode() ).andReturn( localNode );
-        expect( mockSubjectService.getSubject( userId ) ).andReturn( subject );
-        mockSingleSignOnService.setCookies( (SubjectEntity) EasyMock.anyObject(), (DeviceEntity) EasyMock.anyObject(),
-                                            (DateTime) EasyMock.anyObject() );
+        expect(mockNodeAuthenticationService.getCertificates(localNode.getName())).andReturn(Collections.singletonList(nodeCertificate));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN, nodeCertificate)).andReturn(
+                PkiResult.VALID);
+        expect(mockDeviceDAO.getDevice(deviceName)).andReturn(device);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(localNode);
+        expect(mockSubjectService.getSubject(userId)).andReturn(subject);
+        mockSingleSignOnService.setCookies((SubjectEntity) EasyMock.anyObject(), (DeviceEntity) EasyMock.anyObject(),
+                (DateTime) EasyMock.anyObject());
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        AuthenticationAssertion assertion = testedInstance.authenticate( response );
+        AuthenticationAssertion assertion = testedInstance.authenticate(response);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( AuthenticationState.USER_AUTHENTICATED, testedInstance.getAuthenticationState() );
-        assertNotNull( assertion );
-        assertEquals( subject, assertion.getSubject() );
-        assertEquals( 1, assertion.getAuthentications().size() );
-        assertTrue( assertion.getAuthentications().values().contains( device ) );
+        assertEquals(AuthenticationState.USER_AUTHENTICATED, testedInstance.getAuthenticationState());
+        assertNotNull(assertion);
+        assertEquals(subject, assertion.getSubject());
+        assertEquals(1, assertion.getAuthentications().size());
+        assertTrue(assertion.getAuthentications().values().contains(device));
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Commit authentication
@@ -557,69 +521,58 @@ public class AuthenticationServiceBeanTest {
         SubscriptionEntity subscription = new SubscriptionEntity();
         StatisticEntity statisticEntity = new StatisticEntity();
         StatisticDataPointEntity statisticDataPointEntity = new StatisticDataPointEntity();
-        statisticDataPointEntity.setX( 1L );
+        statisticDataPointEntity.setX(1L);
 
         // expectations
-        expect( mockApplicationDAO.getApplication( applicationId ) ).andReturn( application );
-        expect( mockIdentityService.isConfirmationRequired( applicationId ) ).andReturn( false );
-        expect( mockIdentityService.hasMissingAttributes( applicationId ) ).andReturn( false );
-        expect( mockDevicePolicyService.getDevicePolicy( applicationId, null ) ).andReturn(
-                                                                                            Collections.singletonList( device ) );
-        expect( mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation( language ) ).andReturn( false );
-        expect( mockUsageAgreementService.requiresUsageAgreementAcceptation( applicationId, language ) ).andReturn(
-                                                                                                                    false );
-        expect( mockSubscriptionDAO.findSubscription( subject, application ) ).andReturn( subscription );
+        expect(mockApplicationDAO.getApplication(applicationId)).andReturn(application);
+        expect(mockIdentityService.isConfirmationRequired(applicationId)).andReturn(false);
+        expect(mockIdentityService.hasMissingAttributes(applicationId)).andReturn(false);
+        expect(mockDevicePolicyService.getDevicePolicy(applicationId, null)).andReturn(Collections.singletonList(device));
+        expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(language)).andReturn(false);
+        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(applicationId, language)).andReturn(false);
+        expect(mockSubscriptionDAO.findSubscription(subject, application)).andReturn(subscription);
         expect(
-                mockHistoryDAO.addHistoryEntry( (Date) EasyMock.anyObject(), (SubjectEntity) EasyMock.anyObject(),
-                                                (HistoryEventType) EasyMock.anyObject(),
-                                                (Map<String, String>) EasyMock.anyObject() ) ).andReturn( null );
-        mockSubscriptionDAO.loggedIn( subscription );
+                mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(), (SubjectEntity) EasyMock.anyObject(),
+                        (HistoryEventType) EasyMock.anyObject(), (Map<String, String>) EasyMock.anyObject())).andReturn(null);
+        mockSubscriptionDAO.loggedIn(subscription);
         expect(
-                mockStatisticDAO.findOrAddStatisticByNameDomainAndApplication( UsageStatisticTaskBean.statisticName,
-                                                                               UsageStatisticTaskBean.statisticDomain,
-                                                                               application ) ).andReturn(
-                                                                                                          statisticEntity );
-        expect(
-                mockStatisticDataPointDAO.findOrAddStatisticDataPoint( UsageStatisticTaskBean.loginCounter,
-                                                                       statisticEntity ) ).andReturn(
-                                                                                                      statisticDataPointEntity );
+                mockStatisticDAO.findOrAddStatisticByNameDomainAndApplication(UsageStatisticTaskBean.statisticName,
+                        UsageStatisticTaskBean.statisticDomain, application)).andReturn(statisticEntity);
+        expect(mockStatisticDataPointDAO.findOrAddStatisticDataPoint(UsageStatisticTaskBean.loginCounter, statisticEntity)).andReturn(
+                statisticDataPointEntity);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        testedInstance.commitAuthentication( language );
+        testedInstance.commitAuthentication(language);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Finalize authentication
          */
         // setup
         // expectations
-        expect( mockNodeAuthenticationService.getLocalNode() ).andReturn( localNode );
-        expect( mockSamlAuthorityService.getAuthnAssertionValidity() ).andReturn( Integer.MAX_VALUE );
-        expect( mockUserIdMappingService.getApplicationUserId( applicationId, userId ) ).andReturn(
-                                                                                                    UUID.randomUUID().toString() );
-        expect( mockKeyService.getPrivateKeyEntry( SafeOnlineNodeKeyStore.class ) ).andReturn(
-                                                                                               new PrivateKeyEntry(
-                                                                                                       nodeKeyPair.getPrivate(),
-                                                                                                       new Certificate[] { nodeCertificate } ) ).times(
-                                                                                                                                                        2 );
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(localNode);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andReturn(Integer.MAX_VALUE);
+        expect(mockUserIdMappingService.getApplicationUserId(applicationId, userId)).andReturn(UUID.randomUUID().toString());
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
         String encodedAuthnResponse = testedInstance.finalizeAuthentication();
 
         // verify
-        verify( mockObjects );
-        assertNotNull( encodedAuthnResponse );
+        verify(mockObjects);
+        assertNotNull(encodedAuthnResponse);
     }
 
     @Test
@@ -631,113 +584,99 @@ public class AuthenticationServiceBeanTest {
          */
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate( applicationKeyPair,
-                                                                                      "CN=TestApplication" );
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, null, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent( SingleSignOnService.JNDI_BINDING, mockSingleSignOnService );
-        mockSingleSignOnService.initialize( true, new LinkedList<String>(), application, null );
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( applicationCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      applicationCert ) ).andReturn( PkiResult.VALID );
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = testedInstance.initialize( null, null, null, authnRequest );
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( applicationName, protocolContext.getApplicationName() );
-        assertEquals( assertionConsumerService, protocolContext.getTarget() );
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Redirect authentication
          */
         // setup
         NodeEntity localNode = new NodeEntity();
-        localNode.setName( "test-local-node" );
+        localNode.setName("test-local-node");
 
         String deviceName = "test-device-name";
         DeviceEntity device = new DeviceEntity();
-        device.setName( deviceName );
-        device.setLocation( localNode );
+        device.setName(deviceName);
+        device.setLocation(localNode);
 
         // expectations
-        expect( mockNodeAuthenticationService.getLocalNode() ).andReturn( localNode );
-        expect( mockKeyService.getPrivateKeyEntry( SafeOnlineNodeKeyStore.class ) ).andReturn(
-                                                                                               new PrivateKeyEntry(
-                                                                                                       nodeKeyPair.getPrivate(),
-                                                                                                       new Certificate[] { nodeCertificate } ) ).times(
-                                                                                                                                                        2 );
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(localNode);
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        String encodedDeviceAuthenticationRequest = testedInstance.redirectAuthentication( "test-auth-service-url",
-                                                                                           "target-url", deviceName );
-        AuthnRequest deviceAuthnRequest = getAuthnRequest( new String(
-                Base64.decode( encodedDeviceAuthenticationRequest ) ) );
+        String encodedDeviceAuthenticationRequest = testedInstance
+                                                                  .redirectAuthentication("test-auth-service-url", "target-url", deviceName);
+        AuthnRequest deviceAuthnRequest = getAuthnRequest(new String(Base64.decode(encodedDeviceAuthenticationRequest)));
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertNotNull( encodedDeviceAuthenticationRequest );
+        assertNotNull(encodedDeviceAuthenticationRequest);
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Authenticate failed, try another device
          */
         // setup
-        String encodedResponse = AuthnResponseFactory.createAuthResponseRequestRegistration(
-                                                                                             deviceAuthnRequest.getID(),
-                                                                                             localNode.getName(),
-                                                                                             nodeKeyPair, "test-target" );
-        Response response = getResponse( encodedResponse );
+        String encodedResponse = AuthnResponseFactory.createAuthResponseRequestRegistration(deviceAuthnRequest.getID(),
+                localNode.getName(), nodeKeyPair, "test-target");
+        Response response = getResponse(encodedResponse);
 
         // expectations
-        expect( mockNodeAuthenticationService.getCertificates( localNode.getName() ) ).andReturn(
-                                                                                                  Collections.singletonList( nodeCertificate ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN,
-                                                      nodeCertificate ) ).andReturn( PkiResult.VALID );
+        expect(mockNodeAuthenticationService.getCertificates(localNode.getName())).andReturn(Collections.singletonList(nodeCertificate));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN, nodeCertificate)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        AuthenticationAssertion assertion = testedInstance.authenticate( response );
+        AuthenticationAssertion assertion = testedInstance.authenticate(response);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( AuthenticationState.REDIRECTED, testedInstance.getAuthenticationState() );
-        assertNull( assertion );
+        assertEquals(AuthenticationState.REDIRECTED, testedInstance.getAuthenticationState());
+        assertNull(assertion);
     }
 
     @Test
@@ -749,112 +688,99 @@ public class AuthenticationServiceBeanTest {
          */
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate( applicationKeyPair,
-                                                                                      "CN=TestApplication" );
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, null, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent( SingleSignOnService.JNDI_BINDING, mockSingleSignOnService );
-        mockSingleSignOnService.initialize( true, new LinkedList<String>(), application, null );
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( applicationCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      applicationCert ) ).andReturn( PkiResult.VALID );
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = testedInstance.initialize( null, null, null, authnRequest );
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( applicationName, protocolContext.getApplicationName() );
-        assertEquals( assertionConsumerService, protocolContext.getTarget() );
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Redirect authentication
          */
         // setup
         NodeEntity localNode = new NodeEntity();
-        localNode.setName( "test-local-node" );
+        localNode.setName("test-local-node");
 
         String deviceName = "test-device-name";
         DeviceEntity device = new DeviceEntity();
-        device.setName( deviceName );
-        device.setLocation( localNode );
+        device.setName(deviceName);
+        device.setLocation(localNode);
 
         // expectations
-        expect( mockNodeAuthenticationService.getLocalNode() ).andReturn( localNode );
-        expect( mockKeyService.getPrivateKeyEntry( SafeOnlineNodeKeyStore.class ) ).andReturn(
-                                                                                               new PrivateKeyEntry(
-                                                                                                       nodeKeyPair.getPrivate(),
-                                                                                                       new Certificate[] { nodeCertificate } ) ).times(
-                                                                                                                                                        2 );
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(localNode);
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        String encodedDeviceAuthenticationRequest = testedInstance.redirectAuthentication( "test-auth-service-url",
-                                                                                           "target-url", deviceName );
-        AuthnRequest deviceAuthnRequest = getAuthnRequest( new String(
-                Base64.decode( encodedDeviceAuthenticationRequest ) ) );
+        String encodedDeviceAuthenticationRequest = testedInstance
+                                                                  .redirectAuthentication("test-auth-service-url", "target-url", deviceName);
+        AuthnRequest deviceAuthnRequest = getAuthnRequest(new String(Base64.decode(encodedDeviceAuthenticationRequest)));
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertNotNull( encodedDeviceAuthenticationRequest );
+        assertNotNull(encodedDeviceAuthenticationRequest);
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Authenticate failed, try another device
          */
         // setup
-        String encodedResponse = AuthnResponseFactory.createAuthResponseFailed( deviceAuthnRequest.getID(),
-                                                                                localNode.getName(), nodeKeyPair,
-                                                                                "test-target" );
-        Response response = getResponse( encodedResponse );
+        String encodedResponse = AuthnResponseFactory.createAuthResponseFailed(deviceAuthnRequest.getID(), localNode.getName(),
+                nodeKeyPair, "test-target");
+        Response response = getResponse(encodedResponse);
 
         // expectations
-        expect( mockNodeAuthenticationService.getCertificates( localNode.getName() ) ).andReturn(
-                                                                                                  Collections.singletonList( nodeCertificate ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN,
-                                                      nodeCertificate ) ).andReturn( PkiResult.VALID );
+        expect(mockNodeAuthenticationService.getCertificates(localNode.getName())).andReturn(Collections.singletonList(nodeCertificate));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN, nodeCertificate)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        AuthenticationAssertion assertion = testedInstance.authenticate( response );
+        AuthenticationAssertion assertion = testedInstance.authenticate(response);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( AuthenticationState.INITIALIZED, testedInstance.getAuthenticationState() );
-        assertNull( assertion );
+        assertEquals(AuthenticationState.INITIALIZED, testedInstance.getAuthenticationState());
+        assertNull(assertion);
     }
 
     @SuppressWarnings("unchecked")
@@ -867,47 +793,41 @@ public class AuthenticationServiceBeanTest {
          */
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate( applicationKeyPair,
-                                                                                      "CN=TestApplication" );
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         long applicationId = 1234567890;
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        SubjectEntity ownerSubject = new SubjectEntity( UUID.randomUUID().toString() );
-        ApplicationOwnerEntity owner = new ApplicationOwnerEntity( "owner", ownerSubject );
-        ApplicationEntity application = new ApplicationEntity( applicationName, null, owner, null, null, null, null );
-        application.setId( applicationId );
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null,
-                                                                             applicationKeyPair,
-                                                                             assertionConsumerService, destinationUrl,
-                                                                             null, null, false );
-        AuthnRequest authnRequest = getAuthnRequest( encodedAuthnRequest );
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, null);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent( SingleSignOnService.JNDI_BINDING, mockSingleSignOnService );
-        mockSingleSignOnService.initialize( true, new LinkedList<String>(), application, null );
-        expect( mockApplicationDAO.getApplication( applicationName ) ).andStubReturn( application );
-        expect( mockApplicationAuthenticationService.getCertificates( applicationId ) ).andReturn(
-                                                                                                   Collections.singletonList( applicationCert ) );
-        expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                      applicationCert ) ).andReturn( PkiResult.VALID );
+        mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = testedInstance.initialize( null, null, null, authnRequest );
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( applicationName, protocolContext.getApplicationName() );
-        assertEquals( assertionConsumerService, protocolContext.getTarget() );
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Redirect registration
@@ -916,132 +836,156 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
 
         NodeEntity localNode = new NodeEntity();
-        localNode.setName( "test-local-node" );
+        localNode.setName("test-local-node");
 
         String deviceName = "test-device-name";
         DeviceEntity device = new DeviceEntity();
-        device.setName( deviceName );
-        device.setLocation( localNode );
+        device.setName(deviceName);
+        device.setLocation(localNode);
 
         // expectations
-        expect( mockNodeAuthenticationService.getLocalNode() ).andReturn( localNode );
-        expect( mockDeviceDAO.getDevice( deviceName ) ).andReturn( device );
-        expect( mockKeyService.getPrivateKeyEntry( SafeOnlineNodeKeyStore.class ) ).andReturn(
-                                                                                               new PrivateKeyEntry(
-                                                                                                       nodeKeyPair.getPrivate(),
-                                                                                                       new Certificate[] { nodeCertificate } ) ).times(
-                                                                                                                                                        2 );
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(localNode);
+        expect(mockDeviceDAO.getDevice(deviceName)).andReturn(device);
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate })).times(2);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        String encodedDeviceRegistrationRequest = testedInstance.redirectRegistration( "test-reg-service-url",
-                                                                                       "target-url", deviceName, userId );
-        DeviceOperationRequest deviceRegistrationRequest = getDeviceRequest( new String(
-                Base64.decode( encodedDeviceRegistrationRequest ) ) );
+        String encodedDeviceRegistrationRequest = testedInstance.redirectRegistration("test-reg-service-url", "target-url", deviceName,
+                userId);
+        DeviceOperationRequest deviceRegistrationRequest = getDeviceRequest(new String(Base64.decode(encodedDeviceRegistrationRequest)));
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertNotNull( encodedDeviceRegistrationRequest );
+        assertNotNull(encodedDeviceRegistrationRequest);
 
         // reset
-        reset( mockObjects );
+        reset(mockObjects);
 
         /*
          * Registration successful
          */
         // setup
-        SubjectEntity subject = new SubjectEntity( userId );
+        SubjectEntity subject = new SubjectEntity(userId);
         DateTime authenticationTime = new DateTime();
         Map<DateTime, String> authentications = new HashMap<DateTime, String>();
-        authentications.put( authenticationTime, deviceName );
+        authentications.put(authenticationTime, deviceName);
 
-        String encodedResponse = DeviceOperationResponseFactory.createDeviceOperationResponse(
-                                                                                               deviceRegistrationRequest.getID(),
-                                                                                               DeviceOperationType.NEW_ACCOUNT_REGISTER,
-                                                                                               localNode.getName(),
-                                                                                               userId,
-                                                                                               device.getName(),
-                                                                                               nodeKeyPair,
-                                                                                               Integer.MAX_VALUE,
-                                                                                               "test-target" );
-        DeviceOperationResponse response = getDeviceResponse( encodedResponse );
+        String encodedResponse = DeviceOperationResponseFactory.createDeviceOperationResponse(deviceRegistrationRequest.getID(),
+                DeviceOperationType.NEW_ACCOUNT_REGISTER, localNode.getName(), userId, device.getName(), nodeKeyPair, Integer.MAX_VALUE,
+                "test-target");
+        DeviceOperationResponse response = getDeviceResponse(encodedResponse);
 
         // expectations
-        expect( mockNodeAuthenticationService.getCertificates( localNode.getName() ) ).andReturn(
-                                                                                                  Collections.singletonList( nodeCertificate ) );
+        expect(mockNodeAuthenticationService.getCertificates(localNode.getName())).andReturn(Collections.singletonList(nodeCertificate));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN, nodeCertificate)).andReturn(
+                PkiResult.VALID);
+        expect(mockDeviceDAO.getDevice(deviceName)).andReturn(device);
+        expect(mockNodeAuthenticationService.getLocalNode()).andReturn(localNode);
+        expect(mockSubjectService.getSubject(userId)).andReturn(subject);
+        mockSingleSignOnService.setCookies((SubjectEntity) EasyMock.anyObject(), (DeviceEntity) EasyMock.anyObject(),
+                (DateTime) EasyMock.anyObject());
         expect(
-                mockPkiValidator.validateCertificate( SafeOnlineConstants.SAFE_ONLINE_NODE_TRUST_DOMAIN,
-                                                      nodeCertificate ) ).andReturn( PkiResult.VALID );
-        expect( mockDeviceDAO.getDevice( deviceName ) ).andReturn( device );
-        expect( mockNodeAuthenticationService.getLocalNode() ).andReturn( localNode );
-        expect( mockSubjectService.getSubject( userId ) ).andReturn( subject );
-        mockSingleSignOnService.setCookies( (SubjectEntity) EasyMock.anyObject(), (DeviceEntity) EasyMock.anyObject(),
-                                            (DateTime) EasyMock.anyObject() );
-        expect(
-                mockHistoryDAO.addHistoryEntry( (Date) EasyMock.anyObject(), (SubjectEntity) EasyMock.anyObject(),
-                                                (HistoryEventType) EasyMock.anyObject(),
-                                                (Map<String, String>) EasyMock.anyObject() ) ).andReturn( null );
+                mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(), (SubjectEntity) EasyMock.anyObject(),
+                        (HistoryEventType) EasyMock.anyObject(), (Map<String, String>) EasyMock.anyObject())).andReturn(null);
 
         // prepare
-        replay( mockObjects );
+        replay(mockObjects);
 
         // operate
-        AuthenticationAssertion assertion = testedInstance.register( response );
+        AuthenticationAssertion assertion = testedInstance.register(response);
 
         // verify
-        verify( mockObjects );
+        verify(mockObjects);
 
-        assertEquals( AuthenticationState.USER_AUTHENTICATED, testedInstance.getAuthenticationState() );
-        assertNotNull( assertion );
-        assertEquals( subject, assertion.getSubject() );
-        assertEquals( 1, assertion.getAuthentications().size() );
-        assertTrue( assertion.getAuthentications().values().contains( device ) );
+        assertEquals(AuthenticationState.USER_AUTHENTICATED, testedInstance.getAuthenticationState());
+        assertNotNull(assertion);
+        assertEquals(subject, assertion.getSubject());
+        assertEquals(1, assertion.getAuthentications().size());
+        assertTrue(assertion.getAuthentications().values().contains(device));
+    }
 
-        // reset
-        reset( mockObjects );
+    @Test
+    public void initializeWithSessionInfo()
+            throws Exception {
 
+        // setup
+        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
+        String applicationName = "test-application-id";
+        long applicationId = 1234567890;
+        String assertionConsumerService = "http://test.assertion.consumer.service";
+        String destinationUrl = "http://test.destination.url";
+        SubjectEntity ownerSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", ownerSubject);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, owner, null, null, null, null);
+        application.setId(applicationId);
+        String session = UUID.randomUUID().toString();
+
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true, session);
+        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
+
+        // expectations
+        mockSingleSignOnService.initialize(true, session, new LinkedList<String>(), application, null);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+
+        // verify
+        verify(mockObjects);
+
+        assertEquals(applicationName, protocolContext.getApplicationName());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
     }
 
     private AuthnRequest getAuthnRequest(String encodedAuthnRequest)
             throws Exception {
 
-        Document doc = DomUtils.parseDocument( encodedAuthnRequest );
+        Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
-        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller( doc.getDocumentElement() );
-        AuthnRequest authnRequest = (AuthnRequest) unmarshaller.unmarshall( doc.getDocumentElement() );
+        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(doc.getDocumentElement());
+        AuthnRequest authnRequest = (AuthnRequest) unmarshaller.unmarshall(doc.getDocumentElement());
         return authnRequest;
     }
 
     private Response getResponse(String encodedResponse)
             throws Exception {
 
-        Document doc = DomUtils.parseDocument( encodedResponse );
+        Document doc = DomUtils.parseDocument(encodedResponse);
         UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
-        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller( doc.getDocumentElement() );
-        Response response = (Response) unmarshaller.unmarshall( doc.getDocumentElement() );
+        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(doc.getDocumentElement());
+        Response response = (Response) unmarshaller.unmarshall(doc.getDocumentElement());
         return response;
     }
 
     private DeviceOperationRequest getDeviceRequest(String encodedRequest)
             throws Exception {
 
-        Document doc = DomUtils.parseDocument( encodedRequest );
+        Document doc = DomUtils.parseDocument(encodedRequest);
         UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
-        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller( doc.getDocumentElement() );
-        DeviceOperationRequest request = (DeviceOperationRequest) unmarshaller.unmarshall( doc.getDocumentElement() );
+        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(doc.getDocumentElement());
+        DeviceOperationRequest request = (DeviceOperationRequest) unmarshaller.unmarshall(doc.getDocumentElement());
         return request;
     }
 
     private DeviceOperationResponse getDeviceResponse(String encodedResponse)
             throws Exception {
 
-        Document doc = DomUtils.parseDocument( encodedResponse );
+        Document doc = DomUtils.parseDocument(encodedResponse);
         UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
-        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller( doc.getDocumentElement() );
-        DeviceOperationResponse response = (DeviceOperationResponse) unmarshaller.unmarshall( doc.getDocumentElement() );
+        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(doc.getDocumentElement());
+        DeviceOperationResponse response = (DeviceOperationResponse) unmarshaller.unmarshall(doc.getDocumentElement());
         return response;
     }
 }

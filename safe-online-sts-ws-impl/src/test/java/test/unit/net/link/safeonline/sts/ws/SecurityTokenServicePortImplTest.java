@@ -533,7 +533,7 @@ public class SecurityTokenServicePortImplTest {
 
         Challenge<String> challenge = new Challenge<String>();
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, null, applicationName, nodeKeyPair,
-                assertionConsumerServiceURL, destinationURL, challenge, Collections.singleton("test-device-name"), false);
+                assertionConsumerServiceURL, destinationURL, challenge, Collections.singleton("test-device-name"), false, null);
         Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         return doc.getDocumentElement();
     }
@@ -552,7 +552,7 @@ public class SecurityTokenServicePortImplTest {
 
         Challenge<String> challenge = new Challenge<String>();
         String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, nodeKeyPair, destinationURL,
-                challenge);
+                challenge, null);
         Document doc = DomUtils.parseDocument(encodedLogoutRequest);
         return doc.getDocumentElement();
     }

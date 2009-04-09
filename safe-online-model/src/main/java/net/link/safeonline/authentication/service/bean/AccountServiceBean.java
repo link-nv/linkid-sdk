@@ -26,6 +26,7 @@ import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.NodeMappingDAO;
+import net.link.safeonline.dao.SessionTrackingDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
@@ -37,8 +38,8 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -74,6 +75,9 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
     @EJB(mappedName = NodeMappingDAO.JNDI_BINDING)
     private NodeMappingDAO              nodeMappingDAO;
+
+    @EJB(mappedName = SessionTrackingDAO.JNDI_BINDING)
+    private SessionTrackingDAO          sessionTrackingDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService              subjectService;
@@ -119,6 +123,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
         attributeDAO.removeAttributes(subject);
         subjectIdentifierDAO.removeSubjectIdentifiers(subject);
         nodeMappingDAO.removeNodeMappings(subject);
+        sessionTrackingDAO.removeAssertions(subject);
         subjectDAO.removeSubject(subject);
     }
 }

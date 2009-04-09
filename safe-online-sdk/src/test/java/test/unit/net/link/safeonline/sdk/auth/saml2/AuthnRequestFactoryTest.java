@@ -61,12 +61,13 @@ public class AuthnRequestFactoryTest {
         Challenge<String> challenge = new Challenge<String>();
         String destinationURL = "https://test.idp.com/entry";
         String device = "device";
+        String session = "test-session-info";
 
         // operate
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton(device);
         String result = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, keyPair, assertionConsumerServiceURL,
-                destinationURL, challenge, devices, false);
+                destinationURL, challenge, devices, false, session);
         long end = System.currentTimeMillis();
 
         // verify
@@ -111,6 +112,11 @@ public class AuthnRequestFactoryTest {
         assertNotNull(allowCreateNode);
         assertEquals("true", allowCreateNode.getTextContent());
 
+        Node sessionInfoNode = XPathAPI.selectSingleNode(resultDocument,
+                "/samlp2:AuthnRequest/samlp2:Extensions/samlp2:SessionInfo/@Session", nsElement);
+        assertNotNull(sessionInfoNode);
+        assertEquals(session, sessionInfoNode.getTextContent());
+
         // verify signature
         NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");
         assertEquals(1, signatureNodeList.getLength());
@@ -139,7 +145,7 @@ public class AuthnRequestFactoryTest {
         LOG.debug("key pair algo: " + keyPair.getPublic().getAlgorithm());
 
         // operate
-        String result = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, keyPair, null, null, null, null, false);
+        String result = AuthnRequestFactory.createAuthnRequest(applicationName, null, null, keyPair, null, null, null, null, false, null);
         LOG.debug("result: " + result);
     }
 

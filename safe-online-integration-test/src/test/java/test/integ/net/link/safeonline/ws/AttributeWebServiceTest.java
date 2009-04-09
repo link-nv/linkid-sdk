@@ -168,7 +168,7 @@ public class AttributeWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(),
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE),
-                        new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null);
+                        new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -264,7 +264,7 @@ public class AttributeWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(),
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE),
-                        new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null);
+                        new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -338,7 +338,7 @@ public class AttributeWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(),
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE),
-                        new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null);
+                        new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -450,7 +450,7 @@ public class AttributeWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(TEST_COMP_NAME) }),
-                false, false, false, null);
+                false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage

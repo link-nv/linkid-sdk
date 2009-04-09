@@ -87,7 +87,7 @@ namespace safe_online_sdk_dotnet
 			authnRequest.ForceAuthn = !ssoEnabled;
 			authnRequest.ID = this.expectedChallenge;
 			authnRequest.Version = "2.0";
-			authnRequest.IssueInstant = DateTime.Now.ToUniversalTime();
+			authnRequest.IssueInstant = DateTime.UtcNow;
 
 			NameIDType issuer = new NameIDType();
 			issuer.Value = issuerName;

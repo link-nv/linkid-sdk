@@ -209,7 +209,6 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         // Remove any old subjects that use this mobile.
         SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, challengeMobile);
         if (null != subject) {
-            mobileManager.remove(challengeMobile);
             // flush and clear to commit and release the removed entities.
             entityManager.flush();
             entityManager.clear();
@@ -254,7 +253,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
             AttributeEntity parentAttribute = attributeManager.getCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, id);
             String mobile = attributeManager.getCompoundMember(parentAttribute, EncapConstants.ENCAP_MOBILE_ATTRIBUTE).getStringValue();
 
-            mobileManager.remove(mobile);
+            // Encap remove does not work anyway at this time and it is also
+            // enough to cut the link between OLAS and encap
+            // mobileManager.remove(mobile);
 
             subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
             if (null == subject)

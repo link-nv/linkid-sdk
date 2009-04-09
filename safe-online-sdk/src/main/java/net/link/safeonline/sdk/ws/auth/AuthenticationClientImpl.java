@@ -38,7 +38,6 @@ import net.link.safeonline.auth.ws.Confirmation;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
-import net.link.safeonline.sdk.ws.LoggingHandler;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
@@ -95,10 +94,6 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         port = authenticationService.getPort(endpoint, AuthenticationPort.class, new AddressingFeature(true));
 
         registerMessageLoggerHandler(port);
-
-        // TODO: disable logging when finished
-        LoggingHandler.addNewHandler(port);
-        setCaptureMessages(true);
 
         WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }

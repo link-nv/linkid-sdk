@@ -17,7 +17,6 @@ import net.lin_k.safe_online.auth.GetAuthenticationService;
 import net.link.safeonline.auth.ws.GetAuthenticationServiceFactory;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
-import net.link.safeonline.sdk.ws.LoggingHandler;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
@@ -56,10 +55,6 @@ public class GetAuthenticationClientImpl extends AbstractMessageAccessor impleme
         setEndpointAddress();
 
         registerMessageLoggerHandler(port);
-
-        // TODO: disable logging when finished
-        LoggingHandler.addNewHandler(port);
-        setCaptureMessages(true);
     }
 
     private void setEndpointAddress() {

@@ -199,7 +199,7 @@ public class ProxyWebServiceTest {
 
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-                        SafeOnlineConstants.LOGIN_ATTRIBTUE) }), false, false, false, null);
+                        SafeOnlineConstants.LOGIN_ATTRIBTUE) }), false, false, false, null, 0L);
         testApplication = applicationService.getApplication(testApplicationName);
         return testApplication;
     }

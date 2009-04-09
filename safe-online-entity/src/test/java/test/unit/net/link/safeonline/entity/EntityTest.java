@@ -44,6 +44,11 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.DeviceClassDescriptionEntity;
+import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceDescriptionEntity;
+import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.HistoryEventType;
@@ -77,6 +82,9 @@ import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.pkix.TrustPointPK;
+import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
+import net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity;
+import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
@@ -118,7 +126,9 @@ public class EntityTest {
                     AuditContextEntity.class, AuditAuditEntity.class, HelpdeskContextEntity.class,
                     CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class, UsageAgreementEntity.class,
                     UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class, NodeEntity.class, ApplicationPoolEntity.class,
-                    EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class, NotificationMessageEntity.class);
+                    EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class, NotificationMessageEntity.class,
+                    SessionTrackingEntity.class, SessionAssertionEntity.class, SessionAuthnStatementEntity.class, DeviceEntity.class,
+                    DevicePropertyEntity.class, DeviceDescriptionEntity.class, DeviceClassEntity.class, DeviceClassDescriptionEntity.class);
         } catch (Exception e) {
             LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
@@ -1242,5 +1252,99 @@ public class EntityTest {
 
         // verify
         assertNotNull(resultMessage);
+    }
+
+    @Test
+    public void testAddRemoveSessionTracker() {
+
+        // setup
+        SubjectEntity adminSubject = new SubjectEntity(UUID.randomUUID().toString());
+        ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("test-owner", adminSubject);
+        ApplicationEntity application = new ApplicationEntity();
+        application.setApplicationOwner(applicationOwner);
+        String session = UUID.randomUUID().toString();
+        String ssoId = UUID.randomUUID().toString();
+        ApplicationPoolEntity applicationPool = new ApplicationPoolEntity("test-application-pool", Long.MAX_VALUE);
+
+        SessionTrackingEntity tracker = new SessionTrackingEntity(application, session, ssoId, applicationPool);
+
+        // operate
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        entityManager.persist(adminSubject);
+        entityManager.persist(applicationOwner);
+        entityManager.persist(application);
+        entityManager.persist(applicationPool);
+        entityManager.persist(tracker);
+        entityManager.flush();
+
+        // verify
+        SessionTrackingEntity resultTracker = entityManager.find(SessionTrackingEntity.class, tracker.getId());
+        assertNotNull(resultTracker);
+        assertEquals(application, resultTracker.getApplication());
+        assertEquals(session, resultTracker.getSession());
+        assertEquals(ssoId, resultTracker.getSsoId());
+        assertEquals(applicationPool, resultTracker.getApplicationPool());
+
+        // operate
+        entityManager.remove(tracker);
+
+        // verify
+        resultTracker = entityManager.find(SessionTrackingEntity.class, tracker.getId());
+        assertNull(resultTracker);
+    }
+
+    @Test
+    public void testAddRemoveSessionAssertion() {
+
+        // setup
+        ApplicationPoolEntity applicationPool = new ApplicationPoolEntity("test-application-pool", Long.MAX_VALUE);
+        SubjectEntity subject = new SubjectEntity(UUID.randomUUID().toString());
+        DeviceEntity device1 = new DeviceEntity();
+        device1.setName("test-device-1");
+        DeviceEntity device2 = new DeviceEntity();
+        device2.setName("test-device-2");
+
+        SessionAssertionEntity assertion = new SessionAssertionEntity(UUID.randomUUID().toString(), applicationPool);
+        assertion.setSubject(subject);
+        SessionAuthnStatementEntity statement1 = new SessionAuthnStatementEntity(assertion, new Date(), device1);
+        SessionAuthnStatementEntity statement2 = new SessionAuthnStatementEntity(assertion, new Date(), device2);
+        assertion.getStatements().add(statement1);
+        assertion.getStatements().add(statement2);
+
+        // operate
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        entityManager.persist(applicationPool);
+        entityManager.persist(subject);
+        entityManager.persist(device1);
+        entityManager.persist(device2);
+        entityManager.persist(assertion);
+        entityManager.persist(statement1);
+        entityManager.persist(statement2);
+        entityManager.flush();
+
+        // verify
+        SessionAssertionEntity resultAssertion = entityManager.find(SessionAssertionEntity.class, assertion.getId());
+        assertNotNull(resultAssertion);
+        assertEquals(subject, resultAssertion.getSubject());
+        SessionAuthnStatementEntity resultStatement1 = entityManager.find(SessionAuthnStatementEntity.class, statement1.getId());
+        assertNotNull(resultStatement1);
+        assertEquals(device1, resultStatement1.getDevice());
+        SessionAuthnStatementEntity resultStatement2 = entityManager.find(SessionAuthnStatementEntity.class, statement2.getId());
+        assertNotNull(resultStatement2);
+        assertEquals(device2, resultStatement2.getDevice());
+
+        // operate
+        entityManager.remove(assertion);
+        entityManager.remove(statement1);
+        entityManager.remove(statement2);
+        entityManager.flush();
+
+        // verify
+        resultAssertion = entityManager.find(SessionAssertionEntity.class, assertion.getId());
+        assertNull(resultAssertion);
+        resultStatement1 = entityManager.find(SessionAuthnStatementEntity.class, statement1.getId());
+        assertNull(resultStatement1);
+        resultStatement2 = entityManager.find(SessionAuthnStatementEntity.class, statement2.getId());
+        assertNull(resultStatement2);
     }
 }

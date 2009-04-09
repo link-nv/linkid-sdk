@@ -11,7 +11,9 @@ import javax.ejb.Local;
 
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.SubjectEntity;
 
 
 @Local
@@ -26,10 +28,18 @@ public interface UserIdMappingService extends SafeOnlineService {
      * @param applicationId
      * @param userId
      * @throws ApplicationNotFoundException
-     * @throws SubscriptionNotFoundException
+     * @throws SubjectNotFoundException
      */
     String getApplicationUserId(long applicationId, String userId)
-            throws ApplicationNotFoundException, SubscriptionNotFoundException;
+            throws ApplicationNotFoundException, SubjectNotFoundException;
+
+    /**
+     * Returns the application specific user id as specified in the application's id scope.
+     * 
+     * @param applicatio
+     * @param subject
+     */
+    String getApplicationUserId(ApplicationEntity application, SubjectEntity subject);
 
     /**
      * Returns the SafeOnline global user id using the application's id scope settings and provided application id. Returns null if not
@@ -41,4 +51,13 @@ public interface UserIdMappingService extends SafeOnlineService {
      */
     String findUserId(long applicationId, String applicationUserId)
             throws ApplicationNotFoundException;
+
+    /**
+     * Returns the SafeOnline global user id using the application's id scope settings and provided application id. Returns null if not
+     * found.
+     * 
+     * @param application
+     * @param applicationUserId
+     */
+    String findUserId(ApplicationEntity application, String applicationUserId);
 }

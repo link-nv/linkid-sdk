@@ -117,7 +117,6 @@
 										</s:decorate>
 										<h:message for="applicationIdScope" styleClass="error" />
 									</td>
-
 								</tr>
 								<tr>
 
@@ -141,6 +140,21 @@
 												styleClass="label" />
 										</s:decorate>
 										<h:message for="ssoLogoutUrl" styleClass="error" />
+									</td>
+
+								</tr>
+
+								<tr>
+
+									<th>
+										<h:outputText value="#{msgs.operatorSessionTimeout}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="sessionTimeout"
+												value="#{operApplication.sessionTimeout}" styleClass="label" />
+										</s:decorate>
+										<h:message for="sessionTimeout" styleClass="error" />
 									</td>
 
 								</tr>
@@ -241,6 +255,17 @@
 									<td>
 										<h:selectBooleanCheckbox value="#{operApplication.idmapping}"
 											id="idmapping" />
+									</td>
+
+								</tr>
+								<tr>
+
+									<th>
+										<h:outputText value="#{msgs.accessControlWSAuthenticationService}" />
+									</th>
+									<td>
+										<h:selectBooleanCheckbox value="#{operApplication.wsAuthentication}"
+											id="wsauth" />
 									</td>
 
 								</tr>

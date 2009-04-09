@@ -126,7 +126,8 @@ public class LogoutExitServletTest {
         String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair, location);
         String encodedSamlLogoutResponse = Base64.encode(samlLogoutResponse.getBytes());
 
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair, location, null);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair, location, null,
+                null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedSamlLogoutResponse) };
@@ -193,7 +194,8 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair, location, null);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair, location, null,
+                null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         // expectations

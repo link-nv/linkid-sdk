@@ -25,11 +25,11 @@ import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.LogoutInitializationException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationAssertion;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.LogoutService;
@@ -229,10 +229,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
             encodedSamlResponseToken = AuthenticationServiceManager.finalizeAuthentication(session);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
-        } catch (SubscriptionNotFoundException e) {
-            throw new ProtocolException("Subscription not found: " + e.getMessage());
         } catch (ApplicationNotFoundException e) {
             throw new ProtocolException("Application not found: " + e.getMessage());
+        } catch (SubjectNotFoundException e) {
+            throw new ProtocolException("Subject not found: " + e.getMessage());
         }
 
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
@@ -279,6 +279,9 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         } catch (SubjectNotFoundException e) {
             LOG.debug("subject not found: " + e.getMessage());
             throw new ProtocolException("subject not found");
+        } catch (LogoutInitializationException e) {
+            LOG.debug("logout initialization error: " + e.getMessage());
+            throw new ProtocolException("logout initialization error");
         }
     }
 
@@ -336,8 +339,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
             encodedSamlLogoutRequestToken = logoutService.getLogoutRequest(application);
         } catch (NodeNotFoundException e) {
             throw new ProtocolException("Node not found: " + e.getMessage());
-        } catch (SubscriptionNotFoundException e) {
-            throw new ProtocolException("Subscription not found: " + e.getMessage());
         } catch (ApplicationNotFoundException e) {
             throw new ProtocolException("Application not found: " + e.getMessage());
         }

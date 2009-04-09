@@ -336,7 +336,7 @@ public class AccountMergingServiceBeanTest {
                 applicationIdentityAttributes.add(new IdentityAttributeTypeDO(attributeType.getName(), true, false));
             }
             ApplicationEntity applicationEntity = applicationService.addApplication(this.applicationName, null, "owner", null, false,
-                    IdScopeType.USER, null, null, null, applicationIdentityAttributes, false, false, false, null);
+                    false, IdScopeType.USER, null, null, null, applicationIdentityAttributes, false, false, false, null, 0L);
             applicationId = applicationEntity.getId();
         }
     }

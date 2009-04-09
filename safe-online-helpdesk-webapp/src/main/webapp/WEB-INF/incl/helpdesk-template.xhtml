@@ -2,15 +2,28 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html">
 	<ui:composition template="/WEB-INF/template-root.xhtml">
-		<ui:define name="logout">
-			<f:subview rendered="#{userId != null}">
-				<h:outputText value=" | " />
-				<h:commandLink id="logout" action="#{helpLogin.logout}"
-					value="#{msgs.logout}" />
-			</f:subview>
+		<ui:define name="header">
+
+			<h:form>
+
+				<h:commandLink action="#{helpLanguage.entry}">
+					<h:graphicImage
+						value="/images/langs/#{facesContext.viewRoot.locale.language}.png" />
+					#{msgs.chooseLanguage}
+				</h:commandLink>
+
+				<f:subview rendered="#{userId != null}">
+					<h:outputText value=" | " />
+					<h:commandLink id="logout" action="#{helpLogin.logout}"
+						value="#{msgs.logout}" />
+				</f:subview>
+
+			</h:form>
+
 		</ui:define>
 
 		<ui:define name="sidebox">
+
 			<div id="c-sidebox">
 				<h:graphicImage value="/images/box_top.png" border="0" />
 				<div id="sidebox">
@@ -19,6 +32,7 @@
 				<h:graphicImage value="/images/box_bottom.png"
 					border="0" />
 			</div>
+
 		</ui:define>
 	</ui:composition>
 </html>

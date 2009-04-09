@@ -80,7 +80,7 @@ public class LoginBaseBean implements LoginBase {
          * The login cookie is used to help in detecting an application level session timeout.
          */
         addLoginCookie();
-        return SafeOnlineAuthenticationUtils.login("overview.seam", false, localeSelector.getLocale(), null, false);
+        return SafeOnlineAuthenticationUtils.login("overview.seam", false, localeSelector.getLocale(), null, false, false, null);
     }
 
     public String logout() {

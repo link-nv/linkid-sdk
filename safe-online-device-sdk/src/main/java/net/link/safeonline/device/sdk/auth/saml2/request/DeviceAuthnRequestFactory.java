@@ -46,7 +46,7 @@ public class DeviceAuthnRequestFactory {
             throw new IllegalArgumentException("application name should not be null");
 
         return AuthnRequestFactory.createAuthnRequest(issuerName, Collections.singletonList(applicationName), applicationFriendlyName,
-                signerKeyPair, assertionConsumerServiceURL, destinationURL, challenge, devices, false);
+                signerKeyPair, assertionConsumerServiceURL, destinationURL, challenge, devices, false, null);
     }
 
 }

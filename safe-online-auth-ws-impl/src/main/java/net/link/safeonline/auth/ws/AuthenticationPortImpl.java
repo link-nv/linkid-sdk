@@ -83,6 +83,7 @@ import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.saml.common.Saml2Util;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -90,6 +91,7 @@ import net.link.safeonline.sdk.ws.auth.DataType;
 import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.service.NodeMappingService;
+import net.link.safeonline.service.PublicApplicationService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
@@ -217,6 +219,17 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         language = request.getLanguage();
         keyInfo = request.getKeyInfo();
         applicationName = request.getApplicationId();
+
+        // find public application to check ws authentication is allowed
+        PublicApplicationService publicApplicationService = EjbUtils.getEJB(PublicApplicationService.JNDI_BINDING,
+                PublicApplicationService.class);
+        PublicApplication publicApplication = publicApplicationService.findPublicApplication(applicationName);
+        if (!publicApplication.isWsAuthenticationAllowed()) {
+            LOG.error("permission denied: application not allowed to use WS authentication");
+            manager.unexport(this);
+            return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.PERMISSION_DENIED,
+                    "WS authentication not allowed for application");
+        }
 
         // proxy request to specified device
         WSAuthenticationResponseType response;
@@ -800,11 +813,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             throw new ApplicationNotFoundException();
 
         if (null == application) {
-            LOG.debug("a");
             ApplicationService applicationService = EjbUtils.getEJB(ApplicationService.JNDI_BINDING, ApplicationService.class);
-            LOG.debug("b");
             application = applicationService.getApplication(applicationName);
-            LOG.debug("c");
         }
 
         LOG.debug("application = " + application);
@@ -1158,11 +1168,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         try {
             getApplication();
-
-            return userIdMappingService.getApplicationUserId(application.getId(), authenticatedSubject.getUserId());
-        } catch (SubscriptionNotFoundException e) {
-            LOG.error("subscription not found for " + applicationName);
-            throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
+            return userIdMappingService.getApplicationUserId(application, authenticatedSubject);
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());

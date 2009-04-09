@@ -119,11 +119,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
     private Challenge<String>   challenge;
 
-    private boolean             ssoEnabled;
+    private boolean             forceAuthentication;
 
 
     public void init(String inAuthnServiceUrl, String inApplicationName, String inApplicationFriendlyName, KeyPair inApplicationKeyPair,
-                     X509Certificate inApplicationCertificate, boolean inSsoEnabled, Map<String, String> inConfigParams) {
+                     X509Certificate inApplicationCertificate, boolean inForceAuthentication, Map<String, String> inConfigParams) {
 
         LOG.debug("init");
         authnServiceUrl = inAuthnServiceUrl;
@@ -133,7 +133,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         applicationCertificate = inApplicationCertificate;
         configParams = inConfigParams;
         challenge = new Challenge<String>();
-        ssoEnabled = inSsoEnabled;
+        forceAuthentication = inForceAuthentication;
     }
 
     @SuppressWarnings("unchecked")
@@ -169,13 +169,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     }
 
     public void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String targetUrl, Locale language,
-                                       Integer color, Boolean minimal)
+                                       Integer color, Boolean minimal, String session)
             throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
         Set<String> devices = getDevices(request);
         String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, null, applicationFriendlyName,
-                applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices, ssoEnabled);
+                applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices, forceAuthentication, session);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -216,12 +216,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     /**
      * {@inheritDoc}
      */
-    public void initiateLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, String subjectName)
+    public void initiateLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, String subjectName,
+                               String session)
             throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
         String samlRequestToken = LogoutRequestFactory.createLogoutRequest(subjectName, applicationName, applicationKeyPair,
-                authnServiceUrl, challenge);
+                authnServiceUrl, challenge, session);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

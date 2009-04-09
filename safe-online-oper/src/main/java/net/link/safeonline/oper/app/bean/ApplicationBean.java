@@ -141,6 +141,8 @@ public class ApplicationBean implements Application {
 
     private boolean                    idmapping;
 
+    private boolean                    wsAuthentication;
+
     private String                     applicationIdScope;
 
     private boolean                    skipMessageIntegrityCheck;
@@ -150,6 +152,8 @@ public class ApplicationBean implements Application {
     private boolean                    ssoEnabled;
 
     private String                     ssoLogoutUrl;
+
+    private long                       sessionTimeout;
 
     @SuppressWarnings("unused")
     @Out
@@ -254,6 +258,7 @@ public class ApplicationBean implements Application {
         if (null != ssoLogoutUrl) {
             LOG.debug("sso logout url: " + ssoLogoutUrl);
         }
+        LOG.debug("session timeout: " + sessionTimeout);
 
         URL newApplicationUrl = null;
         byte[] newApplicationLogo = null;
@@ -317,9 +322,9 @@ public class ApplicationBean implements Application {
             } else {
                 encodedCertificate = null;
             }
-            applicationService.addApplication(name, friendlyName, applicationOwner, description, idmapping,
+            applicationService.addApplication(name, friendlyName, applicationOwner, description, idmapping, wsAuthentication,
                     IdScopeType.valueOf(applicationIdScope), newApplicationUrl, newApplicationLogo, encodedCertificate,
-                    tempIdentityAttributes, skipMessageIntegrityCheck, deviceRestriction, ssoEnabled, newSsoLogoutUrl);
+                    tempIdentityAttributes, skipMessageIntegrityCheck, deviceRestriction, ssoEnabled, newSsoLogoutUrl, sessionTimeout);
 
         } catch (ExistingApplicationException e) {
             LOG.debug("application already exists: " + name);
@@ -445,6 +450,16 @@ public class ApplicationBean implements Application {
         this.idmapping = idmapping;
     }
 
+    public boolean isWsAuthentication() {
+
+        return wsAuthentication;
+    }
+
+    public void setWsAuthentication(boolean wsAuthentication) {
+
+        this.wsAuthentication = wsAuthentication;
+    }
+
     public String getApplicationIdScope() {
 
         return applicationIdScope;
@@ -493,6 +508,17 @@ public class ApplicationBean implements Application {
     public void setSsoLogoutUrl(String ssoLogoutUrl) {
 
         this.ssoLogoutUrl = ssoLogoutUrl;
+    }
+
+    public Long getSessionTimeout() {
+
+        return sessionTimeout;
+
+    }
+
+    public void setSessionTimeout(Long sessionTimeout) {
+
+        this.sessionTimeout = sessionTimeout;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -663,12 +689,14 @@ public class ApplicationBean implements Application {
             applicationService.updateApplicationLogo(applicationId, newApplicationLogo);
         }
         applicationService.setIdentifierMappingServiceAccess(applicationId, idmapping);
+        applicationService.setWSAuthenticationServiceAccess(applicationId, wsAuthentication);
         if (null != applicationIdScope) {
             applicationService.setIdScope(applicationId, IdScopeType.valueOf(applicationIdScope));
         }
         applicationService.setSkipMessageIntegrityCheck(applicationId, skipMessageIntegrityCheck);
         applicationService.setSsoEnabled(applicationId, ssoEnabled);
         applicationService.updateSsoLogoutUrl(applicationId, newSsoLogoutUrl);
+        applicationService.updateSessionTimeout(applicationId, sessionTimeout);
 
         // device restriction
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
@@ -724,6 +752,8 @@ public class ApplicationBean implements Application {
         }
         idmapping = selectedApplication.isIdentifierMappingAllowed();
 
+        wsAuthentication = selectedApplication.isWsAuthenticationAllowed();
+
         skipMessageIntegrityCheck = selectedApplication.isSkipMessageIntegrityCheck();
 
         applicationIdScope = selectedApplication.getIdScope().name();
@@ -737,6 +767,8 @@ public class ApplicationBean implements Application {
         if (null != selectedApplication.getSsoLogoutUrl()) {
             ssoLogoutUrl = selectedApplication.getSsoLogoutUrl().toExternalForm();
         }
+
+        sessionTimeout = selectedApplication.getSessionTimeout();
 
         return "edit";
     }

@@ -8,11 +8,8 @@
 package test.integ.net.link.safeonline.auth;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
-import static test.integ.net.link.safeonline.IntegrationTestUtils.getAuthenticationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPasswordDeviceService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getProxyAttributeService;
@@ -22,11 +19,8 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistr
 
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
-import javax.ejb.EJBException;
-import javax.ejb.NoSuchEJBException;
 import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 
@@ -34,7 +28,6 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -77,101 +70,6 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void testAuthenticationOverRMI()
-            throws Exception {
-
-        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
-
-        AuthenticationService authenticationService = getAuthenticationService(initialContext);
-
-        boolean result = authenticationService.authenticate("fcorneli", "secret");
-        assertTrue(result);
-
-        String resultUserName = authenticationService.getUsername();
-        assertEquals("fcorneli", resultUserName);
-
-        String userId = authenticationService.getUserId();
-
-        /*
-         * A commitAuthentication can only take place when the user is already authenticated in the SafeOnline core.
-         */
-        IntegrationTestUtils.setupLoginConfig();
-        IntegrationTestUtils.login(userId, "secret");
-        authenticationService.commitAuthentication(Locale.ENGLISH.getLanguage());
-    }
-
-    @Test
-    public void testIncorrectPassword()
-            throws Exception {
-
-        // setup
-        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
-
-        AuthenticationService authenticationService = getAuthenticationService(initialContext);
-
-        // operate
-        boolean result = authenticationService.authenticate("fcorneli", "foobar-password");
-
-        // verify
-        assertFalse(result);
-    }
-
-    @Test
-    public void testAuthenticationAbort()
-            throws Exception {
-
-        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
-
-        AuthenticationService authenticationService = getAuthenticationService(initialContext);
-
-        boolean result = authenticationService.authenticate("fcorneli", "secret");
-        assertTrue(result);
-
-        /*
-         * The abort method has the @Remove annotation on the bean instance.
-         */
-        authenticationService.abort();
-
-        // operate & verify
-        try {
-            /*
-             * We can only use a statefull session bean once.
-             */
-            authenticationService.authenticate("fcorneli", "secret");
-            fail();
-        } catch (NoSuchEJBException e) {
-            // expected
-        }
-    }
-
-    @Test
-    public void testAuthenticationCannotCommitBeforeAuthenticate()
-            throws Exception {
-
-        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
-
-        AuthenticationService authenticationService = getAuthenticationService(initialContext);
-
-        // operate & verify
-        try {
-            authenticationService.commitAuthentication(Locale.ENGLISH.getLanguage());
-            fail();
-        } catch (EJBException e) {
-            // expected
-            LOG.debug("expected exception: " + e.getMessage());
-            LOG.debug("expected exception type: " + e.getClass().getName());
-        }
-
-        // operate & verify: cannot continue after system exception
-        try {
-            authenticationService.authenticate("fcorneli", "secret");
-            fail();
-        } catch (NoSuchEJBException e) {
-            // expected
-        }
-    }
-
-    @Test
     public void testAddApplication()
             throws Exception {
 
@@ -206,8 +104,8 @@ public class AuthenticationTest {
             public Object run()
                     throws Exception {
 
-                applicationService.addApplication(applicationName, null, appOwnerName, null, false, IdScopeType.USER, null, null, null,
-                        null, false, false, false, null);
+                applicationService.addApplication(applicationName, null, appOwnerName, null, false, false, IdScopeType.USER, null, null,
+                        null, null, false, false, false, null, null);
                 return null;
             }
         });
@@ -247,8 +145,8 @@ public class AuthenticationTest {
         final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
         applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
 
-        applicationService.addApplication(applicationName, null, appOwnerName, null, false, IdScopeType.USER, null, null, null, null,
-                false, false, false, null);
+        applicationService.addApplication(applicationName, null, appOwnerName, null, false, false, IdScopeType.USER, null, null, null,
+                null, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         String userLogin = "login-" + UUID.randomUUID().toString();
@@ -332,8 +230,8 @@ public class AuthenticationTest {
         applicationService.registerApplicationOwner(appOwnerName, login);
 
         String applicationName = "application-" + UUID.randomUUID().toString();
-        applicationService.addApplication(applicationName, null, appOwnerName, null, false, IdScopeType.USER, null, null, null, null,
-                false, false, false, null);
+        applicationService.addApplication(applicationName, null, appOwnerName, null, false, false, IdScopeType.USER, null, null, null,
+                null, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
@@ -378,8 +276,8 @@ public class AuthenticationTest {
 
         // operate: create application
         String applicationName = "application-" + UUID.randomUUID().toString();
-        applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, IdScopeType.USER, null, null, null,
-                null, false, false, false, null);
+        applicationService.addApplication(applicationName, null, applicationOwnerName, null, false, false, IdScopeType.USER, null, null,
+                null, null, false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(applicationName);
 
         // operate: change application description via application owner

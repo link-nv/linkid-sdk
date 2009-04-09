@@ -108,7 +108,7 @@ public class AuthenticationProtocolManagerTest {
             String location = servletTestManager.getServletLocation();
             mockProtocolHandler.initiateAuthentication((HttpServletRequest) EasyMock.anyObject(),
                     (HttpServletResponse) EasyMock.anyObject(), EasyMock.eq(location), (Locale) EasyMock.anyObject(),
-                    (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject());
+                    (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject(), (String) EasyMock.anyObject());
             replay(mockProtocolHandler);
             LOG.debug("servlet location: " + location);
             HttpClient httpClient = new HttpClient();
@@ -141,7 +141,8 @@ public class AuthenticationProtocolManagerTest {
             String location = servletTestManager.getServletLocation();
             mockProtocolHandler.initiateAuthentication((HttpServletRequest) EasyMock.anyObject(),
                     (HttpServletResponse) EasyMock.anyObject(), EasyMock.eq(SafeOnlineConfig.applandingbase() + "/" + landingPage),
-                    (Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject());
+                    (Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject(),
+                    (String) EasyMock.anyObject());
             replay(mockProtocolHandler);
             LOG.debug("servlet location: " + location);
             HttpClient httpClient = new HttpClient();

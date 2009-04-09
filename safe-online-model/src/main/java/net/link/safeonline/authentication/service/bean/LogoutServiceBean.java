@@ -27,10 +27,10 @@ import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.LogoutInitializationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SignatureValidationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.LogoutService;
 import net.link.safeonline.authentication.service.LogoutServiceRemote;
@@ -49,6 +49,7 @@ import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
+import net.link.safeonline.sdk.auth.saml2.sessiontracking.SessionInfo;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.validation.InputValidation;
@@ -63,6 +64,7 @@ import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.StatusCode;
+import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureValidator;
@@ -70,8 +72,8 @@ import org.opensaml.xml.validation.ValidationException;
 
 
 /**
- * Implementation of logout service interface. This component does not live within the SafeOnline core security domain
- * (chicken-egg problem).
+ * Implementation of logout service interface. This component does not live within the SafeOnline core security domain (chicken-egg
+ * problem).
  * 
  * @author wvdhaute
  * 
@@ -82,17 +84,9 @@ import org.opensaml.xml.validation.ValidationException;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
-    private static final Log                          LOG          = LogFactory.getLog( LogoutServiceBean.class );
+    private static final Log                          LOG          = LogFactory.getLog(LogoutServiceBean.class);
 
     private static final SafeOnlineNodeKeyStore       nodeKeyStore = new SafeOnlineNodeKeyStore();
-
-    private String                                    expectedChallengeId;
-
-    private String                                    expectedTarget;
-
-    private Map<ApplicationEntity, LogoutState>       ssoApplicationStates;
-
-    private Map<ApplicationEntity, Challenge<String>> ssoApplicationChallenges;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService                            subjectService;
@@ -116,6 +110,16 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
     private ApplicationEntity                         logoutApplication;
 
+    private String                                    expectedChallengeId;
+
+    private String                                    expectedTarget;
+
+    private String                                    session;
+
+    private Map<ApplicationEntity, LogoutState>       ssoApplicationStates;
+
+    private Map<ApplicationEntity, Challenge<String>> ssoApplicationChallenges;
+
     private SingleSignOnService                       ssoService;
 
     private boolean                                   sequential;
@@ -131,8 +135,9 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
     @PreDestroy
     public void preDestroyCallback() {
 
-        if (null != ssoService)
+        if (null != ssoService) {
             ssoService.abort();
+        }
     }
 
     /**
@@ -141,7 +146,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
     @Remove
     public void abort() {
 
-        LOG.debug( "abort" );
+        LOG.debug("abort");
         authenticatedSubject = null;
         logoutApplication = null;
         expectedChallengeId = null;
@@ -153,7 +158,7 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
      */
     public LogoutState getSSoApplicationState(ApplicationEntity application) {
 
-        return ssoApplicationStates.get( application );
+        return ssoApplicationStates.get(application);
     }
 
     /**
@@ -163,8 +168,9 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
         List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
         for (Map.Entry<ApplicationEntity, LogoutState> ssoApplicationState : ssoApplicationStates.entrySet())
-            if (LogoutState.INITIALIZED.equals( ssoApplicationState.getValue() ))
-                applications.add( ssoApplicationState.getKey() );
+            if (LogoutState.INITIALIZED.equals(ssoApplicationState.getValue())) {
+                applications.add(ssoApplicationState.getKey());
+            }
 
         return applications;
     }
@@ -190,13 +196,14 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         ApplicationEntity nextApplication = null;
 
         for (Map.Entry<ApplicationEntity, LogoutState> ssoApplicationState : ssoApplicationStates.entrySet())
-            if (LogoutState.INITIALIZED.equals( ssoApplicationState.getValue() )) {
+            if (LogoutState.INITIALIZED.equals(ssoApplicationState.getValue())) {
                 nextApplication = ssoApplicationState.getKey();
                 break;
             }
 
-        if (nextApplication != null)
-            ssoApplicationStates.put( nextApplication, LogoutState.INITIATED );
+        if (nextApplication != null) {
+            ssoApplicationStates.put(nextApplication, LogoutState.INITIATED);
+        }
 
         return nextApplication;
     }
@@ -205,35 +212,53 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
      * {@inheritDoc}
      */
     public LogoutProtocolContext initialize(@NotNull LogoutRequest logoutRequest)
-            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException,
-            SignatureValidationException {
+            throws ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException, SignatureValidationException,
+            LogoutInitializationException {
 
         Issuer issuer = logoutRequest.getIssuer();
         String issuerName = issuer.getValue();
-        ApplicationEntity application = applicationDAO.getApplication( issuerName );
-        LOG.debug( "initialize logout for application: " + application.getName() );
+        ApplicationEntity application = applicationDAO.getApplication(issuerName);
+        LOG.debug("initialize logout for application: " + application.getName());
 
         // Validate signature.
-        for (X509Certificate certificate : applicationAuthenticationService.getCertificates( issuerName ))
-            if (!validateSignature( certificate, logoutRequest.getSignature() ))
-                throw new SignatureValidationException( "signature validation error" );
+        for (X509Certificate certificate : applicationAuthenticationService.getCertificates(issuerName))
+            if (!validateSignature(certificate, logoutRequest.getSignature()))
+                throw new SignatureValidationException("signature validation error");
 
         String samlAuthnRequestId = logoutRequest.getID();
-        LOG.debug( "SAML authn request ID: " + samlAuthnRequestId );
+        LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
 
         String subjectName = logoutRequest.getNameID().getValue();
-        LOG.debug( "subject name: " + subjectName );
-        String userId = userIdMappingService.findUserId( application.getId(), subjectName );
+        LOG.debug("subject name: " + subjectName);
+        String userId = userIdMappingService.findUserId(application.getId(), subjectName);
         if (null == userId)
             throw new SubjectNotFoundException();
-        SubjectEntity subject = subjectService.getSubject( userId );
+        SubjectEntity subject = subjectService.getSubject(userId);
+
+        session = null;
+        if (null != logoutRequest.getExtensions()) {
+            if (null != logoutRequest.getExtensions().getUnknownXMLObjects(SessionInfo.DEFAULT_ELEMENT_NAME)) {
+                List<XMLObject> sessionInfos = logoutRequest.getExtensions().getUnknownXMLObjects(SessionInfo.DEFAULT_ELEMENT_NAME);
+                if (sessionInfos.size() > 1) {
+                    LOG.error("only 1 sesssion info element supported");
+                    throw new LogoutInitializationException("Only 1 session info element supported");
+                }
+                session = ((SessionInfo) sessionInfos.get(0)).getSession();
+                LOG.debug("session tracking is on: " + session);
+            }
+        }
 
         logoutApplication = application;
         expectedChallengeId = samlAuthnRequestId;
+        if (null == application.getSsoLogoutUrl()) {
+            String errorMessage = "want to use single logout but application " + application.getName() + " has no logout url";
+            LOG.error(errorMessage);
+            throw new LogoutInitializationException(errorMessage);
+        }
         expectedTarget = application.getSsoLogoutUrl().toString();
         authenticatedSubject = subject;
 
-        return new LogoutProtocolContext( application.getName(), expectedTarget );
+        return new LogoutProtocolContext(application.getName(), expectedTarget);
     }
 
     /**
@@ -244,16 +269,17 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
         if (!logoutApplication.isSsoEnabled())
             return;
 
-        ssoService = EjbUtils.getEJB( SingleSignOnService.JNDI_BINDING, SingleSignOnService.class );
+        ssoService = EjbUtils.getEJB(SingleSignOnService.JNDI_BINDING, SingleSignOnService.class);
 
-        List<ApplicationEntity> applicationsToLogout = ssoService.getApplicationsToLogout( logoutApplication,
-                                                                                           ssoCookies );
-        for (ApplicationEntity application : applicationsToLogout) {
-            LOG.debug( "add application " + application.getName() + " for logout" );
-            ssoApplicationStates.put( application, LogoutState.INITIALIZED );
+        List<ApplicationEntity> applicationsToLogout = ssoService.getApplicationsToLogout(session, logoutApplication, ssoCookies);
+        if (null != applicationsToLogout) {
+            for (ApplicationEntity application : applicationsToLogout) {
+                LOG.debug("add application " + application.getName() + " for logout");
+                ssoApplicationStates.put(application, LogoutState.INITIALIZED);
+            }
         }
 
-        LOG.debug( "found " + ssoApplicationStates.size() + " applications to logout" );
+        LOG.debug("found " + ssoApplicationStates.size() + " applications to logout");
     }
 
     /**
@@ -267,18 +293,17 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
     private boolean validateSignature(X509Certificate certificate, Signature signature)
             throws TrustDomainNotFoundException {
 
-        PkiResult certificateValid = pkiValidator.validateCertificate(
-                                                                       SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                                                       certificate );
+        PkiResult certificateValid = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+                certificate);
         if (PkiResult.VALID != certificateValid)
             return false;
 
         BasicX509Credential basicX509Credential = new BasicX509Credential();
-        basicX509Credential.setPublicKey( certificate.getPublicKey() );
-        SignatureValidator signatureValidator = new SignatureValidator( basicX509Credential );
+        basicX509Credential.setPublicKey(certificate.getPublicKey());
+        SignatureValidator signatureValidator = new SignatureValidator(basicX509Credential);
 
         try {
-            signatureValidator.validate( signature );
+            signatureValidator.validate(signature);
         } catch (ValidationException e) {
             return false;
         }
@@ -289,36 +314,30 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
      * {@inheritDoc}
      */
     public String getLogoutRequest(ApplicationEntity application)
-            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException {
+            throws ApplicationNotFoundException, NodeNotFoundException {
 
-        LOG.debug( "get logout request for " + application.getName() );
-        LogoutState applicationState = ssoApplicationStates.get( application );
+        LOG.debug("get logout request for " + application.getName());
+        LogoutState applicationState = ssoApplicationStates.get(application);
         if (applicationState == null)
-            throw new IllegalArgumentException( "this application isn't part of the sso logout pool" );
+            throw new IllegalArgumentException("this application isn't part of the sso logout pool");
         if (applicationState != LogoutState.INITIALIZED)
-            throw new IllegalStateException(
-                    "this application is not in the initialized phase (already being/been logged out?)" );
+            throw new IllegalStateException("this application is not in the initialized phase (already being/been logged out?)");
 
         NodeEntity localNode = nodeAuthenticationService.getLocalNode();
-        String userId = userIdMappingService.getApplicationUserId( application.getId(),
-                                                                   authenticatedSubject.getUserId() );
+        String userId = userIdMappingService.getApplicationUserId(application, authenticatedSubject);
 
         Challenge<String> expectedLogoutChallenge = new Challenge<String>();
 
-        String samlLogoutRequestToken = LogoutRequestFactory.createLogoutRequest(
-                                                                                  userId,
-                                                                                  localNode.getName(),
-                                                                                  nodeKeyStore.getKeyPair(),
-                                                                                  application.getSsoLogoutUrl().toString(),
-                                                                                  expectedLogoutChallenge );
+        String samlLogoutRequestToken = LogoutRequestFactory.createLogoutRequest(userId, localNode.getName(), nodeKeyStore.getKeyPair(),
+                application.getSsoLogoutUrl().toString(), expectedLogoutChallenge, null);
 
-        String encodedSamlLogoutRequestToken = Base64.encode( samlLogoutRequestToken.getBytes() );
+        String encodedSamlLogoutRequestToken = Base64.encode(samlLogoutRequestToken.getBytes());
 
         /*
          * Save the state in this stateful session bean.
          */
-        ssoApplicationStates.put( application, LogoutState.LOGGING_OUT );
-        ssoApplicationChallenges.put( application, expectedLogoutChallenge );
+        ssoApplicationStates.put(application, LogoutState.LOGGING_OUT);
+        ssoApplicationChallenges.put(application, expectedLogoutChallenge);
 
         return encodedSamlLogoutRequestToken;
     }
@@ -332,33 +351,32 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
 
         Issuer issuer = logoutResponse.getIssuer();
         String issuerName = issuer.getValue();
-        ApplicationEntity application = applicationDAO.getApplication( issuerName );
-        LOG.debug( "handle logout response for application: " + application.getName() );
+        ApplicationEntity application = applicationDAO.getApplication(issuerName);
+        LOG.debug("handle logout response for application: " + application.getName());
 
         // Validate application logout state.
-        if (!LogoutState.LOGGING_OUT.equals( ssoApplicationStates.get( application ) ))
-            throw new IllegalStateException(
-                    "Received a logout response from an application that's not in the logging_out state." );
+        if (!LogoutState.LOGGING_OUT.equals(ssoApplicationStates.get(application)))
+            throw new IllegalStateException("Received a logout response from an application that's not in the logging_out state.");
 
         // Validate signature.
-        for (X509Certificate certificate : applicationAuthenticationService.getCertificates( issuerName ))
-            if (!validateSignature( certificate, logoutResponse.getSignature() ))
-                throw new SignatureValidationException( "signature validation error" );
+        for (X509Certificate certificate : applicationAuthenticationService.getCertificates(issuerName))
+            if (!validateSignature(certificate, logoutResponse.getSignature()))
+                throw new SignatureValidationException("signature validation error");
 
         // Validate challenge ID.
-        if (!logoutResponse.getInResponseTo().equals( ssoApplicationChallenges.get( application ).getValue() ))
-            throw new ServletException( "SAML logout response is not a response belonging to the original request." );
+        if (!logoutResponse.getInResponseTo().equals(ssoApplicationChallenges.get(application).getValue()))
+            throw new ServletException("SAML logout response is not a response belonging to the original request.");
 
         // Evaluate response content.
-        if (!logoutResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI )) {
-            ssoApplicationStates.put( application, LogoutState.LOGOUT_FAILED );
-            LOG.debug( " - logout failed." );
+        if (!logoutResponse.getStatus().getStatusCode().getValue().equals(StatusCode.SUCCESS_URI)) {
+            ssoApplicationStates.put(application, LogoutState.LOGOUT_FAILED);
+            LOG.debug(" - logout failed.");
 
             return null;
         }
 
-        ssoApplicationStates.put( application, LogoutState.LOGOUT_SUCCESS );
-        LOG.debug( " - logout success." );
+        ssoApplicationStates.put(application, LogoutState.LOGOUT_SUCCESS);
+        LOG.debug(" - logout success.");
 
         return application.getName();
     }
@@ -371,22 +389,19 @@ public class LogoutServiceBean implements LogoutService, LogoutServiceRemote {
             throws NodeNotFoundException {
 
         boolean partialLogout = isPartial();
-        LOG.debug( "finalize logout (partial: " + partialLogout + ")" );
+        LOG.debug("finalize logout (partial: " + partialLogout + ")");
 
         NodeEntity localNode = nodeAuthenticationService.getLocalNode();
-        String samlLogoutResponseToken = LogoutResponseFactory.createLogoutResponse( partialLogout,
-                                                                                     expectedChallengeId,
-                                                                                     localNode.getName(),
-                                                                                     nodeKeyStore.getKeyPair(),
-                                                                                     expectedTarget );
+        String samlLogoutResponseToken = LogoutResponseFactory.createLogoutResponse(partialLogout, expectedChallengeId,
+                localNode.getName(), nodeKeyStore.getKeyPair(), expectedTarget);
 
-        return Base64.encode( samlLogoutResponseToken.getBytes() );
+        return Base64.encode(samlLogoutResponseToken.getBytes());
     }
 
     public boolean isPartial() {
 
         for (LogoutState state : ssoApplicationStates.values())
-            if (!LogoutState.LOGOUT_SUCCESS.equals( state ))
+            if (!LogoutState.LOGOUT_SUCCESS.equals(state))
                 return true;
 
         return false;

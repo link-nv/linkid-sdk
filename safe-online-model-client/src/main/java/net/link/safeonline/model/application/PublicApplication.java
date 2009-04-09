@@ -28,11 +28,12 @@ import net.link.safeonline.service.PublicApplicationService;
  */
 public class PublicApplication {
 
-    private byte[] logo;
-    private URL    url;
-    private String friendly;
-    private String name;
-    private String description;
+    private byte[]  logo;
+    private URL     url;
+    private String  friendly;
+    private String  name;
+    private String  description;
+    private boolean wsAuthenticationAllowed;
 
 
     public PublicApplication(ApplicationEntity application) {
@@ -44,6 +45,8 @@ public class PublicApplication {
 
         description = application.getDescription();
         url = application.getApplicationUrl();
+
+        wsAuthenticationAllowed = application.isWsAuthenticationAllowed();
     }
 
     public byte[] getLogo() {
@@ -69,5 +72,10 @@ public class PublicApplication {
     public String getDescription() {
 
         return description;
+    }
+
+    public boolean isWsAuthenticationAllowed() {
+
+        return wsAuthenticationAllowed;
     }
 }

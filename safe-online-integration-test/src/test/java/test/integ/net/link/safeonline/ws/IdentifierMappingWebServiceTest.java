@@ -128,7 +128,7 @@ public class IdentifierMappingWebServiceTest {
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, true, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
+                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -188,7 +188,7 @@ public class IdentifierMappingWebServiceTest {
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
+                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null, 0L);
         ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
