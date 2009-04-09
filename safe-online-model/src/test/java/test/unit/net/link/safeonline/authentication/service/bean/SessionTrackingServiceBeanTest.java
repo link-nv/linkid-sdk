@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 import java.security.KeyPair;
@@ -20,6 +21,7 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -51,6 +53,7 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.sessiontracking.SessionAssertionEntity;
 import net.link.safeonline.entity.sessiontracking.SessionAuthnStatementEntity;
+import net.link.safeonline.entity.sessiontracking.SessionTrackingEntity;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -66,6 +69,8 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.SafeOnlineTestConfig;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -75,6 +80,8 @@ import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 
 public class SessionTrackingServiceBeanTest {
+
+    private static final Log  LOG = LogFactory.getLog(SessionTrackingServiceBeanTest.class);
 
     private EntityTestManager entityTestManager;
 
@@ -177,13 +184,17 @@ public class SessionTrackingServiceBeanTest {
                 deviceAttributeType.getName(), null, null);
         DeviceEntity testDevice = deviceService.getDevice(testDeviceName);
 
+        // add session trackers + session assertions
         SessionTrackingDAO sessionTrackingDAO = EJBTestUtils.newInstance(SessionTrackingDAOBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
-        sessionTrackingDAO.addTracker(testApplication, session, ssoId, testApplicationPool);
+        SessionTrackingEntity tracker = sessionTrackingDAO.addTracker(testApplication, session, ssoId, testApplicationPool);
+        Date origTimestamp = tracker.getTimestamp();
         SessionAssertionEntity assertion = sessionTrackingDAO.addAssertion(ssoId, testApplicationPool);
         assertion.setSubject(subject);
         SessionAuthnStatementEntity statement = sessionTrackingDAO.addAuthnStatement(assertion, new DateTime(), testDevice);
         assertion.getStatements().add(statement);
+
+        Thread.sleep(1000);
 
         SessionTrackingService sessionTrackingService = EJBTestUtils.newInstance(SessionTrackingServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, Long.toString(testApplication.getId()),
@@ -201,5 +212,11 @@ public class SessionTrackingServiceBeanTest {
         assertEquals(1, resultAssertion.getStatements().size());
         SessionAuthnStatementEntity resultStatement = resultAssertion.getStatements().get(0);
         assertEquals(testDevice, resultStatement.getDevice());
+
+        sessionTrackingDAO = EJBTestUtils.newInstance(SessionTrackingDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        SessionTrackingEntity resultTracker = sessionTrackingDAO.findTracker(testApplication, session, ssoId, testApplicationPool);
+        LOG.debug("orig tracker time: " + origTimestamp.toString());
+        LOG.debug("new  tracker time: " + resultTracker.getTimestamp().toString());
+        assertTrue(origTimestamp.compareTo(resultTracker.getTimestamp()) < 0);
     }
 }
