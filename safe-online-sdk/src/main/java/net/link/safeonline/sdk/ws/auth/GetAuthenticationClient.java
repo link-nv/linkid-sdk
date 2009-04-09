@@ -24,9 +24,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 public interface GetAuthenticationClient extends MessageAccessor {
 
     /**
-     * Returns EPR to the stateful {@link AuthenticationService}
-     * 
-     * TODO
+     * Returns endpoint reference {@link W3CEndpointReference} to the stateful {@link AuthenticationService}
      */
     W3CEndpointReference getInstance()
             throws RequestDeniedException, WSClientTransportException;

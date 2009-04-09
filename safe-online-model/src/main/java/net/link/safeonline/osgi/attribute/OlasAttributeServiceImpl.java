@@ -17,10 +17,10 @@ import net.link.safeonline.util.ee.EjbUtils;
 
 /**
  * <h2>{@link OlasAttributeServiceImpl}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>Implementation of the OSGI {@link OlasAttributeService}.</sub></h2>
  * 
  * <p>
- * [description / usage].
+ * Implementation of the OSGI {@link OlasAttributeService}.
  * </p>
  * 
  * <p>

@@ -16,10 +16,10 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 /**
  * <h2>{@link OSGIAttributeService}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>EJB service used by the OSGI {@link OlasAttributeService}.</sub></h2>
  * 
  * <p>
- * [description / usage].
+ * EJB service used by the OSGI {@link OlasAttributeService}.
  * </p>
  * 
  * <p>
@@ -36,7 +36,7 @@ public interface OSGIAttributeService {
 
     /**
      * 
-     * TODO
+     * Returns attribute for specified subject with userId and specified attribute name
      * 
      * @throws AttributeUnavailableException
      * @throws SubjectNotFoundException

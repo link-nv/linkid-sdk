@@ -30,34 +30,50 @@ public interface AttributeCacheDAO extends SafeOnlineService {
 
 
     /**
+     * Lists all cached attributes for specified subject and specified attribute type.
+     * 
      * @param subject
      * @param attributeType
-     * @return List all cached attributes for specified subject and attribute type
+     * @return list all cached attributes for specified subject and attribute type
      */
     List<AttributeCacheEntity> listAttributes(SubjectEntity subject, AttributeTypeEntity attributeType);
 
     /**
-     * TODO
+     * Removes all cached attributes for specified subject and specified attribute type.
+     * 
+     * @param subject
+     * @param attributeType
      */
     void removeAttributes(SubjectEntity subject, AttributeTypeEntity attributeType);
 
     /**
-     * TODO
+     * Returns cached attribute for specified subject and specified attribute type with specified index
+     * 
+     * @param subject
+     * @param attributeType
+     * @param index
      */
     AttributeCacheEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index);
 
     /**
-     * TODO
+     * Adds empty cache attribute for specified subject, attribute type and index
+     * 
+     * @param subject
+     * @param attributeType
+     * @param index
+     * @return empty cached attribute
      */
     AttributeCacheEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index);
 
     /**
-     * TODO
+     * Removes specified cached attribute
+     * 
+     * @param attribute
      */
     void removeAttribute(AttributeCacheEntity attribute);
 
     /**
-     * TODO
+     * Lists all cached attributes for all subjects
      */
     List<AttributeCacheEntity> listAttributes();
 

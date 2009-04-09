@@ -198,6 +198,7 @@ public class AuthenticationServiceBeanTest {
         EJBTestUtils.inject(testedInstance, mockSamlAuthorityService);
 
         mockSingleSignOnService = createMock(SingleSignOnService.class);
+        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
 
         nodeKeyPair = PkiTestUtils.generateKeyPair();
         nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
@@ -241,7 +242,6 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
         mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
@@ -290,7 +290,6 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
         mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, Collections.singleton(passwordDevice));
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
@@ -418,7 +417,6 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
         mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
@@ -601,7 +599,6 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
         mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
@@ -706,7 +703,6 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
         mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
@@ -812,7 +808,6 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
         mockSingleSignOnService.initialize(true, null, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));
@@ -935,7 +930,6 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        jndiTestUtils.bindComponent(SingleSignOnService.JNDI_BINDING, mockSingleSignOnService);
         mockSingleSignOnService.initialize(true, session, new LinkedList<String>(), application, null);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationAuthenticationService.getCertificates(applicationId)).andReturn(Collections.singletonList(applicationCert));

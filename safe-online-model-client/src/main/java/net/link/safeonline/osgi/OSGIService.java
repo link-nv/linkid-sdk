@@ -11,10 +11,10 @@ import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 
 /**
  * <h2>{@link OSGIService}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>OSGI helper service to manage OSGI services life cycle.</sub></h2>
  * 
  * <p>
- * [description / usage].
+ * OSGI helper service to manage OSGI services life cycle.
  * </p>
  * 
  * <p>
@@ -26,13 +26,15 @@ import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 public interface OSGIService {
 
     /**
-     * TODO
+     * Returns instance of an OSGI service.
+     * 
+     * @throws SafeOnlineResourceException
      */
     public Object getService()
             throws SafeOnlineResourceException;
 
     /**
-     * TODO
+     * Free's up instance of OSGI service
      */
     public void ungetService();
 }
