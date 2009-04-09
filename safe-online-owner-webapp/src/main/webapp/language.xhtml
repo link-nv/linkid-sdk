@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<body>
+		<ui:composition template="/WEB-INF/incl/owner-template-root.xhtml">
+			<ui:define name="content">
+				<h1>#{msgs.chooseLanguage}</h1>
+				<h:form>
+					<table class="center">
+						<tbody>
+							<tr>
+								<td>
+									<h:commandLink id="en" action="#{ownerLanguage.goBack}"
+										class="padded" actionListener="#{ownerLanguage.selectLanguage}">
+										<h:graphicImage value="/images/langs/en.png" />
+										#{msgs.languageEnglish}
+									</h:commandLink>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:commandLink id="nl" action="#{ownerLanguage.goBack}"
+										class="padded" actionListener="#{ownerLanguage.selectLanguage}">
+										<h:graphicImage value="/images/langs/nl.png" />
+										#{msgs.languageDutch}
+									</h:commandLink>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
+
+</html>
