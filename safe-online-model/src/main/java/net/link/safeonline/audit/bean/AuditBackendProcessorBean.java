@@ -14,7 +14,6 @@ import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
-import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -27,7 +26,6 @@ import javax.rmi.PortableRemoteObject;
 
 import net.link.safeonline.audit.AuditBackend;
 import net.link.safeonline.audit.AuditConstants;
-import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.AuditMessage;
 import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
@@ -44,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 @MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_BACKEND_QUEUE_NAME),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
-@Interceptors(AuditContextManager.class)
 public class AuditBackendProcessorBean implements MessageListener {
 
     private static final Log LOG = LogFactory.getLog(AuditBackendProcessorBean.class);

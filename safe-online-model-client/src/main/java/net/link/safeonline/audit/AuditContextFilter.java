@@ -3,9 +3,7 @@ package net.link.safeonline.audit;
 import java.io.IOException;
 
 import javax.ejb.EJB;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -15,6 +13,7 @@ import net.link.safeonline.audit.dao.AuditContextDAO;
 import net.link.safeonline.audit.exception.ExistingAuditContextException;
 import net.link.safeonline.audit.exception.MissingAuditContextException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
+import net.link.safeonline.util.servlet.AbstractInjectionFilter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * @author mbillemo
  * 
  */
-public class AuditContextFilter implements Filter {
+public class AuditContextFilter extends AbstractInjectionFilter {
 
     private static final Log      LOG = LogFactory.getLog(AuditContextFilter.class);
 
@@ -110,14 +109,6 @@ public class AuditContextFilter implements Filter {
     private long createNewAuditContext() {
 
         return auditContextDAO.createAuditContext().getId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void init(@SuppressWarnings("unused") FilterConfig filterConfig) {
-
-        // empty
     }
 
     /**

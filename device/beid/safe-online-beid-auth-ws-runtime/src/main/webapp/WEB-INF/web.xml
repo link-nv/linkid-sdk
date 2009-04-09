@@ -8,7 +8,7 @@
     <!-- Application Filter Definitions And Mappings -->
     <filter>
         <filter-name>AuditContextFilter</filter-name>
-        <filter-class>net.link.safeonline.util.filter.AuditContextFilter</filter-class>
+        <filter-class>net.link.safeonline.audit.AuditContextFilter</filter-class>
     </filter>
 	<!-- ${safe-online.profiling.filter} -->
 
