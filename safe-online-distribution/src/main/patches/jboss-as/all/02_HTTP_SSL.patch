@@ -5,13 +5,13 @@
           Define a non-SSL HTTP/1.1 Connector on port 8080
      -->
 -    <Connector port="8080" address="${jboss.bind.address}"    
-+    <Connector port="8080" address="${jboss.bind.address}"    
++    <Connector port="${safe-online.jboss.host.port:insecure}" address="${jboss.bind.address}"    
           maxThreads="250" maxHttpHeaderSize="8192"
 -         emptySessionPath="true" protocol="HTTP/1.1"
 -         enableLookups="false" redirectPort="8443" acceptCount="100"
 +         emptySessionPath="false" protocol="HTTP/1.1"
-+         enableLookups="false" redirectPort="8443" acceptCount="100"
-+         proxyName="${hostname}" proxyPort="8080"
++         enableLookups="false" redirectPort="${safe-online.jboss.host.port:secure}" acceptCount="100"
++         proxyName="${hostname}" proxyPort="${safe-online.jboss.host.port:insecure}"
           connectionTimeout="20000" disableUploadTimeout="true" />
  
      <!-- Define a SSL HTTP/1.1 Connector on port 8443
@@ -21,19 +21,19 @@
 -    <!--
 -    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
 +    
-+    <Connector port="8443" address="${jboss.bind.address}"
++    <Connector port="${safe-online.jboss.host.port:secure}" address="${jboss.bind.address}"
                 maxThreads="150" scheme="https" secure="true"
 -               clientAuth="false" sslProtocol="TLS" />
 -    -->
 +               protocol="HTTP/1.1" SSLEnabled="true" clientAuth="false" sslProtocol="TLS"
-+               proxyName="${hostname}" proxyPort="8443"
++               proxyName="${hostname}" proxyPort="${safe-online.jboss.host.port:secure}"
 +               keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"
 +               keystorePass="secret" /> 
  
      <!-- Define an AJP 1.3 Connector on port 8009 -->
      <Connector port="8009" address="${jboss.bind.address}" protocol="AJP/1.3"
 -         emptySessionPath="true" enableLookups="false" redirectPort="8443" />
-+         emptySessionPath="false" enableLookups="false" redirectPort="8443" />
++         emptySessionPath="false" enableLookups="false" redirectPort="${safe-online.jboss.host.port:secure}" />
  
        <Engine name="jboss.web" defaultHost="localhost">
  
