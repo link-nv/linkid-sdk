@@ -252,8 +252,6 @@ a:hover {
 /****************************************************** SIDE MENU **/
 #sidebox ul {
     display:            block;
-    float:              left;
-    clear:              both;
 
     width:              100%;
     margin:             14px 0 14px 0;
