@@ -6,13 +6,13 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Distribution</name>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-distribution</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>pom</packaging>
 
     <build>
@@ -267,25 +267,25 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>zip</type>
 		</dependency>
 
@@ -293,7 +293,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
             <scope>provided</scope>
 			<type>jar</type>
 		</dependency>
@@ -335,25 +335,25 @@
                 <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-root-webapp</artifactId>
-                   <version>1.4-SNAPSHOT</version>
+                   <version>1.4</version>
                    <type>war</type>
                </dependency>
                <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-root-webapp</artifactId>
-                   <version>1.4-SNAPSHOT</version>
+                   <version>1.4</version>
                    <type>zip</type>
                </dependency>
                <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-install-manual</artifactId>
-                   <version>1.4-SNAPSHOT</version>
+                   <version>1.4</version>
                    <type>zip</type>
                </dependency>
                <dependency>
                    <groupId>net.lin-k.safe-online</groupId>
                    <artifactId>safe-online-maintenance-manual</artifactId>
-                   <version>1.4-SNAPSHOT</version>
+                   <version>1.4</version>
                    <type>zip</type>
                 </dependency>
             </dependencies>
@@ -407,74 +407,74 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.beid</groupId>
                     <artifactId>safe-online-beid-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.beid</groupId>
                     <artifactId>safe-online-beid-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.digipass</groupId>
                     <artifactId>safe-online-digipass-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.digipass</groupId>
                     <artifactId>safe-online-digipass-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.encap</groupId>
                     <artifactId>safe-online-encap-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.encap</groupId>
                     <artifactId>safe-online-encap-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.password</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.password</groupId>
                     <artifactId>safe-online-password-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.otpoversms</groupId>
                     <artifactId>safe-online-otpoversms-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.otpoversms</groupId>
                     <artifactId>safe-online-otpoversms-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
 
                 <dependency>
                     <groupId>net.lin-k.safe-online.demo</groupId>
                     <artifactId>safe-online-demo-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.demo</groupId>
                     <artifactId>safe-online-demo-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
 
@@ -482,7 +482,7 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online.demo</groupId>
                     <artifactId>safe-online-demo-sql-ddl</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <scope>provided</scope>
                     <type>jar</type>
                 </dependency>
@@ -527,13 +527,13 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.option</groupId>
                     <artifactId>safe-online-option-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online.device.option</groupId>
                     <artifactId>safe-online-option-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
             </dependencies>
@@ -546,13 +546,13 @@
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-performance-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>ear</type>
                 </dependency>
                 <dependency>
                     <groupId>net.lin-k.safe-online</groupId>
                     <artifactId>safe-online-performance-deploy</artifactId>
-                    <version>1.4-SNAPSHOT</version>
+                    <version>1.4</version>
                     <type>zip</type>
                 </dependency>
             </dependencies>

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k.safe-online.device</groupId>
 		<artifactId>option</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Option Deploy</name>
@@ -17,7 +17,7 @@
 	<groupId>net.lin-k.safe-online.device.option</groupId>
 	<artifactId>safe-online-option-deploy
 	</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>ear</packaging>
 
 	<build>
@@ -104,7 +104,7 @@
 			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-webapp
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -112,14 +112,14 @@
 			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-webapp
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-startup-runtime
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
@@ -127,7 +127,7 @@
 			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-option-startup-runtime
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>zip</type>
 		</dependency>
 
@@ -136,7 +136,7 @@
 			<groupId>net.lin-k.safe-online.device.option</groupId>
 			<artifactId>safe-online-model-option
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>ejb</type>
 		</dependency>
 

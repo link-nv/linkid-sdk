@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Control Base</name>
@@ -17,7 +17,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-ctrl-base</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -26,13 +26,13 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-as</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-jsf</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
             <type>pom</type>
         </dependency>
 
@@ -40,17 +40,17 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-client</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-entity</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-common</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 
 	</dependencies>

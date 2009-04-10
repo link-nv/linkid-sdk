@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k.safe-online.device</groupId>
 		<artifactId>encap</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Encap Dummy Web Services Definition</name>
@@ -17,7 +17,7 @@
 
 	<groupId>net.lin-k.safe-online.device.encap</groupId>
 	<artifactId>safe-online-encap-ws</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>jar</packaging>
 
 	<build>

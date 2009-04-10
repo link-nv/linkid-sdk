@@ -6,14 +6,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Wicket Tools</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-wicket-tools</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 
 	<dependencies>
 
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-as</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
             <type>pom</type>
         </dependency>
 
@@ -29,22 +29,22 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-keystore-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 
             <!-- This one is actually provided by the test-container
                  of whatever unit test that depends on our WicketTests -->
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
             <type>pom</type>
         </dependency>
 

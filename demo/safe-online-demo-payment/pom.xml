@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k.safe-online</groupId>
 		<artifactId>demo</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Demo Payment Beans</name>
@@ -18,7 +18,7 @@
 
 	<groupId>net.lin-k.safe-online.demo</groupId>
 	<artifactId>safe-online-demo-payment</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>ejb</packaging>
 
 	<build>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-as</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
             <type>pom</type>
         </dependency>
 
@@ -62,29 +62,29 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online.demo</groupId>
 			<artifactId>safe-online-demo-payment-keystore</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online.demo</groupId>
 			<artifactId>safe-online-model-demo-client</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-wicket-tools</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
             <type>pom</type>
         </dependency>
 

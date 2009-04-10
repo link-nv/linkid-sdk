@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k.safe-online.device</groupId>
 		<artifactId>password</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Password Authentication Web Service
@@ -19,7 +19,7 @@
 	<groupId>net.lin-k.safe-online.device.password</groupId>
 	<artifactId>safe-online-password-auth-ws-impl
 	</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -29,7 +29,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-as
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>pom</type>
 		</dependency>
 
@@ -37,52 +37,52 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-node</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
             <type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-auth-ws
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-auth-ws-util
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-client
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online.device.password</groupId>
 			<artifactId>safe-online-model-password-client
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-common</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 
 		<!-- Test Dependencies -->
@@ -90,7 +90,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-test
 			</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
 			<type>pom</type>
 		</dependency>
 

@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>net.lin-k.safe-online</groupId>
 		<artifactId>siemens</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>Siemens WS Authentication Acceptance Test Web Service
@@ -24,7 +24,7 @@
 	<groupId>net.lin-k.safe-online.siemens</groupId>
 	<artifactId>siemens-auth-ws-acceptance-jaxws-ws-impl
 	</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -34,7 +34,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-as
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<type>pom</type>
 		</dependency>
 
@@ -43,12 +43,12 @@
 			<groupId>net.lin-k.safe-online.siemens</groupId>
 			<artifactId>siemens-auth-ws-acceptance-jaxws-ws
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 
 	</dependencies>

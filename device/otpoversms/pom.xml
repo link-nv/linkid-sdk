@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>net.lin-k.safe-online</groupId>
 		<artifactId>device</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<!-- PROJECT METADATA -->
 	<name>SafeOnline OTP over SMS Device</name>
 	<groupId>net.lin-k.safe-online.device</groupId>
 	<artifactId>otpoversms</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>pom</packaging>
 
 	<modules>

@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<!-- PROJECT METADATA -->
 	<name>SafeOnline Siemens</name>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>siemens</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>pom</packaging>
 
 	<modules>

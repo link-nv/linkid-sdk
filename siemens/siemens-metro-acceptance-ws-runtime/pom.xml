@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k.safe-online</groupId>
 		<artifactId>siemens</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>Siemens Acceptance Test Metro Web Service Runtime</name>
@@ -14,7 +14,7 @@
 	</groupId>
 	<artifactId>siemens-metro-acceptance-ws-runtime
 	</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>pom</packaging>
 
 	<build>
@@ -117,13 +117,13 @@
 			<groupId>net.lin-k.safe-online.siemens</groupId>
 			<artifactId>siemens-metro-acceptance-ws
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online.siemens</groupId>
 			<artifactId>siemens-metro-acceptance-ws-impl
 			</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 
 	</dependencies>

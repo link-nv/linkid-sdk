@@ -10,7 +10,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Lin.k N.V.</name>
@@ -512,7 +512,7 @@
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
 		<safe-online.release.version>1.4</safe-online.release.version>
-        <safe-online.version>${safe-online.release.version}-SNAPSHOT</safe-online.version>
+        <safe-online.version>${safe-online.release.version}</safe-online.version>
 		<bcel.version>5.1</bcel.version>
 		<bsf.version>2.4.0</bsf.version>
 		<bsh.version>1.3.0</bsh.version>
@@ -1271,7 +1271,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-as
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<scope>provided</scope>
 				<type>pom</type>
 			</dependency>
@@ -1279,21 +1279,21 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-jsf
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-saml
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-test
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<scope>test</scope>
 				<type>pom</type>
 			</dependency>
@@ -1301,7 +1301,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-olas
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
@@ -1309,7 +1309,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-option
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
@@ -1317,14 +1317,14 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base-jsf
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-sql-ddl</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<scope>provided</scope>
 				<type>jar</type>
 			</dependency>
@@ -1332,7 +1332,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-demo-sql-ddl
 				</artifactId>
-				<version>1.4-SNAPSHOT</version>
+				<version>1.4</version>
 				<scope>provided</scope>
 				<type>jar</type>
 			</dependency>

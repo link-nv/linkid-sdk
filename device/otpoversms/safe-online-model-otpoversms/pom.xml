@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k.safe-online.device</groupId>
 		<artifactId>otpoversms</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<name>SafeOnline Model OTP over SMS</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online.device.otpoversms</groupId>
 	<artifactId>safe-online-model-otpoversms</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>ejb</packaging>
 
 	<build>
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-as</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
 			<type>pom</type>
 		</dependency>
 
@@ -74,37 +74,37 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online.device.otpoversms</groupId>
 			<artifactId>safe-online-model-otpoversms-client</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-osgi-sms</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-common</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-client</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-node</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
             <type>ejb</type>
 		</dependency>
 
@@ -112,19 +112,19 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-test</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-jpa-util</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<version>1.4</version>
 			<scope>test</scope>
             <type>ejb</type>
 		</dependency>
