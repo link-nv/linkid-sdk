@@ -82,8 +82,10 @@ public class BeIdErrorPage extends TemplatePage {
             errorMessage = localize("%l", "protocolErrorInfo");
         }
 
-        getContent().add(new Label("title", errorTitle));
-        getContent().add(new Label("message", errorMessage));
+        Label errorMessageLabel = new Label("message", errorMessage);
+        errorMessageLabel.setEscapeModelStrings(false);
+
+        getContent().add(new Label("title", errorTitle), errorMessageLabel);
         getContent().add(new Link<String>("retry") {
 
             private static final long serialVersionUID = 1L;
