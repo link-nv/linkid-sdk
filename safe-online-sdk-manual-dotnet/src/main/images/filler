@@ -1,0 +1,2 @@
+if this directory is empty git will miss it.
+Build fails when this directory is not present

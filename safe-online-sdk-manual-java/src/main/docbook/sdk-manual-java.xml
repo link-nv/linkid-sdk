@@ -1,0 +1,1182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book xmlns='http://docbook.org/ns/docbook' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd">
+
+    <info>
+        <title>linkID Java SDK Manual</title>
+        <copyright>
+            <year>2010</year>
+            <holder>LIN-K N.V.</holder>
+        </copyright>
+        <date>27/09/2010</date>
+        <releaseinfo>2.0.0</releaseinfo>
+        <productname>linkID</productname>
+        <productnumber>1.14</productnumber>
+
+        <authorgroup>
+            <author>
+                <personname>Maarten Billemont</personname>
+                <email>maarten.billemont@lin-k.net</email>
+            </author>
+        </authorgroup>
+
+        <abstract>
+            <para>This document describes the configuration, usage and operation of linkID's Java SDK for application developers.</para>
+        </abstract>
+    </info>
+
+
+    <chapter>
+        <title>Introduction</title>
+        <para>
+            The Java SDK for linkID is a convenience library for providing applications the ability to communicate with linkID services.
+            Since linkID has been built on standard protocols you are in fact free to communicate with it directly using one of the
+            protocols it supports. This SDK will simply make the job easier on you by providing a type-safe and complete interface to
+            configuring, authenticating for and accessing the identity services of linkID.
+        </para>
+        <para>
+            Currently, linkID supports two standard protocols for applications to communicate with its services: OpenID and SAML2. The SDK
+            provides a consistent API for using either protocol, allowing you to effortlessly switch between them if desired. You are,
+            however, strongly recommended to use the more featureful and secure SAML2 protocol.
+        </para>
+
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>OpenID</title>
+            <para>
+                The OpenID protocol is defined by an open standard endorsed by the OIDF (OpenID Foundation). It is quickly gaining
+                popularity among application developers, mainly because it provides universal identity management in a very lightweight
+                protocol. Implementations exist for most development platforms and have only very minimal requirements.
+
+                For use with linkID, however, the OpenID protocol has two main downsides that make it less interesting than the alternative:
+                security limitations and lack of support for single logout. OpenID security relies mainly on trust in DNS security and URL
+                hierarchies. When using the Java SDK, an application developer has the option of providing the SDK with the linkID
+                operator's SSL certificate. This allows the SDK to guarantee the authority of the linkID server when the application and the
+                linkID server are communicating directly.
+            </para>
+            <para>
+                <?dbfo-need height="5cm" ?>
+                <itemizedlist>
+                    <title>Limitations of the OpenID protocol in linkID</title>
+                    <listitem>
+                        <para>Does not support single-sign-out.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Does not yet support any non-essential linkID authentication features:
+                            <itemizedlist>
+                                <listitem>
+                                    <para>Setting a non-default theme or language.</para>
+                                </listitem>
+                                <listitem>
+                                    <para>Session Tracking</para>
+                                </listitem>
+                                <listitem>
+                                    <para>...</para>
+                                </listitem>
+                            </itemizedlist>
+                        </para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+        </section>
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>SAML2</title>
+            <para>
+                The SAML2 protocol is published and maintained by the OASIS organization (Organization for the Advancement of Structured
+                Information Standards). It is an extensive and extensible XML-based authentication and authorization standard.
+            </para>
+            <para>
+                The use of SAML2 for communication with linkID services is strongly recommended since all linkID features are well supported
+                through it. When using the Java SDK, an application developer will need to generate a key pair for his application. The
+                private key should be known exclusively to the application while the linkID operator will need a trusted certificate for
+                your public key. For additional security, the application developer can also provide the SDK with certificates of the
+                linkID node, allowing it to perform additional verification.
+            </para>
+        </section>
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Choosing a protocol</title>
+            <para>
+                By default, the linkID SDK will use the SAML2 protocol.  It is the preferred protocol because it is the most versatile and
+                the most secure of the options.  So by not making a choice, you'll be safely using the SAML2 protocol.
+            </para>
+            <para>
+                If your application is already strongly integrated with OpenID services and you wish to add support for linkID to it, you
+                may want to consider our OpenID protocol.  Take note of the limitations, however, and consider whether it wouldn't make more
+                sense to use linkID with SAML2 anyway, considering that linkID is a secure identity provider.
+            </para>
+        </section>
+    </chapter>
+
+    <chapter>
+        <title>Configuring the SDK</title>
+        <para>
+            There are several ways in which you can configure the linkID Java SDK for use with your application. All configuration is
+            accessed through and documented in the <code>Config</code> interface (and those it references).
+        </para>
+        <para>
+            Application developers can either implement the <code>Config</code> interface themselves or use the default implementation
+            provided by the SDK.
+        </para>
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Default Config Implementation</title>
+            <para>
+                The default implementation of the <code>Config</code> interface is the most convenient way for application developers to
+                configure their application for use with the linkID services. Note, however, that the default implementation currently only
+                works when the application is running inside a Java servlet container.
+            </para>
+            <para>
+                When using the default implementation, values for configuration parameters are obtained from one of three locations. The
+                search locations have an order: If a value is not defind for the property in one location, the next is tried.
+
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Property locations in search order</title>
+                    <varlistentry>
+                        <term>Property File</term>
+                        <listitem>
+                            <para>The classpath is searched for a property file named <code>linkID.xml</code> (for XML-encoded properties)
+                                or <code>linkID.properties</code> (for plain properties). The former is used and the latter discarded if
+                                both exist. Since XML-encoded property files are validatable and specify their own text encoding, they are
+                                recommended over plain property files.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>Servlet Context</term>
+                        <listitem>
+                            <para>If a property has no value defined in a property file then an init parameter on the servlet context of
+                                the active web application is searched for a value. These init parameters are commonly provided by use of
+                                <code>context-param</code> elements in the application's <code>web.xml</code>.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>Defaults</term>
+                        <listitem>
+                            <para>At last, when a property had no value defined in either a property file or the servlet context, a
+                                preconfigured default can be used. The SDK provides default values for almost all properties.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <para>
+                Since the SDK provides sensible defaults for almost all properties, the application developer can focus on customizing
+                those properties that matter to his application only.
+            </para>
+        </section>
+
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Activating the Config Framework</title>
+            <para>
+                To allow the SDK to find the configuration implementation it is necessary to activate it using a <code>ConfigHolder</code>.
+            </para>
+            <para>
+                Since your JVM may be running multiple applications at once or serving multiple unrelated requests at once, the
+                configuration interface is made to bind itself to the active thread. Once bound, any calls to it will operate on the
+                thread-specfic configuration. To facilitate this for use within servlet containers, the SDK provides a servlet filter,
+                <code>ConfigFilter</code>, which takes care of binding the correct config to the active thread when a servlet request is
+                initiated and unbinding the config from the thread after the request has ended.
+            </para>
+            <para>
+                The simplest way for application developers to activate linkID's configuration framework is by adding the
+                <code>SDKConfigFilter</code> implementation of the <code>ConfigFilter</code> class to their servlet configuration.
+            </para>
+            <?dbfo-need height="10cm" ?>
+            <para>
+                If you do this configuration through <code>web.xml</code>, this is what it would look like:
+
+                <programlisting language="xml" linenumbering="numbered"><![CDATA[
+    <filter>
+        <filter-name>ConfigFilter</filter-name>
+        <filter-class>net.link.safeonline.sdk.configuration.SDKConfigFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ConfigFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+                ]]></programlisting>
+            </para>
+            <para>
+                Make sure the mapping comes early enough: The <code>ConfigFilter</code> must have been activated before any SDK code is
+                invoked.
+            </para>
+        </section>
+
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Custom Config Implementation</title>
+            <para>
+                The SDK's configuration framework was written with maximum customizability and freedom to application developers in mind.
+                There are situation where the default implementation is inadequate: You may prefer to provide your configuration values in
+                a more type-safe way, your application may require you to dynamically provide different configuration values for certain
+                properties depending on some external state or your application may not be running inside a servlet container at all.
+            </para>
+            <para>
+                To provide your own implementation of the SDK config, all you need to do is implement the Config interface and the
+                interfaces it references.
+            </para>
+        </section>
+
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Application Config</title>
+            <para>
+                The SDK's configuration framework also provides you with a way of putting your own application's configuration that's
+                unrelated to linkID or the SDK together with the configuration of the SDK. This is an entirely optional operation and solely
+                exists for the possible benefit of application developers.
+            </para>
+            <?dbfo-need height="10cm" ?>
+            <para>
+                To extend the SDK's configuration framework with your own application's configuration properties, all you need to do is
+                extend the AppConfig interface with your own interface and add your properties to it. Here's an example:
+
+                <programlisting language="java" linenumbering="numbered"><![CDATA[
+public interface MyAppConfig extends AppConfig {
+
+    @Config.Property(required = true, unset = "16")
+    Integer minimumAge();
+}
+                ]]></programlisting>
+            </para>
+            <para>
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Requirements for custom AppConfig interfaces</title>
+                    <varlistentry>
+                        <term>Extend <code>AppConfig</code></term>
+                        <listitem>
+                            <para>All interfaces providing application configuration must extend the <code>AppConfig</code> interface. This
+                                interface marks them for use as application configuration and indicates the default group prefix that your
+                                configuration will be stored under (which is <code>app</code>).
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>Properties as methods</term>
+                        <listitem>
+                            <para>Configuration properties are methods in the interface. You should type them as strongly as possible by
+                                using the correct return type. When using the default configuration implementation, string values will be
+                                converted to the return type where possible.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>Annotate property methods</term>
+                        <listitem>
+                            <para>
+                                Use the <code>@Property</code> annotation to indicate to the default configuration implementation that the
+                                value should be loaded from its configuration sources. The annotation also indicates whether or not it's
+                                acceptable when no value can be resolved for the property (not even a default value) by setting
+                                <code>required = true</code> and indicates what value to use as a default value when neither the property
+                                file or servlet context have been able to provide a value for the property by using
+                                <code>unset = "[default value]"</code>.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <para>
+                If necessary, you can group properties together into separate configuration interfaces as is done with the SDK's
+                configuration interfaces. To create a group of properties, simply create a new interface and annotate it with
+                <code>@Group</code>. Put the group's properties in this interface just like you would have in your <code>AppConfig</code>
+                interface extension. The <code>@Group</code> annotation requires an option, though, which is the prefix under which the
+                default configuration implementation should look for the group's properties.
+            </para>
+            <para>
+                If, for example, you used the <code>@Group(prefix="users")</code> annotation on your group interface, referenced it from
+                your <code>AppConfig</code> interface, and put a property method in it with the signature:
+                <code>@Property Integer maxUsers();</code>, then the default configuration implementation would search your property file
+                and servlet context for a property named: <code>app.users.maxUsers</code>. If a value was found for this property, the
+                <code>String</code> value would be converted to an <code>Integer</code> instance (by invoking <code>Integer</code>'s
+                constructor that takes a <code>String</code> argument with the value string) and returned to the code calling the method.
+            </para>
+        </section>
+
+
+        <?dbfo-need height="10cm" ?>
+        <section>
+            <title>Activating your Custom Implementation or Config</title>
+            <para>
+                Once you've created either (or both) a custom configuration implementation and/or an application-specific configuration
+                interface, the next step to actually using them is by telling the SDK about them.
+            </para>
+            <para>
+                If your application runs inside a servlet container and you're using the <code>ConfigFilter</code>, things are fairly easy
+                for you: All you have to do is extend the <code>SDKConfigFilter</code> class, create a public no-arg constructor
+                (also called default constructor), and call <code>super( new SDKConfigHolder(...) )</code> from it. What goes on the dots
+                depends on whether you want to provide either a custom configuration implementation, just an application configuration
+                interface, or both.
+            </para>
+            <?dbfo-need height="10cm" ?>
+            <para>
+                Here's an example filter class that an application could use to activate its own application configuration interface while
+                still using the default configuration implementation:
+
+                <programlisting language="java" linenumbering="numbered"><![CDATA[
+public class MyConfigFilter extends SDKConfigFilter {
+
+    public MyConfigFilter() {
+
+        super( new SDKConfigHolder( MyAppConfig.class ) );
+    }
+}
+                ]]></programlisting>
+            </para>
+            <?dbfo-need height="10cm" ?>
+            <para>
+                Once you have this class, all you need to do is reference it instead of the <code>SDKConfigFilter</code> in your servlet
+                configuration. For example, to activate the example filter above, the application developer might have the following
+                configuration in his <code>web.xml</code>:
+
+                <programlisting language="xml" linenumbering="numbered"><![CDATA[
+    <filter>
+        <filter-name>ConfigFilter</filter-name>
+        <filter-class>com.myapp.webapp.configuration.MyConfigFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ConfigFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+                ]]></programlisting>
+            </para>
+            <para>
+                Now, the application's custom filter will load the <code>SDKConfigHolder</code> with its custom <code>AppConfig</code> and
+                activate the configuration framework on the current thread for this setup. Any further request processing will be able to
+                access the configuration provided by the default configuration implementation.
+            </para>
+        </section>
+
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Configuration Overview</title>
+            <para>
+                Here's a brief overview of all properties exposed by the SDK. You can customize the default values for each of these. For
+                more information on what each option does, review the JavaDoc of the config class that declares the property.
+
+                <table>
+                    <title>All SDK configuration parameters</title>
+                    <tgroup cols="2">
+                        <colspec colwidth="2*" />
+                        <colspec colwidth="3*" />
+                        <thead>
+                            <row>
+                                <entry>Property Name</entry>
+                                <entry>Default Value</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry><code>web.appBase</code></entry>
+                                <entry>
+                                    <emphasis>No default value</emphasis>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>web.appConfidentialBase</code></entry>
+                                <entry>
+                                    <emphasis>No default value</emphasis>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>web.appPath</code></entry>
+                                <entry>
+                                    Use servlet request's context path.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>web.userBase</code></entry>
+                                <entry>
+                                    <code>https://demo.linkid.be/linkid-user</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>web.authBase</code></entry>
+                                <entry>
+                                    <code>https://demo.linkid.be/linkid-auth</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>web.wsBase</code></entry>
+                                <entry>
+                                    <code>https://demo.linkid.be/linkid-ws</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>web.landingPath</code></entry>
+                                <entry>
+                                    Send protocol responses to the target URL.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>proto.defaultProtocol</code></entry>
+                                <entry>
+                                    <code>SAML2</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>proto.maxTimeOffset</code></entry>
+                                <entry>
+                                    5 Minutes (<code>300000</code> ms).
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>proto.openID.realm</code></entry>
+                                <entry>
+                                    The application's confidential root URL.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>proto.openID.discoveryPath</code></entry>
+                                <entry>
+                                    <code>/openid</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>proto.saml.postBindingTemplate</code></entry>
+                                <entry>
+                                    A built-in template.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>proto.saml.binding</code></entry>
+                                <entry>
+                                    <code>HTTP_POST</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>proto.saml.relayState</code></entry>
+                                <entry>
+                                    RelayState is not used.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.authPath</code></entry>
+                                <entry>
+                                    <code>/entry</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.logoutPath</code></entry>
+                                <entry>
+                                    <code>/logout</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.logoutExitPath</code></entry>
+                                <entry>
+                                    <code>/logoutexit</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.theme</code></entry>
+                                <entry>
+                                    The application's default theme.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.language</code></entry>
+                                <entry>
+                                    The language set by the current browser request.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.app.name</code></entry>
+                                <entry>
+                                    <emphasis>No default value</emphasis>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.app.keyStore</code></entry>
+                                <entry>
+                                    <code>res:application.jks</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.app.keyStorePass</code></entry>
+                                <entry>
+                                    <code>secret</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.app.keyEntryPass</code></entry>
+                                <entry>
+                                    <code>secret</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>linkID.app.keyEntryAlias</code></entry>
+                                <entry>
+                                    Use the first key entry in the store.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>jaas.context</code></entry>
+                                <entry>
+                                    <code>client-login</code>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>jaas.loginPath</code></entry>
+                                <entry>
+                                    Unauthenticated users are not redirected.
+                                </entry>
+                            </row>
+                            <row>
+                                <entry><code>jaas.publicPaths</code></entry>
+                                <entry>
+                                    No public paths.
+                                </entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </table>
+            </para>
+
+        </section>
+
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Recommended Configuration</title>
+            <para>
+                There's a small set of properties that are required but have no defaults within the SDK. You're required to provide values
+                for these properties yourself in order to make use of linkID services. Here's an overview of these properties and what they
+                mean:
+
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Required properties without default values</title>
+                    <varlistentry>
+                        <term><code>linkID.app.name</code></term>
+                        <listitem>
+                            <para>
+                                Technical name of the application to the linkID Operator.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term><code>web.appBase</code></term>
+                        <listitem>
+                            <para>
+                                The base URL where your applications are accessed. (Does not include the application's context path.)
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term><code>web.appConfidentialBase</code></term>
+                        <listitem>
+                            <para>
+                                The base URL where confidential information for your applications are accessed or submitted. (Does not
+                                include the application's context path.)
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+
+            <para>
+                Additionally, for some of the parameters that do have default values you are strongly recommended to provide your own:
+
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Properties you are recommended to override</title>
+                    <varlistentry>
+                        <term><code>web.userBase</code></term>
+                        <term><code>web.authBase</code></term>
+                        <term><code>web.wsBase</code></term>
+                        <listitem>
+                            <para>
+                                These parameters tell the SDK what the location of the linkID operator's services is. The default values
+                                reference linkID's demo service. This will probably be fine during application development and testing, but
+                                you will need to reference a production site when your application goes live.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term><code>web.landingPath</code></term>
+                        <listitem>
+                            <para>
+                                This parameter contains the location where the linkID services will make the user post authentication
+                                responses.  If unset (the default), these responses will be sent to the target URL (that's the URL the
+                                application wants the user to go to after the protocol response has been handled). If your application
+                                uses the <code>AuthnResponseFilter</code> on the target URL, the default value for this property will
+                                probably be fine. However, note that in this case your application (or at least, the target URL)
+                                <emphasis>should</emphasis> be running on HTTPS.  The reason is that sensitive information is being
+                                submitted using these responses.  Additionally, if your application is not on HTTPS, some browsers will
+                                warn the user about dangerous activity when submitting to an HTTP site (your application) from an HTTPS
+                                site (linkID).  If you do not use the <code>AuthnResponseFilter</code> or want to run your application on
+                                HTTP, then you should specify a path in this parameter, relative to your application's context path, where
+                                linkID responses can be handled.  This path should be HTTPS and can either have the
+                                <code>AuthnResponseFilter</code> or the <code>LoginServlet</code> bound to it.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term><code>linkID.app.keyStore</code></term>
+                        <term><code>linkID.app.keyStorePass</code></term>
+                        <term><code>linkID.app.keyEntryAlias</code></term>
+                        <term><code>linkID.app.keyEntryPass</code></term>
+                        <listitem>
+                            <para>
+                                These parameters are used by the SDK when it needs to load key or certificate information out of the key
+                                store.  By default, the SDK will look for a key store in the classpath named <code>application.jks</code>
+                                and unlock it (and if necessary, the key entry within it) with the password <code>secret</code>.  If a key
+                                entry is needed and no alias is configured, the first key entry in the store will be used.  The SDK uses
+                                the key store to obtain certificate information about the linkID server or the application's certificate
+                                and private key when building SAML2 requests or contacting linkID web services. You are recommended to build
+                                your own key store with your own sufficiently secure passwords.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <?dbfo-need height="10cm" ?>
+            <para>
+                For example, here's what a basic SDK configuration of an application could look like, if defined by the default property file,
+                <code>linkID.xml</code>:
+
+                <programlisting language="xml" linenumbering="numbered"><![CDATA[
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+    <entry key="linkID.app.name">myapp</entry>
+    <entry key="web.appBase">http://www.myapp.com</entry>
+    <entry key="web.appConfidentialBase">https://www.myapp.com</entry>
+    <entry key="web.landingPath">/linkID-login</entry>
+
+    <entry key="web.userBase">https://my.linkid.be/linkid-user</entry>
+    <entry key="web.authBase">https://my.linkid.be/linkid-auth</entry>
+    <entry key="web.wsBase">https://my.linkid.be/linkid-ws</entry>
+
+    <entry key="linkID.app.keyStorePass">SecretAndSecureKeyStorePassword</entry>
+    <entry key="linkID.app.keyEntryAlias">myapp_linkid</entry>
+    <entry key="linkID.app.keyEntryPass">SecretAndSecureKeyEntryPassword</entry>
+
+</properties>
+                ]]></programlisting>
+            </para>
+            <?dbfo-need height="10cm" ?>
+            <para>
+                If the developer prefers, he can also specify this configuration from his servlet context.  For example, an application
+                developer might use the following <code>web.xml</code> to deploy his application:
+
+                <programlisting language="xml" linenumbering="numbered"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+    <display-name>My Application</display-name>
+
+    <!-- SDK Configuration -->
+    <context-param>
+        <param-name>linkID.app.name</param-name>
+        <param-value>myapp</param-value>
+    </context-param>
+    <context-param>
+        <param-name>web.appBase</param-name>
+        <param-value>http://www.myapp.com</param-value>
+    </context-param>
+    <context-param>
+        <param-name>web.appConfidentialBase</param-name>
+        <param-value>https://www.myapp.com</param-value>
+    </context-param>
+    <context-param>
+        <param-name>web.landingPath</param-name>
+        <param-value>/linkID-login</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>web.userBase</param-name>
+        <param-value>https://my.linkid.be/linkid-user</param-value>
+    </context-param>
+    <context-param>
+        <param-name>web.authBase</param-name>
+        <param-value>https://my.linkid.be/linkid-auth</param-value>
+    </context-param>
+    <context-param>
+        <param-name>web.wsBase</param-name>
+        <param-value>https://my.linkid.be/linkid-ws</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>linkID.app.keyStorePass</param-name>
+        <param-value>SecretAndSecureKeyStorePassword</param-value>
+    </context-param>
+    <context-param>
+        <param-name>linkID.app.keyEntryAlias</param-name>
+        <param-value>myapp_linkid</param-value>
+    </context-param>
+    <context-param>
+        <param-name>linkID.app.keyEntryPass</param-name>
+        <param-value>SecretAndSecureKeyEntryPassword</param-value>
+    </context-param>
+
+    <!-- SDK Configuration Filter -->
+    <filter>
+        <filter-name>ConfigFilter</filter-name>
+        <filter-class>net.link.safeonline.sdk.configuration.SDKConfigFilter</filter-class>
+    </filter>
+
+    <!-- Application's Web Framework -->
+    <filter>
+        <filter-name>WicketFilter</filter-name>
+        <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+
+        <init-param>
+            <param-name>applicationClassName</param-name>
+            <param-value>com.myapp.webapp.MyApplication</param-value>
+        </init-param>
+    </filter>
+
+    <!-- Map filters to URLs -->
+    <filter-mapping>
+        <filter-name>ConfigFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>WicketFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- SDK Response Servlets -->
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>net.link.safeonline.sdk.auth.servlet.LoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>net.link.safeonline.sdk.auth.servlet.LogoutServlet</servlet-class>
+    </servlet>
+
+    <!-- Map servlets to URLs -->
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/linkID-login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/linkID-logout</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+                ]]></programlisting>
+            </para>
+
+            <para>
+                It's good to note the main advantage of not putting the property values in your <code>web.xml</code>: If they are defined in
+                a property file that's in your classpath, you can put the file somewhere in your servlet container's configuration or lib
+                directory, making it easily accessible while the server is running.  That means it's easy to update these values without
+                needing to rebuild or repackage the application.  With this in mind, also note that it's possible to divide parameters
+                between both sources.  You may choose to define most parameters in a property file and leave the static ones defined in your
+                application's <code>web.xml</code>.  As a last remark; note that even if you have defined a parameter in your application's
+                <code>web.xml</code>, it's still possible to change it without repackaging the application simply by adding it to your
+                property file as well.  When the SDK goes looking for a value for the property and finds one in the property file, it will
+                not go on looking at the <code>web.xml</code>.
+            </para>
+        </section>
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Keys and Certificates</title>
+            <para>
+                If you have decided to use the SAML2 protocol with the SDK for communicating with linkID services, this chapter details
+                another required step in setting up your application for use with linkID.  If your application uses the OpenID protocol,
+                this chapter is optional, but still highly recommended.
+            </para>
+            <para>
+                For the linkID Java SDK, all required keys and certificates are obtained from a single key store.  To find this key store,
+                the SDK queries the parameter <code>linkID.app.keyStore</code> (default value <code>res:application.jks</code>).  With this
+                default value, the SDK will load the resource <code>application.jks</code> from the application's classpath if it exists.
+            </para>
+            <para>
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Key store sources supported by <code>linkID.app.keyStore</code></title>
+                    <varlistentry>
+                        <term><code>res:[classpath resource]</code></term>
+                        <listitem>
+                            <para>
+                                Use this syntax to load the keystore from a resource in the classpath.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><code>url:[absolute url]</code></term>
+                        <listitem>
+                            <para>
+                                Use this syntax to load the keystore from a resource found at a specified URL.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><code>file:[filesystem path]</code></term>
+                        <listitem>
+                            <para>
+                                Use this syntax to load the keystore from a file found at the given path in the local filesystem.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><code>class:[keystore class]</code></term>
+                        <listitem>
+                            <para>
+                                Use this syntax to load the keystore using a custom class that implements <code>LinkIDKeyStore</code>.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <para>
+                The key store file will be unlocked using the password provided by <code>linkID.app.keyStorePass</code>.  If the key entry
+                is needed, it will be obtained from the entry with the alias which is the value of <code>linkID.app.keyEntryAlias</code>.
+                The entry will be unlocked using the password provided by <code>linkID.app.keyEntryPass</code>.  The key entry will only
+                be needed when the application authenticates using the SAML2 protocol or utilizes linkID's web services.
+            </para>
+            <para>
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Key store entries used by the SDK</title>
+                    <varlistentry>
+                        <term>The application's private key entry and its certificate</term>
+                        <listitem>
+                            <para>
+                                This information is accessed by the SDK when it builds SAML2 messages or webservice requests.  The
+                                certificate is used to identify the application to the linkID service the message is sent to, and the key
+                                is used to sign the message.  If you're going to use SAML2 for authentication or any of the web services,
+                                add your application's key and certificate to the key store under the alias configured in the value of
+                                <code>linkID.app.keyEntryAlias</code>.  If only one key entry will be added to the key store, this property
+                                may be omitted, though it is recommended that you specify it nonetheless.
+                            </para>
+                            <para>
+                                To generate a key and certificate for your application, you can use the following <code>keytool</code>
+                                command (don't forget to change the alias <code>myapp_linkid</code> to the alias you wish to use):
+                            </para>
+                            <para><code>
+                                keytool -keystore application.jks -genkey -alias myapp_linkid
+                            </code></para>
+                            <para>
+                                Once generated, you need to export your new certificate and send it to the linkID operator.  That way, the
+                                operator can authorize your application access to his linkID services.  To export your certificate, you can
+                                use the following <code>keytool</code> command (don't forget to change the alias <code>myapp_linkid</code>
+                                to the alias you wish to use):
+                            </para>
+                            <para><code>
+                                keytool -keystore application.jks -export -alias myapp_linkid -file application.crt
+                            </code></para>
+                            <para>
+                                The certificate file (<code>application.crt</code>) is not secret.  The key store file
+                                (<code>application.jks</code>), however, <emphasis>is</emphasis> secret.  Make sure that only the most
+                                trusted parties within your organization gain access to the key store and the key store's passwords.
+                                <emphasis>If there is ever suspicion of either of these being compromised, alert your linkID operator
+                                immediately and create your keystore anew with different passwords</emphasis>.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>The linkID service's SSL certificate</term>
+                        <listitem>
+                            <para>
+                                Whenever the SDK communicates directly with the linkID services (by use of web services), this certificate
+                                is the only certificate that will be trusted.  If no SSL certificate is provided by the configuration, any
+                                server certificate is trusted blindly.  Whether you use the OpenID or SAML2 protocol, you are strongly
+                                recommended to add this certificate to your key store under the alias <code>linkID_ssl</code>.  To obtain
+                                the correct SSL certificate for the linkID service you'll be using, contact the linkID operator.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>The linkID service certificate</term>
+                        <listitem>
+                            <para>
+                                Whenever the SDK validates messages sent from the linkID services, it checks whether these messages have
+                                been signed by the certificate that is also included in the message.  This check is not perfect, however,
+                                since the message is validated using a certificate that was obtained along with the message itself.  As an
+                                extra security check, the SDK will ask the configuration to provide it with the real and trusted certificate
+                                of the linkID service and make sure that it's the same as the certificate that came with the message.  You
+                                are strongly recommended to add this certificate to your key store under the alias <code>linkID_service</code>.
+                                The service certificate can also become required in case you are using the SAML v2.0 HTTP-Redirect binding,
+                                in which case it will be used for validation of the signature on the authentication responses and logout
+                                request/responses.
+                                To obtain the correct service certificate for the linkID service you'll be using, the PEM encoded
+                                certificate can be downloaded at: <code>$linkID_host/linkid-auth/pki-cert.pem</code> or at:
+                                <code>$linkID_host/linkid-auth</code>. For rollover purposes it is possible to add multiple linkID service
+                                certificates to your keystore. To do this, they have to have an alias, prefixed with
+                                <code>linkID_service.</code>.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>The linkID service root certificate</term>
+                        <listitem>
+                            <para>
+                                The linkID service will allways sign its authentication responses and logout request/responses. When using
+                                an authentication protocol like SAML v2.0 with HTTP-Post binding, the linkID service certificate chain will
+                                be embedded in the XML DSig's KeyInfo. This allows for local validation of those authentication respones and
+                                logout request/respones. Besides that it is possible to perform a local trust validation of this certificate
+                                chain by specifying the linkID service root certificate, which is strongly recommended. You can do this by
+                                adding this certificate to your key store under the alias <code>linkID_service_root</code>. Again, for
+                                rollover purposes, it is possible to add multiple linkID service root certificates to your keystore by
+                                adding them under an alias prefixed with <code>linkID_service_root.</code>. To obtain the correct service
+                                root certificate for the linkID service, you can download the PEM encoded certificate at:
+                                <code>$linkID_host/linkid-auth/pki-cert-root.pem</code>. or at:
+                                <code>$linkID_host/linkid-auth</code>.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+
+        </section>
+
+    </chapter>
+
+
+    <chapter>
+        <title>Using the SDK</title>
+        <para>
+            Once set up, using the SDK to initiate authentication and logout requests or manage user identity information becomes trivial.
+            The SDK allows application developers to get started quickly and easily by providing defaults for any non-essential parameters
+            and offering a clean and consistent API for most interactions between applications and the linkID services.  If necessary, the
+            SDK's API is versatile enough to allow the developer the ability to drill deep into the inner workings of the SDK and configure
+            more esoteric parameters.
+        </para>
+        <para>
+            As mentioned before, there are two protocols with which the SDK can initiate an authentication request.  Whichever protocol
+            you've opted for in your configuration (the default is SAML2), the API usage to initiate authentication remains identical.  This
+            also means that it's nearly seamless to switch between protocols should you desire to do so.
+        </para>
+        <para>
+            The API provides two main methods of initiating authentication: Via a filter or via a utility method.  We will detail each
+            method and the ways in which you can customize their operation.  If necessary, you could also bypass these convenience methods
+            and construct the requests yourself.  Unless you're doing something very complex and have some very good reasons for working
+            around the SDK, however, this is inadvisable.
+        </para>
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Authentication Filter</title>
+            <para>
+                The authentication filters provided by the SDK allow developers to mark parts (or all) of their application as "requiring
+                authentication".  Users that make a request on any URL that the filter is mapped to will cause it to check whether the user
+                is currently authenticated.  If the user is not yet authenticated the filter will intervene and send the user to linkID for
+                authentication.  After the user has authenticated himself and is returned to the URL he was trying to access, the filter
+                will trigger again, find the user to be authenticated and let him through to your application.  Your application can then
+                rely on the guarantee that no requests will be made to those URLs by unauthenticated users.
+            </para>
+            <para>
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Authentication servlet filters</title>
+                    <varlistentry>
+                        <term><code>AuthnRequestFilter</code></term>
+                        <listitem>
+                            <para>
+                                This is the filter that verifies whether the user requesting the URL has been authenticated.  It does this
+                                by searching the HTTP session for linkID credentials.  If none are found, this filter builds an
+                                authentication request for the linkID service and makes the user's browser submit that request to your
+                                linkID operator.  The user is not allowed to pass into your application at this time.
+                            </para>
+                            <para>
+                                If, during the search of linkID credentials on the session, valid credentials are found, the filter lets the
+                                user pass and your application's code is executed for the request, as normal.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term><code>AuthnResponseFilter</code></term>
+                        <listitem>
+                            <para>
+                                This filter searches each request for a linkID authentication response.  If it finds one, the filter handles
+                                the response by delegating it to the appropriate handler for the protocol.  If the response is found valid,
+                                the filter sets (or updates) the linkID credentials on the user's HTTP session.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <para>
+                Generally, you'll want to bind both these filters to the same URL pattern.  By default, the request filter will tell linkID
+                to send the user back to the URL he tried to access once the authentication process is complete.  That means the response
+                filter will need to be present on that same URL in order for linkID's authentication response to be processed and the HTTP
+                session updated.  Also note that if both filters are active on a certain URL, you need to make sure the response filter is
+                activated before the request filter.  If not, when a user comes back from linkID with an authentication response, the
+                request filter might abort that request and send the user to linkID instead of letting the response filter handle the linkID
+                response in the user's request.  The user will be unable to enter the application.
+            </para>
+        </section>
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Authentication Utilities</title>
+            <para>
+                You can also manually initiate the authentication request with the linkID services.  This makes most sense for applications
+                that have a "login"-type of button or to activate the authentication process manually from a web framework.
+            </para>
+            <para>
+                To manually initiate an authentication request with linkID, invoke one of <code>AuthenticationUtils</code>'
+                <code>login</code> methods.  There are several methods that take a different level of additional arguments.  Eventually,
+                they all do the same, but the simpler ones use default (or configured) values as much as possible. Refer to the JavaDoc
+                in this class for full details on how you can use the methods.  To customize the parameters used to create the
+                authentication request, you can build your own <code>AuthenticationContext</code> object and pass it along.   Refer to the
+                JavaDoc of this class for information on what can be customized.
+            </para>
+            <para>
+                Once the user has completed his authentication with the linkID services, he will be returned to your application.  The URL
+                where the user will be posting his authentication response is determined by the <code>web.landingPath</code> parameter.  If
+                this parameter is not filled in and the request was manually initiated using the authentication utilities, the user will
+                submit the authentication response to the application's root.  We therefore recommend application developers provide a
+                custom <code>web.landingPath</code> and install either the SDK's <code>LoginServlet</code> at that path or the
+                <code>AuthnResponseFilter</code>.  After the user's response has been handled and found valid, the user will be redirected
+                to the target URL that can be specified when manually initiating the authentication request.  The user won't notice much of
+                all this processing and redirecting: He will simply see his browser showing him the linkID services first, and after
+                authenticating, the site at your application's target URL.
+            </para>
+            <para>
+                The authentication utilities also provide a second method: the <code>logout</code> method.  When you invoke this method,
+                the SDK will build and make the user submit a single-sign-on logout (also referred to as single-sign-out) request.
+                Such a request only makes sense if your application uses linkID's single-sign-on services together with other applications
+                to provide a seamless interaction between your and these other applications.  Using single-sign-on the user must
+                authenticate himself only once, after which he will be allowed access without the need for re-authentication to all
+                applications that have agreed to work together in a single-sign-on "pool".  Using this single-sign-out request, the
+                application can tell the linkID services that the user wishes to log himself out.  Upon such a request, linkID will do its
+                best to notify each and every application the user has used since he last signed himself in.  All notified applications will
+                do their best to log the user out of their own respective application sessions.  This guarantees that if the user leaves his
+                workstation, no-one else can take over his browser and try to gain access to applications using the still-active linkID
+                single-sign-on session.
+            </para>
+            <para>
+                To support single-sign-out, an application must bind the <code>LogoutServlet</code> (or a custom implementation of the
+                <code>AbstractLogoutServlet</code>) on a certain URL and pass that URL to the linkID operator.  The operator sets the URL
+                in its configuration of your application so that it knows where to send users to when these users initiate single-sign-out
+                from another application.
+            </para>
+        </section>
+
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Identity Management Services</title>
+            <para>
+                The linkID service provides application developers with a set of web services it can use to access and manage the identity
+                of its users.  The SDK provides convenience methods for making the communication with these services simple and trivial.
+            </para>
+            <para>
+                Several web services are available to applications, however, this section will document only those that are directly useful
+                to applications.  The other web services are either used internally by the SDK or provide more advanced and esoteric
+                use-cases.  Some of these are documented in later chapters while others are purely documented by the JavaDoc and relevant
+                WSDL files.  Should you need any of these other web services, contact your linkID operator for more information.
+            </para>
+            <para>
+                <?dbfo-need height="5cm" ?>
+                <variablelist>
+                    <title>Web services for applications</title>
+                    <varlistentry>
+                        <term>Attribute Service</term>
+                        <listitem>
+                            <para>
+                                The attribute service is a web service provided by linkID which allows applications to look up the current
+                                values for user attributes.  Applications can only access attributes that the user has previously approved
+                                access to for the application.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>Data Service</term>
+                        <listitem>
+                            <para>
+                                The data service allows applications to update the value of a user's linkID attributes.  This service can
+                                only be used on attributes are provided to the user by the application.  Contact the linkID operator if you
+                                wish to provide certain attributes.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <?dbfo-need height="5cm" ?>
+                    <varlistentry>
+                        <term>Identity Mapping Service</term>
+                        <listitem>
+                            <para>
+                                The identity service provides a way for applications to identify users based on the current value of one of
+                                their attributes.  Using this service, it becomes possible to search for users based on attribute values.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <para>
+                Accessing one of these services is trivial thanks to the SDK's API.  The <code>LinkIDServiceFactory</code> class has
+                methods that allow an application to easily construct a proxy object.  There are, again, similar methods that take several
+                degrees of arguments.  The no-arg methods simply use the SDK's configuration to obtain all their information.  It is
+                recommended that you use these no-arg methods whenever possible.  The proxy objects (also referred to as "client objects"),
+                will transparently build web service requests for methods invoked on it, query the relevant linkID web service, and yield
+                the result to you as return value.  Note that method invocations on a client object returned from this factory can take some
+                time to finish since a lot of network activity is happening in the background.  Invoking these methods may stall your
+                application momentarily.
+            </para>
+        </section>
+
+    </chapter>
+
+    <chapter>
+        <title>Using the SDK from Wicket</title>
+        <para>
+            Wicket is a Java web framework that's been gaining in popularity.  The key difference between Wicket and ordinary Java web
+            frameworks is that Wicket is an entirely stateful framework, it allows the web developer to write a fully type-safe user
+            interface, and it forces a strong and clear separation between markup and logic.  Each of these factors allow application
+            developers to build more maintainable and <emphasis>testable</emphasis> web-based user interfaces.
+        </para>
+        <para>
+            The linkID Java SDK provides several convenience components that integrate linkID services nicely into wicket.  The
+            <code>LinkIDApplication</code> class is a base class for wicket applications that wish to make use of these convenience
+            integrations.  If your application's class extends this class instead of the <code>WebApplication</code> class, it will be
+            able to use <code>LinkIDApplicationPage</code> as the base page for its web pages.  In doing so, web pages will receive
+            notifications when newly authenticated users land on them by means of a call to <code>onLinkIDAuthenticated()</code>.
+        </para>
+        <para>
+            Additionally, application developers can now annotate their components with the <code>@RequireLogin</code> annotation to
+            indicate that the component may only be rendered when the user has already been authenticated by linkID.  Another annotation,
+            <code>@ForceLogout</code>, can be set on a page to indicate that when users arrive on the page while being authenticated, their
+            linkID credentials should be wiped and wicket session should be logged out of.
+        </para>
+        <para>
+            Whether a wicket developer chooses to use the <code>LinkIDApplication</code> base class or not, he always has the ability to
+            use the <code>LinkIDLoginLink</code> and <code>LinkIDLogoutLink</code> components on his page.  These components are effectively
+            links that invoke <code>AuthenticationUtils</code>' <code>login</code> and <code>logout</code> methods, respectively.  The
+            components, like many other SDK classes, can be extended (as new classes or anonymous inner classes) to customize the parameters
+            used to initiate these login and logout requests with linkID.
+        </para>
+        <para>
+            As a wrapper for the SDK's <code>LoginManager</code> utility methods, the wicket SDK provides <code>LinkIDWicketUtils</code>.
+            This handy utility class provides the wicket developer with easy access to linkID credentials and attributes stored on the HTTP
+            session.
+        </para>
+    </chapter>
+</book>

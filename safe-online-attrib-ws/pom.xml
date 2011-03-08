@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.lin-k.safe-online.client</groupId>
+        <artifactId>sdk</artifactId>
+        <version>SNAPSHOT</version>
+    </parent>
+
+    <name>SafeOnline Attribute Web Service Definition</name>
+    <description>
+        Contains WSDL for the SafeOnline Attribute Web Service.
+    </description>
+
+    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+    <artifactId>safe-online-attrib-ws</artifactId>
+    <packaging>jar</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>wsimport</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef classname="com.sun.tools.ws.ant.WsImport" name="wsimport">
+                                    <classpath>
+                                        <path refid="maven.compile.classpath" />
+                                        <path refid="maven.plugin.classpath" />
+                                        <path refid="maven.runtime.classpath" />
+                                    </classpath>
+                                </taskdef>
+                                <mkdir dir="${project.build.directory}/generated-sources/main/java" />
+                                <mkdir dir="${project.build.directory}/generated-classes/jaxws" />
+                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/saml-protocol-2.0.wsdl" sourcedestdir="${project.build.directory}/generated-sources/main/java" catalog="${basedir}/src/main/catalog/catalog.xml">
+                                    <produces dir="${project.build.directory}/generated-sources/main/java">
+                                        <include name="**/*.java" />
+                                    </produces>
+                                </wsimport>
+                            </tasks>
+                            <sourceRoot>
+                                ${project.build.directory}/generated-sources/main/java
+                            </sourceRoot>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!-- Specific Dependencies: linkID -->
+
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-tools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>jsr181-api</artifactId>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+    </dependencies>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>

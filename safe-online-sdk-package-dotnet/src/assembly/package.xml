@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+    <id>package</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet />
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>target/files/sources</directory>
+            <outputDirectory>/sources</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <files>
+        <file>
+            <source>target/files/sdk-manual.pdf</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>target/files/sdk-manual-dotnet.pdf</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/files/README.txt</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>
+</assembly>

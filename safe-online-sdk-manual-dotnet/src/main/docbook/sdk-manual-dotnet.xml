@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+        "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book lang="en">
+    <bookinfo>
+        <title>linkID .NET SDK Manual</title>
+        <copyright>
+            <year>2009</year>
+            <holder>LIN-K N.V.</holder>
+        </copyright>
+        <date>18/11/2009</date>
+        <abstract>
+            <para>This document contains the .NET SDK manual for the linkID
+                product.
+            </para>
+        </abstract>
+        <releaseinfo>1.0.0</releaseinfo>
+        <productname>linkID</productname>
+        <productnumber>1.0.0</productnumber>
+        <authorgroup>
+            <author>
+                <firstname>Wim</firstname>
+                <surname>Vandenhaute</surname>
+            </author>
+        </authorgroup>
+    </bookinfo>
+    <chapter id="authentication">
+        <title>Authentication</title>
+        <abstract>
+            <para>This chapter will bring a short overview on how to setup a
+                .NET based web application with the linkID authentication web
+                application.
+            </para>
+        </abstract>
+        <para>
+            The .NET SDK currently only has support for OASIS SAML version
+            2.0 Web SSO profile with HTTP POST binding and OASIS SAML version 2.0
+            Web Single Logout profile with HTTP POST binding.
+        </para>
+        <para>
+            First of all, you will have to download the BouncyCastle C# dll which
+            can be found at
+            <ulink url="http://www.bouncycastle.org/csharp/"></ulink>
+        </para>
+        <para>
+            The .NET SDK provides 2 utility classes for authentication and logout
+            respectively
+            <code>Saml2AuthUtil.cs</code>
+            and
+            <code>Saml2LogoutUtil.cs</code>
+            . Instantiating both classes requires one argument, a
+            <code>RSACryptoServiceProvider</code>
+            containing the private key that will be used to sign the
+            authentication/logout request. The
+            <code>KeyStoreUtil</code>
+            class provides 2 methods returning such an
+            <code>RSACryptoServiceProvider</code>
+            . One takes a .pfx ( i.e. PKCS12 ) keystore + password as input, the
+            other one reads out the private key in PEM format.
+        </para>
+        <para>
+            To start an authentication with linkID, first you will have to send a
+            SAML v2.0 authentication request to linkID. This request can be
+            generated using
+            <code>Saml2AuthUtil.generateEncodedAuthnRequest</code>
+            . This returns the request already Base64 encoded, ready to be sent
+            to linkID. The
+            <code>issuerName</code>
+            is the issuer of your application's certificate. The
+            <code>serviceProviderUrl</code>
+            is the path to which linkID will send a SAML v2.0 authentication
+            response back after a successfull ( or not ) authentication. The
+            <code>identityProviderUrl</code>
+            is the linkID path that accepts your SAML v2.0 authentication
+            request. The request has to be sent to linkID using browser POST.
+            There is a good example to see all the magic happen in
+            <code>WebServerTest.cs</code>
+            .
+        </para>
+        <para>
+            The logout process is similar to authentication, all necessary
+            methods can be found in
+            <code>Saml2LogoutUtil</code>
+            .
+        </para>
+        <para>
+            After successful authentication using linkID, an
+            authentication/logout response will be sent back. This response can
+            be validated using the 2 utility classes.
+            For an authentication
+            response, a
+            <code>AuthenticationProtocolContext</code>
+            instance will be returned, containing the user identifier, used
+            authentication devices and optionally a dictionary containing the
+            application identity. Returning the application identity in the SAML
+            v2.0 Authentication Response is something that can be configured by
+            the linkID operator only.
+        </para>
+        <para>
+            For Single Logout, the
+            <code>Saml2LogoutUtil.cs</code>
+            utility class also contains extra methods for validating incoming
+            logout request sent out by linkID ( due to another application in the
+            same application pool triggering a single logout ) and also sending
+            out a logout response for these requests. Please consult the linkID
+            global SDK manual for more info on the SAML v2.0 Single Logout
+            profile.
+        </para>
+        <para>
+            In all cases, validation of SAML v2.0 requests and response is
+            done using the STS web service.
+        </para>
+    </chapter>
+    <chapter id="webservices">
+        <title>Web Services</title>
+        <abstract>
+            <para>This chapter will bring a short overview on the .NET SDK web
+                service clients.
+            </para>
+        </abstract>
+        <para>
+            The
+            <code>LinkIDBinding.cs</code>
+            class contains the custom WCF binding for communicating with the
+            linkID web services. This binding provides both transport as message
+            integrity, as is enforced by the linkID web services.
+        </para>
+        <para>
+            For each linkID web service, you will find a .NET WCF web
+            service
+            client. Instantiating these clients takes following
+            arguments :
+            <variablelist>
+                <varlistentry>
+                    <term>location</term>
+                    <listitem>
+                        <para>
+                            The location of the linkID web service. This is composed out of
+                            <code>host:port</code>
+                            information.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>appPfxPath</term>
+                    <listitem>
+                        <para>The application's .pfx location ( PKCS12 keystore )
+                            containing the client X509 certificate and private key that will
+                            be used during the creation of the WS-Security signature.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>appPfxPassword</term>
+                    <listitem>
+                        <para>
+                            The password for the
+                            <code>appPfxPath</code>
+                            keystore.
+                            signature.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>linkidCertPath</term>
+                    <listitem>
+                        <para>
+                            The linkID authentication application X509 certificate. This will
+                            be used by the
+                            <code>LinkIDBinding</code>
+                            for validation of the incoming web service response containing a
+                            WS-Security signature places by LinkID.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>useMachineKeyStore ( optional )</term>
+                    <listitem>
+                        <para>
+                            This boolean lets you specify which keystore to use in .NET
+                            when reading the applications keystore. By default the windows
+                            user keystore will be used.
+                        </para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </para>
+        <para>
+            For each web service clients, and for the full SAML v2.0
+            authentication and logout profile, unit tests are provided.
+        </para>
+    </chapter>
+</book>

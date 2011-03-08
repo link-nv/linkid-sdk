@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>SafeOnline OSGi Interfaces</name>
+    <description>
+        SafeOnline OSGi Interfaces provided to OSGi bundles
+    </description>
+
+    <parent>
+        <groupId>net.lin-k.safe-online.client</groupId>
+        <artifactId>sdk</artifactId>
+        <version>SNAPSHOT</version>
+    </parent>
+
+    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+    <artifactId>safe-online-osgi</artifactId>
+    <packaging>jar</packaging>
+
+    <!-- DISTRIBUTION AND DEPLOYMENT -->
+    <distributionManagement>
+        <repository>
+            <id>buildserver-release-repository</id>
+            <url>scpexe://buildserver/home/devel/maven2/repositories/release
+            </url>
+        </repository>
+        <snapshotRepository>
+            <id>buildserver-snapshot-repository
+            </id>
+            <url>scpexe://buildserver/home/devel/maven2/repositories/snapshot
+            </url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+        <site>
+            <id>buildserver-site-repository</id>
+            <url>scpexe://buildserver/home/devel/maven2/site/safe-online
+            </url>
+        </site>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                    <meminitial>32m</meminitial>
+                    <maxmem>512m</maxmem>
+                    <encoding>UTF-8</encoding>
+                    <optimize>true</optimize>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+                <inherited>true</inherited>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <overview>${basedir}/src/main/javadoc/overview.html</overview>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>

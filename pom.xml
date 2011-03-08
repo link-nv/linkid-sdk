@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.lin-k.safe-online</groupId>
+        <artifactId>client</artifactId>
+        <version>SNAPSHOT</version>
+    </parent>
+
+    <!-- PROJECT METADATA -->
+    <name>SafeOnline SDK Artifacts</name>
+    <groupId>net.lin-k.safe-online.client</groupId>
+    <artifactId>sdk</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <ejb-api.version>3.0</ejb-api.version>
+        <servlet-api.version>2.4</servlet-api.version>
+        <xalan.version>2.7.1</xalan.version>
+        <xercesImpl.version>2.9.1</xercesImpl.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <jaxws-rt.version>2.1.4</jaxws-rt.version>
+        <jaxws-tools.version>2.1.4</jaxws-tools.version>
+        <jsr181-api.version>1.0-MR1</jsr181-api.version>
+        <jetbrains-annotations.version>7.0.2</jetbrains-annotations.version>
+        <jtrust.version>1.1.2</jtrust.version>
+    </properties>
+
+    <!-- DEPENDENCIES: DEFAULT SCOPE AND VERSION -->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- LinkID -->
+            <dependency>
+                <groupId>net.lin-k.safe-online.client.sdk.client</groupId>
+                <artifactId>safe-online-container-saml</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <!-- External -->
+            <dependency>
+                <groupId>javax.ejb</groupId>
+                <artifactId>ejb-api</artifactId>
+                <version>${ejb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>${xalan.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>${xercesImpl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commons-httpclient.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-rt</artifactId>
+                <version>${jaxws-rt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-tools</artifactId>
+                <version>${jaxws-tools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.jws</groupId>
+                <artifactId>jsr181-api</artifactId>
+                <version>${jsr181-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${jetbrains-annotations.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>be.fedict</groupId>
+                <artifactId>jtrust</artifactId>
+                <version>${jtrust.version}</version>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+        <!-- Profile that creates an SDK package -->
+        <profile>
+            <id>dep:sdk</id>
+            <distributionManagement>
+                <repository>
+                    <id>repo.linkid.be</id>
+                    <url>scpexe://repo.linkid.be/home/maven/repository/releases</url>
+                </repository>
+                <snapshotRepository>
+                    <id>repo.linkid.be</id>
+                    <url>scpexe://repo.linkid.be/home/maven/repository/snapshots</url>
+                    <uniqueVersion>false</uniqueVersion>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>com.stackoverflow</groupId>
+                        <artifactId>maven-export-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>output</id>
+                                <goals>
+                                    <goal>output-project</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <modules>
+                <module>safe-online-container-saml</module>
+                <module>safe-online-attrib-ws</module>
+                <module>safe-online-auth-ws</module>
+                <module>safe-online-data-ws</module>
+                <module>safe-online-idmapping-ws</module>
+                <module>safe-online-sts-ws</module>
+		        <module>safe-online-xkms2-ws</module>
+                <module>safe-online-notification-consumer-ws</module>
+                <module>safe-online-notification-producer-ws</module>
+                <module>safe-online-notification-subscription-manager-ws</module>
+                <module>safe-online-session-ws</module>
+                <module>safe-online-sdk</module>
+                <module>safe-online-sdk-dotnet</module>
+                <module>safe-online-sdk-manual</module>
+                <module>safe-online-sdk-manual-java</module>
+                <module>safe-online-sdk-package-java</module>
+                <module>safe-online-sdk-manual-dotnet</module>
+                <module>safe-online-sdk-package-dotnet</module>
+                <module>safe-online-osgi</module>
+                <module>safe-online-wicket-sdk</module>
+                <module>safe-online-saml-authn-context</module>
+		        <module>safe-online-sdk-example-jsp</module>
+		        <module>safe-online-sdk-example-wicket</module>
+        		<module>safe-online-attribute-provider</module>
+		        <module>safe-online-attribute-provider-template</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <modules>
+        <module>safe-online-config</module>
+        <module>safe-online-sdk</module>
+        <module>safe-online-container-saml</module>
+        <module>safe-online-attrib-ws</module>
+        <module>safe-online-auth-ws</module>
+        <module>safe-online-data-ws</module>
+        <module>safe-online-idmapping-ws</module>
+        <module>safe-online-sts-ws</module>
+	    <module>safe-online-xkms2-ws</module>
+        <module>safe-online-notification-consumer-ws</module>
+        <module>safe-online-notification-producer-ws</module>
+        <module>safe-online-notification-subscription-manager-ws</module>
+        <module>safe-online-session-ws</module>
+        <module>safe-online-osgi</module>
+        <module>safe-online-wicket-sdk</module>
+        <module>safe-online-saml-authn-context</module>
+	    <module>safe-online-attribute-provider</module>
+        <module>safe-online-attribute-provider-template</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
