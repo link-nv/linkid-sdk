@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
-import net.link.util.servlet.AbstractInjectionFilter;
+import net.link.util.j2ee.AbstractInjectionFilter;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 import net.link.util.servlet.annotation.Init;

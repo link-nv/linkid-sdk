@@ -62,7 +62,7 @@
         <!-- Specific Dependencies: linkID -->
         <dependency>
             <groupId>net.lin-k.util</groupId>
-            <artifactId>util-j2ee-jboss4</artifactId>
+            <artifactId>util-j2ee-jboss6</artifactId>
         </dependency>
 
         <!-- Specific Dependencies: External -->

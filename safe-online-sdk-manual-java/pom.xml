@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.lin-k.safe-online</groupId>
+        <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
         <version>SNAPSHOT</version>
     </parent>

@@ -16,7 +16,8 @@
 
     <properties>
         <ejb-api.version>3.0</ejb-api.version>
-        <servlet-api.version>2.4</servlet-api.version>
+        <jboss-servlet-api_3.0_spec.version>1.0.0.Final</jboss-servlet-api_3.0_spec.version>
+        <!--<servlet-api.version>2.4</servlet-api.version>-->
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
@@ -41,15 +42,25 @@
 
             <!-- External -->
             <dependency>
-                <groupId>javax.ejb</groupId>
-                <artifactId>ejb-api</artifactId>
-                <version>${ejb-api.version}</version>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>${jboss-servlet-api_3.0_spec.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>${servlet-api.version}</version>
+                <groupId>org.jboss.spec.javax.ejb</groupId>
+                <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+                <version>${jboss-ejb-api_3.1_spec.version}</version>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>javax.ejb</groupId>-->
+                <!--<artifactId>ejb-api</artifactId>-->
+                <!--<version>${ejb-api.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>javax.servlet</groupId>-->
+                <!--<artifactId>servlet-api</artifactId>-->
+                <!--<version>${servlet-api.version}</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.apache.xalan</groupId>
                 <artifactId>xalan</artifactId>

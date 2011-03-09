@@ -22,9 +22,13 @@
 
         <!-- Dependency Groups -->
         <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>ejb-api</artifactId>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>javax.ejb</groupId>-->
+            <!--<artifactId>ejb-api</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-container-saml</artifactId>
@@ -95,7 +99,7 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
-            <artifactId>util-j2ee-jboss4</artifactId>
+            <artifactId>util-j2ee-jboss6</artifactId>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -104,9 +108,13 @@
 
         <!-- Specific Dependencies: External -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>javax.servlet</groupId>-->
+            <!--<artifactId>servlet-api</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

@@ -11,7 +11,6 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 import net.link.safeonline.sdk.logging.ws.MessageTrackingHandler;
-import net.link.util.filter.ProfiledException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -31,16 +29,15 @@ import org.w3c.dom.Document;
 
 /**
  * Abstract base implementation of the {@link WSClient} interface. Used by the different web service client components.
- * 
+ *
  * @author fcorneli
  */
 public abstract class AbstractWSClient implements WSClient {
 
     static final Log LOG = LogFactory.getLog( AbstractWSClient.class );
 
-    protected final MessageTrackingHandler messageLoggerHandler;
-    private Map<String, List<String>> responseHeaders;
-
+    protected final MessageTrackingHandler    messageLoggerHandler;
+    private         Map<String, List<String>> responseHeaders;
 
     public AbstractWSClient() {
 
@@ -49,50 +46,51 @@ public abstract class AbstractWSClient implements WSClient {
     }
 
     /**
-     * Registers the {@link X509TrustManager} for the specified port. If no {@link X509Certificate} was specified any server
-     * {@link X509Certificate} will be accepted.
+     * Registers the {@link X509TrustManager} for the specified port. If no {@link X509Certificate} was specified any server {@link
+     * X509Certificate} will be accepted.
      */
     protected void registerTrustManager(Object port, final X509Certificate sslCertificate) {
 
         // Create TrustManager
-        TrustManager[] trustManager = { new X509TrustManager() {
+        TrustManager[] trustManager = {
+                new X509TrustManager() {
 
-            public X509Certificate[] getAcceptedIssuers() {
+                    public X509Certificate[] getAcceptedIssuers() {
 
-                return null;
-            }
+                        return null;
+                    }
 
-            public void checkServerTrusted(X509Certificate[] chain, String authType)
-                    throws CertificateException {
+                    public void checkServerTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
 
-                X509Certificate serverCertificate = chain[0];
-                LOG.debug( "server X509 subject: " + serverCertificate.getSubjectX500Principal().toString() );
-                LOG.debug( "authentication type: " + authType );
-                if (null == sslCertificate) {
-                    LOG.warn( "No SSL certificate specified, accept any..." );
-                    return;
-                }
+                        X509Certificate serverCertificate = chain[0];
+                        LOG.debug( "server X509 subject: " + serverCertificate.getSubjectX500Principal().toString() );
+                        LOG.debug( "authentication type: " + authType );
+                        if (null == sslCertificate) {
+                            LOG.warn( "No SSL certificate specified, accept any..." );
+                            return;
+                        }
 
-                try {
-                    serverCertificate.verify( sslCertificate.getPublicKey() );
-                    LOG.debug( "valid server certificate" );
-                } catch (InvalidKeyException e) {
-                    throw new CertificateException( "Invalid Key" );
-                } catch (NoSuchAlgorithmException e) {
-                    throw new CertificateException( "No such algorithm" );
-                } catch (NoSuchProviderException e) {
-                    throw new CertificateException( "No such provider" );
-                } catch (SignatureException e) {
-                    throw new CertificateException( "Wrong signature" );
-                }
-            }
+                        try {
+                            serverCertificate.verify( sslCertificate.getPublicKey() );
+                            LOG.debug( "valid server certificate" );
+                        } catch (InvalidKeyException e) {
+                            throw new CertificateException( "Invalid Key" );
+                        } catch (NoSuchAlgorithmException e) {
+                            throw new CertificateException( "No such algorithm" );
+                        } catch (NoSuchProviderException e) {
+                            throw new CertificateException( "No such provider" );
+                        } catch (SignatureException e) {
+                            throw new CertificateException( "Wrong signature" );
+                        }
+                    }
 
-            public void checkClientTrusted(X509Certificate[] chain, String authType)
-                    throws CertificateException {
+                    public void checkClientTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
 
-                throw new CertificateException( "this trust manager cannot be used as server-side trust manager" );
-            }
-        } };
+                        throw new CertificateException( "this trust manager cannot be used as server-side trust manager" );
+                    }
+                } };
 
         // Create SSL Context
         try {
@@ -104,7 +102,6 @@ public abstract class AbstractWSClient implements WSClient {
             // Setup TrustManager for validation
             Map<String, Object> requestContext = ((BindingProvider) port).getRequestContext();
             requestContext.put( JAXWSProperties.SSL_SOCKET_FACTORY, sslContext.getSocketFactory() );
-
         } catch (KeyManagementException e) {
             String msg = "key management error: " + e.getMessage();
             LOG.error( msg, e );
@@ -162,12 +159,8 @@ public abstract class AbstractWSClient implements WSClient {
     }
 
     /**
-     * Call this method after your service request to set the response context of the response.<br>
-     * <br>
-     * For example:<br>
-     * <code>finally {
-     * retrieveHeadersFromPort(this.port);
-     * }</code>
+     * Call this method after your service request to set the response context of the response.<br> <br> For example:<br> <code>finally {
+     * retrieveHeadersFromPort(this.port); }</code>
      */
     @SuppressWarnings("unchecked")
     protected void retrieveHeadersFromPort(Object port) {
@@ -183,25 +176,23 @@ public abstract class AbstractWSClient implements WSClient {
     }
 
     /**
-     * Call this method when your service request failed with a {@link ProfiledException}. This will extract the profile headers from the
-     * exception..<br>
-     * <br>
-     * For example:<br>
-     * <code>catch (ProfiledException e) {
-     * throw retrieveHeadersFromException(e);
-     * }</code>
+     * Deprecated profiling exception wrapper.
+     *
+     * Call this method when your service request failed with a ProfiledException. This will extract the profile headers from the
+     * exception..<br> <br> For example:<br> <code>catch (ProfiledException e) { throw retrieveHeadersFromException(e); }</code>
      */
+    @Deprecated
     protected RuntimeException retrieveHeadersFromException(Exception e) {
 
         Throwable cause = e;
 
-        if (e instanceof ProfiledException) {
-            for (Map.Entry<String, String> header : ((ProfiledException) e).getHeaders().entrySet())
-                responseHeaders.put( header.getKey(), Arrays.asList( new String[] { header.getValue() } ) );
-
-            // Throw the exception wrapped in the ProfiledException.
-            cause = e.getCause();
-        }
+        //        if (e instanceof ProfiledException) {
+        //            for (Map.Entry<String, String> header : ((ProfiledException) e).getHeaders().entrySet())
+        //                responseHeaders.put( header.getKey(), Arrays.asList( new String[] { header.getValue() } ) );
+        //
+        //            // Throw the exception wrapped in the ProfiledException.
+        //            cause = e.getCause();
+        //        }
 
         if (cause instanceof RuntimeException)
             return (RuntimeException) cause;
