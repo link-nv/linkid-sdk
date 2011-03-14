@@ -17,7 +17,6 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
@@ -88,7 +87,7 @@ public class LogoutServletTest {
 
         servletTestManager = new ServletTestManager();
 
-        Map<String, ProtocolContext> contexts = new HashMap<String, ProtocolContext>();
+        HashMap<String, ProtocolContext> contexts = new HashMap<String, ProtocolContext>();
         logoutRequest = new LogoutProtocolRequestContext( UUID.randomUUID().toString(), "test-application",
                                                           mockProtocolHandler = createMock( ProtocolHandler.class ),
                                                           target = "http://test.target", UUID.randomUUID().toString() );

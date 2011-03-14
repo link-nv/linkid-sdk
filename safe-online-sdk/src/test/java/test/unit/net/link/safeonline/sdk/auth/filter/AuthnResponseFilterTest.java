@@ -11,7 +11,10 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +53,7 @@ public class AuthnResponseFilterTest {
             throws Exception {
 
         servletTestManager = new ServletTestManager();
-        Map<String, ProtocolContext> contexts = new HashMap<String, ProtocolContext>();
+        HashMap<String, ProtocolContext> contexts = new HashMap<String, ProtocolContext>();
 
         mockProtocolHandler = createMock( ProtocolHandler.class );
         authnRequest = new AuthnProtocolRequestContext( UUID.randomUUID().toString(), "test-application", mockProtocolHandler, null );

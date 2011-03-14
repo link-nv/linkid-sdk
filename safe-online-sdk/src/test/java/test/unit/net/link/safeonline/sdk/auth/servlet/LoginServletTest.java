@@ -48,7 +48,7 @@ public class LoginServletTest {
 
     private String                       servletLocation;
     private ProtocolHandler              mockProtocolHandler;
-    private Map<String, ProtocolContext> contexts;
+    private HashMap<String, ProtocolContext> contexts;
 
     private String                      target;
     private AuthnProtocolRequestContext authnRequest;
