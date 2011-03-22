@@ -150,13 +150,15 @@ public abstract class ResponseUtil {
             throw new ValidationFailedException( "Invalid SAML status code: " + samlStatusCode );
         }
 
-        List<Assertion> assertions = response.getAssertions();
-        if (assertions.isEmpty()) {
-            throw new ValidationFailedException( "missing Assertion in SAML2 Response" );
-        }
+        if (StatusCode.SUCCESS_URI.equals( samlStatusCode )) {
+            List<Assertion> assertions = response.getAssertions();
+            if (assertions.isEmpty()) {
+                throw new ValidationFailedException( "missing Assertion in SAML2 Response" );
+            }
 
-        for (Assertion assertion : assertions) {
-            validateAssertion( assertion, now, audience );
+            for (Assertion assertion : assertions) {
+                validateAssertion( assertion, now, audience );
+            }
         }
     }
 
