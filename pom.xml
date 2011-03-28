@@ -116,7 +116,7 @@
     <profiles>
         <!-- Profile that creates an SDK package -->
         <profile>
-            <id>dep:sdk</id>
+            <id>release</id>
             <distributionManagement>
                 <repository>
                     <id>repo.linkid.be</id>
@@ -128,60 +128,11 @@
                     <uniqueVersion>false</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>com.stackoverflow</groupId>
-                        <artifactId>maven-export-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>output</id>
-                                <goals>
-                                    <goal>output-project</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+        </profile>
+        <profile>
+            <id>dep:sdk</id>
             <modules>
                 <module>safe-online-container-saml</module>
-                <module>safe-online-attrib-ws</module>
-                <module>safe-online-auth-ws</module>
-                <module>safe-online-data-ws</module>
-                <module>safe-online-idmapping-ws</module>
-                <module>safe-online-sts-ws</module>
-		        <module>safe-online-xkms2-ws</module>
-                <module>safe-online-notification-consumer-ws</module>
-                <module>safe-online-notification-producer-ws</module>
-                <module>safe-online-notification-subscription-manager-ws</module>
-                <module>safe-online-session-ws</module>
                 <module>safe-online-sdk</module>
                 <module>safe-online-sdk-dotnet</module>
                 <module>safe-online-sdk-manual</module>
@@ -189,13 +140,9 @@
                 <module>safe-online-sdk-package-java</module>
                 <module>safe-online-sdk-manual-dotnet</module>
                 <module>safe-online-sdk-package-dotnet</module>
-                <module>safe-online-osgi</module>
                 <module>safe-online-wicket-sdk</module>
-                <module>safe-online-saml-authn-context</module>
 		        <module>safe-online-sdk-example-jsp</module>
 		        <module>safe-online-sdk-example-wicket</module>
-        		<module>safe-online-attribute-provider</module>
-		        <module>safe-online-attribute-provider-template</module>
             </modules>
         </profile>
     </profiles>

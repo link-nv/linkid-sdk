@@ -38,16 +38,16 @@
                                         <path refid="maven.runtime.classpath" />
                                     </classpath>
                                 </taskdef>
-                                <mkdir dir="${project.build.directory}/generated-sources/main/java" />
+                                <mkdir dir="${project.build.directory}/generated-sources/java" />
                                 <mkdir dir="${project.build.directory}/generated-classes/jaxws" />
-                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/ws-trust-1.3.wsdl" sourcedestdir="${project.build.directory}/generated-sources/main/java" catalog="${basedir}/src/main/catalog/catalog.xml">
-                                    <produces dir="${project.build.directory}/generated-sources/main/java">
+                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/ws-trust-1.3.wsdl" sourcedestdir="${project.build.directory}/generated-sources/java" catalog="${basedir}/src/main/catalog/catalog.xml">
+                                    <produces dir="${project.build.directory}/generated-sources/java">
                                         <include name="**/*.java" />
                                     </produces>
                                 </wsimport>
                             </tasks>
                             <sourceRoot>
-                                ${project.build.directory}/generated-sources/main/java
+                                ${project.build.directory}/generated-sources/java
                             </sourceRoot>
                         </configuration>
                     </execution>
