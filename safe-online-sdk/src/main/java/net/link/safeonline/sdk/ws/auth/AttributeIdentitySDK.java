@@ -9,7 +9,10 @@ package net.link.safeonline.sdk.ws.auth;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import net.link.safeonline.attribute.provider.*;
+import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.provider.AttributeType;
+import net.link.safeonline.attribute.provider.Compound;
+import net.link.safeonline.attribute.provider.DataType;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
 
 
@@ -45,9 +48,9 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
     public AttributeIdentitySDK(oasis.names.tc.saml._2_0.assertion.AttributeType attributeType) {
 
         super( attributeType.getOtherAttributes().get( WebServiceConstants.ATTRIBUTE_ID ), attributeType.getName() );
-        this.attributeType = new AttributeType( attributeType.getName(), DataType.getDataType(
-                attributeType.getOtherAttributes().get( WebServiceConstants.DATATYPE_ATTRIBUTE ) ), Boolean.valueOf(
-                attributeType.getOtherAttributes().get( WebServiceConstants.MULTIVALUED_ATTRIBUTE ) ) );
+        this.attributeType = new AttributeType( attributeType.getName(),
+                DataType.getDataType( attributeType.getOtherAttributes().get( WebServiceConstants.DATATYPE_ATTRIBUTE ) ),
+                Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.MULTIVALUED_ATTRIBUTE ) ) );
 
         friendlyName = attributeType.getFriendlyName();
         groupName = attributeType.getOtherAttributes().get( WebServiceConstants.GROUP_NAME_ATTRIBUTE );
@@ -64,9 +67,9 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
                     oasis.names.tc.saml._2_0.assertion.AttributeType memberAttributeType = (oasis.names.tc.saml._2_0.assertion.AttributeType) memberAttribute;
                     members.add( new AttributeIdentitySDK( memberAttributeType ) );
                 }
-                value = new Compound( members );
+                setValue( new Compound( members ) );
             } else {
-                value = (Serializable) attributeType.getAttributeValue().get( 0 );
+                setValue( (Serializable) attributeType.getAttributeValue().get( 0 ) );
             }
         }
     }
@@ -79,7 +82,7 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
     /**
      * @return the attribute's friendly name, if available. The friendly name is retrieved using the language passed in the initial
      *         authentication web service call. If no friendly name is available for that language, the default attribute's name is returned
-     *         as in {@link #getAttributeName()}.
+     *         as in {@link #getName()}.
      */
     public String getFriendlyName() {
 
@@ -146,12 +149,12 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
         attributeType.setFriendlyName( friendlyName );
 
         if (this.attributeType.isCompound()) {
-            for (AttributeAbstract<?> memberAbstract : ((Compound) value).getMembers()) {
-                AttributeIdentitySDK member = (AttributeIdentitySDK) memberAbstract;
+            for (AttributeSDK<?> memberSDK : ((Compound) getValue()).getMembers()) {
+                AttributeIdentitySDK member = (AttributeIdentitySDK) memberSDK;
                 attributeType.getAttributeValue().add( member.toSDK() );
             }
         } else {
-            attributeType.getAttributeValue().add( value );
+            attributeType.getAttributeValue().add( getValue() );
         }
         attributeType.getOtherAttributes().put( WebServiceConstants.DATATYPE_ATTRIBUTE, this.attributeType.getType().getValue() );
         attributeType.getOtherAttributes()
@@ -161,7 +164,7 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
         attributeType.getOtherAttributes()
                 .put( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE, Boolean.toString( confirmationNeeded ) );
         attributeType.getOtherAttributes().put( WebServiceConstants.CONFIRMED_ATTRIBUTE, confirmation.name() );
-        attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attributeId );
+        attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, getId() );
         attributeType.getOtherAttributes().put( WebServiceConstants.GROUP_NAME_ATTRIBUTE, groupName );
         return attributeType;
     }

@@ -412,12 +412,12 @@ public abstract class Saml2Util {
 
             AttributeSDK<?> attributeSDK = getAttributeSDK( attribute );
 
-            List<AttributeSDK<?>> attributes = attributeMap.get( attributeSDK.getAttributeName() );
+            List<AttributeSDK<?>> attributes = attributeMap.get( attributeSDK.getName() );
             if (null == attributes) {
                 attributes = new LinkedList<AttributeSDK<?>>();
             }
             attributes.add( attributeSDK );
-            attributeMap.put( attributeSDK.getAttributeName(), attributes );
+            attributeMap.put( attributeSDK.getName(), attributes );
         }
         return attributeMap;
     }

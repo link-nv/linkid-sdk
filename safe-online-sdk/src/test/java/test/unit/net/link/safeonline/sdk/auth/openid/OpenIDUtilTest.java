@@ -90,7 +90,7 @@ public class OpenIDUtilTest {
 
         List<AttributeSDK<?>> resultSingleAttributes = resultAttributeMap.get( singleAttributeType.getName() );
         assertEquals( 1, resultSingleAttributes.size() );
-        assertEquals( singleAttribute.getAttributeId(), resultSingleAttributes.get( 0 ).getAttributeId() );
+        assertEquals( singleAttribute.getId(), resultSingleAttributes.get( 0 ).getId() );
         assertEquals( singleAttribute.getValue(), resultSingleAttributes.get( 0 ).getValue() );
 
         List<AttributeSDK<?>> resultMultiAttributes = resultAttributeMap.get( multiAttributeType.getName() );

@@ -21,9 +21,9 @@ import java.util.List;
  */
 public class Compound implements Serializable {
 
-    private final List<? extends AttributeAbstract<?>> members;
+    private final List<? extends AttributeSDK<?>> members;
 
-    public Compound(List<? extends AttributeAbstract<?>> members) {
+    public Compound(List<? extends AttributeSDK<?>> members) {
 
         this.members = members;
     }
@@ -31,7 +31,7 @@ public class Compound implements Serializable {
     /**
      * @return list of this compound value's members
      */
-    public List<? extends AttributeAbstract<?>> getMembers() {
+    public List<? extends AttributeSDK<?>> getMembers() {
         return members;
     }
 
@@ -40,11 +40,11 @@ public class Compound implements Serializable {
      *
      * @return specific member with specified attribute name
      */
-    public <T extends Serializable> AttributeAbstract<T> findMember(String attributeName) {
+    public <T extends Serializable> AttributeSDK<T> findMember(String attributeName) {
 
-        for (AttributeAbstract<?> member : members) {
-            if (member.getAttributeName().equals( attributeName ))
-                return (AttributeAbstract<T>) member;
+        for (AttributeSDK<?> member : members) {
+            if (member.getName().equals( attributeName ))
+                return (AttributeSDK<T>) member;
         }
 
         return null;

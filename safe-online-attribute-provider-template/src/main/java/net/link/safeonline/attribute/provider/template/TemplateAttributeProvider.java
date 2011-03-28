@@ -141,7 +141,7 @@ public class TemplateAttributeProvider extends AttributeProvider implements Serv
     @Override
     public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute) {
 
-        throw new RuntimeException( "Attribute \"" + attribute.getAttributeName() + " \" is not editable" );
+        throw new RuntimeException( "Attribute \"" + attribute.getName() + " \" is not editable" );
     }
 
     /**

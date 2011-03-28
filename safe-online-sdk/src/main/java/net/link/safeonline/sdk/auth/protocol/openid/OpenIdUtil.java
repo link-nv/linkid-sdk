@@ -61,12 +61,12 @@ public abstract class OpenIdUtil {
     private static FetchResponse addAttribute(int idx, FetchResponse fetchResponse, AttributeCore attribute,
                                               Map<String, String> requiredAttributes, Map<String, String> optionalAttributes) {
 
-        LOG.debug( "add attribute: " + attribute.getAttributeName() );
+        LOG.debug( "add attribute: " + attribute.getName() );
 
         boolean add = false;
         if (null != requiredAttributes && null != optionalAttributes) {
-            if (requiredAttributes.containsValue( attribute.getAttributeName() ) || optionalAttributes.containsValue(
-                    attribute.getAttributeName() )) {
+            if (requiredAttributes.containsValue( attribute.getName() ) || optionalAttributes.containsValue(
+                    attribute.getName() )) {
                 add = true;
             }
         } else
@@ -84,35 +84,35 @@ public abstract class OpenIdUtil {
             }
 
             // add attributeId
-            fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_ID + idx, attribute.getAttributeId() );
+            fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_ID + idx, attribute.getId() );
 
             // add type
-            fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_TYPE + attribute.getAttributeId(), type );
+            fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_TYPE + attribute.getId(), type );
 
             // add attribute name
-            fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_NAME + attribute.getAttributeId(), attribute.getAttributeName() );
+            fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_NAME + attribute.getId(), attribute.getName() );
 
             // add value
             if (attribute.getAttributeType().isCompound()) {
 
                 int memberIdx = 0;
-                for (AttributeAbstract<?> memberAbstract : ((Compound) attribute.getValue()).getMembers()) {
-                    AttributeCore member = (AttributeCore) memberAbstract;
+                for (AttributeSDK<?> memberSDK : ((Compound) attribute.getValue()).getMembers()) {
+                    AttributeCore member = (AttributeCore) memberSDK;
 
                     // add member name
-                    fetchResponse.addAttribute( TYPE_URI_MEMBER_ATTRIBTUE_NAME + attribute.getAttributeId() + '.' + memberIdx,
-                                                member.getAttributeName() );
+                    fetchResponse.addAttribute( TYPE_URI_MEMBER_ATTRIBTUE_NAME + attribute.getId() + '.' + memberIdx,
+                                                member.getName() );
 
                     // add member value
                     String value = getAttributeValue( member.getValue() );
-                    fetchResponse.addAttribute( TYPE_URI_MEMBER_ATTRIBTUE_VALUE + attribute.getAttributeId() + '.' + memberIdx, value );
+                    fetchResponse.addAttribute( TYPE_URI_MEMBER_ATTRIBTUE_VALUE + attribute.getId() + '.' + memberIdx, value );
 
                     memberIdx++;
                 }
             } else {
                 // add attribute value
                 String value = getAttributeValue( attribute.getValue() );
-                fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_VALUE + attribute.getAttributeId(), value );
+                fetchResponse.addAttribute( TYPE_URI_ATTRIBUTE_VALUE + attribute.getId(), value );
             }
         }
 
@@ -208,12 +208,12 @@ public abstract class OpenIdUtil {
 
     private static void addToMap(Map<String, List<AttributeSDK<?>>> attributeMap, AttributeSDK<?> attribute) {
 
-        List<AttributeSDK<?>> attributes = attributeMap.get( attribute.getAttributeName() );
+        List<AttributeSDK<?>> attributes = attributeMap.get( attribute.getName() );
         if (null == attributes) {
             attributes = new LinkedList<AttributeSDK<?>>();
         }
         attributes.add( attribute );
-        attributeMap.put( attribute.getAttributeName(), attributes );
+        attributeMap.put( attribute.getName(), attributes );
     }
 
     private static String getValue(FetchResponse fetchResponse, String typeUri) {

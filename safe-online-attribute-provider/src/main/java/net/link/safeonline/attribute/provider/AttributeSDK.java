@@ -6,10 +6,9 @@
  */
 package net.link.safeonline.attribute.provider;
 
+import com.lyndir.lhunath.lib.system.util.ObjectMeta;
+import com.lyndir.lhunath.lib.system.util.ObjectUtils;
 import java.io.Serializable;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 
 /**
@@ -21,66 +20,66 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  *
  * @author wvdhaute
  */
-public class AttributeSDK<T extends Serializable> extends AttributeAbstract<T> {
+@ObjectMeta
+public class AttributeSDK<T extends Serializable> implements Serializable {
 
-    private final String attributeName;
+    private final String id;
+    private final String name;
+    private T value;
 
-    public AttributeSDK(final String attributeName) {
-        super( null );
-        this.attributeName = attributeName;
+    public AttributeSDK(final String name) {
+
+        this( name, null );
     }
 
-    public AttributeSDK(final String attributeId, final String attributeName) {
-        super( attributeId );
-        this.attributeName = attributeName;
+    public AttributeSDK(final String name, final T value) {
+
+        this( null, name, value );
     }
 
-    public AttributeSDK(final String attributeName, final T value) {
-        super( null );
-        this.attributeName = attributeName;
+    public AttributeSDK(final String id, final String name, final T value) {
+
+        this.id = id;
+        this.name = name;
         this.value = value;
     }
 
-    public AttributeSDK(final String attributeId, final String attributeName, final T value) {
-        super( attributeId );
-        this.attributeName = attributeName;
-        this.value = value;
+    public String getId() {
+
+        return id;
     }
 
-    @Override
-    public String getAttributeName() {
-        return attributeName;
+    public String getName() {
+
+        return name;
+    }
+
+    public T getValue() {
+
+        return value;
+    }
+
+    public void setValue(final T value) {
+
+        this.value = value;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj)
-            return true;
-        if (null == obj)
-            return false;
-        if (!(obj instanceof AttributeSDK))
-            return false;
-        AttributeSDK<T> rhs = (AttributeSDK<T>) obj;
-        return new EqualsBuilder().append( attributeName, rhs.attributeName )
-                .append( attributeId, rhs.attributeId )
-                .append( value, rhs.value )
-                .isEquals();
+        return ObjectUtils.equals( this, obj );
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append( attributeName ).append( attributeId ).append( value ).toHashCode();
+        return ObjectUtils.hashCode( this );
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder( this ).append( "attributeName", attributeName )
-                .append( "attributeId", attributeId )
-                .append( "value", value )
-                .toString();
+        return ObjectUtils.toString( this );
     }
 }
 

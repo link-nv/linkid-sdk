@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.wicket.Component;
 
 
@@ -50,12 +48,12 @@ public class AttributeCore extends AttributeSDK<Serializable> {
 
     public AttributeCore(final AttributeSDK<Serializable> attribute) {
 
-        super( attribute.getAttributeId(), attribute.getAttributeName(), attribute.getValue() );
-        attributeType = new AttributeType( attribute.getAttributeName() );
+        super( attribute.getId(), attribute.getName(), attribute.getValue() );
+        attributeType = new AttributeType( attribute.getName() );
     }
 
     public AttributeCore(final AttributeCore attribute) {
-        this( attribute.getAttributeId(), attribute.getAttributeType(), attribute.getValue() );
+        this( attribute.getId(), attribute.getAttributeType(), attribute.getValue() );
         unavailable = attribute.isUnavailable();
     }
 
@@ -91,32 +89,13 @@ public class AttributeCore extends AttributeSDK<Serializable> {
         return panel;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj)
-            return true;
-        if (null == obj)
-            return false;
-        if (!(obj instanceof AttributeCore))
-            return false;
-        AttributeCore rhs = (AttributeCore) obj;
-        return new EqualsBuilder().append( attributeType, rhs.attributeType ).isEquals() && super.equals( obj );
-    }
-
-    @Override
-    public int hashCode() {
-
-        return new HashCodeBuilder().append( attributeType ).append( attributeId ).append( value ).toHashCode();
-    }
-
     public AttributeCore getTemplate() {
 
         AttributeCore template = new AttributeCore( (String) null, attributeType );
         if (attributeType.isCompound()) {
             List<AttributeCore> memberTemplates = new LinkedList<AttributeCore>();
-            for (AttributeAbstract<?> memberAbstract : ((Compound) getValue()).getMembers()) {
-                AttributeCore member = (AttributeCore) memberAbstract;
+            for (AttributeSDK<?> memberSDK : ((Compound) getValue()).getMembers()) {
+                AttributeCore member = (AttributeCore) memberSDK;
                 memberTemplates.add( member.getTemplate() );
             }
             template.setValue( new Compound( memberTemplates ) );

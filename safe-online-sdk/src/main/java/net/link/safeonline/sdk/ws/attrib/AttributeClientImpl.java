@@ -180,12 +180,12 @@ public class AttributeClientImpl extends AbstractWSClient implements AttributeCl
 
             AttributeSDK<?> attribute = getAttributeSDK( attributeType );
 
-            List<AttributeSDK<?>> attributes = attributeMap.get( attribute.getAttributeName() );
+            List<AttributeSDK<?>> attributes = attributeMap.get( attribute.getName() );
             if (null == attributes) {
                 attributes = new LinkedList<AttributeSDK<?>>();
             }
             attributes.add( attribute );
-            attributeMap.put( attribute.getAttributeName(), attributes );
+            attributeMap.put( attribute.getName(), attributes );
         }
     }
 

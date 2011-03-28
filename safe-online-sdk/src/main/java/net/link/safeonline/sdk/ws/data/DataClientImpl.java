@@ -21,7 +21,6 @@ import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.AddressingFeature;
 import liberty.dst._2006_08.ref.safe_online.*;
 import liberty.util._2006_08.StatusType;
-import net.link.safeonline.attribute.provider.AttributeAbstract;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.attribute.provider.Compound;
 import net.link.safeonline.data.ws.DataServiceConstants;
@@ -283,9 +282,9 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
     private static AttributeType getAttributeType(AttributeSDK<?> attribute) {
 
         AttributeType attributeType = new AttributeType();
-        attributeType.setName( attribute.getAttributeName() );
-        if (null != attribute.getAttributeId())
-            attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attribute.getAttributeId() );
+        attributeType.setName( attribute.getName() );
+        if (null != attribute.getId())
+            attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attribute.getId() );
 
         if (null != attribute.getValue()) {
             if (attribute.getValue() instanceof Compound) {
@@ -296,11 +295,11 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
 
                 // compounded
                 Compound compound = (Compound) attribute.getValue();
-                for (AttributeAbstract<?> memberAttribute : compound.getMembers()) {
+                for (AttributeSDK<?> memberAttribute : compound.getMembers()) {
                     AttributeSDK<?> member = (AttributeSDK<?>) memberAttribute;
 
                     AttributeType memberAttributeType = new AttributeType();
-                    memberAttributeType.setName( member.getAttributeName() );
+                    memberAttributeType.setName( member.getName() );
                     memberAttributeType.getAttributeValue().add( convertFromXmlDatatypeToClient( member.getValue() ) );
 
                     compoundValueAttribute.getAttributeValue().add( memberAttributeType );
@@ -411,7 +410,7 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
 
         SelectType select = new SelectType();
         modifyItem.setSelect( select );
-        select.setValue( attribute.getAttributeName() );
+        select.setValue( attribute.getName() );
 
         AppDataType newData = new AppDataType();
         modifyItem.setNewData( newData );
@@ -435,9 +434,9 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
         DeleteItemType deleteItem = new DeleteItemType();
         deleteItem.setObjectType( DataServiceConstants.ATTRIBUTE_OBJECT_TYPE );
         SelectType select = new SelectType();
-        select.setValue( attribute.getAttributeName() );
-        if (null != attribute.getAttributeId())
-            select.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attribute.getAttributeId() );
+        select.setValue( attribute.getName() );
+        if (null != attribute.getId())
+            select.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attribute.getId() );
 
         return deleteItem;
     }
