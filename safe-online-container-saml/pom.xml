@@ -19,7 +19,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-saml-authn-context</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
 
         <!-- opensaml -->

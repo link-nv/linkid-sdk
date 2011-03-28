@@ -28,7 +28,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-container-saml</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
             <type>pom</type>
         </dependency>
 
@@ -36,62 +36,62 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-attribute-provider</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-config</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-auth-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-attrib-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-data-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-idmapping-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sts-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-notification-consumer-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-notification-producer-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-notification-subscription-manager-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-session-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-xkms2-ws</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -156,7 +156,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>${project.version}</version>
+            <version>SNAPSHOT</version>
             <type>pom</type>
         </dependency>
         <dependency>
