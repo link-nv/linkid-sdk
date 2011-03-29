@@ -23,7 +23,7 @@ import java.io.Serializable;
 @ObjectMeta
 public class AttributeSDK<T extends Serializable> implements Serializable {
 
-    private final String id;
+    private String id;
     private final String name;
     private T value;
 
@@ -57,6 +57,11 @@ public class AttributeSDK<T extends Serializable> implements Serializable {
     public T getValue() {
 
         return value;
+    }
+
+    public void setId(final String id) {
+
+        this.id = id;
     }
 
     public void setValue(final T value) {

@@ -5,8 +5,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import net.link.safeonline.attribute.provider.AttributeSDK;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
-import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
+import net.link.safeonline.sdk.logging.exception.*;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2Client;
@@ -20,8 +19,8 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 
 public class MainPage extends LinkIDApplicationPage {
 
-    private String attributes   = "";
-    private String wsAttributes = "";
+    private final StringBuilder attributes = new StringBuilder();
+    private final StringBuilder wsAttributes = new StringBuilder();
 
     /**
      * Add components to the layout that are present on every page.
@@ -45,7 +44,7 @@ public class MainPage extends LinkIDApplicationPage {
 
             @Override
             public String getObject() {
-                return attributes;
+                return attributes.toString();
             }
         } ) );
 
@@ -53,7 +52,7 @@ public class MainPage extends LinkIDApplicationPage {
 
             @Override
             public String getObject() {
-                return wsAttributes;
+                return wsAttributes.toString();
             }
         } ) );
     }
@@ -65,27 +64,37 @@ public class MainPage extends LinkIDApplicationPage {
     protected void onBeforeRender() {
 
         if (ExampleSession.get().isUserSet()) {
+            attributes.setLength( 0 );
+            wsAttributes.setLength( 0 );
 
             // Fetch application's identity through LinkID's Attribute WS.
             AttributeClient attributeClient = LinkIDServiceFactory.getAttributeService();
             try {
                 Map<String, List<AttributeSDK<?>>> attributeMap = attributeClient.getAttributes( ExampleSession.get().findUserLinkID() );
-                for (Map.Entry<String, List<AttributeSDK<?>>> attributeEntry : attributeMap.entrySet()) {
-                    for (AttributeSDK<?> attribute : attributeEntry.getValue()) {
-                        wsAttributes += " " + attribute.getAttributeName() + "=" + attribute.getValue();
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException( e );
+                for (Map.Entry<String, List<AttributeSDK<?>>> attributeEntry : attributeMap.entrySet())
+                    for (AttributeSDK<?> attribute : attributeEntry.getValue())
+                        wsAttributes.append( ' ' ).append( attribute.getName() ).append( '=' ).append( attribute.getValue() );
+            }
+            catch (AttributeUnavailableException e) {
+                error( e );
+            }
+            catch (RequestDeniedException e) {
+                error( e );
+            }
+            catch (WSClientTransportException e) {
+                error( e );
+            }
+            catch (SubjectNotFoundException e) {
+                error( e );
+            }
+            catch (AttributeNotFoundException e) {
+                error( e );
             }
 
             // attribute in SAML response
-            for (Map.Entry<String, List<AttributeSDK<?>>> attributeEntry : LinkIDWicketUtils.findAttributes().entrySet()) {
-
-                for (AttributeSDK<?> attribute : attributeEntry.getValue()) {
-                    attributes += " " + attribute.getAttributeName() + "=" + attribute.getValue();
-                }
-            }
+            for (Map.Entry<String, List<AttributeSDK<?>>> attributeEntry : LinkIDWicketUtils.findAttributes().entrySet())
+                for (AttributeSDK<?> attribute : attributeEntry.getValue())
+                    attributes.append( ' ' ).append( attribute.getName()).append( '=' ).append( attribute.getValue() );
         }
 
         super.onBeforeRender();
