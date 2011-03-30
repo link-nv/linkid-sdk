@@ -17,14 +17,14 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.AuthenticationStep;
-import net.link.safeonline.auth.ws.Confirmation;
-import net.link.safeonline.auth.ws.WSAuthenticationServiceFactory;
+import net.link.safeonline.auth.ws.soap.AuthenticationStep;
+import net.link.safeonline.auth.ws.soap.Confirmation;
+import net.link.safeonline.auth.ws.soap.WSAuthenticationServiceFactory;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.AbstractWSClient;
-import net.link.safeonline.sdk.ws.AuthenticationErrorCode;
+import net.link.safeonline.auth.ws.AuthenticationErrorCode;
 import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -333,7 +333,7 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             else if (AuthenticationErrorCode.REQUEST_FAILED == authenticationErrorCode)
                 throw new WSClientTransportException( endpoint.toString() );
             else
-                throw new WSAuthenticationException( authenticationErrorCode, status.getStatusMessage() );
+                throw new WSAuthenticationException( authenticationErrorCode, status.getStatusMessage(), null );
         }
     }
 

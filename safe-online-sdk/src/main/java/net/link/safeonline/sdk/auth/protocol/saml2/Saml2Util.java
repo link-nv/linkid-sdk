@@ -39,10 +39,7 @@ import org.opensaml.common.SignableSAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPRedirectDeflateDecoder;
 import org.opensaml.saml2.binding.security.SAML2HTTPRedirectDeflateSignatureRule;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.AttributeStatement;
-import org.opensaml.saml2.core.AttributeValue;
+import org.opensaml.saml2.core.*;
 import org.opensaml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.ws.message.MessageContext;
@@ -89,10 +86,11 @@ public abstract class Saml2Util {
          * Next is because Sun loves to endorse crippled versions of Xerces.
          */
         System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-                            "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
+                "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
         try {
             DefaultBootstrap.bootstrap();
-        } catch (ConfigurationException e) {
+        }
+        catch (ConfigurationException e) {
             throw new RuntimeException( "could not bootstrap the OpenSAML2 library", e );
         }
     }
@@ -114,7 +112,8 @@ public abstract class Saml2Util {
 
         try {
             return marshaller.marshall( samlObject );
-        } catch (MarshallingException e) {
+        }
+        catch (MarshallingException e) {
             throw new RuntimeException( "opensaml2 marshalling error: " + e.getMessage(), e );
         }
     }
@@ -129,13 +128,15 @@ public abstract class Saml2Util {
             xmlObject.addNamespace(
                     new Namespace( WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, WebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
             return xmlObject;
-        } catch (UnmarshallingException e) {
+        }
+        catch (UnmarshallingException e) {
             throw new RuntimeException( "opensaml2 unmarshalling error: " + e.getMessage(), e );
         }
     }
 
     public static String deflateAndBase64Encode(SAMLObject message)
             throws MessageEncodingException, TransformerException, IOException {
+
         LOG.debug( "Deflating and Base64 encoding SAML message" );
         String messageStr = DomUtils.domToString( marshall( message ) );
 
@@ -145,7 +146,8 @@ public abstract class Saml2Util {
         try {
             deflaterStream.write( messageStr.getBytes( "UTF-8" ) );
             deflaterStream.finish();
-        } finally {
+        }
+        finally {
             deflaterStream.close();
         }
 
@@ -195,7 +197,8 @@ public abstract class Saml2Util {
         // Sign after marshaling so we can add a signature to the XML representation.
         try {
             Signer.signObject( signature );
-        } catch (SignatureException e) {
+        }
+        catch (SignatureException e) {
             throw new RuntimeException( "opensaml2 signing error: " + e.getMessage(), e );
         }
         return samlElement;
@@ -208,7 +211,8 @@ public abstract class Saml2Util {
             for (X509Certificate certificate : certificateChain) {
                 KeyInfoHelper.addCertificate( keyInfo, certificate );
             }
-        } catch (CertificateEncodingException e) {
+        }
+        catch (CertificateEncodingException e) {
             throw new RuntimeException( "opensaml2 certificate encoding error: " + e.getMessage(), e );
         }
         return keyInfo;
@@ -247,52 +251,59 @@ public abstract class Saml2Util {
      * @throws ValidationException  validation failed
      * @throws KeyException         failed to extract public key data
      */
-    public static void validateSignature(Signature signature)
-            throws CertificateException, ValidationException, KeyException {
+    private static void validateSignature(Signature signature)
+            throws ValidationFailedException {
 
-        List<X509Certificate> certChain = KeyInfoHelper.getCertificates( signature.getKeyInfo() );
-        List<PublicKey> publicKeys = KeyInfoHelper.getPublicKeys( signature.getKeyInfo() );
+        try {
+            List<X509Certificate> certChain = KeyInfoHelper.getCertificates( signature.getKeyInfo() );
+            List<PublicKey> publicKeys = KeyInfoHelper.getPublicKeys( signature.getKeyInfo() );
 
-        SAMLSignatureProfileValidator pv = new SAMLSignatureProfileValidator();
-        pv.validate( signature );
-        BasicX509Credential credential = new BasicX509Credential();
+            SAMLSignatureProfileValidator pv = new SAMLSignatureProfileValidator();
+            pv.validate( signature );
+            BasicX509Credential credential = new BasicX509Credential();
 
-        if (!certChain.isEmpty())
-            credential.setPublicKey( KeyStoreUtils.getEndCertificate( certChain ).getPublicKey() );
-        else if (!publicKeys.isEmpty() && publicKeys.size() == 1)
-            credential.setPublicKey( publicKeys.get( 0 ) );
-        else
-            throw new ValidationException( "Failed to validate XML Signature, no suitable KeyInfo found..." );
+            if (!certChain.isEmpty())
+                credential.setPublicKey( KeyStoreUtils.getEndCertificate( certChain ).getPublicKey() );
+            else if (!publicKeys.isEmpty() && publicKeys.size() == 1)
+                credential.setPublicKey( publicKeys.get( 0 ) );
+            else
+                throw new ValidationFailedException( "No suitable KeyInfo found" );
 
-        SignatureValidator sigValidator = new SignatureValidator( credential );
-        sigValidator.validate( signature );
+            SignatureValidator sigValidator = new SignatureValidator( credential );
+            sigValidator.validate( signature );
+        }
+        catch (CertificateException e) {
+            throw new ValidationFailedException( e );
+        }
+        catch (KeyException e) {
+            throw new ValidationFailedException( e );
+        }
+        catch (ValidationException e) {
+            throw new ValidationFailedException( e );
+        }
     }
 
     /**
      * Validates the HTTP-Redirect binding signature
      *
-     * @param queryString  query string
-     * @param requestURL   request URL
-     * @param certificates list of certificates to use for validation
-     *
-     * @return valid or not
+     * @param queryString         query string
+     * @param requestURL          request URL
+     * @param trustedCertificates list of certificates to use for validation
      */
-    public static boolean validateSignature(String queryString, StringBuffer requestURL, List<X509Certificate> certificates) {
+    public static void validateSignature(String queryString, StringBuffer requestURL, List<X509Certificate> trustedCertificates)
+            throws ValidationFailedException {
 
         LOG.debug( "validate[HTTP Redirect], Query:\n" + queryString );
 
-        List<Credential> credentials = new LinkedList<Credential>();
-        for (X509Certificate certificate : certificates)
-            credentials.add( SecurityHelper.getSimpleCredential( certificate, null ) );
-        if (credentials.isEmpty()) {
-            LOG.warn( "Signature not valid: There are no credentials to validate against." );
-            return false;
-        }
+        if (trustedCertificates == null || trustedCertificates.isEmpty())
+            throw new ValidationFailedException( "There are no certificates to validate against." );
+        List<Credential> trustedCredentials = new LinkedList<Credential>();
+        for (X509Certificate trustedCertificate : trustedCertificates)
+            trustedCredentials.add( SecurityHelper.getSimpleCredential( trustedCertificate, null ) );
 
-        StaticCredentialResolver credResolver = new StaticCredentialResolver( credentials );
+        StaticCredentialResolver credResolver = new StaticCredentialResolver( trustedCredentials );
         final SignatureTrustEngine engine = new ExplicitKeySignatureTrustEngine( credResolver,
-                                                                                 Configuration.getGlobalSecurityConfiguration()
-                                                                                         .getDefaultKeyInfoCredentialResolver() );
+                Configuration.getGlobalSecurityConfiguration().getDefaultKeyInfoCredentialResolver() );
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
         messageContext.setInboundMessageTransport(
@@ -318,84 +329,94 @@ public abstract class Saml2Util {
 
         try {
             new HTTPRedirectDeflateDecoder().decode( messageContext );
-        } catch (MessageDecodingException e) {
-            LOG.warn( "Signature validation failed.", e );
-            return false;
-        } catch (SecurityException e) {
-            LOG.warn( "Signature validation failed.", e );
-            return false;
         }
-
-        return true;
+        catch (MessageDecodingException e) {
+            throw new ValidationFailedException( e );
+        }
+        catch (SecurityException e) {
+            throw new ValidationFailedException( e );
+        }
     }
 
     /**
      * Validates the signature. If {@link Signature} is <code>null</code> the HTTP-Redirect binding was used and the {@link X509Certificate}
      * serverCertificate is required for validation.
      *
-     * @param signature           signature, if <code>null</code>, serviceCertificate is required
+     * @param signature           signature, if <code>null</code>, serviceCertificate and request are required
+     * @param request             HTTP Servlet Request
      * @param serviceCertificates optional serviceCertificates, required if signature is <code>null</code> and signature was set with
      *                            HTTP-Redirect binding.
-     * @param request             HTTP Servlet Request
      *
      * @return optional embedded certificate chain in the signature
      *
      * @throws ValidationFailedException validation failed
      */
-    public static List<X509Certificate> validateSignature(Signature signature, List<X509Certificate> serviceCertificates,
-                                                          HttpServletRequest request)
+    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, HttpServletRequest request,
+                                                                       List<X509Certificate> serviceCertificates,
+                                                                       List<X509Certificate> serviceRootCertificates)
             throws ValidationFailedException {
 
-        List<X509Certificate> certificateChain = null;
-        if (null == signature) {
+        if (signature != null)
+            return getAndValidateCertificateChain( signature, serviceRootCertificates );
 
-            // HTTP-Redirect, ServerCertificate HAS to be specified ...
-            if (null == serviceCertificates || serviceCertificates.isEmpty()) {
-                throw new ValidationFailedException(
-                        "Response returned in HTTP-Redirect binding, MUST specify LinkID certificate for validation of the signature!" );
-            }
-
-            boolean valid = validateSignature( request.getQueryString(), request.getRequestURL(), serviceCertificates );
-            if (!valid) {
-                throw new ValidationFailedException( "Invalid Signature on the SAML Response (using HTTP-Redirect)" );
-            }
-        } else {
-            try {
-                validateSignature( signature );
-            } catch (CertificateException e) {
-                throw new ValidationFailedException( e );
-            } catch (ValidationException e) {
-                throw new ValidationFailedException( e );
-            } catch (KeyException e) {
-                throw new ValidationFailedException( e );
-            }
-
-            // get certificate chain from signature
-            try {
-                certificateChain = KeyInfoHelper.getCertificates( signature.getKeyInfo() );
-            } catch (CertificateException e) {
-                throw new ValidationFailedException( e );
-            }
-        }
-
-        return certificateChain;
+        validateSignature( request.getQueryString(), request.getRequestURL(), serviceCertificates );
+        return null;
     }
 
-    public static void validateCertificateChain(List<X509Certificate> rootCertificates, List<X509Certificate> certificateChain)
+    /**
+     * Validates the signature. If {@link Signature} is <code>null</code> the HTTP-Redirect binding was used and the {@link X509Certificate}
+     * serverCertificate is required for validation.
+     *
+     * @param signature signature, if <code>null</code>, serviceCertificate and request are required
+     *
+     * @return embedded certificate chain in the signature
+     *
+     * @throws ValidationFailedException validation failed
+     */
+    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, List<X509Certificate> serviceRootCertificates)
+            throws ValidationFailedException {
+
+        validateSignature( signature );
+
+        // get certificate chain from signature
+        try {
+            List<X509Certificate> certificateChain = KeyInfoHelper.getCertificates( signature.getKeyInfo() );
+
+            // validate cert chain trust
+            if (null != serviceRootCertificates && !serviceRootCertificates.isEmpty())
+                Saml2Util.validateCertificateChain( serviceRootCertificates, certificateChain );
+
+            return certificateChain;
+        }
+        catch (CertificateException e) {
+            throw new ValidationFailedException( e );
+        }
+    }
+
+    private static void validateCertificateChain(List<X509Certificate> rootCertificates, List<X509Certificate> certificateChain)
             throws ValidationFailedException {
 
         MemoryCertificateRepository certificateRepository = new MemoryCertificateRepository();
-        for (X509Certificate rootCertificate : rootCertificates) {
+        for (X509Certificate rootCertificate : rootCertificates)
             certificateRepository.addTrustPoint( rootCertificate );
-        }
 
         TrustValidator trustValidator = new TrustValidator( certificateRepository );
         try {
             trustValidator.isTrusted( certificateChain );
-        } catch (CertPathValidatorException e) {
+        }
+        catch (CertPathValidatorException e) {
             LOG.error( "Trust validation of LinkID certificate chain failed!", e );
             throw new ValidationFailedException( e );
         }
+    }
+
+    public static Map<String, Object> getAttributeValues(final Response samlResponse) {
+
+        Map<String, Object> attributeValues = new HashMap<String, Object>();
+        for (Assertion assertion : samlResponse.getAssertions())
+            attributeValues.putAll( getAttributeValues( assertion ) );
+
+        return attributeValues;
     }
 
     @SuppressWarnings("unchecked")
@@ -457,6 +478,38 @@ public abstract class Saml2Util {
 
         XSAnyBuilder anyBuilder = (XSAnyBuilder) Configuration.getBuilderFactory().getBuilder( XSAny.TYPE_NAME );
         return anyBuilder.buildObject( qName, XSAny.TYPE_NAME );
+    }
+
+    public static List<String> getAuthenticatedDevices(final Response samlResponse) {
+
+        if (samlResponse.getAssertions().isEmpty())
+            return new LinkedList<String>();
+
+        return getAuthenticatedDevices( samlResponse.getAssertions().get( 0 ) );
+    }
+
+    public static List<String> getAuthenticatedDevices(final Assertion assertion) {
+
+        List<String> authenticatedDevices = new LinkedList<String>();
+        for (AuthnStatement authnStatement : assertion.getAuthnStatements()) {
+            authenticatedDevices.add( authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
+            LOG.debug( "authenticated device " + authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
+        }
+
+        return authenticatedDevices;
+    }
+
+    public static String findApplicationName(final Assertion assertion) {
+
+        String applicationName = null;
+        List<AudienceRestriction> audienceRestrictions = assertion.getConditions().getAudienceRestrictions();
+        if (!audienceRestrictions.isEmpty()) {
+            List<Audience> audiences = audienceRestrictions.get( 0 ).getAudiences();
+            if (!audiences.isEmpty())
+                applicationName = audiences.get( 0 ).getAudienceURI();
+        }
+
+        return applicationName;
     }
 
     public static XMLObject toXmlObject(Object attributeValue) {

@@ -523,7 +523,7 @@ public class MyConfigFilter extends SDKConfigFilter {
                             <row>
                                 <entry><code>linkID.app.keyEntryAlias</code></entry>
                                 <entry>
-                                    Use the first key entry in the store.
+                                    Use the linkID application name as alias.
                                 </entry>
                             </row>
                             <row>
@@ -642,10 +642,10 @@ public class MyConfigFilter extends SDKConfigFilter {
                                 These parameters are used by the SDK when it needs to load key or certificate information out of the key
                                 store.  By default, the SDK will look for a key store in the classpath named <code>application.jks</code>
                                 and unlock it (and if necessary, the key entry within it) with the password <code>secret</code>.  If a key
-                                entry is needed and no alias is configured, the first key entry in the store will be used.  The SDK uses
-                                the key store to obtain certificate information about the linkID server or the application's certificate
-                                and private key when building SAML2 requests or contacting linkID web services. You are recommended to build
-                                your own key store with your own sufficiently secure passwords.
+                                entry is needed and no alias is configured, the application's name (<code>linkID.app.name</code>) is used
+                                as the alias.  The SDK uses the key store to obtain certificate information about the linkID server or the
+                                application's certificate and private key when building SAML2 requests or contacting linkID web services.
+                                You are recommended to build your own key store with your own sufficiently secure passwords.
                             </para>
                         </listitem>
                     </varlistentry>
@@ -672,7 +672,7 @@ public class MyConfigFilter extends SDKConfigFilter {
     <entry key="web.wsBase">https://my.linkid.be/linkid-ws</entry>
 
     <entry key="linkID.app.keyStorePass">SecretAndSecureKeyStorePassword</entry>
-    <entry key="linkID.app.keyEntryAlias">myapp_linkid</entry>
+    <entry key="linkID.app.keyEntryAlias">myapp</entry>
     <entry key="linkID.app.keyEntryPass">SecretAndSecureKeyEntryPassword</entry>
 
 </properties>
@@ -729,7 +729,7 @@ public class MyConfigFilter extends SDKConfigFilter {
     </context-param>
     <context-param>
         <param-name>linkID.app.keyEntryAlias</param-name>
-        <param-value>myapp_linkid</param-value>
+        <param-value>myapp</param-value>
     </context-param>
     <context-param>
         <param-name>linkID.app.keyEntryPass</param-name>
@@ -869,24 +869,24 @@ public class MyConfigFilter extends SDKConfigFilter {
                                 certificate is used to identify the application to the linkID service the message is sent to, and the key
                                 is used to sign the message.  If you're going to use SAML2 for authentication or any of the web services,
                                 add your application's key and certificate to the key store under the alias configured in the value of
-                                <code>linkID.app.keyEntryAlias</code>.  If only one key entry will be added to the key store, this property
-                                may be omitted, though it is recommended that you specify it nonetheless.
+                                <code>linkID.app.keyEntryAlias</code>.  You may omit this value if you decide to use your application's
+                                name (<code>linkID.app.name</code>) as the alias.
                             </para>
                             <para>
                                 To generate a key and certificate for your application, you can use the following <code>keytool</code>
-                                command (don't forget to change the alias <code>myapp_linkid</code> to the alias you wish to use):
+                                command (don't forget to change the alias <code>myapp</code> to the alias you wish to use):
                             </para>
                             <para><code>
-                                keytool -keystore application.jks -genkey -alias myapp_linkid
+                                keytool -keystore application.jks -genkey -alias myapp
                             </code></para>
                             <para>
                                 Once generated, you need to export your new certificate and send it to the linkID operator.  That way, the
                                 operator can authorize your application access to his linkID services.  To export your certificate, you can
-                                use the following <code>keytool</code> command (don't forget to change the alias <code>myapp_linkid</code>
+                                use the following <code>keytool</code> command (don't forget to change the alias <code>myapp</code>
                                 to the alias you wish to use):
                             </para>
                             <para><code>
-                                keytool -keystore application.jks -export -alias myapp_linkid -file application.crt
+                                keytool -keystore application.jks -export -alias myapp -file application.crt
                             </code></para>
                             <para>
                                 The certificate file (<code>application.crt</code>) is not secret.  The key store file

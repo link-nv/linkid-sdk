@@ -35,6 +35,7 @@ import org.openid4java.server.RealmVerifierFactory;
 import org.openid4java.util.HttpFetcherFactory;
 
 
+
 /**
  * <h2>{@link LinkIDContext}<br> <sub>[in short] (TODO).</sub></h2>
  *
@@ -160,6 +161,7 @@ public abstract class LinkIDContext implements Serializable {
 
         saml = new SAMLContext();
         openID = new OpenIDContext( sslCertificate );
+
         this.applicationName = getOrDefault( applicationName, config().linkID().app().name() );
         this.applicationFriendlyName = applicationFriendlyName;
         this.applicationKeyPair = applicationKeyPair;

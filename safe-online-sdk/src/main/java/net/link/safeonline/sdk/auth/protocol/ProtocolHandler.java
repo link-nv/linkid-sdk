@@ -10,6 +10,8 @@ package net.link.safeonline.sdk.auth.protocol;
 import com.google.common.base.Function;
 import java.io.IOException;
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
@@ -33,7 +35,7 @@ public interface ProtocolHandler extends Serializable {
      *
      * @return Authentication protocol request context
      *
-     * @throws IOException IO Exception, something went wrong constructing/sending the authentication request.
+     * @throws IOException The request could not be written to the response.
      */
     AuthnProtocolRequestContext sendAuthnRequest(HttpServletResponse response, AuthenticationContext context)
             throws IOException;
@@ -43,11 +45,22 @@ public interface ProtocolHandler extends Serializable {
      *
      * @param request HTTP Servlet Request
      *
-     * @return the authenticated user Id or <code>null</code> if the handler thinks the request has nothing to do with authentication.
+     * @return Details about the authentication such as the authenticated user's application identifier or <code>null</code> if the handler
+     *         thinks the request has nothing to do with authentication.
      *
      * @throws ValidationFailedException Validation failed for the incoming authentication response.
      */
     AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
+            throws ValidationFailedException;
+
+    /**
+     * Complete a detached (without request) authentication.
+     *
+     * @return Details about the authentication such as the authenticated user's application identifier or <code>null</code> if the handler
+     *         finds no detached authentication assertion in the request.
+     */
+    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request,
+                                                                      Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException;
 
     /**
@@ -61,7 +74,7 @@ public interface ProtocolHandler extends Serializable {
      *
      * @return logout protocol request context
      *
-     * @throws IOException Something went wrong constructing/sending the logout request.
+     * @throws IOException The request could not be written to the response.
      */
     LogoutProtocolRequestContext sendLogoutRequest(HttpServletResponse response, String userId, LogoutContext context)
             throws IOException;
@@ -71,8 +84,8 @@ public interface ProtocolHandler extends Serializable {
      *
      * @param request HTTP Servlet Request
      *
-     * @return null if there is no logout response in the request. true if all applications that needed to be logged out due to the request
-     *         were logged out.
+     * @return Details about the logout such as whether it was successful or <code>null</code> if there is no logout response in the
+     *         request.
      *
      * @throws ValidationFailedException validation of the logout response failed.
      */
@@ -85,7 +98,8 @@ public interface ProtocolHandler extends Serializable {
      * @param request          HTTP Servlet Request
      * @param requestToContext logout request context
      *
-     * @return logout protocol request context
+     * @return Details about the logout request such as the application identifier of the user that requested it or <code>null</code> if
+     *         there is no logout request in the request.
      *
      * @throws ValidationFailedException validation of the logout request failed
      */
@@ -102,7 +116,7 @@ public interface ProtocolHandler extends Serializable {
      *
      * @return logout response context
      *
-     * @throws IOException something went wrong constructing/sending the logout response
+     * @throws IOException The request could not be written to the response.
      */
     LogoutProtocolResponseContext sendLogoutResponse(HttpServletResponse response, LogoutProtocolRequestContext logoutRequestContext,
                                                      boolean partialLogout)

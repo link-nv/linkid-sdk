@@ -46,7 +46,7 @@ public interface AppLinkIDConfig {
      *
      * <i>[optional, default: Use the first key entry in the store]</i>
      */
-    @Config.Property(required = false)
+    @Config.Property(required = false, unset = Config.Property.AUTO)
     String keyEntryAlias();
 
     /**

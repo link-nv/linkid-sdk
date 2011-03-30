@@ -34,7 +34,7 @@ public abstract class ConfigUtils {
      */
     public static String getApplicationURL() {
 
-        return URLUtils.concat( config().web().appConfidentialBase(), config().web().appPath() );
+        return URLUtils.concat( config().web().appBase(), config().web().appPath() );
     }
 
     /**

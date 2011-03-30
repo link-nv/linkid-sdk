@@ -85,11 +85,11 @@ public abstract class PostBindingUtil {
          * usage. It's easier to do all these things ourselves.
          */
         Properties velocityProperties = new Properties();
-        velocityProperties.put( "resource.loader", "class" );
-        velocityProperties.put( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, JdkLogChute.class.getName() );
-        velocityProperties.put( JdkLogChute.RUNTIME_LOG_JDK_LOGGER, PostBindingUtil.class.getName() );
-        velocityProperties.put( "class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
-        velocityProperties.put( "file.resource.loader.cache ", "false" );
+        velocityProperties.setProperty( "resource.loader", "class" );
+        velocityProperties.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, JdkLogChute.class.getName() );
+        velocityProperties.setProperty( JdkLogChute.RUNTIME_LOG_JDK_LOGGER, PostBindingUtil.class.getName() );
+        velocityProperties.setProperty( "class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
+        velocityProperties.setProperty( "file.resource.loader.cache ", "false" );
         VelocityEngine velocityEngine;
         try {
             velocityEngine = new VelocityEngine( velocityProperties );
@@ -226,7 +226,6 @@ public abstract class PostBindingUtil {
         return messageContext.getInboundSAMLMessage();
     }
 
-    @SuppressWarnings("unused")
     public static String getRelayState(HttpServletRequest request) {
 
         return request.getParameter( "RelayState" );

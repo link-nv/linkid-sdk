@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.logging.exception;
 
-import net.link.safeonline.sdk.ws.AuthenticationErrorCode;
+import net.link.safeonline.auth.ws.AuthenticationErrorCode;
 
 
 /**
@@ -19,23 +19,20 @@ public class WSAuthenticationException extends Exception {
 
     private AuthenticationErrorCode errorCode;
 
-    private String message;
+    public WSAuthenticationException(AuthenticationErrorCode errorCode, String message, final Throwable cause) {
 
-    public WSAuthenticationException(AuthenticationErrorCode errorCode, String message) {
+        super(message, cause);
 
-        super();
         this.errorCode = errorCode;
-        this.message = message;
+    }
+
+    public WSAuthenticationException(AuthenticationErrorCode errorCode, final Throwable cause) {
+
+        this( errorCode, null, cause );
     }
 
     public AuthenticationErrorCode getErrorCode() {
 
         return errorCode;
-    }
-
-    @Override
-    public String getMessage() {
-
-        return message;
     }
 }

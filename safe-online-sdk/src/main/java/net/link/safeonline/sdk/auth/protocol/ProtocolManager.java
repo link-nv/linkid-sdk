@@ -22,9 +22,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Manager class for the stateful protocol handlers.
  *
- * <p>
- * The state is preserved using the HTTP session.
- * </p>
+ * <p> The state is preserved using the HTTP session. </p>
  *
  * @author fcorneli
  */
@@ -68,6 +66,20 @@ public abstract class ProtocolManager {
         for (Map.Entry<String, ProtocolContext> protocolContextEntry : contexts.entrySet())
             LOG.debug( protocolContextEntry.getKey() + ": " + protocolContextEntry.getValue() );
 
+        return null;
+    }
+
+    public static AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request,
+                                                                             final Function<AuthnProtocolResponseContext, AuthenticationContext> responseContext)
+            throws ValidationFailedException {
+
+        for (Protocol protocol : Protocol.values()) {
+            AuthnProtocolResponseContext authnResponse = protocol.newHandler().findAndValidateAuthnAssertion( request, responseContext );
+            if (authnResponse != null)
+                return authnResponse;
+        }
+
+        LOG.debug( "No authn assertion found in request." );
         return null;
     }
 

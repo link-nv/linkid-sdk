@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import java.io.IOException;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Locale;
@@ -72,8 +71,6 @@ public abstract class RequestUtil {
      *
      * @param request                 HTTP Servlet Request
      * @param logoutRequest           SAML v2.0 Request
-     * @param applicationCertificate  application certificate
-     * @param applicationPrivateKey   application private key
      * @param serviceCertificates     linkID service certificates used for validation of non-XML DSig signatures, e.g. SAML HTTP-Redirect.
      * @param serviceRootCertificates The linkID service root certificates, optionally used for trust validation of the cert.chain returned
      *                                in signed authentication responses.
@@ -83,19 +80,13 @@ public abstract class RequestUtil {
      * @throws ValidationFailedException validation failed for some reason
      */
     public static List<X509Certificate> validateRequest(HttpServletRequest request, LogoutRequest logoutRequest,
-                                                        X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
                                                         List<X509Certificate> serviceCertificates,
                                                         List<X509Certificate> serviceRootCertificates)
             throws ValidationFailedException {
 
         // validate signature
-        List<X509Certificate> certificateChain = Saml2Util.validateSignature( logoutRequest.getSignature(), serviceCertificates, request );
-
-        // validate cert.chain trust
-        if (null != serviceRootCertificates && !serviceRootCertificates.isEmpty()) {
-            LOG.debug( "Logout Response: LinkID certificate chain trust validation" );
-            Saml2Util.validateCertificateChain( serviceRootCertificates, certificateChain );
-        }
+        List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( logoutRequest.getSignature(), request,
+                serviceCertificates, serviceRootCertificates );
 
         // validate logout request
         if (null == logoutRequest.getIssuer() || null == logoutRequest.getIssuer().getValue()) {

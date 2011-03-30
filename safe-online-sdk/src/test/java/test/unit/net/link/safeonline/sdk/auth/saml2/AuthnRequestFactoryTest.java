@@ -92,7 +92,7 @@ public class AuthnRequestFactoryTest {
         assertTrue( resultAuthnRequest.getNameIDPolicy().getAllowCreate() );
 
         // verify signature
-        Saml2Util.validateSignature( resultAuthnRequest.getSignature() );
+        Saml2Util.getAndValidateCertificateChain( resultAuthnRequest.getSignature(),  null, null, null );
     }
 
     @Test
@@ -141,7 +141,7 @@ public class AuthnRequestFactoryTest {
         assertEquals( rootCertificate, resultCertificateChain.get( 0 ) );
         assertEquals( certificate, resultCertificateChain.get( 1 ) );
 
-        Saml2Util.validateSignature( resultAuthnRequest.getSignature() );
+        Saml2Util.getAndValidateCertificateChain( resultAuthnRequest.getSignature(), null, null, null );
     }
 
     private static Element createNsElement(Document document) {

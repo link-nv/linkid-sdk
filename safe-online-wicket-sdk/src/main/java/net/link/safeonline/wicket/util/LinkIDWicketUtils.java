@@ -11,9 +11,17 @@ import java.util.List;
 import java.util.Map;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
+import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.util.wicket.util.RedirectResponseException;
 import net.link.util.wicket.util.WicketUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.IRequestTarget;
+import org.apache.wicket.RequestCycle;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebResponse;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -68,6 +76,35 @@ public abstract class LinkIDWicketUtils {
     public static Map<String, List<AttributeSDK<?>>> findAttributes() {
 
         return LoginManager.findAttributes( WicketUtils.getHttpSession() );
+    }
+
+    /**
+     * Initiates linkID authentication by redirecting the user to the linkID authentication application.
+     */
+    public static void login() {
+
+        login( new AuthenticationContext() );
+    }
+
+    /**
+     * Initiates linkID authentication by redirecting the user to the linkID authentication application.
+     *
+     * @param context The authentication context can be used to configure the parameters of this authentication request in detail.
+     */
+    public static void login(@NotNull final AuthenticationContext context) {
+
+        throw new RedirectResponseException( new IRequestTarget() {
+
+            public void detach(RequestCycle requestCycle) {
+
+            }
+
+            public void respond(RequestCycle requestCycle) {
+
+                AuthenticationUtils.login( ((WebRequest) requestCycle.getRequest()).getHttpServletRequest(),
+                        ((WebResponse) requestCycle.getResponse()).getHttpServletResponse(), context );
+            }
+        } );
     }
 
     /**

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol;
 
+import java.lang.reflect.InvocationTargetException;
 import net.link.safeonline.sdk.auth.protocol.openid.OpenIdProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler;
 
@@ -21,7 +22,7 @@ public enum Protocol {
     SAML2( Saml2ProtocolHandler.class ),
     OPENID( OpenIdProtocolHandler.class );
 
-    private Class<? extends ProtocolHandler> protocolHandler;
+    private final Class<? extends ProtocolHandler> protocolHandler;
 
     Protocol(Class<? extends ProtocolHandler> protocolHandler) {
 
@@ -31,10 +32,14 @@ public enum Protocol {
     public ProtocolHandler newHandler() {
 
         try {
-            return protocolHandler.newInstance();
+            return protocolHandler.getConstructor().newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException( e );
         } catch (IllegalAccessException e) {
+            throw new RuntimeException( e );
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException( e );
+        } catch (InvocationTargetException e) {
             throw new RuntimeException( e );
         }
     }

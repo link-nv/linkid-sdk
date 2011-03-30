@@ -138,7 +138,7 @@ public class LoginServletTest {
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId,
-                                                                                       Collections.singletonList( authenticatedDevice ),
+                                                                                       null, Collections.singletonList( authenticatedDevice ),
                                                                                        new HashMap<String, List<AttributeSDK<?>>>(), true,
                                                                                        null );
 

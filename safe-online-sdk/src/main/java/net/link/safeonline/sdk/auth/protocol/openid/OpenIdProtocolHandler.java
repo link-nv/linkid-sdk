@@ -55,7 +55,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
     static {
         try {
             Message.addExtensionFactory( AuthenticatedDevicesMessage.class );
-        } catch (MessageException e) {
+        }
+        catch (MessageException e) {
             throw new RuntimeException( e );
         }
     }
@@ -66,7 +67,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
     public AuthnProtocolRequestContext sendAuthnRequest(HttpServletResponse response, AuthenticationContext context)
             throws IOException {
 
-        this.authnContext = context;
+        authnContext = context;
 
         String realm = config().proto().openID().realm();
         if (realm == null)
@@ -102,7 +103,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             response.sendRedirect( authReq.getDestinationUrl( true ) );
 
             return new AuthnProtocolRequestContext( authReq.getHandle(), null, this, targetURL );
-        } catch (OpenIDException e) {
+        }
+        catch (OpenIDException e) {
             LOG.error( "OpenID OpenIDException", e );
             throw new RuntimeException( e );
         }
@@ -129,7 +131,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             verification = authnContext.getOpenID().getManager().verify( receivingURL.toString(), parameterList, discovered );
             LOG.debug( "discovered: " + discovered.getOPEndpoint().toString() );
             LOG.debug( "verification: " + verification.getStatusMsg() );
-        } catch (OpenIDException e) {
+        }
+        catch (OpenIDException e) {
             LOG.error( "OpenID OpenIDException", e );
             throw new RuntimeException( e );
         }
@@ -148,7 +151,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                 try {
                     FetchResponse fetchResp = (FetchResponse) authResponse.getExtension( AxMessage.OPENID_NS_AX );
                     attributes = OpenIdUtil.getAttributeMap( fetchResp );
-                } catch (MessageException e) {
+                }
+                catch (MessageException e) {
                     LOG.error( "OpenID MessageException", e );
                     throw new RuntimeException( e );
                 }
@@ -159,7 +163,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                     AuthenticatedDevicesMessage authDevicesMessage = (AuthenticatedDevicesMessage) authResponse.getExtension(
                             AuthenticatedDevicesMessage.LINKID_AUTH_DEVICES_NS );
                     Iterables.addAll( authenticatedDevices, authDevicesMessage );
-                } catch (MessageException e) {
+                }
+                catch (MessageException e) {
                     LOG.error( "OpenID MessageException", e );
                     throw new RuntimeException( e );
                 }
@@ -173,7 +178,16 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         }
 
         boolean success = verification.getAuthResponse() instanceof AuthSuccess;
-        return new AuthnProtocolResponseContext( requestContext, handle, userId, authenticatedDevices, attributes, success, null );
+        return new AuthnProtocolResponseContext( requestContext, handle, userId, requestContext == null? null: requestContext.getIssuer(),
+                authenticatedDevices, attributes, success, null );
+    }
+
+    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request,
+                                                                      final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
+            throws ValidationFailedException {
+
+        LOG.debug( "OpenID implementation does not support detached authentication yet" );
+        return null;
     }
 
     public LogoutProtocolRequestContext sendLogoutRequest(HttpServletResponse response, String userId, LogoutContext context)
@@ -239,9 +253,11 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                 LOG.debug( "found association: " + association.getHandle() );
             else
                 LOG.debug( "association " + authResp.getHandle() + " not found" );
-        } catch (MessageException e) {
+        }
+        catch (MessageException e) {
             LOG.error( "MessageException", e );
-        } catch (DiscoveryException e) {
+        }
+        catch (DiscoveryException e) {
             LOG.error( "[TODO]", e );
         }
         // END-DEBUG

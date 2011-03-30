@@ -7,22 +7,29 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.common.DomUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.util.encoders.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -33,6 +40,18 @@ import org.opensaml.saml2.core.*;
 public abstract class ResponseUtil {
 
     private static final Log LOG = LogFactory.getLog( ResponseUtil.class );
+    private static final DocumentBuilder documentBuilder;
+
+    static {
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware( true );
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        }
+        catch (ParserConfigurationException e) {
+            throw new RuntimeException( e );
+        }
+    }
 
     /**
      * Sends out a SAML response message to the specified consumer URL.
@@ -58,7 +77,7 @@ public abstract class ResponseUtil {
         switch (responseBinding) {
             case HTTP_POST:
                 PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                                              response, language );
+                        response, language );
                 break;
 
             case HTTP_REDIRECT:
@@ -74,8 +93,6 @@ public abstract class ResponseUtil {
      *
      * @param request                 HTTP Servlet Request
      * @param contexts                map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
-     * @param applicationCertificate  application certificate used in the STS WS Request
-     * @param applicationPrivateKey   application private key used for signing the STS WS request
      * @param serviceCertificates     The linkID service certificates for validation of the HTTP-Redirect signature (else can be
      *                                <code>null</code> or empty)
      * @param serviceRootCertificates The linkID service root certificate, optionally used for trust validation of the cert.chain returned
@@ -87,8 +104,6 @@ public abstract class ResponseUtil {
      * @throws ValidationFailedException validation failed for some reason
      */
     public static Saml2ResponseContext findAndValidateAuthnResponse(HttpServletRequest request, Map<String, ProtocolContext> contexts,
-                                                                    X509Certificate applicationCertificate,
-                                                                    PrivateKey applicationPrivateKey,
                                                                     List<X509Certificate> serviceCertificates,
                                                                     List<X509Certificate> serviceRootCertificates)
             throws ValidationFailedException {
@@ -106,18 +121,38 @@ public abstract class ResponseUtil {
         LOG.debug( "response matches request: " + authnRequest );
 
         // validate signature
-        List<X509Certificate> certificateChain = Saml2Util.validateSignature( authnResponse.getSignature(), serviceCertificates, request );
-
-        // validate cert.chain trust
-        if (null != serviceRootCertificates && !serviceRootCertificates.isEmpty()) {
-            LOG.debug( "LinkID certificate chain trust validation" );
-            Saml2Util.validateCertificateChain( serviceRootCertificates, certificateChain );
-        }
+        List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( authnResponse.getSignature(), request,
+                serviceCertificates, serviceRootCertificates );
 
         // validate response
         validateResponse( authnResponse, authnRequest.getIssuer() );
 
         return new Saml2ResponseContext( authnResponse, certificateChain );
+    }
+
+    public static Assertion findAuthnAssertion(HttpServletRequest request)
+            throws ValidationFailedException {
+
+        String b64Assertion = request.getParameter( "SAMLAssertion" );
+        if (b64Assertion == null || b64Assertion.isEmpty()) {
+            LOG.debug( "No Authn Assertion in request." );
+            return null;
+        }
+
+        try {
+            byte[] assertionBytes = Base64.decode( b64Assertion );
+            Element assertionElement = documentBuilder.parse( new ByteArrayInputStream( assertionBytes ) ).getDocumentElement();
+            if (LOG.isDebugEnabled())
+                LOG.debug( "Found assertion:\n" + DomUtils.domToString( assertionElement ) );
+
+            return (Assertion) Saml2Util.unmarshall( assertionElement );
+        }
+        catch (SAXException e) {
+            throw new RuntimeException( e );
+        }
+        catch (IOException e) {
+            throw new RuntimeException( e );
+        }
     }
 
     /**
@@ -211,10 +246,14 @@ public abstract class ResponseUtil {
                     "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnContextClassRef" );
 
         if (expectedAudience != null)
-            // Check whether the audience of the response corresponds to the original audience restriction
             validateAudienceRestriction( conditions, expectedAudience );
     }
 
+    /**
+     * Check whether the audience of the response corresponds to the original audience restriction
+     *
+     * @throws ValidationFailedException
+     */
     private static void validateAudienceRestriction(Conditions conditions, String expectedAudience)
             throws ValidationFailedException {
 
@@ -242,8 +281,6 @@ public abstract class ResponseUtil {
      *
      * @param request                 HTTP Servlet Request
      * @param contexts                map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
-     * @param applicationCertificate  application certificate used in the STS WS Request
-     * @param applicationPrivateKey   application private key used for signing the STS WS request
      * @param serviceCertificates     optional LinkID service certificates for validation of the signature on the logout response (e.g. for
      *                                SAML v2.0 with HTTP-Redirect binding).
      * @param serviceRootCertificates The linkID service root certificates, optionally used for trust validation of the cert.chain returned
@@ -255,8 +292,6 @@ public abstract class ResponseUtil {
      * @throws ValidationFailedException validation failed for some reason
      */
     public static Saml2ResponseContext findAndValidateLogoutResponse(HttpServletRequest request, Map<String, ProtocolContext> contexts,
-                                                                     X509Certificate applicationCertificate,
-                                                                     PrivateKey applicationPrivateKey,
                                                                      List<X509Certificate> serviceCertificates,
                                                                      List<X509Certificate> serviceRootCertificates)
             throws ValidationFailedException {
@@ -266,13 +301,8 @@ public abstract class ResponseUtil {
             return null;
 
         // validate signature
-        List<X509Certificate> certificateChain = Saml2Util.validateSignature( logoutResponse.getSignature(), serviceCertificates, request );
-
-        // validate cert.chain trust
-        if (null != serviceRootCertificates && !serviceRootCertificates.isEmpty()) {
-            LOG.debug( "Logout Response: LinkID certificate chain trust validation" );
-            Saml2Util.validateCertificateChain( serviceRootCertificates, certificateChain );
-        }
+        List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( logoutResponse.getSignature(), request,
+                serviceCertificates, serviceRootCertificates );
 
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
         ProtocolContext logoutRequest = contexts.get( logoutResponse.getInResponseTo() );

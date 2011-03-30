@@ -12,7 +12,7 @@ import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.GetWSAuthenticationServiceFactory;
+import net.link.safeonline.auth.ws.soap.GetWSAuthenticationServiceFactory;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.AbstractWSClient;
 import org.apache.commons.logging.Log;

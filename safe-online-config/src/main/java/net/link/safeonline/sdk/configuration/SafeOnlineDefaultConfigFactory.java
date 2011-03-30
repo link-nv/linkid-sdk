@@ -1,5 +1,7 @@
 package net.link.safeonline.sdk.configuration;
 
+import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -46,6 +48,9 @@ public class SafeOnlineDefaultConfigFactory extends DefaultConfigFactory {
             else
                 throw new UnsupportedOperationException( "Cannot generate appPath when servlet request is not set. "
                                                          + "Consider using the ConfigFilter in your web application or provide appPath as a property value." );
+
+        if ("keyEntryAlias".equals( method.getName() ) && method.getDeclaringClass().equals( AppLinkIDConfig.class ))
+            return config().linkID().app().name();
 
         return null;
     }

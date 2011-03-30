@@ -16,12 +16,10 @@ import org.apache.wicket.protocol.http.WebResponse;
 
 
 /**
- * <h2>{@link AbstractLinkIDAuthLink}<br>
- * <sub>A link that uses the linkID SDK to log a user in through the linkID authentication services.</sub></h2>
+ * <h2>{@link AbstractLinkIDAuthLink}<br> <sub>A link that uses the linkID SDK to log a user in through the linkID authentication
+ * services.</sub></h2>
  *
- * <p>
- * <i>Sep 22, 2008</i>
- * </p>
+ * <p> <i>Sep 22, 2008</i> </p>
  *
  * @author lhunath
  */

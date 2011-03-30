@@ -19,7 +19,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.Confirmation;
+import net.link.safeonline.auth.ws.soap.Confirmation;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.RequestAbstractType;

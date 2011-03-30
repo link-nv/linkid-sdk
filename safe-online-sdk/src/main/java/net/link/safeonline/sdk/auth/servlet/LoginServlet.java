@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.servlet;
 
+import com.google.common.base.Function;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,9 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
+import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 import net.link.util.servlet.annotation.Init;
@@ -28,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author fcorneli
  */
-public class LoginServlet extends AbstractConfidentialInjectionServlet {
+public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
     private static final Log LOG = LogFactory.getLog( LoginServlet.class );
 
@@ -54,9 +57,11 @@ public class LoginServlet extends AbstractConfidentialInjectionServlet {
 
         try {
             AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request );
+            if (null == authnResponse)
+                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction() );
             if (null == authnResponse) {
                 LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null, new ErrorMessage(
-                        "No expected authentication responses found in request." ) ) );
+                        "No expected or detached authentication responses found in request." ) ) );
                 return;
             }
 
@@ -70,8 +75,24 @@ public class LoginServlet extends AbstractConfidentialInjectionServlet {
     }
 
     /**
-     * Invoked when an authentication response is received.  The default implementation sets the user's credentials on the session if the
-     * response was successful and does nothing if it wasn't.
+     * Override this method if you want to create a custom context for detached authentication responses.
+     *
+     * The standard implementation uses {@link AuthenticationContext#AuthenticationContext()}.
+     *
+     * @return A function that provides the context for validating detached authentication responses (assertions).
+     */
+    protected Function<AuthnProtocolResponseContext, AuthenticationContext> getContextFunction() {
+
+        return new Function<AuthnProtocolResponseContext, AuthenticationContext>() {
+            public AuthenticationContext apply(final AuthnProtocolResponseContext from) {
+
+                return new AuthenticationContext();
+            }
+        };
+    }
+
+    /**
+     * Invoked when an authentication response is received.  The default implementation sets the user's credentials on the session if the response was successful and does nothing if it wasn't.
      *
      * @param session       The HTTP session within which the response was received.
      * @param authnResponse The response that was received.

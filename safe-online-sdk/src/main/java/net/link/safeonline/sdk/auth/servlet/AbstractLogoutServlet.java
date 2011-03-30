@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.auth.protocol.LogoutProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.configuration.LogoutContext;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 import net.link.util.servlet.annotation.Init;
@@ -37,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author wvdhaute
  */
-public abstract class AbstractLogoutServlet extends AbstractConfidentialInjectionServlet {
+public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
     private static final Log LOG = LogFactory.getLog( AbstractLogoutServlet.class );
 
