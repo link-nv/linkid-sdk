@@ -7,7 +7,7 @@
 
 package test.unit.net.link.safeonline.idmapping.ws;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import net.lin_k.safe_online.idmapping.NameIdentifierMappingService;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingServiceFactory;

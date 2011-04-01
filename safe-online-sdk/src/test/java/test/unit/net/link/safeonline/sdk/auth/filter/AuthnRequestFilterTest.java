@@ -7,33 +7,25 @@
 
 package test.unit.net.link.safeonline.sdk.auth.filter;
 
-import static net.link.safeonline.sdk.configuration.TestConfigHolder.testConfig;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static net.link.safeonline.sdk.configuration.TestConfigHolder.*;
+import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableMap;
 import java.security.cert.X509Certificate;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
 import net.link.safeonline.sdk.configuration.TestConfigHolder;
 import net.link.util.config.KeyProviderImpl;
 import net.link.util.test.j2ee.TestClassLoader;
 import net.link.util.test.pkix.PkiTestUtils;
-import net.link.util.test.web.ContainerSetup;
-import net.link.util.test.web.FilterSetup;
-import net.link.util.test.web.ServletSetup;
-import net.link.util.test.web.ServletTestManager;
+import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 
 public class AuthnRequestFilterTest {

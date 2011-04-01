@@ -7,17 +7,13 @@
 
 package test.unit.net.link.safeonline.attrib.ws;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
@@ -28,9 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
-import org.w3c.dom.Document;
+import org.w3c.dom.*;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 
 public class SAMLTest {
@@ -94,8 +89,11 @@ public class SAMLTest {
         JAXBElement<AssertionType> assertionElement = (JAXBElement<AssertionType>) unmarshaller.unmarshal( document );
 
         assertEquals( AttributeType.class, ((AttributeType) ((AttributeStatementType) assertionElement.getValue()
-                .getStatementOrAuthnStatementOrAuthzDecisionStatement()
-                .get( 0 )).getAttributeOrEncryptedAttribute().get( 0 )).getAttributeValue().get( 0 ).getClass() );
+                                                                                                      .getStatementOrAuthnStatementOrAuthzDecisionStatement()
+                                                                                                      .get( 0 )).getAttributeOrEncryptedAttribute()
+                                                                                                                .get( 0 )).getAttributeValue()
+                                                                                                                          .get( 0 )
+                                                                                                                          .getClass() );
     }
 
     public static String domToString(Node domNode)

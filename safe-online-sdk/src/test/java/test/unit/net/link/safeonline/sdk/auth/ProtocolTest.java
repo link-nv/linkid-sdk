@@ -7,7 +7,7 @@
 
 package test.unit.net.link.safeonline.sdk.auth;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import org.apache.commons.logging.Log;

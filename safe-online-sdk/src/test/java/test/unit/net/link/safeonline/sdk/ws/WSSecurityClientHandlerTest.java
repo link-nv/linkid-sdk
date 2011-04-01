@@ -16,10 +16,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.PrivateKey;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPConstants;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.soap.SOAPPart;
+import javax.xml.soap.*;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.util.common.CertificateChain;
 import net.link.util.test.pkix.PkiTestUtils;
@@ -127,7 +124,8 @@ public class WSSecurityClientHandlerTest {
         try {
             testedInstance.handleMessage( soapMessageContext );
             fail();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // expected
         }
     }

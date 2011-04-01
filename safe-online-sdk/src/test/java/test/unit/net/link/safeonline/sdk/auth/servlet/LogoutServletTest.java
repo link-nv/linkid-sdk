@@ -7,10 +7,9 @@
 
 package test.unit.net.link.safeonline.sdk.auth.servlet;
 
-import static net.link.safeonline.sdk.configuration.TestConfigHolder.testConfig;
+import static net.link.safeonline.sdk.configuration.TestConfigHolder.*;
 import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import com.google.common.collect.ImmutableMap;
 import java.security.KeyPair;
@@ -24,10 +23,7 @@ import javax.jws.WebService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
-import net.link.safeonline.sdk.auth.protocol.LogoutProtocolResponseContext;
-import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
-import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
+import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2Util;
 import net.link.safeonline.sdk.auth.servlet.LogoutServlet;
@@ -35,10 +31,7 @@ import net.link.safeonline.sdk.configuration.TestConfigHolder;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.util.config.KeyProviderImpl;
 import net.link.util.test.pkix.PkiTestUtils;
-import net.link.util.test.web.ContainerSetup;
-import net.link.util.test.web.DomTestUtils;
-import net.link.util.test.web.ServletSetup;
-import net.link.util.test.web.ServletTestManager;
+import net.link.util.test.web.*;
 import net.link.util.test.web.ws.WebServiceTestManager;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -47,16 +40,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xpath.XPathAPI;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.*;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.core.LogoutRequest;
-import org.opensaml.saml2.core.LogoutResponse;
-import org.opensaml.saml2.core.StatusCode;
+import org.opensaml.saml2.core.*;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
 import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
@@ -103,8 +92,8 @@ public class LogoutServletTest {
         testConfig().web().wsBase = webServiceTestManager.getLocation();
         testConfig().linkID().app().keyProvider = new KeyProviderImpl(
                 new KeyStore.PrivateKeyEntry( keyPair.getPrivate(), new Certificate[] {
-                        PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=TestApplication" ) } ),
-                ImmutableMap.<String, X509Certificate>of() );
+                        PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=TestApplication" )
+                } ), ImmutableMap.<String, X509Certificate>of() );
 
         servletLocation = servletTestManager.getServletLocation();
         httpClient = new HttpClient();

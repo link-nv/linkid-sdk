@@ -7,7 +7,7 @@
 
 package test.unit.net.link.safeonline.xkms2.ws;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import net.link.safeonline.xkms2.ws.Xkms2ServiceFactory;
 import org.junit.Test;

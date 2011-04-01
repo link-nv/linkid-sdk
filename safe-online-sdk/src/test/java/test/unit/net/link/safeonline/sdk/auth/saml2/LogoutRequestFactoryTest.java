@@ -26,10 +26,7 @@ import org.apache.xpath.objects.XObject;
 import org.jcp.xml.dsig.internal.dom.XMLDSigRI;
 import org.junit.Test;
 import org.opensaml.saml2.core.LogoutRequest;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 
 /**
@@ -86,8 +83,7 @@ public class LogoutRequestFactoryTest {
         assertEquals( "urn:oasis:names:tc:SAML:2.0:nameid-format:entity", formatNode.getTextContent() );
 
         Node sessionInfoNode = XPathAPI.selectSingleNode( resultDocument,
-                                                          "/samlp2:LogoutRequest/samlp2:Extensions/samlp2:SessionInfo/@Session",
-                                                          nsElement );
+                "/samlp2:LogoutRequest/samlp2:Extensions/samlp2:SessionInfo/@Session", nsElement );
         assertNotNull( sessionInfoNode );
         assertEquals( session, sessionInfoNode.getTextContent() );
 

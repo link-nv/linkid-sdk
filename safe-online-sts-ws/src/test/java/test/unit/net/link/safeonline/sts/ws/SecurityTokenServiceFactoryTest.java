@@ -7,7 +7,7 @@
 
 package test.unit.net.link.safeonline.sts.ws;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
 import org.junit.Test;

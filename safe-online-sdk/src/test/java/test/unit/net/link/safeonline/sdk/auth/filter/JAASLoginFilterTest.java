@@ -7,24 +7,21 @@
 
 package test.unit.net.link.safeonline.sdk.auth.filter;
 
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.*;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.*;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.callback.*;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.spi.LoginModule;
 import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import net.link.safeonline.sdk.auth.filter.JAASLoginFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.configuration.TestConfigHolder;
@@ -99,9 +96,11 @@ public class JAASLoginFilterTest {
             Callback[] callbacks = new Callback[] { nameCallback };
             try {
                 callbackHandler.handle( callbacks );
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new RuntimeException( "IO error: " + e.getMessage(), e );
-            } catch (UnsupportedCallbackException e) {
+            }
+            catch (UnsupportedCallbackException e) {
                 throw new RuntimeException( "callback error: " + e.getMessage(), e );
             }
 

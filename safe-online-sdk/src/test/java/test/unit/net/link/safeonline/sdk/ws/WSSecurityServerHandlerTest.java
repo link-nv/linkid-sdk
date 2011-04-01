@@ -19,10 +19,8 @@ import java.util.Set;
 import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.soap.MessageFactory;
+import javax.xml.soap.*;
 import javax.xml.soap.SOAPConstants;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.soap.SOAPPart;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.MessageContext.Scope;
@@ -33,16 +31,12 @@ import net.link.util.pkix.ServerCrypto;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
-import net.link.util.ws.security.AbstractWSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.*;
 import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.message.WSSecHeader;
-import org.apache.ws.security.message.WSSecSignature;
-import org.apache.ws.security.message.WSSecTimestamp;
+import org.apache.ws.security.message.*;
 import org.apache.ws.security.util.WSSecurityUtil;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.utils.Constants;
@@ -82,8 +76,7 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        CertificateChain certificateChain = new CertificateChain(
-                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
+        CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
@@ -128,8 +121,7 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        CertificateChain certificateChain = new CertificateChain(
-                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
+        CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         KeyPair linkidKeyPair = PkiTestUtils.generateKeyPair();
         CertificateChain linkidCertificateChain = new CertificateChain(
@@ -242,8 +234,7 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        CertificateChain certificateChain = new CertificateChain(
-                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
+        CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
@@ -327,8 +318,7 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        CertificateChain certificateChain = new CertificateChain(
-                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
+        CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
@@ -399,9 +389,9 @@ public class WSSecurityServerHandlerTest {
 
     private static class TestWSSecurityConfiguration extends AbstractWSSecurityConfiguration {
 
-        public boolean               trusted;
+        public boolean          trusted;
         public CertificateChain certificateChain;
-        public PrivateKey            privateKey;
+        public PrivateKey       privateKey;
 
         public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
 

@@ -11,9 +11,7 @@ import static org.junit.Assert.*;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2Util;
 import net.link.util.common.CertificateChain;
@@ -57,7 +55,7 @@ public class AuthnRequestFactoryTest {
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
-                                                                                destinationURL, devices, false, session );
+                destinationURL, devices, false, session );
         String samlAuthnRequestToken = Saml2Util.sign( samlAuthnRequest, keyPair, null );
 
         LOG.debug( DomUtils.domToString( Saml2Util.marshall( samlAuthnRequest ) ) );
@@ -92,7 +90,7 @@ public class AuthnRequestFactoryTest {
         assertTrue( resultAuthnRequest.getNameIDPolicy().getAllowCreate() );
 
         // verify signature
-        Saml2Util.getAndValidateCertificateChain( resultAuthnRequest.getSignature(),  null, null );
+        Saml2Util.getAndValidateCertificateChain( resultAuthnRequest.getSignature(), null, null );
     }
 
     @Test
@@ -112,15 +110,14 @@ public class AuthnRequestFactoryTest {
         DateTime notBefore = new DateTime();
         DateTime notAfter = notBefore.plusYears( 1 );
         X509Certificate certificate = PkiTestUtils.generateCertificate( keyPair.getPublic(), "CN=Test", rootKeyPair.getPrivate(),
-                                                                        rootCertificate, notBefore, notAfter, null, true, false, false,
-                                                                        null );
+                rootCertificate, notBefore, notAfter, null, true, false, false, null );
         CertificateChain certificateChain = new CertificateChain( rootCertificate, certificate );
 
         // Test
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
-                                                                                destinationURL, devices, false, session );
+                destinationURL, devices, false, session );
         String samlAuthnRequestToken = Saml2Util.sign( samlAuthnRequest, keyPair, certificateChain );
         long end = System.currentTimeMillis();
 

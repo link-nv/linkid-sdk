@@ -7,8 +7,7 @@
 
 package test.unit.net.link.safeonline.sdk.auth.saml2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,9 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
 import org.opensaml.saml2.core.LogoutResponse;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 
 public class LogoutResponseFactoryTest {

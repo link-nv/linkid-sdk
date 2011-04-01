@@ -8,35 +8,21 @@
 package test.unit.net.link.safeonline.sdk.auth.filter;
 
 import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import javax.servlet.http.*;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
-import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
-import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
-import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
-import net.link.util.test.web.ContainerSetup;
-import net.link.util.test.web.FilterSetup;
-import net.link.util.test.web.ServletSetup;
-import net.link.util.test.web.ServletTestManager;
+import net.link.safeonline.sdk.auth.protocol.*;
+import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 
 public class AuthnResponseFilterTest {
@@ -59,9 +45,9 @@ public class AuthnResponseFilterTest {
         authnRequest = new AuthnProtocolRequestContext( UUID.randomUUID().toString(), "test-application", mockProtocolHandler, null );
         contexts.put( authnRequest.getId(), authnRequest );
         servletTestManager.setUp( new ContainerSetup( //
-                                                      new ServletSetup( LoginTestServlet.class ), //
-                                                      new FilterSetup( AuthnResponseFilter.class ) ) //
-                                          .addSessionAttribute( ProtocolContext.SESSION_CONTEXTS, contexts ) );
+                new ServletSetup( LoginTestServlet.class ), //
+                new FilterSetup( AuthnResponseFilter.class ) ) //
+                .addSessionAttribute( ProtocolContext.SESSION_CONTEXTS, contexts ) );
         servletTestManager.createSocketConnector();
     }
 
@@ -116,9 +102,7 @@ public class AuthnResponseFilterTest {
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId,
-                                                                                       null, Collections.singletonList( authenticatedDevice ),
-                                                                                       new HashMap<String, List<AttributeSDK<?>>>(), true,
-                                                                                       null );
+                null, Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null );
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( authnResponse );
         replay( mockProtocolHandler );
 

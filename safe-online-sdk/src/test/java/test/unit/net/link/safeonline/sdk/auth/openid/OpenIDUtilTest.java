@@ -39,12 +39,12 @@ public class OpenIDUtilTest {
         AttributeType memberAttributeTypeB = new AttributeType( "test-member-2", DataType.DATE, null, true, true, true, false, false );
 
         AttributeType compoundAttributeType = new AttributeType( "test-compound", DataType.COMPOUNDED, null, true, true, true, false,
-                                                                 false );
+                false );
         compoundAttributeType.getMembers().add( memberAttributeTypeA );
         compoundAttributeType.getMembers().add( memberAttributeTypeB );
 
         AttributeCore singleAttribute = new AttributeCore( UUID.randomUUID().toString(), singleAttributeType,
-                                                           UUID.randomUUID().toString() );
+                UUID.randomUUID().toString() );
         AttributeCore multiAttribute1 = new AttributeCore( UUID.randomUUID().toString(), multiAttributeType, UUID.randomUUID().toString() );
         AttributeCore multiAttribute2 = new AttributeCore( UUID.randomUUID().toString(), multiAttributeType, UUID.randomUUID().toString() );
 
@@ -57,9 +57,9 @@ public class OpenIDUtilTest {
         AttributeCore memberAttributeB2 = new AttributeCore( compoundId2, memberAttributeTypeB, new Date() );
 
         AttributeCore compoundAttribute1 = new AttributeCore( compoundId1, compoundAttributeType,
-                                                              new Compound( Arrays.asList( memberAttributeA1, memberAttributeB1 ) ) );
+                new Compound( Arrays.asList( memberAttributeA1, memberAttributeB1 ) ) );
         AttributeCore compoundAttribute2 = new AttributeCore( compoundId2, compoundAttributeType,
-                                                              new Compound( Arrays.asList( memberAttributeA2, memberAttributeB2 ) ) );
+                new Compound( Arrays.asList( memberAttributeA2, memberAttributeB2 ) ) );
 
         Map<String, List<AttributeCore>> attributeMap = new HashMap<String, List<AttributeCore>>();
         attributeMap.put( singleAttributeType.getName(), Arrays.asList( singleAttribute ) );
