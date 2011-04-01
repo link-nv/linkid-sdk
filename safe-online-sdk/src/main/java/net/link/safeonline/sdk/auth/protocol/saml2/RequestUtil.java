@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.common.CertificateChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -51,7 +51,7 @@ public abstract class RequestUtil {
      * @throws IOException IO Exception
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
-                                   List<X509Certificate> certificateChain, HttpServletResponse response, String relayState,
+                                   CertificateChain certificateChain, HttpServletResponse response, String relayState,
                                    String postTemplateResource, Locale language, String themeName)
             throws IOException {
 
@@ -78,12 +78,12 @@ public abstract class RequestUtil {
      *
      * @throws ValidationFailedException validation failed for some reason
      */
-    public static List<X509Certificate> validateRequest(HttpServletRequest request, LogoutRequest logoutRequest,
+    public static CertificateChain validateRequest(HttpServletRequest request, LogoutRequest logoutRequest,
                                                         Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         // validate signature
-        List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( logoutRequest.getSignature(), request,
+        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( logoutRequest.getSignature(), request,
                 trustedCertificates );
 
         // validate logout request

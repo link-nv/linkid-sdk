@@ -23,6 +23,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,7 +72,7 @@ public abstract class ResponseUtil {
      * @throws IOException IO Exception
      */
     public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse,
-                                    KeyPair signingKeyPair, List<X509Certificate> certificateChain, HttpServletResponse response,
+                                    KeyPair signingKeyPair, CertificateChain certificateChain, HttpServletResponse response,
                                     String relayState, String postTemplateResource, Locale language)
             throws IOException {
 
@@ -120,7 +121,7 @@ public abstract class ResponseUtil {
         LOG.debug( "response matches request: " + authnRequest );
 
         // validate signature
-        List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( authnResponse.getSignature(), request,
+        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( authnResponse.getSignature(), request,
                 trustedCertificates );
 
         // validate response
@@ -296,7 +297,7 @@ public abstract class ResponseUtil {
             return null;
 
         // validate signature
-        List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( logoutResponse.getSignature(), request,
+        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( logoutResponse.getSignature(), request,
                 trustedCertificates );
 
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields

@@ -1,7 +1,6 @@
 package net.link.safeonline.sdk.auth.protocol;
 
-import java.security.cert.X509Certificate;
-import java.util.List;
+import net.link.util.common.CertificateChain;
 
 
 /**
@@ -23,7 +22,7 @@ public class LogoutProtocolResponseContext extends ProtocolResponseContext {
      *                         signature.
      */
     public LogoutProtocolResponseContext(LogoutProtocolRequestContext request, String id, boolean success,
-                                         List<X509Certificate> certificateChain) {
+                                         CertificateChain certificateChain) {
 
         super( request, id, certificateChain );
 

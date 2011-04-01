@@ -9,12 +9,12 @@ package net.link.safeonline.sdk.ws.xkms2;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.List;
 import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import net.link.safeonline.xkms2.ws.ResultMajorCode;
 import net.link.safeonline.xkms2.ws.Xkms2ServiceFactory;
+import net.link.util.common.CertificateChain;
 import net.link.util.ws.AbstractWSClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,7 +55,7 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
     /**
      * {@inheritDoc}
      */
-    public void validate(final List<X509Certificate> certificateChain)
+    public void validate(final CertificateChain certificateChain)
             throws WSClientTransportException, ValidationFailedException, CertificateEncodingException {
 
         LOG.debug( "validate" );

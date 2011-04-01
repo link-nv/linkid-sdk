@@ -128,7 +128,7 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        ImmutableList<X509Certificate> certificateChain = ImmutableList.of(
+        CertificateChain certificateChain = new CertificateChain(
                 PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         KeyPair linkidKeyPair = PkiTestUtils.generateKeyPair();

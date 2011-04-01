@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.security.cert.X509Certificate;
 import java.util.List;
+import net.link.util.common.CertificateChain;
 
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
 public class LogoutProtocolRequestContext extends ProtocolRequestContext {
 
     private final String                userId;
-    private       List<X509Certificate> certificateChain;
+    private CertificateChain certificateChain;
 
     /**
      * @param id              ID of the Logout Request.
@@ -42,14 +43,14 @@ public class LogoutProtocolRequestContext extends ProtocolRequestContext {
     /**
      * @return optional certificate chain embedded in the logout request's signature.
      */
-    public List<X509Certificate> getCertificateChain() {
+    public CertificateChain getCertificateChain() {
         return certificateChain;
     }
 
     /**
      * @param certificateChain optional certificate chain embedded in the logout request's signature.
      */
-    public void setCertificateChain(final List<X509Certificate> certificateChain) {
+    public void setCertificateChain(final CertificateChain certificateChain) {
         this.certificateChain = certificateChain;
     }
 }

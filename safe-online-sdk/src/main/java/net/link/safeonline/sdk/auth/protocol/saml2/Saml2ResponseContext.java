@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import java.security.cert.X509Certificate;
 import java.util.List;
+import net.link.util.common.CertificateChain;
 import org.opensaml.saml2.core.StatusResponseType;
 
 
@@ -22,9 +23,9 @@ import org.opensaml.saml2.core.StatusResponseType;
 public class Saml2ResponseContext {
 
     private final StatusResponseType    response;
-    private final List<X509Certificate> certificateChain;
+    private final CertificateChain certificateChain;
 
-    public Saml2ResponseContext(final StatusResponseType response, final List<X509Certificate> certificateChain) {
+    public Saml2ResponseContext(final StatusResponseType response, final CertificateChain certificateChain) {
         this.response = response;
         this.certificateChain = certificateChain;
     }
@@ -39,7 +40,7 @@ public class Saml2ResponseContext {
     /**
      * @return the (optional) embedded certificate chain in the signed response.
      */
-    public List<X509Certificate> getCertificateChain() {
+    public CertificateChain getCertificateChain() {
         return certificateChain;
     }
 }

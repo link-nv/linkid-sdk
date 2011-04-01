@@ -7,11 +7,11 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.util.common.CertificateChain;
 
 
 /**
@@ -81,9 +81,9 @@ public abstract class LoginManager {
     }
 
     @SuppressWarnings( { "unchecked" })
-    public static List<X509Certificate> findCertificateChain(HttpSession httpSession) {
+    public static CertificateChain findCertificateChain(HttpSession httpSession) {
 
-        return (List<X509Certificate>) httpSession.getAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
+        return (CertificateChain) httpSession.getAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class LoginManager {
      * @param certificateChain     the certificate chain optionally present if response was signed and contained it embedded
      */
     public static void set(HttpSession httpSession, String userId, Map<String, List<AttributeSDK<?>>> attributes,
-                           List<String> authenticatedDevices, List<X509Certificate> certificateChain) {
+                           List<String> authenticatedDevices, CertificateChain certificateChain) {
 
         httpSession.setAttribute( USERID_SESSION_ATTRIBUTE, userId );
         httpSession.setAttribute( ATTRIBUTES_SESSION_ATTRIBUTE, attributes );

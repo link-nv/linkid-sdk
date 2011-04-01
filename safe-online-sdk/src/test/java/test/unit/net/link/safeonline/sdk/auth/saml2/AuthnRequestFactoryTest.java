@@ -11,12 +11,12 @@ import static org.junit.Assert.*;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2Util;
+import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
@@ -114,7 +114,7 @@ public class AuthnRequestFactoryTest {
         X509Certificate certificate = PkiTestUtils.generateCertificate( keyPair.getPublic(), "CN=Test", rootKeyPair.getPrivate(),
                                                                         rootCertificate, notBefore, notAfter, null, true, false, false,
                                                                         null );
-        List<X509Certificate> certificateChain = Arrays.asList( rootCertificate, certificate );
+        CertificateChain certificateChain = new CertificateChain( rootCertificate, certificate );
 
         // Test
         long begin = System.currentTimeMillis();

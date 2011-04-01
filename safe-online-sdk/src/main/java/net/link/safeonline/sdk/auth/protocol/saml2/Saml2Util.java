@@ -154,7 +154,7 @@ public abstract class Saml2Util {
         return Base64.encodeBytes( bytesOut.toByteArray(), Base64.DONT_BREAK_LINES );
     }
 
-    public static Element signAsElement(SignableSAMLObject samlObject, KeyPair signerKeyPair, List<X509Certificate> certificateChain) {
+    public static Element signAsElement(SignableSAMLObject samlObject, KeyPair signerKeyPair, CertificateChain certificateChain) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
         SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder( Signature.DEFAULT_ELEMENT_NAME );
@@ -177,7 +177,7 @@ public abstract class Saml2Util {
                     .getDefaultManager()
                     .getFactory( signingCredential );
             factory.setEmitEntityCertificateChain( true );
-            signingCredential.setEntityCertificateChain( certificateChain );
+            signingCredential.setEntityCertificateChain( certificateChain.getOrderedCertificateChain() );
 
             // add certificate chain as keyinfo
             signature.setKeyInfo( getKeyInfo( certificateChain ) );
@@ -204,13 +204,12 @@ public abstract class Saml2Util {
         return samlElement;
     }
 
-    private static KeyInfo getKeyInfo(List<X509Certificate> certificateChain) {
+    private static KeyInfo getKeyInfo(CertificateChain certificateChain) {
 
         KeyInfo keyInfo = buildXMLObject( KeyInfo.class, KeyInfo.DEFAULT_ELEMENT_NAME );
         try {
-            for (X509Certificate certificate : certificateChain) {
+            for (X509Certificate certificate : certificateChain)
                 KeyInfoHelper.addCertificate( keyInfo, certificate );
-            }
         }
         catch (CertificateEncodingException e) {
             throw new RuntimeException( "opensaml2 certificate encoding error: " + e.getMessage(), e );
@@ -234,7 +233,7 @@ public abstract class Saml2Util {
      *
      * @return The signed {@link SignableSAMLObject}, marshaled and serialized.
      */
-    public static String sign(SignableSAMLObject samlObject, KeyPair signerKeyPair, List<X509Certificate> certificateChain) {
+    public static String sign(SignableSAMLObject samlObject, KeyPair signerKeyPair, CertificateChain certificateChain) {
 
         Element samlElement = signAsElement( samlObject, signerKeyPair, certificateChain );
 
@@ -352,7 +351,7 @@ public abstract class Saml2Util {
      *
      * @throws ValidationFailedException validation failed
      */
-    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, HttpServletRequest request, Collection<X509Certificate> trustedCertificates)
+    public static CertificateChain getAndValidateCertificateChain(Signature signature, HttpServletRequest request, Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         if (signature != null)
@@ -372,14 +371,14 @@ public abstract class Saml2Util {
      *
      * @throws ValidationFailedException validation failed
      */
-    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, Collection<X509Certificate> trustedCertificates)
+    public static CertificateChain getAndValidateCertificateChain(Signature signature, Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         validateSignature( signature );
 
         // get certificate chain from signature
         try {
-            List<X509Certificate> certificateChain = KeyInfoHelper.getCertificates( signature.getKeyInfo() );
+            CertificateChain certificateChain = new CertificateChain( KeyInfoHelper.getCertificates( signature.getKeyInfo() ) );
 
             // validate cert chain trust
             if (null != trustedCertificates && !trustedCertificates.isEmpty())
@@ -392,7 +391,7 @@ public abstract class Saml2Util {
         }
     }
 
-    private static void validateCertificateChain(Collection<X509Certificate> trustedCertificates, List<X509Certificate> certificateChain)
+    private static void validateCertificateChain(Collection<X509Certificate> trustedCertificates, CertificateChain certificateChain)
             throws ValidationFailedException {
 
         MemoryCertificateRepository certificateRepository = new MemoryCertificateRepository();
@@ -401,7 +400,7 @@ public abstract class Saml2Util {
 
         TrustValidator trustValidator = new TrustValidator( certificateRepository );
         try {
-            trustValidator.isTrusted( certificateChain );
+            trustValidator.isTrusted( certificateChain.getOrderedCertificateChain() );
         }
         catch (CertPathValidatorException e) {
             LOG.error( "Trust validation of LinkID certificate chain failed!", e );

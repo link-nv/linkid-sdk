@@ -13,7 +13,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.net.URI;
-import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +22,7 @@ import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.LogoutContext;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.common.CertificateChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.DefaultBootstrap;
@@ -86,9 +86,9 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 authnContext.getApplicationFriendlyName(), landingURL, authnService, authnContext.getDevices(),
                 authnContext.isForceAuthentication(), authnContext.getSessionTrackingId() );
 
-        List<X509Certificate> certificateChain = null;
+        CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {
-            certificateChain = Collections.singletonList( authnContext.getApplicationCertificate() );
+            certificateChain = new CertificateChain( authnContext.getApplicationCertificate() );
         }
 
         RequestUtil.sendRequest( authnService, authnContext.getSAML().getBinding(), samlRequest, authnContext.getApplicationKeyPair(),
@@ -158,7 +158,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), null,
                 authnContext.getTarget() );
 
-        List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( assertion.getSignature(), request,
+        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( assertion.getSignature(), request,
                 authnContext.getTrustedCertificates() );
 
         return new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true,
@@ -185,9 +185,9 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         LogoutRequest samlRequest = LogoutRequestFactory.createLogoutRequest( userId, logoutContext.getApplicationName(), logoutService,
                 logoutContext.getSessionTrackingId() );
 
-        List<X509Certificate> certificateChain = null;
+        CertificateChain certificateChain = null;
         if (null != context.getApplicationCertificate()) {
-            certificateChain = Collections.singletonList( context.getApplicationCertificate() );
+            certificateChain = new CertificateChain( context.getApplicationCertificate() );
         }
 
         RequestUtil.sendRequest( logoutService, logoutContext.getSAML().getBinding(), samlRequest, logoutContext.getApplicationKeyPair(),
@@ -240,7 +240,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 samlRequest.getIssuer().getValue(), this, null, samlRequest.getNameID().getValue() );
         logoutContext = requestToContext.apply( logoutRequest );
 
-        List<X509Certificate> certificateChain = RequestUtil.validateRequest( request, samlRequest,
+        CertificateChain certificateChain = RequestUtil.validateRequest( request, samlRequest,
                 logoutContext.getTrustedCertificates() );
 
         logoutRequest.setCertificateChain( certificateChain );
@@ -262,9 +262,9 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         LogoutResponse samlLogoutResponse = LogoutResponseFactory.createLogoutResponse( partialLogout, logoutRequestContext,
                 logoutContext.getApplicationName(), logoutExitService );
 
-        List<X509Certificate> certificateChain = null;
+        CertificateChain certificateChain = null;
         if (null != logoutContext.getApplicationCertificate()) {
-            certificateChain = Collections.singletonList( logoutContext.getApplicationCertificate() );
+            certificateChain = new CertificateChain( logoutContext.getApplicationCertificate() );
         }
 
         ResponseUtil.sendResponse( logoutExitService, logoutContext.getSAML().getBinding(), samlLogoutResponse,

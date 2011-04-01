@@ -10,14 +10,13 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 import com.google.common.base.Charsets;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.RequestConstants;
+import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,7 +67,7 @@ public abstract class PostBindingUtil {
      * @throws IOException IO Exception
      */
     @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
-    public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, List<X509Certificate> certificateChain,
+    public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
                                    Locale language, String themeName)
             throws IOException {
@@ -133,7 +132,7 @@ public abstract class PostBindingUtil {
      * @throws IOException IO Exception
      */
     @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
-    public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, List<X509Certificate> certificateChain,
+    public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain,
                                     String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
                                     Locale language)
             throws IOException {

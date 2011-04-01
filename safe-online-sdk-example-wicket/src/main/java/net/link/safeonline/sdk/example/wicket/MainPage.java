@@ -1,7 +1,6 @@
 package net.link.safeonline.sdk.example.wicket;
 
 import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import net.link.safeonline.attribute.provider.AttributeSDK;
@@ -13,6 +12,7 @@ import net.link.safeonline.wicket.component.linkid.LinkIDApplicationPage;
 import net.link.safeonline.wicket.component.linkid.LinkIDLoginLink;
 import net.link.safeonline.wicket.component.linkid.LinkIDLogoutLink;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
+import net.link.util.common.CertificateChain;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
@@ -109,7 +109,7 @@ public class MainPage extends LinkIDApplicationPage {
         ExampleSession.get().setUserId( LinkIDWicketUtils.findLinkID() );
 
         // validate PKI via XKMS
-        List<X509Certificate> linkIDCertificateChain = LinkIDWicketUtils.findCertificateChain();
+        CertificateChain linkIDCertificateChain = LinkIDWicketUtils.findCertificateChain();
         if (null != linkIDCertificateChain) {
             Xkms2Client xkms2Client = LinkIDServiceFactory.getXkms2Client();
             try {

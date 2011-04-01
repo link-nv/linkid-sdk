@@ -2,8 +2,7 @@ package net.link.safeonline.sdk.auth.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.security.cert.X509Certificate;
-import java.util.List;
+import net.link.util.common.CertificateChain;
 
 
 /**
@@ -16,7 +15,7 @@ import java.util.List;
 public class ProtocolResponseContext extends ProtocolContext {
 
     private final ProtocolRequestContext request;
-    private final List<X509Certificate>  certificateChain;
+    private final CertificateChain certificateChain;
 
     /**
      * @param request          The request that caused this response.
@@ -24,7 +23,7 @@ public class ProtocolResponseContext extends ProtocolContext {
      * @param certificateChain Optional certificate chain if protocol response was signed and contained the chain embedded in the
      *                         signature.
      */
-    public ProtocolResponseContext(ProtocolRequestContext request, String id, List<X509Certificate> certificateChain) {
+    public ProtocolResponseContext(ProtocolRequestContext request, String id, CertificateChain certificateChain) {
 
         super( id );
 
@@ -41,7 +40,7 @@ public class ProtocolResponseContext extends ProtocolContext {
      * @return The certificate chain if the protocol authentication response was signed and the chain was embedded in the signature. Returns
      *         <code>null</code> if this was not the case.
      */
-    public List<X509Certificate> getCertificateChain() {
+    public CertificateChain getCertificateChain() {
         return certificateChain;
     }
 }

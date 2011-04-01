@@ -6,13 +6,13 @@
  */
 package net.link.safeonline.wicket.util;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.util.common.CertificateChain;
 import net.link.util.wicket.util.RedirectResponse;
 import net.link.util.wicket.util.RedirectResponseException;
 import net.link.util.wicket.util.WicketUtils;
@@ -104,7 +104,7 @@ public abstract class LinkIDWicketUtils {
      *
      * @return the certificate chain in the last signed authentication response.
      */
-    public static List<X509Certificate> findCertificateChain() {
+    public static CertificateChain findCertificateChain() {
 
         return LoginManager.findCertificateChain( WicketUtils.getHttpSession() );
     }

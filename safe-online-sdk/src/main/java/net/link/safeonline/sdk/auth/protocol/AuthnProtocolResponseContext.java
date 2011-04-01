@@ -1,11 +1,11 @@
 package net.link.safeonline.sdk.auth.protocol;
 
 import com.google.common.base.Preconditions;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.util.common.CertificateChain;
 
 
 /**
@@ -36,7 +36,7 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
      */
     public AuthnProtocolResponseContext(AuthnProtocolRequestContext request, String id, String userId, String applicationName, List<String> authenticatedDevices,
                                         Map<String, List<AttributeSDK<?>>> attributes, boolean success,
-                                        List<X509Certificate> certificateChain) {
+                                        CertificateChain certificateChain) {
 
         super( request, id, certificateChain );
         this.userId = userId;
