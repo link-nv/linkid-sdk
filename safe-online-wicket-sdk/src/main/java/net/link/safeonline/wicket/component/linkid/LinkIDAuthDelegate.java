@@ -1,8 +1,8 @@
 package net.link.safeonline.wicket.component.linkid;
 
 import java.io.Serializable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
 
 
 /**
@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 public interface LinkIDAuthDelegate extends Serializable {
 
     /**
-     * @param link The link that invokes this delegate.
+     * @param target               The page where the user should end up after delegation.
+     * @param targetPageParameters The parameters to pass to the page on construction.
      */
-    void delegate(HttpServletRequest request, HttpServletResponse response, AbstractLinkIDAuthLink link);
+    void delegate(Class<? extends Page> target, PageParameters targetPageParameters);
 }

@@ -28,8 +28,8 @@ import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.attribute.provider.Compound;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
+import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
-import net.link.util.common.KeyStoreUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
@@ -255,15 +255,15 @@ public abstract class Saml2Util {
             throws ValidationFailedException {
 
         try {
-            List<X509Certificate> certChain = KeyInfoHelper.getCertificates( signature.getKeyInfo() );
+            CertificateChain certificateChain = new CertificateChain( KeyInfoHelper.getCertificates( signature.getKeyInfo() ) );
             List<PublicKey> publicKeys = KeyInfoHelper.getPublicKeys( signature.getKeyInfo() );
 
             SAMLSignatureProfileValidator pv = new SAMLSignatureProfileValidator();
             pv.validate( signature );
             BasicX509Credential credential = new BasicX509Credential();
 
-            if (!certChain.isEmpty())
-                credential.setPublicKey( KeyStoreUtils.getEndCertificate( certChain ).getPublicKey() );
+            if (!certificateChain.isEmpty())
+                credential.setPublicKey( certificateChain.getIdentityCertificate().getPublicKey() );
             else if (!publicKeys.isEmpty() && publicKeys.size() == 1)
                 credential.setPublicKey( publicKeys.get( 0 ) );
             else
@@ -290,7 +290,7 @@ public abstract class Saml2Util {
      * @param requestURL          request URL
      * @param trustedCertificates list of certificates to use for validation
      */
-    public static void validateSignature(String queryString, StringBuffer requestURL, List<X509Certificate> trustedCertificates)
+    public static void validateSignature(String queryString, StringBuffer requestURL, Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         LOG.debug( "validate[HTTP Redirect], Query:\n" + queryString );
@@ -342,24 +342,23 @@ public abstract class Saml2Util {
      * Validates the signature. If {@link Signature} is <code>null</code> the HTTP-Redirect binding was used and the {@link X509Certificate}
      * serverCertificate is required for validation.
      *
+     *
      * @param signature           signature, if <code>null</code>, serviceCertificate and request are required
      * @param request             HTTP Servlet Request
-     * @param serviceCertificates optional serviceCertificates, required if signature is <code>null</code> and signature was set with
+     * @param trustedCertificates optional serviceCertificates, required if signature is <code>null</code> and signature was set with
      *                            HTTP-Redirect binding.
      *
      * @return optional embedded certificate chain in the signature
      *
      * @throws ValidationFailedException validation failed
      */
-    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, HttpServletRequest request,
-                                                                       List<X509Certificate> serviceCertificates,
-                                                                       List<X509Certificate> serviceRootCertificates)
+    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, HttpServletRequest request, Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         if (signature != null)
-            return getAndValidateCertificateChain( signature, serviceRootCertificates );
+            return getAndValidateCertificateChain( signature, trustedCertificates );
 
-        validateSignature( request.getQueryString(), request.getRequestURL(), serviceCertificates );
+        validateSignature( request.getQueryString(), request.getRequestURL(), trustedCertificates );
         return null;
     }
 
@@ -373,7 +372,7 @@ public abstract class Saml2Util {
      *
      * @throws ValidationFailedException validation failed
      */
-    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, List<X509Certificate> serviceRootCertificates)
+    public static List<X509Certificate> getAndValidateCertificateChain(Signature signature, Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         validateSignature( signature );
@@ -383,8 +382,8 @@ public abstract class Saml2Util {
             List<X509Certificate> certificateChain = KeyInfoHelper.getCertificates( signature.getKeyInfo() );
 
             // validate cert chain trust
-            if (null != serviceRootCertificates && !serviceRootCertificates.isEmpty())
-                Saml2Util.validateCertificateChain( serviceRootCertificates, certificateChain );
+            if (null != trustedCertificates && !trustedCertificates.isEmpty())
+                validateCertificateChain( trustedCertificates, certificateChain );
 
             return certificateChain;
         }
@@ -393,11 +392,11 @@ public abstract class Saml2Util {
         }
     }
 
-    private static void validateCertificateChain(List<X509Certificate> rootCertificates, List<X509Certificate> certificateChain)
+    private static void validateCertificateChain(Collection<X509Certificate> trustedCertificates, List<X509Certificate> certificateChain)
             throws ValidationFailedException {
 
         MemoryCertificateRepository certificateRepository = new MemoryCertificateRepository();
-        for (X509Certificate rootCertificate : rootCertificates)
+        for (X509Certificate rootCertificate : trustedCertificates)
             certificateRepository.addTrustPoint( rootCertificate );
 
         TrustValidator trustValidator = new TrustValidator( certificateRepository );

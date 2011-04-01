@@ -12,7 +12,6 @@ import java.util.List;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 
 
 /**
@@ -21,7 +20,7 @@ import net.link.safeonline.sdk.ws.WSClient;
  *
  * @author fcorneli
  */
-public interface DataClient extends WSClient {
+public interface DataClient {
 
     /**
      * Sets an attribute for specified user. If not yet created will do so.

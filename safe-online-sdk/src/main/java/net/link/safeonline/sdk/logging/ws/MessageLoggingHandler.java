@@ -110,9 +110,8 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
     /**
      * Adds a new logging handler to the handler chain of the given JAX-WS port.
      */
-    public static void addNewHandler(Object port) {
+    public static void addNewHandler(BindingProvider bindingProvider) {
 
-        BindingProvider bindingProvider = (BindingProvider) port;
         Binding binding = bindingProvider.getBinding();
         @SuppressWarnings("unchecked")
         List<Handler> handlerChain = binding.getHandlerChain();

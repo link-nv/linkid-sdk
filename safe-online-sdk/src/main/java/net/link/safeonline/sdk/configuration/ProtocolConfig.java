@@ -2,7 +2,7 @@ package net.link.safeonline.sdk.configuration;
 
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.util.config.Config;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import org.joda.time.Duration;
 
 
 /**
@@ -34,10 +34,10 @@ public interface ProtocolConfig {
      * The maximum deviation in milliseconds between timestamps in WS-Security messages and the current system time.  This is used to
      * compensate for possible differences of the server and client's system clock.
      *
-     * <i>[optional, default: {@value WSSecurityClientHandler#DEFAULT_MAX_TIMESTAMP_OFFSET}]</i>
+     * <i>[optional, default: 300000]</i>
      *
      * @return maximum devication (ms) for WS-Security timestamps.
      */
-    @Config.Property(required = false)
-    Long maxTimeOffset();
+    @Config.Property(required = true, unset = "300000" /* 5 minutes */)
+    Duration maxTimeOffset();
 }

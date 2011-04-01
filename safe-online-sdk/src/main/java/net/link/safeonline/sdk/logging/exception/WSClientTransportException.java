@@ -7,6 +7,9 @@
 
 package net.link.safeonline.sdk.logging.exception;
 
+import javax.xml.ws.BindingProvider;
+
+
 /**
  * Thrown in case a webservice was not found.
  *
@@ -14,24 +17,31 @@ package net.link.safeonline.sdk.logging.exception;
  */
 public class WSClientTransportException extends Exception {
 
-    private String location;
+    private final transient BindingProvider bindingProvider;
+    private                 String          location;
 
-    public WSClientTransportException(String location) {
+    public WSClientTransportException(BindingProvider bindingProvider) {
 
-        super( "Failed to contact webservice: " + location );
-
-        this.location = location;
+        this.bindingProvider = bindingProvider;
+        location = bindingProvider.getEndpointReference().toString();
     }
 
-    public WSClientTransportException(String location, Throwable cause) {
+    public WSClientTransportException(BindingProvider bindingProvider, Throwable cause) {
 
-        super( "Failed to contact webservice: " + location, cause );
+        super( cause );
 
-        this.location = location;
+        this.bindingProvider = bindingProvider;
+        location = this.bindingProvider.getEndpointReference().toString();
     }
 
-    public String getLocation() {
+    public BindingProvider getBindingProvider() {
 
-        return location;
+        return bindingProvider;
+    }
+
+    @Override
+    public String getMessage() {
+
+        return String.format( "[%s]: %s", bindingProvider.getEndpointReference().toString(), super.getMessage() );
     }
 }

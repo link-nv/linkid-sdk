@@ -10,8 +10,10 @@ package test.unit.net.link.safeonline.sdk.ws;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
+import com.google.common.collect.ImmutableList;
 import java.io.InputStream;
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Set;
 import java.util.Vector;
@@ -25,14 +27,15 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.MessageContext.Scope;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-import net.link.safeonline.sdk.ws.wssecurity.WSSecurityServerHandler;
-import net.link.util.test.j2ee.JNDITestUtils;
+import net.link.util.common.CertificateChain;
+import net.link.util.pkix.ClientCrypto;
+import net.link.util.pkix.ServerCrypto;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
-import net.link.util.ws.pkix.ClientCrypto;
-import net.link.util.ws.pkix.ServerCrypto;
-import net.link.util.ws.pkix.wssecurity.WSSecurityConfigurationService;
+import net.link.util.ws.security.AbstractWSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.*;
@@ -44,10 +47,7 @@ import org.apache.ws.security.util.WSSecurityUtil;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -58,11 +58,9 @@ public class WSSecurityServerHandlerTest {
 
     private static final Log LOG = LogFactory.getLog( WSSecurityServerHandlerTest.class );
 
-    private WSSecurityServerHandler testedInstance;
+    private WSSecurityHandler testedInstance;
 
-    private JNDITestUtils jndiTestUtils;
-
-    private WSSecurityConfigurationService mockWSSecurityConfigurationService;
+    private WSSecurityConfiguration mockWSSecurityConfiguration;
 
     private Object[] mockObjects;
 
@@ -70,26 +68,12 @@ public class WSSecurityServerHandlerTest {
     public void setUp()
             throws Exception {
 
-        jndiTestUtils = new JNDITestUtils();
-        jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent( "java:comp/env/wsSecurityConfigurationServiceJndiName",
-                                     "SafeOnline/WSSecurityConfigurationBean/local" );
-        jndiTestUtils.bindComponent( "java:comp/env/wsSecurityOptionalInboudSignature", Boolean.FALSE );
+        mockWSSecurityConfiguration = createMock( WSSecurityConfiguration.class );
 
-        mockWSSecurityConfigurationService = createMock( WSSecurityConfigurationService.class );
-
-        jndiTestUtils.bindComponent( "SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService );
-        testedInstance = new WSSecurityServerHandler();
+        testedInstance = new WSSecurityHandler( mockWSSecurityConfiguration );
         testedInstance.postConstructCallback();
 
-        mockObjects = new Object[] { mockWSSecurityConfigurationService };
-    }
-
-    @After
-    public void tearDown()
-            throws Exception {
-
-        jndiTestUtils.tearDown();
+        mockObjects = new Object[] { mockWSSecurityConfiguration };
     }
 
     @Test
@@ -98,7 +82,8 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" );
+        CertificateChain certificateChain = new CertificateChain(
+                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
@@ -107,13 +92,13 @@ public class WSSecurityServerHandlerTest {
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext( message, true );
-        soapMessageContext.put( WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate );
-        soapMessageContext.setScope( WSSecurityServerHandler.CERTIFICATE_PROPERTY, Scope.APPLICATION );
+        soapMessageContext.put( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, certificateChain );
+        soapMessageContext.setScope( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
 
         // Setup Mocks
-        expect( mockWSSecurityConfigurationService.getCertificate() ).andReturn( certificate );
-        expect( mockWSSecurityConfigurationService.getPrivateKey() ).andReturn( keyPair.getPrivate() );
-        expect( mockWSSecurityConfigurationService.validateCertificate( certificate ) ).andStubReturn( true );
+        expect( mockWSSecurityConfiguration.getIdentityCertificateChain() ).andReturn( certificateChain );
+        expect( mockWSSecurityConfiguration.getPrivateKey() ).andReturn( keyPair.getPrivate() );
+        expect( mockWSSecurityConfiguration.isCertificateChainTrusted( certificateChain ) ).andStubReturn( true );
 
         replay( mockObjects );
 
@@ -128,12 +113,12 @@ public class WSSecurityServerHandlerTest {
         Element nsElement = resultSoapPart.createElement( "nsElement" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:wsse",
-                                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" );
+                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:wsu",
-                                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" );
+                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" );
         assertNotNull( "missing WS-Security timestamp",
-                       XPathAPI.selectSingleNode( resultSoapPart, "/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp/wsu:Created",
-                                                  nsElement ) );
+                XPathAPI.selectSingleNode( resultSoapPart, "/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp/wsu:Created",
+                        nsElement ) );
     }
 
     @SuppressWarnings("unchecked")
@@ -143,10 +128,12 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" );
+        ImmutableList<X509Certificate> certificateChain = ImmutableList.of(
+                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         KeyPair linkidKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate linkidCertificate = PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" );
+        CertificateChain linkidCertificateChain = new CertificateChain(
+                PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
@@ -155,14 +142,14 @@ public class WSSecurityServerHandlerTest {
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext( message, true );
-        soapMessageContext.put( WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate );
-        soapMessageContext.setScope( WSSecurityServerHandler.CERTIFICATE_PROPERTY, Scope.APPLICATION );
+        soapMessageContext.put( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, certificateChain );
+        soapMessageContext.setScope( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
 
         // Setup Mocks
-        expect( mockWSSecurityConfigurationService.validateCertificate( linkidCertificate ) ).andStubReturn( true );
-        expect( mockWSSecurityConfigurationService.getCertificate() ).andStubReturn( linkidCertificate );
-        expect( mockWSSecurityConfigurationService.getPrivateKey() ).andStubReturn( linkidKeyPair.getPrivate() );
-        expect( mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset() ).andStubReturn( Long.MAX_VALUE );
+        expect( mockWSSecurityConfiguration.isCertificateChainTrusted( linkidCertificateChain ) ).andStubReturn( true );
+        expect( mockWSSecurityConfiguration.getIdentityCertificateChain() ).andStubReturn( linkidCertificateChain );
+        expect( mockWSSecurityConfiguration.getPrivateKey() ).andStubReturn( linkidKeyPair.getPrivate() );
+        expect( mockWSSecurityConfiguration.getMaximumAge() ).andStubReturn( new Duration( Long.MAX_VALUE ) );
 
         replay( mockObjects );
 
@@ -179,9 +166,9 @@ public class WSSecurityServerHandlerTest {
 
         // Verify
         verify( mockObjects );
-        X509Certificate resultCertificate = WSSecurityServerHandler.getCertificate( soapMessageContext );
-        assertNotNull( resultCertificate );
-        Set<String> signedElements = (Set<String>) soapMessageContext.get( WSSecurityServerHandler.SIGNED_ELEMENTS_CONTEXT_KEY );
+        CertificateChain resultCertificateChain = WSSecurityHandler.findCertificateChain( soapMessageContext );
+        assertTrue( !resultCertificateChain.isEmpty() );
+        Set<String> signedElements = (Set<String>) soapMessageContext.get( WSSecurityHandler.SIGNED_ELEMENTS_CONTEXT_KEY );
         assertEquals( 2, signedElements.size() );
         LOG.debug( "signed elements: " + signedElements );
     }
@@ -192,7 +179,8 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair linkidKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate linkidCertificate = PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" );
+        ImmutableList<X509Certificate> linkidCertificateChain = ImmutableList.of(
+                PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
@@ -202,14 +190,11 @@ public class WSSecurityServerHandlerTest {
 
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext( message, false );
 
-        jndiTestUtils.bindComponent( "java:comp/env/wsSecurityOptionalInboudSignature", Boolean.TRUE );
-        testedInstance = new WSSecurityServerHandler();
-        testedInstance.postConstructCallback();
-
         // Setup Mocks
-        expect( mockWSSecurityConfigurationService.getCertificate() ).andStubReturn( linkidCertificate );
-        expect( mockWSSecurityConfigurationService.getPrivateKey() ).andStubReturn( linkidKeyPair.getPrivate() );
-        expect( mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset() ).andStubReturn( Long.MAX_VALUE );
+        expect( mockWSSecurityConfiguration.getIdentityCertificateChain() ).andStubReturn( linkidCertificateChain );
+        expect( mockWSSecurityConfiguration.getPrivateKey() ).andStubReturn( linkidKeyPair.getPrivate() );
+        expect( mockWSSecurityConfiguration.getMaximumAge() ).andStubReturn( new Duration( Long.MAX_VALUE ) );
+        expect( mockWSSecurityConfiguration.isInboundSignatureOptional() ).andStubReturn( true );
 
         replay( mockObjects );
 
@@ -257,7 +242,8 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" );
+        CertificateChain certificateChain = new CertificateChain(
+                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
@@ -268,7 +254,7 @@ public class WSSecurityServerHandlerTest {
         LOG.debug( "adding WS-Security SOAP header" );
         WSSecSignature wsSecSignature = new WSSecSignature();
         wsSecSignature.setKeyIdentifierType( WSConstants.BST_DIRECT_REFERENCE );
-        Crypto crypto = new ClientCrypto( certificate, keyPair.getPrivate() );
+        Crypto crypto = new ClientCrypto( certificateChain, keyPair.getPrivate() );
         WSSecHeader wsSecHeader = new WSSecHeader();
         wsSecHeader.insertSecurityHeader( document );
         try {
@@ -278,7 +264,7 @@ public class WSSecurityServerHandlerTest {
 
             Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
             WSEncryptionPart wsEncryptionPart = new WSEncryptionPart( soapConstants.getBodyQName().getLocalPart(),
-                                                                      soapConstants.getEnvelopeURI(), "Content" );
+                    soapConstants.getEnvelopeURI(), "Content" );
             wsEncryptionParts.add( wsEncryptionPart );
 
             WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
@@ -305,8 +291,8 @@ public class WSSecurityServerHandlerTest {
         LOG.debug( "document: " + DomTestUtils.domToString( document ) );
 
         // Setup Mocks
-        expect( mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset() ).andStubReturn( Long.MAX_VALUE );
-        expect( mockWSSecurityConfigurationService.validateCertificate( certificate ) ).andReturn( true );
+        expect( mockWSSecurityConfiguration.getMaximumAge() ).andStubReturn( new Duration( Long.MAX_VALUE ) );
+        expect( mockWSSecurityConfiguration.isCertificateChainTrusted( certificateChain ) ).andReturn( true );
 
         replay( mockObjects );
 
@@ -341,7 +327,8 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" );
+        CertificateChain certificateChain = new CertificateChain(
+                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
@@ -352,7 +339,7 @@ public class WSSecurityServerHandlerTest {
         LOG.debug( "adding WS-Security SOAP header" );
         WSSecSignature wsSecSignature = new WSSecSignature();
         wsSecSignature.setKeyIdentifierType( WSConstants.BST_DIRECT_REFERENCE );
-        Crypto clientCrypto = new ClientCrypto( certificate, keyPair.getPrivate() );
+        Crypto clientCrypto = new ClientCrypto( certificateChain, keyPair.getPrivate() );
         WSSecHeader wsSecHeader = new WSSecHeader();
         wsSecHeader.insertSecurityHeader( document );
         try {
@@ -410,23 +397,25 @@ public class WSSecurityServerHandlerTest {
         }
     }
 
-    @Test
-    public void maxMillis()
-            throws Exception {
+    private static class TestWSSecurityConfiguration extends AbstractWSSecurityConfiguration {
 
-        DateTime dateTime = new DateTime( "2007-02-26T15:06:11.824Z" );
-        LOG.debug( "date time: " + dateTime );
-        Instant instant = dateTime.toInstant();
-        LOG.debug( "instant: " + instant );
-        DateTime now = new DateTime();
-        LOG.debug( "now: " + now );
-        Instant nowInstant = now.toInstant();
-        LOG.debug( "now instant: " + nowInstant );
-        long diff = Math.abs( nowInstant.getMillis() - instant.getMillis() );
-        LOG.debug( "diff: " + diff );
-        LOG.debug( "Max: " + Long.MAX_VALUE );
-        LOG.debug( "diff > MAX?: " + (diff > Long.MAX_VALUE) );
-        Duration duration = new Duration( instant, nowInstant );
-        LOG.debug( "duration: " + duration );
+        public boolean               trusted;
+        public CertificateChain certificateChain;
+        public PrivateKey            privateKey;
+
+        public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
+
+            return trusted;
+        }
+
+        public CertificateChain getIdentityCertificateChain() {
+
+            return certificateChain;
+        }
+
+        public PrivateKey getPrivateKey() {
+
+            return privateKey;
+        }
     }
 }

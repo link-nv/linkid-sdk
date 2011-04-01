@@ -12,10 +12,11 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.security.*;
+import com.google.common.collect.ImmutableMap;
+import java.security.KeyPair;
+import java.security.KeyStore;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.UUID;
 import javax.jws.HandlerChain;
@@ -30,9 +31,9 @@ import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2Util;
 import net.link.safeonline.sdk.auth.servlet.LogoutServlet;
-import net.link.safeonline.sdk.configuration.GeneratedKeyStore;
 import net.link.safeonline.sdk.configuration.TestConfigHolder;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
+import net.link.util.config.KeyProviderImpl;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.ContainerSetup;
 import net.link.util.test.web.DomTestUtils;
@@ -89,28 +90,21 @@ public class LogoutServletTest {
 
         HashMap<String, ProtocolContext> contexts = new HashMap<String, ProtocolContext>();
         logoutRequest = new LogoutProtocolRequestContext( UUID.randomUUID().toString(), "test-application",
-                                                          mockProtocolHandler = createMock( ProtocolHandler.class ),
-                                                          target = "http://test.target", UUID.randomUUID().toString() );
+                mockProtocolHandler = createMock( ProtocolHandler.class ), target = "http://test.target", UUID.randomUUID().toString() );
         contexts.put( logoutRequest.getId(), logoutRequest );
 
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp( new ContainerSetup( //
-                                                      new ServletSetup( LogoutServlet.class ) ) //
-                                          .addSessionAttribute( ProtocolContext.SESSION_CONTEXTS, contexts ) );
+                new ServletSetup( LogoutServlet.class ) ) //
+                .addSessionAttribute( ProtocolContext.SESSION_CONTEXTS, contexts ) );
 
         new TestConfigHolder( servletTestManager.createSocketConnector(), servletTestManager.getServletContext() ).install();
         keyPair = PkiTestUtils.generateKeyPair();
         testConfig().web().wsBase = webServiceTestManager.getLocation();
-        testConfig().linkID().app().keyStore = new GeneratedKeyStore() {
-            @Override
-            protected KeyStore.PrivateKeyEntry load()
-                    throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, SignatureException, IOException,
-                           InvalidKeyException, CertificateException {
-
-                return new KeyStore.PrivateKeyEntry( keyPair.getPrivate(), new Certificate[] {
-                        PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=TestApplication" ) } );
-            }
-        };
+        testConfig().linkID().app().keyProvider = new KeyProviderImpl(
+                new KeyStore.PrivateKeyEntry( keyPair.getPrivate(), new Certificate[] {
+                        PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=TestApplication" ) } ),
+                ImmutableMap.<String, X509Certificate>of() );
 
         servletLocation = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
@@ -155,7 +149,7 @@ public class LogoutServletTest {
 
         // Setup Mocks
         LogoutProtocolResponseContext logoutResponse = new LogoutProtocolResponseContext( logoutRequest, UUID.randomUUID().toString(), true,
-                                                                                          null );
+                null );
         expect( mockProtocolHandler.findAndValidateLogoutResponse( (HttpServletRequest) anyObject() ) ).andStubReturn( logoutResponse );
         replay( mockProtocolHandler );
 

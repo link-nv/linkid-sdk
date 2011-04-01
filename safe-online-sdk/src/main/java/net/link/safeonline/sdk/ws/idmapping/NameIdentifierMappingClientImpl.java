@@ -8,21 +8,20 @@
 package net.link.safeonline.sdk.ws.idmapping;
 
 import com.sun.xml.ws.client.ClientTransportException;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.idmapping.LinkIDNameIDMappingRequestType;
 import net.lin_k.safe_online.idmapping.NameIdentifierMappingPort;
-import net.lin_k.safe_online.idmapping.NameIdentifierMappingService;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingConstants;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingServiceFactory;
-import net.link.safeonline.sdk.ws.SamlpSecondLevelErrorCode;
-import net.link.safeonline.sdk.ws.SamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.SamlpSecondLevelErrorCode;
+import net.link.safeonline.sdk.ws.SamlpTopLevelErrorCode;
+import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.NameIDMappingResponseType;
 import oasis.names.tc.saml._2_0.protocol.NameIDPolicyType;
@@ -37,11 +36,9 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author fcorneli
  */
-public class NameIdentifierMappingClientImpl extends AbstractWSClient implements NameIdentifierMappingClient {
+public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdentifierMappingPort> implements NameIdentifierMappingClient {
 
     private static final Log LOG = LogFactory.getLog( NameIdentifierMappingClientImpl.class );
-
-    private final NameIdentifierMappingPort port;
 
     private final String location;
 
@@ -50,33 +47,16 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient implements
      * Main constructor.
      *
      * @param location the location (host:port) of the attribute web service.
-     * @param clientCertificate the X509 certificate to use for WS-Security signature.
-     * @param clientPrivateKey the private key corresponding with the client certificate.
-     * @param serverCertificate the X509 certificate of the server
-     * @param maxOffset the maximum offset of the WS-Security timestamp received. If <code>null</code> default offset configured in
-     *            {@link WSSecurityClientHandler} will be used.
      * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration The WS-Security configuration.
      */
-    public NameIdentifierMappingClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey,
-                                           X509Certificate serverCertificate, Long maxOffset, X509Certificate sslCertificate) {
+    public NameIdentifierMappingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        NameIdentifierMappingService service = NameIdentifierMappingServiceFactory.newInstance();
-        port = service.getNameIdentifierMappingPort();
-        this.location = location + "/idmapping";
-        setEndpointAddress();
+        super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort() );
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/idmapping" );
 
-        registerMessageLoggerHandler( port );
-
-        registerTrustManager( port, sslCertificate );
-
-        WSSecurityClientHandler.addNewHandler( port, clientCertificate, clientPrivateKey, serverCertificate, maxOffset );
-    }
-
-    private void setEndpointAddress() {
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-
-        bindingProvider.getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
+        registerTrustManager( sslCertificate );
+        WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
     public String getUserId(String attributeType, String identifier)
@@ -96,13 +76,9 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient implements
 
         NameIDMappingResponseType response;
         try {
-            response = port.nameIdentifierMappingQuery( request );
+            response = getPort().nameIdentifierMappingQuery( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( location, e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         StatusType status = response.getStatus();
@@ -126,9 +102,7 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient implements
             }
         }
 
-        NameIDType responseNameId = response.getNameID();
 
-        String userId = responseNameId.getValue();
-        return userId;
+        return response.getNameID().getValue();
     }
 }

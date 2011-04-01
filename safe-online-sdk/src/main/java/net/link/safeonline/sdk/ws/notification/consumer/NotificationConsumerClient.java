@@ -8,7 +8,6 @@
 package net.link.safeonline.sdk.ws.notification.consumer;
 
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 
 
 /**
@@ -16,7 +15,7 @@ import net.link.safeonline.sdk.ws.WSClient;
  *
  * @author wvdhaute
  */
-public interface NotificationConsumerClient extends WSClient {
+public interface NotificationConsumerClient {
 
     void sendNotification(String topic, String destination, String subject, String content)
             throws WSClientTransportException;

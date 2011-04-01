@@ -10,14 +10,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.List;
 import java.util.Locale;
+import javax.security.auth.x500.X500Principal;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
-import net.link.safeonline.keystore.LinkIDKeyStore;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.auth.protocol.saml2.SAMLBinding;
 import net.link.util.config.AppConfig;
 import net.link.util.config.ConfigHolder;
+import net.link.util.config.KeyProvider;
 import net.link.util.servlet.DummyServletRequest;
+import org.joda.time.Duration;
 
 
 /**
@@ -59,6 +61,7 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
 
             @Override
             protected ServletContext getServletContext() {
+
                 return servletContext;
             }
 
@@ -89,10 +92,10 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
 
     public static class TestSDKConfig implements SDKConfig {
 
-        private final TestWebConfig web = new TestWebConfig();
-        private final TestProtocolConfig proto = new TestProtocolConfig();
-        private final TestLinkIDConfig linkID = new TestLinkIDConfig();
-        private final TestJAASConfig jaas = new TestJAASConfig();
+        private final TestWebConfig      web    = new TestWebConfig();
+        private final TestProtocolConfig proto  = new TestProtocolConfig();
+        private final TestLinkIDConfig   linkID = new TestLinkIDConfig();
+        private final TestJAASConfig     jaas   = new TestJAASConfig();
         private final AppConfig appConfig;
 
         TestSDKConfig(String appBase, AppConfig appConfig) {
@@ -123,7 +126,7 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
             return jaas;
         }
 
-        @SuppressWarnings({ "unchecked" })
+        @SuppressWarnings( { "unchecked" })
         public <C extends AppConfig> C app(Class<C> appConfigType) {
 
             return checkNotNull( (C) appConfig, "Can't use app config: it hasn't been set." );
@@ -179,9 +182,9 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
         public static class TestProtocolConfig implements ProtocolConfig {
 
             private final TestOpenIDProtocolConfig openid = new TestOpenIDProtocolConfig();
-            private final TestSAMLProtocolConfig saml = new TestSAMLProtocolConfig();
+            private final TestSAMLProtocolConfig   saml   = new TestSAMLProtocolConfig();
             public Protocol defaultProtocol;
-            public Long maxTimeOffset;
+            public Duration maxTimeOffset;
 
             public TestOpenIDProtocolConfig openID() {
 
@@ -198,16 +201,16 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
                 return defaultProtocol;
             }
 
-            public Long maxTimeOffset() {
+            public Duration maxTimeOffset() {
 
                 return maxTimeOffset;
             }
 
             public static class TestSAMLProtocolConfig implements SAMLProtocolConfig {
 
-                public String postBindingTemplate;
+                public String      postBindingTemplate;
                 public SAMLBinding binding;
-                public String relayState;
+                public String      relayState;
 
                 public String postBindingTemplate() {
 
@@ -286,34 +289,22 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
             public static class TestAppLinkIDConfig implements AppLinkIDConfig {
 
                 public String name = "test-application";
-                public LinkIDKeyStore keyStore;
-                public String keyStorePass;
-                public String keyEntryAlias;
-                public String keyEntryPass;
+                public KeyProvider   keyProvider;
+                public X500Principal trustedDN;
 
                 public String name() {
 
                     return name;
                 }
 
-                public LinkIDKeyStore keyStore() {
+                public KeyProvider keyProvider() {
 
-                    return keyStore;
+                    return keyProvider;
                 }
 
-                public String keyStorePass() {
+                public X500Principal trustedDN() {
 
-                    return keyStorePass;
-                }
-
-                public String keyEntryAlias() {
-
-                    return keyEntryAlias;
-                }
-
-                public String keyEntryPass() {
-
-                    return keyEntryPass;
+                    return trustedDN;
                 }
             }
         }

@@ -8,7 +8,6 @@
 package net.link.safeonline.sdk.ws.auth;
 
 import com.sun.xml.ws.client.ClientTransportException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
@@ -17,15 +16,16 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
+import net.link.safeonline.auth.ws.AuthenticationErrorCode;
 import net.link.safeonline.auth.ws.soap.AuthenticationStep;
 import net.link.safeonline.auth.ws.soap.Confirmation;
 import net.link.safeonline.auth.ws.soap.WSAuthenticationServiceFactory;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
-import net.link.safeonline.auth.ws.AuthenticationErrorCode;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -41,53 +41,28 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author wvdhaute
  */
-public class AuthenticationClientImpl extends AbstractWSClient implements AuthenticationClient {
+public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationPort> implements AuthenticationClient {
 
     private static final Log LOG = LogFactory.getLog( AuthenticationClientImpl.class );
 
-    private final WSAuthenticationPort port;
-
-    private final W3CEndpointReference endpoint;
-
-    private AssertionType assertion;
-
     private DeviceAuthenticationInformationType deviceAuthenticationInformation;
-
     private AuthenticationStep authenticationStep;
-
-    /**
-     * Main constructor
-     *
-     * @param endpoint endpoint
-     */
-    public AuthenticationClientImpl(W3CEndpointReference endpoint) {
-
-        this( endpoint, null, null, null, null, null );
-    }
+    private AssertionType assertion;
 
     /**
      * Main constructor.
      *
      * @param endpoint          endpoint
-     * @param clientCertificate the X509 certificate to use for WS-Security signature.
-     * @param clientPrivateKey  the private key corresponding with the client certificate.
-     * @param serverCertificate the X509 certificate of the server
-     * @param maxOffset         the maximum offset of the WS-Security timestamp received. If <code>null</code> default offset configured in
-     *                          {@link WSSecurityClientHandler} will be used.
      * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration The WS-Security configuration.
      */
-    public AuthenticationClientImpl(W3CEndpointReference endpoint, X509Certificate clientCertificate, PrivateKey clientPrivateKey,
-                                    X509Certificate serverCertificate, Long maxOffset, X509Certificate sslCertificate) {
+    public AuthenticationClientImpl(W3CEndpointReference endpoint, X509Certificate sslCertificate,
+                                    final WSSecurityConfiguration configuration) {
 
-        WSAuthenticationService authenticationService = WSAuthenticationServiceFactory.newInstance();
-        this.endpoint = endpoint;
-        port = authenticationService.getPort( endpoint, WSAuthenticationPort.class, new AddressingFeature( true ) );
+        super( WSAuthenticationServiceFactory.newInstance().getPort( endpoint, WSAuthenticationPort.class, new AddressingFeature( true ) ) );
 
-        registerMessageLoggerHandler( port );
-
-        registerTrustManager( port, sslCertificate );
-
-        WSSecurityClientHandler.addNewHandler( port, clientCertificate, clientPrivateKey, serverCertificate, maxOffset );
+        registerTrustManager( sslCertificate );
+        WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
     /**
@@ -308,13 +283,9 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             throws WSClientTransportException {
 
         try {
-            return port.authenticate( request );
+            return getPort().authenticate( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( endpoint.toString(), e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 
@@ -331,7 +302,7 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             if (AuthenticationErrorCode.REQUEST_DENIED == authenticationErrorCode)
                 throw new RequestDeniedException();
             else if (AuthenticationErrorCode.REQUEST_FAILED == authenticationErrorCode)
-                throw new WSClientTransportException( endpoint.toString() );
+                throw new WSClientTransportException( getBindingProvider() );
             else
                 throw new WSAuthenticationException( authenticationErrorCode, status.getStatusMessage(), null );
         }
@@ -342,13 +313,9 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             throws WSClientTransportException {
 
         try {
-            return port.requestGlobalUsageAgreement( request );
+            return getPort().requestGlobalUsageAgreement( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( endpoint.toString(), e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 
@@ -357,13 +324,9 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             throws WSClientTransportException {
 
         try {
-            return port.confirmGlobalUsageAgreement( request );
+            return getPort().confirmGlobalUsageAgreement( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( endpoint.toString(), e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 
@@ -371,13 +334,9 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             throws WSClientTransportException {
 
         try {
-            return port.requestUsageAgreement( request );
+            return getPort().requestUsageAgreement( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( endpoint.toString(), e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 
@@ -385,13 +344,9 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             throws WSClientTransportException {
 
         try {
-            return port.confirmUsageAgreement( request );
+            return getPort().confirmUsageAgreement( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( endpoint.toString(), e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 
@@ -399,13 +354,9 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             throws WSClientTransportException {
 
         try {
-            return port.requestIdentity( request );
+            return getPort().requestIdentity( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( endpoint.toString(), e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 
@@ -413,13 +364,9 @@ public class AuthenticationClientImpl extends AbstractWSClient implements Authen
             throws WSClientTransportException {
 
         try {
-            return port.confirmIdentity( request );
+            return getPort().confirmIdentity( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( endpoint.toString(), e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 

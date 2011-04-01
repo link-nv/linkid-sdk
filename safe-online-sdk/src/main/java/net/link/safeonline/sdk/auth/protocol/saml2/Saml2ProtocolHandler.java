@@ -111,7 +111,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         Map<String, ProtocolContext> contexts = ProtocolContext.getContexts( request.getSession() );
         Saml2ResponseContext saml2ResponseContext = ResponseUtil.findAndValidateAuthnResponse( request, contexts,
-                authnContext.getServiceCertificates(), authnContext.getServiceRootCertificates() );
+                authnContext.getTrustedCertificates() );
         if (null == saml2ResponseContext)
             // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
             return null;
@@ -159,7 +159,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 authnContext.getTarget() );
 
         List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( assertion.getSignature(), request,
-                authnContext.getServiceCertificates(), authnContext.getServiceRootCertificates() );
+                authnContext.getTrustedCertificates() );
 
         return new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true,
                 certificateChain );
@@ -210,7 +210,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         Map<String, ProtocolContext> contexts = ProtocolContext.getContexts( request.getSession() );
         Saml2ResponseContext saml2ResponseContext = ResponseUtil.findAndValidateLogoutResponse( request, contexts,
-                logoutContext.getServiceCertificates(), logoutContext.getServiceRootCertificates() );
+                logoutContext.getTrustedCertificates() );
         if (null == saml2ResponseContext)
             // The request does not contain a logout response or it didn't match the request sent by this protocol handler.
             return null;
@@ -241,7 +241,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         logoutContext = requestToContext.apply( logoutRequest );
 
         List<X509Certificate> certificateChain = RequestUtil.validateRequest( request, samlRequest,
-                logoutContext.getServiceCertificates(), logoutContext.getServiceRootCertificates() );
+                logoutContext.getTrustedCertificates() );
 
         logoutRequest.setCertificateChain( certificateChain );
         return logoutRequest;

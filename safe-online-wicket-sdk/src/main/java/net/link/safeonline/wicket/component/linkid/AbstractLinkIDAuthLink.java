@@ -6,13 +6,12 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import net.link.util.wicket.util.RedirectResponse;
 import net.link.util.wicket.util.RedirectResponseException;
-import org.apache.wicket.*;
+import org.apache.wicket.Application;
+import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebResponse;
 
 
 /**
@@ -55,17 +54,10 @@ public abstract class AbstractLinkIDAuthLink extends Link<Object> implements Lin
     @Override
     public void onClick() {
 
-        throw new RedirectResponseException( new IRequestTarget() {
+        throw new RedirectResponseException( new RedirectResponse() {
+            public void run() {
 
-            public void detach(RequestCycle requestCycle) {
-
-            }
-
-            public void respond(RequestCycle requestCycle) {
-
-                HttpServletRequest request = ((WebRequest) requestCycle.getRequest()).getHttpServletRequest();
-                HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
-                delegate( request, response, AbstractLinkIDAuthLink.this );
+                delegate( getTarget(), getTargetPageParameters() );
             }
         } );
     }

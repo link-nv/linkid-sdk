@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.logging.exception.*;
-import net.link.safeonline.sdk.ws.WSClient;
 
 
 /**
@@ -23,7 +22,7 @@ import net.link.safeonline.sdk.ws.WSClient;
  *
  * @author fcorneli
  */
-public interface AttributeClient extends WSClient {
+public interface AttributeClient {
 
     /**
      * Gives back attribute values via the map of attributes. The map should hold the requested attribute names as keys. The method will

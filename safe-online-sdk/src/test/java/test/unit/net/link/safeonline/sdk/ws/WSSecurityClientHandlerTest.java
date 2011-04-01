@@ -15,16 +15,18 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.InputStream;
 import java.security.KeyPair;
-import java.security.cert.X509Certificate;
+import java.security.PrivateKey;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPConstants;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.util.common.CertificateChain;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
+import net.link.util.ws.security.AbstractWSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
@@ -39,16 +41,31 @@ public class WSSecurityClientHandlerTest {
 
     private static final Log LOG = LogFactory.getLog( WSSecurityClientHandlerTest.class );
 
-    private WSSecurityClientHandler testedInstance;
+    private WSSecurityHandler testedInstance;
 
     @Before
     public void setUp()
             throws Exception {
 
-        KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" );
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
-        testedInstance = new WSSecurityClientHandler( certificate, keyPair.getPrivate(), certificate, null );
+        testedInstance = new WSSecurityHandler( new AbstractWSSecurityConfiguration() {
+            public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
+
+                return certificateChain.equals( aCertificateChain );
+            }
+
+            public CertificateChain getIdentityCertificateChain() {
+
+                return certificateChain;
+            }
+
+            public PrivateKey getPrivateKey() {
+
+                return keyPair.getPrivate();
+            }
+        } );
     }
 
     @Test
@@ -64,7 +81,7 @@ public class WSSecurityClientHandlerTest {
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext( message, true );
 
         // Test
-        WSSecurityClientHandler.addToBeSignedId( "test-id", soapMessageContext );
+        WSSecurityHandler.addSignedElement( soapMessageContext, "test-id" );
         testedInstance.handleMessage( soapMessageContext );
 
         // Verify

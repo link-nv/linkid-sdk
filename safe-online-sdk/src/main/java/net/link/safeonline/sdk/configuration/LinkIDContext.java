@@ -15,15 +15,16 @@ import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.List;
+import java.util.Collection;
 import java.util.Locale;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import net.link.safeonline.keystore.LinkIDKeyStore;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.auth.protocol.openid.OpenIDSSLSocketFactory;
 import net.link.safeonline.sdk.auth.protocol.openid.OpenIDTrustManager;
 import net.link.safeonline.sdk.auth.protocol.saml2.SAMLBinding;
+import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
+import net.link.util.config.KeyProvider;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.jetbrains.annotations.NotNull;
 import org.openid4java.consumer.ConsumerManager;
@@ -35,7 +36,6 @@ import org.openid4java.server.RealmVerifierFactory;
 import org.openid4java.util.HttpFetcherFactory;
 
 
-
 /**
  * <h2>{@link LinkIDContext}<br> <sub>[in short] (TODO).</sub></h2>
  *
@@ -45,24 +45,23 @@ import org.openid4java.util.HttpFetcherFactory;
  */
 public abstract class LinkIDContext implements Serializable {
 
-    private final String                applicationName;
-    private final String                applicationFriendlyName;
-    private final KeyPair               applicationKeyPair;
-    private final X509Certificate       applicationCertificate;
+    private final String                      applicationName;
+    private final String                      applicationFriendlyName;
+    private final KeyPair                     applicationKeyPair;
+    private final X509Certificate             applicationCertificate;
     //
-    private final List<X509Certificate> serviceCertificates;
-    private final List<X509Certificate> serviceRootCertificates;
-    private final String                sessionTrackingId;
-    private final String                themeName;
-    private final Locale                language;
-    private final String                target;
+    private final Collection<X509Certificate> trustedCertificates;
+    private final String                      sessionTrackingId;
+    private final String                      themeName;
+    private final Locale                      language;
+    private final String                      target;
     //
-    private final Protocol              protocol;
-    private final SAMLContext           saml;
-    private final OpenIDContext         openID;
+    private final Protocol                    protocol;
+    private final SAMLContext                 saml;
+    private final OpenIDContext               openID;
 
     /**
-     * @see #LinkIDContext(String, LinkIDKeyStore, String)
+     * @see #LinkIDContext(String, KeyProvider, String)
      */
     protected LinkIDContext() {
 
@@ -72,19 +71,19 @@ public abstract class LinkIDContext implements Serializable {
     /**
      * @param applicationName The name of the application that the user is being authenticated for. May be <code>null</code>, in which case
      *                        {@link AppLinkIDConfig#name()} will be used.
-     * @param keyStore        The store that will provide the necessary keys and certificates to authenticate and sign the application's
+     * @param keyProvider     The provider that will provide the necessary keys and certificates to authenticate and sign the application's
      *                        requests and responses or verify the linkID server's communications.  May be <code>null</code>, in which case
-     *                        {@link AppLinkIDConfig#keyStore()} will be used.
+     *                        {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
      *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
      *                        context path.
      *
-     * @see #LinkIDContext(String, String, LinkIDKeyStore, String, String, Locale, String)
+     * @see #LinkIDContext(String, String, KeyProvider, String, String, Locale, String)
      */
-    protected LinkIDContext(String applicationName, LinkIDKeyStore keyStore, String target) {
+    protected LinkIDContext(String applicationName, KeyProvider keyProvider, String target) {
 
-        this( applicationName, null, keyStore, null, null, null, target );
+        this( applicationName, null, keyProvider, null, null, null, target );
     }
 
     /**
@@ -92,9 +91,9 @@ public abstract class LinkIDContext implements Serializable {
      *                                which case {@link AppLinkIDConfig#name()} will be used.
      * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
      *                                name configured at the linkID server will be used.
-     * @param keyStore                The store that will provide the necessary keys and certificates to authenticate and sign the
+     * @param keyProvider             The provider that will provide the necessary keys and certificates to authenticate and sign the
      *                                application's requests and responses or verify the linkID server's communications.  May be
-     *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyStore()} will be used.
+     *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
@@ -106,24 +105,22 @@ public abstract class LinkIDContext implements Serializable {
      *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
      *                                user is sent to the application's context path.
      *
-     * @see #LinkIDContext(String, String, KeyPair, X509Certificate, List, List, X509Certificate, String, String, Locale, String, Protocol)
+     * @see #LinkIDContext(String, String, KeyProvider, String, String, Locale, String, Void)
      */
-    protected LinkIDContext(String applicationName, String applicationFriendlyName, LinkIDKeyStore keyStore, String sessionTrackingId,
+    protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
                             String themeName, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, getOrDefault( keyStore, config().linkID().app().keyStore() ), sessionTrackingId,
-              themeName, language, target, null );
+        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, config().linkID().app().keyProvider() ),
+                sessionTrackingId, themeName, language, target, null );
     }
 
-    private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull LinkIDKeyStore keyStore,
+    private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider,
                           String sessionTrackingId, String themeName, Locale language, String target, Void v) {
 
         this( applicationName, applicationFriendlyName, //
-              keyStore.getKeyPair(), keyStore.getCertificate(),  //
-              keyStore.getCertificates( LinkIDKeyStore.LINKID_SERVICE_ALIAS ), //
-              keyStore.getCertificates( LinkIDKeyStore.LINKID_SERVICE_ROOT_ALIAS ), //
-              keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ), //
-              sessionTrackingId, themeName, language, target, null );
+                keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
+                keyProvider.getTrustedCertificates(), //
+                keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ), sessionTrackingId, themeName, language, target, null );
     }
 
     /**
@@ -134,10 +131,9 @@ public abstract class LinkIDContext implements Serializable {
      * @param applicationKeyPair      The application's key pair that will be used to sign the authentication request.
      * @param applicationCertificate  The certificate issued for the application's key pair.  It will be added to WS-Security headers for
      *                                purpose of server-side identification and verification.
-     * @param serviceCertificates     The linkID service certificates. Will be used for validation of signatures (e.g. SAML v2.0
-     *                                HTTP-Redirect).
-     * @param serviceRootCertificates The linkID service root certificates, optionally used for trust validation of the cert.chain returned
-     *                                in signed authentication responses.
+     * @param trustedCertificates     Used for validating whether incoming messages can be trusted.  The certificate chain in the incoming
+     *                                message's signature is deemed trusted when the chain is valid, all certificates are valid, none are
+     *                                revoked, and at least is in the set of trusted certificates.
      * @param sslCertificate          The linkID server's SSL certificate. It will be used to validate establishment of SSL-transport based
      *                                communication with the server. May be <code>null</code>, in which case no SSL certificate validation
      *                                will take place.
@@ -155,9 +151,9 @@ public abstract class LinkIDContext implements Serializable {
      *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                            X509Certificate applicationCertificate, List<X509Certificate> serviceCertificates,
-                            List<X509Certificate> serviceRootCertificates, X509Certificate sslCertificate, String sessionTrackingId,
-                            String themeName, Locale language, String target, Protocol protocol) {
+                            X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
+                            X509Certificate sslCertificate, String sessionTrackingId, String themeName, Locale language, String target,
+                            Protocol protocol) {
 
         saml = new SAMLContext();
         openID = new OpenIDContext( sslCertificate );
@@ -166,8 +162,7 @@ public abstract class LinkIDContext implements Serializable {
         this.applicationFriendlyName = applicationFriendlyName;
         this.applicationKeyPair = applicationKeyPair;
         this.applicationCertificate = applicationCertificate;
-        this.serviceCertificates = serviceCertificates;
-        this.serviceRootCertificates = serviceRootCertificates;
+        this.trustedCertificates = trustedCertificates;
         this.sessionTrackingId = sessionTrackingId;
         this.themeName = getOrDefault( themeName, config().linkID().theme() );
         this.language = getOrDefault( language, config().linkID().language() );
@@ -209,14 +204,9 @@ public abstract class LinkIDContext implements Serializable {
         return applicationCertificate;
     }
 
-    public List<X509Certificate> getServiceCertificates() {
+    public Collection<X509Certificate> getTrustedCertificates() {
 
-        return serviceCertificates;
-    }
-
-    public List<X509Certificate> getServiceRootCertificates() {
-
-        return serviceRootCertificates;
+        return trustedCertificates;
     }
 
     public String getSessionTrackingId() {
@@ -258,8 +248,8 @@ public abstract class LinkIDContext implements Serializable {
     public String toString() {
 
         return String.format( "{app=%s, dn=%s, session=%s, themeName=%s, target=%s, protocol=%s}", //
-                              getApplicationName(), getApplicationCertificate().getSubjectDN(), getSessionTrackingId(), getThemeName(),
-                              getTarget(), getProtocol() );
+                getApplicationName(), getApplicationCertificate().getSubjectDN(), getSessionTrackingId(), getThemeName(), getTarget(),
+                getProtocol() );
     }
 
     public static class SAMLContext implements Serializable {
@@ -334,18 +324,21 @@ public abstract class LinkIDContext implements Serializable {
                     TrustManager[] trustManagers = { trustManager };
                     sslContext.init( null, trustManagers, null );
                     HttpFetcherFactory httpFetcherFactory = new HttpFetcherFactory( sslContext,
-                                                                                    SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER );
+                            SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER );
                     YadisResolver yadisResolver = new YadisResolver( httpFetcherFactory );
                     RealmVerifierFactory realmFactory = new RealmVerifierFactory( yadisResolver );
                     HtmlResolver htmlResolver = new HtmlResolver( httpFetcherFactory );
                     XriResolver xriResolver = Discovery.getXriResolver();
                     Discovery discovery = new Discovery( htmlResolver, yadisResolver, xriResolver );
                     manager = new ConsumerManager( realmFactory, discovery, httpFetcherFactory );
-                } catch (KeyManagementException e) {
+                }
+                catch (KeyManagementException e) {
                     throw new RuntimeException( e );
-                } catch (NoSuchAlgorithmException e) {
+                }
+                catch (NoSuchAlgorithmException e) {
                     throw new RuntimeException( e );
-                } catch (KeyStoreException e) {
+                }
+                catch (KeyStoreException e) {
                     throw new RuntimeException( e );
                 }
             }

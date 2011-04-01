@@ -11,7 +11,6 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.WSAuthenticationService;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 
 
 /**
@@ -19,7 +18,7 @@ import net.link.safeonline.sdk.ws.WSClient;
  *
  * @author wvdhaute
  */
-public interface GetAuthenticationClient extends WSClient {
+public interface GetAuthenticationClient {
 
     /**
      * Returns endpoint reference {@link W3CEndpointReference} to the stateful {@link WSAuthenticationService}

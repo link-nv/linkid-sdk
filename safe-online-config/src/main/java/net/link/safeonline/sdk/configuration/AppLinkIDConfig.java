@@ -1,7 +1,8 @@
 package net.link.safeonline.sdk.configuration;
 
-import net.link.safeonline.keystore.LinkIDKeyStore;
+import javax.security.auth.x500.X500Principal;
 import net.link.util.config.Config;
+import net.link.util.config.KeyProvider;
 
 
 /**
@@ -24,36 +25,17 @@ public interface AppLinkIDConfig {
     String name();
 
     /**
-     * The keystore that will provide the application's identification, authentication and signing credentials, along with any certificates
-     * that are used to verify messages from linkID services.
+     * The key provider that will provide the application's identification, authentication and signing credentials, along with any certificates
+     * that are used to validate messages from linkID services.
      *
-     * <i>[required, default: res:application.jks]</i>
+     * <i>[required, default: classpath://application:secret:secret@application.jks]</i>
      */
-    @Config.Property(required = true, unset = "res:application.jks")
-    LinkIDKeyStore keyStore();
+    @Config.Property(required = true, unset = "classpath://application:secret:secret@application.jks")
+    KeyProvider keyProvider();
 
     /**
-     * The password that protects the key store referenced by {@link AppLinkIDConfig#keyStore()}.
-     *
-     * <i>[required, default: secret]</i>
+     * @return The DN of the end certificate with which incoming messages should be signed.
      */
-    @Config.Property(required = true, unset = "secret")
-    String keyStorePass();
-
-    /**
-     * The alias that identifies the private key entry from the key store referenced by  {@link AppLinkIDConfig#keyStore()} which the SDK
-     * uses to obtain the application's identity and credentials.
-     *
-     * <i>[optional, default: Use the first key entry in the store]</i>
-     */
-    @Config.Property(required = false, unset = Config.Property.AUTO)
-    String keyEntryAlias();
-
-    /**
-     * The password that protects the private key entry identified by {@link AppLinkIDConfig#keyEntryAlias()}.
-     *
-     * <i>[required, default: secret]</i>
-     */
-    @Config.Property(required = true, unset = "secret")
-    String keyEntryPass();
+    @Config.Property(required = true, unset = "CN=SafeOnline Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE")
+    X500Principal trustedDN();
 }

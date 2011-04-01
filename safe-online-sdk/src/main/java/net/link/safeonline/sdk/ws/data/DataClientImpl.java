@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.ws.data;
 
 import com.sun.xml.ws.client.ClientTransportException;
 import java.io.Serializable;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -29,9 +28,10 @@ import net.link.safeonline.data.ws.SecondLevelStatusCode;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,38 +42,24 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author fcorneli
  */
-public class DataClientImpl extends AbstractWSClient implements DataClient {
+public class DataClientImpl extends AbstractWSClient<DataServicePort> implements DataClient {
 
     private static final Log LOG = LogFactory.getLog( DataClientImpl.class );
 
-    private final DataServicePort port;
-
-    private final String location;
-
     private final TargetIdentityClientHandler targetIdentityHandler;
+    private final String location;
 
     /**
      * Main constructor.
      *
      * @param location          the location (host:port) of the attribute web service.
-     * @param clientCertificate the X509 certificate to use for WS-Security signature.
-     * @param clientPrivateKey  the private key corresponding with the client certificate.
-     * @param serverCertificate the X509 certificate of the server
-     * @param maxOffset         the maximum offset of the WS-Security timestamp received. If <code>null</code> default offset configured in
-     *                          {@link WSSecurityClientHandler} will be used.
      * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration The WS-Security configuration.
      */
-    public DataClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey,
-                          X509Certificate serverCertificate, Long maxOffset, X509Certificate sslCertificate) {
+    public DataClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        DataService dataService = DataServiceFactory.newInstance();
-        AddressingFeature addressingFeature = new AddressingFeature();
-        port = dataService.getDataServicePort( addressingFeature );
-        this.location = location + "/data";
-
-        setEndpointAddress();
-
-        registerMessageLoggerHandler( port );
+        super(DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ) );
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/data" );
 
         /*
          * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to come first since it
@@ -82,9 +68,8 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
         targetIdentityHandler = new TargetIdentityClientHandler();
         initTargetIdentityHandler();
 
-        registerTrustManager( port, sslCertificate );
-
-        WSSecurityClientHandler.addNewHandler( port, clientCertificate, clientPrivateKey, serverCertificate, maxOffset );
+        registerTrustManager( sslCertificate );
+        WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
     /**
@@ -112,13 +97,9 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
 
         ModifyResponseType modifyResponse;
         try {
-            modifyResponse = port.modify( modify );
+            modifyResponse = getPort().modify( modify );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( location, e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         validateStatus( modifyResponse.getStatus() );
@@ -146,13 +127,9 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
 
         QueryResponseType queryResponse;
         try {
-            queryResponse = port.query( query );
+            queryResponse = getPort().query( query );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( location, e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         validateStatus( queryResponse.getStatus() );
@@ -194,13 +171,9 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
 
         CreateResponseType createResponse;
         try {
-            createResponse = port.create( create );
+            createResponse = getPort().create( create );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( location, e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         validateStatus( createResponse.getStatus() );
@@ -250,13 +223,9 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
 
         DeleteResponseType deleteResponse;
         try {
-            deleteResponse = port.delete( delete );
+            deleteResponse = getPort().delete( delete );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( location, e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         validateStatus( deleteResponse.getStatus() );
@@ -264,19 +233,11 @@ public class DataClientImpl extends AbstractWSClient implements DataClient {
 
     private void initTargetIdentityHandler() {
 
-        BindingProvider bindingProvider = (BindingProvider) port;
-        Binding binding = bindingProvider.getBinding();
+        Binding binding = getBindingProvider().getBinding();
         @SuppressWarnings("unchecked")
         List<Handler> handlerChain = binding.getHandlerChain();
         handlerChain.add( targetIdentityHandler );
         binding.setHandlerChain( handlerChain );
-    }
-
-    private void setEndpointAddress() {
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-
-        bindingProvider.getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
     }
 
     private static AttributeType getAttributeType(AttributeSDK<?> attribute) {

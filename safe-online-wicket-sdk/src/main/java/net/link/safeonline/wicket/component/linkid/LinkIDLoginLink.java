@@ -6,22 +6,20 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
+import net.link.util.wicket.util.WicketUtils;
 import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.RequestCycle;
 
 
 /**
- * <h2>{@link LinkIDLoginLink}<br>
- * <sub>A link that uses the linkID SDK to log a user in through the linkID authentication services.</sub></h2>
+ * <h2>{@link LinkIDLoginLink}<br> <sub>A link that uses the linkID SDK to log a user in through the linkID authentication
+ * services.</sub></h2>
  *
- * <p>
- * <i>Sep 22, 2008</i>
- * </p>
+ * <p> <i>Sep 22, 2008</i> </p>
  *
  * @author lhunath
  */
@@ -37,21 +35,26 @@ public class LinkIDLoginLink extends AbstractLinkIDAuthLink {
         super( id, target );
     }
 
-    public void delegate(HttpServletRequest request, HttpServletResponse response, AbstractLinkIDAuthLink link) {
+    public void delegate(final Class<? extends Page> target, final PageParameters targetPageParameters) {
 
-        AuthenticationUtils.login( request, response, newContext());
+        AuthenticationUtils.login( WicketUtils.getServletRequest(), WicketUtils.getServletResponse(),
+                newContext( target, targetPageParameters ) );
     }
 
     /**
      * Override this if you want to provide a custom authentication context.
      *
-     * The default context uses the page class and parameters provided by this component to build the URL the user will be sent to after the process has been completed.
+     * The default context uses the page class and parameters provided by this component to build the URL the user will be sent to after the
+     * process has been completed.
+     *
+     * @param target               The page where the user should end up after delegation.
+     * @param targetPageParameters The parameters to pass to the page on construction.
      *
      * @return A new logout context.
      */
-    protected AuthenticationContext newContext() {
+    protected AuthenticationContext newContext(final Class<? extends Page> target, final PageParameters targetPageParameters) {
 
-        String targetURL = RequestCycle.get().urlFor( getTarget(), getTargetPageParameters() ).toString();
+        String targetURL = RequestCycle.get().urlFor( target, targetPageParameters ).toString();
 
         return new AuthenticationContext( null, null, null, targetURL );
     }

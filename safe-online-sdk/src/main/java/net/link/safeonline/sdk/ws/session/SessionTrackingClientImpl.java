@@ -7,20 +7,20 @@
 package net.link.safeonline.sdk.ws.session;
 
 import com.sun.xml.ws.client.ClientTransportException;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.session.*;
-import net.link.safeonline.sdk.ws.SessionTrackingErrorCode;
 import net.link.safeonline.sdk.logging.exception.ApplicationPoolNotFoundException;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.SessionTrackingErrorCode;
 import net.link.safeonline.session.ws.SessionTrackingServiceFactory;
+import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,11 +38,9 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author wvdhaute
  */
-public class SessionTrackingClientImpl extends AbstractWSClient implements SessionTrackingClient {
+public class SessionTrackingClientImpl extends AbstractWSClient<SessionTrackingPort> implements SessionTrackingClient {
 
     private static final Log LOG = LogFactory.getLog( SessionTrackingClientImpl.class );
-
-    private final SessionTrackingPort port;
 
     private final String location;
 
@@ -51,33 +49,16 @@ public class SessionTrackingClientImpl extends AbstractWSClient implements Sessi
      * Main constructor.
      *
      * @param location the location (host:port) of the attribute web service.
-     * @param clientCertificate the X509 certificate to use for WS-Security signature.
-     * @param clientPrivateKey the private key corresponding with the client certificate.
-     * @param serverCertificate the X509 certificate of the server
-     * @param maxOffset the maximum offset of the WS-Security timestamp received. If <code>null</code> default offset configured in
-     *            {@link WSSecurityClientHandler} will be used.
      * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration
      */
-    public SessionTrackingClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey,
-                                     X509Certificate serverCertificate, Long maxOffset, X509Certificate sslCertificate) {
+    public SessionTrackingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        SessionTrackingService service = SessionTrackingServiceFactory.newInstance();
-        port = service.getSessionTrackingPort();
-        this.location = location + "/session";
+        super(SessionTrackingServiceFactory.newInstance().getSessionTrackingPort() );
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/session" );
 
-        setEndpointAddress();
-
-        registerMessageLoggerHandler( port );
-
-        registerTrustManager( port, sslCertificate );
-
-        WSSecurityClientHandler.addNewHandler( port, clientCertificate, clientPrivateKey, serverCertificate, maxOffset );
-    }
-
-    private void setEndpointAddress() {
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
+        registerTrustManager( sslCertificate );
+        WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
     /**
@@ -100,10 +81,10 @@ public class SessionTrackingClientImpl extends AbstractWSClient implements Sessi
 
         SessionTrackingResponseType response;
         try {
-            response = port.getAssertions( request );
+            response = getPort().getAssertions( request );
         } catch (ClientTransportException e) {
             LOG.debug( "Failed to send notification" );
-            throw new WSClientTransportException( location, e );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         checkStatus( response );

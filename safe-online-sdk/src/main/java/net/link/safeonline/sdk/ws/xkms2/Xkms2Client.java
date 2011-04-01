@@ -12,7 +12,6 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 
 
 /**
@@ -20,7 +19,7 @@ import net.link.safeonline.sdk.ws.WSClient;
  *
  * @author wvdhaute
  */
-public interface Xkms2Client extends WSClient {
+public interface Xkms2Client {
 
     /**
      * Validate the linkID certificate chain.

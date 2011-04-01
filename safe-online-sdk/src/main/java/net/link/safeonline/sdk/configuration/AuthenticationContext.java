@@ -4,11 +4,12 @@ import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.confi
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.List;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Set;
-import net.link.safeonline.keystore.LinkIDKeyStore;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
+import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
+import net.link.util.config.KeyProvider;
 
 
 /**
@@ -24,7 +25,7 @@ public class AuthenticationContext extends LinkIDContext {
     private final Set<String> devices;
 
     /**
-     * @see #AuthenticationContext(String, LinkIDKeyStore, Set, String)
+     * @see #AuthenticationContext(String, KeyProvider, Set, String)
      */
     public AuthenticationContext() {
 
@@ -44,7 +45,7 @@ public class AuthenticationContext extends LinkIDContext {
      *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the application's
      *                        device policy configured at the linkID node may further restrict the available devices.
      *
-     * @see #AuthenticationContext(String, String, LinkIDKeyStore, boolean, Set, String, String, Locale, String)
+     * @see #AuthenticationContext(String, String, KeyProvider, boolean, Set, String, String, Locale, String)
      */
     public AuthenticationContext(String applicationName, Set<String> devices, String target, Protocol protocol) {
 
@@ -54,9 +55,9 @@ public class AuthenticationContext extends LinkIDContext {
     /**
      * @param applicationName The name of the application that the user is being authenticated for. May be <code>null</code>, in which case
      *                        {@link AppLinkIDConfig#name()} will be used.
-     * @param keyStore        The store that will provide the necessary keys and certificates to authenticate and sign the application's
+     * @param keyProvider        The provider that will provide the necessary keys and certificates to authenticate and sign the application's
      *                        requests and responses or verify the linkID server's communications.  May be <code>null</code>, in which case
-     *                        {@link AppLinkIDConfig#keyStore()} will be used.
+     *                        {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
      *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
@@ -66,11 +67,11 @@ public class AuthenticationContext extends LinkIDContext {
      *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the application's
      *                        device policy configured at the linkID node may further restrict the available devices.
      *
-     * @see #AuthenticationContext(String, String, LinkIDKeyStore, boolean, Set, String, String, Locale, String)
+     * @see #AuthenticationContext(String, String, KeyProvider, boolean, Set, String, String, Locale, String)
      */
-    public AuthenticationContext(String applicationName, LinkIDKeyStore keyStore, Set<String> devices, String target) {
+    public AuthenticationContext(String applicationName, KeyProvider keyProvider, Set<String> devices, String target) {
 
-        this( applicationName, null, keyStore, false, devices, null, null, null, target );
+        this( applicationName, null, keyProvider, false, devices, null, null, null, target );
     }
 
     /**
@@ -78,9 +79,9 @@ public class AuthenticationContext extends LinkIDContext {
      *                                which case {@link AppLinkIDConfig#name()} will be used.
      * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
      *                                name configured at the linkID server will be used.
-     * @param keyStore                The store that will provide the necessary keys and certificates to authenticate and sign the
+     * @param keyProvider                The provider that will provide the necessary keys and certificates to authenticate and sign the
      *                                application's requests and responses or verify the linkID server's communications.  May be
-     *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyStore()} will be used.
+     *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param forceAuthentication     If <code>true</code>, users initiating authentication while in a live SSO environment will still be
      *                                required to fully identify and authenticate themselves with a device.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
@@ -99,28 +100,26 @@ public class AuthenticationContext extends LinkIDContext {
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
      *
-     * @see #AuthenticationContext(String, String, KeyPair, X509Certificate, List, List, X509Certificate, boolean, String, Locale, String,
+     * @see #AuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, String, Locale, String,
      *      Set, String, Protocol)
      */
-    public AuthenticationContext(String applicationName, String applicationFriendlyName, LinkIDKeyStore keyStore,
-                                 boolean forceAuthentication, Set<String> devices, String sessionTrackingId, String themeName,
-                                 Locale language, String target) {
+    public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, boolean forceAuthentication,
+                                 Set<String> devices, String sessionTrackingId, String themeName, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, getOrDefault( keyStore, config().linkID().app().keyStore() ), forceAuthentication,
-              themeName, language, target, devices, sessionTrackingId, null );
+        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, config().linkID().app().keyProvider() ),
+                forceAuthentication, themeName, language, target, devices, sessionTrackingId, null );
     }
 
-    private AuthenticationContext(String applicationName, String applicationFriendlyName, LinkIDKeyStore keyStore,
-                                  boolean forceAuthentication, String themeName, Locale language, String target, Set<String> devices,
-                                  String sessionTrackingId, Protocol protocol) {
+    private AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyStore, boolean forceAuthentication,
+                                  String themeName, Locale language, String target, Set<String> devices, String sessionTrackingId,
+                                  Protocol protocol) {
 
         this( applicationName, applicationFriendlyName, //
-              null != keyStore? keyStore.getKeyPair(): null, //
-              null != keyStore? keyStore.getCertificate(): null,//
-              null != keyStore? keyStore.getCertificates( LinkIDKeyStore.LINKID_SERVICE_ALIAS ): null, //
-              null != keyStore? keyStore.getCertificates( LinkIDKeyStore.LINKID_SERVICE_ROOT_ALIAS ): null, //
-              null != keyStore? keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ): null, //
-              forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol );
+                null != keyStore? keyStore.getIdentityKeyPair(): null, //
+                null != keyStore? keyStore.getIdentityCertificate(): null,//
+                null != keyStore? keyStore.getTrustedCertificates(): null, //
+                null != keyStore? keyStore.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ): null, //
+                forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol );
     }
 
     /**
@@ -131,11 +130,9 @@ public class AuthenticationContext extends LinkIDContext {
      * @param applicationKeyPair      The application's key pair that will be used to sign the authentication request.
      * @param applicationCertificate  The certificate issued for the application's key pair.  It will be added to WS-Security headers for
      *                                purpose of server-side identification and verification.
-     * @param serviceCertificates     The linkID service certificates.  It will be used to validate incoming WS-Security messages.  May be
-     *                                <code>null</code> or empty, in which case the messages are only validated using the embedded
-     *                                certificate.
-     * @param serviceRootCertificates The linkID service root certificates, optionally used for trust validation of the cert.chain returned
-     *                                in signed authentication responses.
+     * @param trustedCertificates     Used for validating whether incoming messages can be trusted.  The certificate chain in the incoming
+     *                                message's signature is deemed trusted when the chain is valid, all certificates are valid, none are
+     *                                revoked, and at least is in the set of trusted certificates.
      * @param sslCertificate          The linkID server's SSL certificate. It will be used to validate establishment of SSL-transport based
      *                                communication with the server. May be <code>null</code>, in which case no SSL certificate validation
      *                                will take place.
@@ -161,13 +158,12 @@ public class AuthenticationContext extends LinkIDContext {
      *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
     public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                                 X509Certificate applicationCertificate, List<X509Certificate> serviceCertificates,
-                                 List<X509Certificate> serviceRootCertificates, X509Certificate sslCertificate, boolean forceAuthentication,
-                                 String themeName, Locale language, String target, Set<String> devices, String sessionTrackingId,
-                                 Protocol protocol) {
+                                 X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
+                                 X509Certificate sslCertificate, boolean forceAuthentication, String themeName, Locale language,
+                                 String target, Set<String> devices, String sessionTrackingId, Protocol protocol) {
 
-        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, serviceCertificates,
-               serviceRootCertificates, sslCertificate, sessionTrackingId, themeName, language, target, protocol );
+        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
+                sessionTrackingId, themeName, language, target, protocol );
 
         this.forceAuthentication = forceAuthentication;
         this.devices = devices;
@@ -187,6 +183,6 @@ public class AuthenticationContext extends LinkIDContext {
     public String toString() {
 
         return String.format( "{authn: %s, force=%s, dev=%s}", //
-                              super.toString(), isForceAuthentication(), getDevices() );
+                super.toString(), isForceAuthentication(), getDevices() );
     }
 }

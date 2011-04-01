@@ -13,9 +13,9 @@ import java.util.List;
 import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
 import net.link.safeonline.xkms2.ws.ResultMajorCode;
 import net.link.safeonline.xkms2.ws.Xkms2ServiceFactory;
+import net.link.util.ws.AbstractWSClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3._2000._09.xmldsig_.KeyInfoType;
@@ -25,7 +25,6 @@ import org.w3._2002._03.xkms_.QueryKeyBindingType;
 import org.w3._2002._03.xkms_.ValidateRequestType;
 import org.w3._2002._03.xkms_.ValidateResultType;
 import org.w3._2002._03.xkms_wsdl.XKMSPortType;
-import org.w3._2002._03.xkms_wsdl.XKMSService;
 
 
 /**
@@ -33,11 +32,9 @@ import org.w3._2002._03.xkms_wsdl.XKMSService;
  *
  * @author wvdhaute
  */
-public class Xkms2ClientImpl extends AbstractWSClient implements Xkms2Client {
+public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements Xkms2Client {
 
     private static final Log LOG = LogFactory.getLog( Xkms2ClientImpl.class );
-
-    private final XKMSPortType port;
 
     private final String location;
 
@@ -49,20 +46,10 @@ public class Xkms2ClientImpl extends AbstractWSClient implements Xkms2Client {
      */
     public Xkms2ClientImpl(String location, X509Certificate sslCertificate) {
 
-        XKMSService service = Xkms2ServiceFactory.newInstance();
-        port = service.getXKMSPort();
-        this.location = location + "/xkms2";
-        setEndpointAddress();
+        super(Xkms2ServiceFactory.newInstance().getXKMSPort());
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/xkms2" );
 
-        registerMessageLoggerHandler( port );
-
-        registerTrustManager( port, sslCertificate );
-    }
-
-    private void setEndpointAddress() {
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
+        registerTrustManager( sslCertificate );
     }
 
     /**
@@ -91,14 +78,9 @@ public class Xkms2ClientImpl extends AbstractWSClient implements Xkms2Client {
 
         ValidateResultType result;
         try {
-            result = port.validate( request );
+            result = getPort().validate( request );
         } catch (Exception e) {
-            LOG.error( "Exception: " + e.getMessage(), e );
-            throw new WSClientTransportException( location, e );
-        } finally {
-            LOG.debug( "finally" );
-            retrieveHeadersFromPort( port );
-            LOG.debug( "finally done" );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         if (!result.getResultMajor().equals( ResultMajorCode.SUCCESS.getErrorCode() )) {

@@ -16,7 +16,6 @@ import net.link.safeonline.auth.ws.soap.Confirmation;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 
 
@@ -25,7 +24,7 @@ import oasis.names.tc.saml._2_0.assertion.AssertionType;
  *
  * @author wvdhaute
  */
-public interface AuthenticationClient extends WSClient {
+public interface AuthenticationClient {
 
     /**
      * Authenticates for the specified application, using the specified device, given the specified device credentials.

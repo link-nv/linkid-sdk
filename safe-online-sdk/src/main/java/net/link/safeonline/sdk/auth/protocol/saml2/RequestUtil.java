@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
@@ -69,24 +70,21 @@ public abstract class RequestUtil {
     /**
      * The SAML {@link LogoutRequest} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the HTTP request.
      *
+     *
      * @param request                 HTTP Servlet Request
      * @param logoutRequest           SAML v2.0 Request
-     * @param serviceCertificates     linkID service certificates used for validation of non-XML DSig signatures, e.g. SAML HTTP-Redirect.
-     * @param serviceRootCertificates The linkID service root certificates, optionally used for trust validation of the cert.chain returned
-     *                                in signed authentication responses.
-     *
+     * @param trustedCertificates
      * @return optional embedded certificate chain in the LogoutRequest's signature.
      *
      * @throws ValidationFailedException validation failed for some reason
      */
     public static List<X509Certificate> validateRequest(HttpServletRequest request, LogoutRequest logoutRequest,
-                                                        List<X509Certificate> serviceCertificates,
-                                                        List<X509Certificate> serviceRootCertificates)
+                                                        Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         // validate signature
         List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( logoutRequest.getSignature(), request,
-                serviceCertificates, serviceRootCertificates );
+                trustedCertificates );
 
         // validate logout request
         if (null == logoutRequest.getIssuer() || null == logoutRequest.getIssuer().getValue()) {

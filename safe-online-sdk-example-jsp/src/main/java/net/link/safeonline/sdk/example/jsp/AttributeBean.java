@@ -18,7 +18,7 @@ public class AttributeBean {
         attributeClient = LinkIDServiceFactory.getAttributeService();
     }
 
-    public HttpSession getSession() {      
+    public HttpSession getSession() {
         return session;
     }
 

@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.ws.notification.producer;
 
 import net.link.safeonline.sdk.logging.exception.SubscriptionFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 
 
 /**
@@ -17,7 +16,7 @@ import net.link.safeonline.sdk.ws.WSClient;
  *
  * @author wvdhaute
  */
-public interface NotificationProducerClient extends WSClient {
+public interface NotificationProducerClient {
 
     /**
      * Subscribe the specified consumer address to the specified Topic.

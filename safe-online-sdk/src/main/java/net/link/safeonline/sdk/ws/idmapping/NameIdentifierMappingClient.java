@@ -10,7 +10,6 @@ package net.link.safeonline.sdk.ws.idmapping;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 
 
 /**
@@ -21,7 +20,7 @@ import net.link.safeonline.sdk.ws.WSClient;
  *
  * @author fcorneli
  */
-public interface NameIdentifierMappingClient extends WSClient {
+public interface NameIdentifierMappingClient {
 
     /**
      * Gives back the user Id corresponding with the given attribute type and identifier.

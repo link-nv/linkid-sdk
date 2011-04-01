@@ -8,19 +8,22 @@
 package net.link.safeonline.sdk.ws.notification.producer;
 
 import com.sun.xml.ws.client.ClientTransportException;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
-import net.lin_k.safe_online.notification.producer.*;
+import net.lin_k.safe_online.notification.producer.FilterType;
+import net.lin_k.safe_online.notification.producer.NotificationProducerPort;
+import net.lin_k.safe_online.notification.producer.SubscribeRequest;
+import net.lin_k.safe_online.notification.producer.SubscribeResponse;
 import net.link.safeonline.notification.producer.ws.NotificationProducerServiceFactory;
-import net.link.safeonline.sdk.ws.NotificationErrorCode;
-import net.link.safeonline.sdk.ws.WebServiceConstants;
 import net.link.safeonline.sdk.logging.exception.SubscriptionFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.NotificationErrorCode;
+import net.link.safeonline.sdk.ws.WebServiceConstants;
+import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
@@ -31,11 +34,9 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
  *
  * @author wvdhaute
  */
-public class NotificationProducerClientImpl extends AbstractWSClient implements NotificationProducerClient {
+public class NotificationProducerClientImpl extends AbstractWSClient<NotificationProducerPort> implements NotificationProducerClient {
 
     private static final Log LOG = LogFactory.getLog( NotificationProducerClientImpl.class );
-
-    private final NotificationProducerPort port;
 
     private final String location;
 
@@ -44,35 +45,16 @@ public class NotificationProducerClientImpl extends AbstractWSClient implements 
      * Main constructor.
      *
      * @param location the location (host:port) of the attribute web service.
-     * @param clientCertificate the X509 certificate to use for WS-Security signature.
-     * @param clientPrivateKey the private key corresponding with the client certificate.
-     * @param serverCertificate the X509 certificate of the server
-     * @param maxOffset the maximum offset of the WS-Security timestamp received. If <code>null</code> default offset configured in
-     *            {@link WSSecurityClientHandler} will be used.
      * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration
      */
-    public NotificationProducerClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey,
-                                          X509Certificate serverCertificate, Long maxOffset, X509Certificate sslCertificate) {
+    public NotificationProducerClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        NotificationProducerService service = NotificationProducerServiceFactory.newInstance();
-        port = service.getNotificationProducerPort();
-        this.location = location + "/producer";
-        setEndpointAddress();
+        super(NotificationProducerServiceFactory.newInstance().getNotificationProducerPort() );
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/producer" );
 
-        LOG.debug( "endpoint: " + this.location );
-
-        registerMessageLoggerHandler( port );
-
-        registerTrustManager( port, sslCertificate );
-
-        WSSecurityClientHandler.addNewHandler( port, clientCertificate, clientPrivateKey, serverCertificate, maxOffset );
-    }
-
-    private void setEndpointAddress() {
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-
-        bindingProvider.getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
+        registerTrustManager( sslCertificate );
+        WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
     private W3CEndpointReference getEndpointReference(String address) {
@@ -100,9 +82,9 @@ public class NotificationProducerClientImpl extends AbstractWSClient implements 
 
         SubscribeResponse response;
         try {
-            response = port.subscribe( request );
+            response = getPort().subscribe( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( location, e );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         checkStatus( response );

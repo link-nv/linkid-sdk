@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.ws.attrib;
 
 import com.sun.xml.ws.client.ClientTransportException;
 import java.io.Serializable;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.text.MessageFormat;
 import java.util.*;
@@ -19,11 +18,12 @@ import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.attribute.provider.Compound;
 import net.link.safeonline.sdk.logging.exception.*;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
 import net.link.safeonline.sdk.ws.SamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.ws.SamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import oasis.names.tc.saml._2_0.assertion.*;
 import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
 import oasis.names.tc.saml._2_0.protocol.*;
@@ -36,11 +36,9 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author fcorneli
  */
-public class AttributeClientImpl extends AbstractWSClient implements AttributeClient {
+public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> implements AttributeClient {
 
     static final Log LOG = LogFactory.getLog( AttributeClientImpl.class );
-
-    private final SAMLAttributePort port;
 
     private final String location;
 
@@ -48,40 +46,26 @@ public class AttributeClientImpl extends AbstractWSClient implements AttributeCl
      * Main constructor.
      *
      * @param location          the location (host:port) of the attribute web service.
-     * @param clientCertificate the X509 certificate to use for WS-Security signature.
-     * @param clientPrivateKey  the private key corresponding with the client certificate.
-     * @param serverCertificate the X509 certificate of the server used in the incoming WS-Security signature
-     * @param maxOffset         the maximum offset of the WS-Security timestamp received. If <code>null</code> default offset configured in
-     *                          {@link WSSecurityClientHandler} will be used.
      * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration
      */
-    public AttributeClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey,
-                               X509Certificate serverCertificate, Long maxOffset, X509Certificate sslCertificate) {
+    public AttributeClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        SAMLAttributeService attributeService = SAMLAttributeServiceFactory.newInstance();
-        port = attributeService.getSAMLAttributePort();
-        this.location = MessageFormat.format( "{0}/attrib", location );
+        super( SAMLAttributeServiceFactory.newInstance().getSAMLAttributePort() );
+        getBindingProvider().getRequestContext()
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = MessageFormat.format( "{0}/attrib", location ) );
 
-        setEndpointAddress();
-
-        registerMessageLoggerHandler( port );
-
-        registerTrustManager( port, sslCertificate );
-
-        WSSecurityClientHandler.addNewHandler( port, clientCertificate, clientPrivateKey, serverCertificate, maxOffset );
+        registerTrustManager( sslCertificate );
+        WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
     private ResponseType getResponse(AttributeQueryType request)
             throws WSClientTransportException {
 
         try {
-            return port.attributeQuery( request );
+            return getPort().attributeQuery( request );
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException( location, e );
-        } catch (Exception e) {
-            throw retrieveHeadersFromException( e );
-        } finally {
-            retrieveHeadersFromPort( port );
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
 
@@ -110,13 +94,6 @@ public class AttributeClientImpl extends AbstractWSClient implements AttributeCl
             }
             throw new RuntimeException( "error: " + statusCodeValue );
         }
-    }
-
-    private void setEndpointAddress() {
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-
-        bindingProvider.getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
     }
 
     private static AttributeQueryType getAttributeQuery(String userId, String attributeName) {

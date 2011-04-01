@@ -10,7 +10,6 @@ package net.link.safeonline.sdk.ws.sts;
 import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WSClient;
 import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.Response;
@@ -21,7 +20,7 @@ import org.opensaml.saml2.core.Response;
  *
  * @author fcorneli
  */
-public interface SecurityTokenServiceClient extends WSClient {
+public interface SecurityTokenServiceClient {
 
     /**
      * Validate the SAML v2.0 Authentication Response.

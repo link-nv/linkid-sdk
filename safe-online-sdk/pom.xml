@@ -101,6 +101,10 @@
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-j2ee</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.lin-k.util</groupId>
+            <artifactId>util-protocol</artifactId>
+        </dependency>
 
         <!-- Specific Dependencies: External -->
         <dependency>

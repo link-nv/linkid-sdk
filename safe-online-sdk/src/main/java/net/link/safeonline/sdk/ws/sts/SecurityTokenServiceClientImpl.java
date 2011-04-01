@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.sts;
 
-import java.security.PrivateKey;
+import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +18,12 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.AbstractWSClient;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
-import net.link.util.ws.pkix.wssecurity.WSSecurityClientHandler;
+import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.*;
@@ -37,11 +38,9 @@ import org.w3c.dom.Element;
  *
  * @author fcorneli
  */
-public class SecurityTokenServiceClientImpl extends AbstractWSClient implements SecurityTokenServiceClient {
+public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTokenServicePort> implements SecurityTokenServiceClient {
 
     private static final Log LOG = LogFactory.getLog( SecurityTokenServiceClientImpl.class );
-
-    private final SecurityTokenServicePort port;
 
     private final String location;
 
@@ -49,33 +48,16 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient implements 
      * Main constructor.
      *
      * @param location          the location (host:port) of the LinkID STS web service.
-     * @param clientCertificate the X509 certificate to use for a WS-Security signature on the STS validation request.
-     * @param clientPrivateKey  the private key corresponding with the client certificate.
-     * @param serverCertificate optional X509 certificate of the LinkID server, if specified the certificate in the WS-Security header on
-     *                          the STS validation response will be checked against this certificate.
-     * @param maxOffset         the maximum offset of the WS-Security timestamp received. If <code>null</code> default offset configured in
-     *                          {@link WSSecurityClientHandler} will be used.
      * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration
      */
-    public SecurityTokenServiceClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey,
-                                          X509Certificate serverCertificate, Long maxOffset, X509Certificate sslCertificate) {
+    public SecurityTokenServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
-        port = service.getSecurityTokenServicePort();
-        this.location = location + "/sts";
-        setEndpointAddress();
+        super(SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort());
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/sts" );
 
-        registerMessageLoggerHandler( port );
-
-        registerTrustManager( port, sslCertificate );
-
-        WSSecurityClientHandler.addNewHandler( port, clientCertificate, clientPrivateKey, serverCertificate, maxOffset );
-    }
-
-    private void setEndpointAddress() {
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
+        registerTrustManager( sslCertificate );
+        WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
     private void validate(Element token, TrustDomainType trustDomain, Map<QName, String> otherAttributes, String queryString,
@@ -103,14 +85,10 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient implements 
 
         RequestSecurityTokenResponseType response;
         try {
-            response = port.requestSecurityToken( request );
-        } catch (Exception e) {
-            LOG.error( "Exception: " + e.getMessage(), e );
-            throw new WSClientTransportException( location, e );
-        } finally {
-            LOG.debug( "finally" );
-            retrieveHeadersFromPort( port );
-            LOG.debug( "finally done" );
+            response = getPort().requestSecurityToken( request );
+        }
+        catch (ClientTransportException e) {
+            throw new WSClientTransportException( getBindingProvider(), e );
         }
 
         StatusType status = null;

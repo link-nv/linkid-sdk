@@ -11,16 +11,15 @@ import static net.link.safeonline.sdk.configuration.TestConfigHolder.testConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
+import com.google.common.collect.ImmutableMap;
+import java.security.cert.X509Certificate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
-import net.link.safeonline.sdk.configuration.GeneratedKeyStore;
 import net.link.safeonline.sdk.configuration.TestConfigHolder;
+import net.link.util.config.KeyProviderImpl;
 import net.link.util.test.j2ee.TestClassLoader;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.ContainerSetup;
@@ -84,15 +83,8 @@ public class AuthnRequestFilterTest {
                 new ServletSetup( TestServlet.class ), new FilterSetup( AuthnRequestFilter.class ) ) );
 
         new TestConfigHolder( servletTestManager.createSocketConnector(), servletTestManager.getServletContext() ).install();
-        testConfig().linkID().app().keyStore = new GeneratedKeyStore() {
-            @Override
-            protected KeyStore.PrivateKeyEntry load()
-                    throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, SignatureException, IOException,
-                           InvalidKeyException, CertificateException {
-
-                return PkiTestUtils.generateKeyEntry( "CN=TestApplication" );
-            }
-        };
+        testConfig().linkID().app().keyProvider = new KeyProviderImpl( PkiTestUtils.generateKeyEntry( "CN=TestApplication" ),
+                ImmutableMap.<String, X509Certificate>of() );
 
         // Test
         GetMethod getMethod = new GetMethod( servletTestManager.getServletLocation() );
@@ -115,15 +107,8 @@ public class AuthnRequestFilterTest {
 
         new TestConfigHolder( servletTestManager.createSocketConnector(), servletTestManager.getServletContext() ).install();
         testConfig().proto().saml().postBindingTemplate = "test-saml2-post-binding.vm";
-        testConfig().linkID().app().keyStore = new GeneratedKeyStore() {
-            @Override
-            protected KeyStore.PrivateKeyEntry load()
-                    throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, SignatureException, IOException,
-                           InvalidKeyException, CertificateException {
-
-                return PkiTestUtils.generateKeyEntry( "CN=TestApplication" );
-            }
-        };
+        testConfig().linkID().app().keyProvider = new KeyProviderImpl( PkiTestUtils.generateKeyEntry( "CN=TestApplication" ),
+                ImmutableMap.<String, X509Certificate>of() );
 
         GetMethod getMethod = new GetMethod( servletTestManager.getServletLocation() );
         HttpClient httpClient = new HttpClient();
@@ -136,6 +121,6 @@ public class AuthnRequestFilterTest {
         assertEquals( HttpStatus.SC_OK, statusCode );
         String response = getMethod.getResponseBodyAsString();
         LOG.debug( "response body: " + response );
-        assertTrue( response.indexOf( "custom template" ) != -1 );
+        assertTrue( response.contains( "custom template" ) );
     }
 }

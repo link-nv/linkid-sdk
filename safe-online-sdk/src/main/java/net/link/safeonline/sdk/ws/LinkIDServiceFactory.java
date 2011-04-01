@@ -6,12 +6,11 @@
  */
 package net.link.safeonline.sdk.ws;
 
+import static com.lyndir.lhunath.lib.system.util.ObjectUtils.getOrDefault;
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import net.link.safeonline.keystore.LinkIDKeyStore;
+import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
@@ -30,6 +29,8 @@ import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2Client;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
+import net.link.util.config.KeyProvider;
+import net.link.util.ws.security.WSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -44,7 +45,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class LinkIDServiceFactory extends ServiceFactory {
 
-    private static ServiceFactory instance = new LinkIDServiceFactory();
+    public static final String SSL_ALIAS = "ws-ssl";
+
+    private static final ServiceFactory instance = new LinkIDServiceFactory();
 
     protected LinkIDServiceFactory() {
 
@@ -62,51 +65,45 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static AttributeClient getAttributeService() {
 
-        return getAttributeService( config().linkID().app().keyStore() );
+        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration(),
+                null );
     }
 
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *
-     * @param keyStore keystore to get linkID service certificate / SSL certificate from
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static AttributeClient getAttributeService(@NotNull LinkIDKeyStore keyStore) {
+    public static AttributeClient getAttributeService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                      final X509Certificate sslCertificate) {
 
-        return getInstance()._getAttributeService( keyStore._getPrivateKeyEntry(), //
-                                                   keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                                   config().proto().maxTimeOffset(),
-                                                   keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static AttributeClient getAttributeService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                      Long maxTimestampOffset, X509Certificate sslCertificate) {
+    public static AttributeClient getAttributeService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return getInstance()._getAttributeService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getAttributeService( configuration, sslCertificate );
     }
 
     @Override
-    protected AttributeClient _getAttributeService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                   Long maxTimestampOffset, X509Certificate sslCertificate) {
+    protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new AttributeClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate, maxTimestampOffset,
-                                        sslCertificate );
+        return new AttributeClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -116,51 +113,45 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static DataClient getDataService() {
 
-        return getDataService( config().linkID().app().keyStore() );
+        return getDataService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
      * Retrieve a proxy to the linkID data web service.
      *
-     * @param keyStore linkID keystore to get linkID service and SSL certificate from used for validation
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID data web service.
      */
-    public static DataClient getDataService(@NotNull LinkIDKeyStore keyStore) {
+    public static DataClient getDataService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                            final X509Certificate sslCertificate) {
 
-        return getInstance()._getDataService( keyStore._getPrivateKeyEntry(), //
-                                              keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                              config().proto().maxTimeOffset(),
-                                              keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getDataService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID data web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID data web service.
      */
-    public static DataClient getDataService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate, Long maxTimestampOffset,
-                                            X509Certificate sslCertificate) {
+    public static DataClient getDataService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return getInstance()._getDataService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getDataService( configuration, sslCertificate );
     }
 
     @Override
-    protected DataClient _getDataService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate, Long maxTimestampOffset,
-                                         X509Certificate sslCertificate) {
+    protected DataClient _getDataService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new DataClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate, maxTimestampOffset,
-                                   sslCertificate );
+        return new DataClientImpl( config().web().wsBase(),
+                getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -170,51 +161,47 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static NameIdentifierMappingClient getIdMappingService() {
 
-        return getIdMappingService( config().linkID().app().keyStore() );
+        return getIdMappingService( new SDKWSSecurityConfiguration(),
+                null );
     }
 
     /**
      * Retrieve a proxy to the linkID ID mapping web service.
      *
-     * @param keyStore linkID keystore to get linkID service and SSL certificate from used for validation
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NameIdentifierMappingClient getIdMappingService(@NotNull LinkIDKeyStore keyStore) {
+    public static NameIdentifierMappingClient getIdMappingService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                                  final X509Certificate sslCertificate) {
 
-        return getInstance()._getIdMappingService( keyStore._getPrivateKeyEntry(), //
-                                                   keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                                   config().proto().maxTimeOffset(),
-                                                   keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getIdMappingService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID ID mapping web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
-     * @return proxy to the linkID ID mapping web service.
+     * @return proxy to the linkID attribute web service.
      */
-    public static NameIdentifierMappingClient getIdMappingService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                                  Long maxTimestampOffset, X509Certificate sslCertificate) {
+    public static NameIdentifierMappingClient getIdMappingService(final WSSecurityConfiguration configuration,
+                                                                  X509Certificate sslCertificate) {
 
-        return getInstance()._getIdMappingService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getIdMappingService( configuration, sslCertificate );
     }
 
     @Override
-    protected NameIdentifierMappingClient _getIdMappingService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                               Long maxTimestampOffset, X509Certificate sslCertificate) {
+    protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration,
+                                                               X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new NameIdentifierMappingClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate, maxTimestampOffset,
-                                                    sslCertificate );
+        return new NameIdentifierMappingClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -224,51 +211,44 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static SecurityTokenServiceClient getStsService() {
 
-        return getStsService( config().linkID().app().keyStore() );
+        return getStsService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
      * Retrieve a proxy to the linkID Security Token web service.
      *
-     * @param keyStore linkID keystore to get linkID service and SSL certificate from used for validation
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static SecurityTokenServiceClient getStsService(@NotNull LinkIDKeyStore keyStore) {
+    public static SecurityTokenServiceClient getStsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                           final X509Certificate sslCertificate) {
 
-        return getInstance()._getStsService( keyStore._getPrivateKeyEntry(), //
-                                             keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                             config().proto().maxTimeOffset(),
-                                             keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getStsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID Security Token web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
-     * @return proxy to the linkID Security Token web service.
+     * @return proxy to the linkID attribute web service.
      */
-    public static SecurityTokenServiceClient getStsService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                           Long maxTimestampOffset, X509Certificate sslCertificate) {
+    public static SecurityTokenServiceClient getStsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return getInstance()._getStsService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getStsService( configuration, sslCertificate );
     }
 
     @Override
-    protected SecurityTokenServiceClient _getStsService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                        Long maxTimestampOffset, X509Certificate sslCertificate) {
+    protected SecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new SecurityTokenServiceClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate, maxTimestampOffset,
-                                                   sslCertificate );
+        return new SecurityTokenServiceClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -278,52 +258,48 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static NotificationConsumerClient getNotificationConsumerService() {
 
-        return getNotificationConsumerService( config().linkID().app().keyStore() );
+        return getNotificationConsumerService( new SDKWSSecurityConfiguration(),
+                null );
     }
 
     /**
      * Retrieve a proxy to the linkID notification consumer web service.
      *
-     * @param keyStore linkID keystore to get linkID service and SSL certificate from used for validation
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NotificationConsumerClient getNotificationConsumerService(@NotNull LinkIDKeyStore keyStore) {
+    public static NotificationConsumerClient getNotificationConsumerService(final X500Principal trustedDN,
+                                                                            @NotNull final KeyProvider keyProvider,
+                                                                            final X509Certificate sslCertificate) {
 
-        return getInstance()._getNotificationConsumerService( keyStore._getPrivateKeyEntry(), //
-                                                              keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                                              config().proto().maxTimeOffset(),
-                                                              keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getNotificationConsumerService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID notification consumer web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NotificationConsumerClient getNotificationConsumerService(PrivateKeyEntry privateKeyEntry,
-                                                                            X509Certificate serverCertificate, Long maxTimestampOffset,
+    public static NotificationConsumerClient getNotificationConsumerService(final WSSecurityConfiguration configuration,
                                                                             X509Certificate sslCertificate) {
 
-        return getInstance()._getNotificationConsumerService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getNotificationConsumerService( configuration, sslCertificate );
     }
 
     @Override
-    protected NotificationConsumerClient _getNotificationConsumerService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                                         Long maxTimestampOffset, X509Certificate sslCertificate) {
+    protected NotificationConsumerClient _getNotificationConsumerService(final WSSecurityConfiguration configuration,
+                                                                         X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new NotificationConsumerClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate, maxTimestampOffset,
-                                                   sslCertificate );
+        return new NotificationConsumerClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -333,52 +309,48 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static NotificationProducerClient getNotificationProducerService() {
 
-        return getNotificationProducerService( config().linkID().app().keyStore() );
+        return getNotificationProducerService( new SDKWSSecurityConfiguration(),
+                null );
     }
 
     /**
      * Retrieve a proxy to the linkID notification producer web service.
      *
-     * @param keyStore linkID keystore to get linkID service and SSL certificate from used for validation
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID notification producer web service.
      */
-    public static NotificationProducerClient getNotificationProducerService(@NotNull LinkIDKeyStore keyStore) {
+    public static NotificationProducerClient getNotificationProducerService(final X500Principal trustedDN,
+                                                                            @NotNull final KeyProvider keyProvider,
+                                                                            final X509Certificate sslCertificate) {
 
-        return getInstance()._getNotificationProducerService( keyStore._getPrivateKeyEntry(), //
-                                                              keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                                              config().proto().maxTimeOffset(),
-                                                              keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getNotificationProducerService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID notification producer web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID notification producer web service.
      */
-    public static NotificationProducerClient getNotificationProducerService(PrivateKeyEntry privateKeyEntry,
-                                                                            X509Certificate serverCertificate, Long maxTimestampOffset,
+    public static NotificationProducerClient getNotificationProducerService(final WSSecurityConfiguration configuration,
                                                                             X509Certificate sslCertificate) {
 
-        return getInstance()._getNotificationProducerService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getNotificationProducerService( configuration, sslCertificate );
     }
 
     @Override
-    protected NotificationProducerClient _getNotificationProducerService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                                         Long maxTimestampOffset, X509Certificate sslCertificate) {
+    protected NotificationProducerClient _getNotificationProducerService(final WSSecurityConfiguration configuration,
+                                                                         X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new NotificationProducerClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate, maxTimestampOffset,
-                                                   sslCertificate );
+        return new NotificationProducerClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -386,58 +358,51 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID notification subscription web service.
      */
-    public static NotificationSubscriptionManagerClient getNotificationSubscriptionSvc() {
+    public static NotificationSubscriptionManagerClient getNotificationSubscriptionService() {
 
-        return getNotificationSubscriptionSvc( config().linkID().app().keyStore() );
+        return getNotificationSubscriptionService( new SDKWSSecurityConfiguration(),
+                null );
     }
 
     /**
      * Retrieve a proxy to the linkID notification subscription manager web service.
      *
-     * @param keyStore linkID keystore to get linkID service and SSL certificate from used for validation
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID notification subscription web service.
      */
-    public static NotificationSubscriptionManagerClient getNotificationSubscriptionSvc(@NotNull LinkIDKeyStore keyStore) {
+    public static NotificationSubscriptionManagerClient getNotificationSubscriptionService(final X500Principal trustedDN,
+                                                                                           @NotNull final KeyProvider keyProvider,
+                                                                                           final X509Certificate sslCertificate) {
 
-        return getInstance()._getNotificationSubscriptionService( keyStore._getPrivateKeyEntry(), //
-                                                                  keyStore.getOtherCertificates()
-                                                                          .get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                                                  config().proto().maxTimeOffset(),
-                                                                  keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getNotificationSubscriptionService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ),
+                sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID notification subscription manager web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID notification subscription web service.
      */
-    public static NotificationSubscriptionManagerClient getNotificationSubscriptionSvc(PrivateKeyEntry privateKeyEntry,
-                                                                                       X509Certificate serverCertificate,
-                                                                                       Long maxTimestampOffset,
-                                                                                       X509Certificate sslCertificate) {
+    public static NotificationSubscriptionManagerClient getNotificationSubscriptionService(final WSSecurityConfiguration configuration,
+                                                                                           X509Certificate sslCertificate) {
 
-        return getInstance()._getNotificationSubscriptionService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getNotificationSubscriptionService( configuration, sslCertificate );
     }
 
     @Override
-    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(PrivateKeyEntry privateKeyEntry,
-                                                                                        X509Certificate serverCertificate,
-                                                                                        Long maxTimestampOffset,
+    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(final WSSecurityConfiguration configuration,
                                                                                         X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new NotificationSubscriptionManagerClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate,
-                                                              maxTimestampOffset, sslCertificate );
+        return new NotificationSubscriptionManagerClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -447,51 +412,47 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static SessionTrackingClient getSessionTrackingService() {
 
-        return getSessionTrackingService( config().linkID().app().keyStore() );
+        return getSessionTrackingService( new SDKWSSecurityConfiguration(),
+                null );
     }
 
     /**
      * Retrieve a proxy to the linkID session tracking web service.
      *
-     * @param keyStore linkID keystore to get linkID service and SSL certificate from used for validation
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID session tracking web service.
      */
-    public static SessionTrackingClient getSessionTrackingService(@NotNull LinkIDKeyStore keyStore) {
+    public static SessionTrackingClient getSessionTrackingService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                                  final X509Certificate sslCertificate) {
 
-        return getInstance()._getSessionTrackingService( keyStore._getPrivateKeyEntry(), //
-                                                         keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SERVICE_ALIAS ),
-                                                         config().proto().maxTimeOffset(),
-                                                         keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getSessionTrackingService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
      * Retrieve a proxy to the linkID session tracking web service.
      *
-     * @param privateKeyEntry    private key entry used to sign outgoing requests
-     * @param serverCertificate  linkID server certificate for validation of signed incoming responses.
-     * @param maxTimestampOffset maximum WS-Security timestamp offset (ms)
-     * @param sslCertificate     linkID SSL certificate used for validation.
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
      * @return proxy to the linkID session tracking web service.
      */
-    public static SessionTrackingClient getSessionTrackingService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                                  Long maxTimestampOffset, X509Certificate sslCertificate) {
+    public static SessionTrackingClient getSessionTrackingService(final WSSecurityConfiguration configuration,
+                                                                  X509Certificate sslCertificate) {
 
-        return getInstance()._getSessionTrackingService( privateKeyEntry, serverCertificate, maxTimestampOffset, sslCertificate );
+        return getInstance()._getSessionTrackingService( configuration, sslCertificate );
     }
 
     @Override
-    protected SessionTrackingClient _getSessionTrackingService(PrivateKeyEntry privateKeyEntry, X509Certificate serverCertificate,
-                                                               Long maxTimestampOffset, X509Certificate sslCertificate) {
+    protected SessionTrackingClient _getSessionTrackingService(final WSSecurityConfiguration configuration,
+                                                               X509Certificate sslCertificate) {
 
-        // Find the key and certificate of the application.
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new SessionTrackingClientImpl( config().web().wsBase(), certificate, privateKey, serverCertificate, maxTimestampOffset,
-                                              sslCertificate );
+        return new SessionTrackingClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
     }
 
     /**
@@ -501,36 +462,37 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static Xkms2Client getXkms2Client() {
 
-        return getXkms2Client( config().linkID().app().keyStore() );
+        return getXkms2Client( config().linkID().app().keyProvider() );
     }
 
     /**
      * Retrieve a proxy to the linkID XKMS 2 web service.
      *
-     * @param keyStore keystore to get linkID service certificate / SSL certificate from
+     * @param keyProvider The key provider that provides the keys and certificates used by WS-Security for authentication and validation.
      *
      * @return proxy to the linkID XKMS2 web service.
      */
-    public static Xkms2Client getXkms2Client(@NotNull LinkIDKeyStore keyStore) {
+    public static Xkms2Client getXkms2Client(@NotNull final KeyProvider keyProvider) {
 
-        return getXkms2Client( keyStore.getOtherCertificates().get( LinkIDKeyStore.LINKID_SSL_ALIAS ) );
+        return getInstance()._getXkms2Client( keyProvider.getTrustedCertificate( SSL_ALIAS ) );
     }
 
     /**
      * Retrieve a proxy to the linkID XKMS 2 web service.
      *
-     * @param sslCertificate SSL certificate for validation of the linkID SSL certificate
+     * @param sslCertificate The server's SSL certificate.  If not <code>null</code>, validates whether SSL is encrypted using the given
+     *                       certificate.
      *
-     * @return proxy to the linkID XKMS 2 web service.
+     * @return proxy to the linkID XKMS2 web service.
      */
     public static Xkms2Client getXkms2Client(X509Certificate sslCertificate) {
 
-        return getInstance()._getXkms2Client( sslCertificate );
+        return getXkms2Client( sslCertificate );
     }
 
     @Override
     protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
 
-        return new Xkms2ClientImpl( config().web().wsBase(), sslCertificate );
+        return new Xkms2ClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ) );
     }
 }

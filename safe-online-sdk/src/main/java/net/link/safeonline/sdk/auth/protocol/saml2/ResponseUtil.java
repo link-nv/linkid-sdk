@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -91,21 +92,19 @@ public abstract class ResponseUtil {
      * location</li> <li>at least 1 assertion present</li> <li>assertion subject</li> <li>assertion conditions notOnOrAfter and notBefore
      * </ul>
      *
+     *
+     *
      * @param request                 HTTP Servlet Request
      * @param contexts                map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
-     * @param serviceCertificates     The linkID service certificates for validation of the HTTP-Redirect signature (else can be
+     * @param trustedCertificates     The linkID service certificates for validation of the HTTP-Redirect signature (else can be
      *                                <code>null</code> or empty)
-     * @param serviceRootCertificates The linkID service root certificate, optionally used for trust validation of the cert.chain returned
-     *                                in signed authentication responses.
-     *
      * @return The SAML {@link Saml2ResponseContext} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the
      *         HTTP request. Also contains (if present) the certificate chain embedded in the SAML {@link Response}'s signature.
      *
      * @throws ValidationFailedException validation failed for some reason
      */
     public static Saml2ResponseContext findAndValidateAuthnResponse(HttpServletRequest request, Map<String, ProtocolContext> contexts,
-                                                                    List<X509Certificate> serviceCertificates,
-                                                                    List<X509Certificate> serviceRootCertificates)
+                                                                    Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         Response authnResponse = findAuthnResponse( request );
@@ -122,7 +121,7 @@ public abstract class ResponseUtil {
 
         // validate signature
         List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( authnResponse.getSignature(), request,
-                serviceCertificates, serviceRootCertificates );
+                trustedCertificates );
 
         // validate response
         validateResponse( authnResponse, authnRequest.getIssuer() );
@@ -279,21 +278,17 @@ public abstract class ResponseUtil {
      * Returns the SAML v2.0 {@link LogoutResponse} embedded in the request. Throws a {@link ValidationFailedException} if not found, the
      * signature isn't valid or of the wrong type.
      *
+     *
      * @param request                 HTTP Servlet Request
      * @param contexts                map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
-     * @param serviceCertificates     optional LinkID service certificates for validation of the signature on the logout response (e.g. for
-     *                                SAML v2.0 with HTTP-Redirect binding).
-     * @param serviceRootCertificates The linkID service root certificates, optionally used for trust validation of the cert.chain returned
-     *                                in signed authentication responses.
-     *
+     * @param trustedCertificates
      * @return The SAML2 response containing the {@link LogoutResponse} in the HTTP request and the optional certificate chain embedded in
      *         the signature of the signed response..<br> <code>null</code> if there is no SAML message in the HTTP request.
      *
      * @throws ValidationFailedException validation failed for some reason
      */
     public static Saml2ResponseContext findAndValidateLogoutResponse(HttpServletRequest request, Map<String, ProtocolContext> contexts,
-                                                                     List<X509Certificate> serviceCertificates,
-                                                                     List<X509Certificate> serviceRootCertificates)
+                                                                     Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         LogoutResponse logoutResponse = findLogoutResponse( request );
@@ -302,7 +297,7 @@ public abstract class ResponseUtil {
 
         // validate signature
         List<X509Certificate> certificateChain = Saml2Util.getAndValidateCertificateChain( logoutResponse.getSignature(), request,
-                serviceCertificates, serviceRootCertificates );
+                trustedCertificates );
 
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
         ProtocolContext logoutRequest = contexts.get( logoutResponse.getInResponseTo() );
