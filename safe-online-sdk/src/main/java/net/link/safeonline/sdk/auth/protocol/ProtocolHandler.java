@@ -10,13 +10,11 @@ package net.link.safeonline.sdk.auth.protocol;
 import com.google.common.base.Function;
 import java.io.IOException;
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.LogoutContext;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.error.ValidationFailedException;
 
 
 /**

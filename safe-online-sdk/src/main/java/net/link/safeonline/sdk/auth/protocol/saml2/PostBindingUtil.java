@@ -73,10 +73,10 @@ public abstract class PostBindingUtil {
             throws IOException {
 
         LOG.debug( "sendRequest[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                Saml2Util.marshall( samlRequest ), true ) );
+                LinkIDSaml2Utils.marshall( samlRequest ), true ) );
 
         String encodedSamlRequestToken = new String(
-                Base64.encode( Saml2Util.sign( samlRequest, signingKeyPair, certificateChain ).getBytes( Charsets.UTF_8 ) ),
+                Base64.encode( LinkIDSaml2Utils.sign( samlRequest, signingKeyPair, certificateChain ).getBytes( Charsets.UTF_8 ) ),
                 Charsets.UTF_8 );
 
         /*
@@ -138,10 +138,10 @@ public abstract class PostBindingUtil {
             throws IOException {
 
         LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                Saml2Util.marshall( samlResponse ), true ) );
+                LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
         String encodedSamlResponseToken = new String(
-                Base64.encode( Saml2Util.sign( samlResponse, signingKeyPair, certificateChain ).getBytes( Charsets.UTF_8 ) ),
+                Base64.encode( LinkIDSaml2Utils.sign( samlResponse, signingKeyPair, certificateChain ).getBytes( Charsets.UTF_8 ) ),
                 Charsets.UTF_8 );
 
         /*

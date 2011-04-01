@@ -13,7 +13,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.protocol.saml2.Saml2Util;
+import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.test.pkix.PkiTestUtils;
@@ -56,9 +56,9 @@ public class AuthnRequestFactoryTest {
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
                 destinationURL, devices, false, session );
-        String samlAuthnRequestToken = Saml2Util.sign( samlAuthnRequest, keyPair, null );
+        String samlAuthnRequestToken = LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, null );
 
-        LOG.debug( DomUtils.domToString( Saml2Util.marshall( samlAuthnRequest ) ) );
+        LOG.debug( DomUtils.domToString( LinkIDSaml2Utils.marshall( samlAuthnRequest ) ) );
 
         long end = System.currentTimeMillis();
 
@@ -68,7 +68,7 @@ public class AuthnRequestFactoryTest {
         LOG.debug( "result message: " + samlAuthnRequest );
 
         Document resultDocument = DomTestUtils.parseDocument( samlAuthnRequestToken );
-        AuthnRequest resultAuthnRequest = (AuthnRequest) Saml2Util.unmarshall( resultDocument.getDocumentElement() );
+        AuthnRequest resultAuthnRequest = (AuthnRequest) LinkIDSaml2Utils.unmarshall( resultDocument.getDocumentElement() );
 
         assertNotNull( resultAuthnRequest );
         assertNotNull( resultAuthnRequest.getSignature() );
@@ -90,7 +90,7 @@ public class AuthnRequestFactoryTest {
         assertTrue( resultAuthnRequest.getNameIDPolicy().getAllowCreate() );
 
         // verify signature
-        Saml2Util.getAndValidateCertificateChain( resultAuthnRequest.getSignature(), null, null );
+        LinkIDSaml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
     }
 
     @Test
@@ -118,7 +118,7 @@ public class AuthnRequestFactoryTest {
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
                 destinationURL, devices, false, session );
-        String samlAuthnRequestToken = Saml2Util.sign( samlAuthnRequest, keyPair, certificateChain );
+        String samlAuthnRequestToken = LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, certificateChain );
         long end = System.currentTimeMillis();
 
         // Verify
@@ -127,7 +127,7 @@ public class AuthnRequestFactoryTest {
         LOG.debug( "result message: " + samlAuthnRequest );
 
         Document resultDocument = DomTestUtils.parseDocument( samlAuthnRequestToken );
-        AuthnRequest resultAuthnRequest = (AuthnRequest) Saml2Util.unmarshall( resultDocument.getDocumentElement() );
+        AuthnRequest resultAuthnRequest = (AuthnRequest) LinkIDSaml2Utils.unmarshall( resultDocument.getDocumentElement() );
 
         // verify signature
         assertNotNull( resultAuthnRequest.getSignature() );
@@ -138,7 +138,7 @@ public class AuthnRequestFactoryTest {
         assertEquals( rootCertificate, resultCertificateChain.get( 0 ) );
         assertEquals( certificate, resultCertificateChain.get( 1 ) );
 
-        Saml2Util.getAndValidateCertificateChain( resultAuthnRequest.getSignature(), null, null );
+        LinkIDSaml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
     }
 
     private static Element createNsElement(Document document) {

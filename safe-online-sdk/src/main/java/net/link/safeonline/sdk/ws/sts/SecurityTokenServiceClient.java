@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.ws.sts;
 
 import javax.servlet.http.HttpServletRequest;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.error.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.LogoutResponse;

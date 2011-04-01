@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.error.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;

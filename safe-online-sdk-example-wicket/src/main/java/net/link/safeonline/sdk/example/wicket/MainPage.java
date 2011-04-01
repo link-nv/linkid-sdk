@@ -8,11 +8,10 @@ import net.link.safeonline.sdk.logging.exception.*;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2Client;
-import net.link.safeonline.wicket.component.linkid.LinkIDApplicationPage;
-import net.link.safeonline.wicket.component.linkid.LinkIDLoginLink;
-import net.link.safeonline.wicket.component.linkid.LinkIDLogoutLink;
+import net.link.safeonline.wicket.component.linkid.*;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import net.link.util.common.CertificateChain;
+import net.link.util.error.ValidationFailedException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 

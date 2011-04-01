@@ -10,15 +10,13 @@ package net.link.safeonline.sdk.auth.servlet;
 import com.google.common.base.Function;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
+import net.link.util.error.ValidationFailedException;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 import net.link.util.servlet.annotation.Init;
@@ -60,23 +58,24 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             if (null == authnResponse)
                 authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction() );
             if (null == authnResponse) {
-                LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null, new ErrorMessage(
-                        "No expected or detached authentication responses found in request." ) ) );
+                LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
+                        new ErrorMessage( "No expected or detached authentication responses found in request." ) ) );
                 return;
             }
 
             onLogin( request.getSession(), authnResponse );
 
             response.sendRedirect( authnResponse.getRequest().getTarget() );
-        } catch (ValidationFailedException ignored) {
+        }
+        catch (ValidationFailedException ignored) {
             LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
-                                                         new ErrorMessage( "Validation of authentication response failed." ) ) );
+                    new ErrorMessage( "Validation of authentication response failed." ) ) );
         }
     }
 
     /**
      * Override this method if you want to create a custom context for detached authentication responses.
-     *
+     * <p/>
      * The standard implementation uses {@link AuthenticationContext#AuthenticationContext()}.
      *
      * @return A function that provides the context for validating detached authentication responses (assertions).
@@ -92,7 +91,8 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
     }
 
     /**
-     * Invoked when an authentication response is received.  The default implementation sets the user's credentials on the session if the response was successful and does nothing if it wasn't.
+     * Invoked when an authentication response is received.  The default implementation sets the user's credentials on the session if the
+     * response was successful and does nothing if it wasn't.
      *
      * @param session       The HTTP session within which the response was received.
      * @param authnResponse The response that was received.
@@ -102,7 +102,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
         if (authnResponse.isSuccess()) {
             LOG.debug( "username: " + authnResponse.getUserId() );
             LoginManager.set( session, authnResponse.getUserId(), authnResponse.getAttributes(), authnResponse.getAuthenticatedDevices(),
-                              authnResponse.getCertificateChain() );
+                    authnResponse.getCertificateChain() );
         }
     }
 }

@@ -24,7 +24,7 @@ import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.LogoutContext;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openid4java.OpenIDException;

@@ -10,7 +10,7 @@ package net.link.safeonline.sdk.ws.xkms2;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.error.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import net.link.safeonline.xkms2.ws.ResultMajorCode;
 import net.link.safeonline.xkms2.ws.Xkms2ServiceFactory;

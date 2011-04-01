@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.util.error.ValidationFailedException;
 import net.link.util.common.CertificateChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,7 +83,7 @@ public abstract class RequestUtil {
             throws ValidationFailedException {
 
         // validate signature
-        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( logoutRequest.getSignature(), request,
+        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( logoutRequest.getSignature(), request,
                 trustedCertificates );
 
         // validate logout request

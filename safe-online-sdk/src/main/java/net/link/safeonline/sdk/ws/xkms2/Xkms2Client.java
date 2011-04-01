@@ -8,9 +8,9 @@
 package net.link.safeonline.sdk.ws.xkms2;
 
 import java.security.cert.CertificateEncodingException;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import net.link.util.common.CertificateChain;
+import net.link.util.error.ValidationFailedException;
 
 
 /**

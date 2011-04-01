@@ -47,7 +47,7 @@ public class LogoutResponseFactory {
 
     public static LogoutResponse createLogoutResponse(boolean partialLogout, LogoutProtocolRequestContext logoutRequest, String issuer, String destination) {
 
-        LogoutResponse response = Saml2Util.buildXMLObject( LogoutResponse.class, LogoutResponse.DEFAULT_ELEMENT_NAME );
+        LogoutResponse response = LinkIDSaml2Utils.buildXMLObject( LogoutResponse.DEFAULT_ELEMENT_NAME );
 
         DateTime now = new DateTime();
 
@@ -62,14 +62,14 @@ public class LogoutResponseFactory {
         response.setInResponseTo( logoutRequest.getId() );
         response.setIssueInstant( now );
 
-        Issuer responseIssuer = Saml2Util.buildXMLObject( Issuer.class, Issuer.DEFAULT_ELEMENT_NAME );
+        Issuer responseIssuer = LinkIDSaml2Utils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
         responseIssuer.setValue( issuer );
         response.setIssuer( responseIssuer );
 
         response.setDestination( destination );
 
-        Status status = Saml2Util.buildXMLObject( Status.class, Status.DEFAULT_ELEMENT_NAME );
-        StatusCode statusCode = Saml2Util.buildXMLObject( StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME );
+        Status status = LinkIDSaml2Utils.buildXMLObject( Status.DEFAULT_ELEMENT_NAME );
+        StatusCode statusCode = LinkIDSaml2Utils.buildXMLObject( StatusCode.DEFAULT_ELEMENT_NAME );
         if (partialLogout)
             statusCode.setValue( StatusCode.PARTIAL_LOGOUT_URI );
         else

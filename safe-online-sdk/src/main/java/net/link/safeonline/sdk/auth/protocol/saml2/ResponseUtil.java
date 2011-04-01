@@ -11,20 +11,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
+import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.util.encoders.Base64;
@@ -93,12 +88,11 @@ public abstract class ResponseUtil {
      * location</li> <li>at least 1 assertion present</li> <li>assertion subject</li> <li>assertion conditions notOnOrAfter and notBefore
      * </ul>
      *
+     * @param request             HTTP Servlet Request
+     * @param contexts            map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
+     * @param trustedCertificates The linkID service certificates for validation of the HTTP-Redirect signature (else can be
+     *                            <code>null</code> or empty)
      *
-     *
-     * @param request                 HTTP Servlet Request
-     * @param contexts                map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
-     * @param trustedCertificates     The linkID service certificates for validation of the HTTP-Redirect signature (else can be
-     *                                <code>null</code> or empty)
      * @return The SAML {@link Saml2ResponseContext} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the
      *         HTTP request. Also contains (if present) the certificate chain embedded in the SAML {@link Response}'s signature.
      *
@@ -121,7 +115,7 @@ public abstract class ResponseUtil {
         LOG.debug( "response matches request: " + authnRequest );
 
         // validate signature
-        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( authnResponse.getSignature(), request,
+        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( authnResponse.getSignature(), request,
                 trustedCertificates );
 
         // validate response
@@ -145,7 +139,7 @@ public abstract class ResponseUtil {
             if (LOG.isDebugEnabled())
                 LOG.debug( "Found assertion:\n" + DomUtils.domToString( assertionElement ) );
 
-            return (Assertion) Saml2Util.unmarshall( assertionElement );
+            return (Assertion) LinkIDSaml2Utils.unmarshall( assertionElement );
         }
         catch (SAXException e) {
             throw new RuntimeException( e );
@@ -199,7 +193,7 @@ public abstract class ResponseUtil {
 
     /**
      * Validates the specified assertion.
-     *
+     * <p/>
      * Validates : <ul> <li>The notBefore and notOnOrAfter conditions based on the specified time.</li> <li>If the audience in the audience
      * restriction matches the specified audience</li> <li>If a subject is present</li> </ul>
      *
@@ -251,8 +245,6 @@ public abstract class ResponseUtil {
 
     /**
      * Check whether the audience of the response corresponds to the original audience restriction
-     *
-     * @throws ValidationFailedException
      */
     private static void validateAudienceRestriction(Conditions conditions, String expectedAudience)
             throws ValidationFailedException {
@@ -279,10 +271,9 @@ public abstract class ResponseUtil {
      * Returns the SAML v2.0 {@link LogoutResponse} embedded in the request. Throws a {@link ValidationFailedException} if not found, the
      * signature isn't valid or of the wrong type.
      *
+     * @param request  HTTP Servlet Request
+     * @param contexts map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
      *
-     * @param request                 HTTP Servlet Request
-     * @param contexts                map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
-     * @param trustedCertificates
      * @return The SAML2 response containing the {@link LogoutResponse} in the HTTP request and the optional certificate chain embedded in
      *         the signature of the signed response..<br> <code>null</code> if there is no SAML message in the HTTP request.
      *
@@ -297,7 +288,7 @@ public abstract class ResponseUtil {
             return null;
 
         // validate signature
-        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( logoutResponse.getSignature(), request,
+        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( logoutResponse.getSignature(), request,
                 trustedCertificates );
 
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields

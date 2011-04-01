@@ -58,7 +58,7 @@ public abstract class RedirectBindingUtil {
                                    HttpServletResponse response) {
 
         LOG.debug( "sendRequest[HTTP Redirect] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                Saml2Util.marshall( samlRequest ), true ) );
+                LinkIDSaml2Utils.marshall( samlRequest ), true ) );
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
 
@@ -91,7 +91,7 @@ public abstract class RedirectBindingUtil {
                                     HttpServletResponse response) {
 
         LOG.debug( "sendResponse[HTTP Redirect] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                Saml2Util.marshall( samlResponse ), true ) );
+                LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
 

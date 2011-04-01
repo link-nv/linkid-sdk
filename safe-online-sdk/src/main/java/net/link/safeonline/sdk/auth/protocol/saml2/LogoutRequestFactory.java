@@ -70,7 +70,7 @@ public class LogoutRequestFactory {
         if (null == issuerName)
             throw new IllegalArgumentException( "application name should not be null" );
 
-        LogoutRequest request = Saml2Util.buildXMLObject( LogoutRequest.class, LogoutRequest.DEFAULT_ELEMENT_NAME );
+        LogoutRequest request = LinkIDSaml2Utils.buildXMLObject( LogoutRequest.DEFAULT_ELEMENT_NAME );
 
         SecureRandomIdentifierGenerator idGenerator;
         try {
@@ -82,14 +82,14 @@ public class LogoutRequestFactory {
         request.setID( id );
         request.setVersion( SAMLVersion.VERSION_20 );
         request.setIssueInstant( new DateTime() );
-        Issuer issuer = Saml2Util.buildXMLObject( Issuer.class, Issuer.DEFAULT_ELEMENT_NAME );
+        Issuer issuer = LinkIDSaml2Utils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
         issuer.setValue( issuerName );
         request.setIssuer( issuer );
 
         if (null != destinationURL)
             request.setDestination( destinationURL );
 
-        NameID nameID = Saml2Util.buildXMLObject( NameID.class, NameID.DEFAULT_ELEMENT_NAME );
+        NameID nameID = LinkIDSaml2Utils.buildXMLObject( NameID.DEFAULT_ELEMENT_NAME );
         nameID.setValue( subjectName );
         nameID.setFormat( "urn:oasis:names:tc:SAML:2.0:nameid-format:entity" );
         request.setNameID( nameID );
@@ -97,8 +97,8 @@ public class LogoutRequestFactory {
         // add session info
         if (null != session) {
             QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
-            Extensions extensions = Saml2Util.buildXMLObject( Extensions.class, extensionsQName );
-            SessionInfo sessionInfo = Saml2Util.buildXMLObject( SessionInfo.class, SessionInfo.DEFAULT_ELEMENT_NAME );
+            Extensions extensions = LinkIDSaml2Utils.buildXMLObject( extensionsQName );
+            SessionInfo sessionInfo = LinkIDSaml2Utils.buildXMLObject( SessionInfo.DEFAULT_ELEMENT_NAME );
             sessionInfo.setSession( session );
             request.setExtensions( extensions );
             request.getExtensions().getUnknownXMLObjects().add( sessionInfo );

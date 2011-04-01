@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -18,11 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.auth.protocol.*;
-import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.configuration.ConfigUtils;
-import net.link.safeonline.sdk.configuration.LogoutContext;
-import net.link.safeonline.sdk.logging.exception.ValidationFailedException;
+import net.link.safeonline.sdk.configuration.*;
 import net.link.util.common.CertificateChain;
+import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.DefaultBootstrap;
@@ -128,8 +126,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 authenticatedDevices.add( authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
                 LOG.debug( "authenticated device " + authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
             }
-            attributes.putAll( Saml2Util.getAttributeValues( assertion ) );
-            applicationName = Saml2Util.findApplicationName( assertion );
+            attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
+            applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
         }
         LOG.debug( "userId: " + userId );
 
@@ -148,17 +146,17 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
             return null;
 
-        Map<String, List<AttributeSDK<?>>> attributes = Saml2Util.getAttributeValues( assertion );
+        Map<String, List<AttributeSDK<?>>> attributes = LinkIDSaml2Utils.getAttributeValues( assertion );
         String userId = assertion.getSubject().getNameID().getValue();
-        List<String> authenticatedDevices = Saml2Util.getAuthenticatedDevices( assertion );
-        String applicationName = Saml2Util.findApplicationName( assertion );
+        List<String> authenticatedDevices = LinkIDSaml2Utils.getAuthenticatedDevices( assertion );
+        String applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
 
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( null, null, userId, applicationName, authenticatedDevices, attributes, true, null ) );
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), null,
                 authnContext.getTarget() );
 
-        CertificateChain certificateChain = Saml2Util.getAndValidateCertificateChain( assertion.getSignature(), request,
+        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( assertion.getSignature(), request,
                 authnContext.getTrustedCertificates() );
 
         return new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true,
