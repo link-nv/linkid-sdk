@@ -75,7 +75,6 @@ public class LogoutContext extends LinkIDContext {
 
         this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, new Supplier<KeyProvider>() {
             public KeyProvider get() {
-
                 return config().linkID().app().keyProvider();
             }
         } ), sessionTrackingId, themeName, language, target, null );
@@ -85,9 +84,9 @@ public class LogoutContext extends LinkIDContext {
                           String sessionTrackingId, String themeName, Locale language, String target, Void v) {
 
         this( applicationName, applicationFriendlyName, //
-                keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
-                keyProvider.getTrustedCertificates(), keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ), //
-                sessionTrackingId, themeName, language, target, null );
+              keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
+              keyProvider.getTrustedCertificates(), keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ), //
+              sessionTrackingId, themeName, language, target, null );
     }
 
     /**
@@ -124,7 +123,7 @@ public class LogoutContext extends LinkIDContext {
                          Protocol protocol) {
 
         super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
-                sessionTrackingId, themeName, language, target, protocol );
+               sessionTrackingId, themeName, language, target, protocol );
     }
 
     @Override

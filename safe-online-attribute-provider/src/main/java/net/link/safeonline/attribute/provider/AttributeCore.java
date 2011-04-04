@@ -27,12 +27,12 @@ public class AttributeCore extends AttributeSDK<Serializable> {
     private AttributeInputPanel panel;
 
     public AttributeCore(final AttributeType attributeType) {
-        super( null, attributeType.getName() );
+        super( attributeType.getName() );
         this.attributeType = attributeType;
     }
 
     public AttributeCore(final String attributeId, final AttributeType attributeType) {
-        super( attributeId, attributeType.getName() );
+        super( attributeId, attributeType.getName(), null );
         this.attributeType = attributeType;
     }
 
