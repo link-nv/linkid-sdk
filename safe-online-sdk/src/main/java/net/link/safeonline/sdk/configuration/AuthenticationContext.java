@@ -1,6 +1,8 @@
 package net.link.safeonline.sdk.configuration;
 
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
+import static com.lyndir.lhunath.lib.system.util.ObjectUtils.getOrDefault;
+import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
 import com.google.common.base.Supplier;
 import java.security.KeyPair;

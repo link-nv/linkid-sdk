@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
+import static com.lyndir.lhunath.lib.system.util.ObjectUtils.*;
+import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
 import com.google.common.base.Supplier;
 import java.security.KeyPair;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * <h2>{@link AuthenticationContext}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <p/>
  * <p> <i>09 17, 2010</i> </p>
  *
  * @author lhunath

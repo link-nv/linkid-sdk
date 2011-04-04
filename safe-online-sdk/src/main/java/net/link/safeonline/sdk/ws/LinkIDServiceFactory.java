@@ -6,9 +6,10 @@
  */
 package net.link.safeonline.sdk.ws;
 
-import static com.lyndir.lhunath.lib.system.util.ObjectUtils.getOrDefault;
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static com.lyndir.lhunath.lib.system.util.ObjectUtils.*;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
+import com.google.common.base.Supplier;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -36,9 +37,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * <h2>{@link LinkIDServiceFactory}</h2>
- *
+ * <p/>
  * <p> [description / usage]. </p>
- *
+ * <p/>
  * <p> <i>Jan 15, 2009</i> </p>
  *
  * @author lhunath
@@ -65,8 +66,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static AttributeClient getAttributeService() {
 
-        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration(),
-                null );
+        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -103,7 +103,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new AttributeClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new AttributeClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -150,8 +150,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected DataClient _getDataService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new DataClientImpl( config().web().wsBase(),
-                getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new DataClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -161,8 +160,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static NameIdentifierMappingClient getIdMappingService() {
 
-        return getIdMappingService( new SDKWSSecurityConfiguration(),
-                null );
+        return getIdMappingService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -201,7 +199,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration,
                                                                X509Certificate sslCertificate) {
 
-        return new NameIdentifierMappingClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new NameIdentifierMappingClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -248,7 +246,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected SecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new SecurityTokenServiceClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new SecurityTokenServiceClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -258,8 +256,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static NotificationConsumerClient getNotificationConsumerService() {
 
-        return getNotificationConsumerService( new SDKWSSecurityConfiguration(),
-                null );
+        return getNotificationConsumerService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -299,7 +296,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected NotificationConsumerClient _getNotificationConsumerService(final WSSecurityConfiguration configuration,
                                                                          X509Certificate sslCertificate) {
 
-        return new NotificationConsumerClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new NotificationConsumerClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -309,8 +306,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static NotificationProducerClient getNotificationProducerService() {
 
-        return getNotificationProducerService( new SDKWSSecurityConfiguration(),
-                null );
+        return getNotificationProducerService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -350,7 +346,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected NotificationProducerClient _getNotificationProducerService(final WSSecurityConfiguration configuration,
                                                                          X509Certificate sslCertificate) {
 
-        return new NotificationProducerClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new NotificationProducerClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -360,8 +356,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static NotificationSubscriptionManagerClient getNotificationSubscriptionService() {
 
-        return getNotificationSubscriptionService( new SDKWSSecurityConfiguration(),
-                null );
+        return getNotificationSubscriptionService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -402,7 +397,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(final WSSecurityConfiguration configuration,
                                                                                         X509Certificate sslCertificate) {
 
-        return new NotificationSubscriptionManagerClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new NotificationSubscriptionManagerClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -412,8 +407,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static SessionTrackingClient getSessionTrackingService() {
 
-        return getSessionTrackingService( new SDKWSSecurityConfiguration(),
-                null );
+        return getSessionTrackingService( new SDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -452,7 +446,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected SessionTrackingClient _getSessionTrackingService(final WSSecurityConfiguration configuration,
                                                                X509Certificate sslCertificate) {
 
-        return new SessionTrackingClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ), configuration );
+        return new SessionTrackingClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -493,6 +487,16 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
 
-        return new Xkms2ClientImpl( config().web().wsBase(), getOrDefault( sslCertificate, config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS ) ) );
+        return new Xkms2ClientImpl( config().web().wsBase(), getSSLCertificate( sslCertificate ) );
+    }
+
+    private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
+
+        return getOrDefault( sslCertificate, new Supplier<X509Certificate>() {
+            public X509Certificate get() {
+
+                return config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS );
+            }
+        } );
     }
 }

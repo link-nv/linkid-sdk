@@ -7,14 +7,12 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static com.lyndir.lhunath.lib.system.util.ObjectUtils.*;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Supplier;
 import java.io.Serializable;
-import java.security.KeyManagementException;
-import java.security.KeyPair;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Locale;
@@ -111,7 +109,12 @@ public abstract class LinkIDContext implements Serializable {
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
                             String themeName, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, config().linkID().app().keyProvider() ),
+        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, new Supplier<KeyProvider>() {
+            public KeyProvider get() {
+
+                return config().linkID().app().keyProvider();
+            }
+        } ),
                 sessionTrackingId, themeName, language, target, null );
     }
 
@@ -169,34 +172,6 @@ public abstract class LinkIDContext implements Serializable {
         this.language = getOrDefault( language, config().linkID().language() );
         this.target = target;
         this.protocol = getOrDefault( protocol, config().proto().defaultProtocol() );
-    }
-
-    /**
-     * @param object        The object to return if it isn't <code>null</code>.
-     * @param defaultObject The object to return when the first object is <code>null</code>.
-     *
-     * @return The given object or the defaultObject if the object is <code>null</code>.
-     */
-    protected static <T> T getOrDefault(T object, T defaultObject) {
-
-        if (object != null)
-            return object;
-
-        return defaultObject;
-    }
-
-    /**
-     * @param object        The object to return if it isn't <code>null</code>.
-     * @param defaultObject The object to return when the first object is <code>null</code>.
-     *
-     * @return The given object or the defaultObject if the object is <code>null</code>.
-     */
-    protected static <T> T getOrDefault(T object, Supplier<T> defaultObject) {
-
-        if (object != null)
-            return object;
-
-        return defaultObject.get();
     }
 
     public String getApplicationName() {
