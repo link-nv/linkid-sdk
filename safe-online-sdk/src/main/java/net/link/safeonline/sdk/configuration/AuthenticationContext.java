@@ -1,11 +1,13 @@
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
+import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
 
 import com.google.common.base.Supplier;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Set;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;
@@ -13,7 +15,7 @@ import net.link.util.config.KeyProvider;
 
 /**
  * <h2>{@link AuthenticationContext}<br> <sub>[in short] (TODO).</sub></h2>
- * <p/>
+ *
  * <p> <i>09 17, 2010</i> </p>
  *
  * @author lhunath
@@ -39,11 +41,9 @@ public class AuthenticationContext extends LinkIDContext {
      *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
      *                        context path.
      * @param protocol        Authentication protocol to use
-     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this
-     *                        set
+     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this set
      *                        cannot be used by the user to authenticate himself as a result of this call.  May be <code>null</code> or
-     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the
-     *                        application's
+     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the application's
      *                        device policy configured at the linkID node may further restrict the available devices.
      *
      * @see #AuthenticationContext(String, String, KeyProvider, boolean, Set, String, String, Locale, String)
@@ -63,11 +63,9 @@ public class AuthenticationContext extends LinkIDContext {
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
      *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
      *                        context path.
-     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this
-     *                        set
+     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this set
      *                        cannot be used by the user to authenticate himself as a result of this call.  May be <code>null</code> or
-     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the
-     *                        application's
+     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the application's
      *                        device policy configured at the linkID node may further restrict the available devices.
      *
      * @see #AuthenticationContext(String, String, KeyProvider, boolean, Set, String, String, Locale, String)
@@ -112,22 +110,21 @@ public class AuthenticationContext extends LinkIDContext {
 
         this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, new Supplier<KeyProvider>() {
             public KeyProvider get() {
-
                 return config().linkID().app().keyProvider();
             }
         } ), forceAuthentication, themeName, language, target, devices, sessionTrackingId, null );
     }
 
-    private AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyStore, boolean forceAuthentication,
-                                  String themeName, Locale language, String target, Set<String> devices, String sessionTrackingId,
-                                  Protocol protocol) {
+    private AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider,
+                                  boolean forceAuthentication, String themeName, Locale language, String target, Set<String> devices,
+                                  String sessionTrackingId, Protocol protocol) {
 
         this( applicationName, applicationFriendlyName, //
-                null != keyStore? keyStore.getIdentityKeyPair(): null, //
-                null != keyStore? keyStore.getIdentityCertificate(): null,//
-                null != keyStore? keyStore.getTrustedCertificates(): null, //
-                null != keyStore? keyStore.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ): null, //
-                forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol );
+              null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
+              null != keyProvider? keyProvider.getIdentityCertificate(): null,//
+              null != keyProvider? keyProvider.getTrustedCertificates(): null, //
+              null != keyProvider? keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ): null, //
+              forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol );
     }
 
     /**
@@ -171,7 +168,7 @@ public class AuthenticationContext extends LinkIDContext {
                                  String target, Set<String> devices, String sessionTrackingId, Protocol protocol) {
 
         super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
-                sessionTrackingId, themeName, language, target, protocol );
+               sessionTrackingId, themeName, language, target, protocol );
 
         this.forceAuthentication = forceAuthentication;
         this.devices = devices;
@@ -191,6 +188,6 @@ public class AuthenticationContext extends LinkIDContext {
     public String toString() {
 
         return String.format( "{authn: %s, force=%s, dev=%s}", //
-                super.toString(), isForceAuthentication(), getDevices() );
+                              super.toString(), isForceAuthentication(), getDevices() );
     }
 }
