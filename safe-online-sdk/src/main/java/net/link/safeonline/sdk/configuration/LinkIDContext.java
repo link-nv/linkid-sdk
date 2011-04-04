@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.configuration;
 
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
+import com.google.common.base.Supplier;
 import java.io.Serializable;
 import java.security.KeyManagementException;
 import java.security.KeyPair;
@@ -182,6 +183,20 @@ public abstract class LinkIDContext implements Serializable {
             return object;
 
         return defaultObject;
+    }
+
+    /**
+     * @param object        The object to return if it isn't <code>null</code>.
+     * @param defaultObject The object to return when the first object is <code>null</code>.
+     *
+     * @return The given object or the defaultObject if the object is <code>null</code>.
+     */
+    protected static <T> T getOrDefault(T object, Supplier<T> defaultObject) {
+
+        if (object != null)
+            return object;
+
+        return defaultObject.get();
     }
 
     public String getApplicationName() {
