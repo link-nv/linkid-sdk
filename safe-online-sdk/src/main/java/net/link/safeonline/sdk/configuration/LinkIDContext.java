@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.configuration;
 import static com.lyndir.lhunath.lib.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
+import com.google.common.base.Supplier;
 import java.io.Serializable;
 import java.security.*;
 import java.security.cert.X509Certificate;
@@ -108,7 +109,12 @@ public abstract class LinkIDContext implements Serializable {
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
                             String themeName, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, config().linkID().app().keyProvider() ),
+        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, new Supplier<KeyProvider>() {
+            public KeyProvider get() {
+
+                return config().linkID().app().keyProvider();
+            }
+        } ),
                 sessionTrackingId, themeName, language, target, null );
     }
 

@@ -5,6 +5,7 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
 import be.fedict.trust.MemoryCertificateRepository;
 import be.fedict.trust.TrustValidator;
+import com.google.common.base.Supplier;
 import com.lyndir.lhunath.lib.system.logging.Logger;
 import com.lyndir.lhunath.lib.system.util.ObjectUtils;
 import java.security.PrivateKey;
@@ -73,7 +74,12 @@ public class SDKWSSecurityConfiguration extends AbstractWSSecurityConfiguration 
 
     public KeyProvider getKeyProvider() {
 
-        return getOrDefault( keyProvider, config().linkID().app().keyProvider() );
+        return getOrDefault( keyProvider, new Supplier<KeyProvider>() {
+            public KeyProvider get() {
+
+                return config().linkID().app().keyProvider();
+            }
+        } );
     }
 
     public CertificateChain getIdentityCertificateChain() {

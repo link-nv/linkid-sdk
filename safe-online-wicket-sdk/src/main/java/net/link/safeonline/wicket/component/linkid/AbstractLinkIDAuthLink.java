@@ -69,6 +69,6 @@ public abstract class AbstractLinkIDAuthLink extends Link<Object> implements Lin
 
     public PageParameters getTargetPageParameters() {
 
-        return target == null? null: targetParameters;
+        return targetParameters;
     }
 }

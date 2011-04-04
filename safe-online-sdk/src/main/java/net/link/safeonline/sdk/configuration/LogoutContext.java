@@ -1,7 +1,9 @@
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
+import static com.lyndir.lhunath.lib.system.util.ObjectUtils.*;
+import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
+import com.google.common.base.Supplier;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
@@ -14,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * <h2>{@link AuthenticationContext}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <p/>
  * <p> <i>09 17, 2010</i> </p>
  *
  * @author lhunath
@@ -71,8 +73,12 @@ public class LogoutContext extends LinkIDContext {
     public LogoutContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
                          String themeName, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, config().linkID().app().keyProvider() ),
-                sessionTrackingId, themeName, language, target, null );
+        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, new Supplier<KeyProvider>() {
+            public KeyProvider get() {
+
+                return config().linkID().app().keyProvider();
+            }
+        } ), sessionTrackingId, themeName, language, target, null );
     }
 
     private LogoutContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider,
