@@ -10,11 +10,9 @@ package test.unit.net.link.safeonline.sdk.ws;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
-import com.google.common.collect.ImmutableList;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Set;
 import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
@@ -89,9 +87,10 @@ public class WSSecurityServerHandlerTest {
         soapMessageContext.setScope( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
 
         // Setup Mocks
+        expect( mockWSSecurityConfiguration.isCertificateChainTrusted( certificateChain ) ).andStubReturn( true );
+        expect( mockWSSecurityConfiguration.isOutboundSignatureNeeded() ).andStubReturn( true );
         expect( mockWSSecurityConfiguration.getIdentityCertificateChain() ).andReturn( certificateChain );
         expect( mockWSSecurityConfiguration.getPrivateKey() ).andReturn( keyPair.getPrivate() );
-        expect( mockWSSecurityConfiguration.isCertificateChainTrusted( certificateChain ) ).andStubReturn( true );
 
         replay( mockObjects );
 
@@ -138,10 +137,11 @@ public class WSSecurityServerHandlerTest {
         soapMessageContext.setScope( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
 
         // Setup Mocks
-        expect( mockWSSecurityConfiguration.isCertificateChainTrusted( linkidCertificateChain ) ).andStubReturn( true );
-        expect( mockWSSecurityConfiguration.getIdentityCertificateChain() ).andStubReturn( linkidCertificateChain );
-        expect( mockWSSecurityConfiguration.getPrivateKey() ).andStubReturn( linkidKeyPair.getPrivate() );
         expect( mockWSSecurityConfiguration.getMaximumAge() ).andStubReturn( new Duration( Long.MAX_VALUE ) );
+        expect( mockWSSecurityConfiguration.isCertificateChainTrusted( linkidCertificateChain ) ).andStubReturn( true );
+        expect( mockWSSecurityConfiguration.isOutboundSignatureNeeded() ).andStubReturn( true );
+        expect( mockWSSecurityConfiguration.getIdentityCertificateChain() ).andReturn( linkidCertificateChain );
+        expect( mockWSSecurityConfiguration.getPrivateKey() ).andReturn( linkidKeyPair.getPrivate() );
 
         replay( mockObjects );
 
@@ -171,7 +171,7 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair linkidKeyPair = PkiTestUtils.generateKeyPair();
-        ImmutableList<X509Certificate> linkidCertificateChain = ImmutableList.of(
+        CertificateChain linkidCertificateChain = new CertificateChain(
                 PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );

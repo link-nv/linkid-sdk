@@ -133,10 +133,10 @@ public class AuthnRequestFactoryTest {
         assertNotNull( resultAuthnRequest.getSignature() );
         assertNotNull( resultAuthnRequest.getSignature().getKeyInfo() );
 
-        List<X509Certificate> resultCertificateChain = KeyInfoHelper.getCertificates( resultAuthnRequest.getSignature().getKeyInfo() );
-        assertEquals( 2, resultCertificateChain.size() );
-        assertEquals( rootCertificate, resultCertificateChain.get( 0 ) );
-        assertEquals( certificate, resultCertificateChain.get( 1 ) );
+        CertificateChain resultCertificateChain = new CertificateChain( KeyInfoHelper.getCertificates( resultAuthnRequest.getSignature().getKeyInfo() ) );
+        assertEquals( 2, resultCertificateChain.getOrderedCertificateChain().size() );
+        assertEquals( rootCertificate, resultCertificateChain.getRootCertificate() );
+        assertEquals( certificate, resultCertificateChain.getIdentityCertificate() );
 
         LinkIDSaml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
     }
