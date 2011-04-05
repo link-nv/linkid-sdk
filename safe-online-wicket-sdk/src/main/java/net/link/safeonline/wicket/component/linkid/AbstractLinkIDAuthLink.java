@@ -6,18 +6,15 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import net.link.util.wicket.util.RedirectResponse;
-import net.link.util.wicket.util.RedirectResponseException;
-import org.apache.wicket.Application;
-import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
+import net.link.safeonline.wicket.util.StatelessRedirectResponseException;
+import org.apache.wicket.*;
 import org.apache.wicket.markup.html.link.Link;
 
 
 /**
  * <h2>{@link AbstractLinkIDAuthLink}<br> <sub>A link that uses the linkID SDK to log a user in through the linkID authentication
  * services.</sub></h2>
- *
+ * <p/>
  * <p> <i>Sep 22, 2008</i> </p>
  *
  * @author lhunath
@@ -54,10 +51,15 @@ public abstract class AbstractLinkIDAuthLink extends Link<Object> implements Lin
     @Override
     public void onClick() {
 
-        throw new RedirectResponseException( new RedirectResponse() {
-            public void run() {
+        throw new StatelessRedirectResponseException( new IRequestTarget() {
+
+            public void respond(final RequestCycle requestCycle) {
 
                 delegate( getTarget(), getTargetPageParameters() );
+            }
+
+            public void detach(final RequestCycle requestCycle) {
+
             }
         } );
     }
