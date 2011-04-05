@@ -169,7 +169,7 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
     private static AttributeSDK<?> getAttributeSDK(AttributeType attributeType) {
 
         String attributeId = findAttributeId( attributeType );
-        AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName() );
+        AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );
 
         List<Object> attributeValues = attributeType.getAttributeValue();
         if (attributeValues.isEmpty())
@@ -184,7 +184,7 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
             for (Object memberAttributeObject : compoundValueAttribute.getAttributeValue()) {
 
                 AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-                AttributeSDK<Serializable> member = new AttributeSDK<Serializable>( attributeId, memberAttribute.getName() );
+                AttributeSDK<Serializable> member = new AttributeSDK<Serializable>( attributeId, memberAttribute.getName(), null );
                 if (!memberAttribute.getAttributeValue().isEmpty()) {
                     member.setValue( convertFromXmlDatatypeToClient( memberAttribute.getAttributeValue().get( 0 ) ) );
                 }
