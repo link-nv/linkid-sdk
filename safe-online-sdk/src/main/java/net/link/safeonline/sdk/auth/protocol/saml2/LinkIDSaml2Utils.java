@@ -4,6 +4,7 @@
  * Copyright (c) 2006-2011 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  ******************************************************************************/
+
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import com.google.common.collect.ImmutableMap;
@@ -81,7 +82,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
     private static AttributeSDK<?> getAttributeSDK(Attribute attributeType) {
 
         String attributeId = attributeType.getUnknownAttributes().get( WebServiceConstants.ATTRIBUTE_ID );
-        AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName() );
+        AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );
 
         List<XMLObject> attributeValues = attributeType.getAttributeValues();
         if (attributeValues.isEmpty())
@@ -95,7 +96,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
             for (XMLObject memberAttributeObject : attributeValues.get( 0 ).getOrderedChildren()) {
 
                 Attribute memberAttribute = (Attribute) memberAttributeObject;
-                AttributeSDK<Serializable> member = new AttributeSDK<Serializable>( attributeId, memberAttribute.getName() );
+                AttributeSDK<Serializable> member = new AttributeSDK<Serializable>( attributeId, memberAttribute.getName(), null );
                 if (!memberAttribute.getAttributeValues().isEmpty()) {
                     member.setValue( toJavaObject( memberAttribute.getAttributeValues().get( 0 ) ) );
                 }

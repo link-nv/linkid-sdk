@@ -47,7 +47,7 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
 
     public AttributeIdentitySDK(oasis.names.tc.saml._2_0.assertion.AttributeType attributeType) {
 
-        super( attributeType.getOtherAttributes().get( WebServiceConstants.ATTRIBUTE_ID ), attributeType.getName() );
+        super( attributeType.getOtherAttributes().get( WebServiceConstants.ATTRIBUTE_ID ), attributeType.getName(), null );
         this.attributeType = new AttributeType( attributeType.getName(),
                 DataType.getDataType( attributeType.getOtherAttributes().get( WebServiceConstants.DATATYPE_ATTRIBUTE ) ),
                 Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.MULTIVALUED_ATTRIBUTE ) ) );
