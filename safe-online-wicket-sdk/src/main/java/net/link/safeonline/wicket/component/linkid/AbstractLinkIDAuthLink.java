@@ -6,7 +6,11 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import net.link.safeonline.wicket.util.StatelessRedirectResponseException;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.link.util.wicket.util.ServletResponse;
+import net.link.util.wicket.util.ServletResponseException;
 import org.apache.wicket.*;
 import org.apache.wicket.markup.html.link.Link;
 
@@ -51,15 +55,11 @@ public abstract class AbstractLinkIDAuthLink extends Link<Object> implements Lin
     @Override
     public void onClick() {
 
-        throw new StatelessRedirectResponseException( new IRequestTarget() {
+        throw new ServletResponseException( new ServletResponse() {
+            public void respond(final HttpServletRequest request, final HttpServletResponse response)
+                    throws IOException {
 
-            public void respond(final RequestCycle requestCycle) {
-
-                delegate( getTarget(), getTargetPageParameters() );
-            }
-
-            public void detach(final RequestCycle requestCycle) {
-
+                delegate( request, response, getTarget(), getTargetPageParameters() );
             }
         } );
     }
