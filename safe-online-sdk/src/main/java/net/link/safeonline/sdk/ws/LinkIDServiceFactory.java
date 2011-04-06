@@ -48,7 +48,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
     public static final String SSL_ALIAS = "ws-ssl";
 
-    private static final ServiceFactory instance = new LinkIDServiceFactory();
+    private static ServiceFactory instance = new LinkIDServiceFactory();
 
     protected LinkIDServiceFactory() {
 
