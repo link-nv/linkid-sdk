@@ -84,12 +84,12 @@ public class SDKWSSecurityConfiguration extends AbstractWSSecurityConfiguration 
 
     public CertificateChain getIdentityCertificateChain() {
 
-        return keyProvider.getIdentityCertificateChain();
+        return getKeyProvider().getIdentityCertificateChain();
     }
 
     public PrivateKey getPrivateKey() {
 
-        return keyProvider.getIdentityKeyPair().getPrivate();
+        return getKeyProvider().getIdentityKeyPair().getPrivate();
     }
 
     @Override
