@@ -12,11 +12,11 @@ import java.util.Map;
 
 /**
  * <h2>{@link AuthenticationStep}</h2>
- *
+ * <p/>
  * <p>
  * [description / usage].
  * </p>
- *
+ * <p/>
  * <p>
  * <i>Dec 18, 2008</i>
  * </p>
@@ -31,11 +31,11 @@ public enum AuthenticationStep {
     USAGE_AGREEMENT( "Usage Agreement" ),
     SUBSCRIPTION_DENIED( "Subscription denied" ),
     IDENTITY_CONFIRMATION( "Identity Confirmation" ),
-    SUCCESS( "Success" );
+    FINALIZE( "Finalize" );
 
     private final String value;
 
-    private final static Map<String, AuthenticationStep> authenticationStepMap = new HashMap<String, AuthenticationStep>();
+    private static final Map<String, AuthenticationStep> authenticationStepMap = new HashMap<String, AuthenticationStep>();
 
     static {
         AuthenticationStep[] authenticationSteps = AuthenticationStep.values();
@@ -44,8 +44,7 @@ public enum AuthenticationStep {
         }
     }
 
-
-    private AuthenticationStep(String value) {
+    AuthenticationStep(String value) {
 
         this.value = value;
     }

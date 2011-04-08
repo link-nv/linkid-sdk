@@ -20,7 +20,7 @@ public class AuthenticationCommitResponse extends AuthenticationResponse {
 
     public AuthenticationCommitResponse(final String userId, final String deviceName, final byte[] assertion) {
 
-        super( AuthenticationStep.SUCCESS );
+        super( AuthenticationStep.FINALIZE );
 
         this.userId = userId;
         this.deviceName = deviceName;
