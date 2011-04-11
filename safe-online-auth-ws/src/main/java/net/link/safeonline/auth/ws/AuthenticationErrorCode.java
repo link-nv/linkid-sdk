@@ -26,6 +26,7 @@ public enum AuthenticationErrorCode {
     DEVICE_DISABLED( "urn:net:lin-k:safe-online:ws:auth:status:DeviceDisabled" ),
     DEVICE_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:DeviceNotFound" ),
     EMPTY_DEVICE_POLICY( "urn:net:lin-k:safe-online:ws:auth:status:EmptyDevicePolicy" ),
+    IDENTITY_UNAVAILABLE( "urn:net:lin-k:safe-online:ws:auth:status:IdentityUnavilable" ),
     INSUFFICIENT_IDENTITY( "urn:net:lin-k:safe-online:ws:auth:status:InsufficientIdentity" ),
     INSUFFICIENT_CREDENTIALS( "urn:net:lin-k:safe-online:ws:auth:status:InsufficientCredentials" ),
     INSUFFICIENT_DEVICE( "urn:net:lin-k:safe-online:ws:auth:status:InsufficientDevice" ),
@@ -48,7 +49,7 @@ public enum AuthenticationErrorCode {
 
     private final String errorCode;
 
-    private final static Map<String, AuthenticationErrorCode> errorCodeMap = new HashMap<String, AuthenticationErrorCode>();
+    private static final Map<String, AuthenticationErrorCode> errorCodeMap = new HashMap<String, AuthenticationErrorCode>();
 
     static {
         AuthenticationErrorCode[] errorCodes = AuthenticationErrorCode.values();
@@ -56,7 +57,7 @@ public enum AuthenticationErrorCode {
             errorCodeMap.put( errorCode.getErrorCode(), errorCode );
     }
 
-    private AuthenticationErrorCode(String errorCode) {
+    AuthenticationErrorCode(String errorCode) {
 
         this.errorCode = errorCode;
     }

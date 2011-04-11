@@ -30,7 +30,9 @@ public enum AuthenticationStep {
     GLOBAL_USAGE_AGREEMENT( "Global Usage Agreement" ),
     USAGE_AGREEMENT( "Usage Agreement" ),
     SUBSCRIPTION_DENIED( "Subscription denied" ),
-    IDENTITY_CONFIRMATION( "Identity Confirmation" ),
+    IDENTITY_UNAVAILABLE( "Identity Unavailable" ),
+    IDENTITY_CONFIRMATION_EXPLICIT( "Identity Confirmation (explicit)" ),
+    IDENTITY_CONFIRMATION_IMPLICIT( "Identity Confirmation (implicit)" ),
     FINALIZE( "Finalize" );
 
     private final String value;
