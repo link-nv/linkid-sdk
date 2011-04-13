@@ -4,14 +4,16 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.wicket.Component;
 
 
 /**
  * <h2>{@link AttributeCore}</h2>
- *
+ * <p/>
  * <p> <i>Nov 29, 2010</i>
- *
+ * <p/>
  * Core Attribute. </p>
  *
  * @author wvdhaute
@@ -27,21 +29,25 @@ public class AttributeCore extends AttributeSDK<Serializable> {
     private AttributeInputPanel panel;
 
     public AttributeCore(final AttributeType attributeType) {
+
         super( attributeType.getName() );
         this.attributeType = attributeType;
     }
 
     public AttributeCore(final String attributeId, final AttributeType attributeType) {
+
         super( attributeId, attributeType.getName(), null );
         this.attributeType = attributeType;
     }
 
     public AttributeCore(final String attributeId, final AttributeType attributeType, final Serializable value) {
+
         super( attributeId, attributeType.getName(), value );
         this.attributeType = attributeType;
     }
 
     public AttributeCore(final AttributeType attributeType, final Serializable value) {
+
         super( null, attributeType.getName(), value );
         this.attributeType = attributeType;
     }
@@ -53,39 +59,48 @@ public class AttributeCore extends AttributeSDK<Serializable> {
     }
 
     public AttributeCore(final AttributeCore attribute) {
+
         this( attribute.getId(), attribute.getAttributeType(), attribute.getValue() );
         unavailable = attribute.isUnavailable();
     }
 
     public AttributeType getAttributeType() {
+
         return attributeType;
     }
 
     public boolean isRequired() {
+
         return attributeType.isRequired();
     }
 
     public boolean isUnavailable() {
+
         return unavailable;
     }
 
     public void setUnavailable(boolean unavailable) {
+
         this.unavailable = unavailable;
     }
 
     public Component getLabel() {
+
         return label;
     }
 
     public void setLabel(final Component label) {
+
         this.label = label;
     }
 
     public void setPanel(final AttributeInputPanel panel) {
+
         this.panel = panel;
     }
 
     public AttributeInputPanel getPanel() {
+
         return panel;
     }
 
@@ -101,5 +116,24 @@ public class AttributeCore extends AttributeSDK<Serializable> {
             template.setValue( new Compound( memberTemplates ) );
         }
         return template;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (null == obj)
+            return false;
+        if (!(obj instanceof AttributeCore))
+            return false;
+        AttributeCore rhs = (AttributeCore) obj;
+        return new EqualsBuilder().append( attributeType, rhs.attributeType ).isEquals() && super.equals( obj );
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append( attributeType ).append( getId() ).append( getValue() ).toHashCode();
     }
 }

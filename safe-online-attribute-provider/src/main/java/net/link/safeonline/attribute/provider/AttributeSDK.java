@@ -7,15 +7,15 @@
 package net.link.safeonline.attribute.provider;
 
 import com.lyndir.lhunath.lib.system.util.ObjectMeta;
-import com.lyndir.lhunath.lib.system.util.ObjectUtils;
 import java.io.Serializable;
+import org.apache.commons.lang.builder.*;
 
 
 /**
  * <h2>{@link AttributeSDK}</h2>
- *
+ * <p/>
  * <p> <i>Nov 29, 2010</i>
- *
+ * <p/>
  * SDK Attribute.</p>
  *
  * @author wvdhaute
@@ -23,9 +23,9 @@ import java.io.Serializable;
 @ObjectMeta
 public class AttributeSDK<T extends Serializable> implements Serializable {
 
-    private String id;
+    private       String id;
     private final String name;
-    private T value;
+    private       T      value;
 
     public AttributeSDK(final String name) {
 
@@ -72,19 +72,26 @@ public class AttributeSDK<T extends Serializable> implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        return ObjectUtils.equals( this, obj );
+        if (this == obj)
+            return true;
+        if (null == obj)
+            return false;
+        if (!(obj instanceof AttributeSDK))
+            return false;
+        AttributeSDK<T> rhs = (AttributeSDK<T>) obj;
+        return new EqualsBuilder().append( name, rhs.name ).append( id, rhs.id ).append( value, rhs.value ).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return ObjectUtils.hashCode( this );
+        return new HashCodeBuilder().append( name ).append( id ).append( value ).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return ObjectUtils.toString( this );
+        return new ToStringBuilder( this ).append( "name", name ).append( "id", id ).append( "value", value ).toString();
     }
 }
 
