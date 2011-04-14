@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online</groupId>
         <artifactId>client</artifactId>
-        <version>1.15</version>
+        <version>SNAPSHOT</version>
     </parent>
 
     <!-- PROJECT METADATA -->
