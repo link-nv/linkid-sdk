@@ -10,7 +10,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>SNAPSHOT</version>
+        <version>1.15-p2</version>
     </parent>
 
     <groupId>net.lin-k.safe-online.client.sdk</groupId>

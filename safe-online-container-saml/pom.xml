@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>SNAPSHOT</version>
+        <version>1.15-p2</version>
     </parent>
     <name>SafeOnline SAML Container</name>
     <description>Groups the dependencies required for SAML ticket
@@ -19,7 +19,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-saml-authn-context</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.15-p2</version>
         </dependency>
 
         <!-- opensaml -->
