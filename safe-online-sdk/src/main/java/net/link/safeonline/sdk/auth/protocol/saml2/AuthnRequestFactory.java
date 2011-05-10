@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.*;
+import net.link.util.saml.Saml2Utils;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
@@ -43,6 +44,7 @@ public class AuthnRequestFactory {
         /*
          * Next is because Sun loves to endorse crippled versions of Xerces.
          */
+        //noinspection HardcodedFileSeparator
         System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
         try {
@@ -51,7 +53,7 @@ public class AuthnRequestFactory {
                     new SessionInfoUnmarshaller() );
         }
         catch (ConfigurationException e) {
-            throw new RuntimeException( "could not bootstrap the OpenSAML2 library" );
+            throw new RuntimeException( "could not bootstrap the OpenSAML2 library", e );
         }
     }
 
@@ -77,7 +79,7 @@ public class AuthnRequestFactory {
         if (null == issuerName)
             throw new IllegalArgumentException( "application name should not be null" );
 
-        AuthnRequest request = LinkIDSaml2Utils.buildXMLObject( AuthnRequest.DEFAULT_ELEMENT_NAME );
+        AuthnRequest request = Saml2Utils.buildXMLObject( AuthnRequest.DEFAULT_ELEMENT_NAME );
 
         request.setForceAuthn( forceAuthentication );
         SecureRandomIdentifierGenerator idGenerator;
@@ -91,7 +93,7 @@ public class AuthnRequestFactory {
         request.setID( id );
         request.setVersion( SAMLVersion.VERSION_20 );
         request.setIssueInstant( new DateTime() );
-        Issuer issuer = LinkIDSaml2Utils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
+        Issuer issuer = Saml2Utils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
         issuer.setValue( issuerName );
         request.setIssuer( issuer );
 
@@ -106,15 +108,15 @@ public class AuthnRequestFactory {
         if (null != applicationFriendlyName)
             request.setProviderName( applicationFriendlyName );
 
-        NameIDPolicy nameIdPolicy = LinkIDSaml2Utils.buildXMLObject( NameIDPolicy.DEFAULT_ELEMENT_NAME );
+        NameIDPolicy nameIdPolicy = Saml2Utils.buildXMLObject( NameIDPolicy.DEFAULT_ELEMENT_NAME );
         nameIdPolicy.setAllowCreate( true );
         request.setNameIDPolicy( nameIdPolicy );
 
         if (null != devices) {
-            RequestedAuthnContext requestedAuthnContext = LinkIDSaml2Utils.buildXMLObject( RequestedAuthnContext.DEFAULT_ELEMENT_NAME );
+            RequestedAuthnContext requestedAuthnContext = Saml2Utils.buildXMLObject( RequestedAuthnContext.DEFAULT_ELEMENT_NAME );
             List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
             for (String device : devices) {
-                AuthnContextClassRef authnContextClassRef = LinkIDSaml2Utils.buildXMLObject( AuthnContextClassRef.DEFAULT_ELEMENT_NAME );
+                AuthnContextClassRef authnContextClassRef = Saml2Utils.buildXMLObject( AuthnContextClassRef.DEFAULT_ELEMENT_NAME );
                 authnContextClassRef.setAuthnContextClassRef( device );
                 authnContextClassRefs.add( authnContextClassRef );
             }
@@ -122,13 +124,13 @@ public class AuthnRequestFactory {
         }
 
         if (null != audiences) {
-            Conditions conditions = LinkIDSaml2Utils.buildXMLObject( Conditions.DEFAULT_ELEMENT_NAME );
+            Conditions conditions = Saml2Utils.buildXMLObject( Conditions.DEFAULT_ELEMENT_NAME );
             List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-            AudienceRestriction audienceRestriction = LinkIDSaml2Utils.buildXMLObject( AudienceRestriction.DEFAULT_ELEMENT_NAME );
+            AudienceRestriction audienceRestriction = Saml2Utils.buildXMLObject( AudienceRestriction.DEFAULT_ELEMENT_NAME );
             audienceRestrictions.add( audienceRestriction );
             List<Audience> audienceList = audienceRestriction.getAudiences();
             for (String audienceName : audiences) {
-                Audience audience = LinkIDSaml2Utils.buildXMLObject( Audience.DEFAULT_ELEMENT_NAME );
+                Audience audience = Saml2Utils.buildXMLObject( Audience.DEFAULT_ELEMENT_NAME );
                 audienceList.add( audience );
                 audience.setAudienceURI( audienceName );
             }
@@ -138,8 +140,8 @@ public class AuthnRequestFactory {
         // add session info
         if (null != sessionTrackingId) {
             QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
-            Extensions extensions = LinkIDSaml2Utils.buildXMLObject( extensionsQName );
-            SessionInfo sessionInfo = LinkIDSaml2Utils.buildXMLObject( SessionInfo.DEFAULT_ELEMENT_NAME );
+            Extensions extensions = Saml2Utils.buildXMLObject( extensionsQName );
+            SessionInfo sessionInfo = Saml2Utils.buildXMLObject( SessionInfo.DEFAULT_ELEMENT_NAME );
             sessionInfo.setSession( sessionTrackingId );
             request.setExtensions( extensions );
             request.getExtensions().getUnknownXMLObjects().add( sessionInfo );
