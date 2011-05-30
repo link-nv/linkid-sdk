@@ -34,7 +34,7 @@
 
             <!-- LinkID -->
             <dependency>
-                <groupId>net.lin-k.safe-online.client.sdk.client</groupId>
+                <groupId>net.lin-k.safe-online.client.sdk</groupId>
                 <artifactId>safe-online-container-saml</artifactId>
                 <version>SNAPSHOT</version>
                 <type>pom</type>
