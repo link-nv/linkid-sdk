@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -26,6 +27,9 @@
         <jsr181-api.version>1.0-MR1</jsr181-api.version>
         <jetbrains-annotations.version>7.0.2</jetbrains-annotations.version>
         <jtrust.version>1.1.2</jtrust.version>
+
+        <maven-export-plugin.version>1.5</maven-export-plugin.version>
+
     </properties>
 
     <!-- DEPENDENCIES: DEFAULT SCOPE AND VERSION -->
@@ -51,16 +55,7 @@
                 <artifactId>jboss-ejb-api_3.1_spec</artifactId>
                 <version>${jboss-ejb-api_3.1_spec.version}</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>javax.ejb</groupId>-->
-                <!--<artifactId>ejb-api</artifactId>-->
-                <!--<version>${ejb-api.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>javax.servlet</groupId>-->
-                <!--<artifactId>servlet-api</artifactId>-->
-                <!--<version>${servlet-api.version}</version>-->
-            <!--</dependency>-->
+            <!--<dependency>--><!--<groupId>javax.ejb</groupId>--><!--<artifactId>ejb-api</artifactId>--><!--<version>${ejb-api.version}</version>--><!--</dependency>--><!--<dependency>--><!--<groupId>javax.servlet</groupId>--><!--<artifactId>servlet-api</artifactId>--><!--<version>${servlet-api.version}</version>--><!--</dependency>-->
             <dependency>
                 <groupId>org.apache.xalan</groupId>
                 <artifactId>xalan</artifactId>
@@ -128,6 +123,23 @@
                     <uniqueVersion>false</uniqueVersion>
                 </snapshotRepository>
             </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.stackoverflow</groupId>
+                        <artifactId>maven-export-plugin</artifactId>
+                        <version>${maven-export-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>output</id>
+                                <goals>
+                                    <goal>output-project</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>dep:sdk</id>
