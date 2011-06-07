@@ -168,8 +168,8 @@ public abstract class LinkIDContext implements Serializable {
         this.applicationCertificate = applicationCertificate;
         this.trustedCertificates = trustedCertificates;
         this.sessionTrackingId = sessionTrackingId;
-        this.themeName = ifNotNullElse( themeName, config().linkID().theme() );
-        this.language = ifNotNullElse( language, config().linkID().language() );
+        this.themeName = ifNotNullElseNullable( themeName, config().linkID().theme() );
+        this.language = ifNotNullElseNullable( language, config().linkID().language() );
         this.target = target;
         this.protocol = ifNotNullElse( protocol, config().proto().defaultProtocol() );
     }
@@ -261,7 +261,7 @@ public abstract class LinkIDContext implements Serializable {
         public SAMLContext(SAMLBinding binding, String relayState) {
 
             this.binding = ifNotNullElse( binding, config().proto().saml().binding() );
-            this.relayState = ifNotNullElse( relayState, config().proto().saml().relayState() );
+            this.relayState = ifNotNullElseNullable( relayState, config().proto().saml().relayState() );
         }
 
         public SAMLBinding getBinding() {
