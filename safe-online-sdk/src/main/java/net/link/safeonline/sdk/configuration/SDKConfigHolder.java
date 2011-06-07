@@ -1,6 +1,5 @@
 package net.link.safeonline.sdk.configuration;
 
-import net.link.util.config.AppConfig;
 import net.link.util.config.ConfigHolder;
 
 
@@ -25,11 +24,11 @@ public class SDKConfigHolder extends ConfigHolder<SDKConfig> {
 
     public static SDKConfig config() {
 
-        return (SDKConfig) ConfigHolder.config();
+        return ConfigHolder.config( SDKConfig.class );
     }
 
-    public static <A extends AppConfig> SafeOnlineDefaultConfigFactory factory() {
+    public static SafeOnlineDefaultConfigFactory factory() {
 
-        return (SafeOnlineDefaultConfigFactory) ConfigHolder.factory();
+        return ConfigHolder.factory( SafeOnlineDefaultConfigFactory.class );
     }
 }

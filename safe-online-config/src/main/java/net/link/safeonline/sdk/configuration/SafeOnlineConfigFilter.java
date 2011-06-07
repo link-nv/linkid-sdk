@@ -1,7 +1,6 @@
 package net.link.safeonline.sdk.configuration;
 
 import net.link.util.config.AppConfig;
-import net.link.util.config.Config;
 import net.link.util.config.ConfigFilter;
 import net.link.util.config.DefaultConfigFactory;
 

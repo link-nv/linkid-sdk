@@ -24,11 +24,11 @@ public class SafeOnlineConfigHolder extends ConfigHolder<SafeOnlineConfig> {
 
     public static SafeOnlineConfig config() {
 
-        return (SafeOnlineConfig) ConfigHolder.config();
+        return ConfigHolder.config( SafeOnlineConfig.class );
     }
 
     public static SafeOnlineDefaultConfigFactory factory() {
 
-        return (SafeOnlineDefaultConfigFactory) ConfigHolder.factory();
+        return ConfigHolder.factory( SafeOnlineDefaultConfigFactory.class );
     }
 }

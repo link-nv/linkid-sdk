@@ -56,7 +56,7 @@ public class AuthnRequestFactoryTest {
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
                 destinationURL, devices, false, session );
-        String samlAuthnRequestToken = LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, null );
+        String samlAuthnRequestToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, null ));
 
         LOG.debug( DomUtils.domToString( LinkIDSaml2Utils.marshall( samlAuthnRequest ) ) );
 
@@ -118,7 +118,7 @@ public class AuthnRequestFactoryTest {
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
                 destinationURL, devices, false, session );
-        String samlAuthnRequestToken = LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, certificateChain );
+        String samlAuthnRequestToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, certificateChain ));
         long end = System.currentTimeMillis();
 
         // Verify

@@ -1,7 +1,8 @@
 package net.link.safeonline.sdk.configuration;
 
 import net.link.safeonline.sdk.auth.protocol.Protocol;
-import net.link.util.config.Config;
+import net.link.util.config.Group;
+import net.link.util.config.Property;
 import org.joda.time.Duration;
 
 
@@ -12,7 +13,7 @@ import org.joda.time.Duration;
  *
  * @author lhunath
  */
-@Config.Group(prefix = "proto")
+@Group(prefix = "proto")
 public interface ProtocolConfig {
 
     OpenIDProtocolConfig openID();
@@ -27,7 +28,7 @@ public interface ProtocolConfig {
      *
      * @return authentication protocol to use
      */
-    @Config.Property(required = true, unset = "SAML2")
+    @Property(required = true, unset = "SAML2")
     Protocol defaultProtocol();
 
     /**
@@ -38,6 +39,6 @@ public interface ProtocolConfig {
      *
      * @return maximum devication (ms) for WS-Security timestamps.
      */
-    @Config.Property(required = true, unset = "300000" /* 5 minutes */)
+    @Property(required = true, unset = "300000" /* 5 minutes */)
     Duration maxTimeOffset();
 }

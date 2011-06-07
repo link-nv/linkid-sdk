@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static com.lyndir.lhunath.lib.system.util.ObjectUtils.*;
+import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Supplier;
@@ -109,7 +109,7 @@ public abstract class LinkIDContext implements Serializable {
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
                             String themeName, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, new Supplier<KeyProvider>() {
+        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new Supplier<KeyProvider>() {
             public KeyProvider get() {
 
                 return config().linkID().app().keyProvider();
@@ -162,16 +162,16 @@ public abstract class LinkIDContext implements Serializable {
         saml = new SAMLContext();
         openID = new OpenIDContext( sslCertificate );
 
-        this.applicationName = getOrDefault( applicationName, config().linkID().app().name() );
+        this.applicationName = ifNotNullElse( applicationName, config().linkID().app().name() );
         this.applicationFriendlyName = applicationFriendlyName;
         this.applicationKeyPair = applicationKeyPair;
         this.applicationCertificate = applicationCertificate;
         this.trustedCertificates = trustedCertificates;
         this.sessionTrackingId = sessionTrackingId;
-        this.themeName = getOrDefault( themeName, config().linkID().theme() );
-        this.language = getOrDefault( language, config().linkID().language() );
+        this.themeName = ifNotNullElse( themeName, config().linkID().theme() );
+        this.language = ifNotNullElse( language, config().linkID().language() );
         this.target = target;
-        this.protocol = getOrDefault( protocol, config().proto().defaultProtocol() );
+        this.protocol = ifNotNullElse( protocol, config().proto().defaultProtocol() );
     }
 
     public String getApplicationName() {
@@ -260,8 +260,8 @@ public abstract class LinkIDContext implements Serializable {
          */
         public SAMLContext(SAMLBinding binding, String relayState) {
 
-            this.binding = getOrDefault( binding, config().proto().saml().binding() );
-            this.relayState = getOrDefault( relayState, config().proto().saml().relayState() );
+            this.binding = ifNotNullElse( binding, config().proto().saml().binding() );
+            this.relayState = ifNotNullElse( relayState, config().proto().saml().relayState() );
         }
 
         public SAMLBinding getBinding() {

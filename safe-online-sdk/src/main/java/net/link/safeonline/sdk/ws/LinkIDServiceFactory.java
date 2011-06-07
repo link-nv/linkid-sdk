@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.sdk.ws;
 
-import static com.lyndir.lhunath.lib.system.util.ObjectUtils.*;
+import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Supplier;
@@ -492,7 +492,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
 
-        return getOrDefault( sslCertificate, new Supplier<X509Certificate>() {
+        return ifNotNullElse( sslCertificate, new Supplier<X509Certificate>() {
             public X509Certificate get() {
 
                 return config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS );

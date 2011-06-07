@@ -16,6 +16,7 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
+import net.link.util.common.DomUtils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import org.apache.commons.logging.Log;
@@ -52,7 +53,7 @@ public class LogoutRequestFactoryTest {
         // Test
         long begin = System.currentTimeMillis();
         LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( subjectName, applicationName, destinationURL, session );
-        String samlLogoutRequestToken = LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null );
+        String samlLogoutRequestToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) );
         long end = System.currentTimeMillis();
 
         // Verify

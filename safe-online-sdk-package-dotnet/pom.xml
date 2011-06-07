@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>SNAPSHOT</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>SafeOnline .NET SDK Package</name>
@@ -34,7 +34,7 @@
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
                                     <artifactId>safe-online-sdk-manual</artifactId>
-                                    <version>SNAPSHOT</version>
+                                    <version>GIT-SNAPSHOT</version>
                                     <classifier>package</classifier>
                                     <type>zip</type>
                                 </artifactItem>
@@ -55,7 +55,7 @@
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
                                     <artifactId>safe-online-sdk-manual-dotnet</artifactId>
-                                    <version>SNAPSHOT</version>
+                                    <version>GIT-SNAPSHOT</version>
                                     <classifier>package</classifier>
                                     <type>zip</type>
                                 </artifactItem>
@@ -76,7 +76,7 @@
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
                                     <artifactId>safe-online-sdk-dotnet</artifactId>
-                                    <version>SNAPSHOT</version>
+                                    <version>GIT-SNAPSHOT</version>
                                     <classifier>package</classifier>
                                     <type>zip</type>
                                 </artifactItem>

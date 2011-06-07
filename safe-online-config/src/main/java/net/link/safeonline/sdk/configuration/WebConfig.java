@@ -6,7 +6,9 @@
  */
 package net.link.safeonline.sdk.configuration;
 
-import net.link.util.config.Config;
+import net.link.util.config.Group;
+import net.link.util.config.Property;
+
 
 /**
  * <h2>{@link WebConfig}</h2>
@@ -21,7 +23,7 @@ import net.link.util.config.Config;
  *
  * @author lhunath
  */
-@Config.Group(prefix = "web")
+@Group(prefix = "web")
 public interface WebConfig {
 
     /**
@@ -37,7 +39,7 @@ public interface WebConfig {
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
      */
-    @Config.Property(required = true)
+    @Property(required = true)
     String appBase();
 
     /**
@@ -53,7 +55,7 @@ public interface WebConfig {
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
      */
-    @Config.Property(required = true)
+    @Property(required = true)
     String appConfidentialBase();
 
     /**
@@ -65,7 +67,7 @@ public interface WebConfig {
      * <b>NOTE:</b> Should begin and end with a slash.
      * </p>
      */
-    @Config.Property(required = true, unset = Config.Property.AUTO)
+    @Property(required = true, unset = Property.AUTO)
     String appPath();
 
     /**
@@ -81,7 +83,7 @@ public interface WebConfig {
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
      */
-    @Config.Property(required = true, unset = "https://demo.linkid.be/linkid-user")
+    @Property(required = true, unset = "https://demo.linkid.be/linkid-user")
     String userBase();
 
     /**
@@ -97,7 +99,7 @@ public interface WebConfig {
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
      */
-    @Config.Property(required = true, unset = "https://demo.linkid.be/linkid-auth")
+    @Property(required = true, unset = "https://demo.linkid.be/linkid-auth")
     String authBase();
 
     /**
@@ -113,7 +115,7 @@ public interface WebConfig {
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
      */
-    @Config.Property(required = true, unset = "https://demo.linkid.be/linkid-ws")
+    @Property(required = true, unset = "https://demo.linkid.be/linkid-ws")
     String wsBase();
 
     /**
@@ -121,6 +123,6 @@ public interface WebConfig {
      *
      * <i>[optional, default: post the response straight to the authentication's target URL]</i>
      */
-    @Config.Property(required = false)
+    @Property(required = false)
     String landingPath();
 }

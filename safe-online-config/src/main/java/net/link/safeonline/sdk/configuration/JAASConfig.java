@@ -1,7 +1,9 @@
 package net.link.safeonline.sdk.configuration;
 
 import java.util.List;
-import net.link.util.config.Config;
+import net.link.util.config.Group;
+import net.link.util.config.Property;
+
 
 /**
  * <h2>{@link JAASConfig}<br>
@@ -13,7 +15,7 @@ import net.link.util.config.Config;
  *
  * @author lhunath
  */
-@Config.Group(prefix = "jaas")
+@Group(prefix = "jaas")
 public interface JAASConfig {
 
     /**
@@ -21,7 +23,7 @@ public interface JAASConfig {
      *
      * <i>[required, default: client-login]</i>
      */
-    @Config.Property(required = true, unset = "client-login")
+    @Property(required = true, unset = "client-login")
     String context();
 
     /**
@@ -29,7 +31,7 @@ public interface JAASConfig {
      *
      * <i>[optional, default: don't force unauthenticated users away]</i>
      */
-    @Config.Property(required = false)
+    @Property(required = false)
     String loginPath();
 
     /**
@@ -41,6 +43,6 @@ public interface JAASConfig {
      * If {@link #loginPath()} is set and users navigate to filtered paths that are not in this list, they will be redirected to the {@link #loginPath()}.
      * </p>
      */
-    @Config.Property(required = true, unset = "")
+    @Property(required = true, unset = "")
     List<String> publicPaths();
 }

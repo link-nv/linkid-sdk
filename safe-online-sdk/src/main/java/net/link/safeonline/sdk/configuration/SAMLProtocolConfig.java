@@ -1,7 +1,9 @@
 package net.link.safeonline.sdk.configuration;
 
 import net.link.safeonline.sdk.auth.protocol.saml2.SAMLBinding;
-import net.link.util.config.Config;
+import net.link.util.config.Group;
+import net.link.util.config.Property;
+
 
 /**
  * <h2>{@link SAMLProtocolConfig}<br>
@@ -13,7 +15,7 @@ import net.link.util.config.Config;
  *
  * @author lhunath
  */
-@Config.Group(prefix = "saml")
+@Group(prefix = "saml")
 public interface SAMLProtocolConfig {
 
     /**
@@ -21,7 +23,7 @@ public interface SAMLProtocolConfig {
      *
      * <i>[required, default: A built-in template]</i>
      */
-    @Config.Property(required = true, unset = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm")
+    @Property(required = true, unset = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm")
     String postBindingTemplate();
 
     /**
@@ -29,7 +31,7 @@ public interface SAMLProtocolConfig {
      *
      * <i>[required, default: HTTP_POST]</i>
      */
-    @Config.Property( required = true, unset = "HTTP_POST")
+    @Property( required = true, unset = "HTTP_POST")
     SAMLBinding binding();
 
     /**
@@ -37,6 +39,6 @@ public interface SAMLProtocolConfig {
      *
      * <i>[optional, default: don't pass any relay state]</i>
      */
-    @Config.Property(required = false)
+    @Property(required = false)
     String relayState();
 }

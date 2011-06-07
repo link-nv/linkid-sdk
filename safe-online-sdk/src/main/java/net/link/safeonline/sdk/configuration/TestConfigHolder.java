@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.sdk.configuration;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 import java.util.List;
 import java.util.Locale;
@@ -15,10 +15,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.auth.protocol.saml2.SAMLBinding;
-import net.link.util.config.AppConfig;
-import net.link.util.config.ConfigHolder;
-import net.link.util.config.KeyProvider;
-import net.link.util.servlet.DummyServletRequest;
+import net.link.util.common.DummyServletRequest;
+import net.link.util.config.*;
 import org.joda.time.Duration;
 
 

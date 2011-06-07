@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.configuration;
 
-import net.link.util.config.Config;
+import net.link.util.config.Group;
+import net.link.util.config.Property;
 
 
 /**
@@ -10,7 +11,7 @@ import net.link.util.config.Config;
  *
  * @author lhunath
  */
-@Config.Group(prefix = "openid")
+@Group(prefix = "openid")
 public interface OpenIDProtocolConfig {
 
     /**
@@ -21,7 +22,7 @@ public interface OpenIDProtocolConfig {
      *
      *         <p> Must be an absolute URL (eg. <code>http://my.host.net/myapp</code>) </p>
      */
-    @Config.Property(required = false)
+    @Property(required = false)
     String realm();
 
     /**
@@ -29,6 +30,6 @@ public interface OpenIDProtocolConfig {
      *
      *         <i>[required, default: /openid]</i>
      */
-    @Config.Property(required = true, unset = "/openid")
+    @Property(required = true, unset = "/openid")
     String discoveryPath();
 }

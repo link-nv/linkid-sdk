@@ -1,7 +1,8 @@
 package net.link.safeonline.sdk.configuration;
 
 import java.util.Locale;
-import net.link.util.config.Config;
+import net.link.util.config.Group;
+import net.link.util.config.Property;
 
 
 /**
@@ -11,7 +12,7 @@ import net.link.util.config.Config;
  *
  * @author lhunath
  */
-@Config.Group(prefix = "linkID")
+@Group(prefix = "linkID")
 public interface LinkIDConfig {
 
     /**
@@ -26,7 +27,7 @@ public interface LinkIDConfig {
      *
      * <p> We go here when the user begins an authentication from our application. </p>
      */
-    @Config.Property(required = true, unset = "/core/entry")
+    @Property(required = true, unset = "/core/entry")
     String authPath();
 
     /**
@@ -36,7 +37,7 @@ public interface LinkIDConfig {
      *
      * <p> We go here when the user begins a logout from our application. </p>
      */
-    @Config.Property(required = true, unset = "/logoutentry")
+    @Property(required = true, unset = "/logoutentry")
     String logoutPath();
 
     /**
@@ -48,7 +49,7 @@ public interface LinkIDConfig {
      * application in our application's SSO pool.  This response allows linkID to find out whether we successfully logged the user out of
      * the application's SSO session. </p>
      */
-    @Config.Property(required = true, unset = "/logoutexit")
+    @Property(required = true, unset = "/logoutexit")
     String logoutExitPath();
 
     /**
@@ -58,7 +59,7 @@ public interface LinkIDConfig {
      *
      * <p> Accepted values are names of themes configured by the operator of the linkID node you'll be using. </p>
      */
-    @Config.Property(required = false)
+    @Property(required = false)
     String theme();
 
     /**
@@ -66,6 +67,6 @@ public interface LinkIDConfig {
      *
      * <i>[optional, default: Use the locale of the current browser request]</i>
      */
-    @Config.Property(required = false, unset = Config.Property.AUTO)
+    @Property(required = false, unset = Property.AUTO)
     Locale language();
 }

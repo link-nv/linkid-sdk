@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.configuration;
 
-import net.link.util.config.Config;
+import net.link.util.config.RootConfig;
+
 
 /**
  * <h2>{@link SafeOnlineConfig}<br>
@@ -12,7 +13,7 @@ import net.link.util.config.Config;
  *
  * @author lhunath
  */
-public interface SafeOnlineConfig extends Config {
+public interface SafeOnlineConfig extends RootConfig {
 
     /**
      * @return Web configuration.  Base URLs, paths, etc.

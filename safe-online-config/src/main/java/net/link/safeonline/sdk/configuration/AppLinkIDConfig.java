@@ -1,8 +1,7 @@
 package net.link.safeonline.sdk.configuration;
 
 import javax.security.auth.x500.X500Principal;
-import net.link.util.config.Config;
-import net.link.util.config.KeyProvider;
+import net.link.util.config.*;
 
 
 /**
@@ -12,7 +11,7 @@ import net.link.util.config.KeyProvider;
  *
  * @author lhunath
  */
-@Config.Group(prefix = "app")
+@Group(prefix = "app")
 public interface AppLinkIDConfig {
 
     /**
@@ -21,7 +20,7 @@ public interface AppLinkIDConfig {
      *
      * <i>[required]</i>
      */
-    @Config.Property(required = true)
+    @Property(required = true)
     String name();
 
     /**
@@ -30,12 +29,12 @@ public interface AppLinkIDConfig {
      *
      * <i>[required, default: classpath://application:secret:secret@application.jks]</i>
      */
-    @Config.Property(required = true, unset = "classpath://application:secret:secret@application.jks")
+    @Property(required = true, unset = "classpath://application:secret:secret@application.jks")
     KeyProvider keyProvider();
 
     /**
      * @return The DN of the end certificate with which incoming messages should be signed.
      */
-    @Config.Property(required = true, unset = "CN=SafeOnline Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE")
+    @Property(required = true, unset = "CN=SafeOnline Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE")
     X500Principal trustedDN();
 }

@@ -16,6 +16,7 @@ import javax.xml.XMLConstants;
 import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.safeonline.sdk.auth.protocol.saml2.LogoutResponseFactory;
+import net.link.util.common.DomUtils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import org.apache.commons.io.IOUtils;
@@ -45,7 +46,7 @@ public class LogoutResponseFactoryTest {
         long begin = System.currentTimeMillis();
         LogoutProtocolRequestContext logoutRequest = new LogoutProtocolRequestContext( inResponseTo, null, null, null, null );
         LogoutResponse samlLogoutResponse = LogoutResponseFactory.createLogoutResponse( false, logoutRequest, issuerName, destination );
-        String samlLogoutResponseToken = LinkIDSaml2Utils.sign( samlLogoutResponse, signerKeyPair, null );
+        String samlLogoutResponseToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutResponse, signerKeyPair, null ));
         long end = System.currentTimeMillis();
 
         // Verify

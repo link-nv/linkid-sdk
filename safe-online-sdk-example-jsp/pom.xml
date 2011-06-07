@@ -9,7 +9,7 @@
 
     <groupId>net.lin-k.safe-online.client.sdk</groupId>
     <artifactId>safe-online-sdk-example-jsp</artifactId>
-    <version>SNAPSHOT</version>
+    <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <build>
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
-            <version>SNAPSHOT</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>

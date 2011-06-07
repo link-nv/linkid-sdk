@@ -29,6 +29,7 @@ import net.link.safeonline.sdk.auth.protocol.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.servlet.LogoutServlet;
 import net.link.safeonline.sdk.configuration.TestConfigHolder;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
+import net.link.util.common.DomUtils;
 import net.link.util.config.KeyProviderImpl;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.*;
@@ -160,7 +161,7 @@ public class LogoutServletTest {
         // Setup Data
         String userId = UUID.randomUUID().toString();
         LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation, null );
-        String encodedSamlLogoutRequest = Base64.encode( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ).getBytes() );
+        String encodedSamlLogoutRequest = Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null )).getBytes() );
 
         servletTestManager.setSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE, userId );
 
@@ -207,7 +208,7 @@ public class LogoutServletTest {
         String userId = UUID.randomUUID().toString();
         String notUserId = "not " + userId;
         LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation, null );
-        String encodedSamlLogoutRequest = Base64.encode( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ).getBytes() );
+        String encodedSamlLogoutRequest = Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null )).getBytes() );
 
         servletTestManager.setSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE, notUserId );
 

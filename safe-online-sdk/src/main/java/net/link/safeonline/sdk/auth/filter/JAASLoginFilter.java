@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,10 +15,8 @@ import javax.security.auth.callback.*;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import net.link.util.config.URLUtils;
+import javax.servlet.http.*;
+import net.link.util.common.URLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

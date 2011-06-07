@@ -10,9 +10,7 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 import com.google.common.base.Charsets;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.RequestConstants;
@@ -33,9 +31,7 @@ import org.opensaml.saml2.core.RequestAbstractType;
 import org.opensaml.saml2.core.StatusResponseType;
 import org.opensaml.ws.message.MessageContext;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.security.SecurityPolicy;
-import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.ws.security.SecurityPolicyResolver;
+import org.opensaml.ws.security.*;
 import org.opensaml.ws.security.provider.BasicSecurityPolicy;
 import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
@@ -75,8 +71,8 @@ public abstract class PostBindingUtil {
         LOG.debug( "sendRequest[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
                 LinkIDSaml2Utils.marshall( samlRequest ), true ) );
 
-        String encodedSamlRequestToken = new String(
-                Base64.encode( LinkIDSaml2Utils.sign( samlRequest, signingKeyPair, certificateChain ).getBytes( Charsets.UTF_8 ) ),
+        String encodedSamlRequestToken = new String( Base64.encode(
+                DomUtils.domToString( LinkIDSaml2Utils.sign( samlRequest, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
                 Charsets.UTF_8 );
 
         /*
@@ -87,13 +83,15 @@ public abstract class PostBindingUtil {
         velocityProperties.setProperty( "resource.loader", "class" );
         velocityProperties.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, JdkLogChute.class.getName() );
         velocityProperties.setProperty( JdkLogChute.RUNTIME_LOG_JDK_LOGGER, PostBindingUtil.class.getName() );
-        velocityProperties.setProperty( "class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
+        velocityProperties.setProperty( "class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
         velocityProperties.setProperty( "file.resource.loader.cache ", "false" );
         VelocityEngine velocityEngine;
         try {
             velocityEngine = new VelocityEngine( velocityProperties );
             velocityEngine.init();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException( "could not initialize velocity engine", e );
         }
         VelocityContext velocityContext = new VelocityContext();
@@ -109,7 +107,8 @@ public abstract class PostBindingUtil {
         Template template;
         try {
             template = velocityEngine.getTemplate( templateResource );
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException( "Velocity template error: " + e.getMessage(), e );
         }
 
@@ -141,7 +140,7 @@ public abstract class PostBindingUtil {
                 LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
         String encodedSamlResponseToken = new String(
-                Base64.encode( LinkIDSaml2Utils.sign( samlResponse, signingKeyPair, certificateChain ).getBytes( Charsets.UTF_8 ) ),
+                Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlResponse, signingKeyPair, certificateChain )).getBytes( Charsets.UTF_8 ) ),
                 Charsets.UTF_8 );
 
         /*
@@ -157,7 +156,8 @@ public abstract class PostBindingUtil {
         try {
             velocityEngine = new VelocityEngine( velocityProperties );
             velocityEngine.init();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException( "could not initialize velocity engine", e );
         }
         VelocityContext velocityContext = new VelocityContext();
@@ -171,7 +171,8 @@ public abstract class PostBindingUtil {
         Template template;
         try {
             template = velocityEngine.getTemplate( templateResource );
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException( "Velocity template error: " + e.getMessage(), e );
         }
 
@@ -214,11 +215,14 @@ public abstract class PostBindingUtil {
 
         try {
             new HTTPPostDecoder().decode( messageContext );
-        } catch (MessageDecodingException e) {
+        }
+        catch (MessageDecodingException e) {
             throw new RuntimeException( "SAML message decoding error", e );
-        } catch (SecurityPolicyException e) {
+        }
+        catch (SecurityPolicyException e) {
             throw new RuntimeException( "security policy error", e );
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             throw new RuntimeException( "security error", e );
         }
 

@@ -1,15 +1,12 @@
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
-import static com.lyndir.lhunath.lib.system.util.ObjectUtils.getOrDefault;
+import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
 import com.google.common.base.Supplier;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;
@@ -110,8 +107,9 @@ public class AuthenticationContext extends LinkIDContext {
                                  boolean forceAuthentication, Set<String> devices, String sessionTrackingId, String themeName,
                                  Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, getOrDefault( keyProvider, new Supplier<KeyProvider>() {
+        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new Supplier<KeyProvider>() {
             public KeyProvider get() {
+
                 return config().linkID().app().keyProvider();
             }
         } ), forceAuthentication, themeName, language, target, devices, sessionTrackingId, null );

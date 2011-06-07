@@ -6,9 +6,9 @@
  */
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
-import net.link.util.config.URLUtils;
+import net.link.util.common.URLUtils;
 
 
 /**

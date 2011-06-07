@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.attribute.provider;
 
-import com.lyndir.lhunath.lib.system.util.ObjectMeta;
+import com.lyndir.lhunath.opal.system.util.ObjectMeta;
 import java.io.Serializable;
 import org.apache.commons.lang.builder.*;
 
