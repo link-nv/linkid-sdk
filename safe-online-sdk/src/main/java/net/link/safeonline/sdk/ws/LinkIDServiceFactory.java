@@ -492,7 +492,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
 
-        return ifNotNullElse( sslCertificate, new Supplier<X509Certificate>() {
+        return ifNotNullElseNullable( sslCertificate, new Supplier<X509Certificate>() {
             public X509Certificate get() {
 
                 return config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS );
