@@ -6,9 +6,8 @@
  */
 package net.link.safeonline.attribute.provider;
 
-import com.lyndir.lhunath.opal.system.util.ObjectMeta;
+import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
-import org.apache.commons.lang.builder.*;
 
 
 /**
@@ -20,8 +19,7 @@ import org.apache.commons.lang.builder.*;
  *
  * @author wvdhaute
  */
-@ObjectMeta
-public class AttributeSDK<T extends Serializable> implements Serializable {
+public class AttributeSDK<T extends Serializable> extends MetaObject implements Serializable {
 
     private       String id;
     private final String name;
@@ -67,31 +65,6 @@ public class AttributeSDK<T extends Serializable> implements Serializable {
     public void setValue(final T value) {
 
         this.value = value;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj)
-            return true;
-        if (null == obj)
-            return false;
-        if (!(obj instanceof AttributeSDK))
-            return false;
-        AttributeSDK<T> rhs = (AttributeSDK<T>) obj;
-        return new EqualsBuilder().append( name, rhs.name ).append( id, rhs.id ).append( value, rhs.value ).isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-
-        return new HashCodeBuilder().append( name ).append( id ).append( value ).toHashCode();
-    }
-
-    @Override
-    public String toString() {
-
-        return new ToStringBuilder( this ).append( "name", name ).append( "id", id ).append( "value", value ).toString();
     }
 }
 
