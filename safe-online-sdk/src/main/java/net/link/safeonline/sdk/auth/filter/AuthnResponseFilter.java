@@ -62,6 +62,8 @@ public class AuthnResponseFilter extends AbstractInjectionFilter {
                 onLogin( httpRequest.getSession(), authnResponse );
         } catch (ValidationFailedException e) {
             LOG.error( ServletUtils.redirectToErrorPage( httpRequest, httpResponse, errorPage, null, new ErrorMessage( e ) ) );
+        } catch (RuntimeException e) {
+            LOG.error( "Internal error", e );
         }
 
         chain.doFilter( request, response );

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.google.common.base.Charsets;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -133,8 +134,8 @@ public abstract class ResponseUtil {
             return null;
         }
 
+        byte[] assertionBytes = Base64.decode( b64Assertion );
         try {
-            byte[] assertionBytes = Base64.decode( b64Assertion );
             Element assertionElement = documentBuilder.parse( new ByteArrayInputStream( assertionBytes ) ).getDocumentElement();
             if (LOG.isDebugEnabled())
                 LOG.debug( "Found assertion:\n" + DomUtils.domToString( assertionElement ) );
@@ -142,7 +143,7 @@ public abstract class ResponseUtil {
             return (Assertion) LinkIDSaml2Utils.unmarshall( assertionElement );
         }
         catch (SAXException e) {
-            throw new RuntimeException( e );
+            throw new RuntimeException( "Cannot parse assertion: <" + new String( assertionBytes, Charsets.UTF_8 ) + ">", e );
         }
         catch (IOException e) {
             throw new RuntimeException( e );
