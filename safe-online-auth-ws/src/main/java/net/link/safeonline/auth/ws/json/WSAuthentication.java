@@ -40,5 +40,6 @@ public interface WSAuthentication extends Serializable {
 
     List<AuthenticationStep> getNextSteps();
 
-    byte[] commit();
+    byte[] commit()
+            throws AuthenticationOperationFailedException;
 }
