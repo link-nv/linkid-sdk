@@ -1,5 +1,6 @@
 package net.link.safeonline.attribute.provider;
 
+import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +8,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 
-public class AttributeType implements Serializable {
+public class AttributeType extends MetaObject implements Serializable {
 
     private final String   name;
     private final DataType type;

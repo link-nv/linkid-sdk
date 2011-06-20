@@ -1,5 +1,7 @@
 package net.link.safeonline.auth.ws.json;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import net.link.safeonline.auth.ws.AuthenticationStatusCode;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,14 +19,14 @@ public class AuthenticationOperationFailedException extends Exception {
 
         super( cause.toString(), cause );
 
-        this.status = status;
+        this.status = checkNotNull( status );
     }
 
     public AuthenticationOperationFailedException(@NotNull final AuthenticationStatusCode status, @NotNull final String errorMessage) {
 
         super( errorMessage, null );
 
-        this.status = status;
+        this.status = checkNotNull( status );
     }
 
     public AuthenticationStatusCode getCode() {

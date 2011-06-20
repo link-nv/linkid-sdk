@@ -38,7 +38,8 @@ public interface WSAuthentication extends Serializable {
     void confirmIdentity(Set<String> confirmedAttributeNames, Set<String> rejectedAttributeNames, Map<String, List<String>> attributeValues)
             throws AuthenticationOperationFailedException;
 
-    List<AuthenticationStep> getNextSteps();
+    List<AuthenticationStep> getNextSteps()
+            throws AuthenticationOperationFailedException;
 
     byte[] commit()
             throws AuthenticationOperationFailedException;
