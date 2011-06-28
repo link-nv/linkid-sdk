@@ -41,4 +41,12 @@ public interface SAMLProtocolConfig {
      */
     @Property(required = false)
     String relayState();
+
+    /**
+     * Indiciates whether the returned SAML 2 Browser Post Form should break out of its frame ( target=_top )
+     *
+     * <i>[optional, default: false]</i>
+     */
+    @Property(required = false, unset = "false")
+    Boolean breakFrame();
 }

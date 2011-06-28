@@ -64,18 +64,19 @@ public abstract class ResponseUtil {
      * @param postTemplateResource The resource that contains the template of the SAML HTTP POST Binding message.
      * @param language             A language hint to make the application retrieving the response use the same locale as the requesting
      *                             application.
+     * @param breakFrame           Used in browser post form to jump out of an iframe if wanted ( target="_top" )
      *
      * @throws IOException IO Exception
      */
     public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse,
                                     KeyPair signingKeyPair, CertificateChain certificateChain, HttpServletResponse response,
-                                    String relayState, String postTemplateResource, Locale language)
+                                    String relayState, String postTemplateResource, Locale language, boolean breakFrame)
             throws IOException {
 
         switch (responseBinding) {
             case HTTP_POST:
                 PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                        response, language );
+                        response, language, breakFrame );
                 break;
 
             case HTTP_REDIRECT:

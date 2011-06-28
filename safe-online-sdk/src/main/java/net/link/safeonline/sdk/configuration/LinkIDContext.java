@@ -37,7 +37,7 @@ import org.openid4java.util.HttpFetcherFactory;
 
 /**
  * <h2>{@link LinkIDContext}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <p/>
  * <p> <i>09 17, 2010</i> </p>
  *
  * @author lhunath
@@ -114,8 +114,7 @@ public abstract class LinkIDContext implements Serializable {
 
                 return config().linkID().app().keyProvider();
             }
-        } ),
-                sessionTrackingId, themeName, language, target, null );
+        } ), sessionTrackingId, themeName, language, target, null );
     }
 
     private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider,
@@ -246,10 +245,11 @@ public abstract class LinkIDContext implements Serializable {
 
         private final SAMLBinding binding;
         private final String      relayState;
+        private final boolean     breakFrame;
 
         public SAMLContext() {
 
-            this( null, null );
+            this( null, null, null );
         }
 
         /**
@@ -258,10 +258,11 @@ public abstract class LinkIDContext implements Serializable {
          * @param relayState The Relay State that is sent along with SAML communications. May be <code>null</code>, in which case the value
          *                   of {@link SAMLProtocolConfig#relayState()} will be used.
          */
-        public SAMLContext(SAMLBinding binding, String relayState) {
+        public SAMLContext(SAMLBinding binding, String relayState, Boolean breakFrame) {
 
             this.binding = ifNotNullElse( binding, config().proto().saml().binding() );
             this.relayState = ifNotNullElseNullable( relayState, config().proto().saml().relayState() );
+            this.breakFrame = ifNotNullElse( breakFrame, config().proto().saml().breakFrame() );
         }
 
         public SAMLBinding getBinding() {
@@ -272,6 +273,11 @@ public abstract class LinkIDContext implements Serializable {
         public String getRelayState() {
 
             return relayState;
+        }
+
+        public boolean isBreakFrame() {
+
+            return breakFrame;
         }
     }
 

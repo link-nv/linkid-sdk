@@ -22,9 +22,9 @@ import org.joda.time.Duration;
 
 /**
  * <h2>{@link TestConfigHolder}</h2>
- *
+ * <p/>
  * <p> [description / usage]. </p>
- *
+ * <p/>
  * <p> <i>Mar 24, 2009</i> </p>
  *
  * @author lhunath
@@ -57,30 +57,30 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
 
         super( new SafeOnlineDefaultConfigFactory() {
 
-            @Override
-            protected ServletContext getServletContext() {
-
-                return servletContext;
-            }
-
-            @Override
-            protected ServletRequest getServletRequest() {
-
-                return new DummyServletRequest() {
                     @Override
-                    public Locale getLocale() {
+                    protected ServletContext getServletContext() {
 
-                        return new Locale( "en" );
+                        return servletContext;
                     }
 
                     @Override
-                    public String getContextPath() {
+                    protected ServletRequest getServletRequest() {
 
-                        return "/";
+                        return new DummyServletRequest() {
+                            @Override
+                            public Locale getLocale() {
+
+                                return new Locale( "en" );
+                            }
+
+                            @Override
+                            public String getContextPath() {
+
+                                return "/";
+                            }
+                        };
                     }
-                };
-            }
-        }, TestSDKConfig.class, testConfig = new TestSDKConfig( appBase, appConfig ) );
+                }, TestSDKConfig.class, testConfig = new TestSDKConfig( appBase, appConfig ) );
     }
 
     public void install() {
@@ -209,6 +209,7 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
                 public String      postBindingTemplate;
                 public SAMLBinding binding;
                 public String      relayState;
+                public boolean     breakFrame;
 
                 public String postBindingTemplate() {
 
@@ -223,6 +224,11 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
                 public String relayState() {
 
                     return relayState;
+                }
+
+                public Boolean breakFrame() {
+
+                    return breakFrame;
                 }
             }
 

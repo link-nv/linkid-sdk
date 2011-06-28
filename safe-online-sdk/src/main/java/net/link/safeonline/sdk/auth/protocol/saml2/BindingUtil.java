@@ -46,6 +46,13 @@ public abstract class BindingUtil {
         throw new UnsupportedOperationException( "Unsupported Binding, only HTTP Post or HTTP Redirect binding are supported" );
     }
 
+    public static boolean isBreakFrame(HttpServletRequest request) {
+
+        String breakFrameString = request.getParameter( "IsBreakFrame" );
+        return null != breakFrameString && Boolean.parseBoolean( breakFrameString );
+    }
+
+
     /**
      * Parse a SAML object out of a request. This delegates to the SAML Binding specific method of parsing SAML objects.
      *

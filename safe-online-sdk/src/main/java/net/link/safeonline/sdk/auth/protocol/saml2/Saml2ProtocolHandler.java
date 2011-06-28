@@ -91,7 +91,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( authnService, authnContext.getSAML().getBinding(), samlRequest, authnContext.getApplicationKeyPair(),
                 certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName, authnContext.getLanguage(),
-                authnContext.getThemeName() );
+                authnContext.getThemeName(), authnContext.getSAML().isBreakFrame() );
 
         LOG.debug( "sending Authn Request for: " + authnContext.getApplicationName() + ", issuer: " + samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL );
@@ -190,7 +190,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( logoutService, logoutContext.getSAML().getBinding(), samlRequest, logoutContext.getApplicationKeyPair(),
                 certificateChain, response, logoutContext.getSAML().getRelayState(), templateResourceName, logoutContext.getLanguage(),
-                logoutContext.getThemeName() );
+                logoutContext.getThemeName(), logoutContext.getSAML().isBreakFrame() );
 
         return new LogoutProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL,
                 samlRequest.getNameID().getValue() );
@@ -267,7 +267,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         ResponseUtil.sendResponse( logoutExitService, logoutContext.getSAML().getBinding(), samlLogoutResponse,
                 logoutContext.getApplicationKeyPair(), certificateChain, response, logoutContext.getSAML().getRelayState(),
-                templateResourceName, null );
+                templateResourceName, null, false );
 
         String status = samlLogoutResponse.getStatus().getStatusCode().getValue();
         return new LogoutProtocolResponseContext( logoutRequestContext, samlLogoutResponse.getID(), //

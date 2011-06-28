@@ -14,13 +14,11 @@ import java.util.Collection;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.util.error.ValidationFailedException;
 import net.link.util.common.CertificateChain;
+import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.LogoutRequest;
-import org.opensaml.saml2.core.RequestAbstractType;
+import org.opensaml.saml2.core.*;
 
 
 /**
@@ -47,18 +45,19 @@ public abstract class RequestUtil {
      * @param language             A language hint to make the linkID authentication application use the same locale as the requesting
      *                             application.
      * @param themeName            The name of the theme to apply in linkID.
+     * @param breakFrame           indiciate to LinkID whether or not to send the response with target="_top" for jumping out of an iframe.
      *
      * @throws IOException IO Exception
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
                                    CertificateChain certificateChain, HttpServletResponse response, String relayState,
-                                   String postTemplateResource, Locale language, String themeName)
+                                   String postTemplateResource, Locale language, String themeName, boolean breakFrame)
             throws IOException {
 
         switch (requestBinding) {
             case HTTP_POST:
                 PostBindingUtil.sendRequest( samlRequest, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                                             response, language, themeName );
+                        response, language, themeName, breakFrame );
                 break;
 
             case HTTP_REDIRECT:
@@ -70,16 +69,15 @@ public abstract class RequestUtil {
     /**
      * The SAML {@link LogoutRequest} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the HTTP request.
      *
+     * @param request       HTTP Servlet Request
+     * @param logoutRequest SAML v2.0 Request
      *
-     * @param request                 HTTP Servlet Request
-     * @param logoutRequest           SAML v2.0 Request
-     * @param trustedCertificates
      * @return optional embedded certificate chain in the LogoutRequest's signature.
      *
      * @throws ValidationFailedException validation failed for some reason
      */
     public static CertificateChain validateRequest(HttpServletRequest request, LogoutRequest logoutRequest,
-                                                        Collection<X509Certificate> trustedCertificates)
+                                                   Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         // validate signature

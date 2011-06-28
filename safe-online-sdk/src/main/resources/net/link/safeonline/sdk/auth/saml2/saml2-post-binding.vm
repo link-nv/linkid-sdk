@@ -28,8 +28,12 @@
                 you must press the Continue button once to proceed.
             </p>
         </noscript>
-        
-        <form action="${action}" method="post" autocomplete="off">
+
+        #if($BreakFrame)
+            <form action="${action}" method="post" autocomplete="off" target="_top">
+        #else
+            <form action="${action}" method="post" autocomplete="off" target="_self">
+        #end
 
             #if($RelayState)
                 <input type="hidden" name="RelayState" value="${RelayState}"/>
@@ -48,6 +52,10 @@
 
             #if($ThemeName)
                <input type="hidden" name="ThemeName" value="${ThemeName}"/>
+            #end
+
+            #if($IsBreakFrame)
+                <input type="hidden" name="IsBreakFrame" value="${IsBreakFrame}"/>
             #end
 
             <noscript>

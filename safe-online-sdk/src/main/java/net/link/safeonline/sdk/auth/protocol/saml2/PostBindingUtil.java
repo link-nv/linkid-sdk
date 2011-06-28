@@ -65,7 +65,7 @@ public abstract class PostBindingUtil {
     @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                   Locale language, String themeName)
+                                   Locale language, String themeName, boolean breakFrame)
             throws IOException {
 
         LOG.debug( "sendRequest[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
@@ -103,6 +103,8 @@ public abstract class PostBindingUtil {
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
         if (null != themeName)
             velocityContext.put( RequestConstants.THEME_REQUEST_PARAM, themeName );
+        if (breakFrame)
+            velocityContext.put( "IsBreakFrame", "true" );
 
         Template template;
         try {
@@ -133,15 +135,15 @@ public abstract class PostBindingUtil {
     @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
     public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain,
                                     String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                    Locale language)
+                                    Locale language, boolean breakFrame)
             throws IOException {
 
-        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                LinkIDSaml2Utils.marshall( samlResponse ), true ) );
+        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + breakFrame + "):\n"
+                   + DomUtils.domToString( LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
-        String encodedSamlResponseToken = new String(
-                Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlResponse, signingKeyPair, certificateChain )).getBytes( Charsets.UTF_8 ) ),
-                Charsets.UTF_8 );
+        String encodedSamlResponseToken = new String( Base64.encode(
+                DomUtils.domToString( LinkIDSaml2Utils.sign( samlResponse, signingKeyPair, certificateChain ) )
+                        .getBytes( Charsets.UTF_8 ) ), Charsets.UTF_8 );
 
         /*
          * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just too complex in
@@ -167,6 +169,8 @@ public abstract class PostBindingUtil {
             velocityContext.put( "RelayState", relayState );
         if (null != language)
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
+        if (breakFrame)
+            velocityContext.put( "BreakFrame", "true" );
 
         Template template;
         try {
