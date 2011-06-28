@@ -467,6 +467,12 @@ public class MyConfigFilter extends SDKConfigFilter {
                                 </entry>
                             </row>
                             <row>
+                                <entry><code>proto.saml.breakFrame</code></entry>
+                                <entry>
+                                    SAML2 response posted with "target=_top" for breaking out of an iframe.
+                                </entry>
+                            </row>
+                            <row>
                                 <entry><code>linkID.authPath</code></entry>
                                 <entry>
                                     <code>/entry</code>
