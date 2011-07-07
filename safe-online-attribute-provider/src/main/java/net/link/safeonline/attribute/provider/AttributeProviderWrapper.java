@@ -1,18 +1,15 @@
 package net.link.safeonline.attribute.provider;
 
+import static com.google.common.base.Preconditions.*;
+
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.*;
 import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Attribute provider wrapper, setting/unsetting the classloader for each Attribute Provider call.
@@ -21,23 +18,24 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class AttributeProviderWrapper extends AttributeProvider {
 
-    static final Logger logger = LoggerFactory.getLogger(AttributeProviderWrapper.class);
+    static final Logger logger = LoggerFactory.getLogger( AttributeProviderWrapper.class );
 
-    private static final Map<AttributeProvider, AttributeProviderWrapper> proxyMap = new WeakHashMap<AttributeProvider, AttributeProviderWrapper>();
-    private static final ThreadLocal<ClassLoader> originalClassLoader = new ThreadLocal<ClassLoader>();
+    private static final Map<AttributeProvider, AttributeProviderWrapper> proxyMap            = new WeakHashMap<AttributeProvider, AttributeProviderWrapper>();
+    private static final ThreadLocal<ClassLoader>                         originalClassLoader = new ThreadLocal<ClassLoader>();
     private final transient WeakReference<AttributeProvider> wrappedProvider;
 
     public AttributeProviderWrapper(final AttributeProvider wrappedProvider) {
 
-        this.wrappedProvider = new WeakReference<AttributeProvider>(wrappedProvider);
+        this.wrappedProvider = new WeakReference<AttributeProvider>( wrappedProvider );
     }
 
     @Override
     public List<AttributeCore> listAttributes(LinkIDService linkIDService, String userId, String attributeName, boolean filterInvisible) {
 
         try {
-            return activateProvider().listAttributes(linkIDService, userId, attributeName, filterInvisible);
-        } finally {
+            return activateProvider().listAttributes( linkIDService, userId, attributeName, filterInvisible );
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -46,18 +44,22 @@ public class AttributeProviderWrapper extends AttributeProvider {
     public AttributeCore findAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId) {
 
         try {
-            return activateProvider().findAttribute(linkIDService, userId, attributeName, attributeId);
-        } finally {
+            return activateProvider().findAttribute( linkIDService, userId, attributeName, attributeId );
+        }
+        finally {
             deactivateProvider();
         }
     }
 
     @Override
-    public AttributeCore findCompoundAttributeWhere(LinkIDService linkIDService, String userId, String parentAttributeName, String memberAttributeName, Serializable memberValue) {
+    public AttributeCore findCompoundAttributeWhere(LinkIDService linkIDService, String userId, String parentAttributeName,
+                                                    String memberAttributeName, Serializable memberValue) {
 
         try {
-            return activateProvider().findCompoundAttributeWhere(linkIDService, userId, parentAttributeName, memberAttributeName, memberValue);
-        } finally {
+            return activateProvider().findCompoundAttributeWhere( linkIDService, userId, parentAttributeName, memberAttributeName,
+                    memberValue );
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -66,18 +68,21 @@ public class AttributeProviderWrapper extends AttributeProvider {
     public void removeAttributes(LinkIDService linkIDService, String userId, String attributeName) {
 
         try {
-            activateProvider().removeAttributes(linkIDService, userId, attributeName);
-        } finally {
+            activateProvider().removeAttributes( linkIDService, userId, attributeName );
+        }
+        finally {
             deactivateProvider();
         }
     }
 
     @Override
-    public void removeAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId) throws AttributeNotFoundException {
+    public void removeAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId)
+            throws AttributeNotFoundException {
 
         try {
-            activateProvider().removeAttribute(linkIDService, userId, attributeName, attributeId);
-        } finally {
+            activateProvider().removeAttribute( linkIDService, userId, attributeName, attributeId );
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -86,8 +91,9 @@ public class AttributeProviderWrapper extends AttributeProvider {
     public void removeAttributes(LinkIDService linkIDService, String attributeName) {
 
         try {
-            activateProvider().removeAttributes(linkIDService, attributeName);
-        } finally {
+            activateProvider().removeAttributes( linkIDService, attributeName );
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -96,8 +102,9 @@ public class AttributeProviderWrapper extends AttributeProvider {
     public AttributeCore setAttribute(LinkIDService linkIDService, String userId, AttributeCore attribute) {
 
         try {
-            return activateProvider().setAttribute(linkIDService, userId, attribute);
-        } finally {
+            return activateProvider().setAttribute( linkIDService, userId, attribute );
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -107,17 +114,19 @@ public class AttributeProviderWrapper extends AttributeProvider {
 
         try {
             return activateProvider().getSupportedAttributeTypes();
-        } finally {
+        }
+        finally {
             deactivateProvider();
         }
     }
 
     @Override
-    public Map<Serializable, Long> categorize(List<String> subjects, String attributeName) {
+    public Map<Serializable, Long> categorize(LinkIDService linkIDService, List<String> subjects, String attributeName) {
 
         try {
-            return activateProvider().categorize(subjects, attributeName);
-        } finally {
+            return activateProvider().categorize( linkIDService, subjects, attributeName );
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -126,8 +135,9 @@ public class AttributeProviderWrapper extends AttributeProvider {
     public void intialize(LinkIDService linkIDService) {
 
         try {
-            activateProvider().intialize(linkIDService);
-        } finally {
+            activateProvider().intialize( linkIDService );
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -137,7 +147,8 @@ public class AttributeProviderWrapper extends AttributeProvider {
 
         try {
             return activateProvider().getAttributeProvider();
-        } finally {
+        }
+        finally {
             deactivateProvider();
         }
     }
@@ -147,15 +158,16 @@ public class AttributeProviderWrapper extends AttributeProvider {
 
         try {
             return activateProvider().getName();
-        } finally {
+        }
+        finally {
             deactivateProvider();
         }
     }
 
     private AttributeProvider getWrapperProvider() {
 
-        return checkNotNull(checkNotNull(wrappedProvider, "Wrapped provider is no longer available!").get(), //
-                "Wrapped provider is no longer available!");
+        return checkNotNull( checkNotNull( wrappedProvider, "Wrapped provider is no longer available!" ).get(), //
+                "Wrapped provider is no longer available!" );
     }
 
     /**
@@ -175,15 +187,15 @@ public class AttributeProviderWrapper extends AttributeProvider {
     private AttributeProvider activateProvider() {
 
         if (originalClassLoader.get() != null) {
-            logger.debug("No wrapping needed, already done.");
+            logger.debug( "No wrapping needed, already done." );
             return getWrapperProvider();
         }
 
-        checkState(originalClassLoader.get() == null, "Can't wrap: Already wrapped: %s.  Did we forget to unwrap somewhere?",
-                originalClassLoader.get());
+        checkState( originalClassLoader.get() == null, "Can't wrap: Already wrapped: %s.  Did we forget to unwrap somewhere?",
+                originalClassLoader.get() );
 
-        originalClassLoader.set(Thread.currentThread().getContextClassLoader());
-        Thread.currentThread().setContextClassLoader(getProviderClassLoader());
+        originalClassLoader.set( Thread.currentThread().getContextClassLoader() );
+        Thread.currentThread().setContextClassLoader( getProviderClassLoader() );
 
         return getWrapperProvider();
     }
@@ -194,11 +206,11 @@ public class AttributeProviderWrapper extends AttributeProvider {
     private static void deactivateProvider() {
 
         if (originalClassLoader.get() == null) {
-            logger.debug("{} unwrap skipped, was not wrapped", Thread.currentThread());
+            logger.debug( "{} unwrap skipped, was not wrapped", Thread.currentThread() );
             return;
         }
 
-        Thread.currentThread().setContextClassLoader(originalClassLoader.get());
+        Thread.currentThread().setContextClassLoader( originalClassLoader.get() );
         originalClassLoader.remove();
     }
 
@@ -206,13 +218,14 @@ public class AttributeProviderWrapper extends AttributeProvider {
      * Get a classloader-managing wrapper for the given attribute provider.
      *
      * @param wrappedProvider A real attribute provider implementation that may originate from a foreign classloader.
+     *
      * @return A classloader-managing device factory wrapper.
      */
     public static AttributeProviderWrapper of(final AttributeProvider wrappedProvider) {
 
-        AttributeProviderWrapper proxyFactory = proxyMap.get(wrappedProvider);
+        AttributeProviderWrapper proxyFactory = proxyMap.get( wrappedProvider );
         if (proxyFactory == null) {
-            proxyMap.put(wrappedProvider, proxyFactory = new AttributeProviderWrapper(wrappedProvider));
+            proxyMap.put( wrappedProvider, proxyFactory = new AttributeProviderWrapper( wrappedProvider ) );
         }
 
         return proxyFactory;

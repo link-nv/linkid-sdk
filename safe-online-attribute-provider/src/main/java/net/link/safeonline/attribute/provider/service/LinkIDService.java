@@ -18,4 +18,6 @@ public interface LinkIDService {
     ConfigurationService getConfigurationService();
 
     AttributeService getAttributeService();
+
+    PersistenceService getPersistenceService();
 }

@@ -25,7 +25,7 @@ public abstract class AttributeProvider implements Serializable {
     public static final String ATTRIBUTE_PROVIDER_JNDI_PREFIX  = ATTRIBUTE_PROVIDER_JNDI_CONTEXT + '/';
 
     /**
-     * @param linkIDService   LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService   LinkID services available to the implementation.
      * @param userId          userId to return attributes from
      * @param attributeName   attribute to return values for
      * @param filterInvisible filter userInvisble member attributes of compounds.
@@ -38,25 +38,25 @@ public abstract class AttributeProvider implements Serializable {
     /**
      * Fetch attribute for specified user and attribute ID.
      *
-     * @param linkIDService LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService LinkID services available to the implementation.
      * @param userId        userId to find attribute for
      * @param attributeName attribute type of attribute to find
      * @param attributeId   attribute ID of attribute to find.
      *
-     * @return {@link AttributeCore} or <code>null</code> if not found.
+     * @return {@link AttributeCore} or {@code null} if not found.
      */
     public abstract AttributeCore findAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId);
 
     /**
      * Fetch compound attribute of specified type which has a member of specified type with specified value
      *
-     * @param linkIDService       LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService       LinkID services available to the implementation.
      * @param userId              userId to find attribute for
      * @param parentAttributeName attribute type of the parent
      * @param memberAttributeName attribute type of the member
      * @param memberValue         value of the member attribute
      *
-     * @return {@link AttributeCore} or <code>null</code> if not found.
+     * @return {@link AttributeCore} or {@code null} if not found.
      */
     public abstract AttributeCore findCompoundAttributeWhere(LinkIDService linkIDService, String userId, String parentAttributeName,
                                                              String memberAttributeName, Serializable memberValue);
@@ -64,7 +64,7 @@ public abstract class AttributeProvider implements Serializable {
     /**
      * Removes an attribute for the specified subject.
      *
-     * @param linkIDService LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService LinkID services available to the implementation.
      * @param userId        userId to remove the attributes from
      * @param attributeName attribute type of values to be removed
      */
@@ -73,7 +73,7 @@ public abstract class AttributeProvider implements Serializable {
     /**
      * Removes an attribute for the specified subject.
      *
-     * @param linkIDService LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService LinkID services available to the implementation.
      * @param userId        userId to remove the attribute from
      * @param attributeName attribute type of value to be removed
      * @param attributeId   attributeId of value to be removed
@@ -86,7 +86,7 @@ public abstract class AttributeProvider implements Serializable {
     /**
      * Remove all attributes with specified attribute name.
      *
-     * @param linkIDService LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService LinkID services available to the implementation.
      * @param attributeName attribute type of attributes to remove.
      */
     public abstract void removeAttributes(LinkIDService linkIDService, String attributeName);
@@ -94,7 +94,7 @@ public abstract class AttributeProvider implements Serializable {
     /**
      * Create/modify the specified {@link AttributeCore} for specified user.
      *
-     * @param linkIDService LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService LinkID services available to the implementation.
      * @param userId        userId to set attribute for.
      * @param attribute     attribute to set for subject.
      *
@@ -110,17 +110,18 @@ public abstract class AttributeProvider implements Serializable {
     public abstract List<AttributeType> getSupportedAttributeTypes();
 
     /**
+     * @param linkIDService LinkID services available to the implementation.
      * @param subjects      list of userIds to query for
      * @param attributeName name of the attribute
      *
      * @return map containing a list of unique values of an attribute with a count of how many times these values occur
      */
-    public abstract Map<Serializable, Long> categorize(List<String> subjects, String attributeName);
+    public abstract Map<Serializable, Long> categorize(LinkIDService linkIDService, List<String> subjects, String attributeName);
 
     /**
      * Callback for initialization of e.g. some configuration for the implementation.
      *
-     * @param linkIDService LinkID services available to the {@link AttributeProvider} implementation.
+     * @param linkIDService LinkID services available to the implementation.
      */
     public abstract void intialize(LinkIDService linkIDService);
 
@@ -132,6 +133,7 @@ public abstract class AttributeProvider implements Serializable {
      * @return the JNDI location where the implementation will be bound.
      */
     public String getJndiLocation() {
+
         return ATTRIBUTE_PROVIDER_JNDI_PREFIX + getName();
     }
 
@@ -139,7 +141,8 @@ public abstract class AttributeProvider implements Serializable {
 
         try {
             JNDIUtils.bindComponent( getJndiLocation(), getAttributeProvider() );
-        } catch (NamingException e) {
+        }
+        catch (NamingException e) {
             throw new RuntimeException( "Unable to bind Attribute provider \"" + getName() + "\" to " + getJndiLocation(), e );
         }
     }
@@ -148,7 +151,8 @@ public abstract class AttributeProvider implements Serializable {
 
         try {
             JNDIUtils.unbindComponent( getJndiLocation() );
-        } catch (NamingException e) {
+        }
+        catch (NamingException e) {
             throw new RuntimeException( "Unable to unbind Attribute provider \"" + getName() + "\" to " + getJndiLocation(), e );
         }
     }
@@ -162,10 +166,12 @@ public abstract class AttributeProvider implements Serializable {
      * @return a customized {@link WicketPanel} for the specified {@link AttributeCore}.
      */
     public AttributeInputPanel getAttributeInputPanel(final String id, final AttributeCore attribute) {
+
         return getDefaultAttributeInputPanel( id, attribute );
     }
 
     protected static AttributeInputPanel getDefaultAttributeInputPanel(String id, final AttributeCore attribute) {
+
         return new DefaultAttributeInputPanel( id, attribute );
     }
 }

@@ -1,16 +1,10 @@
 package net.link.safeonline.attribute.provider.template;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import net.link.safeonline.attribute.provider.AttributeCore;
-import net.link.safeonline.attribute.provider.AttributeProvider;
-import net.link.safeonline.attribute.provider.AttributeType;
-import net.link.safeonline.attribute.provider.DataType;
+import net.link.safeonline.attribute.provider.*;
 import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
@@ -21,25 +15,25 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Template {@link AttributeProvider}.
- *
+ * <p/>
  * Provides 2 attributes:
- *
+ * <p/>
  * <ul>
- *
+ * <p/>
  * <li>template.string : Random string, multivalued.</li>
- *
+ * <p/>
  * <li>template.boolean : Random boolean, multivalued.</li>
- *
+ * <p/>
  * <li>template.date : Random date, multivalued.</li>
- *
+ * <p/>
  * <li>template.double : Random double, multivalued.</li>
- *
+ * <p/>
  * <li>template.integer : Random integer, multivalued.</li>
- *
+ * <p/>
  * <li>template.integer : Random compound, containing all attribute types defined above, multivalued.</li>
- *
+ * <p/>
  * <li>template.unavailable : allways returns unavailable.</li>
- *
+ * <p/>
  * </ul>
  */
 public class TemplateAttributeProvider extends AttributeProvider implements ServletContextListener {
@@ -182,7 +176,7 @@ public class TemplateAttributeProvider extends AttributeProvider implements Serv
      * {@inheritDoc}
      */
     @Override
-    public Map<Serializable, Long> categorize(final List<String> subjects, final String attributeName) {
+    public Map<Serializable, Long> categorize(final LinkIDService linkIDService, final List<String> subjects, final String attributeName) {
 
         return new HashMap<Serializable, Long>();
     }

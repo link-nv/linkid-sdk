@@ -10,7 +10,8 @@ package net.link.safeonline.attribute.provider.service;
 import java.io.Serializable;
 import java.util.List;
 import net.link.safeonline.attribute.provider.AttributeCore;
-import net.link.safeonline.attribute.provider.exception.*;
+import net.link.safeonline.attribute.provider.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.attribute.provider.exception.SubjectNotFoundException;
 
 
 /**
@@ -64,54 +65,4 @@ public interface AttributeService {
     AttributeCore findCompoundAttributeWhere(String userId, String parentAttributeName, String memberAttributeName,
                                              Serializable memberValue)
             throws SubjectNotFoundException, AttributeTypeNotFoundException;
-
-    /**
-     * Removes an attribute for the specified subject.
-     *
-     * @param userId        userId to remove the attributes from
-     * @param attributeName attribute type of values to be removed
-     *
-     * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
-     * @throws SubjectNotFoundException       subject does not exist
-     */
-    void removeAttributes(String userId, String attributeName)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException;
-
-    /**
-     * Removes an attribute for the specified subject.
-     *
-     * @param userId        userId to remove the attribute from
-     * @param attributeName attribute type of value to be removed
-     * @param attributeId   attributeId of value to be removed
-     *
-     * @throws AttributeNotFoundException     no value found.
-     * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
-     * @throws SubjectNotFoundException       subject does not exist
-     */
-    void removeAttribute(String userId, String attributeName, String attributeId)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
-
-    /**
-     * Remove all attributes with specified attribute name.
-     *
-     * @param attributeName attribute type of attributes to remove.
-     *
-     * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
-     */
-    void removeAttributes(String attributeName)
-            throws AttributeTypeNotFoundException;
-
-    /**
-     * Create/modify the specified {@link AttributeCore} for specified user.
-     *
-     * @param userId    userId to set attribute for.
-     * @param attribute attribute to set for subject.
-     *
-     * @return the updated/created attribute.
-     *
-     * @throws AttributeNotFoundException case attributeId was specified for update but no value was found.
-     * @throws SubjectNotFoundException   subject does not exist
-     */
-    AttributeCore setAttribute(String userId, AttributeCore attribute)
-            throws AttributeNotFoundException, SubjectNotFoundException;
 }

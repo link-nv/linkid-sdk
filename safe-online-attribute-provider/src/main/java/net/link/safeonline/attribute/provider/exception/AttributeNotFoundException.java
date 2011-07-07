@@ -12,10 +12,18 @@ public class AttributeNotFoundException extends Exception {
     private final String attribute;
 
     public AttributeNotFoundException(final String attribute) {
+
+        this.attribute = attribute;
+    }
+
+    public AttributeNotFoundException(final String attribute, final Throwable cause) {
+
+        super( cause );
         this.attribute = attribute;
     }
 
     public String getAttribute() {
+
         return attribute;
     }
 }
