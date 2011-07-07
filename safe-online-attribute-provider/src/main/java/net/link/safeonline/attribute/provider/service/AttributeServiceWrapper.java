@@ -1,20 +1,15 @@
 package net.link.safeonline.attribute.provider.service;
 
-import net.link.safeonline.attribute.provider.AttributeCore;
-import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.SubjectNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.google.common.base.Preconditions.*;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
+import net.link.safeonline.attribute.provider.AttributeCore;
+import net.link.safeonline.attribute.provider.exception.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Attribute service wrapper, setting/unsetting the classloader for each Attribute Provider call.
@@ -23,90 +18,105 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class AttributeServiceWrapper implements AttributeService {
 
-    static final Logger logger = LoggerFactory.getLogger(AttributeServiceWrapper.class);
+    static final Logger logger = LoggerFactory.getLogger( AttributeServiceWrapper.class );
 
-    private static final Map<AttributeService, AttributeServiceWrapper> proxyMap = new WeakHashMap<AttributeService, AttributeServiceWrapper>();
-    private static final ThreadLocal<ClassLoader> originalClassLoader = new ThreadLocal<ClassLoader>();
+    private static final Map<AttributeService, AttributeServiceWrapper> proxyMap            = new WeakHashMap<AttributeService, AttributeServiceWrapper>();
+    private static final ThreadLocal<ClassLoader>                       originalClassLoader = new ThreadLocal<ClassLoader>();
     private final transient WeakReference<AttributeService> wrappedService;
 
     public AttributeServiceWrapper(final AttributeService wrappedService) {
 
-        this.wrappedService = new WeakReference<AttributeService>(wrappedService);
+        this.wrappedService = new WeakReference<AttributeService>( wrappedService );
     }
 
-    public List<AttributeCore> listAttributes(String userId, String attributeName) throws SubjectNotFoundException, AttributeTypeNotFoundException {
+    public List<AttributeCore> listAttributes(String userId, String attributeName, boolean filterInvisible)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException {
 
         try {
-            return activateService().listAttributes(userId, attributeName);
-        } finally {
+            return activateService().listAttributes( userId, attributeName, filterInvisible );
+        }
+        finally {
             deactivateService();
         }
     }
 
-    public AttributeCore findAttribute(String userId, String attributeName, String attributeId) throws SubjectNotFoundException, AttributeTypeNotFoundException {
+    public AttributeCore findAttribute(String userId, String attributeName, String attributeId)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException {
 
         try {
-            return activateService().findAttribute(userId, attributeName, attributeId);
-        } finally {
+            return activateService().findAttribute( userId, attributeName, attributeId );
+        }
+        finally {
             deactivateService();
         }
     }
 
-    public AttributeCore findCompoundAttributeWhere(String userId, String parentAttributeName, String memberAttributeName, Serializable memberValue) throws SubjectNotFoundException, AttributeTypeNotFoundException {
+    public AttributeCore findCompoundAttributeWhere(String userId, String parentAttributeName, String memberAttributeName,
+                                                    Serializable memberValue)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException {
 
         try {
-            return activateService().findCompoundAttributeWhere(userId, parentAttributeName, memberAttributeName, memberValue);
-        } finally {
+            return activateService().findCompoundAttributeWhere( userId, parentAttributeName, memberAttributeName, memberValue );
+        }
+        finally {
             deactivateService();
         }
     }
 
-    public void removeAttributes(String userId, String attributeName) throws SubjectNotFoundException, AttributeTypeNotFoundException {
+    public void removeAttributes(String userId, String attributeName)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException {
 
         try {
-            activateService().removeAttributes(userId, attributeName);
-        } finally {
+            activateService().removeAttributes( userId, attributeName );
+        }
+        finally {
             deactivateService();
         }
     }
 
-    public void removeAttribute(String userId, String attributeName, String attributeId) throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
+    public void removeAttribute(String userId, String attributeName, String attributeId)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         try {
-            activateService().removeAttribute(userId, attributeName, attributeId);
-        } finally {
+            activateService().removeAttribute( userId, attributeName, attributeId );
+        }
+        finally {
             deactivateService();
         }
     }
 
-    public void removeAttributes(String attributeName) throws AttributeTypeNotFoundException {
+    public void removeAttributes(String attributeName)
+            throws AttributeTypeNotFoundException {
 
         try {
-            activateService().removeAttributes(attributeName);
-        } finally {
+            activateService().removeAttributes( attributeName );
+        }
+        finally {
             deactivateService();
         }
     }
 
-    public AttributeCore setAttribute(String userId, AttributeCore attribute) throws AttributeNotFoundException, SubjectNotFoundException {
+    public AttributeCore setAttribute(String userId, AttributeCore attribute)
+            throws AttributeNotFoundException, SubjectNotFoundException {
 
         try {
-            return activateService().setAttribute(userId, attribute);
-        } finally {
+            return activateService().setAttribute( userId, attribute );
+        }
+        finally {
             deactivateService();
         }
     }
 
     private AttributeService getWrappedService() {
 
-        return checkNotNull(checkNotNull(wrappedService, "Wrapped provider is no longer available!").get(), //
-                "Wrapped provider is no longer available!");
+        return checkNotNull( checkNotNull( wrappedService, "Wrapped provider is no longer available!" ).get(), //
+                "Wrapped provider is no longer available!" );
     }
 
     /**
      * @return The classloader of the wrapped attribute service.
      */
-    public ClassLoader getProviderClassLoader() {
+    private ClassLoader getProviderClassLoader() {
 
         return getWrappedService().getClass().getClassLoader();
     }
@@ -120,15 +130,15 @@ public class AttributeServiceWrapper implements AttributeService {
     private AttributeService activateService() {
 
         if (originalClassLoader.get() != null) {
-            logger.debug("No wrapping needed, already done.");
+            logger.debug( "No wrapping needed, already done." );
             return getWrappedService();
         }
 
-        checkState(originalClassLoader.get() == null, "Can't wrap: Already wrapped: %s.  Did we forget to unwrap somewhere?",
-                originalClassLoader.get());
+        checkState( originalClassLoader.get() == null, "Can't wrap: Already wrapped: %s.  Did we forget to unwrap somewhere?",
+                originalClassLoader.get() );
 
-        originalClassLoader.set(Thread.currentThread().getContextClassLoader());
-        Thread.currentThread().setContextClassLoader(getProviderClassLoader());
+        originalClassLoader.set( Thread.currentThread().getContextClassLoader() );
+        Thread.currentThread().setContextClassLoader( getProviderClassLoader() );
 
         return getWrappedService();
     }
@@ -139,11 +149,11 @@ public class AttributeServiceWrapper implements AttributeService {
     private static void deactivateService() {
 
         if (originalClassLoader.get() == null) {
-            logger.debug("{} unwrap skipped, was not wrapped", Thread.currentThread());
+            logger.debug( "{} unwrap skipped, was not wrapped", Thread.currentThread() );
             return;
         }
 
-        Thread.currentThread().setContextClassLoader(originalClassLoader.get());
+        Thread.currentThread().setContextClassLoader( originalClassLoader.get() );
         originalClassLoader.remove();
     }
 
@@ -151,13 +161,14 @@ public class AttributeServiceWrapper implements AttributeService {
      * Get a classloader-managing wrapper for the given attribute service.
      *
      * @param wrappedService A real attribute service implementation that may originate from a foreign classloader.
+     *
      * @return A classloader-managing device factory wrapper.
      */
     public static AttributeServiceWrapper of(final AttributeService wrappedService) {
 
-        AttributeServiceWrapper proxyFactory = proxyMap.get(wrappedService);
+        AttributeServiceWrapper proxyFactory = proxyMap.get( wrappedService );
         if (proxyFactory == null) {
-            proxyMap.put(wrappedService, proxyFactory = new AttributeServiceWrapper(wrappedService));
+            proxyMap.put( wrappedService, proxyFactory = new AttributeServiceWrapper( wrappedService ) );
         }
 
         return proxyFactory;

@@ -10,28 +10,27 @@ package net.link.safeonline.attribute.provider.service;
 import java.io.Serializable;
 import java.util.List;
 import net.link.safeonline.attribute.provider.AttributeCore;
-import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.SubjectNotFoundException;
+import net.link.safeonline.attribute.provider.exception.*;
 
 
 /**
  * LinkID Attribute Service. <p/>
- *
+ * <p/>
  * Offers fetching of LinkID attributes.
  */
 public interface AttributeService {
 
     /**
-     * @param userId        userId to return attributes from
-     * @param attributeName attribute to return values for
+     * @param userId          userId to return attributes from
+     * @param attributeName   attribute to return values for
+     * @param filterInvisible filter user invisible attributes
      *
-     * @return all {@link AttributeCore}'s for specified user and attribute name.
+     * @return all {@link AttributeCore}'s for specified user and attribute name, filtered on user inivisiblity if specified.
      *
      * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
      * @throws SubjectNotFoundException       subject does not exist
      */
-    List<AttributeCore> listAttributes(String userId, String attributeName)
+    List<AttributeCore> listAttributes(String userId, String attributeName, boolean filterInvisible)
             throws SubjectNotFoundException, AttributeTypeNotFoundException;
 
     /**
@@ -41,7 +40,7 @@ public interface AttributeService {
      * @param attributeName attribute type of attribute to find
      * @param attributeId   attribute ID of attribute to find.
      *
-     * @return {@link AttributeCore} or <code>null</code> if not found.
+     * @return {@link AttributeCore} or {@code null} if not found.
      *
      * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
      * @throws SubjectNotFoundException       subject does not exist
@@ -57,7 +56,7 @@ public interface AttributeService {
      * @param memberAttributeName attribute type of the member
      * @param memberValue         value of the member attribute
      *
-     * @return {@link AttributeCore} or <code>null</code> if not found.
+     * @return {@link AttributeCore} or {@code null} if not found.
      *
      * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
      * @throws SubjectNotFoundException       subject does not exist
