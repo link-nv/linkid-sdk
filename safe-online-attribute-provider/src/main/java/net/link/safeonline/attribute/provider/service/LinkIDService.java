@@ -20,4 +20,6 @@ public interface LinkIDService {
     AttributeService getAttributeService();
 
     PersistenceService getPersistenceService();
+
+    LocalizationService getLocalizationService();
 }

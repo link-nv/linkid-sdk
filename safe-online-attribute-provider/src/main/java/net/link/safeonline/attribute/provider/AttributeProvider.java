@@ -165,7 +165,7 @@ public abstract class AttributeProvider implements Serializable {
      *
      * @return a customized {@link WicketPanel} for the specified {@link AttributeCore}.
      */
-    public AttributeInputPanel getAttributeInputPanel(final String id, final AttributeCore attribute) {
+    public AttributeInputPanel getAttributeInputPanel(final LinkIDService linkIDService, final String id, final AttributeCore attribute) {
 
         return getDefaultAttributeInputPanel( id, attribute );
     }

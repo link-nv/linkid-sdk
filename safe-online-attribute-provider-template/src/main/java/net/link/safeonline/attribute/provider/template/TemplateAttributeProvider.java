@@ -200,7 +200,7 @@ public class TemplateAttributeProvider extends AttributeProvider implements Serv
     }
 
     @Override
-    public AttributeInputPanel getAttributeInputPanel(String id, final AttributeCore attribute) {
+    public AttributeInputPanel getAttributeInputPanel(final LinkIDService linkIDService, final String id, final AttributeCore attribute) {
 
         if (attribute.getAttributeType().getType() == DataType.STRING && !attribute.isUnavailable()) {
             return new CustomAttributeInputPanel( id, attribute );
