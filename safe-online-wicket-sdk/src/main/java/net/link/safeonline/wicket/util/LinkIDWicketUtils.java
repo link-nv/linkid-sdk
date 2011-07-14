@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.wicket.util;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import net.link.safeonline.attribute.provider.AttributeSDK;
@@ -13,9 +14,7 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.util.common.CertificateChain;
-import net.link.util.wicket.util.RedirectResponse;
-import net.link.util.wicket.util.RedirectResponseException;
-import net.link.util.wicket.util.WicketUtils;
+import net.link.util.wicket.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
@@ -23,9 +22,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * <h2>{@link LinkIDWicketUtils}</h2>
- *
+ * <p/>
  * <p> [description / usage]. </p>
- *
+ * <p/>
  * <p> <i>Sep 17, 2008</i> </p>
  *
  * @author lhunath
@@ -70,7 +69,7 @@ public abstract class LinkIDWicketUtils {
      *
      * @return The linkID attributes that were sent with the last authentication response.
      */
-    public static Map<String, List<AttributeSDK<?>>> findAttributes() {
+    public static Map<String, List<AttributeSDK<Serializable>>> findAttributes() {
 
         return LoginManager.findAttributes( WicketUtils.getHttpSession() );
     }

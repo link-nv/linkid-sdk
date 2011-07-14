@@ -1,8 +1,10 @@
 package net.link.safeonline.sdk.example.wicket;
 
+import java.io.Serializable;
 import java.security.cert.CertificateEncodingException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.logging.exception.*;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
@@ -18,12 +20,12 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 
 public class MainPage extends LinkIDApplicationPage {
 
-    private final StringBuilder attributes = new StringBuilder();
+    private final StringBuilder attributes   = new StringBuilder();
     private final StringBuilder wsAttributes = new StringBuilder();
 
     /**
      * Add components to the layout that are present on every page.
-     *
+     * <p/>
      * This includes the title and the global ticket.
      */
     public MainPage() {
@@ -35,6 +37,7 @@ public class MainPage extends LinkIDApplicationPage {
 
             @Override
             public String getObject() {
+
                 return ExampleSession.get().isUserSet()? ExampleSession.get().findUserLinkID(): "";
             }
         } ) );
@@ -43,6 +46,7 @@ public class MainPage extends LinkIDApplicationPage {
 
             @Override
             public String getObject() {
+
                 return attributes.toString();
             }
         } ) );
@@ -51,6 +55,7 @@ public class MainPage extends LinkIDApplicationPage {
 
             @Override
             public String getObject() {
+
                 return wsAttributes.toString();
             }
         } ) );
@@ -91,9 +96,9 @@ public class MainPage extends LinkIDApplicationPage {
             }
 
             // attribute in SAML response
-            for (Map.Entry<String, List<AttributeSDK<?>>> attributeEntry : LinkIDWicketUtils.findAttributes().entrySet())
+            for (Entry<String, List<AttributeSDK<Serializable>>> attributeEntry : LinkIDWicketUtils.findAttributes().entrySet())
                 for (AttributeSDK<?> attribute : attributeEntry.getValue())
-                    attributes.append( ' ' ).append( attribute.getName()).append( '=' ).append( attribute.getValue() );
+                    attributes.append( ' ' ).append( attribute.getName() ).append( '=' ).append( attribute.getValue() );
         }
 
         super.onBeforeRender();
@@ -113,11 +118,14 @@ public class MainPage extends LinkIDApplicationPage {
             Xkms2Client xkms2Client = LinkIDServiceFactory.getXkms2Client();
             try {
                 xkms2Client.validate( linkIDCertificateChain );
-            } catch (WSClientTransportException e) {
+            }
+            catch (WSClientTransportException e) {
                 throw new RuntimeException( e );
-            } catch (ValidationFailedException e) {
+            }
+            catch (ValidationFailedException e) {
                 throw new RuntimeException( e );
-            } catch (CertificateEncodingException e) {
+            }
+            catch (CertificateEncodingException e) {
                 throw new RuntimeException( e );
             }
         }

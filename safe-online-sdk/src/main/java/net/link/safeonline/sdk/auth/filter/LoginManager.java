@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
@@ -16,7 +17,7 @@ import net.link.util.common.CertificateChain;
 
 /**
  * Login manager for servlet container based web applications. The login status is saved on the HTTP session.
- *
+ * <p/>
  * <p> Notice that we explicitly disconnected the login manager from the authentication protocol manager. Both store their data into the
  * HTTP session. </p>
  *
@@ -42,7 +43,7 @@ public abstract class LoginManager {
     }
 
     /**
-     * Gives back the SafeOnline authenticated userId, or <code>null</code> if the user was not yet authenticated.
+     * Gives back the SafeOnline authenticated userId, or {@code null} if the user was not yet authenticated.
      *
      * @param httpSession The session from which to look up the credentials.
      *
@@ -55,32 +56,42 @@ public abstract class LoginManager {
     }
 
     /**
-     * Gives back the SafeOnline authenticated device, or <code>null</code> if the user was not yet authenticated.
+     * Gives back the SafeOnline authenticated device, or {@code null} if the user was not yet authenticated.
      *
      * @param httpSession The session from which to look up the credentials.
      *
      * @return The linkID devices with which the user that last authenticated himself on the given session had been authenticated.
      */
-    @SuppressWarnings( { "unchecked" })
+    @SuppressWarnings("unchecked")
     public static List<String> findAuthenticatedDevices(HttpSession httpSession) {
 
         return (List<String>) httpSession.getAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
     }
 
     /**
-     * Gives back the SafeOnline attributes, or <code>null</code> if the user was not yet authenticated or no attributes were included.
+     * Gives back the LinkID attributes, or {@code null} if the user was not yet authenticated or no attributes were included.
      *
      * @param httpSession The session from which to look up the credentials.
      *
      * @return The linkID attributes that were sent with the last authentication response on the given session.
      */
-    @SuppressWarnings( { "unchecked" })
-    public static Map<String, List<AttributeSDK<?>>> findAttributes(HttpSession httpSession) {
+    @SuppressWarnings("unchecked")
+    public static Map<String, List<AttributeSDK<Serializable>>> findAttributes(HttpSession httpSession) {
 
-        return (Map<String, List<AttributeSDK<?>>>) httpSession.getAttribute( ATTRIBUTES_SESSION_ATTRIBUTE );
+        return (Map<String, List<AttributeSDK<Serializable>>>) httpSession.getAttribute( ATTRIBUTES_SESSION_ATTRIBUTE );
     }
 
-    @SuppressWarnings( { "unchecked" })
+    /**
+     * Remove the attributes map from the session.
+     *
+     * @param httpSession the HTTP session.
+     */
+    public static void cleanupAttributes(HttpSession httpSession) {
+
+        httpSession.removeAttribute( ATTRIBUTES_SESSION_ATTRIBUTE );
+    }
+
+    @SuppressWarnings("unchecked")
     public static CertificateChain findCertificateChain(HttpSession httpSession) {
 
         return (CertificateChain) httpSession.getAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
@@ -94,7 +105,7 @@ public abstract class LoginManager {
     public static void cleanup(HttpSession httpSession) {
 
         httpSession.removeAttribute( USERID_SESSION_ATTRIBUTE );
-        httpSession.removeAttribute( ATTRIBUTES_SESSION_ATTRIBUTE );
+        cleanupAttributes( httpSession );
         httpSession.removeAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
     }
