@@ -8,7 +8,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>1.16</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
     <name>SafeOnline Template Attribute Provider</name>
     <description>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-attribute-provider</artifactId>
-            <version>1.16</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
 
         <!-- Specific Dependencies: External -->
