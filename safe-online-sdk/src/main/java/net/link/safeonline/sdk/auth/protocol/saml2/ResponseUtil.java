@@ -24,6 +24,7 @@ import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.util.encoders.Base64;
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
 import org.w3c.dom.Element;
@@ -70,7 +71,7 @@ public abstract class ResponseUtil {
      */
     public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse,
                                     KeyPair signingKeyPair, CertificateChain certificateChain, HttpServletResponse response,
-                                    String relayState, String postTemplateResource, Locale language, boolean breakFrame)
+                                    String relayState, String postTemplateResource, @Nullable Locale language, boolean breakFrame)
             throws IOException {
 
         switch (responseBinding) {

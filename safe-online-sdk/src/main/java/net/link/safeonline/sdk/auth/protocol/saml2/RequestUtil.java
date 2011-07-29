@@ -18,6 +18,7 @@ import net.link.util.common.CertificateChain;
 import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.*;
 
 
@@ -50,8 +51,8 @@ public abstract class RequestUtil {
      * @throws IOException IO Exception
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
-                                   CertificateChain certificateChain, HttpServletResponse response, String relayState,
-                                   String postTemplateResource, Locale language, String themeName, boolean breakFrame)
+                                   CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState,
+                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, boolean breakFrame)
             throws IOException {
 
         switch (requestBinding) {
