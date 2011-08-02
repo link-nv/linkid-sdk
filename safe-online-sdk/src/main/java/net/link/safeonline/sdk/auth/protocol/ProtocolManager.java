@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.auth.protocol;
 
 import com.google.common.base.Function;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Manager class for the stateful protocol handlers.
- *
+ * <p/>
  * <p> The state is preserved using the HTTP session. </p>
  *
  * @author fcorneli
@@ -85,8 +86,6 @@ public abstract class ProtocolManager {
 
     /**
      * Initiates a logout request.
-     *
-     * @throws IOException
      */
     public static LogoutProtocolRequestContext initiateLogout(HttpServletRequest request, HttpServletResponse response, String userId,
                                                               LogoutContext context)

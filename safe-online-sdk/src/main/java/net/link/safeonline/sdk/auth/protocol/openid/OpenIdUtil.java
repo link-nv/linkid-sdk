@@ -65,8 +65,7 @@ public abstract class OpenIdUtil {
 
         boolean add = false;
         if (null != requiredAttributes && null != optionalAttributes) {
-            if (requiredAttributes.containsValue( attribute.getName() ) || optionalAttributes.containsValue(
-                    attribute.getName() )) {
+            if (requiredAttributes.containsValue( attribute.getName() ) || optionalAttributes.containsValue( attribute.getName() )) {
                 add = true;
             }
         } else
@@ -100,8 +99,7 @@ public abstract class OpenIdUtil {
                     AttributeCore member = (AttributeCore) memberSDK;
 
                     // add member name
-                    fetchResponse.addAttribute( TYPE_URI_MEMBER_ATTRIBTUE_NAME + attribute.getId() + '.' + memberIdx,
-                                                member.getName() );
+                    fetchResponse.addAttribute( TYPE_URI_MEMBER_ATTRIBTUE_NAME + attribute.getId() + '.' + memberIdx, member.getName() );
 
                     // add member value
                     String value = getAttributeValue( member.getValue() );
@@ -197,7 +195,7 @@ public abstract class OpenIdUtil {
                 addToMap( attributeMap, new AttributeSDK( attributeId, attributeType.getName(), new Compound( members ) ) );
             } else {
                 addToMap( attributeMap, new AttributeSDK( attributeId, attributeType.getName(),
-                                                          getValue( fetchResponse, TYPE_URI_ATTRIBUTE_VALUE + attributeId ) ) );
+                        getValue( fetchResponse, TYPE_URI_ATTRIBUTE_VALUE + attributeId ) ) );
             }
 
             idx++;
