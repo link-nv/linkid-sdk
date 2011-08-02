@@ -12,6 +12,58 @@
     <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
+    <properties>
+        <maven-export-plugin.version>1.6</maven-export-plugin.version>
+    </properties>
+
+    <!-- CODE MANAGEMENT -->
+    <scm>
+        <tag>HEAD</tag>
+        <url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git
+        </url>
+        <connection>
+            scm:git:ssh://buildserver/home/devel/scm/git/safe-online.git
+        </connection>
+        <developerConnection>
+            scm:git:ssh://buildserver/home/devel/scm/git/safe-online.git
+        </developerConnection>
+    </scm>
+
+    <profiles>
+        <!-- Profile that creates an SDK package -->
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <repository>
+                    <id>repo.linkid.be</id>
+                    <url>scpexe://repo.linkid.be/home/maven/repository/releases</url>
+                </repository>
+                <snapshotRepository>
+                    <id>repo.linkid.be</id>
+                    <url>scpexe://repo.linkid.be/home/maven/repository/snapshots</url>
+                    <uniqueVersion>false</uniqueVersion>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.stackoverflow</groupId>
+                        <artifactId>maven-export-plugin</artifactId>
+                        <version>${maven-export-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>output</id>
+                                <goals>
+                                    <goal>output-project</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <resources>
             <resource>
@@ -32,6 +84,27 @@
                 </excludes>
             </resource>
         </resources>
+
+        <pluginManagement>
+            <plugins>
+                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <developmentVersion>GIT-SNAPSHOT</developmentVersion>
+                        <localCheckout>true</localCheckout>
+                        <preparationGoals>clean install</preparationGoals>
+                        <goals>deploy</goals>
+                        <updateBranchVersions>true</updateBranchVersions>
+                        <updateWorkingCopyVersions>false</updateWorkingCopyVersions>
+                        <branchName>${project.version}-maint</branchName>
+                        <mavenExecutorId>forked-path</mavenExecutorId>
+                    </configuration>
+                 </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
