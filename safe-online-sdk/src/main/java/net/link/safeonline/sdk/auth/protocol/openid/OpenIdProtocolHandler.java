@@ -7,23 +7,18 @@
 
 package net.link.safeonline.sdk.auth.protocol.openid;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.auth.protocol.*;
-import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.configuration.ConfigUtils;
-import net.link.safeonline.sdk.configuration.LogoutContext;
+import net.link.safeonline.sdk.configuration.*;
 import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,9 +26,7 @@ import org.openid4java.OpenIDException;
 import org.openid4java.association.Association;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
-import org.openid4java.discovery.DiscoveryException;
-import org.openid4java.discovery.DiscoveryInformation;
-import org.openid4java.discovery.Identifier;
+import org.openid4java.discovery.*;
 import org.openid4java.message.*;
 import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchResponse;
@@ -41,9 +34,9 @@ import org.openid4java.message.ax.FetchResponse;
 
 /**
  * Implementation class for the SAML2 browser POST authentication protocol.
- *
+ * <p/>
  * <p> Optional configuration parameters: </p> <ul> </ul>
- *
+ * <p/>
  * <p> Optional session configuration attributes: </p> <ul> </ul>
  *
  * @author fcorneli
@@ -69,11 +62,9 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
 
         authnContext = context;
 
-        String realm = config().proto().openID().realm();
-        if (realm == null)
-            realm = ConfigUtils.getApplicationConfidentialURL();
+        String realm = getRealm();
         LOG.debug( "realm: " + realm );
-        String discoveryUrl = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().openID().discoveryPath() );
+        String discoveryUrl = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().openid().discoveryPath() );
         LOG.debug( "discoveryUrl: " + discoveryUrl );
 
         String targetURL = context.getTarget();
@@ -89,7 +80,6 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         if (landingURL == null) {
             // If no landing URL is configured, land on target.
             landingURL = targetURL;
-            targetURL = null;
         }
 
         try {
@@ -102,7 +92,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             AuthRequest authReq = manager.authenticate( discovered, landingURL, realm );
             response.sendRedirect( authReq.getDestinationUrl( true ) );
 
-            return new AuthnProtocolRequestContext( authReq.getHandle(), null, this, targetURL );
+            return new AuthnProtocolRequestContext( realm, realm, this, targetURL );
         }
         catch (OpenIDException e) {
             LOG.error( "OpenID OpenIDException", e );
@@ -170,16 +160,15 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                 }
         }
 
-        String handle = null;
-        AuthnProtocolRequestContext requestContext = null;
-        if (authResponse instanceof AuthSuccess) {
-            handle = ((AuthSuccess) authResponse).getHandle();
-            requestContext = ProtocolContext.findContext( request.getSession(), handle );
+        String realm = getRealm();
+        AuthnProtocolRequestContext requestContext = ProtocolContext.findContext( request.getSession(), realm );
+        if (null == requestContext) {
+            throw new ValidationFailedException( "OpenID response returned but no matching request found?!" );
         }
 
         boolean success = verification.getAuthResponse() instanceof AuthSuccess;
-        return new AuthnProtocolResponseContext( requestContext, handle, userId, requestContext == null? null: requestContext.getIssuer(),
-                authenticatedDevices, attributes, success, null );
+        return new AuthnProtocolResponseContext( requestContext, realm, userId, requestContext.getIssuer(), authenticatedDevices,
+                attributes, success, null );
     }
 
     public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request,
@@ -261,5 +250,13 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             LOG.error( "[TODO]", e );
         }
         // END-DEBUG
+    }
+
+    private static String getRealm() {
+
+        String realm = config().proto().openid().realm();
+        if (realm == null)
+            realm = ConfigUtils.getApplicationConfidentialURL();
+        return realm;
     }
 }

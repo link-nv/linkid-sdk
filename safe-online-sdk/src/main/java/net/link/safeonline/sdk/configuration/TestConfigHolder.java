@@ -184,7 +184,7 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
             public Protocol defaultProtocol;
             public Duration maxTimeOffset;
 
-            public TestOpenIDProtocolConfig openID() {
+            public TestOpenIDProtocolConfig openid() {
 
                 return openid;
             }

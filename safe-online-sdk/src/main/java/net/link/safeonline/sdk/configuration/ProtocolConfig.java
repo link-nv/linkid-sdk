@@ -16,7 +16,7 @@ import org.joda.time.Duration;
 @Group(prefix = "proto")
 public interface ProtocolConfig {
 
-    OpenIDProtocolConfig openID();
+    OpenIDProtocolConfig openid();
 
     SAMLProtocolConfig saml();
 
