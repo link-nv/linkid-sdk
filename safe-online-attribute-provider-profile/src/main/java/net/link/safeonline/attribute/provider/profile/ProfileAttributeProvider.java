@@ -36,6 +36,7 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
         attributes.add( new PhoneAttribute( getJndiLocation() ) );
         attributes.add( new PostalCodeAttribute( getJndiLocation() ) );
         attributes.add( new StreetAndNumberAttribute( getJndiLocation() ) );
+        attributes.add( new NrnAttribute( getJndiLocation() ) );
     }
 
     @Override

@@ -45,6 +45,21 @@
         <value for="nl">Geslacht</value>
         <value for="fr">Sexe</value>
     </entry>
+    <entry key="attribute.profile.mobile.friendly">
+        <value for="en">Mobile</value>
+        <value for="nl">GSM</value>
+        <value for="fr">GSM</value>
+    </entry>
+    <entry key="attribute.profile.phone.friendly">
+        <value for="en">Phone</value>
+        <value for="nl">Telefoon</value>
+        <value for="fr">Téléphone</value>
+    </entry>
+    <entry key="attribute.profile.dob.friendly">
+        <value for="en">Date of birth</value>
+        <value for="nl">Geboortedatum</value>
+        <value for="fr">Date de naissance</value>
+    </entry>
     <entry key="attributegroup.profile.profile.friendly">
         <value for="en">Profile</value>
         <value for="nl">Profiel</value>
