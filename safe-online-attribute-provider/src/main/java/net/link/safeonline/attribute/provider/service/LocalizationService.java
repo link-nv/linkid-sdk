@@ -7,8 +7,10 @@
 
 package net.link.safeonline.attribute.provider.service;
 
+import java.io.InputStream;
 import java.util.Locale;
 import net.link.safeonline.attribute.provider.AttributeProvider;
+import net.link.safeonline.attribute.provider.exception.LocalizationImportException;
 
 
 /**
@@ -25,4 +27,14 @@ public interface LocalizationService {
      * @return text for specified key and locale. Returns {@code null} if not found.
      */
     String findText(String key, Locale locale);
+
+    /**
+     * Import attribute provider's localization key/value pairs.
+     *
+     * @param inputStream the input stream of the localization XML file
+     *
+     * @throws LocalizationImportException something went wrong trying to import.
+     */
+    void importXML(InputStream inputStream)
+            throws LocalizationImportException;
 }

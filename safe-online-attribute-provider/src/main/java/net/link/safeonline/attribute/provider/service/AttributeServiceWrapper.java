@@ -7,7 +7,6 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import net.link.safeonline.attribute.provider.AttributeCore;
 import net.link.safeonline.attribute.provider.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.SubjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class AttributeServiceWrapper implements AttributeService {
     }
 
     public List<AttributeCore> listAttributes(String userId, String attributeName, boolean filterInvisible)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException {
+            throws AttributeTypeNotFoundException {
 
         try {
             return activateService().listAttributes( userId, attributeName, filterInvisible );
@@ -42,7 +41,7 @@ public class AttributeServiceWrapper implements AttributeService {
     }
 
     public AttributeCore findAttribute(String userId, String attributeName, String attributeId)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException {
+            throws AttributeTypeNotFoundException {
 
         try {
             return activateService().findAttribute( userId, attributeName, attributeId );
@@ -54,7 +53,7 @@ public class AttributeServiceWrapper implements AttributeService {
 
     public AttributeCore findCompoundAttributeWhere(String userId, String parentAttributeName, String memberAttributeName,
                                                     Serializable memberValue)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException {
+            throws AttributeTypeNotFoundException {
 
         try {
             return activateService().findCompoundAttributeWhere( userId, parentAttributeName, memberAttributeName, memberValue );

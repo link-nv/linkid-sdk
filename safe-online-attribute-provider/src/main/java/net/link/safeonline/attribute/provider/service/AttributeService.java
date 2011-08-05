@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.List;
 import net.link.safeonline.attribute.provider.AttributeCore;
 import net.link.safeonline.attribute.provider.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.SubjectNotFoundException;
 
 
 /**
@@ -29,10 +28,9 @@ public interface AttributeService {
      * @return all {@link AttributeCore}'s for specified user and attribute name, filtered on user inivisiblity if specified.
      *
      * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
-     * @throws SubjectNotFoundException       subject does not exist
      */
     List<AttributeCore> listAttributes(String userId, String attributeName, boolean filterInvisible)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException;
+            throws AttributeTypeNotFoundException;
 
     /**
      * Fetch attribute for specified user and attribute ID.
@@ -44,10 +42,9 @@ public interface AttributeService {
      * @return {@link AttributeCore} or {@code null} if not found.
      *
      * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
-     * @throws SubjectNotFoundException       subject does not exist
      */
     AttributeCore findAttribute(String userId, String attributeName, String attributeId)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException;
+            throws AttributeTypeNotFoundException;
 
     /**
      * Fetch compound attribute of specified type which has a member of specified type with specified value
@@ -60,9 +57,8 @@ public interface AttributeService {
      * @return {@link AttributeCore} or {@code null} if not found.
      *
      * @throws AttributeTypeNotFoundException attribute type for specified attribute name does not exist.
-     * @throws SubjectNotFoundException       subject does not exist
      */
     AttributeCore findCompoundAttributeWhere(String userId, String parentAttributeName, String memberAttributeName,
                                              Serializable memberValue)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException;
+            throws AttributeTypeNotFoundException;
 }

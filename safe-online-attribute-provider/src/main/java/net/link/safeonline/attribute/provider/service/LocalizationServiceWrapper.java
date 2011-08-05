@@ -2,8 +2,10 @@ package net.link.safeonline.attribute.provider.service;
 
 import static com.google.common.base.Preconditions.*;
 
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.*;
+import net.link.safeonline.attribute.provider.exception.LocalizationImportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +99,17 @@ public class LocalizationServiceWrapper implements LocalizationService {
 
         try {
             return activateService().findText( key, locale );
+        }
+        finally {
+            deactivateService();
+        }
+    }
+
+    public void importXML(final InputStream inputStream)
+            throws LocalizationImportException {
+
+        try {
+            activateService().importXML( inputStream );
         }
         finally {
             deactivateService();

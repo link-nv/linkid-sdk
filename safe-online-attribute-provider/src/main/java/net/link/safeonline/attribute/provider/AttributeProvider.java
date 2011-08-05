@@ -17,6 +17,7 @@ import net.link.safeonline.attribute.provider.input.DefaultAttributeInputPanel;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import net.link.util.j2ee.JNDIUtils;
 import net.link.util.wicket.component.WicketPanel;
+import org.jetbrains.annotations.Nullable;
 
 
 public abstract class AttributeProvider implements Serializable {
@@ -45,6 +46,7 @@ public abstract class AttributeProvider implements Serializable {
      *
      * @return {@link AttributeCore} or {@code null} if not found.
      */
+    @Nullable
     public abstract AttributeCore findAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId);
 
     /**
@@ -160,12 +162,15 @@ public abstract class AttributeProvider implements Serializable {
     /**
      * Override this method if you want to provide a non-default attribute input panel.
      *
-     * @param id        wicket id of panel
-     * @param attribute attribute to get panel for
+     * @param linkIDService linkID services provided to attribute provider implementations.
+     * @param id            wicket id of panel
+     * @param userId        the user ID
+     * @param attribute     attribute to get panel for
      *
      * @return a customized {@link WicketPanel} for the specified {@link AttributeCore}.
      */
-    public AttributeInputPanel getAttributeInputPanel(final LinkIDService linkIDService, final String id, final AttributeCore attribute) {
+    public AttributeInputPanel getAttributeInputPanel(final LinkIDService linkIDService, final String id, final String userId,
+                                                      final AttributeCore attribute) {
 
         return getDefaultAttributeInputPanel( id, attribute );
     }

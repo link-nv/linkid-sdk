@@ -177,6 +177,7 @@
         <module>safe-online-saml-authn-context</module>
 	    <module>safe-online-attribute-provider</module>
         <module>safe-online-attribute-provider-template</module>
+        <module>safe-online-attribute-provider-profile</module>
     </modules>
 
     <dependencies>
