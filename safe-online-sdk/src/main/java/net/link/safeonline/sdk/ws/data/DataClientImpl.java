@@ -10,9 +10,7 @@ package net.link.safeonline.sdk.ws.data;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
@@ -22,10 +20,7 @@ import liberty.dst._2006_08.ref.safe_online.*;
 import liberty.util._2006_08.StatusType;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.attribute.provider.Compound;
-import net.link.safeonline.data.ws.DataServiceConstants;
-import net.link.safeonline.data.ws.DataServiceFactory;
-import net.link.safeonline.data.ws.SecondLevelStatusCode;
-import net.link.safeonline.data.ws.TopLevelStatusCode;
+import net.link.safeonline.data.ws.*;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
@@ -47,18 +42,18 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
     private static final Log LOG = LogFactory.getLog( DataClientImpl.class );
 
     private final TargetIdentityClientHandler targetIdentityHandler;
-    private final String location;
+    private final String                      location;
 
     /**
      * Main constructor.
      *
-     * @param location          the location (host:port) of the attribute web service.
-     * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
-     * @param configuration The WS-Security configuration.
+     * @param location       the location (host:port) of the attribute web service.
+     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param configuration  The WS-Security configuration.
      */
     public DataClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super(DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ) );
+        super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ) );
         getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/data" );
 
         /*
@@ -98,7 +93,8 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         ModifyResponseType modifyResponse;
         try {
             modifyResponse = getPort().modify( modify );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
@@ -128,7 +124,8 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         QueryResponseType queryResponse;
         try {
             queryResponse = getPort().query( query );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
@@ -172,7 +169,8 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         CreateResponseType createResponse;
         try {
             createResponse = getPort().create( create );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
@@ -195,7 +193,7 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
             throws WSClientTransportException, RequestDeniedException {
 
         removeAttributes( userId,
-                          Collections.<AttributeSDK<?>>singletonList( new AttributeSDK<Serializable>( attributeId, attributeName, null ) ) );
+                Collections.<AttributeSDK<?>>singletonList( new AttributeSDK<Serializable>( attributeId, attributeName, null ) ) );
     }
 
     /**
@@ -224,7 +222,8 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         DeleteResponseType deleteResponse;
         try {
             deleteResponse = getPort().delete( delete );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
@@ -257,11 +256,10 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
                 // compounded
                 Compound compound = (Compound) attribute.getValue();
                 for (AttributeSDK<?> memberAttribute : compound.getMembers()) {
-                    AttributeSDK<?> member = (AttributeSDK<?>) memberAttribute;
 
                     AttributeType memberAttributeType = new AttributeType();
-                    memberAttributeType.setName( member.getName() );
-                    memberAttributeType.getAttributeValue().add( convertFromXmlDatatypeToClient( member.getValue() ) );
+                    memberAttributeType.setName( memberAttribute.getName() );
+                    memberAttributeType.getAttributeValue().add( convertFromXmlDatatypeToClient( memberAttribute.getValue() ) );
 
                     compoundValueAttribute.getAttributeValue().add( memberAttributeType );
                 }
@@ -399,6 +397,7 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         if (null != attribute.getId())
             select.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attribute.getId() );
 
+        deleteItem.setSelect( select );
         return deleteItem;
     }
 }
