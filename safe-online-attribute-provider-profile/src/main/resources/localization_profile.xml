@@ -60,6 +60,11 @@
         <value for="nl">Geboortedatum</value>
         <value for="fr">Date de naissance</value>
     </entry>
+    <entry key="attribute.profile.nrn.friendly">
+        <value for="en">National registry number</value>
+        <value for="nl">Rijksregisternummber</value>
+        <value for="fr">Numéro du registre national</value>
+    </entry>
     <entry key="attributegroup.profile.profile.friendly">
         <value for="en">Profile</value>
         <value for="nl">Profiel</value>
