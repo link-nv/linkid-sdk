@@ -25,15 +25,17 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
 
     public ProfileAttributeProvider() {
 
-        attributes.add( new GivenNameAttribute( getJndiLocation() ) );
-        attributes.add( new FamilyNameAttribute( getJndiLocation() ) );
-        attributes.add( new EmailAttribute( getJndiLocation() ) );
-        attributes.add( new GenderAttribute( getJndiLocation() ) );
-        attributes.add( new StreetAndNumberAttribute( getJndiLocation() ) );
-        attributes.add( new PostalCodeAttribute( getJndiLocation() ) );
         attributes.add( new CityAttribute( getJndiLocation() ) );
         attributes.add( new CountryAttribute( getJndiLocation() ) );
         attributes.add( new DobAttribute( getJndiLocation() ) );
+        attributes.add( new EmailAttribute( getJndiLocation() ) );
+        attributes.add( new FamilyNameAttribute( getJndiLocation() ) );
+        attributes.add( new GenderAttribute( getJndiLocation() ) );
+        attributes.add( new GivenNameAttribute( getJndiLocation() ) );
+        attributes.add( new MobileAttribute( getJndiLocation() ) );
+        attributes.add( new PhoneAttribute( getJndiLocation() ) );
+        attributes.add( new PostalCodeAttribute( getJndiLocation() ) );
+        attributes.add( new StreetAndNumberAttribute( getJndiLocation() ) );
     }
 
     @Override
