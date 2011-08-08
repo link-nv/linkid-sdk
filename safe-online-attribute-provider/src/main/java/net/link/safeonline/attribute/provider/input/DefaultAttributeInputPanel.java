@@ -15,9 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.model.IModel;
 
 
@@ -34,6 +32,7 @@ public class DefaultAttributeInputPanel extends AttributeInputPanel {
     CheckBox         checkBox;
 
     public DefaultAttributeInputPanel(String id, AttributeCore attribute) {
+
         super( id, attribute );
 
         checkBox = createBooleanField();
@@ -95,6 +94,7 @@ public class DefaultAttributeInputPanel extends AttributeInputPanel {
 
             @SuppressWarnings("unchecked")
             public T getObject() {
+
                 return (T) attribute.getValue();
             }
 
@@ -113,6 +113,7 @@ public class DefaultAttributeInputPanel extends AttributeInputPanel {
             }
 
             public void detach() {
+
             }
         }, clazz ) {
 
@@ -129,14 +130,17 @@ public class DefaultAttributeInputPanel extends AttributeInputPanel {
         return new CheckBox( BOOLEAN_ID, new IModel<Boolean>() {
 
             public Boolean getObject() {
+
                 return (Boolean) attribute.getValue();
             }
 
             public void setObject(final Boolean object) {
+
                 attribute.setValue( object );
             }
 
             public void detach() {
+
             }
         } );
     }
@@ -146,14 +150,17 @@ public class DefaultAttributeInputPanel extends AttributeInputPanel {
         DateTextField field = new DateTextField( VALUE_ID, new IModel<Date>() {
 
             public Date getObject() {
+
                 return (Date) attribute.getValue();
             }
 
             public void setObject(final Date object) {
+
                 attribute.setValue( object );
             }
 
             public void detach() {
+
             }
         }, "dd/MM/yyyy" );
         field.add( new DatePicker() );

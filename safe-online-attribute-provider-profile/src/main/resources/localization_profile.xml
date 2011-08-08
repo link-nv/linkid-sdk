@@ -5,6 +5,11 @@
     <language name="Nederlands" id="nl" />
     <language name="Francais" id="fr" />
   </languages>
+    <entry key="attributegroup.profile.friendly">
+        <value for="en">Profile</value>
+        <value for="nl">Profiel</value>
+        <value for="fr">Profile</value>
+    </entry>
     <entry key="attribute.profile.city.friendly">
         <value for="en">City</value>
         <value for="nl">Stad</value>

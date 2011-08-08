@@ -9,11 +9,11 @@ package net.link.safeonline.sdk;
 /**
  * <h2>{@link SafeOnlineAppConstants}<br>
  * <sub>Constants for Safe-Online applications.</sub></h2>
- *
+ * <p/>
  * <p>
  * [description / usage].
  * </p>
- *
+ * <p/>
  * <p>
  * <i>Nov 7, 2008</i>
  * </p>
@@ -22,5 +22,5 @@ package net.link.safeonline.sdk;
  */
 public interface SafeOnlineAppConstants {
 
-    public static final String THEME_SESSION_ATTRIBUTE = "ThemeName";
+    String THEME_URL_SESSION_ATTRIBUTE = "ThemeURL";
 }
