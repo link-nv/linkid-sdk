@@ -43,9 +43,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     public List<AttributeCore> listAttributes(final LinkIDService linkIDService, final String userId, final String attributeName,
                                               final boolean filterInvisible) {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            if (demoAttribute.getAttributeType().getName().equals( attributeName ))
-                return demoAttribute.listAttributes( linkIDService, userId );
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( attributeName ))
+                return profileAttribute.listAttributes( linkIDService, userId );
         }
 
         throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
@@ -56,9 +56,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     public AttributeCore findAttribute(final LinkIDService linkIDService, final String userId, final String attributeName,
                                        final String attributeId) {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            if (demoAttribute.getAttributeType().getName().equals( attributeName ))
-                return demoAttribute.findAttribute( linkIDService, userId, attributeId );
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( attributeName ))
+                return profileAttribute.findAttribute( linkIDService, userId, attributeId );
         }
 
         throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
@@ -75,9 +75,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     @Override
     public void removeAttributes(final LinkIDService linkIDService, final String userId, final String attributeName) {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            if (demoAttribute.getAttributeType().getName().equals( attributeName )) {
-                demoAttribute.removeAttributes( linkIDService, userId );
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( attributeName )) {
+                profileAttribute.removeAttributes( linkIDService, userId );
                 return;
             }
         }
@@ -90,9 +90,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
                                 final String attributeId)
             throws AttributeNotFoundException {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            if (demoAttribute.getAttributeType().getName().equals( attributeName )) {
-                demoAttribute.removeAttribute( linkIDService, userId, attributeId );
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( attributeName )) {
+                profileAttribute.removeAttribute( linkIDService, userId, attributeId );
                 return;
             }
         }
@@ -103,9 +103,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     @Override
     public void removeAttributes(final LinkIDService linkIDService, final String attributeName) {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            if (demoAttribute.getAttributeType().getName().equals( attributeName )) {
-                demoAttribute.removeAttributes( linkIDService );
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( attributeName )) {
+                profileAttribute.removeAttributes( linkIDService );
                 return;
             }
         }
@@ -116,9 +116,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     @Override
     public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute) {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            if (demoAttribute.getAttributeType().getName().equals( attribute.getAttributeType().getName() ))
-                return demoAttribute.setAttribute( linkIDService, userId, attribute );
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( attribute.getAttributeType().getName() ))
+                return profileAttribute.setAttribute( linkIDService, userId, attribute );
         }
 
         throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attribute.getAttributeType().getName() ) );
@@ -128,8 +128,8 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     public List<AttributeType> getSupportedAttributeTypes() {
 
         List<AttributeType> attributeTypes = new LinkedList<AttributeType>();
-        for (ProfileAttribute demoAttribute : attributes) {
-            attributeTypes.add( demoAttribute.getAttributeType() );
+        for (ProfileAttribute profileAttribute : attributes) {
+            attributeTypes.add( profileAttribute.getAttributeType() );
         }
         return attributeTypes;
     }
@@ -137,8 +137,8 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     @Override
     public void intialize(final LinkIDService linkIDService) {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            demoAttribute.initialize( linkIDService );
+        for (ProfileAttribute profileAttribute : attributes) {
+            profileAttribute.initialize( linkIDService );
         }
 
         // initialize localization
@@ -161,9 +161,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     public AttributeInputPanel getAttributeInputPanel(final LinkIDService linkIDService, final String id, final String userId,
                                                       final AttributeCore attribute) {
 
-        for (ProfileAttribute demoAttribute : attributes) {
-            if (demoAttribute.getAttributeType().getName().equals( attribute.getAttributeType().getName() )) {
-                AttributeInputPanel attributeInputPanel = demoAttribute.findAttributeInputPanel( linkIDService, id, userId, attribute );
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( attribute.getAttributeType().getName() )) {
+                AttributeInputPanel attributeInputPanel = profileAttribute.findAttributeInputPanel( linkIDService, id, userId, attribute );
                 if (null != attributeInputPanel)
                     return attributeInputPanel;
                 else
@@ -183,18 +183,18 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
     @Override
     public String getName() {
 
-        return "Demo";
+        return "Profile";
     }
 
     public void contextInitialized(final ServletContextEvent sce) {
 
-        LOG.debug( "bind Demo attribute provider" );
+        LOG.debug( "bind Profile attribute provider" );
         register();
     }
 
     public void contextDestroyed(final ServletContextEvent sce) {
 
-        LOG.debug( "unbind Demo attribute provider" );
+        LOG.debug( "unbind Profile attribute provider" );
         unregister();
     }
 }
