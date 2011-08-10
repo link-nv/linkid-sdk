@@ -27,7 +27,7 @@ public interface LinkIDConfig {
      *
      * <p> We go here when the user begins an authentication from our application. </p>
      */
-    @Property(required = true, unset = "/core/entry")
+    @Property(required = true, unset = "/entry")
     String authPath();
 
     /**
