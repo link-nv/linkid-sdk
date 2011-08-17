@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author wvdhaute
  */
-public enum AuthenticationErrorCode {
+public enum AuthenticationStatusCode {
 
     ALREADY_AUTHENTICATED( "urn:net:lin-k:safe-online:ws:auth:status:AlreadyAuthenticated" ),
     ALREADY_SUBSCRIBED( "urn:net:lin-k:safe-online:ws:auth:status:AlreadySubscribed" ),
@@ -45,39 +45,40 @@ public enum AuthenticationErrorCode {
     SUBJECT_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:SubjectNotFound" ),
     SUBSCRIPTION_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:SubscriptionNotFound" ),
     LANGUAGE_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:LanguageNotFound" ),
+    CANCELLED( "urn:net:lin-k:safe-online:ws:auth:status:Cancelled" ),
     SUCCESS( "urn:oasis:names:tc:SAML:2.0:status:Success" );
 
-    private final String errorCode;
+    private final String urn;
 
-    private static final Map<String, AuthenticationErrorCode> errorCodeMap = new HashMap<String, AuthenticationErrorCode>();
+    private static final Map<String, AuthenticationStatusCode> urnMap = new HashMap<String, AuthenticationStatusCode>();
 
     static {
-        AuthenticationErrorCode[] errorCodes = AuthenticationErrorCode.values();
-        for (AuthenticationErrorCode errorCode : errorCodes)
-            errorCodeMap.put( errorCode.getErrorCode(), errorCode );
+        AuthenticationStatusCode[] statusCodes = AuthenticationStatusCode.values();
+        for (AuthenticationStatusCode statusCode : statusCodes)
+            urnMap.put( statusCode.getURN(), statusCode );
     }
 
-    AuthenticationErrorCode(String errorCode) {
+    AuthenticationStatusCode(String urn) {
 
-        this.errorCode = errorCode;
+        this.urn = urn;
     }
 
-    public String getErrorCode() {
+    public String getURN() {
 
-        return errorCode;
+        return urn;
     }
 
     @Override
     public String toString() {
 
-        return errorCode;
+        return urn;
     }
 
-    public static AuthenticationErrorCode getWSAuthenticationErrorCode(String errorCode) {
+    public static AuthenticationStatusCode ofURN(String urn) {
 
-        AuthenticationErrorCode authenticationErrorCode = errorCodeMap.get( errorCode );
-        if (null == authenticationErrorCode)
-            throw new IllegalArgumentException( "unknown ws authentication error code: " + errorCode );
-        return authenticationErrorCode;
+        AuthenticationStatusCode authenticationStatusCode = urnMap.get( urn );
+        if (null == authenticationStatusCode)
+            throw new IllegalArgumentException( "unknown ws authentication error code: " + urn );
+        return authenticationStatusCode;
     }
 }

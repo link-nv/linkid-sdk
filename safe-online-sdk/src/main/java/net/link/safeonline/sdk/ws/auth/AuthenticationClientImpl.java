@@ -16,7 +16,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.AuthenticationErrorCode;
+import net.link.safeonline.auth.ws.AuthenticationStatusCode;
 import net.link.safeonline.auth.ws.soap.AuthenticationStep;
 import net.link.safeonline.auth.ws.soap.Confirmation;
 import net.link.safeonline.auth.ws.soap.WSAuthenticationServiceFactory;
@@ -295,16 +295,16 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         StatusType status = response.getStatus();
         StatusCodeType statusCode = status.getStatusCode();
         String statusCodeValue = statusCode.getValue();
-        AuthenticationErrorCode authenticationErrorCode = AuthenticationErrorCode.getWSAuthenticationErrorCode( statusCodeValue );
-        if (AuthenticationErrorCode.SUCCESS != authenticationErrorCode) {
+        AuthenticationStatusCode authenticationStatusCode = AuthenticationStatusCode.ofURN( statusCodeValue );
+        if (AuthenticationStatusCode.SUCCESS != authenticationStatusCode) {
             LOG.error( "status code: " + statusCodeValue );
             LOG.error( "status message: " + status.getStatusMessage() );
-            if (AuthenticationErrorCode.REQUEST_DENIED == authenticationErrorCode)
+            if (AuthenticationStatusCode.REQUEST_DENIED == authenticationStatusCode)
                 throw new RequestDeniedException();
-            else if (AuthenticationErrorCode.REQUEST_FAILED == authenticationErrorCode)
+            else if (AuthenticationStatusCode.REQUEST_FAILED == authenticationStatusCode)
                 throw new WSClientTransportException( getBindingProvider() );
             else
-                throw new WSAuthenticationException( authenticationErrorCode, status.getStatusMessage(), null );
+                throw new WSAuthenticationException( authenticationStatusCode, status.getStatusMessage(), null );
         }
     }
 

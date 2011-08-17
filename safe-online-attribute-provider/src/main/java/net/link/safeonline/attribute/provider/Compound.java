@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.attribute.provider;
 
+import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @author wvdhaute
  */
-public class Compound implements Serializable {
+public class Compound extends MetaObject implements Serializable {
 
     private final List<? extends AttributeSDK<?>> members;
 

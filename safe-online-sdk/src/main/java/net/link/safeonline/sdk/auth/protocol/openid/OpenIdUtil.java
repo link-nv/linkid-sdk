@@ -3,6 +3,7 @@ package net.link.safeonline.sdk.auth.protocol.openid;
 import java.io.Serializable;
 import java.util.*;
 import net.link.safeonline.attribute.provider.*;
+import net.link.safeonline.attribute.provider.AttributeSDK;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openid4java.message.ax.FetchResponse;

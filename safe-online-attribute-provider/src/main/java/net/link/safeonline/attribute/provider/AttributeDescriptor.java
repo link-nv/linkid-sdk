@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.attribute.provider;
 
+import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 
 
@@ -18,7 +19,7 @@ import java.io.Serializable;
  *
  * @author wvdhaute
  */
-public final class AttributeDescriptor<T extends Serializable> implements Serializable {
+public final class AttributeDescriptor<T extends Serializable> extends MetaObject implements Serializable {
 
     private final Class<T> type;
     private final String attributeName;

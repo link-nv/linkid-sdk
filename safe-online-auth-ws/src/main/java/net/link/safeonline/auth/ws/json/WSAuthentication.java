@@ -1,32 +1,46 @@
 package net.link.safeonline.auth.ws.json;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import net.link.safeonline.auth.ws.soap.AuthenticationStep;
 
 
 /**
  * <h2>{@link WSAuthentication}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <p/>
  * <p> <i>12 01, 2010</i> </p>
  *
  * @author lhunath
  */
 public interface WSAuthentication extends Serializable {
 
-    AuthenticationResponse authenticate(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language);
+    String authenticate(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language)
+            throws AuthenticationOperationFailedException;
 
-    AuthenticationResponse requestGlobalUsageAgreement();
+    String requestGlobalUsageAgreement(final Locale language)
+            throws AuthenticationOperationFailedException;
 
-    AuthenticationResponse confirmGlobalUsageAgreement(boolean agreed);
+    void confirmGlobalUsageAgreement()
+            throws AuthenticationOperationFailedException;
 
-    AuthenticationResponse requestApplicationUsageAgreement();
+    String requestApplicationUsageAgreement(Locale language)
+            throws AuthenticationOperationFailedException;
 
-    AuthenticationResponse confirmApplicationUsageAgreement(boolean agreed);
+    void confirmApplicationUsageAgreement()
+            throws AuthenticationOperationFailedException;
 
-    AuthenticationResponse requestIdentity();
+    Map<String, List<AttributeType>> requestIdentity(Locale language)
+            throws AuthenticationOperationFailedException;
 
-    AuthenticationResponse confirmIdentity(List<String> confirmedAttributeNames, List<String> rejectedAttributeNames,
-                                           Map<String, List<String>> attributeValues);
+    public void confirmAllIdentity(Map<String, List<String>> attributeValues)
+            throws AuthenticationOperationFailedException;
+
+    void confirmIdentity(Set<String> confirmedAttributeNames, Set<String> rejectedAttributeNames, Map<String, List<String>> attributeValues)
+            throws AuthenticationOperationFailedException;
+
+    List<AuthenticationStep> getNextSteps()
+            throws AuthenticationOperationFailedException;
+
+    byte[] commit()
+            throws AuthenticationOperationFailedException;
 }

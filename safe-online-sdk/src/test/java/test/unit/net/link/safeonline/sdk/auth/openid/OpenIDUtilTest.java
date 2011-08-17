@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 import net.link.safeonline.attribute.provider.*;
+import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.sdk.auth.protocol.openid.OpenIdUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -9,10 +9,8 @@ package net.link.safeonline.sdk.ws.auth;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import net.link.safeonline.attribute.provider.*;
 import net.link.safeonline.attribute.provider.AttributeSDK;
-import net.link.safeonline.attribute.provider.AttributeType;
-import net.link.safeonline.attribute.provider.Compound;
-import net.link.safeonline.attribute.provider.DataType;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
 
 
