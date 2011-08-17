@@ -18,9 +18,7 @@ import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.attribute.provider.Compound;
 import net.link.safeonline.sdk.logging.exception.*;
-import net.link.safeonline.sdk.ws.SamlpSecondLevelErrorCode;
-import net.link.safeonline.sdk.ws.SamlpTopLevelErrorCode;
-import net.link.safeonline.sdk.ws.WebServiceConstants;
+import net.link.safeonline.sdk.ws.*;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -45,9 +43,9 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
     /**
      * Main constructor.
      *
-     * @param location          the location (host:port) of the attribute web service.
-     * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
-     * @param configuration
+     * @param location       the location (host:port) of the attribute web service.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration  WS Security configuration
      */
     public AttributeClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
@@ -64,7 +62,8 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
 
         try {
             return getPort().attributeQuery( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
@@ -121,16 +120,14 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
         return attributeQuery;
     }
 
-    private static AttributeQueryType getAttributeQuery(String userId, Map<String, List<AttributeSDK<?>>> attributes) {
+    private static AttributeQueryType getAttributeQuery(String userId, Map<String, List<AttributeSDK<Serializable>>> attributes) {
 
         Set<String> attributeNames = attributes.keySet();
         return getAttributeQuery( userId, attributeNames );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void getAttributes(String userId, Map<String, List<AttributeSDK<?>>> attributes)
+    @Override
+    public void getAttributes(String userId, Map<String, List<AttributeSDK<Serializable>>> attributes)
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException,
                    SubjectNotFoundException {
 
@@ -140,7 +137,7 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
         getAttributeValues( response, attributes );
     }
 
-    private static void getAttributeValues(ResponseType response, Map<String, List<AttributeSDK<?>>> attributeMap) {
+    private static void getAttributeValues(ResponseType response, Map<String, List<AttributeSDK<Serializable>>> attributeMap) {
 
         List<Object> assertions = response.getAssertionOrEncryptedAssertion();
         if (assertions.isEmpty())
@@ -155,18 +152,18 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
         for (Object attributeTypeObject : attributeStatement.getAttributeOrEncryptedAttribute()) {
             AttributeType attributeType = (AttributeType) attributeTypeObject;
 
-            AttributeSDK<?> attribute = getAttributeSDK( attributeType );
+            AttributeSDK<Serializable> attribute = getAttributeSDK( attributeType );
 
-            List<AttributeSDK<?>> attributes = attributeMap.get( attribute.getName() );
+            List<AttributeSDK<Serializable>> attributes = attributeMap.get( attribute.getName() );
             if (null == attributes) {
-                attributes = new LinkedList<AttributeSDK<?>>();
+                attributes = new LinkedList<AttributeSDK<Serializable>>();
             }
             attributes.add( attribute );
             attributeMap.put( attribute.getName(), attributes );
         }
     }
 
-    private static AttributeSDK<?> getAttributeSDK(AttributeType attributeType) {
+    private static AttributeSDK<Serializable> getAttributeSDK(AttributeType attributeType) {
 
         String attributeId = findAttributeId( attributeType );
         AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );
@@ -203,14 +200,12 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
         return attribute.getOtherAttributes().get( WebServiceConstants.ATTRIBUTE_ID );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Map<String, List<AttributeSDK<?>>> getAttributes(String userId)
+    @Override
+    public Map<String, List<AttributeSDK<Serializable>>> getAttributes(String userId)
             throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException,
                    SubjectNotFoundException {
 
-        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>();
+        Map<String, List<AttributeSDK<Serializable>>> attributes = new HashMap<String, List<AttributeSDK<Serializable>>>();
         AttributeQueryType request = getAttributeQuery( userId, attributes );
         ResponseType response = getResponse( request );
         validateStatus( response );
@@ -218,14 +213,12 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
         return attributes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<AttributeSDK<?>> getAttributes(String userId, String attributeName)
+    @Override
+    public List<AttributeSDK<Serializable>> getAttributes(String userId, String attributeName)
             throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException,
                    SubjectNotFoundException {
 
-        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>();
+        Map<String, List<AttributeSDK<Serializable>>> attributes = new HashMap<String, List<AttributeSDK<Serializable>>>();
         AttributeQueryType request = getAttributeQuery( userId, attributeName );
         ResponseType response = getResponse( request );
         validateStatus( response );

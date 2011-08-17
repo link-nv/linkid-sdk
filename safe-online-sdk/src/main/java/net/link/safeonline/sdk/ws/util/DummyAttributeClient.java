@@ -16,40 +16,38 @@ import org.w3c.dom.Document;
 
 /**
  * <h2>{@link DummyAttributeClient}<br> <sub>An linkID attribute service client used inside unit tests.</sub></h2>
- *
+ * <p/>
  * <p> [description / usage]. </p>
- *
+ * <p/>
  * <p> <i>Oct 9, 2008</i> </p>
  *
  * @author lhunath
  */
 public class DummyAttributeClient implements AttributeClient {
 
-    private static final Map<String, Map<String, List<AttributeSDK<?>>>> usersAttributes = new HashMap<String, Map<String, List<AttributeSDK<?>>>>();
+    private static final Map<String, Map<String, List<AttributeSDK<Serializable>>>> usersAttributes = new HashMap<String, Map<String, List<AttributeSDK<Serializable>>>>();
 
     /**
      * Set an attribute for a given user to the given value.
      *
-     * @return As per contract of {@link Map#put(Object, Object)}, this method returns the previous value of the given attribute, if one was
-     *         set. Otherwise it returns <code>null</code>.
+     * @return As per contract of {@link Map#put(Object, Object)}, this method returns the previous value of the given attribute, if one
+     *         was
+     *         set. Otherwise it returns {@code null}.
      */
-    public static List<AttributeSDK<?>> setAttribute(String user, String attribute, Serializable... values) {
+    public static List<AttributeSDK<Serializable>> setAttribute(String user, String attribute, Serializable... values) {
 
-        Map<String, List<AttributeSDK<?>>> userAttributes = usersAttributes.get( user );
+        Map<String, List<AttributeSDK<Serializable>>> userAttributes = usersAttributes.get( user );
         if (userAttributes == null)
-            usersAttributes.put( user, userAttributes = new HashMap<String, List<AttributeSDK<?>>>() );
+            usersAttributes.put( user, userAttributes = new HashMap<String, List<AttributeSDK<Serializable>>>() );
 
-        List<AttributeSDK<?>> attributes = new LinkedList<AttributeSDK<?>>();
+        List<AttributeSDK<Serializable>> attributes = new LinkedList<AttributeSDK<Serializable>>();
         for (Serializable value : values) {
-            attributes.add( new AttributeSDK( UUID.randomUUID().toString(), attribute, value ) );
+            attributes.add( new AttributeSDK<Serializable>( UUID.randomUUID().toString(), attribute, value ) );
         }
 
         return userAttributes.put( attribute, attributes );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static <T> T getAttributes(String userId, String attributeName, Class<T> valueClass)
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
@@ -62,71 +60,53 @@ public class DummyAttributeClient implements AttributeClient {
                 + attributeValue.getClass() + ": " + attributeValue );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void getAttributes(String userId, Map<String, List<AttributeSDK<?>>> attributes)
+    @Override
+    public void getAttributes(String userId, Map<String, List<AttributeSDK<Serializable>>> attributes)
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         attributes.clear();
         attributes.putAll( getAttributes( userId ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Map<String, List<AttributeSDK<?>>> getAttributes(String userId)
+    @Override
+    public Map<String, List<AttributeSDK<Serializable>>> getAttributes(String userId)
             throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException {
 
         return DummyAttributeClient.usersAttributes.get( userId );
     }
 
-    public List<AttributeSDK<?>> getAttributes(final String userId, final String attributeName)
+    @Override
+    public List<AttributeSDK<Serializable>> getAttributes(final String userId, final String attributeName)
             throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException,
                    SubjectNotFoundException {
 
-        List<AttributeSDK<?>> result = DummyAttributeClient.usersAttributes.get( userId ).get( attributeName );
+        List<AttributeSDK<Serializable>> result = DummyAttributeClient.usersAttributes.get( userId ).get( attributeName );
         if (null == result)
-            return new LinkedList<AttributeSDK<?>>();
+            return new LinkedList<AttributeSDK<Serializable>>();
         else
             return DummyAttributeClient.usersAttributes.get( userId ).get( attributeName );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Map<String, List<String>> getHeaders() {
 
         return new HashMap<String, List<String>>();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Document getInboundMessage() {
 
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Document getOutboundMessage() {
 
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isCaptureMessages() {
 
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void setCaptureMessages(boolean captureMessages) {
 
         throw new UnsupportedOperationException();

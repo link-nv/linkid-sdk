@@ -61,9 +61,6 @@ public class MainPage extends LinkIDApplicationPage {
         } ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void onBeforeRender() {
 
@@ -74,8 +71,9 @@ public class MainPage extends LinkIDApplicationPage {
             // Fetch application's identity through LinkID's Attribute WS.
             AttributeClient attributeClient = LinkIDServiceFactory.getAttributeService();
             try {
-                Map<String, List<AttributeSDK<?>>> attributeMap = attributeClient.getAttributes( ExampleSession.get().findUserLinkID() );
-                for (Map.Entry<String, List<AttributeSDK<?>>> attributeEntry : attributeMap.entrySet())
+                Map<String, List<AttributeSDK<Serializable>>> attributeMap = attributeClient.getAttributes(
+                        ExampleSession.get().findUserLinkID() );
+                for (Entry<String, List<AttributeSDK<Serializable>>> attributeEntry : attributeMap.entrySet())
                     for (AttributeSDK<?> attribute : attributeEntry.getValue())
                         wsAttributes.append( ' ' ).append( attribute.getName() ).append( '=' ).append( attribute.getValue() );
             }
@@ -104,9 +102,6 @@ public class MainPage extends LinkIDApplicationPage {
         super.onBeforeRender();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void onLinkIDAuthenticated() {
 

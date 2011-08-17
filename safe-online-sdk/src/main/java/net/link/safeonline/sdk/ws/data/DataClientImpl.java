@@ -67,19 +67,15 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setAttributeValue(String userId, AttributeSDK<?> attribute)
+    @Override
+    public void setAttributeValue(String userId, AttributeSDK<? extends Serializable> attribute)
             throws WSClientTransportException, RequestDeniedException {
 
-        setAttributeValue( userId, Collections.<AttributeSDK<?>>singletonList( attribute ) );
+        setAttributeValue( userId, Collections.<AttributeSDK<? extends Serializable>>singletonList( attribute ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setAttributeValue(String userId, List<AttributeSDK<?>> attributes)
+    @Override
+    public void setAttributeValue(String userId, List<AttributeSDK<? extends Serializable>> attributes)
             throws WSClientTransportException, RequestDeniedException {
 
         // set userId
@@ -101,10 +97,8 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         validateStatus( modifyResponse.getStatus() );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<AttributeSDK<?>> getAttributes(String userId, String attributeName)
+    @Override
+    public <T extends Serializable> List<AttributeSDK<T>> getAttributes(String userId, String attributeName)
             throws WSClientTransportException, RequestDeniedException {
 
         // set userId
@@ -132,30 +126,26 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         validateStatus( queryResponse.getStatus() );
 
         // parse attributes
-        List<AttributeSDK<?>> attributes = new LinkedList<AttributeSDK<?>>();
+        List<AttributeSDK<T>> attributes = new LinkedList<AttributeSDK<T>>();
 
         List<DataType> dataList = queryResponse.getData();
         for (DataType data : dataList) {
             AttributeType attribute = data.getAttribute();
-            attributes.add( getAttributeSDK( attribute ) );
+            attributes.add( (AttributeSDK<T>) getAttributeSDK( attribute ) );
         }
 
         return attributes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void createAttribute(final String userId, final AttributeSDK<?> attribute)
+    @Override
+    public void createAttribute(final String userId, final AttributeSDK<? extends Serializable> attribute)
             throws WSClientTransportException, RequestDeniedException {
 
-        createAttributes( userId, Collections.<AttributeSDK<?>>singletonList( attribute ) );
+        createAttributes( userId, Collections.<AttributeSDK<? extends Serializable>>singletonList( attribute ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void createAttributes(final String userId, final List<AttributeSDK<?>> attributes)
+    @Override
+    public void createAttributes(final String userId, final List<AttributeSDK<? extends Serializable>> attributes)
             throws WSClientTransportException, RequestDeniedException {
 
         // set userId
@@ -177,38 +167,31 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         validateStatus( createResponse.getStatus() );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void removeAttributes(final String userId, final String attributeName)
             throws WSClientTransportException, RequestDeniedException {
 
-        removeAttributes( userId, Collections.<AttributeSDK<?>>singletonList( new AttributeSDK<Serializable>( attributeName, null ) ) );
+        removeAttributes( userId,
+                Collections.<AttributeSDK<? extends Serializable>>singletonList( new AttributeSDK<Serializable>( attributeName, null ) ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void removeAttribute(final String userId, final String attributeName, final String attributeId)
             throws WSClientTransportException, RequestDeniedException {
 
-        removeAttributes( userId,
-                Collections.<AttributeSDK<?>>singletonList( new AttributeSDK<Serializable>( attributeId, attributeName, null ) ) );
+        removeAttributes( userId, Collections.<AttributeSDK<? extends Serializable>>singletonList(
+                new AttributeSDK<Serializable>( attributeId, attributeName, null ) ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void removeAttribute(final String userId, final AttributeSDK<?> attribute)
+    @Override
+    public void removeAttribute(final String userId, final AttributeSDK<? extends Serializable> attribute)
             throws WSClientTransportException, RequestDeniedException {
 
-        removeAttributes( userId, Collections.<AttributeSDK<?>>singletonList( attribute ) );
+        removeAttributes( userId, Collections.<AttributeSDK<? extends Serializable>>singletonList( attribute ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void removeAttributes(final String userId, final List<AttributeSDK<?>> attributes)
+    @Override
+    public void removeAttributes(final String userId, final List<AttributeSDK<? extends Serializable>> attributes)
             throws WSClientTransportException, RequestDeniedException {
 
         // set userId
@@ -271,7 +254,7 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         return attributeType;
     }
 
-    private static AttributeSDK<?> getAttributeSDK(AttributeType attributeType) {
+    private static AttributeSDK<? extends Serializable> getAttributeSDK(AttributeType attributeType) {
 
         String attributeId = findAttributeId( attributeType );
         AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );

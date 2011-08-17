@@ -31,7 +31,7 @@ public interface DataClient {
      * @throws WSClientTransportException in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      * @throws RequestDeniedException     in case the application is not allowed write access to the attribute
      */
-    void setAttributeValue(String userId, AttributeSDK<?> attribute)
+    void setAttributeValue(String userId, AttributeSDK<? extends Serializable> attribute)
             throws WSClientTransportException, RequestDeniedException;
 
     /**
@@ -43,7 +43,7 @@ public interface DataClient {
      * @throws WSClientTransportException in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      * @throws RequestDeniedException     in case the application is not allowed write access to the attribute or another access violation
      */
-    void setAttributeValue(String userId, List<AttributeSDK<?>> attributes)
+    void setAttributeValue(String userId, List<AttributeSDK<? extends Serializable>> attributes)
             throws WSClientTransportException, RequestDeniedException;
 
     /**
@@ -69,7 +69,7 @@ public interface DataClient {
      * @throws WSClientTransportException in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      * @throws RequestDeniedException     in case the application is not allowed write access to the attribute
      */
-    void createAttribute(String userId, AttributeSDK<?> attribute)
+    void createAttribute(String userId, AttributeSDK<? extends Serializable> attribute)
             throws WSClientTransportException, RequestDeniedException;
 
     /**
@@ -81,7 +81,7 @@ public interface DataClient {
      * @throws WSClientTransportException in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      * @throws RequestDeniedException     in case the application is not allowed write access to the attribute
      */
-    void createAttributes(String userId, List<AttributeSDK<?>> attributes)
+    void createAttributes(String userId, List<AttributeSDK<? extends Serializable>> attributes)
             throws WSClientTransportException, RequestDeniedException;
 
     /**
@@ -99,9 +99,9 @@ public interface DataClient {
     void removeAttribute(String userId, String attributeName, String attributeId)
             throws WSClientTransportException, RequestDeniedException;
 
-    void removeAttribute(String userId, AttributeSDK<?> attribute)
+    void removeAttribute(String userId, AttributeSDK<? extends Serializable> attribute)
             throws WSClientTransportException, RequestDeniedException;
 
-    void removeAttributes(String userId, List<AttributeSDK<?>> attributes)
+    void removeAttributes(String userId, List<AttributeSDK<? extends Serializable>> attributes)
             throws WSClientTransportException, RequestDeniedException;
 }
