@@ -3,6 +3,7 @@ package net.link.safeonline.auth.ws.json;
 import java.io.Serializable;
 import java.util.*;
 import net.link.safeonline.auth.ws.soap.AuthenticationStep;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -17,12 +18,14 @@ public interface WSAuthentication extends Serializable {
     String authenticate(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language)
             throws AuthenticationOperationFailedException;
 
+    @Nullable
     String requestGlobalUsageAgreement(final Locale language)
             throws AuthenticationOperationFailedException;
 
     void confirmGlobalUsageAgreement()
             throws AuthenticationOperationFailedException;
 
+    @Nullable
     String requestApplicationUsageAgreement(Locale language)
             throws AuthenticationOperationFailedException;
 

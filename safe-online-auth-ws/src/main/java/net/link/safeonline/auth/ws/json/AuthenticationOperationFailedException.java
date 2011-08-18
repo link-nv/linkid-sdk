@@ -1,6 +1,6 @@
 package net.link.safeonline.auth.ws.json;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 import net.link.safeonline.auth.ws.AuthenticationStatusCode;
 import org.jetbrains.annotations.NotNull;
