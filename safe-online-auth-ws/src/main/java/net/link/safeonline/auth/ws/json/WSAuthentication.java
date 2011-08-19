@@ -15,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface WSAuthentication extends Serializable {
 
+    String register(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language)
+            throws AuthenticationOperationFailedException;
+
     String authenticate(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language)
             throws AuthenticationOperationFailedException;
 

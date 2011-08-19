@@ -43,6 +43,7 @@ public enum AuthenticationStatusCode {
     REQUEST_FAILED( "urn:net:lin-k:safe-online:ws:auth:status:RequestFailed" ),
     SESSION_EXPIRED( "urn:net:lin-k:safe-online:ws:auth:status:SessionExpired" ),
     SUBJECT_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:SubjectNotFound" ),
+    SUBJECT_ALREADY_EXISTS( "urn:net:lin-k:safe-online:ws:auth:status:SubjectAlreadyExists" ),
     SUBSCRIPTION_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:SubscriptionNotFound" ),
     LANGUAGE_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:LanguageNotFound" ),
     CANCELLED( "urn:net:lin-k:safe-online:ws:auth:status:Cancelled" ),

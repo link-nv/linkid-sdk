@@ -8,9 +8,10 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import org.opensaml.saml2.core.StatusCode;
 
+
 /**
  * <h2>{@link DeviceStatus}</h2>
- *
+ * <p/>
  * <p>
  * <i>Feb 26, 2010</i>
  * </p>
@@ -24,18 +25,18 @@ public enum DeviceStatus {
     REGISTER( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:register" );
 
     private final String statusCode;
-    private String secondLevelStatusCode;
+    private       String secondLevelStatusCode;
 
-    private DeviceStatus(String statusCode, String secondLevelStatusCode) {
+    DeviceStatus(String statusCode, String secondLevelStatusCode) {
 
         this.statusCode = statusCode;
         this.secondLevelStatusCode = secondLevelStatusCode;
     }
 
-    private DeviceStatus(String statusCode) {
+    DeviceStatus(String statusCode) {
 
         this.statusCode = statusCode;
-        this.secondLevelStatusCode = null;
+        secondLevelStatusCode = null;
     }
 
     public String getStatusCode() {
@@ -44,10 +45,12 @@ public enum DeviceStatus {
     }
 
     public String getSecondLevelStatusCode() {
+
         return secondLevelStatusCode;
     }
 
     public void setSecondLevelStatusCode(String secondLevelStatusCode) {
+
         this.secondLevelStatusCode = secondLevelStatusCode;
     }
 
@@ -62,9 +65,8 @@ public enum DeviceStatus {
 
         for (DeviceStatus status : DeviceStatus.values())
             if (status.getStatusCode().equals( statusCode )) {
-                if (null != status.getSecondLevelStatusCode() && status.getSecondLevelStatusCode().equals( secondLevelStatusCode ))
-                    return status;
-                else if (null == status.getSecondLevelStatusCode())
+                if (null != status.getSecondLevelStatusCode() && status.getSecondLevelStatusCode().equals( secondLevelStatusCode )
+                    || null == status.getSecondLevelStatusCode())
                     return status;
             }
 

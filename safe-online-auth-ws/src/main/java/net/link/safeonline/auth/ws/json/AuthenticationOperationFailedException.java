@@ -29,6 +29,14 @@ public class AuthenticationOperationFailedException extends Exception {
         this.status = checkNotNull( status );
     }
 
+    public AuthenticationOperationFailedException(@NotNull final Throwable cause, @NotNull final AuthenticationStatusCode status,
+                                                  @NotNull final String errorMessage) {
+
+        super( errorMessage, cause );
+
+        this.status = checkNotNull( status );
+    }
+
     public AuthenticationStatusCode getCode() {
 
         return status;
