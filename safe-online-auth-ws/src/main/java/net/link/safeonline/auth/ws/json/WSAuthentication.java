@@ -22,7 +22,7 @@ public interface WSAuthentication extends Serializable {
             throws AuthenticationOperationFailedException;
 
     @Nullable
-    String requestGlobalUsageAgreement(final Locale language)
+    String requestGlobalUsageAgreement(Locale language)
             throws AuthenticationOperationFailedException;
 
     void confirmGlobalUsageAgreement()
@@ -38,10 +38,11 @@ public interface WSAuthentication extends Serializable {
     Map<String, List<AttributeType>> requestIdentity(Locale language)
             throws AuthenticationOperationFailedException;
 
-    public void confirmAllIdentity(Map<String, List<String>> attributeValues)
+    void confirmAllIdentity(Map<String, List<List<String>>> attributes)
             throws AuthenticationOperationFailedException;
 
-    void confirmIdentity(Set<String> confirmedAttributeNames, Set<String> rejectedAttributeNames, Map<String, List<String>> attributeValues)
+    void confirmIdentity(Set<String> confirmedAttributeNames, Set<String> rejectedAttributeNames,
+                         Map<String, List<List<String>>> attributes)
             throws AuthenticationOperationFailedException;
 
     List<AuthenticationStep> getNextSteps()
