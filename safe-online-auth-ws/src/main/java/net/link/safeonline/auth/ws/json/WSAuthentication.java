@@ -2,6 +2,7 @@ package net.link.safeonline.auth.ws.json;
 
 import java.io.Serializable;
 import java.util.*;
+import net.link.safeonline.attribute.provider.AttributeSDK;
 import net.link.safeonline.auth.ws.soap.AuthenticationStep;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +36,7 @@ public interface WSAuthentication extends Serializable {
     void confirmApplicationUsageAgreement()
             throws AuthenticationOperationFailedException;
 
-    Map<String, List<AttributeType>> requestIdentity(Locale language)
+    Map<String, List<AttributeSDK<? extends Serializable>>> requestIdentity()
             throws AuthenticationOperationFailedException;
 
     void confirmAllIdentity(Map<String, List<List<String>>> attributes)

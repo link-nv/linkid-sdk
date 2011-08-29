@@ -61,6 +61,11 @@
 
         <!-- Specific Dependencies: linkID -->
         <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-attribute-provider</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-j2ee-jboss6</artifactId>
         </dependency>
