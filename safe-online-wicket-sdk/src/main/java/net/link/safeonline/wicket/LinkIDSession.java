@@ -36,15 +36,15 @@ public abstract class LinkIDSession extends WebSession {
 
     /**
      * @return The linkID application-specific user identifier as known by the application's specific user representation. Should be
-     *         <code>null</code> if the application thinks no user is logged in yet.
+     *         {@code null} if the application thinks no user is logged in yet.
      */
     public abstract String findUserLinkID();
 
     /**
-     * If this yields <code>false</code>, LinkIDApplicationPage#onLinkIDAuthenticated() and LinkIDApplicationPage#postAuth()
+     * If this yields {@code false}, LinkIDApplicationPage#onLinkIDAuthenticated() and LinkIDApplicationPage#postAuth()
      * need be processed, still.
      *
-     * @return <code>true</code> if this application's application-specific user is known to it.
+     * @return {@code true} if this application's application-specific user is known to it.
      */
     public abstract boolean isUserSet();
 
@@ -52,7 +52,7 @@ public abstract class LinkIDSession extends WebSession {
      * Invoked when a linkID user has logged into your application that is <b>different from {@link #findUserLinkID()}</b>, OR when
      * {@link #findUserLinkID()} indicates a user is logged in, but there is no linkID user currently logged in.
      *
-     * @return <code>true</code> Application could not log out the user cleanly. The wicket HTTP session will be invalidated instead.
+     * @return {@code true} Application could not log out the user cleanly. The wicket HTTP session will be invalidated instead.
      */
     public abstract boolean logout();
 

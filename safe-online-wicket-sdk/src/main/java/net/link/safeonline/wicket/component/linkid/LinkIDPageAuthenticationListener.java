@@ -38,11 +38,13 @@ public class LinkIDPageAuthenticationListener implements IComponentOnBeforeRende
     static final Log LOG = LogFactory.getLog( LinkIDPageAuthenticationListener.class );
 
 
+    @Override
     public void onInstantiation(Component component) {
 
         handle( component );
     }
 
+    @Override
     public void onBeforeRender(Component component) {
 
         try {
