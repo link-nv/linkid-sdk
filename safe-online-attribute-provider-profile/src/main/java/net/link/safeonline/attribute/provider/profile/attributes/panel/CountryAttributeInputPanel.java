@@ -16,6 +16,7 @@ import net.link.util.wicket.component.input.RequiredDropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.jetbrains.annotations.Nullable;
 
 
 public abstract class CountryAttributeInputPanel extends AttributeInputPanel {
@@ -32,6 +33,8 @@ public abstract class CountryAttributeInputPanel extends AttributeInputPanel {
         RequiredDropDownChoice<Country> countriesDropDownDropDown = new RequiredDropDownChoice<Country>( COUNTRIES_ID,
                 new IModel<Country>() {
 
+                    @Nullable
+                    @Override
                     public Country getObject() {
 
                         if (null != attribute.getValue())
@@ -39,21 +42,25 @@ public abstract class CountryAttributeInputPanel extends AttributeInputPanel {
                         return null;
                     }
 
+                    @Override
                     public void setObject(final Country object) {
 
                         attribute.setValue( object.getValue() );
                     }
 
+                    @Override
                     public void detach() {
 
                     }
                 }, Arrays.asList( Country.values() ), new IChoiceRenderer<Country>() {
 
+            @Override
             public Object getDisplayValue(Country object) {
 
                 return localize( object, getLocale() );
             }
 
+            @Override
             public String getIdValue(Country object, int index) {
 
                 return object.toString();

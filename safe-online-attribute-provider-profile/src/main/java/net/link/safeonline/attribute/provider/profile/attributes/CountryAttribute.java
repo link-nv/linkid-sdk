@@ -23,11 +23,13 @@ public class CountryAttribute extends AbstractProfileAttribute {
             @Override
             protected String localize(final Country country, final Locale locale) {
 
-                return linkIDService.getLocalizationService().findText( "attribute.profile.country." + country.getKey(), locale );
+                return linkIDService.getLocalizationService()
+                                    .findText( String.format( "attribute.profile.country.%s", country.getKey() ), locale );
             }
         };
     }
 
+    @Override
     public String getName() {
 
         return "profile.country";

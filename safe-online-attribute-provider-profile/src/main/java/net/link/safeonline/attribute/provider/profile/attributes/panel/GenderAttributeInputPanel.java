@@ -13,6 +13,7 @@ import net.link.util.wicket.component.feedback.ErrorComponentFeedbackLabel;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.jetbrains.annotations.Nullable;
 
 
 public abstract class GenderAttributeInputPanel extends AttributeInputPanel {
@@ -32,6 +33,8 @@ public abstract class GenderAttributeInputPanel extends AttributeInputPanel {
 
         RadioGroup<Gender> genderGroup = new RadioGroup<Gender>( VALUE_GROUP_ID, new IModel<Gender>() {
 
+            @Nullable
+            @Override
             public Gender getObject() {
 
                 String genderString = (String) attribute.getValue();
@@ -45,6 +48,7 @@ public abstract class GenderAttributeInputPanel extends AttributeInputPanel {
                     return Gender.FEMALE;
             }
 
+            @Override
             public void setObject(final Gender object) {
 
                 switch (object) {
@@ -57,6 +61,7 @@ public abstract class GenderAttributeInputPanel extends AttributeInputPanel {
                 }
             }
 
+            @Override
             public void detach() {
 
             }
