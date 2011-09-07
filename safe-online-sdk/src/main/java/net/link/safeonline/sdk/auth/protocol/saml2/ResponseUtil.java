@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import com.google.common.base.Charsets;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -15,20 +14,20 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.*;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.error.ValidationFailedException;
+import net.link.util.saml.Saml2Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.util.encoders.Base64;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
+import org.opensaml.xml.parse.*;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -39,17 +38,10 @@ import org.xml.sax.SAXException;
 public abstract class ResponseUtil {
 
     private static final Log LOG = LogFactory.getLog( ResponseUtil.class );
-    private static final DocumentBuilder documentBuilder;
+    private static final ParserPool parserPool;
 
     static {
-        try {
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilderFactory.setNamespaceAware( true );
-            documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        }
-        catch (ParserConfigurationException e) {
-            throw new RuntimeException( e );
-        }
+        parserPool = new BasicParserPool();
     }
 
     /**
@@ -94,13 +86,14 @@ public abstract class ResponseUtil {
      * @param request             HTTP Servlet Request
      * @param contexts            map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
      * @param trustedCertificates The linkID service certificates for validation of the HTTP-Redirect signature (else can be
-     *                            <code>null</code> or empty)
+     *                            {@code null} or empty)
      *
-     * @return The SAML {@link Saml2ResponseContext} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the
+     * @return The SAML {@link Saml2ResponseContext} that is in the HTTP request<br> {@code null} if there is no SAML message in the
      *         HTTP request. Also contains (if present) the certificate chain embedded in the SAML {@link Response}'s signature.
      *
      * @throws ValidationFailedException validation failed for some reason
      */
+    @Nullable
     public static Saml2ResponseContext findAndValidateAuthnResponse(HttpServletRequest request, Map<String, ProtocolContext> contexts,
                                                                     Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
@@ -118,8 +111,7 @@ public abstract class ResponseUtil {
         LOG.debug( "response matches request: " + authnRequest );
 
         // validate signature
-        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( authnResponse.getSignature(), request,
-                trustedCertificates );
+        CertificateChain certificateChain = Saml2Utils.validateSignature( authnResponse.getSignature(), request, trustedCertificates );
 
         // validate response
         validateResponse( authnResponse, authnRequest.getIssuer() );
@@ -127,6 +119,7 @@ public abstract class ResponseUtil {
         return new Saml2ResponseContext( authnResponse, certificateChain );
     }
 
+    @Nullable
     public static Assertion findAuthnAssertion(HttpServletRequest request)
             throws ValidationFailedException {
 
@@ -138,16 +131,13 @@ public abstract class ResponseUtil {
 
         byte[] assertionBytes = Base64.decode( b64Assertion );
         try {
-            Element assertionElement = documentBuilder.parse( new ByteArrayInputStream( assertionBytes ) ).getDocumentElement();
+            Element assertionElement = parserPool.parse( new ByteArrayInputStream( assertionBytes ) ).getDocumentElement();
             if (LOG.isDebugEnabled())
                 LOG.debug( "Found assertion:\n" + DomUtils.domToString( assertionElement ) );
 
             return (Assertion) LinkIDSaml2Utils.unmarshall( assertionElement );
         }
-        catch (SAXException e) {
-            throw new RuntimeException( "Cannot parse assertion: <" + new String( assertionBytes, Charsets.UTF_8 ) + ">", e );
-        }
-        catch (IOException e) {
+        catch (XMLParserException e) {
             throw new RuntimeException( e );
         }
     }
@@ -155,7 +145,7 @@ public abstract class ResponseUtil {
     /**
      * @param request HTTP Servlet Request
      *
-     * @return The SAML {@link Response} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the HTTP request.
+     * @return The SAML {@link Response} that is in the HTTP request<br> {@code null} if there is no SAML message in the HTTP request.
      */
     public static Response findAuthnResponse(HttpServletRequest request) {
 
@@ -278,10 +268,11 @@ public abstract class ResponseUtil {
      * @param contexts map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
      *
      * @return The SAML2 response containing the {@link LogoutResponse} in the HTTP request and the optional certificate chain embedded in
-     *         the signature of the signed response..<br> <code>null</code> if there is no SAML message in the HTTP request.
+     *         the signature of the signed response..<br> {@code null} if there is no SAML message in the HTTP request.
      *
      * @throws ValidationFailedException validation failed for some reason
      */
+    @Nullable
     public static Saml2ResponseContext findAndValidateLogoutResponse(HttpServletRequest request, Map<String, ProtocolContext> contexts,
                                                                      Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
@@ -291,8 +282,7 @@ public abstract class ResponseUtil {
             return null;
 
         // validate signature
-        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( logoutResponse.getSignature(), request,
-                trustedCertificates );
+        CertificateChain certificateChain = Saml2Utils.validateSignature( logoutResponse.getSignature(), request, trustedCertificates );
 
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
         ProtocolContext logoutRequest = contexts.get( logoutResponse.getInResponseTo() );
@@ -305,7 +295,7 @@ public abstract class ResponseUtil {
     /**
      * @param request HTTP Servlet Request
      *
-     * @return The {@link LogoutResponse} in the HTTP request.<br> <code>null</code> if there is no SAML message in the HTTP request.
+     * @return The {@link LogoutResponse} in the HTTP request.<br> {@code null} if there is no SAML message in the HTTP request.
      */
     public static LogoutResponse findLogoutResponse(HttpServletRequest request) {
 
