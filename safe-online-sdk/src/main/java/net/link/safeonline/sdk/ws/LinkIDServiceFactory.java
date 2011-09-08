@@ -33,6 +33,7 @@ import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.util.config.KeyProvider;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -127,8 +128,8 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID data web service.
      */
-    public static DataClient getDataService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                            final X509Certificate sslCertificate) {
+    public static DataClient getDataService(@Nullable final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                            @Nullable final X509Certificate sslCertificate) {
 
         return getInstance()._getDataService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }

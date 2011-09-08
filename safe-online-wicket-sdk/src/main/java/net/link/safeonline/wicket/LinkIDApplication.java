@@ -29,6 +29,15 @@ public abstract class LinkIDApplication extends WebApplication {
         LinkIDPageAuthenticationListener linkIDAuthenticationListener = new LinkIDPageAuthenticationListener();
         addPreComponentOnBeforeRenderListener( linkIDAuthenticationListener );
         addComponentInstantiationListener( linkIDAuthenticationListener );
+
+        switch (ApplicationMode.get()) {
+            case DEBUG:
+            case DEMO:
+                getDebugSettings().setOutputComponentPath( true );
+                break;
+            case DEPLOYMENT:
+                break;
+        }
     }
 
     @Override
