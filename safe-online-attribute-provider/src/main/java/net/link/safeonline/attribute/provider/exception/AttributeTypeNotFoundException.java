@@ -7,18 +7,19 @@
 
 package net.link.safeonline.attribute.provider.exception;
 
-public class AttributeTypeNotFoundException extends Exception {
+public class AttributeTypeNotFoundException extends AbstractAttributeProviderException {
 
     private final String attribute;
 
     public AttributeTypeNotFoundException(final String attribute) {
 
+        super( String.format( "Attribute type \"%s\" not found.", attribute ) );
         this.attribute = attribute;
     }
 
     public AttributeTypeNotFoundException(final String attribute, final Throwable cause) {
 
-        super( cause );
+        super( String.format( "Attribute type \"%s\" not found.", attribute ), cause );
         this.attribute = attribute;
     }
 

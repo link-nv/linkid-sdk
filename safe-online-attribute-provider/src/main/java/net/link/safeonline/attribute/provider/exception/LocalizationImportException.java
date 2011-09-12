@@ -7,7 +7,7 @@
 
 package net.link.safeonline.attribute.provider.exception;
 
-public class LocalizationImportException extends Exception {
+public class LocalizationImportException extends AbstractAttributeProviderException {
 
     public LocalizationImportException(final Throwable cause) {
 

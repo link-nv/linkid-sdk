@@ -7,8 +7,7 @@ import java.util.*;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import net.link.safeonline.attribute.provider.*;
-import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.LocalizationImportException;
+import net.link.safeonline.attribute.provider.exception.*;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.profile.attributes.*;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
@@ -41,39 +40,43 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
 
     @Override
     public List<AttributeCore> listAttributes(final LinkIDService linkIDService, final String userId, final String attributeName,
-                                              final boolean filterInvisible) {
+                                              final boolean filterInvisible)
+            throws AttributeProviderRuntimeException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attributeName ))
                 return profileAttribute.listAttributes( linkIDService, userId );
         }
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
+        throw new AttributeProviderRuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
     }
 
     @Nullable
     @Override
     public AttributeCore findAttribute(final LinkIDService linkIDService, final String userId, final String attributeName,
-                                       final String attributeId) {
+                                       final String attributeId)
+            throws AttributeProviderRuntimeException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attributeName ))
                 return profileAttribute.findAttribute( linkIDService, userId, attributeId );
         }
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
+        throw new AttributeProviderRuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
     }
 
     @Override
     public AttributeCore findCompoundAttributeWhere(final LinkIDService linkIDService, final String userId,
                                                     final String parentAttributeName, final String memberAttributeName,
-                                                    final Serializable memberValue) {
+                                                    final Serializable memberValue)
+            throws AttributeProviderRuntimeException {
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", parentAttributeName ) );
+        throw new AttributeProviderRuntimeException( String.format( "Attribute \"%s\" not supported.", parentAttributeName ) );
     }
 
     @Override
-    public void removeAttributes(final LinkIDService linkIDService, final String userId, final String attributeName) {
+    public void removeAttributes(final LinkIDService linkIDService, final String userId, final String attributeName)
+            throws AttributeProviderRuntimeException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attributeName )) {
@@ -82,13 +85,13 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
             }
         }
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
+        throw new AttributeProviderRuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
     }
 
     @Override
     public void removeAttribute(final LinkIDService linkIDService, final String userId, final String attributeName,
                                 final String attributeId)
-            throws AttributeNotFoundException {
+            throws AttributeNotFoundException, AttributeProviderRuntimeException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attributeName )) {
@@ -97,11 +100,12 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
             }
         }
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
+        throw new AttributeProviderRuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
     }
 
     @Override
-    public void removeAttributes(final LinkIDService linkIDService, final String attributeName) {
+    public void removeAttributes(final LinkIDService linkIDService, final String attributeName)
+            throws AttributeProviderRuntimeException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attributeName )) {
@@ -110,18 +114,20 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
             }
         }
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
+        throw new AttributeProviderRuntimeException( String.format( "Attribute \"%s\" not supported.", attributeName ) );
     }
 
     @Override
-    public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute) {
+    public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute)
+            throws AttributeProviderRuntimeException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attribute.getAttributeType().getName() ))
                 return profileAttribute.setAttribute( linkIDService, userId, attribute );
         }
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attribute.getAttributeType().getName() ) );
+        throw new AttributeProviderRuntimeException(
+                String.format( "Attribute \"%s\" not supported.", attribute.getAttributeType().getName() ) );
     }
 
     @Override
@@ -159,7 +165,8 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
 
     @Override
     public AttributeInputPanel getAttributeInputPanel(final LinkIDService linkIDService, final String id, final String userId,
-                                                      final AttributeCore attribute) {
+                                                      final AttributeCore attribute)
+            throws AttributeProviderRuntimeException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attribute.getAttributeType().getName() )) {
@@ -171,7 +178,8 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
             }
         }
 
-        throw new RuntimeException( String.format( "Attribute \"%s\" not supported.", attribute.getAttributeType().getName() ) );
+        throw new AttributeProviderRuntimeException(
+                String.format( "Attribute \"%s\" not supported.", attribute.getAttributeType().getName() ) );
     }
 
     @Override
@@ -186,12 +194,14 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
         return "Profile";
     }
 
+    @Override
     public void contextInitialized(final ServletContextEvent sce) {
 
         LOG.debug( "bind Profile attribute provider" );
         register();
     }
 
+    @Override
     public void contextDestroyed(final ServletContextEvent sce) {
 
         LOG.debug( "unbind Profile attribute provider" );

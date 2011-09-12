@@ -7,9 +7,10 @@
 
 package net.link.safeonline.attribute.provider.exception;
 
-public class SubjectNotFoundException extends Exception {
+public class SubjectNotFoundException extends AbstractAttributeProviderException {
 
     public SubjectNotFoundException(final String message) {
+
         super( message );
     }
 }

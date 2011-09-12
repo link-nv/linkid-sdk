@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import javax.naming.NamingException;
 import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
+import net.link.safeonline.attribute.provider.exception.AttributeProviderRuntimeException;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.input.DefaultAttributeInputPanel;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
@@ -32,9 +33,13 @@ public abstract class AttributeProvider implements Serializable {
      * @param filterInvisible filter userInvisble member attributes of compounds.
      *
      * @return all {@link AttributeCore}'s for specified user and attribute name.
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
     public abstract List<AttributeCore> listAttributes(LinkIDService linkIDService, String userId, String attributeName,
-                                                       boolean filterInvisible);
+                                                       boolean filterInvisible)
+            throws AttributeProviderRuntimeException;
 
     /**
      * Fetch attribute for specified user and attribute ID.
@@ -45,9 +50,13 @@ public abstract class AttributeProvider implements Serializable {
      * @param attributeId   attribute ID of attribute to find.
      *
      * @return {@link AttributeCore} or {@code null} if not found.
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
     @Nullable
-    public abstract AttributeCore findAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId);
+    public abstract AttributeCore findAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId)
+            throws AttributeProviderRuntimeException;
 
     /**
      * Fetch compound attribute of specified type which has a member of specified type with specified value
@@ -59,9 +68,14 @@ public abstract class AttributeProvider implements Serializable {
      * @param memberValue         value of the member attribute
      *
      * @return {@link AttributeCore} or {@code null} if not found.
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
+    @Nullable
     public abstract AttributeCore findCompoundAttributeWhere(LinkIDService linkIDService, String userId, String parentAttributeName,
-                                                             String memberAttributeName, Serializable memberValue);
+                                                             String memberAttributeName, Serializable memberValue)
+            throws AttributeProviderRuntimeException;
 
     /**
      * Removes an attribute for the specified subject.
@@ -69,8 +83,12 @@ public abstract class AttributeProvider implements Serializable {
      * @param linkIDService LinkID services available to the implementation.
      * @param userId        userId to remove the attributes from
      * @param attributeName attribute type of values to be removed
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
-    public abstract void removeAttributes(LinkIDService linkIDService, String userId, String attributeName);
+    public abstract void removeAttributes(LinkIDService linkIDService, String userId, String attributeName)
+            throws AttributeProviderRuntimeException;
 
     /**
      * Removes an attribute for the specified subject.
@@ -81,17 +99,23 @@ public abstract class AttributeProvider implements Serializable {
      * @param attributeId   attributeId of value to be removed
      *
      * @throws AttributeNotFoundException no value found.
+     * @throws AttributeProviderRuntimeException
+     *                                    something went unexpectely wrong
      */
     public abstract void removeAttribute(LinkIDService linkIDService, String userId, String attributeName, String attributeId)
-            throws AttributeNotFoundException;
+            throws AttributeProviderRuntimeException, AttributeNotFoundException;
 
     /**
      * Remove all attributes with specified attribute name.
      *
      * @param linkIDService LinkID services available to the implementation.
      * @param attributeName attribute type of attributes to remove.
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
-    public abstract void removeAttributes(LinkIDService linkIDService, String attributeName);
+    public abstract void removeAttributes(LinkIDService linkIDService, String attributeName)
+            throws AttributeProviderRuntimeException;
 
     /**
      * Create/modify the specified {@link AttributeCore} for specified user.
@@ -101,8 +125,12 @@ public abstract class AttributeProvider implements Serializable {
      * @param attribute     attribute to set for subject.
      *
      * @return the updated/created attribute.
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
-    public abstract AttributeCore setAttribute(LinkIDService linkIDService, String userId, AttributeCore attribute);
+    public abstract AttributeCore setAttribute(LinkIDService linkIDService, String userId, AttributeCore attribute)
+            throws AttributeProviderRuntimeException;
 
     /**
      * These {@link AttributeType}'s will be registered into LinkID if not yet so.
@@ -117,8 +145,12 @@ public abstract class AttributeProvider implements Serializable {
      * @param attributeName name of the attribute
      *
      * @return map containing a list of unique values of an attribute with a count of how many times these values occur
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
-    public abstract Map<Serializable, Long> categorize(LinkIDService linkIDService, List<String> subjects, String attributeName);
+    public abstract Map<Serializable, Long> categorize(LinkIDService linkIDService, List<String> subjects, String attributeName)
+            throws AttributeProviderRuntimeException;
 
     /**
      * Callback for initialization of e.g. some configuration for the implementation.
@@ -136,7 +168,7 @@ public abstract class AttributeProvider implements Serializable {
      */
     public String getJndiLocation() {
 
-        return ATTRIBUTE_PROVIDER_JNDI_PREFIX + getName();
+        return String.format( "%s%s", ATTRIBUTE_PROVIDER_JNDI_PREFIX, getName() );
     }
 
     protected void register() {
@@ -145,7 +177,8 @@ public abstract class AttributeProvider implements Serializable {
             JNDIUtils.bindComponent( getJndiLocation(), getAttributeProvider() );
         }
         catch (NamingException e) {
-            throw new RuntimeException( "Unable to bind Attribute provider \"" + getName() + "\" to " + getJndiLocation(), e );
+            throw new RuntimeException( String.format( "Unable to bind Attribute provider \"%s\" to \"%s\"", getName(), getJndiLocation() ),
+                    e );
         }
     }
 
@@ -155,7 +188,8 @@ public abstract class AttributeProvider implements Serializable {
             JNDIUtils.unbindComponent( getJndiLocation() );
         }
         catch (NamingException e) {
-            throw new RuntimeException( "Unable to unbind Attribute provider \"" + getName() + "\" to " + getJndiLocation(), e );
+            throw new RuntimeException(
+                    String.format( "Unable to unbind Attribute provider \"%s\" to \"%s\"", getName(), getJndiLocation() ), e );
         }
     }
 
@@ -168,9 +202,13 @@ public abstract class AttributeProvider implements Serializable {
      * @param attribute     attribute to get panel for
      *
      * @return a customized {@link WicketPanel} for the specified {@link AttributeCore}.
+     *
+     * @throws AttributeProviderRuntimeException
+     *          something went unexpectely wrong
      */
     public AttributeInputPanel getAttributeInputPanel(final LinkIDService linkIDService, final String id, final String userId,
-                                                      final AttributeCore attribute) {
+                                                      final AttributeCore attribute)
+            throws AttributeProviderRuntimeException {
 
         return getDefaultAttributeInputPanel( id, attribute );
     }
