@@ -113,4 +113,19 @@ public abstract class AbstractProfileAttribute implements ProfileAttribute {
 
         LOG.debug( "initialize" );
     }
+
+    public String getProviderJndi() {
+
+        return providerJndi;
+    }
+
+    public DataType getDataType() {
+
+        return dataType;
+    }
+
+    public String getFallbackAttributeName() {
+
+        return fallbackAttributeName;
+    }
 }
