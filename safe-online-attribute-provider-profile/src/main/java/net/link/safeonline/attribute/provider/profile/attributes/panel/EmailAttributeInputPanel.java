@@ -1,5 +1,6 @@
 package net.link.safeonline.attribute.provider.profile.attributes.panel;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.link.safeonline.attribute.provider.AttributeCore;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.util.wicket.component.feedback.ErrorComponentFeedbackLabel;
@@ -7,8 +8,7 @@ import net.link.util.wicket.component.input.CustomRequiredTextField;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.*;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
@@ -43,17 +43,18 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
 
         //required field email
         emailField = new CustomRequiredTextField<String>( EMAILFIELD_ID, new PropertyModel<String>( attribute, "value" ) );
-        emailField.setRequiredMessageKey( "errorMissingEmail" );
+        emailField.setRequiredMessageKey( "profile.email.errorMissingEmail" );
+        emailField.setOutputMarkupPlaceholderTag( true );
         emailField.add( new EmailAddressValidator() {
             @Override
             protected String resourceKey() {
 
-                return getLocalizedString( "errorInvalidEmail" );
+                return "profile.email.errorInvalidEmail";
             }
         });
         add( emailField );
         //add Ajax behaviour to toggle verification field if content changes
-        emailField.add( new AjaxEventBehavior("onchange"){
+        emailField.add( new AjaxEventBehavior("onfocus"){
 
             @Override
             protected void onEvent(final AjaxRequestTarget ajaxRequestTarget) {
@@ -67,41 +68,56 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
         });
 
         //field for verification: contents must match that of emailField.
-        verificationField = new CustomRequiredTextField<String>( VERIFICATION_ID );
-        verificationField.setRequiredMessageKey( "errorRepeatEmail" );
+        verificationField = new CustomRequiredTextField<String>( VERIFICATION_ID , new Model<String>( (attribute.getValue() == null?"":attribute.getValue().toString())));
+        verificationField.setRequiredMessageKey( "profile.email.errorRepeatEmail" );
+        verificationField.setOutputMarkupPlaceholderTag( true );
+        verificationField.setOutputMarkupId( true );
         //validation: field must match content of emailField
         verificationField.add( new AbstractValidator<String>(){
             @Override
             protected void onValidate(final IValidatable<String> stringIValidatable) {
                   if(!stringIValidatable.getValue().equals( emailField.newValidatable().getValue() )){
-                        verificationField.error( getLocalizedString( "errorRepeatEmail" ) );
+                        verificationField.error( getLocalizedString( "profile.email.errorRepeatEmail" ) );
                   }
             }
         });
         add( verificationField );
 
-        verificationLabel = new Label( VERIFICATION_TEXT_ID, new StringResourceModel( "pleaseConfirm", this, null) );
+        verificationLabel = new Label( VERIFICATION_TEXT_ID, getLocalizedParameterModel( "profile.email.pleaseConfirm" ) );
+        verificationLabel.setOutputMarkupPlaceholderTag( true );
         add( verificationLabel ) ;
 
         ErrorComponentFeedbackLabel feedbackEmail = new ErrorComponentFeedbackLabel( FEEDBACK_EMAIL_ID, emailField );
         ErrorComponentFeedbackLabel feedbackVerification = new ErrorComponentFeedbackLabel( FEEDBACK_VERIFICATION_ID, verificationField );
         add( feedbackEmail );
         add( feedbackVerification );
+
+        verificationField.setEnabled( false );
+        verificationField.setVisible( false );
+        verificationLabel.setEnabled( false );
+        verificationLabel.setVisible( false );
+
     }
 
-    @Override
-    protected void onBeforeRender() {
-        if (attribute.getValue() == null || attribute.getValue().equals( "" )){
-            verificationField.setEnabled( false );
-            verificationField.setVisible( false );
-            verificationLabel.setEnabled( false );
-            verificationLabel.setVisible( false );
-        }
-        super.onBeforeRender();
-    }
+//    @Override
+//    protected void onBeforeRender() {
+//        if (attribute.getValue() == null || attribute.getValue().equals( "" )){
+//            verificationField.setEnabled( true );
+//            verificationField.setVisible( true );
+//            verificationLabel.setEnabled( true );
+//            verificationLabel.setVisible( true );
+//        } else {
+//            verificationField.setEnabled( false );
+//            verificationField.setVisible( false );
+//            verificationLabel.setEnabled( false );
+//            verificationLabel.setVisible( false );
+//        }
+//
+//        super.onBeforeRender();
+//    }
 
     @Override
     public void onMissingAttribute() {
-       emailField.error( getLocalizedString( "errorMissingEmail" ) );
+       emailField.error( getLocalizedString( "profile.email.errorMissingEmail" ) );
     }
 }

@@ -4,14 +4,13 @@
     <body>
 
         <wicket:panel>
-
-            <input type="text" wicket:id="email" />
-            <div wicket:id="feedbackEmail" />
-
-            <input type="text" wicket:id="verification" />
-            <div wicket:id="confirm" />
-            <div wicket:id="feedbackVerification" />
-
+            <div class="left">
+                <input type="text" wicket:id="email" class="label" />
+                <div wicket:id="feedbackEmail" class="error" />
+                <input type="text" wicket:id="verification" class="label" />
+                <div wicket:id="confirm" />
+                <div wicket:id="feedbackVerification" class="error" />
+            </div>
         </wicket:panel>
 
     </body>
