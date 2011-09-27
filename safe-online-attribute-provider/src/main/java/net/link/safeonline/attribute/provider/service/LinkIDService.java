@@ -22,4 +22,6 @@ public interface LinkIDService {
     PersistenceService getPersistenceService();
 
     LocalizationService getLocalizationService();
+
+    IdentifierService getIdentifierService();
 }
