@@ -1,14 +1,15 @@
 package net.link.safeonline.attribute.provider.profile.attributes.panel;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.link.safeonline.attribute.provider.AttributeCore;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
+import net.link.safeonline.attribute.provider.service.LinkIDService;
 import net.link.util.wicket.component.feedback.ErrorComponentFeedbackLabel;
 import net.link.util.wicket.component.input.CustomRequiredTextField;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.*;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
@@ -33,16 +34,26 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
     private final CustomRequiredTextField<String> verificationField;
     private final Label verificationLabel;
 
-    private final AttributeCore attribute;
-
-    public EmailAttributeInputPanel(String id, AttributeCore attribute) {
+    public EmailAttributeInputPanel(String id, final LinkIDService linkIDService, final AttributeCore attribute, final String userId) {
 
         super( id, attribute );
 
         this.attribute = attribute;
 
         //required field email
-        emailField = new CustomRequiredTextField<String>( EMAILFIELD_ID, new PropertyModel<String>( attribute, "value" ) );
+        emailField = new CustomRequiredTextField<String>( EMAILFIELD_ID, new PropertyModel<String>( attribute, "value" ) ){
+            @Override
+            public void updateModel() {
+
+                super.updateModel();
+
+                //send a confirmation mail
+
+                //temporary identifier mapping
+                linkIDService.getIdentifierService().addSubjectIdentifier( attribute.getName(), attribute.getValue().toString(), userId );
+
+            }
+        };
         emailField.setRequiredMessageKey( "profile.email.errorMissingEmail" );
         emailField.setOutputMarkupPlaceholderTag( true );
         emailField.add( new EmailAddressValidator() {

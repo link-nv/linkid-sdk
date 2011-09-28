@@ -29,6 +29,6 @@ public class EmailAttribute extends AbstractProfileAttribute {
     public AttributeInputPanel findAttributeInputPanel(final LinkIDService linkIDService, final String id, final String userId,
                                                        final AttributeCore attribute) {
 
-        return new EmailAttributeInputPanel( id, attribute );
+        return new EmailAttributeInputPanel( id, linkIDService, attribute, userId );
     }
 }
