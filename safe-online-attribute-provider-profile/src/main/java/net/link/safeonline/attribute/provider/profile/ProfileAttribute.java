@@ -5,6 +5,7 @@ import java.util.List;
 import net.link.safeonline.attribute.provider.AttributeCore;
 import net.link.safeonline.attribute.provider.AttributeType;
 import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
+import net.link.safeonline.attribute.provider.exception.AttributePermissionDeniedException;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +29,8 @@ public interface ProfileAttribute extends Serializable {
 
     void removeAttributes(LinkIDService linkIDService);
 
-    AttributeCore setAttribute(LinkIDService linkIDService, String userId, AttributeCore attribute);
+    AttributeCore setAttribute(LinkIDService linkIDService, String userId, AttributeCore attribute)
+            throws AttributePermissionDeniedException;
 
     @Nullable
     AttributeInputPanel findAttributeInputPanel(LinkIDService linkIDService, String id, String userId, AttributeCore attribute);

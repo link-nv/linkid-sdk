@@ -11,15 +11,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.naming.NamingException;
-import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.AttributeProviderRuntimeException;
+import net.link.safeonline.attribute.provider.confirmation.AttributeConfirmationPanel;
+import net.link.safeonline.attribute.provider.exception.*;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.input.DefaultAttributeInputPanel;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import net.link.util.j2ee.JNDIUtils;
 import net.link.util.wicket.component.WicketPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.jetbrains.annotations.Nullable;
-
 
 public abstract class AttributeProvider implements Serializable {
 
@@ -120,6 +120,7 @@ public abstract class AttributeProvider implements Serializable {
     /**
      * Create/modify the specified {@link AttributeCore} for specified user.
      *
+     *
      * @param linkIDService LinkID services available to the implementation.
      * @param userId        userId to set attribute for.
      * @param attribute     attribute to set for subject.
@@ -128,9 +129,24 @@ public abstract class AttributeProvider implements Serializable {
      *
      * @throws AttributeProviderRuntimeException
      *          something went unexpectely wrong
+     * @throws AttributePermissionDeniedException
+     *          the user is not allowed to modify the attribute
      */
     public abstract AttributeCore setAttribute(LinkIDService linkIDService, String userId, AttributeCore attribute)
-            throws AttributeProviderRuntimeException;
+            throws AttributeProviderRuntimeException, AttributePermissionDeniedException;
+
+    /**
+     * Confirm (e.g. confirm an email address) the specified attribute with specified confirmationId.
+     *
+     * @param linkIDService
+     * @param userId
+     * @param attributeConfirmationId
+     * @param attribute
+     */
+    public void confirmAttribute(LinkIDService linkIDService, String userId, String attributeConfirmationId, AttributeCore attribute)
+            throws AttributePermissionDeniedException {
+
+    }
 
     /**
      * These {@link AttributeType}'s will be registered into LinkID if not yet so.
@@ -216,5 +232,20 @@ public abstract class AttributeProvider implements Serializable {
     protected static AttributeInputPanel getDefaultAttributeInputPanel(String id, final AttributeCore attribute) {
 
         return new DefaultAttributeInputPanel( id, attribute );
+    }
+
+    /**
+     * Returns a confirmation panel for the given attribute and confirmation Id, or 'null' if there is none
+     * @param linkIDService
+     * @param id
+     * @param userId
+     * @param attribute
+     * @param confirmationId
+     * @return
+     */
+    public AttributeConfirmationPanel getAttributeConfirmationPanel(final LinkIDService linkIDService, final String id, final String userId,
+                                                       final AttributeCore attribute, final String confirmationId){
+
+        return null;
     }
 }

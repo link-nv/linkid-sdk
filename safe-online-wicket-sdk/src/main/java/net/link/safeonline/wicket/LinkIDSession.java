@@ -7,9 +7,7 @@
 package net.link.safeonline.wicket;
 
 import net.link.util.wicket.component.WicketPage;
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.Session;
+import org.apache.wicket.*;
 import org.apache.wicket.protocol.http.WebSession;
 
 
@@ -31,6 +29,8 @@ import org.apache.wicket.protocol.http.WebSession;
 public abstract class LinkIDSession extends WebSession {
 
     private Class<? extends Page> postAuthenticationPage;
+
+    private PageParameters postAuhtenticationParameters;
 
     // USER ---------------------------------------------------------
 
@@ -66,6 +66,16 @@ public abstract class LinkIDSession extends WebSession {
     public void setPostAuthenticationPage(Class<? extends Page> postAuthenticationPage) {
 
         this.postAuthenticationPage = postAuthenticationPage;
+    }
+
+    public PageParameters getPostAuhtenticationParameters() {
+
+        return postAuhtenticationParameters;
+    }
+
+    public void setPostAuhtenticationParameters(final PageParameters postAuhtenticationParameters) {
+
+        this.postAuhtenticationParameters = postAuhtenticationParameters;
     }
 
     // GLOBAL -------------------------------------------------------

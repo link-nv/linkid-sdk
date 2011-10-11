@@ -60,6 +60,11 @@ public class LinkIDPageAuthenticationListener implements IComponentOnBeforeRende
                                + " for authentication." );
 
                     LinkIDSession.get().setPostAuthenticationPage( component.getPage().getClass() );
+
+                    if (component.getRequestCycle().getPageParameters() != null && component.getRequestCycle().getPageParameters().size() > 0 ){
+                        LinkIDSession.get().setPostAuhtenticationParameters( new PageParameters( component.getRequestCycle().getPageParameters() ) );
+                    }
+                    
                     throw new RedirectToPageException( loginPageClass );
                 }
 

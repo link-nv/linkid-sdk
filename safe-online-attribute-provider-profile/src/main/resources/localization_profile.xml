@@ -20,6 +20,11 @@
         <value for="nl">Email</value>
         <value for="fr">Email</value>
     </entry>
+    <entry key="attribute.profile.email.address.friendly">
+        <value for="en">Email address</value>
+        <value for="nl">Email adres</value>
+        <value for="fr">Adresse email</value>
+    </entry>
     <entry key="webapp.common.profile.email.pleaseConfirm">
         <value for="en">Please repeat the email address</value>
         <value for="nl">Herhaal het email adres</value>
@@ -39,6 +44,21 @@
         <value for="en">Email addresses do not match</value>
         <value for="nl">Adressen komen niet overeen</value>
         <value for="fr">Les adresses email ne correspondent pas</value>
+    </entry>
+    <entry key="webapp.common.profile.email.errorEmailAlreadyInUse">
+        <value for="en">The email address is already in use, choose another</value>
+        <value for="nl">Het email adres is reeds in gebruik, kies een ander</value>
+        <value for="fr">L'adresse email est déjà utilisé, choisissez un autre</value>
+    </entry>
+    <entry key="webapp.common.profile.email.confirmEmailSubject">
+        <value for="en">Confirm your email address</value>
+        <value for="nl">Bevestig uw email adres</value>
+        <value for="fr">Confirmez votre adresse email</value>
+    </entry>
+    <entry key="webapp.common.profile.email.emailExpired">
+        <value for="en">Email confirmation failed, email expired</value>
+        <value for="nl">Email confirmatie gefaald, email is al vervallen</value>
+        <value for="fr">Erreur de confirmation de l'addresse email, email a expiré</value>
     </entry>
     <entry key="attribute.profile.familyName.friendly">
         <value for="en">Family Name</value>

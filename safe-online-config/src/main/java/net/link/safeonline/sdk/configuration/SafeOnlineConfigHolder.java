@@ -10,7 +10,8 @@ import net.link.util.config.ConfigHolder;
  *
  * @author lhunath
  */
-public class SafeOnlineConfigHolder extends ConfigHolder<SafeOnlineConfig> {
+public class
+        SafeOnlineConfigHolder extends ConfigHolder<SafeOnlineConfig> {
 
     public SafeOnlineConfigHolder() {
 

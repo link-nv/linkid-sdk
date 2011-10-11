@@ -5,7 +5,7 @@ import java.util.*;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import net.link.safeonline.attribute.provider.*;
-import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
+import net.link.safeonline.attribute.provider.exception.*;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import net.link.safeonline.attribute.provider.template.panel.CustomAttributeInputPanel;
@@ -133,7 +133,8 @@ public class TemplateAttributeProvider extends AttributeProvider implements Serv
      * {@inheritDoc}
      */
     @Override
-    public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute) {
+    public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute)
+            throws AttributeProviderRuntimeException, AttributePermissionDeniedException {
 
         throw new RuntimeException( "Attribute \"" + attribute.getName() + " \" is not editable" );
     }

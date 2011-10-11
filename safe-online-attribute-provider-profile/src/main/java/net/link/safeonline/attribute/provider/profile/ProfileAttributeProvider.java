@@ -7,12 +7,15 @@ import java.util.*;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import net.link.safeonline.attribute.provider.*;
+import net.link.safeonline.attribute.provider.confirmation.AttributeConfirmationPanel;
+import net.link.safeonline.attribute.provider.confirmation.DefaultAttributeConfirmationPanel;
 import net.link.safeonline.attribute.provider.exception.*;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.profile.attributes.*;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -27,6 +30,9 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
         attributes.add( new CityAttribute( getJndiLocation() ) );
         attributes.add( new CountryAttribute( getJndiLocation() ) );
         attributes.add( new DobAttribute( getJndiLocation() ) );
+        attributes.add( new EmailAddressAttribute( getJndiLocation() ) );
+        attributes.add( new EmailExpireDateAttribute( getJndiLocation() ) );
+        attributes.add( new EmailConfirmedAttribute( getJndiLocation() ) );
         attributes.add( new EmailAttribute( getJndiLocation() ) );
         attributes.add( new FamilyNameAttribute( getJndiLocation() ) );
         attributes.add( new GenderAttribute( getJndiLocation() ) );
@@ -119,7 +125,7 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
 
     @Override
     public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute)
-            throws AttributeProviderRuntimeException {
+            throws AttributeProviderRuntimeException, AttributePermissionDeniedException {
 
         for (ProfileAttribute profileAttribute : attributes) {
             if (profileAttribute.getAttributeType().getName().equals( attribute.getAttributeType().getName() ))
@@ -180,6 +186,33 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
 
         throw new AttributeProviderRuntimeException(
                 String.format( "Attribute \"%s\" not supported.", attribute.getAttributeType().getName() ) );
+    }
+
+    @Override
+    public void confirmAttribute(final LinkIDService linkIDService, final String userId, final String attributeConfirmationId,
+                                 final AttributeCore attribute)
+            throws AttributePermissionDeniedException {
+
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( EmailAttribute.NAME ))
+                ((EmailAttribute) profileAttribute).confirmAttribute( linkIDService, userId, attributeConfirmationId, attribute );
+        }
+
+
+    }
+
+    @Override
+    public AttributeConfirmationPanel getAttributeConfirmationPanel(final LinkIDService linkIDService, final String id, final String userId,
+                                               final AttributeCore attribute, final String confirmationId) {
+
+        for (ProfileAttribute profileAttribute : attributes) {
+            if (profileAttribute.getAttributeType().getName().equals( EmailAttribute.NAME ) && attribute.getAttributeType().getName().equals( EmailAttribute.NAME )){
+                AttributeConfirmationPanel panel = ((EmailAttribute) profileAttribute).getAttributeConfirmationPanel( linkIDService, id, userId, attribute, confirmationId );
+                if (panel != null)
+                    return panel;
+            }
+        }
+        return null;
     }
 
     @Override

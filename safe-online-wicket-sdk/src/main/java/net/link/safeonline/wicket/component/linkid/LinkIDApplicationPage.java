@@ -72,12 +72,18 @@ public abstract class LinkIDApplicationPage extends WicketPage {
 
         if (LinkIDSession.get().isUserSet()) {
             Class<? extends Page> postAuthPage = LinkIDSession.get().getPostAuthenticationPage();
+            PageParameters postAuthPageParameters = (LinkIDSession.get().getPostAuhtenticationParameters() != null?new PageParameters( LinkIDSession.get().getPostAuhtenticationParameters() ):null);
 
             if (postAuthPage != null) {
                 LOG.debug( "[LinkIDWicketAuth] auth completed; triggering post auth, sending user to " + postAuthPage );
 
                 LinkIDSession.get().setPostAuthenticationPage( null );
-                throw new RedirectToPageException( postAuthPage );
+                LinkIDSession.get().setPostAuhtenticationParameters( null );
+
+                if (postAuthPageParameters != null)
+                    throw new RedirectToPageException( postAuthPage, postAuthPageParameters );
+                else
+                    throw new RedirectToPageException( postAuthPage );
             }
         }
     }

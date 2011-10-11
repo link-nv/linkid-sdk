@@ -2,8 +2,7 @@ package net.link.safeonline.attribute.provider.profile.attributes;
 
 import java.util.List;
 import net.link.safeonline.attribute.provider.*;
-import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
-import net.link.safeonline.attribute.provider.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.attribute.provider.exception.*;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.profile.ProfileAttribute;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
@@ -97,7 +96,8 @@ public abstract class AbstractProfileAttribute implements ProfileAttribute {
         linkIDService.getPersistenceService().removeAttributes( getName() );
     }
 
-    public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute) {
+    public AttributeCore setAttribute(final LinkIDService linkIDService, final String userId, final AttributeCore attribute)
+            throws AttributePermissionDeniedException {
 
         return linkIDService.getPersistenceService().setAttribute( userId, attribute );
     }

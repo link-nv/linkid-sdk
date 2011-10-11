@@ -2,9 +2,12 @@ package net.link.safeonline.attribute.provider.profile.attributes.panel;
 
 import net.link.safeonline.attribute.provider.AttributeCore;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
+import net.link.safeonline.attribute.provider.profile.attributes.EmailAttribute;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import net.link.util.wicket.component.feedback.ErrorComponentFeedbackLabel;
 import net.link.util.wicket.component.input.CustomRequiredTextField;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
@@ -24,6 +27,8 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
  */
 public class EmailAttributeInputPanel extends AttributeInputPanel {
 
+    static final Log LOG = LogFactory.getLog( EmailAttributeInputPanel.class );
+
     private static final String EMAILFIELD_ID = "email";
     private static final String VERIFICATION_ID = "verification";
     private static final String FEEDBACK_EMAIL_ID = "feedbackEmail";
@@ -34,26 +39,18 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
     private final CustomRequiredTextField<String> verificationField;
     private final Label verificationLabel;
 
-    public EmailAttributeInputPanel(String id, final LinkIDService linkIDService, final AttributeCore attribute, final String userId) {
 
-        super( id, attribute );
 
-        this.attribute = attribute;
+    public EmailAttributeInputPanel(String id, final LinkIDService linkIDService, final AttributeCore valueAttribute, final String userId) {
+
+        super( id, valueAttribute );
+
+        //final AttributeCore valueAttribute = (AttributeCore) ((Compound)attribute.getValue()).findMember( EmailAddressAttribute.NAME );
+        //final AttributeCore dateAttribute = (AttributeCore) ((Compound)attribute.getValue()).findMember( new EmailExpireDateAttribute( null ).getName() );
+        //final AttributeCore confirmedAttribute = (AttributeCore) ((Compound)attribute.getValue()).findMember( new EmailConfirmedAttribute(  null ).getName() );
 
         //required field email
-        emailField = new CustomRequiredTextField<String>( EMAILFIELD_ID, new PropertyModel<String>( attribute, "value" ) ){
-            @Override
-            public void updateModel() {
-
-                super.updateModel();
-
-                //send a confirmation mail
-
-                //temporary identifier mapping
-                linkIDService.getIdentifierService().addSubjectIdentifier( attribute.getName(), attribute.getValue().toString(), userId );
-
-            }
-        };
+        emailField = new CustomRequiredTextField<String>( EMAILFIELD_ID, new PropertyModel<String>( valueAttribute, "value" ) );
         emailField.setRequiredMessageKey( "profile.email.errorMissingEmail" );
         emailField.setOutputMarkupPlaceholderTag( true );
         emailField.add( new EmailAddressValidator() {
@@ -61,6 +58,16 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
             protected String resourceKey() {
 
                 return "profile.email.errorInvalidEmail";
+            }
+        });
+        emailField.add( new AbstractValidator<String>(){
+            @Override
+            protected void onValidate(final IValidatable<String> stringIValidatable) {
+                if (EmailAttribute.isEmailInUse( linkIDService, stringIValidatable.getValue() ) && !EmailAttribute.isEmailOwner( linkIDService,
+                        userId, stringIValidatable.getValue() )){
+                    emailField.error( getLocalizedString( "profile.email.errorEmailAlreadyInUse"  ) );
+                }
+
             }
         });
         add( emailField );
@@ -79,7 +86,7 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
         });
 
         //field for verification: contents must match that of emailField.
-        verificationField = new CustomRequiredTextField<String>( VERIFICATION_ID , new Model<String>( (attribute.getValue() == null?"":attribute.getValue().toString())));
+        verificationField = new CustomRequiredTextField<String>( VERIFICATION_ID , new Model<String>( (valueAttribute.getValue() == null?"":(String)attribute.getValue())));
         verificationField.setRequiredMessageKey( "profile.email.errorRepeatEmail" );
         verificationField.setOutputMarkupPlaceholderTag( true );
         verificationField.setOutputMarkupId( true );
@@ -110,25 +117,12 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
 
     }
 
-//    @Override
-//    protected void onBeforeRender() {
-//        if (attribute.getValue() == null || attribute.getValue().equals( "" )){
-//            verificationField.setEnabled( true );
-//            verificationField.setVisible( true );
-//            verificationLabel.setEnabled( true );
-//            verificationLabel.setVisible( true );
-//        } else {
-//            verificationField.setEnabled( false );
-//            verificationField.setVisible( false );
-//            verificationLabel.setEnabled( false );
-//            verificationLabel.setVisible( false );
-//        }
-//
-//        super.onBeforeRender();
-//    }
-
     @Override
     public void onMissingAttribute() {
        emailField.error( getLocalizedString( "profile.email.errorMissingEmail" ) );
     }
+
+
+
+
 }

@@ -61,10 +61,22 @@
             <version>GIT-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-config</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+
         <!-- Specific Dependencies: External -->
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-j2ee</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

@@ -13,6 +13,8 @@ public interface IdentifierService {
 
     void addSubjectIdentifier(String attributeName, String subjectIdentifier, String userId);
 
+    void updateSubjectIdentifier(String attributeName, String subjectIdentifier, String userId);
+
     /**
      *
      * @param attributeName
