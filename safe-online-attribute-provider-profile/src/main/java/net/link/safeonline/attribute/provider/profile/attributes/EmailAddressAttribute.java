@@ -1,5 +1,7 @@
 package net.link.safeonline.attribute.provider.profile.attributes;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.link.safeonline.attribute.provider.*;
 import net.link.safeonline.attribute.provider.exception.AttributePermissionDeniedException;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
@@ -52,14 +54,19 @@ public class EmailAddressAttribute extends AbstractProfileAttribute {
         if (attribute.getId() == null){
             // doesn't exist yet in database, create everything
             compound = new AttributeCore(  new EmailAttribute(null).getAttributeType() );
+            List<AttributeCore> members = new ArrayList<AttributeCore>( 3 );
+            members.add( attribute );
+            Compound value = new Compound( members );
+            compound.setValue( value );
         }
         else{
             //get existing values from database. The attribute we have is an updated one, so we can't use its value to find the compound
             previousValue = linkIDService.getPersistenceService().findAttribute( userId, attribute.getName(), attribute.getId() );
             compound = linkIDService.getPersistenceService().findCompoundAttributeWhere( userId, EmailAttribute.NAME, previousValue.getName() , previousValue.getValue() );
+            previousValue.setValue( attribute.getValue() );
         }
 
-        compound = new EmailAttribute( null ).setAttribute( linkIDService, userId, compound );
+        compound = (new EmailAttribute( null )).setAttribute( linkIDService, userId, compound );
 
         return ((AttributeCore) ((Compound)compound.getValue()).findMember( NAME ));
     }
