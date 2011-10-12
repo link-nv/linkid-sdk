@@ -152,7 +152,6 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
         for (ProfileAttribute profileAttribute : attributes) {
             profileAttribute.initialize( linkIDService );
         }
-
         // initialize localization
         InputStream localizationStream = getClass().getResourceAsStream( "/localization_profile.xml" );
         try {
