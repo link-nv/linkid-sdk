@@ -1,11 +1,10 @@
 package net.link.safeonline.sdk.ws;
 
-import static com.lyndir.lhunath.opal.system.util.ObjectUtils.ifNotNullElse;
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import be.fedict.trust.MemoryCertificateRepository;
 import be.fedict.trust.TrustValidator;
-import com.google.common.base.Supplier;
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.util.ObjectUtils;
 import java.security.PrivateKey;
@@ -22,7 +21,7 @@ import org.joda.time.Duration;
 
 /**
  * <h2>{@link SDKWSSecurityConfiguration}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <p/>
  * <p> <i>03 31, 2011</i> </p>
  *
  * @author lhunath
@@ -74,7 +73,7 @@ public class SDKWSSecurityConfiguration extends AbstractWSSecurityConfiguration 
 
     public KeyProvider getKeyProvider() {
 
-        return ifNotNullElse( keyProvider, new Supplier<KeyProvider>() {
+        return ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
             public KeyProvider get() {
 
                 return config().linkID().app().keyProvider();

@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.ws;
 import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
-import com.google.common.base.Supplier;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -493,7 +492,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
 
-        return ifNotNullElseNullable( sslCertificate, new Supplier<X509Certificate>() {
+        return ifNotNullElseNullable( sslCertificate, new NSupplier<X509Certificate>() {
             public X509Certificate get() {
 
                 return config().linkID().app().keyProvider().getTrustedCertificate( SSL_ALIAS );

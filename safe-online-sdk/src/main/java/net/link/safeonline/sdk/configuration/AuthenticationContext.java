@@ -3,7 +3,6 @@ package net.link.safeonline.sdk.configuration;
 import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
-import com.google.common.base.Supplier;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -14,7 +13,7 @@ import net.link.util.config.KeyProvider;
 
 /**
  * <h2>{@link AuthenticationContext}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <p/>
  * <p> <i>09 17, 2010</i> </p>
  *
  * @author lhunath
@@ -40,9 +39,11 @@ public class AuthenticationContext extends LinkIDContext {
      *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
      *                        context path.
      * @param protocol        Authentication protocol to use
-     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this set
+     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this
+     *                        set
      *                        cannot be used by the user to authenticate himself as a result of this call.  May be <code>null</code> or
-     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the application's
+     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the
+     *                        application's
      *                        device policy configured at the linkID node may further restrict the available devices.
      *
      * @see #AuthenticationContext(String, String, KeyProvider, boolean, Set, String, String, Locale, String)
@@ -62,9 +63,11 @@ public class AuthenticationContext extends LinkIDContext {
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
      *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
      *                        context path.
-     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this set
+     * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this
+     *                        set
      *                        cannot be used by the user to authenticate himself as a result of this call.  May be <code>null</code> or
-     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the application's
+     *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the
+     *                        application's
      *                        device policy configured at the linkID node may further restrict the available devices.
      *
      * @see #AuthenticationContext(String, String, KeyProvider, boolean, Set, String, String, Locale, String)
@@ -107,7 +110,7 @@ public class AuthenticationContext extends LinkIDContext {
                                  boolean forceAuthentication, Set<String> devices, String sessionTrackingId, String themeName,
                                  Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new Supplier<KeyProvider>() {
+        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
             public KeyProvider get() {
 
                 return config().linkID().app().keyProvider();
@@ -120,11 +123,11 @@ public class AuthenticationContext extends LinkIDContext {
                                   String sessionTrackingId, Protocol protocol) {
 
         this( applicationName, applicationFriendlyName, //
-              null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
-              null != keyProvider? keyProvider.getIdentityCertificate(): null,//
-              null != keyProvider? keyProvider.getTrustedCertificates(): null, //
-              null != keyProvider? keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ): null, //
-              forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol );
+                null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
+                null != keyProvider? keyProvider.getIdentityCertificate(): null,//
+                null != keyProvider? keyProvider.getTrustedCertificates(): null, //
+                null != keyProvider? keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ): null, //
+                forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol );
     }
 
     /**
@@ -168,7 +171,7 @@ public class AuthenticationContext extends LinkIDContext {
                                  String target, Set<String> devices, String sessionTrackingId, Protocol protocol) {
 
         super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
-               sessionTrackingId, themeName, language, target, protocol );
+                sessionTrackingId, themeName, language, target, protocol );
 
         this.forceAuthentication = forceAuthentication;
         this.devices = devices;
@@ -188,6 +191,6 @@ public class AuthenticationContext extends LinkIDContext {
     public String toString() {
 
         return String.format( "{authn: %s, force=%s, dev=%s}", //
-                              super.toString(), isForceAuthentication(), getDevices() );
+                super.toString(), isForceAuthentication(), getDevices() );
     }
 }
