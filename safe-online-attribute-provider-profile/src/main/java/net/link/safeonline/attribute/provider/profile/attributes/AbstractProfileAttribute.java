@@ -88,7 +88,7 @@ public abstract class AbstractProfileAttribute implements ProfileAttribute {
     public void removeAttribute(final LinkIDService linkIDService, final String userId, final String attributeId)
             throws AttributeNotFoundException {
 
-        linkIDService.getPersistenceService().removeAttribute( userId, attributeId, getName() );
+        linkIDService.getPersistenceService().removeAttribute( userId, getName(), attributeId );
     }
 
     public void removeAttributes(final LinkIDService linkIDService) {
