@@ -33,6 +33,14 @@ public interface PersistenceService {
     List<AttributeCore> listAttributes(String userId, String attributeName, boolean filterInvisible);
 
     /**
+     *
+     * @param attributeName
+     * @param filterInvisible
+     * @return all {@link AttributeCore}'s for attribute name.
+     */
+    List<AttributeCore> listAttributes(String attributeName, boolean filterInvisible);
+
+    /**
      * Fetch attribute for specified user and attribute ID.
      *
      * @param userId        userId to find attribute for

@@ -279,6 +279,41 @@ public class EmailAttribute extends AbstractProfileAttribute {
 
     }
 
+    @Override
+    public void removeAttributes(final LinkIDService linkIDService, final String userId) {
+        for (AttributeCore userAttribute : linkIDService.getPersistenceService().listAttributes( userId, EmailAttribute.NAME, false )){
+                AttributeCore emailAttribute = getAddressMember( userAttribute );
+                if (emailAttribute != null)
+                    linkIDService.getIdentifierService().removeSubjectIdentifier( userId, EmailAddressAttribute.NAME, (String)emailAttribute.getValue() );
+            }
+        super.removeAttributes( linkIDService, userId );
+
+    }
+
+    @Override
+    public void removeAttribute(final LinkIDService linkIDService, final String userId, final String attributeId)
+            throws AttributeNotFoundException {
+        AttributeCore compound = linkIDService.getPersistenceService().findAttribute( userId, EmailAttribute.NAME, attributeId );
+        AttributeCore emailAttribute = getAddressMember( compound );
+        if (emailAttribute != null)
+            linkIDService.getIdentifierService().removeSubjectIdentifier( userId, EmailAddressAttribute.NAME, (String)emailAttribute.getValue() );
+        super.removeAttribute( linkIDService, userId,
+                attributeId );  
+    }
+
+    @Override
+    public void removeAttributes(final LinkIDService linkIDService) {
+        for (AttributeCore compound : linkIDService.getPersistenceService().listAttributes( EmailAttribute.NAME, false )){
+            AttributeCore emailAttribute = getAddressMember( compound );
+            if (emailAttribute != null){
+                String userId = linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, (String)emailAttribute.getValue());
+                if (userId != null)
+                    linkIDService.getIdentifierService().removeSubjectIdentifier( userId, EmailAddressAttribute.NAME, (String)emailAttribute.getValue() );
+            }
+        }
+        super.removeAttributes( linkIDService );    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
     private String getEmailConfirmationTimeout(Date startDate) {
         Date date =  new Date( startDate.getTime() + emailTimeout * 1000 * 60);
         return new SimpleDateFormat(  ).format( date );
