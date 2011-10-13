@@ -26,4 +26,6 @@ public interface LinkIDService {
     IdentifierService getIdentifierService();
 
     EmailService getEmailService();
+
+    SubjectService getSubjectService();
 }
