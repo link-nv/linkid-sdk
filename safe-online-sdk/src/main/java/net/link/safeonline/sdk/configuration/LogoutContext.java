@@ -3,7 +3,6 @@ package net.link.safeonline.sdk.configuration;
 import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
-import com.google.common.base.Supplier;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
@@ -73,8 +72,9 @@ public class LogoutContext extends LinkIDContext {
     public LogoutContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
                          String themeName, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new Supplier<KeyProvider>() {
+        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
             public KeyProvider get() {
+
                 return config().linkID().app().keyProvider();
             }
         } ), sessionTrackingId, themeName, language, target, null );
@@ -84,9 +84,9 @@ public class LogoutContext extends LinkIDContext {
                           String sessionTrackingId, String themeName, Locale language, String target, Void v) {
 
         this( applicationName, applicationFriendlyName, //
-              keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
-              keyProvider.getTrustedCertificates(), keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ), //
-              sessionTrackingId, themeName, language, target, null );
+                keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
+                keyProvider.getTrustedCertificates(), keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ), //
+                sessionTrackingId, themeName, language, target, null );
     }
 
     /**
@@ -123,7 +123,7 @@ public class LogoutContext extends LinkIDContext {
                          Protocol protocol) {
 
         super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
-               sessionTrackingId, themeName, language, target, protocol );
+                sessionTrackingId, themeName, language, target, protocol );
     }
 
     @Override
