@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.17</version>
     </parent>
 
     <name>SafeOnline Authentication Web Service Definition</name>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-attribute-provider</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.17</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.17</version>
             <type>pom</type>
         </dependency>
 
