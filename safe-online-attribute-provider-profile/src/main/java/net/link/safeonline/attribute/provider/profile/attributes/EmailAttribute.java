@@ -20,7 +20,7 @@ import net.link.util.j2ee.Configurable;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.log.Log4JLogChute;
+import org.apache.velocity.runtime.log.JdkLogChute;
 
 public class EmailAttribute extends AbstractProfileAttribute {
 
@@ -161,8 +161,8 @@ public class EmailAttribute extends AbstractProfileAttribute {
         //send the mail
         Properties velocityProperties = new Properties();
         velocityProperties.put( "resource.loader", "class" );
-        velocityProperties.put( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName() );
-        velocityProperties.put( Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, EmailAttributeInputPanel.class.getName() );
+        velocityProperties.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, JdkLogChute.class.getName() );
+        velocityProperties.setProperty( JdkLogChute.RUNTIME_LOG_JDK_LOGGER, EmailAttributeInputPanel.class.getName() );
         velocityProperties.put( "class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
 
         VelocityEngine velocityEngine;
