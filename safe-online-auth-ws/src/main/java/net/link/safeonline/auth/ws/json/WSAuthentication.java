@@ -61,4 +61,8 @@ public interface WSAuthentication extends Serializable {
 
     void unsubscribe(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language)
             throws AuthenticationOperationFailedException;
+
+    List<ApplicationSubscription> getSubscriptions(String applicationName, String deviceName, Map<String, String> deviceCredentials,
+                                                   Locale language)
+            throws AuthenticationOperationFailedException;
 }
