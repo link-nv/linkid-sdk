@@ -58,4 +58,7 @@ public interface WSAuthentication extends Serializable {
 
     byte[] commit()
             throws AuthenticationOperationFailedException;
+
+    void unsubscribe(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language)
+            throws AuthenticationOperationFailedException;
 }
