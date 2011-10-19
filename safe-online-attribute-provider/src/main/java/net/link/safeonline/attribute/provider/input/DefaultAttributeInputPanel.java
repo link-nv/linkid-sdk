@@ -102,7 +102,7 @@ public class DefaultAttributeInputPanel extends AttributeInputPanel {
 
                 if (object instanceof String && null != object) {
                     String stringObject = (String) object;
-                    if (stringObject.isEmpty()) {
+                    if (stringObject.trim().isEmpty()) {
                         attribute.setValue( null );
                     } else {
                         attribute.setValue( stringObject );
