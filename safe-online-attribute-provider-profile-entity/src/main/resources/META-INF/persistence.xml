@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+
+	<persistence-unit name="EmailConfirmationManager">
+
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>java:/${safe-online.data.source}</jta-data-source>
+
+        <class>net.link.safeonline.attribute.provider.profile.entity.EmailConfirmationEntity</class>
+
+        <properties>
+            <property name="hibernate.show_sql" value="false" />
+            <property name="jboss.entity.manager.jndi.name" value="java:/EmailConfirmationManager" />
+        </properties>
+
+	</persistence-unit>
+
+</persistence> 

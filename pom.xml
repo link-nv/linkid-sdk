@@ -178,6 +178,8 @@
 	    <module>safe-online-attribute-provider</module>
         <module>safe-online-attribute-provider-template</module>
         <module>safe-online-attribute-provider-profile</module>
+        <module>safe-online-attribute-provider-profile-entity</module>
+        <module>safe-online-attribute-provider-profile-sql-ddl</module>
     </modules>
 
     <dependencies>

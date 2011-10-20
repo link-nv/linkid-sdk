@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.lin-k.safe-online.client</groupId>
+        <artifactId>sdk</artifactId>
+        <version>GIT-SNAPSHOT</version>
+    </parent>
+    <name>SafeOnline Profile Attribute Provider Entity</name>
+    <description>
+        SafeOnline Profile Attribute Provider Entity
+    </description>
+
+    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+    <artifactId>safe-online-attribute-provider-profile-entity</artifactId>
+    <packaging>jar</packaging>
+
+
+    <dependencies>
+
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online.server</groupId>
+            <artifactId>container</artifactId>
+            <type>pom</type>
+        </dependency>
+
+    </dependencies>
+
+</project>

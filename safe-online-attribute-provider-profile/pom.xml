@@ -71,6 +71,7 @@
             <artifactId>container</artifactId>
             <type>pom</type>
         </dependency>
+       
 
         <!-- Specific Dependencies: External -->
         <dependency>
@@ -83,6 +84,12 @@
             <groupId>velocity</groupId>
             <artifactId>velocity</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-attribute-provider-profile-entity</artifactId>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
