@@ -14,4 +14,8 @@ public class ProfileAttributeConstants {
 
     public static final String ATTRIBUTE_CONFIRMATION_LANDING_PATH = "confirm-attribute";
     public static final String ATTRIBUTE_CONFIRMATION_PARAMETER_KEY = "key";
+
+    public static final String JNDI_CONTEXT = "ProfileAttributeProvider";
+    public static final String JNDI_PREFIX = JNDI_CONTEXT + "/";
+    public static final String ENTITY_MANAGER = "EmailConfirmationManager";
 }

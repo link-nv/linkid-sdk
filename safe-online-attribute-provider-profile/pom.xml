@@ -66,11 +66,18 @@
             <version>GIT-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.lin-k.safe-online.server</groupId>
+            <artifactId>container</artifactId>
+            <type>pom</type>
+        </dependency>
+
         <!-- Specific Dependencies: External -->
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-j2ee</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>velocity</groupId>

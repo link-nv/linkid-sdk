@@ -4,18 +4,18 @@ import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyExc
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
+import javax.ejb.EJB;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import net.link.safeonline.attribute.provider.*;
 import net.link.safeonline.attribute.provider.confirmation.AttributeConfirmationPanel;
-import net.link.safeonline.attribute.provider.confirmation.DefaultAttributeConfirmationPanel;
 import net.link.safeonline.attribute.provider.exception.*;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.profile.attributes.*;
+import net.link.safeonline.attribute.provider.profile.bean.EmailConfirmationManager;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -25,13 +25,16 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
 
     private final List<ProfileAttribute> attributes = new LinkedList<ProfileAttribute>();
 
+    @EJB(mappedName = EmailConfirmationManager.JNDI_BINDING)
+    EmailConfirmationManager emailConfirmationManager;
+
+
     public ProfileAttributeProvider() {
 
         attributes.add( new CityAttribute( getJndiLocation() ) );
         attributes.add( new CountryAttribute( getJndiLocation() ) );
         attributes.add( new DobAttribute( getJndiLocation() ) );
         attributes.add( new EmailAddressAttribute( getJndiLocation() ) );
-        attributes.add( new EmailExpireDateAttribute( getJndiLocation() ) );
         attributes.add( new EmailConfirmedAttribute( getJndiLocation() ) );
         attributes.add( new EmailAttribute( getJndiLocation() ) );
         attributes.add( new FamilyNameAttribute( getJndiLocation() ) );
@@ -212,6 +215,11 @@ public class ProfileAttributeProvider extends AttributeProvider implements Servl
             }
         }
         return null;
+    }
+
+    @Override
+    public String getUserIdForConfirmationId(final String confirmationId) {
+        return emailConfirmationManager.getUserId( confirmationId );
     }
 
     @Override

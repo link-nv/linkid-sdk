@@ -149,6 +149,17 @@ public abstract class AttributeProvider implements Serializable {
     }
 
     /**
+     * Returns the user id associated with a particular attribute confirmations session id
+     * Returns null if there is no user for the confirmationId
+     *
+     * @param confirmationId
+     * @return
+     */
+    public String getUserIdForConfirmationId(String confirmationId){
+        return null;
+    }
+
+    /**
      * These {@link AttributeType}'s will be registered into LinkID if not yet so.
      *
      * @return {@link List} of supported {@link AttributeType}'s by this provider.

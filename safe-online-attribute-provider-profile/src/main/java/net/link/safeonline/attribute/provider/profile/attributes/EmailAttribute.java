@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.ejb.EJB;
 import net.link.safeonline.attribute.provider.*;
 import net.link.safeonline.attribute.provider.confirmation.AttributeConfirmationPanel;
 import net.link.safeonline.attribute.provider.exception.AttributeNotFoundException;
@@ -15,8 +16,10 @@ import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
 import net.link.safeonline.attribute.provider.input.DefaultAttributeInputPanel;
 import net.link.safeonline.attribute.provider.profile.attributes.panel.EmailAttributeConfirmationPanel;
 import net.link.safeonline.attribute.provider.profile.attributes.panel.EmailAttributeInputPanel;
+import net.link.safeonline.attribute.provider.profile.bean.ConfirmationInProgressException;
+import net.link.safeonline.attribute.provider.profile.bean.EmailConfirmationManager;
+import net.link.safeonline.attribute.provider.profile.entity.EmailConfirmationEntity;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
-import net.link.util.j2ee.Configurable;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
@@ -28,8 +31,8 @@ public class EmailAttribute extends AbstractProfileAttribute {
 
     private static final String RESOURCE_EMAIL_TEMPLATE = "PasswordConfirmationEmailTemplate.vm";
 
-    @Configurable(name = ProfileAttributeConstants.EMAIL_CONFIRMATION_TIMEOUT_CONFIG, group = ProfileAttributeConstants.EMAIL_CONFIRMATION_TIMEOUT_CONFIG_GROUP)
-    private Integer emailTimeout = 60;
+    @EJB(mappedName = EmailConfirmationManager.JNDI_BINDING)
+    EmailConfirmationManager emailConfirmationManager;
 
     public EmailAttribute(String providerJndi) {
 
@@ -48,7 +51,6 @@ public class EmailAttribute extends AbstractProfileAttribute {
                 false );
 
         compoundAttributeType.getMembers().add( new EmailAddressAttribute( getProviderJndi() ).getAttributeType() );
-        compoundAttributeType.getMembers().add( new EmailExpireDateAttribute( getProviderJndi() ).getAttributeType() );
         compoundAttributeType.getMembers().add( new EmailConfirmedAttribute( getProviderJndi() ).getAttributeType() );
 
         return compoundAttributeType;
@@ -80,7 +82,6 @@ public class EmailAttribute extends AbstractProfileAttribute {
         //first, construct the entire compound attribute
 
         AttributeCore address = getAddressMember( compound );
-        AttributeCore expireDate = getExpiredMember( compound );
         AttributeCore confirmed = getConfirmationMember( compound );
 
         AttributeCore previousAddress = null; //for checking against changed addresses
@@ -90,19 +91,11 @@ public class EmailAttribute extends AbstractProfileAttribute {
             AttributeCore previousCompound = linkIDService.getPersistenceService().findAttribute( userId, compound.getName(), compound.getId() );
             previousAddress = getAddressMember( previousCompound );
             //find other members if necessary, they are invisible, so they might not have been passed along by whoever called us
-            if (expireDate == null){
-                expireDate = getExpiredMember( previousCompound );
-                ((List<AttributeCore>)((Compound)compound.getValue()).getMembers()).add( expireDate );
-            }
             if (confirmed == null){
                 confirmed = getConfirmationMember( previousCompound );
                 ((List<AttributeCore>)((Compound)compound.getValue()).getMembers()).add( confirmed );
             }
         }else { //brand new attribute
-            if (expireDate == null){
-                expireDate = new AttributeCore( new EmailExpireDateAttribute(null).getAttributeType() );
-                ((List<AttributeCore>)((Compound)compound.getValue()).getMembers()).add( expireDate );
-            }
             if (confirmed == null){
                 confirmed = new AttributeCore(  new EmailConfirmedAttribute(null).getAttributeType() );
                 ((List<AttributeCore>)((Compound)compound.getValue()).getMembers()).add( confirmed );
@@ -123,18 +116,28 @@ public class EmailAttribute extends AbstractProfileAttribute {
     }
 
 
-    private void initiateConfirmationProcedure(LinkIDService linkIDService, String userId, final AttributeCore attribute){
+    private void initiateConfirmationProcedure(LinkIDService linkIDService, String userId, final AttributeCore attribute)
+            throws AttributePermissionDeniedException {
         String email = (String)getAddressMember( attribute ).getValue();
 
-        String confirmationId = UUID.randomUUID().toString();
-        getExpiredMember( attribute ).setValue( getEmailConfirmationTimeout( new Date(  ) ) );
-        getConfirmationMember( attribute ).setValue( confirmationId );
+        EmailConfirmationEntity entity = null;
+        try {
+            entity = emailConfirmationManager.createNewEmailConfirmation( userId, email );
+        }
+        catch (ConfirmationInProgressException e) {
+            throw new AttributePermissionDeniedException(e.getMessage());
+        }
+        String confirmationId = entity.getConfirmationId();
+        getConfirmationMember( attribute ).setValue( false );
 
         // do verification
         String previousUser = linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email );
         if (previousUser != null && !previousUser.equals( userId )){
             //somebody used this email but didn't confirm it (in time), too bad, he can't use it anymore
             linkIDService.getIdentifierService().updateSubjectIdentifier( EmailAddressAttribute.NAME, email, userId );
+            emailConfirmationManager.remove( emailConfirmationManager.getConfirmationIdForUser( previousUser, false ) );
+            //we also remove email from the previous user's account. This may seem harsh, but could otherwise lead to confusing behaviour
+            // (i.e.  user has an email address, but it doesn't work)
             for (AttributeCore userAttribute : linkIDService.getPersistenceService().listAttributes( previousUser, EmailAttribute.NAME, false )){
                 AttributeCore emailAttribute = getAddressMember( userAttribute );
                 if ( emailAttribute != null && email.equals( emailAttribute.getValue() )){
@@ -202,6 +205,7 @@ public class EmailAttribute extends AbstractProfileAttribute {
         String currentOwnderId = linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email );
         if ( !userId.equals( currentOwnderId ) ){ //we waited too long, email confirmation has expired and someone else took the email address
             //delete first
+            emailConfirmationManager.remove( emailConfirmationManager.getConfirmationIdForUser( userId, false ) );
              try {
                 linkIDService.getPersistenceService().removeAttribute( userId, attribute.getName(),
                         attribute.getId() ); //method also removes the members
@@ -213,55 +217,35 @@ public class EmailAttribute extends AbstractProfileAttribute {
             throw new AttributePermissionDeniedException( linkIDService.getLocalizationService().findText( "webapp.common.profile.email.emailExpired", getLocale( userId ) ) );
         }
         //email is still ours, confirm it!
-        AttributeCore confirmation = getConfirmationMember( attribute );
-        if (confirmation == null){ //see if it is in the database
+        emailConfirmationManager.remove( emailConfirmationManager.getConfirmationIdForUser( userId, false ) ); //confirmation is no longer pending, remove entity
+        AttributeCore confirmed = getConfirmationMember( attribute );
+        if (confirmed == null){ //see if it is in the database
             AttributeCore previousCompound = linkIDService.getPersistenceService().findAttribute( userId, attribute.getName(), attribute.getId() );
-            confirmation = getConfirmationMember( previousCompound );
-            ((List<AttributeCore>)((Compound)attribute.getValue()).getMembers()).add( confirmation );
+            confirmed = getConfirmationMember( previousCompound );
+            ((List<AttributeCore>)((Compound)attribute.getValue()).getMembers()).add( confirmed );
         }
-        //need it to build entire compound attribute
-        AttributeCore expire = getExpiredMember( attribute );
-        if (expire == null){ //see if it is in the database
-            AttributeCore previousCompound = linkIDService.getPersistenceService().findAttribute( userId, attribute.getName(), attribute.getId() );
-            expire = getExpiredMember( previousCompound );
-            ((List<AttributeCore>)((Compound)attribute.getValue()).getMembers()).add( expire );
-        }
-        if (confirmation != null && confirmation.getValue() != null && confirmation.getValue().equals( confirmationId )){
-            confirmation.setValue( "" );
+        if (confirmed != null && confirmed.getValue() != null && confirmed.getValue().equals( confirmationId )){
+            confirmed.setValue( true );
         }
 
         linkIDService.getPersistenceService().setAttribute( userId, attribute );
 
     }
 
-    public static boolean isEmailInUse(LinkIDService linkIDService, String email){
+    private boolean isEmailInUse(LinkIDService linkIDService, String email){
         //see if there is a corresponding user for the email, and if so, check if he has confirmed his email address within time
         String userId = linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email );
         if (userId != null){
-            List<AttributeCore> emails = linkIDService.getPersistenceService().listAttributes( userId, EmailAttribute.NAME, false );
-            for (AttributeCore attribute : emails){
-                String emailValue = (String)getAddressMember( attribute ).getValue();
-                if (emailValue != null && emailValue.equals( email )){
-                    boolean confirmed = getConfirmationMember( attribute ).getValue() == null || "".equals( getConfirmationMember( attribute ).getValue() );
-                    boolean pending = false;
-                    try {
-                        pending = new SimpleDateFormat().parse( (String) getExpiredMember( attribute ).getValue() ).after(
-                                new Date() );
-                    }
-                    catch (ParseException e) {
-                        throw new RuntimeException( e );
-                    }
-                    return confirmed || pending;
-                }
-            }
+            String id = emailConfirmationManager.getConfirmationIdForEmail( email, true );
+            return (id != null);
         }
         return false;
     }
 
-    public static boolean isEmailOwner(LinkIDService linkIDService, String userId, String email){
-        return linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email ) != null
-                 && linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email ).equals( userId );
-    }
+//    public static boolean isEmailOwner(LinkIDService linkIDService, String userId, String email){
+//        return linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email ) != null
+//                 && linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email ).equals( userId );
+//    }
 
     public AttributeConfirmationPanel getAttributeConfirmationPanel(final LinkIDService linkIDService, final String id, final String userId,
                                                final AttributeCore attribute, final String confirmationId) {
@@ -314,11 +298,6 @@ public class EmailAttribute extends AbstractProfileAttribute {
         super.removeAttributes( linkIDService );    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    private String getEmailConfirmationTimeout(Date startDate) {
-        Date date =  new Date( startDate.getTime() + emailTimeout * 1000 * 60);
-        return new SimpleDateFormat(  ).format( date );
-    }
-
     private static AttributeCore getAddressMember(AttributeCore attribute){
         if (attribute != null)
             return ((AttributeCore) ((Compound)attribute.getValue()).findMember( EmailAddressAttribute.NAME ));
@@ -329,13 +308,6 @@ public class EmailAttribute extends AbstractProfileAttribute {
     private static AttributeCore getConfirmationMember(AttributeCore attribute){
         if (attribute != null)
             return ((AttributeCore) ((Compound)attribute.getValue()).findMember( EmailConfirmedAttribute.NAME ));
-        else
-            return null;
-    }
-
-    private static AttributeCore getExpiredMember(AttributeCore attribute){
-        if (attribute != null)
-            return ((AttributeCore) ((Compound)attribute.getValue()).findMember( EmailExpireDateAttribute.NAME ));
         else
             return null;
     }

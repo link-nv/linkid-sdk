@@ -1,8 +1,11 @@
 package net.link.safeonline.attribute.provider.profile.attributes.panel;
 
+import javax.ejb.EJB;
 import net.link.safeonline.attribute.provider.AttributeCore;
 import net.link.safeonline.attribute.provider.input.AttributeInputPanel;
+import net.link.safeonline.attribute.provider.profile.attributes.EmailAddressAttribute;
 import net.link.safeonline.attribute.provider.profile.attributes.EmailAttribute;
+import net.link.safeonline.attribute.provider.profile.bean.EmailConfirmationManager;
 import net.link.safeonline.attribute.provider.service.LinkIDService;
 import net.link.util.wicket.component.feedback.ErrorComponentFeedbackLabel;
 import net.link.util.wicket.component.input.CustomRequiredTextField;
@@ -39,6 +42,8 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
     private final CustomRequiredTextField<String> verificationField;
     private final Label verificationLabel;
 
+    @EJB(mappedName = EmailConfirmationManager.JNDI_BINDING)
+    EmailConfirmationManager emailConfirmationManager;
 
 
     public EmailAttributeInputPanel(String id, final LinkIDService linkIDService, final AttributeCore valueAttribute, final String userId) {
@@ -63,7 +68,7 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
         emailField.add( new AbstractValidator<String>(){
             @Override
             protected void onValidate(final IValidatable<String> stringIValidatable) {
-                if (EmailAttribute.isEmailInUse( linkIDService, stringIValidatable.getValue() ) && !EmailAttribute.isEmailOwner( linkIDService,
+                if (isEmailInUse( linkIDService, stringIValidatable.getValue() ) && !isEmailOwner( linkIDService,
                         userId, stringIValidatable.getValue() )){
                     emailField.error( getLocalizedString( "profile.email.errorEmailAlreadyInUse"  ) );
                 }
@@ -122,7 +127,20 @@ public class EmailAttributeInputPanel extends AttributeInputPanel {
        emailField.error( getLocalizedString( "profile.email.errorMissingEmail" ) );
     }
 
+    private boolean isEmailInUse(LinkIDService linkIDService, String email){
+        //see if there is a corresponding user for the email, and if so, check if he has confirmed his email address within time
+        String userId = linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email );
+        if (userId != null){
+            String id = emailConfirmationManager.getConfirmationIdForEmail( email, true );
+            return (id != null);
+        }
+        return false;
+    }
 
+    private static boolean isEmailOwner(LinkIDService linkIDService, String userId, String email){
+        return linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email ) != null
+                 && linkIDService.getIdentifierService().findSubject( EmailAddressAttribute.NAME, email ).equals( userId );
+    }
 
 
 }

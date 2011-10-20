@@ -12,7 +12,7 @@ public class EmailConfirmedAttribute extends AbstractProfileAttribute {
 
     public EmailConfirmedAttribute(String providerJndi) {
 
-        super( providerJndi, null, DataType.STRING );
+        super( providerJndi, null, DataType.BOOLEAN );
     }
 
     public String getName() {
