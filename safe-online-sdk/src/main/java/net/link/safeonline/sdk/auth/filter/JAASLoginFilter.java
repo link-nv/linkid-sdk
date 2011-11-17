@@ -55,7 +55,8 @@ public class JAASLoginFilter implements Filter {
 
         try {
             chain.doFilter( request, response );
-        } finally {
+        }
+        finally {
             logout( request );
             // processFlushJBossCredentialCache( httpServletRequest );
         }
@@ -117,9 +118,11 @@ public class JAASLoginFilter implements Filter {
             LOG.debug( "login to " + loginContextName + " with " + userId + " for " + request.getRequestURL() );
             loginContext.login();
             request.setAttribute( JAAS_LOGIN_CONTEXT_SESSION_ATTRIB, loginContext );
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             LOG.warn( "During JAAS Login", e );
-        } catch (LoginException e) {
+        }
+        catch (LoginException e) {
             LOG.error( "During JAAS Login", e );
         }
     }
@@ -133,7 +136,8 @@ public class JAASLoginFilter implements Filter {
         try {
             LOG.debug( "logout" );
             loginContext.logout();
-        } catch (LoginException e) {
+        }
+        catch (LoginException e) {
             LOG.error( "logout error: " + e.getMessage(), e );
         }
     }
