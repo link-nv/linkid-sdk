@@ -1,2 +1,0 @@
-<classloading xmlns="urn:jboss:classloading:1.0" domain="DefaultDomain" export-all="NON_EMPTY" import-all="true"
-              top-level-classloader="true" />

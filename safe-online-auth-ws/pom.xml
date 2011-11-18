@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -41,7 +42,10 @@
                                 </taskdef>
                                 <mkdir dir="${project.build.directory}/generated-sources/java" />
                                 <mkdir dir="${project.build.directory}/generated-classes/jaxws" />
-                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/safe-online-auth.wsdl" sourcedestdir="${project.build.directory}/generated-sources/java" catalog="${basedir}/src/main/catalog/catalog.xml">
+                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws"
+                                          verbose="true" wsdl="${basedir}/src/main/resources/safe-online-auth.wsdl"
+                                          sourcedestdir="${project.build.directory}/generated-sources/java"
+                                          catalog="${basedir}/src/main/catalog/catalog.xml">
                                     <produces dir="${project.build.directory}/generated-sources/java">
                                         <include name="**/*.java" />
                                     </produces>
@@ -60,11 +64,6 @@
     <dependencies>
 
         <!-- Specific Dependencies: linkID -->
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-attribute-provider</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-j2ee-jboss6</artifactId>
@@ -95,6 +94,10 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->

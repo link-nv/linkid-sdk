@@ -9,7 +9,7 @@ package net.link.safeonline.auth.ws.json;
 
 import java.io.Serializable;
 import java.util.*;
-import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.AttributeSDK;
 import net.link.safeonline.auth.ws.soap.AuthenticationStep;
 import org.jetbrains.annotations.Nullable;
 

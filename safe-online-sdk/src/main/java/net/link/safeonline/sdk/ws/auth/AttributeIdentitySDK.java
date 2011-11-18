@@ -9,16 +9,15 @@ package net.link.safeonline.sdk.ws.auth;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import net.link.safeonline.attribute.provider.*;
-import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.*;
 import net.link.safeonline.sdk.ws.WebServiceConstants;
 
 
 /**
  * <h2>{@link AttributeIdentitySDK}<br> <sub>Data-container for linkID attribute.</sub></h2>
- *
+ * <p/>
  * <p> Data-container for a linkID attribute to be used by the linkID Authentication Web Service. </p>
- *
+ * <p/>
  * <p> <i>Jan 14, 2009</i> </p>
  *
  * @author wvdhaute
@@ -79,7 +78,8 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
 
     /**
      * @return the attribute's friendly name, if available. The friendly name is retrieved using the language passed in the initial
-     *         authentication web service call. If no friendly name is available for that language, the default attribute's name is returned
+     *         authentication web service call. If no friendly name is available for that language, the default attribute's name is
+     *         returned
      *         as in {@link #getName()}.
      */
     public String getFriendlyName() {
@@ -156,11 +156,11 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
         }
         attributeType.getOtherAttributes().put( WebServiceConstants.DATATYPE_ATTRIBUTE, this.attributeType.getType().getValue() );
         attributeType.getOtherAttributes()
-                .put( WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.toString( this.attributeType.isMultivalued() ) );
+                     .put( WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.toString( this.attributeType.isMultivalued() ) );
         attributeType.getOtherAttributes().put( WebServiceConstants.DATAMINING_ATTRIBUTE, Boolean.toString( anonymous ) );
         attributeType.getOtherAttributes().put( WebServiceConstants.OPTIONAL_ATTRIBUTE, Boolean.toString( optional ) );
         attributeType.getOtherAttributes()
-                .put( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE, Boolean.toString( confirmationNeeded ) );
+                     .put( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE, Boolean.toString( confirmationNeeded ) );
         attributeType.getOtherAttributes().put( WebServiceConstants.CONFIRMED_ATTRIBUTE, confirmation.name() );
         attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, getId() );
         attributeType.getOtherAttributes().put( WebServiceConstants.GROUP_NAME_ATTRIBUTE, groupName );
