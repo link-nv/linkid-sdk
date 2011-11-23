@@ -54,7 +54,6 @@
                 <artifactId>jboss-ejb-api_3.1_spec</artifactId>
                 <version>${jboss-ejb-api_3.1_spec.version}</version>
             </dependency>
-            <!--<dependency>--><!--<groupId>javax.ejb</groupId>--><!--<artifactId>ejb-api</artifactId>--><!--<version>${ejb-api.version}</version>--><!--</dependency>--><!--<dependency>--><!--<groupId>javax.servlet</groupId>--><!--<artifactId>servlet-api</artifactId>--><!--<version>${servlet-api.version}</version>--><!--</dependency>-->
             <dependency>
                 <groupId>org.apache.xalan</groupId>
                 <artifactId>xalan</artifactId>
@@ -175,8 +174,6 @@
         <module>safe-online-osgi</module>
         <module>safe-online-wicket-sdk</module>
         <module>safe-online-saml-authn-context</module>
-	    <module>safe-online-attribute-provider</module>
-        <module>safe-online-attribute-provider-template</module>
     </modules>
 
     <dependencies>

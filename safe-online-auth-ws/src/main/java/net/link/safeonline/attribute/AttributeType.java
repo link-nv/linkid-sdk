@@ -1,4 +1,4 @@
-package net.link.safeonline.attribute.provider;
+package net.link.safeonline.attribute;
 
 import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;

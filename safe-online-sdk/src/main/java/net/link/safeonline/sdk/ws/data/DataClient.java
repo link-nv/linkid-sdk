@@ -9,7 +9,7 @@ package net.link.safeonline.sdk.ws.data;
 
 import java.io.Serializable;
 import java.util.List;
-import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.AttributeSDK;
 import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
 import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
 
