@@ -32,7 +32,7 @@ public class Compound extends MetaObject implements Serializable {
     /**
      * @return list of this compound value's members
      */
-    public List<? extends AttributeSDK<?>> getMembers() {
+    public List<? extends AttributeSDK<? extends Serializable>> getMembers() {
 
         return members;
     }
