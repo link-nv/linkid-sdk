@@ -29,7 +29,8 @@ public interface RequestConstants {
      */
     public static final String LANGUAGE_REQUEST_PARAM = "Language";
     public static final String THEME_REQUEST_PARAM = "ThemeName";
-    public static final String LOGINMODE_REQUEST_PARAM = "LoginMode";
+    public static final String LOGINMODE_REQUEST_PARAM = "login_mode";
+    public static final String TARGETURI_REQUEST_PARAM = "return_uri";
     public static final String APPLICATION_ID_REQUEST_PARAM = "ApplicationId";
     public static final String CANCELLED_REQUEST_PARAM = "cancelled";
     public static final String TIMEOUT_REQUEST_PARAM = "timeout";

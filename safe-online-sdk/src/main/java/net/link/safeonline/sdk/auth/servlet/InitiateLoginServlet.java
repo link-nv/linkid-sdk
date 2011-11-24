@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.*;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
@@ -19,9 +20,6 @@ import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
  */
 public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
 
-    public static String INITIATE_LOGIN_RETURN_URI_PARAMETER = "return_uri";
-
-    public static String INITIATE_LOGIN_LOGIN_MODE_PARAMETER = "login_mode";
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -43,9 +41,9 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
      */
     public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
         //optional target URL: when login is complete, user will be redirected to this location
-        String targetURI = request.getParameter( INITIATE_LOGIN_RETURN_URI_PARAMETER );
-        String modeParam = request.getParameter( INITIATE_LOGIN_LOGIN_MODE_PARAMETER );
-         LoginMode mode = null;
+        String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
+        String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
+        LoginMode mode = null;
         if (modeParam != null){
             for (LoginMode val : LoginMode.values()){
                 if (modeParam.trim().equalsIgnoreCase( val.name() )){
