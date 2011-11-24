@@ -26,32 +26,58 @@ import org.opensaml.saml2.core.Attribute;
 
 
 /**
- * <h2>{@link LinkIDJavaScriptLoginLink}<br> <sub>A link that uses the linkID SDK to log a user in through the linkID authentication
- * services.</sub></h2>
- * <p/>
- * <p> <i>Sep 22, 2008</i> </p>
+ * <h2>{@link LinkIDJavaScriptLoginLink}<br> <sub>A link that uses the linkID SDK to log a user in through the linkID authentication services.
+ * Needs 'linkid.login.js' on the page, but this class can add it itself.
  *
- * @author lhunath
+ * </sub></h2>
+ * <p/>
+ * <p> <i>Nov 24, 2011</i> </p>
+ *
+ * @author sgdesmet
  */
 public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
 
-    protected boolean addJS = false;
+    protected boolean addJS;
 
+    /**
+     * Constructor. Adds 'linkid.login.js' to the page.
+     * @param id
+     */
     public LinkIDJavaScriptLoginLink(String id) {
 
-        this( id, null, false );
+        this( id, null, true );
     }
 
+        /**
+     * Constructor. Adds 'linkid.login.js' to the page.
+     * @param id
+     * @param target
+     */
     public LinkIDJavaScriptLoginLink(String id, Class<? extends Page> target) {
 
-        this( id, target, false );
+        this( id, target, true );
     }
 
+    /**
+     * Constructor. If addJS is true, the 'linkid.login.js' javascript will be added automatically to the page.
+     * If false, it is the task of the web developer to ensure that this JavaScript is added. This component will not work
+     * without it.
+     * @param id
+     * @param addJS
+     */
     public LinkIDJavaScriptLoginLink(String id, boolean addJS) {
 
         this( id, null, addJS );
     }
-    
+
+    /**
+     * Constructor. If addJS is true, the 'linkid.login.js' javascript will be added automatically to the page.
+     * If false, it is the task of the web developer to ensure that this JavaScript is added. This component will not work
+     * without it.
+     * @param id
+     * @param target
+     * @param addJS
+     */
     public LinkIDJavaScriptLoginLink(String id, Class<? extends Page> target, boolean addJS) {
 
         super( id, target );
