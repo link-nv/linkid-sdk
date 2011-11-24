@@ -11,6 +11,7 @@ import com.google.common.base.Function;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
+import net.link.safeonline.sdk.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;

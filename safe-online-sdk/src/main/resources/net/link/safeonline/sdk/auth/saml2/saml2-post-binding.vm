@@ -58,6 +58,10 @@
                 <input type="hidden" name="IsBreakFrame" value="${IsBreakFrame}"/>
             #end
 
+            #if($LoginMode)
+                <input type="hidden" name="LoginMode" value="${LoginMode}"/>
+            #end
+
             <noscript>
                 <input type="submit" value="Continue"/>
             </noscript>

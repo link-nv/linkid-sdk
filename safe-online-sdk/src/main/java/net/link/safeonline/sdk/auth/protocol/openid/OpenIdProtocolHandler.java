@@ -48,6 +48,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
     static {
         try {
             Message.addExtensionFactory( AuthenticatedDevicesMessage.class );
+            Message.addExtensionFactory( UserInterfaceMessage.class );
         }
         catch (MessageException e) {
             throw new RuntimeException( e );
