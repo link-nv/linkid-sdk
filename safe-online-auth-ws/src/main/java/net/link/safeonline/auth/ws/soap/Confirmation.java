@@ -12,11 +12,11 @@ import java.util.Map;
 
 /**
  * <h2>{@link Confirmation}</h2>
- *
+ * <p/>
  * <p>
  * [description / usage].
  * </p>
- *
+ * <p/>
  * <p>
  * <i>Jan 13, 2008</i>
  * </p>
@@ -30,7 +30,7 @@ public enum Confirmation {
 
     private final String value;
 
-    private final static Map<String, Confirmation> confirmationMap = new HashMap<String, Confirmation>();
+    private static final Map<String, Confirmation> confirmationMap = new HashMap<String, Confirmation>();
 
     static {
         Confirmation[] confirmations = Confirmation.values();
@@ -39,8 +39,7 @@ public enum Confirmation {
         }
     }
 
-
-    private Confirmation(String value) {
+    Confirmation(String value) {
 
         this.value = value;
     }
@@ -60,7 +59,7 @@ public enum Confirmation {
 
         Confirmation confirmation = confirmationMap.get( confirmationValue );
         if (null == confirmation)
-            throw new IllegalArgumentException( "unknown confirmation: " + confirmationValue );
+            throw new IllegalArgumentException( String.format( "unknown confirmation: %s", confirmationValue ) );
         return confirmation;
     }
 }
