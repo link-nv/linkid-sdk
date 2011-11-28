@@ -6,11 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
-import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.LogoutContext;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
-import net.link.util.wicket.util.RedirectToPageException;
-import org.apache.wicket.Session;
 
 
 /**
@@ -46,7 +43,7 @@ public class InitiateLogoutServlet extends AbstractLinkIDInjectionServlet {
             redirected = AuthenticationUtils.logout( request, response, new LogoutContext( null, null, targetURI ) );
 
         if (!redirected) {
-            Session.get().invalidateNow();
+            request.getSession().invalidate();
         }
     }
 }
