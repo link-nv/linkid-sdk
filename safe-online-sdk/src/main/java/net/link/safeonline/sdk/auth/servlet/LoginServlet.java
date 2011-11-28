@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.auth.servlet;
 
 import com.google.common.base.Function;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import net.link.safeonline.sdk.auth.RequestConstants;
@@ -16,6 +17,7 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.safeonline.sdk.configuration.LoginMode;
 import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
 import net.link.util.error.ValidationFailedException;
 import net.link.util.servlet.ErrorMessage;
@@ -66,7 +68,35 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
             onLogin( request.getSession(), authnResponse );
 
-            response.sendRedirect( authnResponse.getRequest().getTarget() );
+            String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
+            LoginMode mode = null;
+            if (modeParam != null){
+                for (LoginMode val : LoginMode.values()){
+                    if (modeParam.trim().equalsIgnoreCase( val.name() )){
+                        mode = val;
+                        break;
+                    }
+                }
+            }
+
+            if (mode == LoginMode.POPUP){
+                response.setContentType( "text/html" );
+                PrintWriter out = response.getWriter();
+                out.println( "<html>" );
+                out.println( "<head>" );
+                out.println( "<script type=\"text/javascript\">" );
+                out.println( "window.opener.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
+                out.println( "window.close();" );
+                out.println( "</script>" );
+                out.println( "</head>" );
+                out.println( "<body>" );
+                out.println( "<noscript><p>You are successfully logged in. Since your browser does not support JavaScript, you must close this popup window and refresh the original window manually.</p></noscript>" );
+                out.println( "</body>" );
+                out.println( "</html>" );
+            }
+            else {
+                response.sendRedirect( authnResponse.getRequest().getTarget() );
+            }
         }
         catch (ValidationFailedException ignored) {
             LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null,

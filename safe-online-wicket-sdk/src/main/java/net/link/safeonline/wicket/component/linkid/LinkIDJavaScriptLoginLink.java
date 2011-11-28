@@ -38,6 +38,7 @@ import org.opensaml.saml2.core.Attribute;
 public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
 
     protected boolean addJS;
+    protected LoginMode loginMode = null;
 
     /**
      * Constructor. Adds 'linkid.login.js' to the page.
@@ -85,6 +86,20 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
         this.add( new AttributeAppender("class", new Model<String>("linkid-login"), " ") );
     }
 
+    public LoginMode getLoginMode() {
+
+        return loginMode;
+    }
+
+    /**
+     * Set the login style (redirect, popup window, modal window). Only used if this parameter has not already been set by linkid.login.js
+     * @param loginMode
+     */
+    public void setLoginMode(final LoginMode loginMode) {
+
+        this.loginMode = loginMode;
+    }
+
     public boolean isAddJS() {
 
         return addJS;
@@ -125,12 +140,12 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
      * the
      * process has been completed.
      *
-     * @param target               The page where the user should end up after delegation.
+     * @param targetPage               The page where the user should end up after delegation.
      * @param targetPageParameters The parameters to pass to the page on construction.
      *
      * @return A new logout context.
      */
-    protected AuthenticationContext newContext(final Class<? extends Page> target, final PageParameters targetPageParameters) {
+    protected AuthenticationContext newContext(final Class<? extends Page> targetPage, final PageParameters targetPageParameters) {
 
         WebRequest request = getWebRequest();
         String targetURL = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
@@ -145,8 +160,12 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
             }
         }
 
-        if (target == null){
-            targetURL = RequestCycle.get().urlFor( target, targetPageParameters ).toString();
+        if (targetURL == null){
+            targetURL = RequestCycle.get().urlFor( targetPage, targetPageParameters ).toString();
+        }
+
+        if (mode == null){
+            mode = loginMode;
         }
 
         return new AuthenticationContext(null, null, null, targetURL, mode);

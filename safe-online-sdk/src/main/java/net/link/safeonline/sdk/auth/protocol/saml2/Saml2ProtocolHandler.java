@@ -267,7 +267,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         ResponseUtil.sendResponse( logoutExitService, logoutContext.getSAML().getBinding(), samlLogoutResponse,
                 logoutContext.getApplicationKeyPair(), certificateChain, response, logoutContext.getSAML().getRelayState(),
-                templateResourceName, null, false );
+                templateResourceName, null, null );
 
         String status = samlLogoutResponse.getStatus().getStatusCode().getValue();
         return new LogoutProtocolResponseContext( logoutRequestContext, samlLogoutResponse.getID(), //

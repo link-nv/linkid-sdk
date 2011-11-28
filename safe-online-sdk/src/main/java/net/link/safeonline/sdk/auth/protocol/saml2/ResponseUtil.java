@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
+import net.link.safeonline.sdk.configuration.LoginMode;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.error.ValidationFailedException;
@@ -57,19 +58,19 @@ public abstract class ResponseUtil {
      * @param postTemplateResource The resource that contains the template of the SAML HTTP POST Binding message.
      * @param language             A language hint to make the application retrieving the response use the same locale as the requesting
      *                             application.
-     * @param breakFrame           Used in browser post form to jump out of an iframe if wanted ( target="_top" )
+     * @param loginMode           Used in browser post form to jump out of an iframe if wanted ( target="_top" ), or jump out of a popup window
      *
      * @throws IOException IO Exception
      */
     public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse,
                                     KeyPair signingKeyPair, CertificateChain certificateChain, HttpServletResponse response,
-                                    String relayState, String postTemplateResource, @Nullable Locale language, boolean breakFrame)
+                                    String relayState, String postTemplateResource, @Nullable Locale language, LoginMode loginMode)
             throws IOException {
 
         switch (responseBinding) {
             case HTTP_POST:
                 PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                        response, language, breakFrame );
+                        response, language, loginMode );
                 break;
 
             case HTTP_REDIRECT:

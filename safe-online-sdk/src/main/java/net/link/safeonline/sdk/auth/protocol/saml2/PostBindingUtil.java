@@ -141,10 +141,10 @@ public abstract class PostBindingUtil {
     @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
     public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain,
                                     String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                    Locale language, boolean breakFrame)
+                                    Locale language, LoginMode loginMode)
             throws IOException {
 
-        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + breakFrame + "):\n"
+        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + (loginMode != null && loginMode == LoginMode.FRAMED) + "):\n"
                    + DomUtils.domToString( LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
         String encodedSamlResponseToken = new String( Base64.encode(
@@ -175,7 +175,10 @@ public abstract class PostBindingUtil {
             velocityContext.put( "RelayState", relayState );
         if (null != language)
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
-        if (breakFrame)
+        if ( loginMode != null){
+            velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
+        }
+        if (loginMode != null && loginMode == LoginMode.FRAMED)
             velocityContext.put( "BreakFrame", "true" );
 
         Template template;
