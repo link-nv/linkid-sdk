@@ -1085,7 +1085,179 @@ public class MyConfigFilter extends SDKConfigFilter {
                 in its configuration of your application so that it knows where to send users to when these users initiate single-sign-out
                 from another application.
             </para>
+            </section>
+        <section>
+            <?dbfo-need height="10cm" ?>
+            <title>Integrating the linkID login process</title>
+            <para>
+                In order to integrate the linkID authentication process in a seamless and uniform way across applications, the linkID
+                SDK provides a number of options.
+            </para>
+            <para>
+                First, the previously mentioned <code>AuthenticationContext</code> has a parameter <code>loginmode</code> allowing
+                you to manually specify how you will display the login process in your application (e.g. inside a popup window, embedded in the
+                page, etc.). Based on the value of this parameter, the linkID platform will take a number of decisions on how to display
+                the authentication process:
+                <variablelist>
+                    <varlistentry>
+                        <term>Redirect</term>
+                        <listitem>
+                            <para>
+                                When the authentication process is started, the user leaves the original page and is redirected to the
+                                normal linkID authentication application pages. When the authentication process is complete, the user
+                                will be redirected back to the original page. This is the default if not specified.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Popup</term>
+                        <listitem>
+                            <para>
+                                This indicates to linkID that the authentication process will take place in a popup window. LinkID will
+                                use a custom CSS style to display the login process in a popup window. Note that this window is required
+                                to have a size of 640x480 pixels.
+                                Furthermore, upon completion of the authentication process, the <code>LoginServlet</code>
+                                landing servlet will not issue a redirect to the user (as is the case in the previous mode), but instead
+                                generate a special response page containing javascript which causes the popup window to close and the parent
+                                page (the main page) to refresh.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Framed</term>
+                        <listitem>
+                            <para>
+                                This indicates to linkID that the authentication process will run inside an <code>iframe</code> (for example
+                                in a JavaScript modal window). The iframe is assumed to be 640x480 pixels. LinkID will set an appropriate
+                                style for the framed login process, and upon completion of the authentication process submits to result back
+                                to the frame's parent, instead of the frame itself.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+            <para>
+                Furthermore, two complementary components are available to allow you to quickly add a linkID login procedure to your pages.
+                More precisely, there is a client-side JavaScript widget allowing you to quickly add a linkID login link to your pages, and a
+                server-side servlet to handle initiating the login process.
+            </para>
+            <para>
+               The JavaScript widget is called <code>linkid.login.js</code> and is provided both in the SDK and hosted on the linkID servers.
+               It allows you to quickly add a LinkID login link or button to any web page by adding an anchor tag with a certain class.
+               The widget also offers a number of configuration options allowing you to style the login process to your needs (for example,
+               open the login window in a popup or in a modal window).
+            </para>
+            <para>
+               To use the widget, simply import the JavaScript in the head of your html document, and once you have done this
+               you can create a login link using the <code><![CDATA[<a href="#" class="linkid-login">Login!</a>]]></code> element as illustrated below:
+               <programlisting language="xml" linenumbering="numbered"><![CDATA[
+                   <html>
+                       <head>
+                           <title>My LinkID Login Page</title>
+                           <script type="text/javascript" id="linkid-login-script"
+                                    src="http://demo.linkid.be/linkid-user/resources/common/js/linkid.login.js" />
+                       </head>
+                       <body>
+                           <a href="#" class="linkid-login">My first linkID login!</a>
+                       </body>
+                   </html>]]>
+               </programlisting>
+               This particular snippet will create a link which will start the linkID authentication process in an iframe, shown in a modal window. The configuraton
+                options will be discussed later on.
+            </para>
+            <para>
+                The widget is currently hosted on either
+                <code><![CDATA[http://<linkidinstance>/linkid-user/resources/common/js/linkid.login.js"]]></code> or
+                <code><![CDATA[http://<linkidinstance>/linkid-auth/resources/common/js/linkid.login.js"]]></code>.
+                Minified versions are also available (<code> linkid.login-min.js</code>).
+            </para>
+            <para>
+                It should be noted that the authentication request (be it a SAML2 or OpenID request) naturally needs to be generated server-side
+                in your application. Thus, the login widget cannot work on its own and needs a server side component which creates the authentication context
+                and request, and starts the authentication process by calling <code>login</code> on <code>AuthenticationUtils</code>.
+            </para>
+            <para>
+                You can manually create such a component (for example, a servlet), as discussed in the previous sections, using the authentication utils.
+                However, if you do not need custom functionality a convenience servlet is already provided for you in the SDK which
+                does just this: <code>InitiateLoginServlet</code>. Simply add the following code to your <code>web.xml</code> in order
+                to add it tou your project:
+                <programlisting language="xml" linenumbering="numbered"><![CDATA[
+                    <servlet>
+                        <servlet-name>AutoLoginServlet</servlet-name>
+                        <servlet-class>net.link.safeonline.sdk.auth.servlet.InitiateLoginServlet</servlet-class>
+                    </servlet>
+                    <servlet-mapping>
+                        <servlet-name>AutoLoginServlet</servlet-name>
+                        <url-pattern>/startlogin</url-pattern>
+                    </servlet-mapping>]]>
+               </programlisting>
+                Navigating to the servlet's URL will cause the authentication procedure to be started on linkID.
+            </para>
+            <para>
+                Both the login widget and login servlet have a number of parameters which can be set. The <code>InitiateLoginServlet</code> accepts
+                the following query parameters:
+                <variablelist>
+                    <varlistentry>
+                        <term>login_mode</term>
+                        <listitem>
+                            <para>
+                                The type of login which will be set on the <code>AuthenticationContext</code> (see earlier). Possible values are:
+                                'redirect', 'framed', 'popup' (see also the <code>LoginMode</code> and
+                                <code>AuthenticationContext</code> classes in the SDK).
+                                Defaults to redirect.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>return_uri</term>
+                        <listitem>
+                            <para>
+                                The URL to return to upon completion of the authentication process. See <code>AuthenticationContext</code>
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+
+                In order to configure the login widget, the following attributes can be set on each anchor tag containing the 'linkid-login'
+                class:
+                <variablelist>
+                    <varlistentry>
+                        <term>href</term>
+                        <listitem>
+                            <para>
+                                Sets the URL for <code>InitiateLoginServlet</code> or any other similar component which starts the authentication
+                                process. Defaults to <code>/startlogin</code> if not set or set to "#".
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>login-mode</term>
+                        <listitem>
+                            <para>
+                                Sets the login mode and adds the <code>login_mode</code> query parameter to the login URL. Possible values are:
+                                'redirect', 'framed', 'popup' (default is framed). If the value is 'popup', a popup will be opened, if the value
+                                is 'framed', a modal window containing an iframe will be opened.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>redirect-to-on-complete</term>
+                        <listitem>
+                            <para>
+                                Specifies the URL to return to after the authentication process is complete (sets the return_uri query parameter
+                                for the <code>InitiateLoginServlet</code>). Defaults to the current page.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+
+            </para>
+            <para>
+                Thus, using both the JavaScript login widget and the <code>InitiateLoginServlet</code> you can easily and quickly add a LinkID login
+                to your application.
+            </para>
         </section>
+
 
         <section>
             <?dbfo-need height="10cm" ?>
@@ -1178,6 +1350,13 @@ public class MyConfigFilter extends SDKConfigFilter {
             links that invoke <code>AuthenticationUtils</code>' <code>login</code> and <code>logout</code> methods, respectively.  The
             components, like many other SDK classes, can be extended (as new classes or anonymous inner classes) to customize the parameters
             used to initiate these login and logout requests with linkID.
+        </para>
+        <para>
+            Another provided component is the <code>LinkIDJavaScriptLoginLink</code>. It provides the same functionality as <code>LinkIDLoginLink</code>,
+            but works in conjunction with the JavaScript login widget mentioned previously. If specified, the component will automatically add
+            the <code>linkid.login.js</code> widget to the page's header. Note that it is not required to add the <code>InitiateLoginServlet</code> to
+            your project, as this component also serves as the target for the login widget, and invokes <code>AuthenticationUtils</code>' <code>login</code>
+            by itself.
         </para>
         <para>
             As a wrapper for the SDK's <code>LoginManager</code> utility methods, the wicket SDK provides <code>LinkIDWicketUtils</code>.
