@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.configuration.*;
 import net.link.util.common.CertificateChain;
@@ -238,8 +238,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 samlRequest.getIssuer().getValue(), this, null, samlRequest.getNameID().getValue() );
         logoutContext = requestToContext.apply( logoutRequest );
 
-        CertificateChain certificateChain = RequestUtil.validateRequest( request, samlRequest,
-                logoutContext.getTrustedCertificates() );
+        CertificateChain certificateChain = RequestUtil.validateRequest( request, samlRequest, logoutContext.getTrustedCertificates() );
 
         logoutRequest.setCertificateChain( certificateChain );
         return logoutRequest;

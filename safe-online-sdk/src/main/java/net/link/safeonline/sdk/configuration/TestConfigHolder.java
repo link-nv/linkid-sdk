@@ -29,7 +29,7 @@ import org.joda.time.Duration;
  *
  * @author lhunath
  */
-public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfig> {
+public class TestConfigHolder extends ConfigHolder {
 
     private static TestSDKConfig testConfig;
 
@@ -57,30 +57,30 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
 
         super( new SafeOnlineDefaultConfigFactory() {
 
-                    @Override
-                    protected ServletContext getServletContext() {
+            @Override
+            protected ServletContext getServletContext() {
 
-                        return servletContext;
+                return servletContext;
+            }
+
+            @Override
+            protected ServletRequest getServletRequest() {
+
+                return new DummyServletRequest() {
+                    @Override
+                    public Locale getLocale() {
+
+                        return new Locale( "en" );
                     }
 
                     @Override
-                    protected ServletRequest getServletRequest() {
+                    public String getContextPath() {
 
-                        return new DummyServletRequest() {
-                            @Override
-                            public Locale getLocale() {
-
-                                return new Locale( "en" );
-                            }
-
-                            @Override
-                            public String getContextPath() {
-
-                                return "/";
-                            }
-                        };
+                        return "/";
                     }
-                }, TestSDKConfig.class, testConfig = new TestSDKConfig( appBase, appConfig ) );
+                };
+            }
+        }, TestSDKConfig.class, testConfig = new TestSDKConfig( appBase, appConfig ) );
     }
 
     public void install() {
@@ -124,7 +124,7 @@ public class TestConfigHolder extends ConfigHolder<TestConfigHolder.TestSDKConfi
             return jaas;
         }
 
-        @SuppressWarnings( { "unchecked" })
+        @SuppressWarnings({ "unchecked" })
         public <C extends AppConfig> C app(Class<C> appConfigType) {
 
             return checkNotNull( (C) appConfig, "Can't use app config: it hasn't been set." );

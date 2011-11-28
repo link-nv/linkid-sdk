@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.servlet.LoginServlet;
@@ -132,7 +132,7 @@ public class LoginServletTest {
                 null, Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null );
 
         // Setup Mocks
-        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) EasyMock.anyObject() ) ).andReturn( authnResponse );
+        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( authnResponse );
         replay( mockProtocolHandler );
 
         // Test

@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 import javax.servlet.http.*;
-import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.*;

@@ -9,7 +9,7 @@ package net.link.safeonline.auth.ws.json;
 
 import java.io.Serializable;
 import java.util.*;
-import net.link.safeonline.attribute.provider.AttributeSDK;
+import net.link.safeonline.attribute.AttributeSDK;
 import net.link.safeonline.auth.ws.soap.AuthenticationStep;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,5 +57,12 @@ public interface WSAuthentication extends Serializable {
             throws AuthenticationOperationFailedException;
 
     byte[] commit()
+            throws AuthenticationOperationFailedException;
+
+    void unsubscribe(String applicationName, String deviceName, Map<String, String> deviceCredentials, Locale language)
+            throws AuthenticationOperationFailedException;
+
+    List<ApplicationSubscription> getSubscriptions(String applicationName, String deviceName, Map<String, String> deviceCredentials,
+                                                   Locale language)
             throws AuthenticationOperationFailedException;
 }

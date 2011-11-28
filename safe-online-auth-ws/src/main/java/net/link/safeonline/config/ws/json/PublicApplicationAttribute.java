@@ -28,11 +28,19 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
     private final String  friendly;
     private final boolean required;
 
-    public PublicApplicationAttribute(final String name, final String friendly, final boolean required) {
+    private final boolean userVisible;
+    private final boolean userEditable;
+    private final boolean userRemovable;
+
+    public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final boolean userVisible,
+                                      final boolean userEditable, final boolean userRemovable) {
 
         this.name = name;
         this.friendly = friendly;
         this.required = required;
+        this.userVisible = userVisible;
+        this.userEditable = userEditable;
+        this.userRemovable = userRemovable;
     }
 
     public String getName() {
@@ -48,5 +56,20 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
     public boolean isRequired() {
 
         return required;
+    }
+
+    public boolean isUserVisible() {
+
+        return userVisible;
+    }
+
+    public boolean isUserEditable() {
+
+        return userEditable;
+    }
+
+    public boolean isUserRemovable() {
+
+        return userRemovable;
     }
 }
