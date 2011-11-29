@@ -8,6 +8,7 @@ package net.link.safeonline.attribute;
 
 import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -35,7 +36,7 @@ public class AttributeSDK<T extends Serializable> extends MetaObject implements 
         this( null, name, value );
     }
 
-    public AttributeSDK(final String id, final String name, final T value) {
+    public AttributeSDK(@Nullable final String id, final String name, @Nullable final T value) {
 
         this.id = id;
         this.name = name;
@@ -62,7 +63,7 @@ public class AttributeSDK<T extends Serializable> extends MetaObject implements 
         this.id = id;
     }
 
-    public void setValue(final T value) {
+    public void setValue(@Nullable final T value) {
 
         this.value = value;
     }
