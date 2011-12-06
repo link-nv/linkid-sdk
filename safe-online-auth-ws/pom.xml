@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.18</version>
     </parent>
 
     <name>SafeOnline Authentication Web Service Definition</name>
@@ -42,10 +41,7 @@
                                 </taskdef>
                                 <mkdir dir="${project.build.directory}/generated-sources/java" />
                                 <mkdir dir="${project.build.directory}/generated-classes/jaxws" />
-                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws"
-                                          verbose="true" wsdl="${basedir}/src/main/resources/safe-online-auth.wsdl"
-                                          sourcedestdir="${project.build.directory}/generated-sources/java"
-                                          catalog="${basedir}/src/main/catalog/catalog.xml">
+                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/safe-online-auth.wsdl" sourcedestdir="${project.build.directory}/generated-sources/java" catalog="${basedir}/src/main/catalog/catalog.xml">
                                     <produces dir="${project.build.directory}/generated-sources/java">
                                         <include name="**/*.java" />
                                     </produces>
@@ -104,7 +100,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.18</version>
             <type>pom</type>
         </dependency>
 
