@@ -30,10 +30,6 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
     private final boolean required;
 
     private final AttributeType attributeType;
-    //    private final DataType type;
-    //    private final boolean  userVisible;
-    //    private final boolean  userEditable;
-    //    private final boolean  userRemovable;
 
     public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final AttributeType attributeType) {
 
@@ -41,9 +37,6 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
         this.friendly = friendly;
         this.required = required;
         this.attributeType = attributeType;
-        //        this.userVisible = userVisible;
-        //        this.userEditable = userEditable;
-        //        this.userRemovable = userRemovable;
     }
 
     public String getName() {
@@ -60,21 +53,6 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
 
         return required;
     }
-
-    //    public boolean isUserVisible() {
-    //
-    //        return userVisible;
-    //    }
-    //
-    //    public boolean isUserEditable() {
-    //
-    //        return userEditable;
-    //    }
-    //
-    //    public boolean isUserRemovable() {
-    //
-    //        return userRemovable;
-    //    }
 
     public AttributeType getAttributeType() {
 
