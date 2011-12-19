@@ -45,8 +45,8 @@ public abstract class LinkIDApplication extends WebApplication {
 
         switch (ApplicationMode.get()) {
             case DEBUG:
-            case DEMO:
                 return Application.DEVELOPMENT;
+            case DEMO:
             case DEPLOYMENT:
                 return Application.DEPLOYMENT;
         }
