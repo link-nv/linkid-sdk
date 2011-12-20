@@ -152,7 +152,7 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-package-dotnet</artifactId>
+            <artifactId>safe-online-sdk-package-dotnet</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
             <version>${project.version}</version>

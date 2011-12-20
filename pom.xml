@@ -132,6 +132,8 @@
         <module>safe-online-sdk-example-jsp</module>
         <module>safe-online-sdk-example-wicket</module>
 
+        <module>repo.linkid.be</module>
+
     </modules>
 
     <dependencies>

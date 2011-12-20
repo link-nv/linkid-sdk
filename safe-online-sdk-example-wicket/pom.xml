@@ -29,41 +29,6 @@
         </developerConnection>
     </scm>
 
-    <profiles>
-        <!-- Profile that creates an SDK package -->
-        <profile>
-            <id>release</id>
-            <distributionManagement>
-                <repository>
-                    <id>repo.linkid.be</id>
-                    <url>scpexe://repo.linkid.be/home/maven/repository/releases</url>
-                </repository>
-                <snapshotRepository>
-                    <id>repo.linkid.be</id>
-                    <url>scpexe://repo.linkid.be/home/maven/repository/snapshots</url>
-                    <uniqueVersion>false</uniqueVersion>
-                </snapshotRepository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.stackoverflow</groupId>
-                        <artifactId>maven-export-plugin</artifactId>
-                        <version>${maven-export-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>output</id>
-                                <goals>
-                                    <goal>output-project</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <build>
         <resources>
             <resource>
