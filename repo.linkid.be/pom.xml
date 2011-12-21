@@ -112,7 +112,31 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk</artifactId>
+            <classifier>javadoc</classifier>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk</artifactId>
+            <classifier>sources</classifier>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-wicket-sdk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-wicket-sdk</artifactId>
+            <classifier>javadoc</classifier>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-wicket-sdk</artifactId>
+            <classifier>sources</classifier>
             <version>${project.version}</version>
         </dependency>
         <dependency>
