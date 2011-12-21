@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online</groupId>
         <artifactId>client</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.19</version>
     </parent>
 
     <!-- PROJECT METADATA -->
@@ -39,7 +39,7 @@
             <dependency>
                 <groupId>net.lin-k.safe-online.client.sdk</groupId>
                 <artifactId>safe-online-container-saml</artifactId>
-                <version>GIT-SNAPSHOT</version>
+                <version>1.19</version>
                 <type>pom</type>
             </dependency>
 
