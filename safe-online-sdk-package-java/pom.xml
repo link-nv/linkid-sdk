@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.19</version>
     </parent>
 
     <name>SafeOnline Java SDK Package</name>
@@ -34,7 +34,7 @@
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
                                     <artifactId>safe-online-sdk-manual</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
+                                    <version>1.19</version>
                                     <classifier>package</classifier>
                                     <type>zip</type>
                                 </artifactItem>
@@ -55,7 +55,7 @@
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
                                     <artifactId>safe-online-sdk-manual-java</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
+                                    <version>1.19</version>
                                     <classifier>package</classifier>
                                     <type>zip</type>
                                 </artifactItem>
@@ -76,7 +76,7 @@
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
                                     <artifactId>safe-online-sdk</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
+                                    <version>1.19</version>
                                     <classifier>javadoc</classifier>
                                 </artifactItem>
                             </artifactItems>
@@ -96,7 +96,7 @@
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
                                     <artifactId>safe-online-sdk</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
+                                    <version>1.19</version>
                                     <classifier>sources</classifier>
                                 </artifactItem>
                             </artifactItems>
@@ -136,7 +136,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
 
     </dependencies>

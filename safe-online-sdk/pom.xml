@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.19</version>
     </parent>
 
     <name>SafeOnline SDK</name>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-container-saml</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
             <type>pom</type>
         </dependency>
 
@@ -67,57 +67,57 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-config</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-auth-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-attrib-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-data-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-idmapping-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sts-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-notification-consumer-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-notification-producer-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-notification-subscription-manager-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-session-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-xkms2-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -186,7 +186,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.19</version>
             <type>pom</type>
         </dependency>
         <dependency>
