@@ -64,7 +64,7 @@ public abstract class ResponseUtil {
      */
     public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse,
                                     KeyPair signingKeyPair, CertificateChain certificateChain, HttpServletResponse response,
-                                    String relayState, String postTemplateResource, @Nullable Locale language, LoginMode loginMode)
+                                    String relayState, String postTemplateResource, @Nullable Locale language, @Nullable LoginMode loginMode)
             throws IOException {
 
         switch (responseBinding) {

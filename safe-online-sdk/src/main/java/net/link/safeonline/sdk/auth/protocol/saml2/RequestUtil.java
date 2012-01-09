@@ -55,7 +55,7 @@ public abstract class RequestUtil {
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
                                    CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState,
-                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, LoginMode loginMode)
+                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, @Nullable LoginMode loginMode)
             throws IOException {
 
         switch (requestBinding) {
