@@ -13,8 +13,7 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 import java.io.Serializable;
 import java.security.*;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.Locale;
+import java.util.*;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
@@ -43,21 +42,23 @@ import org.openid4java.util.HttpFetcherFactory;
  */
 public abstract class LinkIDContext implements Serializable {
 
-    private final String                      applicationName;
-    private final String                      applicationFriendlyName;
-    private final KeyPair                     applicationKeyPair;
-    private final X509Certificate             applicationCertificate;
+    private String                      applicationName;
+    private String                      applicationFriendlyName;
+    private KeyPair                     applicationKeyPair;
+    private X509Certificate             applicationCertificate;
     //
-    private final Collection<X509Certificate> trustedCertificates;
-    private final String                      sessionTrackingId;
-    private final String                      themeName;
-    private final Locale                      language;
-    private final String                      target;
+    private Collection<X509Certificate> trustedCertificates;
+    private String                      sessionTrackingId;
+    private String                      themeName;
+    private Locale                      language;
+    private String                      target;
     //
-    private final Protocol                    protocol;
-    private final SAMLContext                 saml;
-    private final OpenIDContext               openID;
-    private final LoginMode                   loginMode;
+    private Protocol                    protocol;
+    private SAMLContext                 saml;
+    private OpenIDContext               openID;
+    private LoginMode                   loginMode;
+
+    private Map<String, String> deviceContext;
 
     /**
      * @see #LinkIDContext(String, KeyProvider, String)
@@ -68,14 +69,14 @@ public abstract class LinkIDContext implements Serializable {
     }
 
     /**
-     * @param applicationName The name of the application that the user is being authenticated for. May be <code>null</code>, in which case
+     * @param applicationName The name of the application that the user is being authenticated for. May be {@code null}, in which case
      *                        {@link AppLinkIDConfig#name()} will be used.
      * @param keyProvider     The provider that will provide the necessary keys and certificates to authenticate and sign the application's
-     *                        requests and responses or verify the linkID server's communications.  May be <code>null</code>, in which case
+     *                        requests and responses or verify the linkID server's communications.  May be {@code null}, in which case
      *                        {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
-     *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
+     *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
      *                        context path.
      *
      * @see #LinkIDContext(String, String, KeyProvider, String, String, Locale, String)
@@ -86,22 +87,22 @@ public abstract class LinkIDContext implements Serializable {
     }
 
     /**
-     * @param applicationName         The name of the application that the user is being authenticated for. May be <code>null</code>, in
+     * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
      *                                which case {@link AppLinkIDConfig#name()} will be used.
-     * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
+     * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param keyProvider             The provider that will provide the necessary keys and certificates to authenticate and sign the
      *                                application's requests and responses or verify the linkID server's communications.  May be
-     *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
+     *                                {@code null}, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
      *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
+     *                                {@code null}, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
+     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      *
      * @see #LinkIDContext(String, String, KeyProvider, String, String, Locale, String, Void)
@@ -127,9 +128,9 @@ public abstract class LinkIDContext implements Serializable {
     }
 
     /**
-     * @param applicationName         The name of the application that the user is being authenticated for. May be <code>null</code>, in
+     * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
      *                                which case {@link AppLinkIDConfig#name()} will be used.
-     * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
+     * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param applicationKeyPair      The application's key pair that will be used to sign the authentication request.
      * @param applicationCertificate  The certificate issued for the application's key pair.  It will be added to WS-Security headers for
@@ -138,20 +139,20 @@ public abstract class LinkIDContext implements Serializable {
      *                                message's signature is deemed trusted when the chain is valid, all certificates are valid, none are
      *                                revoked, and at least is in the set of trusted certificates.
      * @param sslCertificate          The linkID server's SSL certificate. It will be used to validate establishment of SSL-transport based
-     *                                communication with the server. May be <code>null</code>, in which case no SSL certificate validation
+     *                                communication with the server. May be {@code null}, in which case no SSL certificate validation
      *                                will take place.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
      *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
+     *                                {@code null}, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
+     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
-     *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
+     *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                             X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
@@ -160,13 +161,12 @@ public abstract class LinkIDContext implements Serializable {
 
         this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
                 sessionTrackingId, themeName, language, target, protocol, null );
-
     }
 
     /**
-     * @param applicationName         The name of the application that the user is being authenticated for. May be <code>null</code>, in
+     * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
      *                                which case {@link AppLinkIDConfig#name()} will be used.
-     * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
+     * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param applicationKeyPair      The application's key pair that will be used to sign the authentication request.
      * @param applicationCertificate  The certificate issued for the application's key pair.  It will be added to WS-Security headers for
@@ -175,24 +175,28 @@ public abstract class LinkIDContext implements Serializable {
      *                                message's signature is deemed trusted when the chain is valid, all certificates are valid, none are
      *                                revoked, and at least is in the set of trusted certificates.
      * @param sslCertificate          The linkID server's SSL certificate. It will be used to validate establishment of SSL-transport based
-     *                                communication with the server. May be <code>null</code>, in which case no SSL certificate validation
+     *                                communication with the server. May be {@code null}, in which case no SSL certificate validation
      *                                will take place.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
      *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
+     *                                {@code null}, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
+     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
-     *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
-     * @param loginMode               Indicates to the LinkID services how the login procedure wil be shown visually at client side: a redirect
-     *                                to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window). Based on this
-     *                                information, LinkID services can make decisions on for example theme's to use, and wether or not authorisation
-     *                                responses should try to break out of an iframe (needed when showing the login inside an iframe). If <code>null</code>,
+     *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
+     * @param loginMode               Indicates to the LinkID services how the login procedure wil be shown visually at client side: a
+     *                                redirect
+     *                                to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window). Based on
+     *                                this
+     *                                information, LinkID services can make decisions on for example theme's to use, and wether or not
+     *                                authorisation
+     *                                responses should try to break out of an iframe (needed when showing the login inside an iframe). If
+     *                                {@code null},
      *                                will default to redirect mode, unless the legacy breakFrame configuration option has been enabled.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
@@ -213,8 +217,8 @@ public abstract class LinkIDContext implements Serializable {
         this.language = ifNotNullElseNullable( language, config().linkID().language() );
         this.target = target;
         this.protocol = ifNotNullElse( protocol, config().proto().defaultProtocol() );
-        if (loginMode == null){
-            if (config().proto().saml().breakFrame()){ //legacy breakFrame option support
+        if (loginMode == null) {
+            if (config().proto().saml().breakFrame()) { //legacy breakFrame option support
                 this.loginMode = LoginMode.FRAMED;
             } else {
                 this.loginMode = LoginMode.REDIRECT;
@@ -223,7 +227,6 @@ public abstract class LinkIDContext implements Serializable {
             this.loginMode = loginMode;
         }
     }
-    
 
     public String getApplicationName() {
 
@@ -285,8 +288,84 @@ public abstract class LinkIDContext implements Serializable {
         return openID;
     }
 
-    public LoginMode getLoginMode(){
+    public LoginMode getLoginMode() {
+
         return loginMode;
+    }
+
+    public Map<String, String> getDeviceContext() {
+
+        return deviceContext;
+    }
+
+    public void setDeviceContext(final Map<String, String> deviceContext) {
+
+        this.deviceContext = deviceContext;
+    }
+
+    public void setApplicationName(final String applicationName) {
+
+        this.applicationName = applicationName;
+    }
+
+    public void setApplicationFriendlyName(final String applicationFriendlyName) {
+
+        this.applicationFriendlyName = applicationFriendlyName;
+    }
+
+    public void setApplicationKeyPair(final KeyPair applicationKeyPair) {
+
+        this.applicationKeyPair = applicationKeyPair;
+    }
+
+    public void setApplicationCertificate(final X509Certificate applicationCertificate) {
+
+        this.applicationCertificate = applicationCertificate;
+    }
+
+    public void setTrustedCertificates(final Collection<X509Certificate> trustedCertificates) {
+
+        this.trustedCertificates = trustedCertificates;
+    }
+
+    public void setSessionTrackingId(final String sessionTrackingId) {
+
+        this.sessionTrackingId = sessionTrackingId;
+    }
+
+    public void setThemeName(final String themeName) {
+
+        this.themeName = themeName;
+    }
+
+    public void setLanguage(final Locale language) {
+
+        this.language = language;
+    }
+
+    public void setTarget(final String target) {
+
+        this.target = target;
+    }
+
+    public void setProtocol(final Protocol protocol) {
+
+        this.protocol = protocol;
+    }
+
+    public void setSaml(final SAMLContext saml) {
+
+        this.saml = saml;
+    }
+
+    public void setOpenID(final OpenIDContext openID) {
+
+        this.openID = openID;
+    }
+
+    public void setLoginMode(final LoginMode loginMode) {
+
+        this.loginMode = loginMode;
     }
 
     @Override
@@ -309,9 +388,9 @@ public abstract class LinkIDContext implements Serializable {
         }
 
         /**
-         * @param binding    The SAML binding that should be used to establish SAML communication.  May be <code>null</code>, in which case
+         * @param binding    The SAML binding that should be used to establish SAML communication.  May be {@code null}, in which case
          *                   the value of {@link SAMLProtocolConfig#binding()} will be used.
-         * @param relayState The Relay State that is sent along with SAML communications. May be <code>null</code>, in which case the value
+         * @param relayState The Relay State that is sent along with SAML communications. May be {@code null}, in which case the value
          *                   of {@link SAMLProtocolConfig#relayState()} will be used.
          */
         public SAMLContext(SAMLBinding binding, String relayState, Boolean breakFrame) {
@@ -348,7 +427,7 @@ public abstract class LinkIDContext implements Serializable {
         private final X509Certificate sslCertificate;
 
         /**
-         * @param sslCertificate optional SSL certificate of the LinkID Service. If <code>null</code> all SSL certificates are considered
+         * @param sslCertificate optional SSL certificate of the LinkID Service. If {@code null} all SSL certificates are considered
          *                       trusted.
          */
         public OpenIDContext(X509Certificate sslCertificate) {

@@ -11,11 +11,14 @@ import static org.junit.Assert.*;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
+import net.link.util.saml.Saml2Utils;
+import net.link.util.saml.SamlUtils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import org.apache.commons.logging.Log;
@@ -55,10 +58,10 @@ public class AuthnRequestFactoryTest {
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
-                destinationURL, devices, false, session );
-        String samlAuthnRequestToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, null ));
+                destinationURL, devices, false, session, null );
+        String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
 
-        LOG.debug( DomUtils.domToString( LinkIDSaml2Utils.marshall( samlAuthnRequest ) ) );
+        LOG.debug( DomUtils.domToString( SamlUtils.marshall( samlAuthnRequest ) ) );
 
         long end = System.currentTimeMillis();
 
@@ -117,8 +120,8 @@ public class AuthnRequestFactoryTest {
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
-                destinationURL, devices, false, session );
-        String samlAuthnRequestToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlAuthnRequest, keyPair, certificateChain ));
+                destinationURL, devices, false, session, null );
+        String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, certificateChain ) );
         long end = System.currentTimeMillis();
 
         // Verify
@@ -133,12 +136,13 @@ public class AuthnRequestFactoryTest {
         assertNotNull( resultAuthnRequest.getSignature() );
         assertNotNull( resultAuthnRequest.getSignature().getKeyInfo() );
 
-        CertificateChain resultCertificateChain = new CertificateChain( KeyInfoHelper.getCertificates( resultAuthnRequest.getSignature().getKeyInfo() ) );
+        CertificateChain resultCertificateChain = new CertificateChain(
+                KeyInfoHelper.getCertificates( resultAuthnRequest.getSignature().getKeyInfo() ) );
         assertEquals( 2, resultCertificateChain.getOrderedCertificateChain().size() );
         assertEquals( rootCertificate, resultCertificateChain.getRootCertificate() );
         assertEquals( certificate, resultCertificateChain.getIdentityCertificate() );
 
-        LinkIDSaml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
+        Saml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
     }
 
     private static Element createNsElement(Document document) {

@@ -9,6 +9,8 @@ import java.util.*;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -20,8 +22,8 @@ import net.link.util.config.KeyProvider;
  */
 public class AuthenticationContext extends LinkIDContext {
 
-    private final boolean     forceAuthentication;
-    private final Set<String> devices;
+    private boolean     forceAuthentication;
+    private Set<String> devices;
 
     /**
      * @see #AuthenticationContext(String, KeyProvider, Set, String)
@@ -32,16 +34,16 @@ public class AuthenticationContext extends LinkIDContext {
     }
 
     /**
-     * @param applicationName The name of the application that the user is being authenticated for. May be <code>null</code>, in which case
+     * @param applicationName The name of the application that the user is being authenticated for. May be {@code null}, in which case
      *                        {@link AppLinkIDConfig#name()} will be used.
      * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
-     *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
+     *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
      *                        context path.
      * @param protocol        Authentication protocol to use
      * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this
      *                        set
-     *                        cannot be used by the user to authenticate himself as a result of this call.  May be <code>null</code> or
+     *                        cannot be used by the user to authenticate himself as a result of this call.  May be {@code null} or
      *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the
      *                        application's
      *                        device policy configured at the linkID node may further restrict the available devices.
@@ -54,18 +56,18 @@ public class AuthenticationContext extends LinkIDContext {
     }
 
     /**
-     * @param applicationName The name of the application that the user is being authenticated for. May be <code>null</code>, in which case
+     * @param applicationName The name of the application that the user is being authenticated for. May be {@code null}, in which case
      *                        {@link AppLinkIDConfig#name()} will be used.
      * @param keyProvider     The provider that will provide the necessary keys and certificates to authenticate and sign the application's
-     *                        requests and responses or verify the linkID server's communications.  May be <code>null</code>, in which case
+     *                        requests and responses or verify the linkID server's communications.  May be {@code null}, in which case
      *                        {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
-     *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
+     *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
      *                        context path.
      * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this
      *                        set
-     *                        cannot be used by the user to authenticate himself as a result of this call.  May be <code>null</code> or
+     *                        cannot be used by the user to authenticate himself as a result of this call.  May be {@code null} or
      *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the
      *                        application's
      *                        device policy configured at the linkID node may further restrict the available devices.
@@ -77,19 +79,19 @@ public class AuthenticationContext extends LinkIDContext {
         this( applicationName, null, keyProvider, false, devices, null, null, null, target );
     }
 
-       /**
-     * @param applicationName The name of the application that the user is being authenticated for. May be <code>null</code>, in which case
+    /**
+     * @param applicationName The name of the application that the user is being authenticated for. May be {@code null}, in which case
      *                        {@link AppLinkIDConfig#name()} will be used.
      * @param keyProvider     The provider that will provide the necessary keys and certificates to authenticate and sign the application's
-     *                        requests and responses or verify the linkID server's communications.  May be <code>null</code>, in which case
+     *                        requests and responses or verify the linkID server's communications.  May be {@code null}, in which case
      *                        {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
-     *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
+     *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
      *                        context path.
      * @param devices         A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in this
      *                        set
-     *                        cannot be used by the user to authenticate himself as a result of this call.  May be <code>null</code> or
+     *                        cannot be used by the user to authenticate himself as a result of this call.  May be {@code null} or
      *                        empty, in which case the user is free to pick from any supported devices.  NOTE: Either way, the
      *                        application's
      *                        device policy configured at the linkID node may further restrict the available devices.
@@ -102,26 +104,26 @@ public class AuthenticationContext extends LinkIDContext {
     }
 
     /**
-     * @param applicationName         The name of the application that the user is being authenticated for. May be <code>null</code>, in
+     * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
      *                                which case {@link AppLinkIDConfig#name()} will be used.
-     * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
+     * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param keyProvider             The provider that will provide the necessary keys and certificates to authenticate and sign the
      *                                application's requests and responses or verify the linkID server's communications.  May be
-     *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
-     * @param forceAuthentication     If <code>true</code>, users initiating authentication while in a live SSO environment will still be
+     *                                {@code null}, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
+     * @param forceAuthentication     If {@code true}, users initiating authentication while in a live SSO environment will still be
      *                                required to fully identify and authenticate themselves with a device.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
      *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
+     *                                {@code null}, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
+     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      * @param devices                 A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in
      *                                this set cannot be used by the user to authenticate himself as a result of this call.  May be
-     *                                <code>null</code> or empty, in which case the user is free to pick from any supported devices.  NOTE:
+     *                                {@code null} or empty, in which case the user is free to pick from any supported devices.  NOTE:
      *                                Either way, the application's device policy configured at the linkID node may further restrict the
      *                                available devices.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
@@ -130,11 +132,13 @@ public class AuthenticationContext extends LinkIDContext {
      * @see #AuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, String, Locale, String,
      *      Set, String, Protocol)
      */
-    public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider,
-                                 boolean forceAuthentication, Set<String> devices, String sessionTrackingId, String themeName,
-                                 Locale language, String target) {
+    public AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider,
+                                 boolean forceAuthentication, Set<String> devices, @Nullable String sessionTrackingId,
+                                 @Nullable String themeName, @Nullable Locale language, String target) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
+            @NotNull
+            @Override
             public KeyProvider get() {
 
                 return config().linkID().app().keyProvider();
@@ -142,45 +146,50 @@ public class AuthenticationContext extends LinkIDContext {
         } ), forceAuthentication, themeName, language, target, devices, sessionTrackingId, null, null );
     }
 
-        /**
-     * @param applicationName         The name of the application that the user is being authenticated for. May be <code>null</code>, in
+    /**
+     * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
      *                                which case {@link AppLinkIDConfig#name()} will be used.
-     * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
+     * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param keyProvider             The provider that will provide the necessary keys and certificates to authenticate and sign the
      *                                application's requests and responses or verify the linkID server's communications.  May be
-     *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
-     * @param forceAuthentication     If <code>true</code>, users initiating authentication while in a live SSO environment will still be
+     *                                {@code null}, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
+     * @param forceAuthentication     If {@code true}, users initiating authentication while in a live SSO environment will still be
      *                                required to fully identify and authenticate themselves with a device.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
      *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
+     *                                {@code null}, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
+     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      * @param devices                 A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in
      *                                this set cannot be used by the user to authenticate himself as a result of this call.  May be
-     *                                <code>null</code> or empty, in which case the user is free to pick from any supported devices.  NOTE:
+     *                                {@code null} or empty, in which case the user is free to pick from any supported devices.  NOTE:
      *                                Either way, the application's device policy configured at the linkID node may further restrict the
      *                                available devices.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
-     * @param loginMode               Indicates to the LinkID services how the login procedure wil be shown visually at client side: a redirect
-     *                                to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window). Based on this
-     *                                information, LinkID services can make decisions on for example theme's to use, and wether or not authorisation
-     *                                responses should try to break out of an iframe (needed when showing the login inside an iframe). If <code>null</code>,
+     * @param loginMode               Indicates to the LinkID services how the login procedure wil be shown visually at client side: a
+     *                                redirect
+     *                                to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window). Based on
+     *                                this
+     *                                information, LinkID services can make decisions on for example theme's to use, and wether or not
+     *                                authorisation
+     *                                responses should try to break out of an iframe (needed when showing the login inside an iframe). If
+     *                                {@code null},
      *                                will default to redirect mode, unless the legacy breakFrame configuration option has been enabled.
      *
      * @see #AuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, String, Locale, String,
      *      Set, String, Protocol)
      */
     public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider,
-                                 boolean forceAuthentication, Set<String> devices, String sessionTrackingId, String themeName,
-                                 Locale language, String target, LoginMode loginMode) {
+                                 boolean forceAuthentication, Set<String> devices, @Nullable String sessionTrackingId,
+                                 @Nullable String themeName, @Nullable Locale language, String target, LoginMode loginMode) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
+            @Override
             public KeyProvider get() {
 
                 return config().linkID().app().keyProvider();
@@ -190,7 +199,7 @@ public class AuthenticationContext extends LinkIDContext {
 
     private AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider,
                                   boolean forceAuthentication, String themeName, Locale language, String target, Set<String> devices,
-                                  String sessionTrackingId, Protocol protocol, LoginMode loginMode) {
+                                  String sessionTrackingId, @Nullable Protocol protocol, @Nullable LoginMode loginMode) {
 
         this( applicationName, applicationFriendlyName, //
                 null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
@@ -201,9 +210,9 @@ public class AuthenticationContext extends LinkIDContext {
     }
 
     /**
-     * @param applicationName         The name of the application that the user is being authenticated for. May be <code>null</code>, in
+     * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
      *                                which case {@link AppLinkIDConfig#name()} will be used.
-     * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
+     * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param applicationKeyPair      The application's key pair that will be used to sign the authentication request.
      * @param applicationCertificate  The certificate issued for the application's key pair.  It will be added to WS-Security headers for
@@ -212,28 +221,28 @@ public class AuthenticationContext extends LinkIDContext {
      *                                message's signature is deemed trusted when the chain is valid, all certificates are valid, none are
      *                                revoked, and at least is in the set of trusted certificates.
      * @param sslCertificate          The linkID server's SSL certificate. It will be used to validate establishment of SSL-transport based
-     *                                communication with the server. May be <code>null</code>, in which case no SSL certificate validation
+     *                                communication with the server. May be {@code null}, in which case no SSL certificate validation
      *                                will take place.
-     * @param forceAuthentication     If <code>true</code>, users initiating authentication while in a live SSO environment will still be
+     * @param forceAuthentication     If {@code true}, users initiating authentication while in a live SSO environment will still be
      *                                required to fully identify and authenticate themselves with a device.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
      *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
+     *                                {@code null}, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
+     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      * @param devices                 A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in
      *                                this set cannot be used by the user to authenticate himself as a result of this call.  May be
-     *                                <code>null</code>, in which case the user is free to pick from any supported devices.  NOTE: Either
+     *                                {@code null}, in which case the user is free to pick from any supported devices.  NOTE: Either
      *                                way, the application's device policy configured at the linkID node may further restrict the available
      *                                devices.  <b>Note:</b> An empty set means does NOT mean <i>all</i>, but <i>no</i> devices are
      *                                allowed!
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
-     *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
+     *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
     public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                                  X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
@@ -242,13 +251,12 @@ public class AuthenticationContext extends LinkIDContext {
 
         this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
                 forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol, null );
-
     }
 
-        /**
-     * @param applicationName         The name of the application that the user is being authenticated for. May be <code>null</code>, in
+    /**
+     * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
      *                                which case {@link AppLinkIDConfig#name()} will be used.
-     * @param applicationFriendlyName A user-friendly name of the application.  May be <code>null</code>, in which case the user-friendly
+     * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param applicationKeyPair      The application's key pair that will be used to sign the authentication request.
      * @param applicationCertificate  The certificate issued for the application's key pair.  It will be added to WS-Security headers for
@@ -257,32 +265,36 @@ public class AuthenticationContext extends LinkIDContext {
      *                                message's signature is deemed trusted when the chain is valid, all certificates are valid, none are
      *                                revoked, and at least is in the set of trusted certificates.
      * @param sslCertificate          The linkID server's SSL certificate. It will be used to validate establishment of SSL-transport based
-     *                                communication with the server. May be <code>null</code>, in which case no SSL certificate validation
+     *                                communication with the server. May be {@code null}, in which case no SSL certificate validation
      *                                will take place.
-     * @param forceAuthentication     If <code>true</code>, users initiating authentication while in a live SSO environment will still be
+     * @param forceAuthentication     If {@code true}, users initiating authentication while in a live SSO environment will still be
      *                                required to fully identify and authenticate themselves with a device.
      * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
      *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
+     *                                {@code null}, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
+     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      * @param devices                 A set of devices with which the user is allowed to authenticate himself.  Any devices that are not in
      *                                this set cannot be used by the user to authenticate himself as a result of this call.  May be
-     *                                <code>null</code>, in which case the user is free to pick from any supported devices.  NOTE: Either
+     *                                {@code null}, in which case the user is free to pick from any supported devices.  NOTE: Either
      *                                way, the application's device policy configured at the linkID node may further restrict the available
      *                                devices.  <b>Note:</b> An empty set means does NOT mean <i>all</i>, but <i>no</i> devices are
      *                                allowed!
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
-     *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
-     * @param loginMode               Indicates to the LinkID services how the login procedure wil be shown visually at client side: a redirect
-     *                                to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window). Based on this
-     *                                information, LinkID services can make decisions on for example theme's to use, and wether or not authorisation
-     *                                responses should try to break out of an iframe (needed when showing the login inside an iframe). If <code>null</code>,
+     *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
+     * @param loginMode               Indicates to the LinkID services how the login procedure wil be shown visually at client side: a
+     *                                redirect
+     *                                to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window). Based on
+     *                                this
+     *                                information, LinkID services can make decisions on for example theme's to use, and wether or not
+     *                                authorisation
+     *                                responses should try to break out of an iframe (needed when showing the login inside an iframe). If
+     *                                {@code null},
      *                                will default to redirect mode, unless the legacy breakFrame configuration option has been enabled.
      */
     public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
@@ -305,6 +317,16 @@ public class AuthenticationContext extends LinkIDContext {
     public Set<String> getDevices() {
 
         return devices;
+    }
+
+    public void setForceAuthentication(final boolean forceAuthentication) {
+
+        this.forceAuthentication = forceAuthentication;
+    }
+
+    public void setDevices(final Set<String> devices) {
+
+        this.devices = devices;
     }
 
     @Override

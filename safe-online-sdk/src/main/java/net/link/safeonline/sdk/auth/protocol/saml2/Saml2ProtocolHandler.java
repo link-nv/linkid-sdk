@@ -52,9 +52,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
     private AuthenticationContext authnContext;
     private LogoutContext         logoutContext;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public AuthnProtocolRequestContext sendAuthnRequest(HttpServletResponse response, AuthenticationContext context)
             throws IOException {
 
@@ -82,7 +80,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null,
                 authnContext.getApplicationFriendlyName(), landingURL, authnService, authnContext.getDevices(),
-                authnContext.isForceAuthentication(), authnContext.getSessionTrackingId() );
+                authnContext.isForceAuthentication(), authnContext.getSessionTrackingId(), authnContext.getDeviceContext() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {
@@ -97,9 +95,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException {
 
