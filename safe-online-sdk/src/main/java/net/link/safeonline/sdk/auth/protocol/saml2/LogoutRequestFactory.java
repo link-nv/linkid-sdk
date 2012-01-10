@@ -13,6 +13,7 @@ import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfo;
 import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfoBuilder;
 import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfoMarshaller;
 import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfoUnmarshaller;
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
@@ -65,7 +66,7 @@ public class LogoutRequestFactory {
      * @param session the optional SSO session
      */
     public static LogoutRequest createLogoutRequest(String subjectName, String issuerName, String destinationURL,
-                                                     String session) {
+                                                     @Nullable String session) {
 
         if (null == issuerName)
             throw new IllegalArgumentException( "application name should not be null" );
