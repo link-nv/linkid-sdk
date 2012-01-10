@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.configuration.LoginMode;
 import net.link.util.common.CertificateChain;
 import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
@@ -46,19 +47,21 @@ public abstract class RequestUtil {
      * @param language             A language hint to make the linkID authentication application use the same locale as the requesting
      *                             application.
      * @param themeName            The name of the theme to apply in linkID.
-     * @param breakFrame           indiciate to LinkID whether or not to send the response with target="_top" for jumping out of an iframe.
+     * @param loginMode            indiciate to LinkID how the client renders the login process. POPUP and FRAMED indicate a different
+     *                             theme should be used, if the application hasn't specified one itself. Furthermore, if FRAMED, send
+     *                             the response with target="_top" for jumping out of an iframe.
      *
      * @throws IOException IO Exception
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
                                    CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState,
-                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, boolean breakFrame)
+                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, @Nullable LoginMode loginMode)
             throws IOException {
 
         switch (requestBinding) {
             case HTTP_POST:
                 PostBindingUtil.sendRequest( samlRequest, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                        response, language, themeName, breakFrame );
+                        response, language, themeName, loginMode );
                 break;
 
             case HTTP_REDIRECT:

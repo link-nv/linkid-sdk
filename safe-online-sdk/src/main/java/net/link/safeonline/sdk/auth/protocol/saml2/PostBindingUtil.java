@@ -14,6 +14,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.RequestConstants;
+import net.link.safeonline.sdk.configuration.LoginMode;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import org.apache.commons.logging.Log;
@@ -65,7 +66,7 @@ public abstract class PostBindingUtil {
     @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                   Locale language, String themeName, boolean breakFrame)
+                                   Locale language, String themeName, LoginMode loginMode)
             throws IOException {
 
         LOG.debug( "sendRequest[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
@@ -103,8 +104,13 @@ public abstract class PostBindingUtil {
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
         if (null != themeName)
             velocityContext.put( RequestConstants.THEME_REQUEST_PARAM, themeName );
-        if (breakFrame)
+        if ( loginMode != null){
+            velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
+        }
+//        if (breakFrame)
+        if (loginMode != null && loginMode == LoginMode.FRAMED)
             velocityContext.put( "IsBreakFrame", "true" );
+
 
         Template template;
         try {
@@ -135,10 +141,10 @@ public abstract class PostBindingUtil {
     @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
     public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain,
                                     String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                    Locale language, boolean breakFrame)
+                                    Locale language, LoginMode loginMode)
             throws IOException {
 
-        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + breakFrame + "):\n"
+        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + (loginMode != null && loginMode == LoginMode.FRAMED) + "):\n"
                    + DomUtils.domToString( LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
         String encodedSamlResponseToken = new String( Base64.encode(
@@ -169,7 +175,10 @@ public abstract class PostBindingUtil {
             velocityContext.put( "RelayState", relayState );
         if (null != language)
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
-        if (breakFrame)
+        if ( loginMode != null){
+            velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
+        }
+        if (loginMode != null && loginMode == LoginMode.FRAMED)
             velocityContext.put( "BreakFrame", "true" );
 
         Template template;

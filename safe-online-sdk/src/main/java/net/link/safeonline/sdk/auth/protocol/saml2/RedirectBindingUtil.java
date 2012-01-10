@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.util.common.DomUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPRedirectDeflateDecoder;
@@ -54,7 +55,7 @@ public abstract class RedirectBindingUtil {
      * @param consumerUrl    consumer URL to send the Response to
      * @param response       HTTP Servlet Response
      */
-    public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, String relayState, String consumerUrl,
+    public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, @Nullable String relayState, String consumerUrl,
                                    HttpServletResponse response) {
 
         LOG.debug( "sendRequest[HTTP Redirect] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(

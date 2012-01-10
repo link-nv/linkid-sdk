@@ -9,6 +9,8 @@ package net.link.safeonline.config.ws.json;
 
 import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
+import net.link.safeonline.attribute.AttributeType;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -28,19 +30,23 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
     private final String  friendly;
     private final boolean required;
 
-    private final boolean userVisible;
-    private final boolean userEditable;
-    private final boolean userRemovable;
+    private final AttributeType attributeType;
 
-    public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final boolean userVisible,
-                                      final boolean userEditable, final boolean userRemovable) {
+    private final String groupName;
+
+    public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final AttributeType attributeType) {
+
+        this( name, friendly, required, attributeType, null );
+    }
+
+    public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final AttributeType attributeType,
+                                      @Nullable final String groupName) {
 
         this.name = name;
         this.friendly = friendly;
         this.required = required;
-        this.userVisible = userVisible;
-        this.userEditable = userEditable;
-        this.userRemovable = userRemovable;
+        this.attributeType = attributeType;
+        this.groupName = groupName;
     }
 
     public String getName() {
@@ -58,18 +64,13 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
         return required;
     }
 
-    public boolean isUserVisible() {
+    public AttributeType getAttributeType() {
 
-        return userVisible;
+        return attributeType;
     }
 
-    public boolean isUserEditable() {
+    public String getGroupName() {
 
-        return userEditable;
-    }
-
-    public boolean isUserRemovable() {
-
-        return userRemovable;
+        return groupName;
     }
 }

@@ -52,9 +52,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
     private AuthenticationContext authnContext;
     private LogoutContext         logoutContext;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public AuthnProtocolRequestContext sendAuthnRequest(HttpServletResponse response, AuthenticationContext context)
             throws IOException {
 
@@ -82,7 +80,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null,
                 authnContext.getApplicationFriendlyName(), landingURL, authnService, authnContext.getDevices(),
-                authnContext.isForceAuthentication(), authnContext.getSessionTrackingId() );
+                authnContext.isForceAuthentication(), authnContext.getSessionTrackingId(), authnContext.getDeviceContext() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {
@@ -91,15 +89,13 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( authnService, authnContext.getSAML().getBinding(), samlRequest, authnContext.getApplicationKeyPair(),
                 certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName, authnContext.getLanguage(),
-                authnContext.getThemeName(), authnContext.getSAML().isBreakFrame() );
+                authnContext.getThemeName(), authnContext.getLoginMode() );
 
         LOG.debug( "sending Authn Request for: " + authnContext.getApplicationName() + ", issuer: " + samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException {
 
@@ -190,7 +186,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( logoutService, logoutContext.getSAML().getBinding(), samlRequest, logoutContext.getApplicationKeyPair(),
                 certificateChain, response, logoutContext.getSAML().getRelayState(), templateResourceName, logoutContext.getLanguage(),
-                logoutContext.getThemeName(), logoutContext.getSAML().isBreakFrame() );
+                logoutContext.getThemeName(), logoutContext.getLoginMode() );
 
         return new LogoutProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL,
                 samlRequest.getNameID().getValue() );
@@ -266,7 +262,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         ResponseUtil.sendResponse( logoutExitService, logoutContext.getSAML().getBinding(), samlLogoutResponse,
                 logoutContext.getApplicationKeyPair(), certificateChain, response, logoutContext.getSAML().getRelayState(),
-                templateResourceName, null, false );
+                templateResourceName, null, null );
 
         String status = samlLogoutResponse.getStatus().getStatusCode().getValue();
         return new LogoutProtocolResponseContext( logoutRequestContext, samlLogoutResponse.getID(), //

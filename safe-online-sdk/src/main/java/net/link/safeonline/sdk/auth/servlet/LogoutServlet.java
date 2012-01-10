@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.servlet;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
@@ -24,6 +25,7 @@ public class LogoutServlet extends AbstractLogoutServlet {
             return true;
 
         session.invalidate();
+
         return true;
     }
 

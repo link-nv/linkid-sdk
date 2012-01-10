@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.lin-k.safe-online.client</groupId>
+        <artifactId>sdk</artifactId>
+        <version>GIT-SNAPSHOT</version>
+    </parent>
 
     <name>SafeOnline SDK JSP Example</name>
     <description>
@@ -13,193 +18,6 @@
     <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <properties>
-        <maven-export-plugin.version>1.6</maven-export-plugin.version>
-    </properties>
-
-    <!-- CODE MANAGEMENT -->
-    <scm>
-        <tag>HEAD</tag>
-        <url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git
-        </url>
-        <connection>
-            scm:git:ssh://buildserver/home/devel/scm/git/safe-online.git
-        </connection>
-        <developerConnection>
-            scm:git:ssh://buildserver/home/devel/scm/git/safe-online.git
-        </developerConnection>
-    </scm>
-
-    <profiles>
-        <!-- Profile that creates an SDK package -->
-        <profile>
-            <id>release</id>
-            <distributionManagement>
-                <repository>
-                    <id>repo.linkid.be</id>
-                    <url>scpexe://repo.linkid.be/home/maven/repository/releases</url>
-                </repository>
-                <snapshotRepository>
-                    <id>repo.linkid.be</id>
-                    <url>scpexe://repo.linkid.be/home/maven/repository/snapshots</url>
-                    <uniqueVersion>false</uniqueVersion>
-                </snapshotRepository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.stackoverflow</groupId>
-                        <artifactId>maven-export-plugin</artifactId>
-                        <version>${maven-export-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>output</id>
-                                <goals>
-                                    <goal>output-project</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <build>
-        <resources>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
-        <pluginManagement>
-            <plugins>
-                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <configuration>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <developmentVersion>GIT-SNAPSHOT</developmentVersion>
-                        <localCheckout>true</localCheckout>
-                        <preparationGoals>clean install</preparationGoals>
-                        <goals>deploy</goals>
-                        <updateBranchVersions>true</updateBranchVersions>
-                        <updateWorkingCopyVersions>false</updateWorkingCopyVersions>
-                        <branchName>${project.version}-maint</branchName>
-                        <mavenExecutorId>forked-path</mavenExecutorId>
-                    </configuration>
-                 </plugin>
-            </plugins>
-        </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration> 
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
-                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                    <webResources>
-                        <resource>
-                            <directory>
-                                ${basedir}/src/main/webapp/WEB-INF
-                            </directory>
-                            <targetPath>WEB-INF</targetPath>
-                            <filtering>true</filtering>
-                        </resource>
-                        <resource>
-                            <filtering>false</filtering>
-                            <directory>${basedir}/src/main/java
-                            </directory>
-                            <targetPath>WEB-INF/classes</targetPath>
-                            <includes>
-                                <include>**/*.html</include>
-                                <include>**/*.properties</include>
-                            </includes>
-                            <excludes>
-                                <exclude>**/*.java</exclude>
-                            </excludes>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>7.0.0.pre5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>keytool-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>clean</goal>
-                            <goal>genkey</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <keystore>
-                        ${project.build.directory}/classes/application.jks
-                    </keystore>
-                    <dname>
-                        cn=SDK JSP Example,
-                        ou=LinkID, L=SINT-MARTENS-LATEM, ST=VL,
-                        o=LIN.K_NV, c=BE
-                    </dname>
-                    <keypass>secret</keypass>
-                    <storepass>secret</storepass>
-                    <alias>example</alias>
-                    <keyalg>RSA</keyalg>
-                    <verbose>true</verbose>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>project</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>                      
-                        <goals>
-                            <goal>single</goal>                      
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
@@ -209,7 +27,7 @@
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-common</artifactId>
-            <version>1.7</version>
+            <version>1.38</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

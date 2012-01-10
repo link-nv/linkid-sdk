@@ -27,20 +27,12 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
     private final AttributeType attributeType;
 
     // identity info
-    private final String       friendlyName;
-    private final String       groupName;
-    private final boolean      anonymous;
-    private final boolean      optional;
-    private final boolean      confirmationNeeded;
-    private       Confirmation confirmation;
-
-
-    public enum Confirmation {
-
-        CONFIRMED,
-        REJECTED,
-        NONE
-    }
+    private final String  friendlyName;
+    private final String  groupName;
+    private final boolean anonymous;
+    private final boolean optional;
+    private final boolean confirmationNeeded;
+    private       boolean confirmed;
 
     public AttributeIdentitySDK(oasis.names.tc.saml._2_0.assertion.AttributeType attributeType) {
 
@@ -55,7 +47,7 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
         optional = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.OPTIONAL_ATTRIBUTE ) );
         confirmationNeeded = Boolean.valueOf(
                 attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE ) );
-        confirmation = Confirmation.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMED_ATTRIBUTE ) );
+        confirmed = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMED_ATTRIBUTE ) );
 
         if (null != attributeType.getAttributeValue()) {
             if (this.attributeType.isCompound()) {
@@ -121,22 +113,14 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
         return confirmationNeeded;
     }
 
-    /**
-     * @return whether this attribute is confirmed/rejected or neither.
-     */
-    public Confirmation getConfirmation() {
+    public boolean isConfirmed() {
 
-        return confirmation;
+        return confirmed;
     }
 
-    /**
-     * Set confirmation status
-     *
-     * @param confirmation confirmation
-     */
-    public void setConfirmation(Confirmation confirmation) {
+    public void setConfirmed(boolean confirmed) {
 
-        this.confirmation = confirmation;
+        this.confirmed = confirmed;
     }
 
     public oasis.names.tc.saml._2_0.assertion.AttributeType toSDK() {
@@ -161,7 +145,7 @@ public class AttributeIdentitySDK extends AttributeSDK<Serializable> {
         attributeType.getOtherAttributes().put( WebServiceConstants.OPTIONAL_ATTRIBUTE, Boolean.toString( optional ) );
         attributeType.getOtherAttributes()
                      .put( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE, Boolean.toString( confirmationNeeded ) );
-        attributeType.getOtherAttributes().put( WebServiceConstants.CONFIRMED_ATTRIBUTE, confirmation.name() );
+        attributeType.getOtherAttributes().put( WebServiceConstants.CONFIRMED_ATTRIBUTE, Boolean.toString( confirmed ) );
         attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, getId() );
         attributeType.getOtherAttributes().put( WebServiceConstants.GROUP_NAME_ATTRIBUTE, groupName );
         return attributeType;
