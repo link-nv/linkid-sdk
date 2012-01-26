@@ -10,10 +10,10 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.auth.RequestConstants;
+import net.link.safeonline.sdk.api.auth.LoginMode;
+import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.configuration.LoginMode;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import org.apache.wicket.*;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -22,7 +22,6 @@ import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequest;
-import org.opensaml.saml2.core.Attribute;
 
 
 /**

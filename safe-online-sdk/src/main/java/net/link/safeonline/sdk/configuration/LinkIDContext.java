@@ -16,6 +16,7 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.auth.protocol.openid.OpenIDSSLSocketFactory;
 import net.link.safeonline.sdk.auth.protocol.openid.OpenIDTrustManager;

@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
-import net.link.safeonline.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.util.common.CertificateChain;
 
 

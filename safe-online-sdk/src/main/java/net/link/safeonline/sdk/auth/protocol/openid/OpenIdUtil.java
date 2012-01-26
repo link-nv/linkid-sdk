@@ -1,8 +1,8 @@
 package net.link.safeonline.sdk.auth.protocol.openid;
 
 import java.util.*;
-import net.link.safeonline.attribute.AttributeSDK;
-import net.link.safeonline.attribute.Compound;
+import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.attribute.Compound;
 import org.openid4java.message.ax.FetchResponse;
 
 

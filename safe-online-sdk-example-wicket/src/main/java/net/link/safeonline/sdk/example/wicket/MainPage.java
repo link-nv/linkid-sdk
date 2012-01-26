@@ -1,19 +1,19 @@
 package net.link.safeonline.sdk.example.wicket;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.cert.CertificateEncodingException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.link.safeonline.attribute.AttributeSDK;
-import net.link.safeonline.sdk.logging.exception.*;
+import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.exception.*;
+import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
+import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.xkms2.Xkms2Client;
 import net.link.safeonline.wicket.component.linkid.*;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import net.link.util.common.CertificateChain;
-import net.link.util.error.ValidationFailedException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
@@ -115,13 +115,13 @@ public class MainPage extends LinkIDApplicationPage {
                 xkms2Client.validate( linkIDCertificateChain );
             }
             catch (WSClientTransportException e) {
-                throw new RuntimeException( e );
-            }
-            catch (ValidationFailedException e) {
-                throw new RuntimeException( e );
+                throw new InternalInconsistencyException( e );
             }
             catch (CertificateEncodingException e) {
-                throw new RuntimeException( e );
+                throw new InternalInconsistencyException( e );
+            }
+            catch (ValidationFailedException e) {
+                throw new InternalInconsistencyException( e );
             }
         }
     }

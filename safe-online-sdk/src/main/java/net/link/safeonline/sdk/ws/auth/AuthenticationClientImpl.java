@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.auth;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -16,24 +17,18 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.AuthenticationStatusCode;
-import net.link.safeonline.auth.ws.soap.AuthenticationStep;
-import net.link.safeonline.auth.ws.soap.Confirmation;
 import net.link.safeonline.auth.ws.soap.WSAuthenticationServiceFactory;
-import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
-import net.link.safeonline.sdk.logging.exception.WSAuthenticationException;
-import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.attribute.AttributeIdentitySDK;
+import net.link.safeonline.sdk.api.exception.*;
+import net.link.safeonline.sdk.api.ws.auth.*;
+import net.link.safeonline.sdk.api.ws.auth.client.AuthenticationClient;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
-import oasis.names.tc.saml._2_0.assertion.AssertionType;
-import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
-import oasis.names.tc.saml._2_0.assertion.AttributeType;
-import oasis.names.tc.saml._2_0.assertion.NameIDType;
+import oasis.names.tc.saml._2_0.assertion.*;
 import oasis.names.tc.saml._2_0.protocol.StatusCodeType;
 import oasis.names.tc.saml._2_0.protocol.StatusType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -41,40 +36,41 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author wvdhaute
  */
-public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationPort> implements AuthenticationClient {
+public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationPort> implements
+        AuthenticationClient<AssertionType, DeviceAuthenticationInformationType> {
 
-    private static final Log LOG = LogFactory.getLog( AuthenticationClientImpl.class );
+    private static final Logger logger = Logger.get( AuthenticationClientImpl.class );
 
     private DeviceAuthenticationInformationType deviceAuthenticationInformation;
-    private AuthenticationStep authenticationStep;
-    private AssertionType assertion;
+    private AuthenticationStep                  authenticationStep;
+    private AssertionType                       assertion;
 
     /**
      * Main constructor.
      *
-     * @param endpoint          endpoint
-     * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
-     * @param configuration The WS-Security configuration.
+     * @param endpoint       endpoint
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration  The WS-Security configuration.
      */
     public AuthenticationClientImpl(W3CEndpointReference endpoint, X509Certificate sslCertificate,
                                     final WSSecurityConfiguration configuration) {
 
-        super( WSAuthenticationServiceFactory.newInstance().getPort( endpoint, WSAuthenticationPort.class, new AddressingFeature( true ) ) );
+        super( WSAuthenticationServiceFactory.newInstance()
+                                             .getPort( endpoint, WSAuthenticationPort.class, new AddressingFeature( true ) ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public String authenticate(String applicationName, String deviceName, String language, Object deviceCredentials, PublicKey publicKey)
             throws RequestDeniedException, WSAuthenticationException, WSClientTransportException {
 
-        LOG.debug( "authentication for application " + applicationName + " using device " + deviceName );
+        logger.dbg( "authentication for application %s using device %s", applicationName, deviceName );
 
         WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest( applicationName, deviceName, language,
-                                                                                           deviceCredentials, publicKey );
+                deviceCredentials, publicKey );
 
         WSAuthenticationResponseType response = getAuthenticateResponse( request );
 
@@ -90,13 +86,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public String getGlobalUsageAgreement()
             throws WSClientTransportException, RequestDeniedException, WSAuthenticationException {
 
-        LOG.debug( "get global usage agreement to be confirmed" );
+        logger.dbg( "get global usage agreement to be confirmed" );
 
         WSAuthenticationGlobalUsageAgreementRequestType request = AuthenticationUtil.getGlobalUsageAgreementRequest();
 
@@ -113,13 +108,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public String confirmGlobalUsageAgreement(Confirmation confirmation)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
-        LOG.debug( "confirm or reject global usage agreement: " + confirmation.getValue() );
+        logger.dbg( "confirm or reject global usage agreement: %s", confirmation.getValue() );
 
         WSAuthenticationGlobalUsageAgreementConfirmationType request = AuthenticationUtil.getGlobalUsageAgreementConfirmationRequest(
                 confirmation );
@@ -137,13 +131,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public String getUsageAgreement()
             throws WSClientTransportException, RequestDeniedException, WSAuthenticationException {
 
-        LOG.debug( "get application's usage agreement to be confirmed or subscription required" );
+        logger.dbg( "get application's usage agreement to be confirmed or subscription required" );
 
         WSAuthenticationUsageAgreementRequestType request = AuthenticationUtil.getUsageAgreementRequest();
 
@@ -160,13 +153,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public String confirmUsageAgreement(Confirmation confirmation)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
-        LOG.debug( "confirm or reject application usage agreement: " + confirmation.getValue() );
+        logger.dbg( "confirm or reject application usage agreement: %s", confirmation.getValue() );
 
         WSAuthenticationUsageAgreementConfirmationType request = AuthenticationUtil.getUsageAgreementConfirmationRequest( confirmation );
 
@@ -183,13 +175,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public List<AttributeIdentitySDK> getIdentity()
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
-        LOG.debug( "get application's identity to be confirmed" );
+        logger.dbg( "get application's identity to be confirmed" );
 
         WSAuthenticationIdentityRequestType request = AuthenticationUtil.getIdentityRequest();
 
@@ -205,12 +196,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
             if (null == response.getAssertion().get( 0 ).getSubject()) {
                 List<AttributeIdentitySDK> identity = new LinkedList<AttributeIdentitySDK>();
                 AttributeStatementType attributeStatement = (AttributeStatementType) response.getAssertion()
-                        .get( 0 )
-                        .getStatementOrAuthnStatementOrAuthzDecisionStatement()
-                        .get( 0 );
+                                                                                             .get( 0 )
+                                                                                             .getStatementOrAuthnStatementOrAuthzDecisionStatement()
+                                                                                             .get( 0 );
                 for (Object attributeOrEncryptedAttribute : attributeStatement.getAttributeOrEncryptedAttribute()) {
                     AttributeType attributeType = (AttributeType) attributeOrEncryptedAttribute;
-                    identity.add( new AttributeIdentitySDK( attributeType ) );
+                    identity.add( AuthenticationUtil.newAttributeIdentitySDK( attributeType ) );
                 }
                 return identity;
             }
@@ -221,13 +212,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public String confirmIdentity(List<AttributeIdentitySDK> attributes)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
-        LOG.debug( "confirm the application's identity" );
+        logger.dbg( "confirm the application's identity" );
 
         WSAuthenticationIdentityConfirmationType request = AuthenticationUtil.getIdentityConfirmationRequest( attributes );
 
@@ -244,30 +234,25 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public AssertionType getAssertion() {
 
         return assertion;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public DeviceAuthenticationInformationType getDeviceAuthenticationInformation() {
 
         return deviceAuthenticationInformation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public AuthenticationStep getAuthenticationStep() {
 
         return authenticationStep;
     }
 
+    @Nullable
     private String getSubject() {
 
         for (JAXBElement<?> object : assertion.getSubject().getContent())
@@ -284,7 +269,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         try {
             return getPort().authenticate( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
@@ -297,8 +283,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         String statusCodeValue = statusCode.getValue();
         AuthenticationStatusCode authenticationStatusCode = AuthenticationStatusCode.ofURN( statusCodeValue );
         if (AuthenticationStatusCode.SUCCESS != authenticationStatusCode) {
-            LOG.error( "status code: " + statusCodeValue );
-            LOG.error( "status message: " + status.getStatusMessage() );
+            logger.err( "status code: %s", statusCodeValue );
+            logger.err( "status message: %s", status.getStatusMessage() );
             if (AuthenticationStatusCode.REQUEST_DENIED == authenticationStatusCode)
                 throw new RequestDeniedException();
             else if (AuthenticationStatusCode.REQUEST_FAILED == authenticationStatusCode)
@@ -314,7 +300,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         try {
             return getPort().requestGlobalUsageAgreement( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
@@ -325,7 +312,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         try {
             return getPort().confirmGlobalUsageAgreement( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
@@ -335,7 +323,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         try {
             return getPort().requestUsageAgreement( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
@@ -345,7 +334,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         try {
             return getPort().confirmUsageAgreement( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
@@ -355,7 +345,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         try {
             return getPort().requestIdentity( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }
@@ -365,7 +356,8 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         try {
             return getPort().confirmIdentity( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }

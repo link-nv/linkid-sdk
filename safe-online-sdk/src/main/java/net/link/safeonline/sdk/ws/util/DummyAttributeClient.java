@@ -8,9 +8,9 @@ package net.link.safeonline.sdk.ws.util;
 
 import java.io.Serializable;
 import java.util.*;
-import net.link.safeonline.attribute.AttributeSDK;
-import net.link.safeonline.sdk.logging.exception.*;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.exception.*;
+import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import org.w3c.dom.Document;
 
 

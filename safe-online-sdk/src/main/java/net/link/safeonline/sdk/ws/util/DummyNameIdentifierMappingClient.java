@@ -9,10 +9,10 @@ package net.link.safeonline.sdk.ws.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.link.safeonline.sdk.logging.exception.RequestDeniedException;
-import net.link.safeonline.sdk.logging.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.exception.RequestDeniedException;
+import net.link.safeonline.sdk.api.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import org.w3c.dom.Document;
 
 

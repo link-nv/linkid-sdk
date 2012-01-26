@@ -2,7 +2,7 @@ package net.link.safeonline.sdk.auth.protocol;
 
 import com.google.common.base.Preconditions;
 import java.util.*;
-import net.link.safeonline.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.util.common.CertificateChain;
 
 

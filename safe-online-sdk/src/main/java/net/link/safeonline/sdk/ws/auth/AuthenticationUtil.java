@@ -6,20 +6,18 @@
  */
 package net.link.safeonline.sdk.ws.auth;
 
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.xml.bind.JAXBElement;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.datatype.*;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.soap.Confirmation;
+import net.link.safeonline.sdk.api.attribute.*;
+import net.link.safeonline.sdk.api.ws.WebServiceConstants;
+import net.link.safeonline.sdk.api.ws.auth.Confirmation;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.RequestAbstractType;
@@ -27,17 +25,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
-import org.w3._2000._09.xmldsig_.DSAKeyValueType;
-import org.w3._2000._09.xmldsig_.KeyInfoType;
+import org.w3._2000._09.xmldsig_.*;
 import org.w3._2000._09.xmldsig_.ObjectFactory;
-import org.w3._2000._09.xmldsig_.RSAKeyValueType;
 
 
 /**
  * <h2>{@link AuthenticationUtil}</h2>
- *
+ * <p/>
  * <p> Utility class for constructing the linkID Authentication WS messages. </p>
- *
+ * <p/>
  * <p> <i>Jan 15, 2009</i> </p>
  *
  * @author wvdhaute
@@ -131,7 +127,7 @@ public class AuthenticationUtil {
 
         if (null != attributes)
             for (AttributeIdentitySDK attribute : attributes) {
-                AttributeType attributeType = attribute.toSDK();
+                AttributeType attributeType = toSDK( attribute );
                 request.getAttribute().add( attributeType );
             }
 
@@ -143,7 +139,8 @@ public class AuthenticationUtil {
         SecureRandomIdentifierGenerator idGenerator;
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e) {
             throw new RuntimeException( "secure random init error: " + e.getMessage(), e );
         }
         String id = idGenerator.generateIdentifier();
@@ -159,7 +156,8 @@ public class AuthenticationUtil {
         DatatypeFactory datatypeFactory;
         try {
             datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
+        }
+        catch (DatatypeConfigurationException e) {
             LOG.error( "datatype configuration exception", e );
             throw new RuntimeException( "datatype configuration exception: " + e.getMessage() );
         }
@@ -200,5 +198,74 @@ public class AuthenticationUtil {
             throw new IllegalArgumentException( "Only RSAPublicKey and DSAPublicKey are supported" );
 
         return keyInfo;
+    }
+
+    public static AttributeType toSDK(AttributeIdentitySDK attributeIdentitySDK) {
+
+        AttributeType attributeType = new AttributeType();
+        attributeType.setNameFormat( WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC );
+        attributeType.setName( attributeType.getName() );
+        attributeType.setFriendlyName( attributeIdentitySDK.getFriendlyName() );
+
+        if (attributeIdentitySDK.getAttributeType().isCompound()) {
+            for (AttributeSDK<?> memberSDK : ((Compound) attributeIdentitySDK.getValue()).getMembers()) {
+                AttributeIdentitySDK member = (AttributeIdentitySDK) memberSDK;
+                attributeType.getAttributeValue().add( toSDK( member ) );
+            }
+        } else {
+            attributeType.getAttributeValue().add( attributeIdentitySDK.getValue() );
+        }
+        attributeType.getOtherAttributes()
+                     .put( WebServiceConstants.DATATYPE_ATTRIBUTE, attributeIdentitySDK.getAttributeType().getType().getValue() );
+        attributeType.getOtherAttributes()
+                     .put( WebServiceConstants.MULTIVALUED_ATTRIBUTE,
+                             Boolean.toString( attributeIdentitySDK.getAttributeType().isMultivalued() ) );
+        attributeType.getOtherAttributes()
+                     .put( WebServiceConstants.DATAMINING_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isAnonymous() ) );
+        attributeType.getOtherAttributes()
+                     .put( WebServiceConstants.OPTIONAL_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isOptional() ) );
+        attributeType.getOtherAttributes()
+                     .put( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE,
+                             Boolean.toString( attributeIdentitySDK.isConfirmationNeeded() ) );
+        attributeType.getOtherAttributes()
+                     .put( WebServiceConstants.CONFIRMED_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isConfirmed() ) );
+        attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attributeIdentitySDK.getId() );
+        attributeType.getOtherAttributes().put( WebServiceConstants.GROUP_NAME_ATTRIBUTE, attributeIdentitySDK.getGroupName() );
+        return attributeType;
+    }
+
+    public static AttributeIdentitySDK newAttributeIdentitySDK(AttributeType attributeType) {
+
+        String id = attributeType.getOtherAttributes().get( WebServiceConstants.ATTRIBUTE_ID );
+
+        net.link.safeonline.sdk.api.attribute.AttributeType sdkAttributeType = new net.link.safeonline.sdk.api.attribute.AttributeType(
+                attributeType.getName(),
+                DataType.getDataType( attributeType.getOtherAttributes().get( WebServiceConstants.DATATYPE_ATTRIBUTE ) ),
+                Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.MULTIVALUED_ATTRIBUTE ) ) );
+
+        String friendlyName = attributeType.getFriendlyName();
+        String groupName = attributeType.getOtherAttributes().get( WebServiceConstants.GROUP_NAME_ATTRIBUTE );
+        boolean anonymous = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.DATAMINING_ATTRIBUTE ) );
+        boolean optional = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.OPTIONAL_ATTRIBUTE ) );
+        boolean confirmationNeeded = Boolean.valueOf(
+                attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE ) );
+        boolean confirmed = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMED_ATTRIBUTE ) );
+
+        Serializable value = null;
+        if (null != attributeType.getAttributeValue()) {
+            if (sdkAttributeType.isCompound()) {
+                List<AttributeIdentitySDK> members = new LinkedList<AttributeIdentitySDK>();
+                for (Object memberAttribute : attributeType.getAttributeValue()) {
+                    oasis.names.tc.saml._2_0.assertion.AttributeType memberAttributeType = (oasis.names.tc.saml._2_0.assertion.AttributeType) memberAttribute;
+                    members.add( newAttributeIdentitySDK( memberAttributeType ) );
+                }
+                value = new Compound( members );
+            } else {
+                value = (Serializable) attributeType.getAttributeValue().get( 0 );
+            }
+        }
+
+        return new AttributeIdentitySDK( id, sdkAttributeType, friendlyName, groupName, anonymous, optional, confirmationNeeded, confirmed,
+                value );
     }
 }

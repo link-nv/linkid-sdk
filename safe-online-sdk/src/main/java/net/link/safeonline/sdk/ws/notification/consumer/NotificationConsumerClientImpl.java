@@ -15,7 +15,8 @@ import net.lin_k.safe_online.notification.consumer.NotificationMessageHolderType
 import net.lin_k.safe_online.notification.consumer.NotificationMessageHolderType.Message;
 import net.lin_k.safe_online.notification.consumer.Notify;
 import net.link.safeonline.notification.consumer.ws.NotificationConsumerServiceFactory;
-import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;

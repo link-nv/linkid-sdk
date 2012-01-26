@@ -7,8 +7,6 @@
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import javax.servlet.http.HttpServletRequest;
-import net.link.safeonline.sdk.auth.RequestConstants;
-import net.link.safeonline.sdk.configuration.LinkIDContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLObject;

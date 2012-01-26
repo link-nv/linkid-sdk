@@ -7,29 +7,26 @@
 
 package net.link.safeonline.sdk.ws.sts;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
-import net.link.util.error.ValidationFailedException;
-import net.link.safeonline.sdk.logging.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.WebServiceConstants;
-import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
+import net.link.safeonline.sdk.api.exception.ValidationFailedException;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.ws.WebServiceConstants;
+import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceConstants;
+import net.link.safeonline.sdk.api.ws.sts.TrustDomainType;
+import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.*;
-import org.opensaml.saml2.core.LogoutRequest;
-import org.opensaml.saml2.core.LogoutResponse;
-import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.*;
 import org.w3c.dom.Element;
 
 
@@ -38,37 +35,35 @@ import org.w3c.dom.Element;
  *
  * @author fcorneli
  */
-public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTokenServicePort> implements SecurityTokenServiceClient {
+public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTokenServicePort> implements
+        SecurityTokenServiceClient<Response, LogoutResponse, LogoutRequest> {
 
-    private static final Log LOG = LogFactory.getLog( SecurityTokenServiceClientImpl.class );
-
-    private final String location;
+    private static final Logger logger = Logger.get( SecurityTokenServiceClientImpl.class );
 
     /**
      * Main constructor.
      *
-     * @param location          the location (host:port) of the LinkID STS web service.
-     * @param sslCertificate    If not <code>null</code> will verify the server SSL {@link X509Certificate}.
-     * @param configuration
+     * @param location       the location (host:port) of the LinkID STS web service.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration  WS Security Configuration
      */
     public SecurityTokenServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super(SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort());
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/sts" );
+        super( SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort() );
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/sts", location ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-    private void validate(Element token, TrustDomainType trustDomain, Map<QName, String> otherAttributes, String queryString,
+    private void validate(Element token, TrustDomainType trustDomain, @Nullable Map<QName, String> otherAttributes, String queryString,
                           StringBuffer requestUrl)
             throws WSClientTransportException, ValidationFailedException {
 
-        LOG.debug( "invoke" );
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         ObjectFactory objectFactory = new ObjectFactory();
         JAXBElement<String> requestType = objectFactory.createRequestType(
-                WebServiceConstants.WS_TRUST_REQUEST_TYPE + "Validate#" + trustDomain );
+                String.format( "%sValidate#%s", WebServiceConstants.WS_TRUST_REQUEST_TYPE, trustDomain ) );
         request.getAny().add( requestType );
 
         JAXBElement<String> tokenType = objectFactory.createTokenType( SecurityTokenServiceConstants.TOKEN_TYPE_STATUS );
@@ -106,37 +101,32 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
         if (SecurityTokenServiceConstants.STATUS_VALID.equals( statusCode ))
             return;
         String reason = status.getReason();
-        LOG.debug( "reason: " + reason );
-        throw new ValidationFailedException( "token found to be invalid: " + reason );
+        logger.dbg( "reason: %s", reason );
+        throw new ValidationFailedException( String.format( "token found to be invalid: %s", reason ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void validate(final Response response, final String requestIssuer, final HttpServletRequest request)
+    @Override
+    public void validateResponse(final Response response, final String requestIssuer, final String requestQueryString,
+                                 final StringBuffer requestURL)
             throws WSClientTransportException, ValidationFailedException {
 
         Map<QName, String> otherAttributes = new HashMap<QName, String>();
         otherAttributes.put( WebServiceConstants.SAML_AUDIENCE_ATTRIBUTE, requestIssuer );
 
-        validate( response.getDOM(), TrustDomainType.LINK_ID, otherAttributes, request.getQueryString(), request.getRequestURL() );
+        validate( response.getDOM(), TrustDomainType.LINK_ID, otherAttributes, requestQueryString, requestURL );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void validate(final LogoutResponse logoutResponse, final HttpServletRequest request)
+    @Override
+    public void validateLogoutResponse(final LogoutResponse logoutResponse, final String requestQueryString, final StringBuffer requestURL)
             throws WSClientTransportException, ValidationFailedException {
 
-        validate( logoutResponse.getDOM(), TrustDomainType.LINK_ID, null, request.getQueryString(), request.getRequestURL() );
+        validate( logoutResponse.getDOM(), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void validate(final LogoutRequest logoutRequest, final HttpServletRequest request)
+    @Override
+    public void validateLogoutRequest(final LogoutRequest logoutRequest, final String requestQueryString, final StringBuffer requestURL)
             throws WSClientTransportException, ValidationFailedException {
 
-        validate( logoutRequest.getDOM(), TrustDomainType.LINK_ID, null, request.getQueryString(), request.getRequestURL() );
+        validate( logoutRequest.getDOM(), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
     }
 }

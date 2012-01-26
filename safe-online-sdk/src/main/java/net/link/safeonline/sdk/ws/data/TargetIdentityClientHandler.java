@@ -7,31 +7,26 @@
 
 package net.link.safeonline.sdk.ws.data;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.util.Set;
 import java.util.UUID;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.*;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPHeader;
-import javax.xml.soap.SOAPHeaderElement;
-import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.*;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-import net.link.safeonline.data.ws.DataServiceConstants;
+import net.link.safeonline.sdk.api.ws.data.DataServiceConstants;
 import net.link.util.ws.security.WSSecurityHandler;
-import oasis.names.tc.saml._2_0.assertion.NameIDType;
-import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
-import oasis.names.tc.saml._2_0.assertion.SubjectType;
+import oasis.names.tc.saml._2_0.assertion.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
  * SOAP Handler for TargetIdentity SOAP Header handling.
- *
+ * <p/>
  * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
  * </p>
@@ -52,49 +47,57 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
 
     /**
      * Sets the target identity, i.e. the user Id.
+     *
+     * @param targetIdentity the user ID
      */
     public void setTargetIdentity(String targetIdentity) {
 
         this.targetIdentity = targetIdentity;
     }
 
+    @Nullable
+    @Override
     public Set<QName> getHeaders() {
 
         return null;
     }
 
+    @Override
     public void close(MessageContext context) {
 
     }
 
+    @Override
     public boolean handleFault(SOAPMessageContext soapContext) {
 
         return true;
     }
 
+    @Override
     public boolean handleMessage(SOAPMessageContext soapContext) {
 
         Boolean outboundProperty = (Boolean) soapContext.get( MessageContext.MESSAGE_OUTBOUND_PROPERTY );
-        if (false == outboundProperty.booleanValue())
+        if (!outboundProperty)
             /*
              * We only need to add the TargetIdentity SOAP header to the outbound messages.
              */
             return true;
 
         SOAPMessage soapMessage = soapContext.getMessage();
-        SOAPHeader soapHeader;
         try {
-            soapHeader = soapMessage.getSOAPHeader();
+            SOAPHeader soapHeader = soapMessage.getSOAPHeader();
             if (soapHeader == null)
                 /*
                  * This can happen in the case that we're the first one to add a SOAP header element.
                  */
                 soapHeader = soapMessage.getSOAPPart().getEnvelope().addHeader();
             addTargetIdentityHeader( soapHeader, soapContext );
-        } catch (SOAPException e) {
-            throw new RuntimeException( "SOAP error: " + e.getMessage(), e );
-        } catch (JAXBException e) {
-            throw new RuntimeException( "JAXB error: " + e.getMessage(), e );
+        }
+        catch (SOAPException e) {
+            throw new InternalInconsistencyException( String.format( "SOAP error:%s ", e.getMessage() ), e );
+        }
+        catch (JAXBException e) {
+            throw new InternalInconsistencyException( String.format( "JAXB error:%s ", e.getMessage() ), e );
         }
         return true;
     }

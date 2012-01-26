@@ -2,9 +2,9 @@ package net.link.safeonline.sdk.example.jsp;
 
 import java.util.Map;
 import javax.servlet.http.HttpSession;
+import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 
 
 public class AttributeBean {

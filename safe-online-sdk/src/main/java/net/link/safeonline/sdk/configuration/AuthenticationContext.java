@@ -6,6 +6,7 @@ import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;

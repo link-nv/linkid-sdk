@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.configuration.LoginMode;
+import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.util.common.CertificateChain;
 import net.link.util.error.ValidationFailedException;
 import org.apache.commons.logging.Log;
@@ -55,7 +55,8 @@ public abstract class RequestUtil {
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
                                    CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState,
-                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, @Nullable LoginMode loginMode)
+                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, @Nullable
+    LoginMode loginMode)
             throws IOException {
 
         switch (requestBinding) {

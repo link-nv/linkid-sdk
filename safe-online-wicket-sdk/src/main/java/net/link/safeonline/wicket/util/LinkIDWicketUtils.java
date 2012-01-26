@@ -9,7 +9,7 @@ package net.link.safeonline.wicket.util;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import net.link.safeonline.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;

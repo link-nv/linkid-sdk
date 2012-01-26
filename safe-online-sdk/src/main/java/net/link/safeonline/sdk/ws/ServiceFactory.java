@@ -7,15 +7,15 @@
 package net.link.safeonline.sdk.ws;
 
 import java.security.cert.X509Certificate;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
-import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClient;
-import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClient;
-import net.link.safeonline.sdk.ws.notification.subscription.NotificationSubscriptionManagerClient;
-import net.link.safeonline.sdk.ws.session.SessionTrackingClient;
-import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
-import net.link.safeonline.sdk.ws.xkms2.Xkms2Client;
+import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
+import net.link.safeonline.sdk.api.ws.data.client.DataClient;
+import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
+import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
+import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
+import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
+import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
+import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.util.ws.security.WSSecurityConfiguration;
 
 
