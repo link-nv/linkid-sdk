@@ -108,6 +108,7 @@
 
     <modules>
         <module>safe-online-config</module>
+        <module>safe-online-sdk-api</module>
         <module>safe-online-sdk</module>
         <module>safe-online-container-saml</module>
         <module>safe-online-attrib-ws</module>

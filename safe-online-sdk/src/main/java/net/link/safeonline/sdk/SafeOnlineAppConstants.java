@@ -22,6 +22,9 @@ package net.link.safeonline.sdk;
  */
 public interface SafeOnlineAppConstants {
 
-    String THEME_URL_SESSION_ATTRIBUTE = "ThemeURL";
+    String THEME_URL_SESSION_ATTRIBUTE  = "ThemeURL";
     String LOGIN_MODE_SESSION_ATTRIBUTE = "LoginMode";
+
+    // device context
+    String DEVICE_LINKID_CONTEXT_TITLE = "linkID.contextTitle";
 }
