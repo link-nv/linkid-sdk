@@ -34,9 +34,12 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
 
     private final String groupName;
 
+    private boolean rejected;
+
     public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final AttributeType attributeType) {
 
         this( name, friendly, required, attributeType, null );
+        rejected = false;
     }
 
     public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final AttributeType attributeType,
@@ -47,6 +50,7 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
         this.required = required;
         this.attributeType = attributeType;
         this.groupName = groupName;
+        rejected = false;
     }
 
     public String getName() {
@@ -72,5 +76,15 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
     public String getGroupName() {
 
         return groupName;
+    }
+
+    public boolean isRejected() {
+
+        return rejected;
+    }
+
+    public void setRejected(final boolean rejected) {
+
+        this.rejected = rejected;
     }
 }

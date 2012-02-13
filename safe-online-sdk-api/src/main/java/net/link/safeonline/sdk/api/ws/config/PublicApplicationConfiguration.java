@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.api.ws.config;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.net.URL;
@@ -15,18 +16,17 @@ import java.util.List;
 
 public class PublicApplicationConfiguration extends MetaObject implements Serializable {
 
-    private final String                           name;
-    private final URL                              url;
-    private final String                           ua;
-    private final List<PublicApplicationAttribute> attributes;
+    private final String                          name;
+    private final URL                             url;
+    private final String                          ua;
+    private final List<ApplicationAttributeGroup> groups;
 
-    public PublicApplicationConfiguration(final String name, final URL url, final String ua,
-                                          final List<PublicApplicationAttribute> attributes) {
+    public PublicApplicationConfiguration(final String name, final URL url, final String ua, final List<ApplicationAttributeGroup> groups) {
 
         this.name = name;
         this.url = url;
         this.ua = ua;
-        this.attributes = attributes;
+        this.groups = groups;
     }
 
     public String getName() {
@@ -44,8 +44,22 @@ public class PublicApplicationConfiguration extends MetaObject implements Serial
         return ua;
     }
 
-    public List<PublicApplicationAttribute> getAttributes() {
+    public List<ApplicationAttributeGroup> getGroups() {
 
-        return attributes;
+        return groups;
+    }
+
+    public void reject(final String attributeName) {
+
+        for (ApplicationAttributeGroup group : groups) {
+            for (PublicApplicationAttribute attribute : group.getAttributes()) {
+                if (attribute.getName().equals( attributeName )) {
+                    attribute.setRejected( true );
+                    return;
+                }
+            }
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unable to reject unknown attribute :%s", attributeName ) );
     }
 }
