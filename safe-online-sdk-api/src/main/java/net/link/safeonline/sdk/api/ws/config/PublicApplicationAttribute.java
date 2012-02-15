@@ -10,7 +10,6 @@ package net.link.safeonline.sdk.api.ws.config;
 import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import net.link.safeonline.sdk.api.attribute.AttributeType;
-import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -32,24 +31,14 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
 
     private final AttributeType attributeType;
 
-    private final String groupName;
-
     private boolean rejected;
 
     public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final AttributeType attributeType) {
-
-        this( name, friendly, required, attributeType, null );
-        rejected = false;
-    }
-
-    public PublicApplicationAttribute(final String name, final String friendly, final boolean required, final AttributeType attributeType,
-                                      @Nullable final String groupName) {
 
         this.name = name;
         this.friendly = friendly;
         this.required = required;
         this.attributeType = attributeType;
-        this.groupName = groupName;
         rejected = false;
     }
 
@@ -71,11 +60,6 @@ public class PublicApplicationAttribute extends MetaObject implements Serializab
     public AttributeType getAttributeType() {
 
         return attributeType;
-    }
-
-    public String getGroupName() {
-
-        return groupName;
     }
 
     public boolean isRejected() {
