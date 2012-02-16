@@ -25,6 +25,7 @@ import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.discovery.Discovery;
 import org.openid4java.discovery.html.HtmlResolver;
@@ -82,7 +83,7 @@ public abstract class LinkIDContext implements Serializable {
      *
      * @see #LinkIDContext(String, String, KeyProvider, String, String, Locale, String)
      */
-    protected LinkIDContext(String applicationName, KeyProvider keyProvider, String target) {
+    protected LinkIDContext(@Nullable String applicationName, @Nullable KeyProvider keyProvider, @Nullable String target) {
 
         this( applicationName, null, keyProvider, null, null, null, target );
     }
@@ -108,10 +109,12 @@ public abstract class LinkIDContext implements Serializable {
      *
      * @see #LinkIDContext(String, String, KeyProvider, String, String, Locale, String, Void)
      */
-    protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
-                            String themeName, Locale language, String target) {
+    protected LinkIDContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider,
+                            @Nullable String sessionTrackingId, @Nullable String themeName, @Nullable Locale language, String target) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
+            @NotNull
+            @Override
             public KeyProvider get() {
 
                 return config().linkID().app().keyProvider();
@@ -120,7 +123,7 @@ public abstract class LinkIDContext implements Serializable {
     }
 
     private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider,
-                          String sessionTrackingId, String themeName, Locale language, String target, Void v) {
+                          String sessionTrackingId, String themeName, Locale language, String target, @Nullable Void v) {
 
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
@@ -158,7 +161,7 @@ public abstract class LinkIDContext implements Serializable {
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                             X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
                             X509Certificate sslCertificate, String sessionTrackingId, String themeName, Locale language, String target,
-                            Protocol protocol) {
+                            @Nullable Protocol protocol) {
 
         this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
                 sessionTrackingId, themeName, language, target, protocol, null );
@@ -203,7 +206,7 @@ public abstract class LinkIDContext implements Serializable {
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                             X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
                             X509Certificate sslCertificate, String sessionTrackingId, String themeName, Locale language, String target,
-                            Protocol protocol, LoginMode loginMode) {
+                            Protocol protocol, @Nullable LoginMode loginMode) {
 
         saml = new SAMLContext();
         openID = new OpenIDContext( sslCertificate );
@@ -393,8 +396,10 @@ public abstract class LinkIDContext implements Serializable {
          *                   the value of {@link SAMLProtocolConfig#binding()} will be used.
          * @param relayState The Relay State that is sent along with SAML communications. May be {@code null}, in which case the value
          *                   of {@link SAMLProtocolConfig#relayState()} will be used.
+         * @param breakFrame break frame, used for having the linkID authentication process in an iframe. At the end of the process, the
+         *                   SAML2 browser POST will make it break out of the iframe.
          */
-        public SAMLContext(SAMLBinding binding, String relayState, Boolean breakFrame) {
+        public SAMLContext(@Nullable SAMLBinding binding, @Nullable String relayState, @Nullable Boolean breakFrame) {
 
             this.binding = ifNotNullElse( binding, config().proto().saml().binding() );
             this.relayState = ifNotNullElseNullable( relayState, config().proto().saml().relayState() );
