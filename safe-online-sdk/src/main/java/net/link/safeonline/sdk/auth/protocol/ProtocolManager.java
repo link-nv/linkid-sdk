@@ -8,16 +8,15 @@
 package net.link.safeonline.sdk.auth.protocol;
 
 import com.google.common.base.Function;
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.LogoutContext;
 import net.link.util.error.ValidationFailedException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -29,11 +28,18 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class ProtocolManager {
 
-    private static final Log LOG = LogFactory.getLog( ProtocolManager.class );
+    private static final Logger logger = Logger.get( ProtocolManager.class );
 
     /**
      * Initiates the authentication.
      *
+     * @param request  HTTP servlet request
+     * @param response HTTP servlet response
+     * @param context  authentication context
+     *
+     * @return protocol context, use to finalize then authentication
+     *
+     * @throws IOException something went wrong sending the authentication request
      * @see ProtocolHandler#sendAuthnRequest(HttpServletResponse, AuthenticationContext)
      */
     public static AuthnProtocolRequestContext initiateAuthentication(HttpServletRequest request, HttpServletResponse response,
@@ -47,6 +53,7 @@ public abstract class ProtocolManager {
         return authnRequest;
     }
 
+    @Nullable
     public static AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException {
 
@@ -62,14 +69,15 @@ public abstract class ProtocolManager {
             }
         }
 
-        LOG.debug( "No authn response found in request matching known Ids." );
-        LOG.debug( "Known Contexts:" );
+        logger.dbg( "No authn response found in request matching known Ids." );
+        logger.dbg( "Known Contexts:" );
         for (Map.Entry<String, ProtocolContext> protocolContextEntry : contexts.entrySet())
-            LOG.debug( protocolContextEntry.getKey() + ": " + protocolContextEntry.getValue() );
+            logger.dbg( "%s: %s", protocolContextEntry.getKey(), protocolContextEntry.getValue() );
 
         return null;
     }
 
+    @Nullable
     public static AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request,
                                                                              final Function<AuthnProtocolResponseContext, AuthenticationContext> responseContext)
             throws ValidationFailedException {
@@ -80,12 +88,21 @@ public abstract class ProtocolManager {
                 return authnResponse;
         }
 
-        LOG.debug( "No authn assertion found in request." );
+        logger.dbg( "No authn assertion found in request." );
         return null;
     }
 
     /**
      * Initiates a logout request.
+     *
+     * @param request  HTTP servlet request
+     * @param response HTTP servlet response
+     * @param userId   user ID to logout
+     * @param context  logout context
+     *
+     * @return logout protocol request context
+     *
+     * @throws IOException something went wrong sending the logout request
      */
     public static LogoutProtocolRequestContext initiateLogout(HttpServletRequest request, HttpServletResponse response, String userId,
                                                               LogoutContext context)
@@ -99,6 +116,7 @@ public abstract class ProtocolManager {
         return logoutRequest;
     }
 
+    @Nullable
     public static LogoutProtocolRequestContext findAndValidateLogoutRequest(HttpServletRequest request,
                                                                             Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
             throws ValidationFailedException {
@@ -113,6 +131,7 @@ public abstract class ProtocolManager {
         return null;
     }
 
+    @Nullable
     public static LogoutProtocolResponseContext findAndValidateLogoutResponse(HttpServletRequest request)
             throws ValidationFailedException {
 

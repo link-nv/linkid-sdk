@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.LogoutContext;
 import net.link.util.error.ValidationFailedException;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -57,6 +58,7 @@ public interface ProtocolHandler extends Serializable {
      * @return Details about the authentication such as the authenticated user's application identifier or <code>null</code> if the handler
      *         finds no detached authentication assertion in the request.
      */
+    @Nullable
     public AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request,
                                                                       Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException;
@@ -101,6 +103,7 @@ public interface ProtocolHandler extends Serializable {
      *
      * @throws ValidationFailedException validation of the logout request failed
      */
+    @Nullable
     LogoutProtocolRequestContext findAndValidateLogoutRequest(HttpServletRequest request,
                                                               Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
             throws ValidationFailedException;

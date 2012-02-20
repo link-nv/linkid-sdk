@@ -11,6 +11,8 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
@@ -20,8 +22,7 @@ import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.configuration.*;
 import net.link.util.error.ValidationFailedException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 import org.openid4java.OpenIDException;
 import org.openid4java.association.Association;
 import org.openid4java.consumer.ConsumerManager;
@@ -43,7 +44,7 @@ import org.openid4java.message.ax.FetchResponse;
  */
 public class OpenIdProtocolHandler implements ProtocolHandler {
 
-    private static final Log LOG = LogFactory.getLog( OpenIdProtocolHandler.class );
+    private static final Logger logger = Logger.get( OpenIdProtocolHandler.class );
 
     static {
         try {
@@ -51,32 +52,33 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             Message.addExtensionFactory( UserInterfaceMessage.class );
         }
         catch (MessageException e) {
-            throw new RuntimeException( e );
+            throw new InternalInconsistencyException( e );
         }
     }
 
     private DiscoveryInformation  discovered;
     private AuthenticationContext authnContext;
 
+    @Override
     public AuthnProtocolRequestContext sendAuthnRequest(HttpServletResponse response, AuthenticationContext context)
             throws IOException {
 
         authnContext = context;
 
         String realm = getRealm();
-        LOG.debug( "realm: " + realm );
+        logger.dbg( "realm: %s", realm );
         String discoveryUrl = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().openid().discoveryPath() );
-        LOG.debug( "discoveryUrl: " + discoveryUrl );
+        logger.dbg( "discoveryUrl: %s", discoveryUrl );
 
         String targetURL = context.getTarget();
         if (targetURL == null || !URI.create( targetURL ).isAbsolute())
             targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
-        LOG.debug( "target url: " + targetURL );
+        logger.dbg( "target url: %s", targetURL );
 
         String landingURL = null;
         if (config().web().landingPath() != null)
             landingURL = ConfigUtils.getApplicationConfidentialURLFromPath( config().web().landingPath() );
-        LOG.debug( "landing url: " + landingURL );
+        logger.dbg( "landing url: %s", landingURL );
 
         if (landingURL == null) {
             // If no landing URL is configured, land on target.
@@ -86,7 +88,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         try {
             ConsumerManager manager = context.getOpenID().getManager();
 
-            @SuppressWarnings({ "unchecked" })
+            @SuppressWarnings("unchecked")
             List<DiscoveryInformation> discoveries = manager.discover( discoveryUrl );
             discovered = manager.associate( discoveries );
 
@@ -96,11 +98,12 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             return new AuthnProtocolRequestContext( realm, realm, this, targetURL );
         }
         catch (OpenIDException e) {
-            LOG.error( "OpenID OpenIDException", e );
-            throw new RuntimeException( e );
+            logger.err( "OpenID OpenIDException", e );
+            throw new InternalInconsistencyException( e );
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException {
@@ -110,7 +113,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         // extract the receiving URL from the HTTP request
         StringBuffer receivingURL = request.getRequestURL();
         String queryString = request.getQueryString();
-        if (queryString != null && queryString.length() > 0)
+        if (queryString != null && !queryString.isEmpty())
             receivingURL.append( '?' ).append( request.getQueryString() );
 
         // debug( parameterList );
@@ -120,12 +123,12 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         VerificationResult verification;
         try {
             verification = authnContext.getOpenID().getManager().verify( receivingURL.toString(), parameterList, discovered );
-            LOG.debug( "discovered: " + discovered.getOPEndpoint().toString() );
-            LOG.debug( "verification: " + verification.getStatusMsg() );
+            logger.dbg( "discovered: %s", discovered.getOPEndpoint().toString() );
+            logger.dbg( "verification: %s", verification.getStatusMsg() );
         }
         catch (OpenIDException e) {
-            LOG.error( "OpenID OpenIDException", e );
-            throw new RuntimeException( e );
+            logger.err( "OpenID OpenIDException", e );
+            throw new InternalInconsistencyException( e );
         }
 
         Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>();
@@ -135,7 +138,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         String userId = null;
         if (identifier != null) {
             userId = identifier.getIdentifier();
-            LOG.debug( "userId: " + userId );
+            logger.dbg( "userId: %s", userId );
 
             // attribute exchange support
             if (authResponse.hasExtension( AxMessage.OPENID_NS_AX ))
@@ -144,8 +147,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                     attributes = OpenIdUtil.getAttributeMap( fetchResp );
                 }
                 catch (MessageException e) {
-                    LOG.error( "OpenID MessageException", e );
-                    throw new RuntimeException( e );
+                    logger.err( "OpenID MessageException", e );
+                    throw new InternalInconsistencyException( e );
                 }
 
             // authenticated devices support
@@ -156,8 +159,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                     Iterables.addAll( authenticatedDevices, authDevicesMessage );
                 }
                 catch (MessageException e) {
-                    LOG.error( "OpenID MessageException", e );
-                    throw new RuntimeException( e );
+                    logger.err( "OpenID MessageException", e );
+                    throw new InternalInconsistencyException( e );
                 }
         }
 
@@ -172,33 +175,41 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                 attributes, success, null );
     }
 
+    @Nullable
+    @Override
     public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request,
                                                                       final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
 
-        LOG.debug( "OpenID implementation does not support detached authentication yet" );
+        logger.dbg( "OpenID implementation does not support detached authentication yet" );
         return null;
     }
 
+    @Override
     public LogoutProtocolRequestContext sendLogoutRequest(HttpServletResponse response, String userId, LogoutContext context)
             throws IOException {
 
         throw new UnsupportedOperationException( "OpenID implementation does not support single logout" );
     }
 
+    @Override
     public LogoutProtocolResponseContext findAndValidateLogoutResponse(HttpServletRequest request)
             throws ValidationFailedException {
 
         throw new UnsupportedOperationException( "OpenID implementation does not support single logout" );
     }
 
+    @Nullable
+    @Override
     public LogoutProtocolRequestContext findAndValidateLogoutRequest(HttpServletRequest request,
                                                                      Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
             throws ValidationFailedException {
 
-        throw new UnsupportedOperationException( "OpenID implementation does not support single logout" );
+        // not supported by OpenID
+        return null;
     }
 
+    @Override
     public LogoutProtocolResponseContext sendLogoutResponse(HttpServletResponse response, LogoutProtocolRequestContext logoutRequestContext,
                                                             boolean partialLogout)
             throws IOException {
@@ -218,37 +229,37 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             @SuppressWarnings("unchecked")
             List<DiscoveryInformation> discoveries = manager.getDiscovery().discover( respClaimed );
 
-            LOG.debug( "discovered" );
-            LOG.debug( "  * getDelegateIdentifier(): " + discovered.getDelegateIdentifier() );
-            LOG.debug( "  * getClaimedIdentifier(): " + discovered.getClaimedIdentifier() );
-            LOG.debug( "  * getClaimedIdentifier.getVersion(): " + discovered.getVersion() );
-            LOG.debug( "  * getOPEndpoint(): " + discovered.getOPEndpoint() );
+            logger.dbg( "discovered" );
+            logger.dbg( "  * getDelegateIdentifier(): %s", discovered.getDelegateIdentifier() );
+            logger.dbg( "  * getClaimedIdentifier(): %s", discovered.getClaimedIdentifier() );
+            logger.dbg( "  * getClaimedIdentifier.getVersion(): %s", discovered.getVersion() );
+            logger.dbg( "  * getOPEndpoint(): %s", discovered.getOPEndpoint() );
 
             for (DiscoveryInformation discovery : discoveries) {
-                LOG.debug( "service" );
-                LOG.debug( "  * getDelegateIdentifier(): " + discovery.getDelegateIdentifier() );
-                LOG.debug( "  * getClaimedIdentifier(): " + discovery.getClaimedIdentifier() );
-                LOG.debug( "  * getClaimedIdentifier.getVersion(): " + discovery.getVersion() );
-                LOG.debug( "  * getOPEndpoint(): " + discovery.getOPEndpoint() );
+                logger.dbg( "service" );
+                logger.dbg( "  * getDelegateIdentifier(): %s", discovery.getDelegateIdentifier() );
+                logger.dbg( "  * getClaimedIdentifier(): %s", discovery.getClaimedIdentifier() );
+                logger.dbg( "  * getClaimedIdentifier.getVersion(): %s", discovery.getVersion() );
+                logger.dbg( "  * getOPEndpoint(): %s", discovery.getOPEndpoint() );
             }
 
-            LOG.debug( "response" );
-            LOG.debug( "  * assertId: " + authResp.getIdentity() );
-            LOG.debug( "  * respEndpoint: " + authResp.getOpEndpoint() );
-            LOG.debug( "  * respClaimed: " + respClaimed );
-            LOG.debug( "  * handle: " + authResp.getHandle() );
+            logger.dbg( "response" );
+            logger.dbg( "  * assertId: %s", authResp.getIdentity() );
+            logger.dbg( "  * respEndpoint: %s", authResp.getOpEndpoint() );
+            logger.dbg( "  * respClaimed: %s", respClaimed );
+            logger.dbg( "  * handle: %s", authResp.getHandle() );
 
             Association association = manager.getAssociations().load( discovered.getOPEndpoint().toString(), authResp.getHandle() );
             if (null != association)
-                LOG.debug( "found association: " + association.getHandle() );
+                logger.dbg( "found association: %s", association.getHandle() );
             else
-                LOG.debug( "association " + authResp.getHandle() + " not found" );
+                logger.dbg( "association %s not found.", authResp.getHandle() );
         }
         catch (MessageException e) {
-            LOG.error( "MessageException", e );
+            logger.err( e, "MessageException" );
         }
         catch (DiscoveryException e) {
-            LOG.error( "[TODO]", e );
+            logger.err( e, "[TODO]" );
         }
         // END-DEBUG
     }
