@@ -39,6 +39,10 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
     @Init(name = "ErrorPage", optional = true)
     private String errorPage;
 
+    @Init(name = "TimeoutPage", optional = true)
+    private String timeoutPage;
+
+
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -61,6 +65,13 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             if (null == authnResponse)
                 authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction() );
             if (null == authnResponse) {
+                // if we don't have a response, check if perhaps the session has expired
+                if (request.getSession( false) == null || request.getSession().isNew()){
+                    LOG.warn( ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
+                            new ErrorMessage(  "Session timeout, authentication took too long." ) ) );
+
+                }
+                //nope, it's something else
                 LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
                         new ErrorMessage( "No expected or detached authentication responses found in request." ) ) );
                 return;
