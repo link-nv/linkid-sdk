@@ -83,7 +83,7 @@
         <url-pattern>/startlogin</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>InitiateLoginServlet</servlet-name>
+        <servlet-name>InitiateLogoutServlet</servlet-name>
         <url-pattern>/startlogout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>

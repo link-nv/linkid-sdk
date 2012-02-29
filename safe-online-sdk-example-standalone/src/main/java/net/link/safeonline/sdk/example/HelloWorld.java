@@ -32,7 +32,13 @@ public class HelloWorld extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession currentSession = request.getSession(); 
+        HttpSession currentSession = request.getSession();
+
+        //log out?
+        if (request.getParameter( "logout" ) != null && request.getParameter( "logout" ).equals( "true" )){
+            currentSession.invalidate();
+        }
+
         boolean authenticated = LoginManager.isAuthenticated( currentSession );
         Map<String, List<AttributeSDK<Serializable>>> attributes = LoginManager.findAttributes( currentSession );
         String userName;
@@ -50,8 +56,10 @@ public class HelloWorld extends HttpServlet {
         out.println( "<body>" );
         if (!authenticated)
             out.println( "<a href=\"/startlogin?return_uri=/helloworld\">Login</a>" ); //startlogin path is defined in web.xml!
-        else
-            out.println( "<a href=\"/startlogout\">Logout</a>" );
+        else{
+            out.println( "<a href=\"/startlogout\">Single sign-on logout</a>" );
+            out.println( "<a href=\"/helloworld?logout=true\">Simple logout</a>" );
+        }
         out.println( "<p>Hello  " + userName + " </p>" );
         out.println( "<p>Authenticated:  " + authenticated + " </p>" );
         out.println( "</body>" );
