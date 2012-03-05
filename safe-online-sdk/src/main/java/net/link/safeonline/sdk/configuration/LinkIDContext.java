@@ -194,14 +194,11 @@ public abstract class LinkIDContext implements Serializable {
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
      *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      * @param loginMode               Indicates to the LinkID services how the login procedure wil be shown visually at client side: a
-     *                                redirect
-     *                                to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window). Based on
-     *                                this
-     *                                information, LinkID services can make decisions on for example theme's to use, and wether or not
-     *                                authorisation
-     *                                responses should try to break out of an iframe (needed when showing the login inside an iframe). If
-     *                                {@code null},
-     *                                will default to redirect mode, unless the legacy breakFrame configuration option has been enabled.
+     *                                redirect to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window).
+     *                                Based on this information, LinkID services can make decisions on which theme to use, and
+     *                                wether or not authorisation responses should try to break out of an iframe (needed when showing the
+     *                                login inside an iframe). If {@code null}, will default to redirect mode, unless the legacy breakFrame
+     *                                configuration option for saml2 has been set to true, in which case it will be set to 'framed' mode.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                             X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,

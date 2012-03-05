@@ -8,5 +8,5 @@ package net.link.safeonline.sdk.api.auth;
 * To change this template use File | Settings | File Templates.
 */
 public enum LoginMode {
-    REDIRECT, POPUP, FRAMED;
+    REDIRECT, POPUP, FRAMED, FRAMED_NO_BREAKFRAME, POPUP_NO_CLOSE;
 }

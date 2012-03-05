@@ -1124,6 +1124,15 @@ public class MyConfigFilter extends SDKConfigFilter {
                         </listitem>
                     </varlistentry>
                     <varlistentry>
+                        <term>Popup_no_close</term>
+                        <listitem>
+                            <para>
+                                The same as before, but the <code>LoginServlet</code> landing servlet will not close the popup window, and
+                                issue the normal redirect.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
                         <term>Framed</term>
                         <listitem>
                             <para>
@@ -1131,6 +1140,15 @@ public class MyConfigFilter extends SDKConfigFilter {
                                 in a JavaScript modal window). The iframe is assumed to be 640x480 pixels. LinkID will set an appropriate
                                 style for the framed login process, and upon completion of the authentication process submits to result back
                                 to the frame's parent, instead of the frame itself.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>Framed_no_breakframe</term>
+                        <listitem>
+                            <para>
+                                The same as before, but the result of the authentication processes is submitted to the frame itself, and
+                                not the parent.
                             </para>
                         </listitem>
                     </varlistentry>

@@ -53,7 +53,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
                 }
             }
         }
-            AuthenticationUtils.login( request, response,  new AuthenticationContext(null, null, null, targetURI, mode) );
+        AuthenticationUtils.login( request, response,  new AuthenticationContext(null, null, null, targetURI, mode) );
     }
 
 }
