@@ -1148,7 +1148,9 @@ public class MyConfigFilter extends SDKConfigFilter {
                         <listitem>
                             <para>
                                 The same as before, but the result of the authentication processes is submitted to the frame itself, and
-                                not the parent.
+                                not the parent. If you have used the 'linkid.login.js' javascript provided by LinkID to show the login iframe
+                                in a modal window, then you can use the following javascript from within the iframe to close the window:
+                                <code>parent.$.fn.colorbox.close()</code>
                             </para>
                         </listitem>
                     </varlistentry>
