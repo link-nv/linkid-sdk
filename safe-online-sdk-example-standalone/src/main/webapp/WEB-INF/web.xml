@@ -10,7 +10,7 @@
     </context-param>
     <context-param>
         <param-name>linkID.app.keyProvider</param-name>
-        <param-value>classpath://e-loket:secret:secret@testapp.jks</param-value>
+        <param-value>classpath://helloworld:secret:secret@testapp.jks</param-value>
     </context-param>
     <context-param>
         <param-name>web.landingPath</param-name>
