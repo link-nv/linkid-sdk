@@ -20,6 +20,11 @@
 
     <build>
         <plugins>
+            <!-- Needed for copying the endorsed JAXB 2.2 JAXWS 2.2 jars -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -41,7 +46,7 @@
                                 </taskdef>
                                 <mkdir dir="${project.build.directory}/generated-sources/java" />
                                 <mkdir dir="${project.build.directory}/generated-classes/jaxws" />
-                                <wsimport debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/safe-online-session.wsdl" sourcedestdir="${project.build.directory}/generated-sources/java" catalog="${basedir}/src/main/catalog/catalog.xml">
+                                <wsimport xendorsed="true" debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/safe-online-session.wsdl" sourcedestdir="${project.build.directory}/generated-sources/java" catalog="${basedir}/src/main/catalog/catalog.xml">
                                     <produces dir="${project.build.directory}/generated-sources/java">
                                         <include name="**/*.java" />
                                     </produces>

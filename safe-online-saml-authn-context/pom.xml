@@ -18,62 +18,44 @@
     <artifactId>safe-online-saml-authn-context</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <jaxb-api.version>2.1</jaxb-api.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb-api.version}</version>
-            </dependency>            
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>wsimport</id>
-                        <phase>generate-sources</phase>
+                        <id>xjc</id>
                         <goals>
-                            <goal>run</goal>
+                            <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <tasks>
-                                <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
-                                    <classpath>
-                                        <path refid="maven.compile.classpath" />
-                                        <path refid="maven.plugin.classpath" />
-                                        <path refid="maven.runtime.classpath" />
-                                    </classpath>
-                                </taskdef>
-                                <mkdir dir="${project.build.directory}/generated-sources/xjc" />
-                                <xjc destdir="${project.build.directory}/generated-sources/xjc" catalog="${basedir}/src/main/catalog/catalog.xml">
-                                    <schema dir="${basedir}/src/main/resources" includes="saml-schema-authn-context-2.0.xsd" />
-                                    <schema dir="${basedir}/src/main/resources" includes="saml-schema-authn-context-ppt-2.0.xsd" />
-                                    <schema dir="${basedir}/src/main/resources" includes="saml-schema-authn-context-smartcardpki-2.0.xsd" />
-                                    <produces dir="${project.build.directory}/generated-sources/xjc">
-                                        <include name="**/*.java" />
-                                    </produces>
-                                </xjc>
-                            </tasks>
-                            <sourceRoot>
-                                ${project.build.directory}/generated-sources/xjc
-                            </sourceRoot>
+                            <catalog>${basedir}/src/main/catalog/catalog.xml</catalog>
+                            <schemaIncludes>
+                                <schemaInclude>saml-schema-authn-context-2.0.xsd</schemaInclude>
+                                <schemaInclude>saml-schema-authn-context-ppt-2.0.xsd</schemaInclude>
+                                <schemaInclude>saml-schema-authn-context-smartcardpki-2.0.xsd</schemaInclude>
+                            </schemaIncludes>
+                            <debug>false</debug>
+                            <verbose>true</verbose>
+                            <generateDirectory>${project.build.directory}/generated-sources/xjc</generateDirectory>
                         </configuration>
                     </execution>
                 </executions>
                 <dependencies>
                     <dependency>
                         <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-xjc</artifactId>
-                        <version>${jaxb-xjc.version}</version>
+                        <artifactId>jaxb-impl</artifactId>
+                        <version>${jaxb-impl.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -81,11 +63,6 @@
     </build>
 
     <dependencies>
-
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>

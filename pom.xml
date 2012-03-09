@@ -16,17 +16,6 @@
 
     <properties>
         <ejb-api.version>3.0</ejb-api.version>
-        <jboss-servlet-api_3.0_spec.version>1.0.0.Final</jboss-servlet-api_3.0_spec.version>
-        <!--<servlet-api.version>2.4</servlet-api.version>-->
-        <xalan.version>2.7.1</xalan.version>
-        <xercesImpl.version>2.9.1</xercesImpl.version>
-        <commons-httpclient.version>3.1</commons-httpclient.version>
-        <jaxws-rt.version>2.1.4</jaxws-rt.version>
-        <jaxws-tools.version>2.1.4</jaxws-tools.version>
-        <jsr181-api.version>1.0-MR1</jsr181-api.version>
-        <jetbrains-annotations.version>7.0.2</jetbrains-annotations.version>
-        <jtrust.version>1.1.2</jtrust.version>
-
         <maven-export-plugin.version>1.6</maven-export-plugin.version>
 
     </properties>
@@ -78,12 +67,12 @@
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
-                <version>${jaxws-rt.version}</version>
+                <version>${jaxws.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-tools</artifactId>
-                <version>${jaxws-tools.version}</version>
+                <version>${jaxws.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.jws</groupId>

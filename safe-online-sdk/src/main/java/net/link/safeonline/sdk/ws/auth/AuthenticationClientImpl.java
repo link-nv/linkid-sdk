@@ -115,8 +115,7 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         logger.dbg( "confirm or reject global usage agreement: %s", confirmation.getValue() );
 
-        WSAuthenticationGlobalUsageAgreementConfirmationType request = AuthenticationUtil.getGlobalUsageAgreementConfirmationRequest(
-                confirmation );
+        WSAuthenticationGlobalUsageAgreementConfirmationType request = AuthenticationUtil.getGlobalUAConfirmationRequest( confirmation );
 
         WSAuthenticationResponseType response = getGlobalUsageAgreementConfirmationResponse( request );
 
@@ -160,7 +159,7 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         logger.dbg( "confirm or reject application usage agreement: %s", confirmation.getValue() );
 
-        WSAuthenticationUsageAgreementConfirmationType request = AuthenticationUtil.getUsageAgreementConfirmationRequest( confirmation );
+        WSAuthenticationUsageAgreementConfirmationType request = AuthenticationUtil.getUAConfirmationRequest( confirmation );
 
         WSAuthenticationResponseType response = getUsageAgreementConfirmationResponse( request );
 

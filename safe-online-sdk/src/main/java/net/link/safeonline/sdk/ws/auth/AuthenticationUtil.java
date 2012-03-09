@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.sdk.ws.auth;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -25,8 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
-import org.w3._2000._09.xmldsig_.*;
-import org.w3._2000._09.xmldsig_.ObjectFactory;
+import org.w3._2000._09.xmldsig.*;
+import org.w3._2000._09.xmldsig.ObjectFactory;
 
 
 /**
@@ -89,8 +90,7 @@ public class AuthenticationUtil {
         return request;
     }
 
-    public static WSAuthenticationGlobalUsageAgreementConfirmationType getGlobalUsageAgreementConfirmationRequest(
-            Confirmation confirmation) {
+    public static WSAuthenticationGlobalUsageAgreementConfirmationType getGlobalUAConfirmationRequest(Confirmation confirmation) {
 
         WSAuthenticationGlobalUsageAgreementConfirmationType request = new WSAuthenticationGlobalUsageAgreementConfirmationType();
         setRequest( request );
@@ -105,7 +105,7 @@ public class AuthenticationUtil {
         return request;
     }
 
-    public static WSAuthenticationUsageAgreementConfirmationType getUsageAgreementConfirmationRequest(Confirmation confirmation) {
+    public static WSAuthenticationUsageAgreementConfirmationType getUAConfirmationRequest(Confirmation confirmation) {
 
         WSAuthenticationUsageAgreementConfirmationType request = new WSAuthenticationUsageAgreementConfirmationType();
         setRequest( request );
@@ -141,7 +141,7 @@ public class AuthenticationUtil {
             idGenerator = new SecureRandomIdentifierGenerator();
         }
         catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException( "secure random init error: " + e.getMessage(), e );
+            throw new InternalInconsistencyException( String.format( "secure random init error: %s", e.getMessage() ), e );
         }
         String id = idGenerator.generateIdentifier();
         XMLGregorianCalendar now = getCurrentXmlGregorianCalendar();
@@ -159,7 +159,7 @@ public class AuthenticationUtil {
         }
         catch (DatatypeConfigurationException e) {
             LOG.error( "datatype configuration exception", e );
-            throw new RuntimeException( "datatype configuration exception: " + e.getMessage() );
+            throw new InternalInconsistencyException( String.format( "datatype configuration exception: %s", e.getMessage() ), e );
         }
 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();

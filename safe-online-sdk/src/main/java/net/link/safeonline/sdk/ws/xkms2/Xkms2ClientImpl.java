@@ -19,10 +19,9 @@ import net.link.util.common.CertificateChain;
 import net.link.util.ws.AbstractWSClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3._2000._09.xmldsig_.KeyInfoType;
-import org.w3._2000._09.xmldsig_.X509DataType;
-import org.w3._2002._03.xkms_.*;
-import org.w3._2002._03.xkms_wsdl.XKMSPortType;
+import org.w3._2000._09.xmldsig.KeyInfoType;
+import org.w3._2000._09.xmldsig.X509DataType;
+import org.w3._2002._03.xkms.*;
 
 
 /**
@@ -55,7 +54,7 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
         LOG.debug( "validate" );
 
         ObjectFactory objectFactory = new ObjectFactory();
-        org.w3._2000._09.xmldsig_.ObjectFactory xmldsigObjectFactory = new org.w3._2000._09.xmldsig_.ObjectFactory();
+        org.w3._2000._09.xmldsig.ObjectFactory xmldsigObjectFactory = new org.w3._2000._09.xmldsig.ObjectFactory();
 
         ValidateRequestType request = objectFactory.createValidateRequestType();
         QueryKeyBindingType queryKeyBinding = objectFactory.createQueryKeyBindingType();
