@@ -26,7 +26,6 @@ public class DataServiceFactory {
         if (null == wsdlUrl)
             throw new RuntimeException( "Liberty ID-WSF DST Ref WSDL not found" );
 
-        DataService dataService = new DataService( wsdlUrl, new QName( "urn:liberty:dst:2006-08:ref:safe-online", "DataService" ) );
-        return dataService;
+        return new DataService( wsdlUrl, new QName( "urn:liberty:dst:2006-08:ref:safe-online", "DataService" ) );
     }
 }
