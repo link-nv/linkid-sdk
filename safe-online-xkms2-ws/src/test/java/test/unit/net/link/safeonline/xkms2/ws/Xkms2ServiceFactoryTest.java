@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 import net.link.safeonline.xkms2.ws.Xkms2ServiceFactory;
 import org.junit.Test;
-import org.w3._2002._03.xkms_wsdl.XKMSService;
+import org.w3._2002._03.xkms.XKMSService;
 
 
 public class Xkms2ServiceFactoryTest {

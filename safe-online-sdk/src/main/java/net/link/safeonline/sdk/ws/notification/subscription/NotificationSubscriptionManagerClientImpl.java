@@ -14,9 +14,7 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 import net.lin_k.safe_online.notification.subscription.manager.*;
 import net.link.safeonline.notification.subscription.manager.ws.NotificationSubscriptionManagerServiceFactory;
-import net.link.safeonline.sdk.api.exception.RequestDeniedException;
-import net.link.safeonline.sdk.api.exception.SubscriptionNotFoundException;
-import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.NotificationErrorCode;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
@@ -58,12 +56,21 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-    private W3CEndpointReference getEndpointReference(String address) {
+        private W3CEndpointReference getEndpointReference(String address) {
 
-        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-        builder.address( address );
-        return builder.build();
-    }
+            W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
+            builder.address( address );
+            return builder.build();
+        }
+
+//    private EndpointReferenceType getEndpointReference(String address) {
+//
+//        EndpointReferenceType endpoint = new EndpointReferenceType();
+//        AttributedURIType addressType = new AttributedURIType();
+//        addressType.setValue( address );
+//        endpoint.setAddress( addressType );
+//        return endpoint;
+//    }
 
     public void unsubscribe(String topic, String address)
             throws SubscriptionNotFoundException, RequestDeniedException, WSClientTransportException {
@@ -71,8 +78,8 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<
         LOG.debug( "unsubscribe" );
         UnsubscribeRequest request = new UnsubscribeRequest();
 
-        W3CEndpointReference endpoint = getEndpointReference( address );
-        request.setConsumerReference( endpoint );
+                W3CEndpointReference endpoint = getEndpointReference( address );
+//        request.setConsumerReference( getEndpointReference( address ) );
 
         TopicType topicType = new TopicType();
         TopicExpressionType topicExpression = new TopicExpressionType();

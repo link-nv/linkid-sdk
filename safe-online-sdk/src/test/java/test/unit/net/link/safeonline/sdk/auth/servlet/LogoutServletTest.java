@@ -72,10 +72,6 @@ public class LogoutServletTest {
     public void setUp()
             throws Exception {
 
-        WebServiceTestManager webServiceTestManager = new WebServiceTestManager();
-        SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
-        webServiceTestManager.setUp( port, "/linkid-ws", "sts" );
-
         servletTestManager = new ServletTestManager();
 
         HashMap<String, ProtocolContext> contexts = new HashMap<String, ProtocolContext>();
@@ -90,7 +86,6 @@ public class LogoutServletTest {
 
         new TestConfigHolder( servletTestManager.createSocketConnector(), servletTestManager.getServletContext() ).install();
         keyPair = PkiTestUtils.generateKeyPair();
-        testConfig().web().wsBase = webServiceTestManager.getLocation();
         testConfig().linkID().app().keyProvider = new KeyProviderImpl(
                 new KeyStore.PrivateKeyEntry( keyPair.getPrivate(), new Certificate[] {
                         PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=TestApplication" )

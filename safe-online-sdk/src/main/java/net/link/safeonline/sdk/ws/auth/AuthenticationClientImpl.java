@@ -62,6 +62,13 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
+//    private W3CEndpointReference getEndpointReference(EndpointReferenceType endpointReferenceType) {
+//
+//        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
+//        builder.address( address );
+//        return builder.build();
+//    }
+
     @Nullable
     @Override
     public String authenticate(String applicationName, String deviceName, String language, Object deviceCredentials, PublicKey publicKey)

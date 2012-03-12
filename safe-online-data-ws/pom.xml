@@ -50,14 +50,14 @@
                                         <path refid="maven.runtime.classpath" />
                                     </classpath>
                                 </taskdef>
-                                <mkdir dir="${project.build.directory}/generated-sources/xjc" />
-                                <xjc destdir="${project.build.directory}/generated-sources/xjc" catalog="${basedir}/src/main/catalog/catalog.xml">
-                                    <schema dir="${basedir}/src/main/resources" includes="liberty-idwsf-soap-binding-v2.0.xsd" />
-                                    <arg value="-verbose" />
-                                    <produces dir="${project.build.directory}/generated-sources/xjc">
-                                        <include name="**/*.java" />
-                                    </produces>
-                                </xjc>
+                                <!--<mkdir dir="${project.build.directory}/generated-sources/xjc" />-->
+                                <!--<xjc destdir="${project.build.directory}/generated-sources/xjc" catalog="${basedir}/src/main/catalog/catalog.xml">-->
+                                    <!--<schema dir="${basedir}/src/main/resources" includes="liberty-idwsf-soap-binding-v2.0.xsd" />-->
+                                    <!--<arg value="-verbose" />-->
+                                    <!--<produces dir="${project.build.directory}/generated-sources/xjc">-->
+                                        <!--<include name="**/*.java" />-->
+                                    <!--</produces>-->
+                                <!--</xjc>-->
                                 <mkdir dir="${project.build.directory}/generated-classes/jaxws" />
                                 <wsimport xendorsed="true" debug="true" fork="true" destdir="${project.build.directory}/generated-classes/jaxws" verbose="true" wsdl="${basedir}/src/main/resources/liberty-idwsf-dst-ref-v2.1-link.wsdl" sourcedestdir="${project.build.directory}/generated-sources/xjc" catalog="${basedir}/src/main/catalog/catalog.xml">
                                     <produces dir="${project.build.directory}/generated-classes/jaxws">

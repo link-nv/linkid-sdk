@@ -11,9 +11,7 @@ import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
-import net.lin_k.safe_online.auth.AuthenticationGetInstanceRequestType;
-import net.lin_k.safe_online.auth.AuthenticationGetInstanceResponseType;
-import net.lin_k.safe_online.auth.GetWSAuthenticationPort;
+import net.lin_k.safe_online.auth.*;
 import net.link.safeonline.auth.ws.soap.GetWSAuthenticationServiceFactory;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.auth.client.GetAuthenticationClient;
@@ -33,12 +31,11 @@ public class GetAuthenticationClientImpl extends AbstractWSClient<GetWSAuthentic
 
     private final String location;
 
-
     /**
      * Main constructor.
      *
      * @param location       the location (host:port/ws-context) of the authentication web service.
-     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
     public GetAuthenticationClientImpl(String location, X509Certificate sslCertificate) {
 
@@ -48,6 +45,7 @@ public class GetAuthenticationClientImpl extends AbstractWSClient<GetWSAuthentic
         registerTrustManager( sslCertificate );
     }
 
+    @Override
     public W3CEndpointReference getInstance()
             throws WSClientTransportException {
 
@@ -56,7 +54,8 @@ public class GetAuthenticationClientImpl extends AbstractWSClient<GetWSAuthentic
         AuthenticationGetInstanceResponseType response;
         try {
             response = getPort().getInstance( new AuthenticationGetInstanceRequestType() );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 

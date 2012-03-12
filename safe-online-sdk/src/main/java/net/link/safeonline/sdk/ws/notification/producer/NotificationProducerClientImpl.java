@@ -12,10 +12,7 @@ import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
-import net.lin_k.safe_online.notification.producer.FilterType;
-import net.lin_k.safe_online.notification.producer.NotificationProducerPort;
-import net.lin_k.safe_online.notification.producer.SubscribeRequest;
-import net.lin_k.safe_online.notification.producer.SubscribeResponse;
+import net.lin_k.safe_online.notification.producer.*;
 import net.link.safeonline.notification.producer.ws.NotificationProducerServiceFactory;
 import net.link.safeonline.sdk.api.exception.SubscriptionFailedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
@@ -41,17 +38,15 @@ public class NotificationProducerClientImpl extends AbstractWSClient<Notificatio
 
     private final String location;
 
-
     /**
      * Main constructor.
      *
-     * @param location the location (host:port) of the attribute web service.
+     * @param location       the location (host:port) of the attribute web service.
      * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
-     * @param configuration
      */
     public NotificationProducerClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super(NotificationProducerServiceFactory.newInstance().getNotificationProducerPort() );
+        super( NotificationProducerServiceFactory.newInstance().getNotificationProducerPort() );
         getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/producer" );
 
         registerTrustManager( sslCertificate );
@@ -65,14 +60,24 @@ public class NotificationProducerClientImpl extends AbstractWSClient<Notificatio
         return builder.build();
     }
 
+//    private EndpointReferenceType getEndpointReference(String address) {
+//
+//        EndpointReferenceType endpoint = new EndpointReferenceType();
+//        AttributedURIType addressType = new AttributedURIType();
+//        addressType.setValue( address );
+//        endpoint.setAddress( addressType );
+//        return endpoint;
+//    }
+
     public void subscribe(String topic, String address)
             throws SubscriptionFailedException, WSClientTransportException {
 
         LOG.debug( "subscribe " + address + " to " + topic );
         SubscribeRequest request = new SubscribeRequest();
 
-        W3CEndpointReference endpoint = getEndpointReference( address );
+                W3CEndpointReference endpoint = getEndpointReference( address );
         request.setConsumerReference( endpoint );
+//        request.setConsumerReference( getEndpointReference( address ) );
 
         FilterType filter = new FilterType();
         TopicExpressionType topicExpression = new TopicExpressionType();
@@ -84,7 +89,8 @@ public class NotificationProducerClientImpl extends AbstractWSClient<Notificatio
         SubscribeResponse response;
         try {
             response = getPort().subscribe( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
