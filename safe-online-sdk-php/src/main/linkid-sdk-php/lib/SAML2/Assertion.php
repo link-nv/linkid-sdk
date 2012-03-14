@@ -460,7 +460,7 @@ class SAML2_Assertion implements SAML2_SignedElement {
 
              // detect if compound...
             $compoundMembers = SAML2_Utils::xpQuery($attribute, './saml_assertion:AttributeValue/saml_assertion:Attribute');
-            if (isset($compoundMembers)) {
+            if (count($compoundMembers) > 0) {
 
                 // parse...
                 $members = array();
