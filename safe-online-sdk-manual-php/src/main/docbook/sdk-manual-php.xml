@@ -138,6 +138,10 @@ $metadata['linkID'] = array(
            This chapter explains how to initiate the linkID authentication process.
        </para>
        <para>
+           The SDK contains a basic linkID SP example which you could use to start form. This example is located in
+           <code>www/linkid-example</code>.
+       </para>
+       <para>
            If you have successfully complete the configuration of the SDK for your SP application, initiating the linkID
            authentication process is as simple as follows:
 
