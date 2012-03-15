@@ -49,6 +49,7 @@ public interface ProtocolHandler extends Serializable {
      *
      * @throws ValidationFailedException Validation failed for the incoming authentication response.
      */
+    @Nullable
     AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException;
 
@@ -89,6 +90,7 @@ public interface ProtocolHandler extends Serializable {
      *
      * @throws ValidationFailedException validation of the logout response failed.
      */
+    @Nullable
     LogoutProtocolResponseContext findAndValidateLogoutResponse(HttpServletRequest request)
             throws ValidationFailedException;
 

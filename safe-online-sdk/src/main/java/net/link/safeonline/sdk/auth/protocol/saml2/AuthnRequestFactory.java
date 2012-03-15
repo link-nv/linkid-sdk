@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import javax.xml.namespace.QName;
@@ -54,7 +55,7 @@ public class AuthnRequestFactory {
                     new SessionInfoUnmarshaller() );
         }
         catch (ConfigurationException e) {
-            throw new RuntimeException( "could not bootstrap the OpenSAML2 library", e );
+            throw new InternalInconsistencyException( "could not bootstrap the OpenSAML2 library", e );
         }
     }
 
@@ -78,8 +79,9 @@ public class AuthnRequestFactory {
      *
      * @return unsigned SAML v2.0 AuthnRequest object
      */
-    public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences, @Nullable String applicationFriendlyName,
-                                                  String assertionConsumerServiceURL, @Nullable String destinationURL, @Nullable Set<String> devices,
+    public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences,
+                                                  @Nullable String applicationFriendlyName, String assertionConsumerServiceURL,
+                                                  @Nullable String destinationURL, @Nullable Set<String> devices,
                                                   boolean forceAuthentication, @Nullable String sessionTrackingId,
                                                   @Nullable Map<String, String> deviceContext) {
 
@@ -94,7 +96,7 @@ public class AuthnRequestFactory {
             idGenerator = new SecureRandomIdentifierGenerator();
         }
         catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException( "secure random init error: " + e.getMessage(), e );
+            throw new InternalInconsistencyException( String.format( "secure random init error: %s", e.getMessage() ), e );
         }
         String id = idGenerator.generateIdentifier();
         request.setID( id );
