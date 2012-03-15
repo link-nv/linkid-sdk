@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -31,11 +32,18 @@
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceIncludes>
+                                <dependencySourceInclude>net.lin-k.safe-online.client.sdk:safe-online-sdk-api</dependencySourceInclude>
+                            </dependencySourceIncludes>
+                        </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -72,6 +80,12 @@
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-api</artifactId>
             <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-api</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>

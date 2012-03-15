@@ -60,6 +60,7 @@ public class LinkIDLogoutLink extends AbstractLinkIDAuthLink {
         return logoutEnabled;
     }
 
+    @Override
     public void delegate(final HttpServletRequest request, final HttpServletResponse response, final Class<? extends Page> target,
                          final PageParameters targetPageParameters) {
 
@@ -94,9 +95,6 @@ public class LinkIDLogoutLink extends AbstractLinkIDAuthLink {
         return new LogoutContext( null, null, targetURL );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isVisible() {
 
