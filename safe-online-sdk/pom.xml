@@ -68,12 +68,6 @@
             <groupId>org.jboss.spec.javax.ejb</groupId>
             <artifactId>jboss-ejb-api_3.1_spec</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-container-saml</artifactId>
-            <version>GIT-SNAPSHOT</version>
-            <type>pom</type>
-        </dependency>
 
         <!-- Specific Dependencies: linkID -->
         <dependency>

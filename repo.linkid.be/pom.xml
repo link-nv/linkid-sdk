@@ -46,12 +46,6 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-container-saml</artifactId>
-            <type>pom</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-attrib-ws</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -98,11 +92,6 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-session-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-saml-authn-context</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

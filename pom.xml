@@ -24,14 +24,6 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- LinkID -->
-            <dependency>
-                <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                <artifactId>safe-online-container-saml</artifactId>
-                <version>GIT-SNAPSHOT</version>
-                <type>pom</type>
-            </dependency>
-
             <!-- External -->
             <dependency>
                 <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -99,7 +91,6 @@
         <module>safe-online-config</module>
         <module>safe-online-sdk-api</module>
         <module>safe-online-sdk</module>
-        <module>safe-online-container-saml</module>
         <module>safe-online-attrib-ws</module>
         <module>safe-online-auth-ws</module>
         <module>safe-online-data-ws</module>
@@ -111,7 +102,6 @@
         <module>safe-online-notification-subscription-manager-ws</module>
         <module>safe-online-session-ws</module>
         <module>safe-online-wicket-sdk</module>
-        <module>safe-online-saml-authn-context</module>
 
         <module>safe-online-sdk-dotnet</module>
         <module>safe-online-sdk-php</module>
