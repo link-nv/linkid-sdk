@@ -3,6 +3,7 @@ package net.link.safeonline.sdk.configuration;
 import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -23,8 +24,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class AuthenticationContext extends LinkIDContext {
 
-    private boolean     forceAuthentication;
-    private Set<String> devices;
+    private boolean                         forceAuthentication;
+    private Set<String>                     devices;
+    private Map<String, List<Serializable>> attributes;
 
     /**
      * @see #AuthenticationContext(String, KeyProvider, Set, String)
@@ -75,7 +77,8 @@ public class AuthenticationContext extends LinkIDContext {
      *
      * @see #AuthenticationContext(String, String, KeyProvider, boolean, Set, String, String, Locale, String)
      */
-    public AuthenticationContext(String applicationName, KeyProvider keyProvider, Set<String> devices, String target) {
+    public AuthenticationContext(@Nullable String applicationName, @Nullable KeyProvider keyProvider, @Nullable Set<String> devices,
+                                 String target) {
 
         this( applicationName, null, keyProvider, false, devices, null, null, null, target );
     }
@@ -185,11 +188,12 @@ public class AuthenticationContext extends LinkIDContext {
      * @see #AuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, String, Locale, String,
      *      Set, String, Protocol)
      */
-    public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider,
+    public AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider,
                                  boolean forceAuthentication, Set<String> devices, @Nullable String sessionTrackingId,
                                  @Nullable String themeName, @Nullable Locale language, String target, LoginMode loginMode) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
+            @NotNull
             @Override
             public KeyProvider get() {
 
@@ -198,9 +202,10 @@ public class AuthenticationContext extends LinkIDContext {
         } ), forceAuthentication, themeName, language, target, devices, sessionTrackingId, null, loginMode );
     }
 
-    private AuthenticationContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider,
-                                  boolean forceAuthentication, String themeName, Locale language, String target, Set<String> devices,
-                                  String sessionTrackingId, @Nullable Protocol protocol, @Nullable LoginMode loginMode) {
+    private AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, @Nullable KeyProvider keyProvider,
+                                  boolean forceAuthentication, @Nullable String themeName, @Nullable Locale language, String target,
+                                  Set<String> devices, @Nullable String sessionTrackingId, @Nullable Protocol protocol,
+                                  @Nullable LoginMode loginMode) {
 
         this( applicationName, applicationFriendlyName, //
                 null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
@@ -301,7 +306,8 @@ public class AuthenticationContext extends LinkIDContext {
     public AuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                                  X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
                                  X509Certificate sslCertificate, boolean forceAuthentication, String themeName, Locale language,
-                                 String target, Set<String> devices, String sessionTrackingId, Protocol protocol, LoginMode loginMode) {
+                                 String target, Set<String> devices, String sessionTrackingId, Protocol protocol,
+                                 @Nullable LoginMode loginMode) {
 
         super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
                 sessionTrackingId, themeName, language, target, protocol, loginMode );
@@ -335,5 +341,15 @@ public class AuthenticationContext extends LinkIDContext {
 
         return String.format( "{authn: %s, force=%s, dev=%s}", //
                 super.toString(), isForceAuthentication(), getDevices() );
+    }
+
+    public Map<String, List<Serializable>> getAttributes() {
+
+        return attributes;
+    }
+
+    public void setAttributes(final Map<String, List<Serializable>> attributes) {
+
+        this.attributes = attributes;
     }
 }

@@ -13,6 +13,7 @@ require_once('../_include.php');
                 // This parameter is optional for running the linkID authentication process in a framed/popup mode.
                 // Please refer to the linkID SDK Manual for more information on this.
                 'DestinationParams' => '?login_mode=FRAMED'
+                'ErrorURL'  => 'http://localhost/linkid-example/error.php'
             ));
 
     } else {

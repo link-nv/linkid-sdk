@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.configuration;
 import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.*;
 import java.security.cert.X509Certificate;
@@ -467,13 +468,13 @@ public abstract class LinkIDContext implements Serializable {
                     manager = new ConsumerManager( realmFactory, discovery, httpFetcherFactory );
                 }
                 catch (KeyManagementException e) {
-                    throw new RuntimeException( e );
+                    throw new InternalInconsistencyException( e );
                 }
                 catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException( e );
+                    throw new InternalInconsistencyException( e );
                 }
                 catch (KeyStoreException e) {
-                    throw new RuntimeException( e );
+                    throw new InternalInconsistencyException( e );
                 }
             }
             return manager;
