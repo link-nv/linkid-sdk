@@ -18,7 +18,7 @@
         <testapp.webapp.name>testApp</testapp.webapp.name>
 
         <!-- Library/plugin versions -->
-        <safe-online.version>GIT-SNAPSHOT</safe-online.version>
+        <safe-online.version>1.20</safe-online.version>
 
     </properties>
 
@@ -201,6 +201,12 @@
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
             <version>${safe-online.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.xerces</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
