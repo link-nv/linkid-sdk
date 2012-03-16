@@ -26,7 +26,7 @@ public class AuthenticationContext extends LinkIDContext {
 
     private boolean                         forceAuthentication;
     private Set<String>                     devices;
-    private Map<String, List<Serializable>> attributes;
+    private Map<String, List<Serializable>> subjectAttributes;
 
     /**
      * @see #AuthenticationContext(String, KeyProvider, Set, String)
@@ -336,20 +336,20 @@ public class AuthenticationContext extends LinkIDContext {
         this.devices = devices;
     }
 
+    public Map<String, List<Serializable>> getSubjectAttributes() {
+
+        return subjectAttributes;
+    }
+
+    public void setSubjectAttributes(final Map<String, List<Serializable>> subjectAttributes) {
+
+        this.subjectAttributes = subjectAttributes;
+    }
+
     @Override
     public String toString() {
 
         return String.format( "{authn: %s, force=%s, dev=%s}", //
                 super.toString(), isForceAuthentication(), getDevices() );
-    }
-
-    public Map<String, List<Serializable>> getAttributes() {
-
-        return attributes;
-    }
-
-    public void setAttributes(final Map<String, List<Serializable>> attributes) {
-
-        this.attributes = attributes;
     }
 }
