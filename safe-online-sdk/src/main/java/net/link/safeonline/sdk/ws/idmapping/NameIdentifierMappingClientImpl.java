@@ -14,7 +14,7 @@ import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.idmapping.LinkIDNameIDMappingRequestType;
 import net.lin_k.safe_online.idmapping.NameIdentifierMappingPort;
-import net.link.safeonline.idmapping.ws.NameIdentifierMappingServiceFactory;
+import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
 import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.SamlpSecondLevelErrorCode;

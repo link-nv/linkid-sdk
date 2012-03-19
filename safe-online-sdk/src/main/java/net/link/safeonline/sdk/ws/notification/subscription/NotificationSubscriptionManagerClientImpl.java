@@ -14,12 +14,12 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 import net.lin_k.safe_online.notification.subscription.manager.*;
-import net.link.safeonline.notification.subscription.manager.ws.NotificationSubscriptionManagerServiceFactory;
 import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.NotificationErrorCode;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
+import net.link.safeonline.ws.notification.NotificationSubscriptionManagerServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -47,6 +47,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<
                                                      final WSSecurityConfiguration configuration) {
 
         super( NotificationSubscriptionManagerServiceFactory.newInstance().getNotificationSubscriptionManagerPort() );
+
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.notification.subscription.path" ) ) );

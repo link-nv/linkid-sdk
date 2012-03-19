@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://docs.oasis-open.org/ws-sx/ws-trust/200512/"
+             xmlns:tns="http://docs.oasis-open.org/ws-sx/ws-trust/200512/" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://docs.oasis-open.org/ws-sx/ws-trust/200512/" schemaLocation="ws-trust-1.3.xsd" />
+        </schema>
+    </types>
+
+    <message name="RequestSecurityTokenMsg">
+        <part name="request" element="wst:RequestSecurityToken" />
+    </message>
+    <message name="RequestSecurityTokenResponseMsg">
+        <part name="response" element="wst:RequestSecurityTokenResponse" />
+    </message>
+
+    <portType name="SecurityTokenServicePort">
+        <operation name="RequestSecurityToken">
+            <input message="tns:RequestSecurityTokenMsg" />
+            <output message="tns:RequestSecurityTokenResponseMsg" />
+        </operation>
+    </portType>
+
+    <binding name="SecurityTokenServiceBinding" type="tns:SecurityTokenServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="RequestSecurityToken">
+            <soap:operation soapAction="http://www.oasis-open.org/committees/security" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <service name="SecurityTokenService">
+        <port name="SecurityTokenServicePort" binding="tns:SecurityTokenServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/sts/" />
+        </port>
+    </service>
+</definitions>

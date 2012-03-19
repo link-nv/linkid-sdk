@@ -17,11 +17,11 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.soap.WSAuthenticationServiceFactory;
 import net.link.safeonline.sdk.api.attribute.AttributeIdentitySDK;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.auth.*;
 import net.link.safeonline.sdk.api.ws.auth.client.AuthenticationClient;
+import net.link.safeonline.ws.auth.WSAuthenticationServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -61,13 +61,6 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
-
-//    private W3CEndpointReference getEndpointReference(EndpointReferenceType endpointReferenceType) {
-//
-//        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-//        builder.address( address );
-//        return builder.build();
-//    }
 
     @Nullable
     @Override

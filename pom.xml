@@ -91,16 +91,7 @@
         <module>safe-online-config</module>
         <module>safe-online-sdk-api</module>
         <module>safe-online-sdk</module>
-        <module>safe-online-attrib-ws</module>
-        <module>safe-online-auth-ws</module>
-        <module>safe-online-data-ws</module>
-        <module>safe-online-idmapping-ws</module>
-        <module>safe-online-sts-ws</module>
-	    <module>safe-online-xkms2-ws</module>
-        <module>safe-online-notification-consumer-ws</module>
-        <module>safe-online-notification-producer-ws</module>
-        <module>safe-online-notification-subscription-manager-ws</module>
-        <module>safe-online-session-ws</module>
+        <module>safe-online-ws</module>
         <module>safe-online-wicket-sdk</module>
 
         <module>safe-online-sdk-dotnet</module>

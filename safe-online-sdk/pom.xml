@@ -88,52 +88,7 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-auth-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-attrib-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-data-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-idmapping-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sts-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-notification-consumer-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-notification-producer-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-notification-subscription-manager-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-session-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-xkms2-ws</artifactId>
+            <artifactId>safe-online-ws</artifactId>
             <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>

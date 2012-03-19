@@ -21,7 +21,7 @@ import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.TrustDomainType;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
-import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
+import net.link.safeonline.ws.sts.SecurityTokenServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;

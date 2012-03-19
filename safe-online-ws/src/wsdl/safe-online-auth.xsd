@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:auth"
+	xmlns:tns="urn:net:lin-k:safe-online:auth" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+	xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-auth
+			Revision history:
+			V1.0 (December, 2008):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+	<element name="NameValuePair" type="tns:NameValuePairType" />
+	<complexType name="NameValuePairType">
+		<attribute name="Name" type="string" use="required" />
+		<attribute name="Value" type="string" use="required" />
+	</complexType>
+
+
+	<element name="DeviceCredentials" type="tns:DeviceCredentialsType" />
+	<complexType name="DeviceCredentialsType">
+		<sequence>
+			<element name="NameValueMap" ref="tns:NameValuePair"
+				minOccurs="0" maxOccurs="unbounded" />
+			<any namespace="##other" processContents="lax" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<element name="WSAuthenticationRequest" type="tns:WSAuthenticationRequestType" />
+	<complexType name="WSAuthenticationRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<sequence>
+					<element ref="tns:DeviceCredentials" minOccurs="0"
+						maxOccurs="1" />
+					<element ref="ds:KeyInfo" minOccurs="0" maxOccurs="1" />
+				</sequence>
+				<attribute name="ApplicationName" type="string" use="required" />
+				<attribute name="DeviceName" type="string" use="required" />
+				<attribute name="Language" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="DeviceAuthenticationInformation" type="tns:DeviceAuthenticationInformationType" />
+	<complexType name="DeviceAuthenticationInformationType">
+		<sequence>
+			<element name="NameValuePairList" ref="tns:NameValuePair"
+				minOccurs="0" maxOccurs="unbounded" />
+			<any namespace="##other" processContents="lax" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<element name="WSAuthenticationResponse" type="tns:WSAuthenticationResponseType" />
+	<complexType name="WSAuthenticationResponseType">
+		<complexContent>
+			<extension base="samlp:StatusResponseType">
+				<sequence>
+					<element ref="tns:DeviceAuthenticationInformation"
+						minOccurs="0" maxOccurs="1" />
+					<element name="assertions" ref="saml:Assertion" minOccurs="0"
+						maxOccurs="unbounded" />
+				</sequence>
+				<attribute name="DeviceName" type="string" />
+				<attribute name="UserId" type="string" />
+				<attribute name="AuthenticationStep" type="string" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="AuthenticationGetInstanceRequest" type="tns:AuthenticationGetInstanceRequestType" />
+	<complexType name="AuthenticationGetInstanceRequestType" />
+
+	<element name="AuthenticationGetInstanceResponse" type="tns:AuthenticationGetInstanceResponseType" />
+	<complexType name="AuthenticationGetInstanceResponseType">
+		<sequence>
+			<element name="endpoint" type="wsa:EndpointReferenceType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<element name="WSAuthenticationGlobalUsageAgreementRequest"
+		type="tns:WSAuthenticationGlobalUsageAgreementRequestType" />
+	<complexType name="WSAuthenticationGlobalUsageAgreementRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType" />
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationGlobalUsageAgreementResponse"
+		type="tns:WSAuthenticationGlobalUsageAgreementResponseType" />
+	<complexType name="WSAuthenticationGlobalUsageAgreementResponseType">
+		<complexContent>
+			<extension base="tns:WSAuthenticationResponseType">
+				<attribute name="GlobalUsageAgreement" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationGlobalUsageAgreementConfirmation"
+		type="tns:WSAuthenticationGlobalUsageAgreementConfirmationType" />
+	<complexType name="WSAuthenticationGlobalUsageAgreementConfirmationType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<attribute name="Confirmation" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationUsageAgreementRequest" type="tns:WSAuthenticationUsageAgreementRequestType" />
+	<complexType name="WSAuthenticationUsageAgreementRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType" />
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationUsageAgreementResponse" type="tns:WSAuthenticationUsageAgreementResponseType" />
+	<complexType name="WSAuthenticationUsageAgreementResponseType">
+		<complexContent>
+			<extension base="tns:WSAuthenticationResponseType">
+				<attribute name="UsageAgreement" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationUsageAgreementConfirmation"
+		type="tns:WSAuthenticationUsageAgreementConfirmationType" />
+	<complexType name="WSAuthenticationUsageAgreementConfirmationType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<attribute name="Confirmation" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationIdentityRequest" type="tns:WSAuthenticationIdentityRequestType" />
+	<complexType name="WSAuthenticationIdentityRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType"></extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationIdentityConfirmation" type="tns:WSAuthenticationIdentityConfirmationType" />
+	<complexType name="WSAuthenticationIdentityConfirmationType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<sequence>
+					<element name="identity" ref="saml:Attribute" minOccurs="1"
+						maxOccurs="unbounded" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+</schema>

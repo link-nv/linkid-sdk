@@ -17,7 +17,7 @@ import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.SessionTrackingErrorCode;
 import net.link.safeonline.sdk.api.ws.session.SessionAssertion;
 import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
-import net.link.safeonline.session.ws.SessionTrackingServiceFactory;
+import net.link.safeonline.ws.session.SessionTrackingServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;

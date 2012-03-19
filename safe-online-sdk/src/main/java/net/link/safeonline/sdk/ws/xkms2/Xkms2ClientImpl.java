@@ -16,7 +16,7 @@ import net.link.safeonline.sdk.api.exception.ValidationFailedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.xkms2.ResultMajorCode;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
-import net.link.safeonline.xkms2.ws.Xkms2ServiceFactory;
+import net.link.safeonline.ws.xkms2.Xkms2ServiceFactory;
 import net.link.util.common.CertificateChain;
 import net.link.util.ws.AbstractWSClient;
 import org.w3._2000._09.xmldsig.KeyInfoType;
