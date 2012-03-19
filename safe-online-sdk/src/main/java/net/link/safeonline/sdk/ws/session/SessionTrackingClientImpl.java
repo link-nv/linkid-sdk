@@ -6,11 +6,13 @@
  */
 package net.link.safeonline.sdk.ws.session;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.session.*;
+import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.SessionTrackingErrorCode;
 import net.link.safeonline.sdk.api.ws.session.SessionAssertion;
@@ -19,8 +21,6 @@ import net.link.safeonline.session.ws.SessionTrackingServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -38,38 +38,36 @@ import org.apache.commons.logging.LogFactory;
  */
 public class SessionTrackingClientImpl extends AbstractWSClient<SessionTrackingPort> implements SessionTrackingClient {
 
-    private static final Log LOG = LogFactory.getLog( SessionTrackingClientImpl.class );
-
-    private final String location;
+    private static final Logger logger = Logger.get( SessionTrackingClientImpl.class );
 
     /**
      * Main constructor.
      *
      * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
     public SessionTrackingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
         super( SessionTrackingServiceFactory.newInstance().getSessionTrackingPort() );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/session" );
+        getBindingProvider().getRequestContext()
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.session.tracking.path" ) ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public List<SessionAssertion> getAssertions(String session, String subject, List<String> applicationPools)
             throws WSClientTransportException, ApplicationPoolNotFoundException, SubjectNotFoundException, RequestDeniedException {
 
-        LOG.debug( "get assertions: session=" + session + " subject=" + subject );
+        logger.dbg( "get assertions: session=%s subject=%s", session, subject );
         SessionTrackingRequestType request = new SessionTrackingRequestType();
         request.setSession( session );
         request.setSubject( subject );
         if (null != applicationPools && !applicationPools.isEmpty())
             for (String applicationPool : applicationPools) {
-                LOG.debug( "application pool: " + applicationPool );
+                logger.dbg( "application pool: %s", applicationPool );
                 ApplicationPoolType applicationPoolType = new ApplicationPoolType();
                 applicationPoolType.setName( applicationPool );
                 request.getApplicationPools().add( applicationPoolType );
@@ -80,11 +78,11 @@ public class SessionTrackingClientImpl extends AbstractWSClient<SessionTrackingP
             response = getPort().getAssertions( request );
         }
         catch (ClientTransportException e) {
-            LOG.debug( "Failed to send notification" );
+            logger.dbg( "Failed to send notification" );
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
-        checkStatus( response );
+        validateStatus( response );
 
         return getAssertions( response );
     }
@@ -106,15 +104,15 @@ public class SessionTrackingClientImpl extends AbstractWSClient<SessionTrackingP
         return new SessionAssertion( assertion.getSubject(), assertion.getApplicationPool(), authentications );
     }
 
-    private static void checkStatus(SessionTrackingResponseType response)
+    private static void validateStatus(SessionTrackingResponseType response)
             throws ApplicationPoolNotFoundException, SubjectNotFoundException, RequestDeniedException {
 
         if (response.getStatus().getValue().equals( SessionTrackingErrorCode.SUCCESS.getErrorCode() )) {
         } else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.APPLICATION_POOL_NOT_FOUND.getErrorCode() ))
             throw new ApplicationPoolNotFoundException();
-        else if (response.getStatus().equals( SessionTrackingErrorCode.SUBJECT_NOT_FOUND.getErrorCode() ))
+        else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.SUBJECT_NOT_FOUND.getErrorCode() ))
             throw new SubjectNotFoundException();
-        else if (response.getStatus().equals( SessionTrackingErrorCode.TRUSTED_DEVICE_NOT_FOUND.getErrorCode() ))
+        else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.TRUSTED_DEVICE_NOT_FOUND.getErrorCode() ))
             throw new RequestDeniedException();
     }
 }

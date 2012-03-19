@@ -7,14 +7,16 @@
 
 package net.link.safeonline.sdk.ws.attrib;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
-import java.text.MessageFormat;
 import java.util.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
+import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.attribute.Compound;
 import net.link.safeonline.sdk.api.exception.*;
@@ -26,8 +28,7 @@ import net.link.util.ws.security.WSSecurityHandler;
 import oasis.names.tc.saml._2_0.assertion.*;
 import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
 import oasis.names.tc.saml._2_0.protocol.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -37,9 +38,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> implements AttributeClient {
 
-    static final Log LOG = LogFactory.getLog( AttributeClientImpl.class );
-
-    private final String location;
+    static final Logger logger = Logger.get( AttributeClientImpl.class );
 
     /**
      * Main constructor.
@@ -52,7 +51,8 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
 
         super( SAMLAttributeServiceFactory.newInstance().getSAMLAttributePort() );
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = MessageFormat.format( "{0}/attrib", location ) );
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.attribute.path" ) ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
@@ -82,17 +82,22 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
                 String secondLevelStatusCodeValue = secondLevelStatusCode.getValue();
                 SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode(
                         secondLevelStatusCodeValue );
+
                 if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode)
                     throw new AttributeNotFoundException();
-                else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
+
+                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
                     throw new RequestDeniedException();
-                else if (SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == samlpSecondLevelErrorCode)
+
+                if (SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == samlpSecondLevelErrorCode)
                     throw new AttributeUnavailableException();
-                else if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == samlpSecondLevelErrorCode)
+
+                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == samlpSecondLevelErrorCode)
                     throw new SubjectNotFoundException();
-                LOG.debug( "second level status code: " + secondLevelStatusCode.getValue() );
+
+                logger.dbg( "second level status code: %s", secondLevelStatusCode.getValue() );
             }
-            throw new RuntimeException( "error: " + statusCodeValue );
+            throw new InternalInconsistencyException( String.format( "error: %s", statusCodeValue ) );
         }
     }
 
@@ -142,12 +147,12 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
 
         List<Object> assertions = response.getAssertionOrEncryptedAssertion();
         if (assertions.isEmpty())
-            throw new RuntimeException( "No assertions in response" );
+            throw new InternalInconsistencyException( "No assertions in response" );
         AssertionType assertion = (AssertionType) assertions.get( 0 );
 
         List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
         if (statements.isEmpty())
-            throw new RuntimeException( "No statements in response assertion" );
+            throw new InternalInconsistencyException( "No statements in response assertion" );
         AttributeStatementType attributeStatement = (AttributeStatementType) statements.get( 0 );
 
         for (Object attributeTypeObject : attributeStatement.getAttributeOrEncryptedAttribute()) {
@@ -225,10 +230,11 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
         validateStatus( response );
         getAttributeValues( response, attributes );
         if (attributes.size() != 1)
-            throw new RuntimeException( "Requested 1 specified attribute but received multiple ?!" );
+            throw new InternalInconsistencyException( "Requested 1 specified attribute but received multiple ?!" );
         return attributes.get( attributeName );
     }
 
+    @Nullable
     private static Serializable convertFromXmlDatatypeToClient(Object value) {
 
         if (null == value)
