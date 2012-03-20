@@ -149,15 +149,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
         WebRequest request = getWebRequest();
         String targetURL = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
         String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
-        LoginMode mode = null;
-        if (modeParam != null){
-            for (LoginMode val : LoginMode.values()){
-                if (modeParam.trim().equalsIgnoreCase( val.name() )){
-                    mode = val;
-                    break;
-                }
-            }
-        }
+        LoginMode mode = LoginMode.fromString( modeParam );
 
         if (targetURL == null){
             targetURL = RequestCycle.get().urlFor( targetPage, targetPageParameters ).toString();

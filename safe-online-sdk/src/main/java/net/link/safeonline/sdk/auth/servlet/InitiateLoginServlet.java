@@ -44,15 +44,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
         String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
-        LoginMode mode = null;
-        if (modeParam != null){
-            for (LoginMode val : LoginMode.values()){
-                if (modeParam.trim().equalsIgnoreCase( val.name() )){
-                    mode = val;
-                    break;
-                }
-            }
-        }
+        LoginMode mode = LoginMode.fromString( modeParam );
         AuthenticationUtils.login( request, response,  new AuthenticationContext(null, null, null, targetURI, mode) );
     }
 
