@@ -52,7 +52,6 @@
                     <bindingFiles>
                         <bindingFile>jaxb-bindings.xml</bindingFile>
                     </bindingFiles>
-                    <!--<xnoAddressingDataBinding>false</xnoAddressingDataBinding>-->
                 </configuration>
                 <dependencies>
                     <dependency>
