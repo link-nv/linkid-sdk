@@ -13,7 +13,6 @@ import java.security.PublicKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.*;
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.*;
 import net.lin_k.safe_online.auth.*;
 import net.link.safeonline.sdk.api.attribute.*;
@@ -44,7 +43,7 @@ public class AuthenticationUtil {
     private static final Log LOG = LogFactory.getLog( AuthenticationUtil.class );
 
     public static WSAuthenticationRequestType getAuthenticationRequest(String applicationName, String deviceName, String language,
-                                                                       Object deviceCredentials, PublicKey publicKey) {
+                                                                       Map<String, String> deviceCredentials, PublicKey publicKey) {
 
         WSAuthenticationRequestType authenticationRequest = new WSAuthenticationRequestType();
         setRequest( authenticationRequest );
@@ -60,18 +59,12 @@ public class AuthenticationUtil {
 
         if (null != deviceCredentials) {
             DeviceCredentialsType deviceCredentialsType = new DeviceCredentialsType();
-            if (deviceCredentials instanceof Map<?, ?>) {
-                @SuppressWarnings("unchecked")
-                Map<String, String> genericDeviceCredentials = (Map<String, String>) deviceCredentials;
-
-                for (Map.Entry<String, String> entry : genericDeviceCredentials.entrySet()) {
-                    NameValuePairType nameValuePair = new NameValuePairType();
-                    nameValuePair.setName( entry.getKey() );
-                    nameValuePair.setValue( entry.getValue() );
-                    deviceCredentialsType.getNameValuePair().add( nameValuePair );
-                }
-            } else if (deviceCredentials instanceof JAXBElement<?>)
-                deviceCredentialsType.getAny().add( deviceCredentials );
+            for (Map.Entry<String, String> entry : deviceCredentials.entrySet()) {
+                NameValuePairType nameValuePair = new NameValuePairType();
+                nameValuePair.setName( entry.getKey() );
+                nameValuePair.setValue( entry.getValue() );
+                deviceCredentialsType.getNameValuePair().add( nameValuePair );
+            }
             authenticationRequest.setDeviceCredentials( deviceCredentialsType );
         }
 

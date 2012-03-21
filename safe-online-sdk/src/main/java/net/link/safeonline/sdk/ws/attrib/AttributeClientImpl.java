@@ -145,7 +145,7 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
 
     private static void getAttributeValues(ResponseType response, Map<String, List<AttributeSDK<Serializable>>> attributeMap) {
 
-        List<Object> assertions = response.getAssertionOrEncryptedAssertion();
+        List<Serializable> assertions = response.getAssertionOrEncryptedAssertion();
         if (assertions.isEmpty())
             throw new InternalInconsistencyException( "No assertions in response" );
         AssertionType assertion = (AssertionType) assertions.get( 0 );

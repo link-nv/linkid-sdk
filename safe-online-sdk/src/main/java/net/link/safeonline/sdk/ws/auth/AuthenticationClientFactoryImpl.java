@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.auth;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
@@ -14,21 +15,14 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
 import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
-import net.link.safeonline.sdk.api.ws.auth.client.GetAuthenticationClient;
+import net.link.safeonline.sdk.api.ws.auth.client.AuthenticationClientFactory;
 import net.link.safeonline.ws.auth.GetWSAuthenticationServiceFactory;
 import net.link.util.ws.AbstractWSClient;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
-/**
- * Implementation of get authentication client. This class is using JAX-WS and server-side SSL.
- *
- * @author wvdhaute
- */
-public class GetAuthenticationClientImpl extends AbstractWSClient<GetWSAuthenticationPort> implements GetAuthenticationClient {
+public class AuthenticationClientFactoryImpl extends AbstractWSClient<GetWSAuthenticationPort> implements AuthenticationClientFactory {
 
-    private static final Log LOG = LogFactory.getLog( GetAuthenticationClientImpl.class );
+    private static final Logger logger = Logger.get( AuthenticationClientFactoryImpl.class );
 
     /**
      * Main constructor.
@@ -36,7 +30,7 @@ public class GetAuthenticationClientImpl extends AbstractWSClient<GetWSAuthentic
      * @param location       the location (host:port/ws-context) of the authentication web service.
      * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public GetAuthenticationClientImpl(String location, X509Certificate sslCertificate) {
+    public AuthenticationClientFactoryImpl(String location, X509Certificate sslCertificate) {
 
         super( GetWSAuthenticationServiceFactory.newInstance().getGetWSAuthenticationPort() );
         getBindingProvider().getRequestContext()
@@ -50,7 +44,7 @@ public class GetAuthenticationClientImpl extends AbstractWSClient<GetWSAuthentic
     public W3CEndpointReference getInstance()
             throws WSClientTransportException {
 
-        LOG.debug( "get instance of stateful authentication service" );
+        logger.dbg( "get instance of stateful authentication service" );
 
         AuthenticationGetInstanceResponseType response;
         try {

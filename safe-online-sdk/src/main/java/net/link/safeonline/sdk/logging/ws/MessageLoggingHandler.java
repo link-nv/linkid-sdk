@@ -7,10 +7,7 @@
 
 package net.link.safeonline.sdk.logging.ws;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -41,17 +38,20 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
     private static final Log LOG = LogFactory.getLog( MessageLoggingHandler.class );
 
+    @Override
     public Set<QName> getHeaders() {
 
         return null;
     }
 
+    @Override
     @SuppressWarnings("unused")
     public void close(MessageContext context) {
 
         // empty
     }
 
+    @Override
     public boolean handleFault(SOAPMessageContext soapContext) {
 
         Boolean outboundProperty = (Boolean) soapContext.get( MessageContext.MESSAGE_OUTBOUND_PROPERTY );
@@ -61,6 +61,7 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
         return true;
     }
 
+    @Override
     public boolean handleMessage(SOAPMessageContext soapContext) {
 
         Boolean outboundProperty = (Boolean) soapContext.get( MessageContext.MESSAGE_OUTBOUND_PROPERTY );
@@ -69,17 +70,19 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
         LOG.debug( "SOAP message (outbound: " + outboundProperty + "): " + toString( soapPart ) );
         try {
             File tmpFile;
-            if (true == outboundProperty)
+            if (outboundProperty)
                 tmpFile = File.createTempFile( "outbound-soap-", ".xml" );
             else
                 tmpFile = File.createTempFile( "inbound-soap-", ".xml" );
             FileOutputStream outputStream = new FileOutputStream( tmpFile );
             try {
                 IOUtils.write( toString( soapPart ), outputStream );
-            } finally {
+            }
+            finally {
                 IOUtils.closeQuietly( outputStream );
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException( "IO error: " + e.getMessage() );
         }
         return true;
@@ -99,9 +102,11 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
             transformer.transform( source, result );
-        } catch (TransformerConfigurationException e) {
+        }
+        catch (TransformerConfigurationException e) {
             throw new RuntimeException( "Transformer config error: " + e.getMessage() );
-        } catch (TransformerException e) {
+        }
+        catch (TransformerException e) {
             throw new RuntimeException( "Transformer error: " + e.getMessage() );
         }
         return stringWriter.toString();

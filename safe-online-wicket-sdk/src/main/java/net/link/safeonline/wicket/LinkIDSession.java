@@ -9,6 +9,7 @@ package net.link.safeonline.wicket;
 import net.link.util.wicket.component.WicketPage;
 import org.apache.wicket.*;
 import org.apache.wicket.protocol.http.WebSession;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -38,6 +39,7 @@ public abstract class LinkIDSession extends WebSession {
      * @return The linkID application-specific user identifier as known by the application's specific user representation. Should be
      *         {@code null} if the application thinks no user is logged in yet.
      */
+    @Nullable
     public abstract String findUserLinkID();
 
     /**

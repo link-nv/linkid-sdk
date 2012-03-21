@@ -104,27 +104,32 @@ public class TestConfigHolder extends ConfigHolder {
             web.appConfidentialBase = appBase == null? "https://appBaseIsNull:0": appBase;
         }
 
+        @Override
         public TestWebConfig web() {
 
             return web;
         }
 
+        @Override
         public TestProtocolConfig proto() {
 
             return proto;
         }
 
+        @Override
         public TestLinkIDConfig linkID() {
 
             return linkID;
         }
 
+        @Override
         public TestJAASConfig jaas() {
 
             return jaas;
         }
 
-        @SuppressWarnings({ "unchecked" })
+        @Override
+        @SuppressWarnings("unchecked")
         public <C extends AppConfig> C app(Class<C> appConfigType) {
 
             return checkNotNull( (C) appConfig, "Can't use app config: it hasn't been set." );
@@ -138,38 +143,52 @@ public class TestConfigHolder extends ConfigHolder {
             public String authBase;
             public String userBase;
             public String wsBase;
+            public String authWsBase;
             public String landingPath;
 
+            @Override
             public String appBase() {
 
                 return appBase;
             }
 
+            @Override
             public String appConfidentialBase() {
 
                 return appConfidentialBase;
             }
 
+            @Override
             public String appPath() {
 
                 return appPath;
             }
 
+            @Override
             public String authBase() {
 
                 return authBase;
             }
 
+            @Override
             public String userBase() {
 
                 return userBase;
             }
 
+            @Override
             public String wsBase() {
 
                 return wsBase;
             }
 
+            @Override
+            public String authWsBase() {
+
+                return authWsBase;
+            }
+
+            @Override
             public String landingPath() {
 
                 return landingPath;
@@ -184,21 +203,25 @@ public class TestConfigHolder extends ConfigHolder {
             public Protocol defaultProtocol;
             public Duration maxTimeOffset;
 
+            @Override
             public TestOpenIDProtocolConfig openid() {
 
                 return openid;
             }
 
+            @Override
             public TestSAMLProtocolConfig saml() {
 
                 return saml;
             }
 
+            @Override
             public Protocol defaultProtocol() {
 
                 return defaultProtocol;
             }
 
+            @Override
             public Duration maxTimeOffset() {
 
                 return maxTimeOffset;
@@ -211,21 +234,25 @@ public class TestConfigHolder extends ConfigHolder {
                 public String      relayState;
                 public boolean     breakFrame;
 
+                @Override
                 public String postBindingTemplate() {
 
                     return postBindingTemplate;
                 }
 
+                @Override
                 public SAMLBinding binding() {
 
                     return binding;
                 }
 
+                @Override
                 public String relayState() {
 
                     return relayState;
                 }
 
+                @Override
                 public Boolean breakFrame() {
 
                     return breakFrame;
@@ -238,11 +265,13 @@ public class TestConfigHolder extends ConfigHolder {
                 public String realm;
                 public String discoveryPath;
 
+                @Override
                 public String realm() {
 
                     return realm;
                 }
 
+                @Override
                 public String discoveryPath() {
 
                     return discoveryPath;
@@ -260,31 +289,37 @@ public class TestConfigHolder extends ConfigHolder {
             public String theme;
             public Locale language;
 
+            @Override
             public TestAppLinkIDConfig app() {
 
                 return app;
             }
 
+            @Override
             public String authPath() {
 
                 return authPath;
             }
 
+            @Override
             public String logoutPath() {
 
                 return logoutPath;
             }
 
+            @Override
             public String logoutExitPath() {
 
                 return logoutExitPath;
             }
 
+            @Override
             public String theme() {
 
                 return theme;
             }
 
+            @Override
             public Locale language() {
 
                 return language;
@@ -296,16 +331,19 @@ public class TestConfigHolder extends ConfigHolder {
                 public KeyProvider   keyProvider;
                 public X500Principal trustedDN;
 
+                @Override
                 public String name() {
 
                     return name;
                 }
 
+                @Override
                 public KeyProvider keyProvider() {
 
                     return keyProvider;
                 }
 
+                @Override
                 public X500Principal trustedDN() {
 
                     return trustedDN;
@@ -321,16 +359,19 @@ public class TestConfigHolder extends ConfigHolder {
 
             public List<String> publicPaths;
 
+            @Override
             public String context() {
 
                 return context;
             }
 
+            @Override
             public String loginPath() {
 
                 return loginPath;
             }
 
+            @Override
             public List<String> publicPaths() {
 
                 return publicPaths;

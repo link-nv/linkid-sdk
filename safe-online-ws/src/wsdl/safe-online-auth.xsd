@@ -25,7 +25,6 @@
 		<sequence>
 			<element name="NameValueMap" ref="tns:NameValuePair"
 				minOccurs="0" maxOccurs="unbounded" />
-			<any namespace="##other" processContents="lax" maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
 
@@ -50,7 +49,6 @@
 		<sequence>
 			<element name="NameValuePairList" ref="tns:NameValuePair"
 				minOccurs="0" maxOccurs="unbounded" />
-			<any namespace="##other" processContents="lax" maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
 
