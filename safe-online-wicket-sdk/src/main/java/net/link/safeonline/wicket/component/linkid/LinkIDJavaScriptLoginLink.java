@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,12 +22,14 @@ import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequest;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
- * <h2>{@link LinkIDJavaScriptLoginLink}<br> <sub>A link that uses the linkID SDK to log a user in through the linkID authentication services.
+ * <h2>{@link LinkIDJavaScriptLoginLink}<br> <sub>A link that uses the linkID SDK to log a user in through the linkID authentication
+ * services.
  * Needs 'linkid.login.js' on the page, but this class can add it itself.
- *
+ * <p/>
  * </sub></h2>
  * <p/>
  * <p> <i>Nov 24, 2011</i> </p>
@@ -41,17 +43,14 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
 
     /**
      * Constructor. Adds 'linkid.login.js' to the page.
-     * @param id
      */
     public LinkIDJavaScriptLoginLink(String id) {
 
         this( id, null, true );
     }
 
-        /**
+    /**
      * Constructor. Adds 'linkid.login.js' to the page.
-     * @param id
-     * @param target
      */
     public LinkIDJavaScriptLoginLink(String id, Class<? extends Page> target) {
 
@@ -62,8 +61,6 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
      * Constructor. If addJS is true, the 'linkid.login.js' javascript will be added automatically to the page.
      * If false, it is the task of the web developer to ensure that this JavaScript is added. This component will not work
      * without it.
-     * @param id
-     * @param addJS
      */
     public LinkIDJavaScriptLoginLink(String id, boolean addJS) {
 
@@ -74,15 +71,12 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
      * Constructor. If addJS is true, the 'linkid.login.js' javascript will be added automatically to the page.
      * If false, it is the task of the web developer to ensure that this JavaScript is added. This component will not work
      * without it.
-     * @param id
-     * @param target
-     * @param addJS
      */
-    public LinkIDJavaScriptLoginLink(String id, Class<? extends Page> target, boolean addJS) {
+    public LinkIDJavaScriptLoginLink(String id, @Nullable Class<? extends Page> target, boolean addJS) {
 
         super( id, target );
         this.addJS = addJS;
-        this.add( new AttributeAppender("class", new Model<String>("linkid-login"), " ") );
+        add( new AttributeAppender( "class", new Model<String>( "linkid-login" ), " " ) );
     }
 
     public LoginMode getLoginMode() {
@@ -92,7 +86,6 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
 
     /**
      * Set the login style (redirect, popup window, modal window). Only used if this parameter has not already been set by linkid.login.js
-     * @param loginMode
      */
     public void setLoginMode(final LoginMode loginMode) {
 
@@ -113,19 +106,20 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
     protected void onBeforeRender() {
 
         super.onBeforeRender();
-        if (addJS){
+        if (addJS) {
             //LinkID JavaScript which handles login look
             add( new HeaderContributor( new IHeaderContributor() {
-                    @Override
-                    public void renderHead(IHeaderResponse response) {
+                @Override
+                public void renderHead(IHeaderResponse response) {
 
-                        response.renderJavascriptReference( config().web().authBase() + "/resources/common/js/linkid.login-min.js", "linkid-login-script" );
-                    }
+                    response.renderJavascriptReference( config().web().authBase() + "/resources/common/js/linkid.login-min.js",
+                            "linkid-login-script" );
+                }
             } ) );
         }
-
     }
 
+    @Override
     public void delegate(final HttpServletRequest request, final HttpServletResponse response, final Class<? extends Page> target,
                          final PageParameters targetPageParameters) {
 
@@ -139,7 +133,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
      * the
      * process has been completed.
      *
-     * @param targetPage               The page where the user should end up after delegation.
+     * @param targetPage           The page where the user should end up after delegation.
      * @param targetPageParameters The parameters to pass to the page on construction.
      *
      * @return A new logout context.
@@ -150,34 +144,29 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
         String targetURL = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
         String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
         LoginMode mode = null;
-        if (modeParam != null){
-            for (LoginMode val : LoginMode.values()){
-                if (modeParam.trim().equalsIgnoreCase( val.name() )){
+        if (modeParam != null) {
+            for (LoginMode val : LoginMode.values()) {
+                if (modeParam.trim().equalsIgnoreCase( val.name() )) {
                     mode = val;
                     break;
                 }
             }
         }
 
-        if (targetURL == null){
+        if (targetURL == null) {
             targetURL = RequestCycle.get().urlFor( targetPage, targetPageParameters ).toString();
         }
 
-        if (mode == null){
+        if (mode == null) {
             mode = loginMode;
         }
 
-        return new AuthenticationContext(null, null, null, targetURL, mode);
+        return new AuthenticationContext( null, null, null, targetURL, mode );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isVisible() {
 
         return !LinkIDWicketUtils.isLinkIDAuthenticated();
     }
-
-
 }

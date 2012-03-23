@@ -28,23 +28,23 @@ public abstract class AbstractLinkIDAuthLink extends Link<Object> implements Lin
     private final Class<? extends Page> target;
     private final PageParameters        targetParameters;
 
-    public AbstractLinkIDAuthLink(String id) {
+    protected AbstractLinkIDAuthLink(String id) {
 
         this( id, null );
     }
 
     /**
-     * @param target The {@link Page} to return to after the linkID delegation. <code>null</code>: Use the application's homepage.
+     * @param target The {@link Page} to return to after the linkID delegation. {@code null}: Use the application's homepage.
      */
-    public AbstractLinkIDAuthLink(String id, Class<? extends Page> target) {
+    protected AbstractLinkIDAuthLink(String id, Class<? extends Page> target) {
 
         this( id, target, null );
     }
 
     /**
-     * @param target The {@link Page} to return to after the linkID delegation. <code>null</code>: Use the application's homepage.
+     * @param target The {@link Page} to return to after the linkID delegation. {@code null}: Use the application's homepage.
      */
-    public AbstractLinkIDAuthLink(String id, Class<? extends Page> target, PageParameters targetParameters) {
+    protected AbstractLinkIDAuthLink(String id, Class<? extends Page> target, PageParameters targetParameters) {
 
         super( id );
 
