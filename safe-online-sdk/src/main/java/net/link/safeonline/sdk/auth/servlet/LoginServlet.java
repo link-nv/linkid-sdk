@@ -36,12 +36,14 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
     private static final Log LOG = LogFactory.getLog( LoginServlet.class );
 
-    @Init(name = "ErrorPage", optional = true)
+    public static final String ERROR_PAGE_PARAM   = "ErrorPage";
+    public static final String TIMEOUT_PAGE_PARAM = "TimeoutPage";
+
+    @Init(name = ERROR_PAGE_PARAM, optional = true)
     private String errorPage;
 
-    @Init(name = "TimeoutPage", optional = true)
+    @Init(name = TIMEOUT_PAGE_PARAM, optional = true)
     private String timeoutPage;
-
 
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
@@ -66,10 +68,9 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                 authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction() );
             if (null == authnResponse) {
                 // if we don't have a response, check if perhaps the session has expired
-                if (request.getSession( false) == null || request.getSession().isNew()){
+                if (request.getSession( false ) == null || request.getSession().isNew()) {
                     LOG.warn( ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
-                            new ErrorMessage(  "Session timeout, authentication took too long." ) ) );
-
+                            new ErrorMessage( "Session timeout, authentication took too long." ) ) );
                 }
                 //nope, it's something else
                 LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
@@ -81,16 +82,16 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
             String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
             LoginMode mode = null;
-            if (modeParam != null){
-                for (LoginMode val : LoginMode.values()){
-                    if (modeParam.trim().equalsIgnoreCase( val.name() )){
+            if (modeParam != null) {
+                for (LoginMode val : LoginMode.values()) {
+                    if (modeParam.trim().equalsIgnoreCase( val.name() )) {
                         mode = val;
                         break;
                     }
                 }
             }
 
-            if (mode == LoginMode.POPUP){
+            if (mode == LoginMode.POPUP) {
                 response.setContentType( "text/html" );
                 PrintWriter out = response.getWriter();
                 out.println( "<html>" );
@@ -101,11 +102,11 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                 out.println( "</script>" );
                 out.println( "</head>" );
                 out.println( "<body>" );
-                out.println( "<noscript><p>You are successfully logged in. Since your browser does not support JavaScript, you must close this popup window and refresh the original window manually.</p></noscript>" );
+                out.println(
+                        "<noscript><p>You are successfully logged in. Since your browser does not support JavaScript, you must close this popup window and refresh the original window manually.</p></noscript>" );
                 out.println( "</body>" );
                 out.println( "</html>" );
-            }
-            else {
+            } else {
                 response.sendRedirect( authnResponse.getRequest().getTarget() );
             }
         }
