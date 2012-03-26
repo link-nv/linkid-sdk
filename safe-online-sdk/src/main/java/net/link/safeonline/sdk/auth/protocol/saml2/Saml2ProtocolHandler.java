@@ -39,18 +39,6 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
     private static final Logger logger = Logger.get( Saml2ProtocolHandler.class );
 
-    static {
-        // Because Sun loves to endorse crippled versions of Xerces.
-        System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-                "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
-        try {
-            DefaultBootstrap.bootstrap();
-        }
-        catch (ConfigurationException e) {
-            throw new InternalInconsistencyException( "could not bootstrap the OpenSAML2 library", e );
-        }
-    }
-
     private AuthenticationContext authnContext;
     private LogoutContext         logoutContext;
 

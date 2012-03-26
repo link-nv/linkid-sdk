@@ -49,9 +49,15 @@ public class AuthnRequestFactory {
     }
 
     static {
+
+        bootstrapSaml2();
+    }
+
+    public static void bootstrapSaml2() {
+
         /*
-         * Next is because Sun loves to endorse crippled versions of Xerces.
-         */
+        * Next is because Sun loves to endorse crippled versions of Xerces.
+        */
         //noinspection HardcodedFileSeparator
         System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
