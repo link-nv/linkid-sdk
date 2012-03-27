@@ -106,6 +106,9 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
     protected void onBeforeRender() {
 
         super.onBeforeRender();
+        if (loginMode != null){
+            add( new AttributeAppender( "login-mode", new Model<String>( loginMode.toString().toLowerCase() ), " " ) );
+        }
         if (addJS) {
             //LinkID JavaScript which handles login look
             add( new HeaderContributor( new IHeaderContributor() {
