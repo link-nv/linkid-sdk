@@ -171,6 +171,8 @@ public class AuthenticationUtil {
     private static KeyInfoType getKeyInfo(PublicKey publicKey) {
 
         KeyInfoType keyInfo = new KeyInfoType();
+        KeyValueType keyValue = new KeyValueType();
+        keyInfo.getContent().add( keyValue );
         ObjectFactory dsigObjectFactory = new ObjectFactory();
 
         if (publicKey instanceof RSAPublicKey) {
@@ -178,7 +180,7 @@ public class AuthenticationUtil {
             RSAKeyValueType rsaKeyValue = new RSAKeyValueType();
             rsaKeyValue.setModulus( rsaPublicKey.getModulus().toByteArray() );
             rsaKeyValue.setExponent( rsaPublicKey.getPublicExponent().toByteArray() );
-            keyInfo.getContent().add( dsigObjectFactory.createRSAKeyValue( rsaKeyValue ) );
+            keyValue.getContent().add( dsigObjectFactory.createRSAKeyValue( rsaKeyValue ) );
         } else if (publicKey instanceof DSAPublicKey) {
             DSAPublicKey dsaPublicKey = (DSAPublicKey) publicKey;
             DSAKeyValueType dsaKeyValue = new DSAKeyValueType();
@@ -186,7 +188,7 @@ public class AuthenticationUtil {
             dsaKeyValue.setG( dsaPublicKey.getParams().getG().toByteArray() );
             dsaKeyValue.setP( dsaPublicKey.getParams().getP().toByteArray() );
             dsaKeyValue.setQ( dsaPublicKey.getParams().getQ().toByteArray() );
-            keyInfo.getContent().add( dsaKeyValue );
+            keyValue.getContent().add( dsaKeyValue );
         } else
             throw new IllegalArgumentException( "Only RSAPublicKey and DSAPublicKey are supported" );
 

@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.ws.attrib;
 
 import static org.junit.Assert.*;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +48,7 @@ public class SAMLTest {
         AttributeStatementType attributeStatement = objectFactory.createAttributeStatementType();
         statements.add( attributeStatement );
 
-        List<Object> attributes = attributeStatement.getAttributeOrEncryptedAttribute();
+        List<Serializable> attributes = attributeStatement.getAttributeOrEncryptedAttribute();
         AttributeType attribute = objectFactory.createAttributeType();
         attributes.add( attribute );
 
