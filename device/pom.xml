@@ -16,6 +16,7 @@
 
     <modules>
         <module>safe-online-qr-sdk</module>
+        <module>safe-online-beid-sdk</module>
     </modules>
 
 </project>
