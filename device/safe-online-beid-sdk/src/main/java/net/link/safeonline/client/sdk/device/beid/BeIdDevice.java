@@ -16,6 +16,8 @@ public interface BeIdDevice {
     String ATTRIBUTE_POSTAL_CODE       = "device.beid.zip";
     String ATTRIBUTE_MUNICIPALITY      = "device.beid.municipality";
 
+    String ATTRIBUTE_GROUP = "beid";
+
     // WS-Authentication
     String WS_AUTH_SALT_ATTRIBUTE                    = "urn:net:lin-k:safe-online:beid:ws:auth:salt";
     String WS_AUTH_AUTHN_SIGNATURE_VALUE_ATTRIBUTE   = "urn:net:lin-k:safe-online:beid:ws:auth:authnSignatureValue";
