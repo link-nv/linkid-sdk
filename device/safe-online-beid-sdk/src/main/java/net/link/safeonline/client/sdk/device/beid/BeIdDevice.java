@@ -6,6 +6,7 @@ public interface BeIdDevice {
 
     // attributes
     String ATTRIBUTE_NRN               = "device.beid.nrn";
+    String ATTRIBUTE_MASKED_NRN        = "device.beid.maskedNrn";
     String ATTRIBUTE_FAMILYNAME        = "device.beid.surname";
     String ATTRIBUTE_GIVENNAME         = "device.beid.givenName";
     String ATTRIBUTE_NATIONALITY       = "device.beid.nationality";
