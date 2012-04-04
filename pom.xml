@@ -109,6 +109,7 @@
         <module>safe-online-sdk-example-wicket</module>
 
         <module>device</module>
+        <module>attribute</module>
 
         <module>repo.linkid.be</module>
 
