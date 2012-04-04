@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import javax.xml.soap.*;
+import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.util.common.CertificateChain;
 import net.link.util.test.pkix.PkiTestUtils;
@@ -48,16 +49,19 @@ public class WSSecurityClientHandlerTest {
         final CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         testedInstance = new WSSecurityHandler( new AbstractWSSecurityConfiguration() {
+            @Override
             public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
 
                 return certificateChain.equals( aCertificateChain );
             }
 
+            @Override
             public CertificateChain getIdentityCertificateChain() {
 
                 return certificateChain;
             }
 
+            @Override
             public PrivateKey getPrivateKey() {
 
                 return keyPair.getPrivate();
@@ -145,6 +149,9 @@ public class WSSecurityClientHandlerTest {
 
         // Operate : let client put ws-security header first
         testedInstance.handleMessage( soapMessageContext );
+
+        // switch to inbound for validation
+        soapMessageContext.put( MessageContext.MESSAGE_OUTBOUND_PROPERTY, false );
 
         // Operate : validate ws-security header
         boolean result = testedInstance.handleMessage( soapMessageContext );
