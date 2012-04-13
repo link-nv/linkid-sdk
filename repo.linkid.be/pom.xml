@@ -176,6 +176,12 @@
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk.device</groupId>
+            <artifactId>safe-online-password-sdk</artifactId>
+            <type>jar</type>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 
