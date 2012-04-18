@@ -25,6 +25,9 @@ public abstract class LinkIDApplication extends WebApplication {
         // Poll resources, even in PRODUCTION.
         getResourceSettings().setResourcePollFrequency( Duration.ONE_MINUTE );
 
+        // Strip wicket markup
+        getMarkupSettings().setStripWicketTags( true );
+
         // LinkID Authentication.
         LinkIDPageAuthenticationListener linkIDAuthenticationListener = new LinkIDPageAuthenticationListener();
         addPreComponentOnBeforeRenderListener( linkIDAuthenticationListener );
