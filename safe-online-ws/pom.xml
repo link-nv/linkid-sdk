@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.22</version>
     </parent>
 
     <name>SafeOnline Web Service Definitions</name>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.22</version>
             <type>pom</type>
         </dependency>
 
