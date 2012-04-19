@@ -1,8 +1,0 @@
-SafeOnline STS Web Service Definition
-
- On Linux you can check for downloaded XSD/DTD files via:
-
-+---+
-su
-tcpdump -i eth0 -l -s 0 -t -w - port 80 | strings | grep -e '\(GET.*\)\|\(Host:.*\)'
-+---+

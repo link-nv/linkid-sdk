@@ -7,22 +7,22 @@
 
 package net.link.safeonline.sdk.ws.notification.subscription;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 import net.lin_k.safe_online.notification.subscription.manager.*;
-import net.link.safeonline.notification.subscription.manager.ws.NotificationSubscriptionManagerServiceFactory;
+import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.NotificationErrorCode;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
+import net.link.safeonline.ws.notification.NotificationSubscriptionManagerServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 
@@ -34,52 +34,40 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<NotificationSubscriptionManagerPort> implements
         NotificationSubscriptionManagerClient {
 
-    private static final Log LOG = LogFactory.getLog( NotificationSubscriptionManagerClientImpl.class );
-
-    private final String location;
+    private static final Logger logger = Logger.get( NotificationSubscriptionManagerClientImpl.class );
 
     /**
      * Main constructor.
      *
      * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      * @param configuration  The WS-Security configuration.
      */
     public NotificationSubscriptionManagerClientImpl(String location, X509Certificate sslCertificate,
                                                      final WSSecurityConfiguration configuration) {
 
         super( NotificationSubscriptionManagerServiceFactory.newInstance().getNotificationSubscriptionManagerPort() );
+
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/subscription" );
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.notification.subscription.path" ) ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-        private W3CEndpointReference getEndpointReference(String address) {
+    private static W3CEndpointReference getEndpointReference(String address) {
 
-            W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-            builder.address( address );
-            return builder.build();
-        }
+        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
+        builder.address( address );
+        return builder.build();
+    }
 
-//    private EndpointReferenceType getEndpointReference(String address) {
-//
-//        EndpointReferenceType endpoint = new EndpointReferenceType();
-//        AttributedURIType addressType = new AttributedURIType();
-//        addressType.setValue( address );
-//        endpoint.setAddress( addressType );
-//        return endpoint;
-//    }
-
+    @Override
     public void unsubscribe(String topic, String address)
             throws SubscriptionNotFoundException, RequestDeniedException, WSClientTransportException {
 
-        LOG.debug( "unsubscribe" );
         UnsubscribeRequest request = new UnsubscribeRequest();
-
-                W3CEndpointReference endpoint = getEndpointReference( address );
-//        request.setConsumerReference( getEndpointReference( address ) );
 
         TopicType topicType = new TopicType();
         TopicExpressionType topicExpression = new TopicExpressionType();
@@ -87,6 +75,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<
         topicExpression.getContent().add( topic );
         topicType.setTopic( topicExpression );
         request.setTopic( topicType );
+        request.setConsumerReference( getEndpointReference( address ) );
 
         UnsubscribeResponse response;
         try {
@@ -96,10 +85,10 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
-        checkStatus( response );
+        validateStatus( response );
     }
 
-    private void checkStatus(UnsubscribeResponse response)
+    private static void validateStatus(UnsubscribeResponse response)
             throws SubscriptionNotFoundException, RequestDeniedException {
 
         StatusType status = response.getStatus();

@@ -38,9 +38,9 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
 
     private static final Log LOG = LogFactory.getLog( AbstractLogoutServlet.class );
 
-    public static final String ERROR_PAGE = "ErrorPage";
+    public static final String ERROR_PAGE_PARAM = "ErrorPage";
 
-    @Init(name = ERROR_PAGE, optional = true)
+    @Init(name = ERROR_PAGE_PARAM, optional = true)
     private String errorPage;
 
     @Override

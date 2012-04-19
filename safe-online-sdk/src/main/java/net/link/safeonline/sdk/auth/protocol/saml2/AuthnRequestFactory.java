@@ -7,10 +7,15 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import javax.xml.namespace.QName;
+import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.*;
+import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.*;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.saml.SamlUtils;
 import org.jetbrains.annotations.Nullable;
@@ -36,15 +41,23 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class AuthnRequestFactory {
 
+    private static final Logger logger = Logger.get( AuthnRequestFactory.class );
+
     private AuthnRequestFactory() {
 
         // empty
     }
 
     static {
+
+        bootstrapSaml2();
+    }
+
+    public static void bootstrapSaml2() {
+
         /*
-         * Next is because Sun loves to endorse crippled versions of Xerces.
-         */
+        * Next is because Sun loves to endorse crippled versions of Xerces.
+        */
         //noinspection HardcodedFileSeparator
         System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
@@ -52,9 +65,13 @@ public class AuthnRequestFactory {
             DefaultBootstrap.bootstrap();
             Configuration.registerObjectProvider( SessionInfo.DEFAULT_ELEMENT_NAME, new SessionInfoBuilder(), new SessionInfoMarshaller(),
                     new SessionInfoUnmarshaller() );
+            Configuration.registerObjectProvider( DeviceContext.DEFAULT_ELEMENT_NAME, new DeviceContextBuilder(),
+                    new DeviceContextMarshaller(), new DeviceContextUnmarshaller() );
+            Configuration.registerObjectProvider( SubjectAttributes.DEFAULT_ELEMENT_NAME, new SubjectAttributesBuilder(),
+                    new SubjectAttributesMarshaller(), new SubjectAttributesUnmarshaller() );
         }
         catch (ConfigurationException e) {
-            throw new RuntimeException( "could not bootstrap the OpenSAML2 library", e );
+            throw new InternalInconsistencyException( "could not bootstrap the OpenSAML2 library", e );
         }
     }
 
@@ -74,14 +91,19 @@ public class AuthnRequestFactory {
      * @param devices                     the optional list of allowed authentication devices.
      * @param forceAuthentication         whether authentication should be forced and SSO ignore
      * @param sessionTrackingId           optional session info, marks application wishes to track this session
-     * @param deviceContext               optional device context, can contain context attributes for specific device's like the iOS client
+     * @param deviceContextMap            optional device context, can contain context attributes for specific device's like the iOS client
+     * @param subjectAttributesMap        optional map attributes of the to be authenticated subject. These values will be used if needed
+     *                                    in case of missing attributes in the linkID authentication flow. The key's are the linkID
+     *                                    attribute names.
      *
      * @return unsigned SAML v2.0 AuthnRequest object
      */
-    public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences, @Nullable String applicationFriendlyName,
-                                                  String assertionConsumerServiceURL, @Nullable String destinationURL, @Nullable Set<String> devices,
+    public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences,
+                                                  @Nullable String applicationFriendlyName, String assertionConsumerServiceURL,
+                                                  @Nullable String destinationURL, @Nullable Set<String> devices,
                                                   boolean forceAuthentication, @Nullable String sessionTrackingId,
-                                                  @Nullable Map<String, String> deviceContext) {
+                                                  @Nullable Map<String, String> deviceContextMap,
+                                                  @Nullable Map<String, List<Serializable>> subjectAttributesMap) {
 
         if (null == issuerName)
             throw new IllegalArgumentException( "application name should not be null" );
@@ -94,7 +116,7 @@ public class AuthnRequestFactory {
             idGenerator = new SecureRandomIdentifierGenerator();
         }
         catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException( "secure random init error: " + e.getMessage(), e );
+            throw new InternalInconsistencyException( String.format( "secure random init error: %s", e.getMessage() ), e );
         }
         String id = idGenerator.generateIdentifier();
         request.setID( id );
@@ -159,7 +181,7 @@ public class AuthnRequestFactory {
         }
 
         // add device context
-        if (null != deviceContext) {
+        if (null != deviceContextMap) {
 
             if (null == request.getExtensions()) {
                 QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
@@ -167,32 +189,75 @@ public class AuthnRequestFactory {
                 request.setExtensions( extensions );
             }
 
-            request.getExtensions().getUnknownXMLObjects().add( toAttributeStatement( deviceContext ) );
+            request.getExtensions().getUnknownXMLObjects().add( toDeviceContext( deviceContextMap ) );
+        }
+
+        // add attributes
+        if (null != subjectAttributesMap) {
+
+            if (null == request.getExtensions()) {
+                QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
+                Extensions extensions = SamlUtils.buildXMLObject( extensionsQName );
+                request.setExtensions( extensions );
+            }
+
+            request.getExtensions().getUnknownXMLObjects().add( toSubjectAttributes( subjectAttributesMap ) );
         }
 
         return request;
     }
 
     /**
-     * Returns a SAML v2.0 {@link AttributeStatement} constructed from specified device context.
+     * Returns a SAML v2.0 {@link DeviceContext} constructed from specified device context.
      *
-     * @param deviceContext device context
+     * @param deviceContextMap device context map
      *
-     * @return attribute statement
+     * @return DeviceContext SAML v2.0 object.
      */
-    public static AttributeStatement toAttributeStatement(Map<String, String> deviceContext) {
+    public static DeviceContext toDeviceContext(Map<String, String> deviceContextMap) {
 
-        AttributeStatement attributeStatement = SamlUtils.buildXMLObject( AttributeStatement.DEFAULT_ELEMENT_NAME );
+        DeviceContext deviceContext = SamlUtils.buildXMLObject( DeviceContext.DEFAULT_ELEMENT_NAME );
 
-        for (Map.Entry<String, String> entry : deviceContext.entrySet()) {
+        for (Map.Entry<String, String> entry : deviceContextMap.entrySet()) {
             Attribute attribute = SamlUtils.buildXMLObject( Attribute.DEFAULT_ELEMENT_NAME );
             attribute.setName( entry.getKey() );
             if (entry.getValue() != null) {
                 attribute.getAttributeValues().add( Saml2Utils.toAttributeValue( entry.getValue() ) );
             }
-            attributeStatement.getAttributes().add( attribute );
+            deviceContext.getAttributes().add( attribute );
         }
 
-        return attributeStatement;
+        return deviceContext;
+    }
+
+    /**
+     * Returns a SAML v2.0 {@link SubjectAttributes} constructed from specified subject attributes map.
+     *
+     * @param subjectAttributesMap subject attributes map
+     *
+     * @return SubjectAttributes SAML v2.0 object.
+     */
+    public static SubjectAttributes toSubjectAttributes(Map<String, List<Serializable>> subjectAttributesMap) {
+
+        SubjectAttributes subjectAttributes = SamlUtils.buildXMLObject( SubjectAttributes.DEFAULT_ELEMENT_NAME );
+
+        for (Map.Entry<String, List<Serializable>> entry : subjectAttributesMap.entrySet()) {
+
+            List<Serializable> values = entry.getValue();
+            if (null != values) {
+
+                Attribute attribute = SamlUtils.buildXMLObject( Attribute.DEFAULT_ELEMENT_NAME );
+                attribute.setName( entry.getKey() );
+
+                for (Serializable value : values) {
+
+                    attribute.getAttributeValues().add( Saml2Utils.toAttributeValue( value ) );
+                }
+
+                subjectAttributes.getAttributes().add( attribute );
+            }
+        }
+
+        return subjectAttributes;
     }
 }

@@ -10,13 +10,11 @@ package net.link.safeonline.sdk.ws.notification.consumer;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.notification.consumer.NotificationConsumerPort;
-import net.lin_k.safe_online.notification.consumer.NotificationMessageHolderType;
+import net.lin_k.safe_online.notification.consumer.*;
 import net.lin_k.safe_online.notification.consumer.NotificationMessageHolderType.Message;
-import net.lin_k.safe_online.notification.consumer.Notify;
-import net.link.safeonline.notification.consumer.ws.NotificationConsumerServiceFactory;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
+import net.link.safeonline.ws.notification.NotificationConsumerServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -38,17 +36,16 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
 
     private final String location;
 
-
     /**
      * Main constructor.
      *
-     * @param location the location (host:port) of the attribute web service.
+     * @param location       the location (host:port) of the attribute web service.
      * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
-     * @param configuration The WS-Security configuration.
+     * @param configuration  The WS-Security configuration.
      */
     public NotificationConsumerClientImpl(String location, X509Certificate sslCertificate, WSSecurityConfiguration configuration) {
 
-        super(NotificationConsumerServiceFactory.newInstance().getNotificationConsumerPort());
+        super( NotificationConsumerServiceFactory.newInstance().getNotificationConsumerPort() );
         getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location );
 
         registerTrustManager( sslCertificate );
@@ -59,7 +56,7 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
             throws WSClientTransportException {
 
         LOG.debug( "send notification to " + location + " for topic: " + topic + ", destination:" + destination + ", subject:" + subject
-                + ", content:" + content );
+                   + ", content:" + content );
 
         TopicExpressionType topicExpression = new TopicExpressionType();
         topicExpression.setDialect( TOPIC_DIALECT_SIMPLE );
@@ -77,7 +74,8 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
 
         try {
             getPort().notify( notifications );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             LOG.debug( "Failed to send notification" );
             throw new WSClientTransportException( getBindingProvider(), e );
         }

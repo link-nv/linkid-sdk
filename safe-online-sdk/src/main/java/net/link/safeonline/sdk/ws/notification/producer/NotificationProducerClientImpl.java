@@ -7,23 +7,23 @@
 
 package net.link.safeonline.sdk.ws.notification.producer;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 import net.lin_k.safe_online.notification.producer.*;
-import net.link.safeonline.notification.producer.ws.NotificationProducerServiceFactory;
+import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.SubscriptionFailedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.NotificationErrorCode;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
+import net.link.safeonline.ws.notification.NotificationProducerServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 
@@ -34,50 +34,41 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
  */
 public class NotificationProducerClientImpl extends AbstractWSClient<NotificationProducerPort> implements NotificationProducerClient {
 
-    private static final Log LOG = LogFactory.getLog( NotificationProducerClientImpl.class );
-
-    private final String location;
+    private static final Logger logger = Logger.get( NotificationProducerClientImpl.class );
 
     /**
      * Main constructor.
      *
      * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
     public NotificationProducerClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
         super( NotificationProducerServiceFactory.newInstance().getNotificationProducerPort() );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/producer" );
+        getBindingProvider().getRequestContext()
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.notification.producer.path" ) ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-    private W3CEndpointReference getEndpointReference(String address) {
+    private static W3CEndpointReference getEndpointReference(String address) {
 
         W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
         builder.address( address );
         return builder.build();
     }
 
-//    private EndpointReferenceType getEndpointReference(String address) {
-//
-//        EndpointReferenceType endpoint = new EndpointReferenceType();
-//        AttributedURIType addressType = new AttributedURIType();
-//        addressType.setValue( address );
-//        endpoint.setAddress( addressType );
-//        return endpoint;
-//    }
-
+    @Override
     public void subscribe(String topic, String address)
             throws SubscriptionFailedException, WSClientTransportException {
 
-        LOG.debug( "subscribe " + address + " to " + topic );
+        logger.dbg( "subscribe \"%s\" to \"%s\"", address, topic );
         SubscribeRequest request = new SubscribeRequest();
 
-                W3CEndpointReference endpoint = getEndpointReference( address );
+        W3CEndpointReference endpoint = getEndpointReference( address );
         request.setConsumerReference( endpoint );
-//        request.setConsumerReference( getEndpointReference( address ) );
 
         FilterType filter = new FilterType();
         TopicExpressionType topicExpression = new TopicExpressionType();
@@ -94,10 +85,10 @@ public class NotificationProducerClientImpl extends AbstractWSClient<Notificatio
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
-        checkStatus( response );
+        validateStatus( response );
     }
 
-    private void checkStatus(SubscribeResponse response)
+    private static void validateStatus(SubscribeResponse response)
             throws SubscriptionFailedException {
 
         if (response.getSubscribeStatus().getStatusCode().equals( NotificationErrorCode.SUBSCRIPTION_FAILED.getErrorCode() ))

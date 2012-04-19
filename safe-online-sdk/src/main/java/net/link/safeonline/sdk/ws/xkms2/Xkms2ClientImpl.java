@@ -7,18 +7,18 @@
 
 package net.link.safeonline.sdk.ws.xkms2;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
+import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.ValidationFailedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.xkms2.ResultMajorCode;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
-import net.link.safeonline.xkms2.ws.Xkms2ServiceFactory;
+import net.link.safeonline.ws.xkms2.Xkms2ServiceFactory;
 import net.link.util.common.CertificateChain;
 import net.link.util.ws.AbstractWSClient;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3._2000._09.xmldsig.KeyInfoType;
 import org.w3._2000._09.xmldsig.X509DataType;
 import org.w3._2002._03.xkms.*;
@@ -31,7 +31,7 @@ import org.w3._2002._03.xkms.*;
  */
 public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements Xkms2Client {
 
-    private static final Log LOG = LogFactory.getLog( Xkms2ClientImpl.class );
+    private static final Logger logger = Logger.get( Xkms2ClientImpl.class );
 
     /**
      * Main constructor.
@@ -42,7 +42,9 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
     public Xkms2ClientImpl(String location, X509Certificate sslCertificate) {
 
         super( Xkms2ServiceFactory.newInstance().getXKMSPort() );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/xkms2", location ) );
+        getBindingProvider().getRequestContext()
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.xkms2.path" ) ) );
 
         registerTrustManager( sslCertificate );
     }
@@ -51,7 +53,7 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
     public void validate(final CertificateChain certificateChain)
             throws WSClientTransportException, ValidationFailedException, CertificateEncodingException {
 
-        LOG.debug( "validate" );
+        logger.dbg( "validate" );
 
         ObjectFactory objectFactory = new ObjectFactory();
         org.w3._2000._09.xmldsig.ObjectFactory xmldsigObjectFactory = new org.w3._2000._09.xmldsig.ObjectFactory();

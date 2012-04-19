@@ -7,36 +7,38 @@
 
 package net.link.safeonline.sdk.pkix;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.cert.X509Certificate;
-import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.SDKUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.openssl.PEMReader;
 
 
 /**
  * Implementation component for PKI client.
- * 
+ *
  * @author fcorneli
  */
 public class PkiClientImpl implements PkiClient {
 
-    private static final Log LOG = LogFactory.getLog( PkiClientImpl.class );
+    private static final Logger logger = Logger.get( PkiClientImpl.class );
 
     private final String location;
-
 
     public PkiClientImpl(String location) {
 
         this.location = location;
     }
 
+    @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
+    @Override
     public X509Certificate getCertificate() {
 
         HttpClient httpClient = new HttpClient();
@@ -45,39 +47,42 @@ public class PkiClientImpl implements PkiClient {
         int statusCode;
         try {
             statusCode = httpClient.executeMethod( getMethod );
-        } catch (HttpException e) {
-            throw new RuntimeException( "HTTP error: " + e.getMessage(), e );
-        } catch (IOException e) {
-            throw new RuntimeException( "IO error: " + e.getMessage(), e );
+        }
+        catch (HttpException e) {
+            throw new InternalInconsistencyException( String.format( "HTTP error: %s", e.getMessage() ), e );
+        }
+        catch (IOException e) {
+            throw new InternalInconsistencyException( String.format( "IO error: %s", e.getMessage() ), e );
         }
         if (HttpServletResponse.SC_OK != statusCode)
-            throw new RuntimeException( "invalid status code: " + statusCode );
+            throw new InternalInconsistencyException( String.format( "Invalid status code: %s", statusCode ) );
         String responseBody;
         try {
             responseBody = getMethod.getResponseBodyAsString();
-        } catch (IOException e) {
-            throw new RuntimeException( "IO error: " + e.getMessage(), e );
         }
-        LOG.debug( "response body: " + responseBody );
+        catch (IOException e) {
+            throw new InternalInconsistencyException( String.format( "IO error: %s", e.getMessage() ), e );
+        }
+        logger.dbg( "response body: %s", responseBody );
         StringReader stringReader = new StringReader( responseBody );
-        PEMReader pemReader = new PEMReader( stringReader );
         Object obj;
+        PEMReader pemReader = new PEMReader( stringReader );
         try {
             obj = pemReader.readObject();
-        } catch (IOException e) {
-            throw new RuntimeException( "IO error: " + e.getMessage(), e );
         }
-        if (false == obj instanceof X509Certificate)
-            throw new RuntimeException( "invalid response type: " + obj.getClass().getName() );
-        X509Certificate certificate = (X509Certificate) obj;
-        return certificate;
+        catch (IOException e) {
+            throw new InternalInconsistencyException( String.format( "IO error: %s", e.getMessage() ), e );
+        }
+        finally {
+            IOUtils.closeQuietly( pemReader );
+        }
+        if (!(obj instanceof X509Certificate))
+            throw new InternalInconsistencyException( String.format( "Invalid response type: %s", obj.getClass().getName() ) );
+        return (X509Certificate) obj;
     }
 
     private String getUri() {
 
-        ResourceBundle properties = ResourceBundle.getBundle( "sdk_config" );
-        String authWebappUrl = properties.getString( "linkid.auth.webapp.url" );
-
-        return "http://" + location + "/" + authWebappUrl + "/pki-cert";
+        return String.format( "http://%s/%s/pki-cert.pem", location, SDKUtils.getSDKProperty( "linkid.auth.webapp.url" ) );
     }
 }

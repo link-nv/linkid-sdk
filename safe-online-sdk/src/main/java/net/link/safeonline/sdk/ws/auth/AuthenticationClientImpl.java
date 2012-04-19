@@ -7,21 +7,22 @@
 
 package net.link.safeonline.sdk.ws.auth;
 
+import com.google.common.collect.Maps;
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.auth.*;
-import net.link.safeonline.auth.ws.soap.WSAuthenticationServiceFactory;
 import net.link.safeonline.sdk.api.attribute.AttributeIdentitySDK;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.auth.*;
 import net.link.safeonline.sdk.api.ws.auth.client.AuthenticationClient;
+import net.link.safeonline.sdk.api.ws.auth.client.AuthenticationResult;
+import net.link.safeonline.ws.auth.WSAuthenticationServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -36,14 +37,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author wvdhaute
  */
-public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationPort> implements
-        AuthenticationClient<AssertionType, DeviceAuthenticationInformationType> {
+public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationPort> implements AuthenticationClient<AssertionType> {
 
     private static final Logger logger = Logger.get( AuthenticationClientImpl.class );
-
-    private DeviceAuthenticationInformationType deviceAuthenticationInformation;
-    private AuthenticationStep                  authenticationStep;
-    private AssertionType                       assertion;
 
     /**
      * Main constructor.
@@ -62,16 +58,10 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
-//    private W3CEndpointReference getEndpointReference(EndpointReferenceType endpointReferenceType) {
-//
-//        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-//        builder.address( address );
-//        return builder.build();
-//    }
-
     @Nullable
     @Override
-    public String authenticate(String applicationName, String deviceName, String language, Object deviceCredentials, PublicKey publicKey)
+    public AuthenticationResult<AssertionType> authenticate(String applicationName, String deviceName, String language,
+                                                            Map<String, String> deviceCredentials, PublicKey publicKey)
             throws RequestDeniedException, WSAuthenticationException, WSClientTransportException {
 
         logger.dbg( "authentication for application %s using device %s", applicationName, deviceName );
@@ -83,14 +73,7 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         validateStatus( response );
 
-        setAssertion( response );
-        if (null != assertion)
-            return getSubject();
-
-        setDeviceAuthenticationInformation( response );
-        setAuthenticationSteps( response );
-
-        return null;
+        return getAuthenticationResult( response );
     }
 
     @Nullable
@@ -106,18 +89,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         validateStatus( response );
 
-        if (null != response.getGlobalUsageAgreement())
-            return response.getGlobalUsageAgreement();
-
-        setAssertion( response );
-        setAuthenticationSteps( response );
-
-        return null;
+        return response.getGlobalUsageAgreement();
     }
 
     @Nullable
     @Override
-    public String confirmGlobalUsageAgreement(Confirmation confirmation)
+    public AuthenticationResult<AssertionType> confirmGlobalUsageAgreement(Confirmation confirmation)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
         logger.dbg( "confirm or reject global usage agreement: %s", confirmation.getValue() );
@@ -128,13 +105,7 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         validateStatus( response );
 
-        setAssertion( response );
-        if (null != assertion)
-            return getSubject();
-
-        setAuthenticationSteps( response );
-
-        return null;
+        return getAuthenticationResult( response );
     }
 
     @Nullable
@@ -150,18 +121,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         validateStatus( response );
 
-        if (null != response.getUsageAgreement())
-            return response.getUsageAgreement();
-
-        setAssertion( response );
-        setAuthenticationSteps( response );
-
-        return null;
+        return response.getUsageAgreement();
     }
 
     @Nullable
     @Override
-    public String confirmUsageAgreement(Confirmation confirmation)
+    public AuthenticationResult<AssertionType> confirmUsageAgreement(Confirmation confirmation)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
         logger.dbg( "confirm or reject application usage agreement: %s", confirmation.getValue() );
@@ -172,13 +137,7 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         validateStatus( response );
 
-        setAssertion( response );
-        if (null != assertion)
-            return getSubject();
-
-        setAuthenticationSteps( response );
-
-        return null;
+        return getAuthenticationResult( response );
     }
 
     @Nullable
@@ -193,8 +152,6 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         WSAuthenticationResponseType response = getIdentityResponse( request );
 
         validateStatus( response );
-        setAssertion( response );
-        setAuthenticationSteps( response );
 
         if (null != response.getAssertion())
             // either authentication is successful and SAML v2.0 assertion containing subject information is returned, or a SAML v2.0
@@ -212,15 +169,12 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
                 return identity;
             }
 
-        setAssertion( response );
-        setAuthenticationSteps( response );
-
         return null;
     }
 
     @Nullable
     @Override
-    public String confirmIdentity(List<AttributeIdentitySDK> attributes)
+    public AuthenticationResult<AssertionType> confirmIdentity(List<AttributeIdentitySDK> attributes)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
         logger.dbg( "confirm the application's identity" );
@@ -231,43 +185,7 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
 
         validateStatus( response );
 
-        setAssertion( response );
-        if (null != assertion)
-            return getSubject();
-
-        setAuthenticationSteps( response );
-
-        return null;
-    }
-
-    @Override
-    public AssertionType getAssertion() {
-
-        return assertion;
-    }
-
-    @Override
-    public DeviceAuthenticationInformationType getDeviceAuthenticationInformation() {
-
-        return deviceAuthenticationInformation;
-    }
-
-    @Override
-    public AuthenticationStep getAuthenticationStep() {
-
-        return authenticationStep;
-    }
-
-    @Nullable
-    private String getSubject() {
-
-        for (JAXBElement<?> object : assertion.getSubject().getContent())
-            if (object.getDeclaredType().equals( NameIDType.class )) {
-                NameIDType nameIDType = (NameIDType) object.getValue();
-                return nameIDType.getValue();
-            }
-
-        return null;
+        return getAuthenticationResult( response );
     }
 
     private WSAuthenticationResponseType getAuthenticateResponse(WSAuthenticationRequestType request)
@@ -368,25 +286,42 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         }
     }
 
-    private void setAssertion(WSAuthenticationResponseType response) {
+    private static AuthenticationResult<AssertionType> getAuthenticationResult(final WSAuthenticationResponseType response) {
 
+        // assertion
+        AssertionType assertion = null;
         if (!response.getAssertion().isEmpty())
             if (null != response.getAssertion().get( 0 ).getSubject())
                 assertion = response.getAssertion().get( 0 );
-    }
 
-    private void setDeviceAuthenticationInformation(WSAuthenticationResponseType response) {
+        // userId
+        String userId = null;
+        if (null != assertion) {
 
-        deviceAuthenticationInformation = response.getDeviceAuthenticationInformation();
-    }
-
-    private void setAuthenticationSteps(WSAuthenticationResponseType response) {
-
-        if (null == response.getAuthenticationStep()) {
-            authenticationStep = null;
-            return;
+            for (JAXBElement<?> object : assertion.getSubject().getContent())
+                if (object.getDeclaredType().equals( NameIDType.class )) {
+                    NameIDType nameIDType = (NameIDType) object.getValue();
+                    userId = nameIDType.getValue();
+                }
         }
 
-        authenticationStep = AuthenticationStep.getAuthenticationStep( response.getAuthenticationStep() );
+        // device information
+        Map<String, String> deviceInformation = Maps.newHashMap();
+        if (null != response.getDeviceAuthenticationInformation() && null != response.getDeviceAuthenticationInformation()
+                                                                                     .getNameValuePair()) {
+
+            for (NameValuePairType nameValuePair : response.getDeviceAuthenticationInformation().getNameValuePair()) {
+
+                deviceInformation.put( nameValuePair.getName(), nameValuePair.getValue() );
+            }
+        }
+
+        // authentication step
+        AuthenticationStep authenticationStep = null;
+        if (null != response.getAuthenticationStep()) {
+            authenticationStep = AuthenticationStep.getAuthenticationStep( response.getAuthenticationStep() );
+        }
+
+        return new AuthenticationResult<AssertionType>( userId, assertion, deviceInformation, authenticationStep );
     }
 }

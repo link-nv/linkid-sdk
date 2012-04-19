@@ -12,11 +12,11 @@ import net.link.util.config.Property;
 
 /**
  * <h2>{@link WebConfig}</h2>
- *
+ * <p/>
  * <p>
  * Web configuration.  Base URLs, paths, etc.
  * </p>
- *
+ * <p/>
  * <p>
  * <i>Sep 8, 2009</i>
  * </p>
@@ -27,14 +27,15 @@ import net.link.util.config.Property;
 public interface WebConfig {
 
     /**
-     * Property that defines the base URL for applications on this host.  It will be used to create absolute URLs that point the user to the application.
-     *
+     * Property that defines the base URL for applications on this host.  It will be used to create absolute URLs that point the user to the
+     * application.
+     * <p/>
      * <i>[required]</i>
-     *
+     * <p/>
      * <p>
-     * Use the form: <code>[scheme]//[authority]</code> (eg. <code>http://my.host.be</code>)
+     * Use the form: {@code [scheme]//[authority]} (eg. {@code http://my.host.be})
      * </p>
-     *
+     * <p/>
      * <p>
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
@@ -44,13 +45,13 @@ public interface WebConfig {
 
     /**
      * Property that defines the base URL for application landing pages on this host (should be on HTTPS).
-     *
+     * <p/>
      * <i>[required]</i>
-     *
+     * <p/>
      * <p>
-     * Use the form: <code>[scheme]//[authority]</code> (eg. <code>https://my.host.be</code>)
+     * Use the form: {@code [scheme]//[authority]} (eg. {@code https://my.host.be})
      * </p>
-     *
+     * <p/>
      * <p>
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
@@ -60,9 +61,9 @@ public interface WebConfig {
 
     /**
      * Property that defines the application's root path relative to the {@link #appBase()}.
-     *
+     * <p/>
      * <i>[required]</i>
-     *
+     * <p/>
      * <p>
      * <b>NOTE:</b> Should begin and end with a slash.
      * </p>
@@ -72,13 +73,13 @@ public interface WebConfig {
 
     /**
      * Property that defines the base URL to the linkID user web application to use for user profile management.
-     *
+     * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-user]</i>
-     *
+     * <p/>
      * <p>
-     * Use the form: <code>[scheme]//[authority]/[path-to-linkid-user]</code> (eg. <code>https://my.linkid.be/linkid-user</code>)
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-user]} (eg. {@code https://my.linkid.be/linkid-user})
      * </p>
-     *
+     * <p/>
      * <p>
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
@@ -88,13 +89,13 @@ public interface WebConfig {
 
     /**
      * Property that defines the base URL to the linkID authentication web application to use for application authentication.
-     *
+     * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-auth]</i>
-     *
+     * <p/>
      * <p>
-     * Use the form: <code>[scheme]//[authority]/[path-to-linkid-auth]</code> (eg. <code>https://my.linkid.be/linkid-auth</code>)
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-auth]} (eg. {@code https://my.linkid.be/linkid-auth})
      * </p>
-     *
+     * <p/>
      * <p>
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
@@ -104,13 +105,13 @@ public interface WebConfig {
 
     /**
      * Property that defines the base URL to the linkID web services to use.
-     *
+     * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-ws]</i>
-     *
+     * <p/>
      * <p>
-     * Use the form: <code>[scheme]//[authority]/[path-to-linkid-ws]</code> (eg. <code>https://my.linkid.be/linkid-ws</code>)
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-ws]} (eg. {@code https://my.linkid.be/linkid-ws})
      * </p>
-     *
+     * <p/>
      * <p>
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
@@ -119,8 +120,25 @@ public interface WebConfig {
     String wsBase();
 
     /**
-     * PATH within our application where linkID's authentication response will be posted to.  Absolute URLs to this path will use the {@link #appConfidentialBase()}.
-     *
+     * Property that defines the base URL to the linkID web services to use.
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-ws]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-ws]} (eg. {@code https://my.linkid.be/linkid-ws})
+     * </p>
+     * <p/>
+     * <p>
+     * <b>NOTE:</b> Do not terminate with a slash.
+     * </p>
+     */
+    @Property(required = true, unset = "https://demo.linkid.be/linkid-auth-ws")
+    String authWsBase();
+
+    /**
+     * PATH within our application where linkID's authentication response will be posted to.  Absolute URLs to this path will use the {@link
+     * #appConfidentialBase()}.
+     * <p/>
      * <i>[optional, default: post the response straight to the authentication's target URL]</i>
      */
     @Property(required = false)

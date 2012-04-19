@@ -11,6 +11,8 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
@@ -21,8 +23,8 @@ import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.configuration.*;
 import net.link.util.common.CertificateChain;
 import net.link.util.error.ValidationFailedException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.link.util.saml.Saml2Utils;
+import org.jetbrains.annotations.Nullable;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.*;
 import org.opensaml.xml.ConfigurationException;
@@ -35,19 +37,7 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class Saml2ProtocolHandler implements ProtocolHandler {
 
-    private static final Log LOG = LogFactory.getLog( Saml2ProtocolHandler.class );
-
-    static {
-        // Because Sun loves to endorse crippled versions of Xerces.
-        System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-                "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
-        try {
-            DefaultBootstrap.bootstrap();
-        }
-        catch (ConfigurationException e) {
-            throw new RuntimeException( "could not bootstrap the OpenSAML2 library", e );
-        }
-    }
+    private static final Logger logger = Logger.get( Saml2ProtocolHandler.class );
 
     private AuthenticationContext authnContext;
     private LogoutContext         logoutContext;
@@ -61,12 +51,12 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         String targetURL = authnContext.getTarget();
         if (targetURL == null || !URI.create( targetURL ).isAbsolute())
             targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
-        LOG.debug( "target url: " + targetURL );
+        logger.dbg( "target url: %s", targetURL );
 
         String landingURL = null;
         if (config().web().landingPath() != null)
             landingURL = ConfigUtils.getApplicationConfidentialURLFromPath( config().web().landingPath() );
-        LOG.debug( "landing url: " + landingURL );
+        logger.dbg( "landing url: %s", landingURL );
 
         if (landingURL == null) {
             // If no landing URL is configured, land on target.
@@ -80,7 +70,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null,
                 authnContext.getApplicationFriendlyName(), landingURL, authnService, authnContext.getDevices(),
-                authnContext.isForceAuthentication(), authnContext.getSessionTrackingId(), authnContext.getDeviceContext() );
+                authnContext.isForceAuthentication(), authnContext.getSessionTrackingId(), authnContext.getDeviceContext(),
+                authnContext.getSubjectAttributes() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {
@@ -91,10 +82,11 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName, authnContext.getLanguage(),
                 authnContext.getThemeName(), authnContext.getLoginMode() );
 
-        LOG.debug( "sending Authn Request for: " + authnContext.getApplicationName() + ", issuer: " + samlRequest.getIssuer().getValue() );
+        logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL );
     }
 
+    @Nullable
     @Override
     public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException {
@@ -120,12 +112,13 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             userId = assertion.getSubject().getNameID().getValue();
             for (AuthnStatement authnStatement : assertion.getAuthnStatements()) {
                 authenticatedDevices.add( authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
-                LOG.debug( "authenticated device " + authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
+                logger.dbg( "authenticated device %s",
+                        authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
             }
             attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
             applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
         }
-        LOG.debug( "userId: " + userId );
+        logger.dbg( "userId: %s", userId );
 
         boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
         AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
@@ -133,6 +126,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 attributes, success, saml2ResponseContext.getCertificateChain() );
     }
 
+    @Override
     public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request,
                                                                       final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
@@ -152,16 +146,14 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), null,
                 authnContext.getTarget() );
 
-        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( assertion.getSignature(), request,
+        CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request,
                 authnContext.getTrustedCertificates() );
 
         return new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true,
                 certificateChain );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public LogoutProtocolRequestContext sendLogoutRequest(HttpServletResponse response, String userId, LogoutContext context)
             throws IOException {
 
@@ -170,7 +162,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         String targetURL = logoutContext.getTarget();
         if (targetURL == null || !URI.create( targetURL ).isAbsolute())
             targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
-        LOG.debug( "target url: " + targetURL );
+        logger.dbg( "target url: %s", targetURL );
 
         String logoutService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().logoutPath() );
 
@@ -192,9 +184,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 samlRequest.getNameID().getValue() );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Nullable
+    @Override
     public LogoutProtocolResponseContext findAndValidateLogoutResponse(HttpServletRequest request)
             throws ValidationFailedException {
 
@@ -218,9 +209,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 saml2ResponseContext.getCertificateChain() );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public LogoutProtocolRequestContext findAndValidateLogoutRequest(HttpServletRequest request,
                                                                      Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
             throws ValidationFailedException {
@@ -240,9 +229,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         return logoutRequest;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public LogoutProtocolResponseContext sendLogoutResponse(HttpServletResponse response, LogoutProtocolRequestContext logoutRequestContext,
                                                             boolean partialLogout)
             throws IOException {

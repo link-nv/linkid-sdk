@@ -18,14 +18,15 @@ import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.AddressingFeature;
 import liberty.dst._2006_08.ref.safe_online.*;
 import liberty.util._2006_08.StatusType;
+import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.attribute.Compound;
-import net.link.safeonline.data.ws.*;
-import net.link.safeonline.sdk.api.ws.WebServiceConstants;
-import net.link.safeonline.sdk.api.ws.data.*;
 import net.link.safeonline.sdk.api.exception.RequestDeniedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.ws.WebServiceConstants;
+import net.link.safeonline.sdk.api.ws.data.*;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
+import net.link.safeonline.ws.data.DataServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -44,19 +45,20 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
     private static final Log LOG = LogFactory.getLog( DataClientImpl.class );
 
     private final TargetIdentityClientHandler targetIdentityHandler;
-    private final String                      location;
 
     /**
      * Main constructor.
      *
      * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      * @param configuration  The WS-Security configuration.
      */
     public DataClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
         super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ) );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/data" );
+        getBindingProvider().getRequestContext()
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.data.path" ) ) );
 
         /*
          * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to come first since it

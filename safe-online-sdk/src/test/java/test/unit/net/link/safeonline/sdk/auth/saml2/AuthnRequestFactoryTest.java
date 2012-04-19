@@ -9,25 +9,30 @@ package test.unit.net.link.safeonline.sdk.auth.saml2;
 
 import static org.junit.Assert.*;
 
+import com.google.common.collect.Maps;
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
+import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContext;
+import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.SubjectAttributes;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.saml.SamlUtils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.security.keyinfo.KeyInfoHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,7 +45,7 @@ import org.w3c.dom.Element;
  */
 public class AuthnRequestFactoryTest {
 
-    private static final Log LOG = LogFactory.getLog( AuthnRequestFactoryTest.class );
+    private static final Logger logger = Logger.get( AuthnRequestFactoryTest.class );
 
     @Test
     public void createAuthnRequest()
@@ -58,17 +63,17 @@ public class AuthnRequestFactoryTest {
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
-                destinationURL, devices, false, session, null );
+                destinationURL, devices, false, session, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
 
-        LOG.debug( DomUtils.domToString( SamlUtils.marshall( samlAuthnRequest ) ) );
+        logger.dbg( DomUtils.domToString( SamlUtils.marshall( samlAuthnRequest ) ) );
 
         long end = System.currentTimeMillis();
 
         // Verify
         assertNotNull( samlAuthnRequest );
-        LOG.debug( "duration: " + (end - begin) + " ms" );
-        LOG.debug( "result message: " + samlAuthnRequest );
+        logger.dbg( "duration: %d ms", end - begin );
+        logger.dbg( "result message: %s", samlAuthnRequest );
 
         Document resultDocument = DomTestUtils.parseDocument( samlAuthnRequestToken );
         AuthnRequest resultAuthnRequest = (AuthnRequest) LinkIDSaml2Utils.unmarshall( resultDocument.getDocumentElement() );
@@ -93,7 +98,7 @@ public class AuthnRequestFactoryTest {
         assertTrue( resultAuthnRequest.getNameIDPolicy().getAllowCreate() );
 
         // verify signature
-        LinkIDSaml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
+        Saml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
     }
 
     @Test
@@ -120,14 +125,14 @@ public class AuthnRequestFactoryTest {
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton( device );
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
-                destinationURL, devices, false, session, null );
+                destinationURL, devices, false, session, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, certificateChain ) );
         long end = System.currentTimeMillis();
 
         // Verify
         assertNotNull( samlAuthnRequest );
-        LOG.debug( "duration: " + (end - begin) + " ms" );
-        LOG.debug( "result message: " + samlAuthnRequest );
+        logger.dbg( "duration: %d ms", end - begin );
+        logger.dbg( "result message: %s", samlAuthnRequest );
 
         Document resultDocument = DomTestUtils.parseDocument( samlAuthnRequestToken );
         AuthnRequest resultAuthnRequest = (AuthnRequest) LinkIDSaml2Utils.unmarshall( resultDocument.getDocumentElement() );
@@ -143,6 +148,84 @@ public class AuthnRequestFactoryTest {
         assertEquals( certificate, resultCertificateChain.getIdentityCertificate() );
 
         Saml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
+    }
+
+    @Test
+    public void createAuthnRequestWithDeviceContextAndSubjectAttributes()
+            throws Exception {
+
+        // Setup Data
+        String applicationName = "test-application-id";
+        String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
+        String destinationURL = "https://test.idp.com/entry";
+        String device = "device";
+        String session = "test-session-info";
+
+        KeyPair rootKeyPair = PkiTestUtils.generateKeyPair();
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+
+        // Setup device context map
+        Map<String, String> deviceContextMap = Maps.newHashMap();
+        deviceContextMap.put( "devicecontext1", UUID.randomUUID().toString() );
+        deviceContextMap.put( "devicecontext2", UUID.randomUUID().toString() );
+
+        // Setup subject attributes map
+        Map<String, List<Serializable>> subjectAttributesMap = Maps.newHashMap();
+        String testAttributeString = "test.attribute.string";
+        String testAttributeBoolean = "test.attribute.boolean";
+        String testAttributeDate = "test.attribute.date";
+
+        subjectAttributesMap.put( testAttributeString, Arrays.<Serializable>asList( "value1", "value2", "value3" ) );
+        subjectAttributesMap.put( testAttributeBoolean, Arrays.<Serializable>asList( true ) );
+        subjectAttributesMap.put( testAttributeDate, Arrays.<Serializable>asList( new Date(), new Date() ) );
+
+        // Test
+        long begin = System.currentTimeMillis();
+        Set<String> devices = Collections.singleton( device );
+        AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL,
+                destinationURL, devices, false, session, deviceContextMap, subjectAttributesMap );
+        String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
+        long end = System.currentTimeMillis();
+
+        // Verify
+        assertNotNull( samlAuthnRequest );
+        logger.dbg( "duration: %d ms", end - begin );
+        logger.dbg( "result message: %s", samlAuthnRequest );
+
+        Document resultDocument = DomTestUtils.parseDocument( samlAuthnRequestToken );
+        AuthnRequest resultAuthnRequest = (AuthnRequest) LinkIDSaml2Utils.unmarshall( resultDocument.getDocumentElement() );
+
+        // verify signature
+        assertNotNull( resultAuthnRequest.getSignature() );
+        assertNotNull( resultAuthnRequest.getSignature().getKeyInfo() );
+
+        Saml2Utils.validateSignature( resultAuthnRequest.getSignature(), null, null );
+
+        // validate device context map
+        List<XMLObject> deviceContexts = resultAuthnRequest.getExtensions().getUnknownXMLObjects( DeviceContext.DEFAULT_ELEMENT_NAME );
+        assertNotNull( deviceContexts );
+        assertEquals( 1, deviceContexts.size() );
+        DeviceContext deviceContext = (DeviceContext) deviceContexts.get( 0 );
+        assertEquals( 2, deviceContext.getAttributes().size() );
+
+        // validate subject attributes map
+        List<XMLObject> saList = resultAuthnRequest.getExtensions().getUnknownXMLObjects( SubjectAttributes.DEFAULT_ELEMENT_NAME );
+        assertNotNull( saList );
+        assertEquals( 1, saList.size() );
+        SubjectAttributes subjectAttributes = (SubjectAttributes) saList.get( 0 );
+        assertEquals( 3, subjectAttributes.getAttributes().size() );
+        for (Attribute attribute : subjectAttributes.getAttributes()) {
+            if (attribute.getName().equals( testAttributeString )) {
+                assertEquals( 3, attribute.getAttributeValues().size() );
+            } else if (attribute.getName().equals( testAttributeBoolean )) {
+                assertEquals( 1, attribute.getAttributeValues().size() );
+            } else if (attribute.getName().equals( testAttributeDate )) {
+                assertEquals( 2, attribute.getAttributeValues().size() );
+            } else {
+                throw new InternalInconsistencyException(
+                        String.format( "Unexpected attribute in SubjectAttributesExtension: %s", attribute.getName() ) );
+            }
+        }
     }
 
     private static Element createNsElement(Document document) {

@@ -14,13 +14,14 @@ import java.util.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
+import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.ValidationFailedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.TrustDomainType;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
-import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
+import net.link.safeonline.ws.sts.SecurityTokenServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -50,7 +51,9 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
     public SecurityTokenServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
         super( SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort() );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/sts", location ) );
+        getBindingProvider().getRequestContext()
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.sts.path" ) ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );

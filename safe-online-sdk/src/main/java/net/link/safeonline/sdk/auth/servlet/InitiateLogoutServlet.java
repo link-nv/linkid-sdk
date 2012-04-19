@@ -34,7 +34,7 @@ public class InitiateLogoutServlet extends AbstractLinkIDInjectionServlet {
     }
 
     /**
-     * @see net.link.safeonline.wicket.component.linkid.LinkIDLogoutLink
+     * Checkout the wicket SDK LinkIDLogoutLink
      */
     public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
         String targetURI = request.getParameter( "return_uri" );

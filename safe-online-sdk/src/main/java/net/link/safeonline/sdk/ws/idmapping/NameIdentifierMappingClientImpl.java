@@ -7,29 +7,25 @@
 
 package net.link.safeonline.sdk.ws.idmapping;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.idmapping.LinkIDNameIDMappingRequestType;
 import net.lin_k.safe_online.idmapping.NameIdentifierMappingPort;
-import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingConstants;
-import net.link.safeonline.idmapping.ws.NameIdentifierMappingServiceFactory;
-import net.link.safeonline.sdk.api.exception.RequestDeniedException;
-import net.link.safeonline.sdk.api.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
+import net.link.safeonline.sdk.SDKUtils;
+import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.SamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.SamlpTopLevelErrorCode;
+import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingConstants;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
-import oasis.names.tc.saml._2_0.protocol.NameIDMappingResponseType;
-import oasis.names.tc.saml._2_0.protocol.NameIDPolicyType;
-import oasis.names.tc.saml._2_0.protocol.StatusCodeType;
-import oasis.names.tc.saml._2_0.protocol.StatusType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import oasis.names.tc.saml._2_0.protocol.*;
 
 
 /**
@@ -39,31 +35,29 @@ import org.apache.commons.logging.LogFactory;
  */
 public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdentifierMappingPort> implements NameIdentifierMappingClient {
 
-    private static final Log LOG = LogFactory.getLog( NameIdentifierMappingClientImpl.class );
-
-    private final String location;
-
+    private static final Logger logger = Logger.get( NameIdentifierMappingClientImpl.class );
 
     /**
      * Main constructor.
      *
-     * @param location the location (host:port) of the attribute web service.
-     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
-     * @param configuration The WS-Security configuration.
+     * @param location       the location (host:port) of the attribute web service.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration  The WS-Security configuration.
      */
     public NameIdentifierMappingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
         super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort() );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location + "/idmapping" );
+        getBindingProvider().getRequestContext()
+                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.idmapping.path" ) ) );
 
         registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
+    @Override
     public String getUserId(String attributeType, String identifier)
             throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
-
-        LOG.debug( "getUserId: attributeType=" + attributeType + " identifier=" + identifier );
 
         LinkIDNameIDMappingRequestType request = new LinkIDNameIDMappingRequestType();
         request.setAttributeType( attributeType );
@@ -78,7 +72,8 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
         NameIDMappingResponseType response;
         try {
             response = getPort().nameIdentifierMappingQuery( request );
-        } catch (ClientTransportException e) {
+        }
+        catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
 
@@ -89,8 +84,8 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
         if (SamlpTopLevelErrorCode.SUCCESS != topLevelErrorCode) {
             // throw new RuntimeException("error occured on identifier mapping
             // service");
-            LOG.error( "status code: " + statusCode.getValue() );
-            LOG.error( "status message: " + status.getStatusMessage() );
+            logger.err( "status code: %s", statusCode.getValue() );
+            logger.err( "status message: %s", status.getStatusMessage() );
             StatusCodeType secondStatusCode = statusCode.getStatusCode();
             if (null != secondStatusCode) {
                 String secondErrorCode = secondStatusCode.getValue();
@@ -99,10 +94,10 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
                     throw new SubjectNotFoundException();
                 if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
                     throw new RequestDeniedException();
-                throw new RuntimeException( "error occurred on identifier mapping service: " + secondErrorCode );
+                throw new InternalInconsistencyException(
+                        String.format( "Error occurred on identifier mapping service: %s", secondErrorCode ) );
             }
         }
-
 
         return response.getNameID().getValue();
     }

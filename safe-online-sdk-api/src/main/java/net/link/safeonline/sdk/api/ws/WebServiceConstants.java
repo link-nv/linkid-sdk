@@ -22,10 +22,12 @@ public abstract class WebServiceConstants {
     public static final String SAFE_ONLINE_SAML_PREFIX = "sosaml";
 
     public static final QName MULTIVALUED_ATTRIBUTE = new QName( SAFE_ONLINE_SAML_NAMESPACE, "multivalued", SAFE_ONLINE_SAML_PREFIX );
-    public static final QName ATTRIBUTE_ID = new QName( SAFE_ONLINE_SAML_NAMESPACE, "attributeId", SAFE_ONLINE_SAML_PREFIX );
+    public static final QName ATTRIBUTE_ID          = new QName( SAFE_ONLINE_SAML_NAMESPACE, "attributeId", SAFE_ONLINE_SAML_PREFIX );
+
+    public static final QName XML_DSIG_NS = new QName( "http://www.w3.org/2000/09/xmldsig#", "type", "ds" );
 
     public static final QName XML_SCHEMA_INSTANCE_TYPE = new QName( "http://www.w3.org/2001/XMLSchema-instance", "type", "xsi" );
-    public static final QName XML_SCHEMA_INSTANCE_NIL = new QName( "http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi" );
+    public static final QName XML_SCHEMA_INSTANCE_NIL  = new QName( "http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi" );
 
     public static final QName DATAMINING_ATTRIBUTE = new QName( SAFE_ONLINE_SAML_NAMESPACE, "datamining", SAFE_ONLINE_SAML_PREFIX );
 

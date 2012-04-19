@@ -7,29 +7,23 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.security.NoSuchAlgorithmException;
 import javax.xml.namespace.QName;
 import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfo;
-import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfoBuilder;
-import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfoMarshaller;
-import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfoUnmarshaller;
+import net.link.util.saml.SamlUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
-import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.common.Extensions;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.LogoutRequest;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.xml.Configuration;
-import org.opensaml.xml.ConfigurationException;
+import org.opensaml.saml2.core.*;
 
 
 /**
  * Factory class for SAML2 logout requests.
- *
+ * <p/>
  * <p>
  * We're using the OpenSAML2 Java library for construction of the XML SAML documents.
  * </p>
@@ -44,18 +38,7 @@ public class LogoutRequestFactory {
     }
 
     static {
-        /*
-         * Next is because Sun loves to endorse crippled versions of Xerces.
-         */
-        System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-                "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
-        try {
-            DefaultBootstrap.bootstrap();
-            Configuration.registerObjectProvider( SessionInfo.DEFAULT_ELEMENT_NAME, new SessionInfoBuilder(), new SessionInfoMarshaller(),
-                    new SessionInfoUnmarshaller() );
-        } catch (ConfigurationException e) {
-            throw new RuntimeException( "could not bootstrap the OpenSAML2 library" );
-        }
+        AuthnRequestFactory.bootstrapSaml2();
     }
 
     /**
@@ -63,34 +46,35 @@ public class LogoutRequestFactory {
      * Later on we could use the SAML Metadata service or a persistent server-side application field to locate this service.
      *
      * @param destinationURL the optional location of the destination IdP.
-     * @param session the optional SSO session
+     * @param session        the optional SSO session
      */
     public static LogoutRequest createLogoutRequest(String subjectName, String issuerName, String destinationURL,
-                                                     @Nullable String session) {
+                                                    @Nullable String session) {
 
         if (null == issuerName)
             throw new IllegalArgumentException( "application name should not be null" );
 
-        LogoutRequest request = LinkIDSaml2Utils.buildXMLObject( LogoutRequest.DEFAULT_ELEMENT_NAME );
+        LogoutRequest request = SamlUtils.buildXMLObject( LogoutRequest.DEFAULT_ELEMENT_NAME );
 
         SecureRandomIdentifierGenerator idGenerator;
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException( "secure random init error: " + e.getMessage(), e );
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new InternalInconsistencyException( String.format( "secure random init error: %s", e.getMessage() ), e );
         }
         String id = idGenerator.generateIdentifier();
         request.setID( id );
         request.setVersion( SAMLVersion.VERSION_20 );
         request.setIssueInstant( new DateTime() );
-        Issuer issuer = LinkIDSaml2Utils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
+        Issuer issuer = SamlUtils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
         issuer.setValue( issuerName );
         request.setIssuer( issuer );
 
         if (null != destinationURL)
             request.setDestination( destinationURL );
 
-        NameID nameID = LinkIDSaml2Utils.buildXMLObject( NameID.DEFAULT_ELEMENT_NAME );
+        NameID nameID = SamlUtils.buildXMLObject( NameID.DEFAULT_ELEMENT_NAME );
         nameID.setValue( subjectName );
         nameID.setFormat( "urn:oasis:names:tc:SAML:2.0:nameid-format:entity" );
         request.setNameID( nameID );
@@ -98,8 +82,8 @@ public class LogoutRequestFactory {
         // add session info
         if (null != session) {
             QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
-            Extensions extensions = LinkIDSaml2Utils.buildXMLObject( extensionsQName );
-            SessionInfo sessionInfo = LinkIDSaml2Utils.buildXMLObject( SessionInfo.DEFAULT_ELEMENT_NAME );
+            Extensions extensions = SamlUtils.buildXMLObject( extensionsQName );
+            SessionInfo sessionInfo = SamlUtils.buildXMLObject( SessionInfo.DEFAULT_ELEMENT_NAME );
             sessionInfo.setSession( session );
             request.setExtensions( extensions );
             request.getExtensions().getUnknownXMLObjects().add( sessionInfo );

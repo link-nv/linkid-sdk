@@ -7,17 +7,14 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.security.NoSuchAlgorithmException;
 import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
+import net.link.util.saml.SamlUtils;
 import org.joda.time.DateTime;
-import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.LogoutResponse;
-import org.opensaml.saml2.core.Status;
-import org.opensaml.saml2.core.StatusCode;
-import org.opensaml.xml.ConfigurationException;
+import org.opensaml.saml2.core.*;
 
 
 /**
@@ -28,16 +25,7 @@ import org.opensaml.xml.ConfigurationException;
 public class LogoutResponseFactory {
 
     static {
-        /*
-         * Next is because Sun loves to endorse crippled versions of Xerces.
-         */
-        System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-                "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
-        try {
-            DefaultBootstrap.bootstrap();
-        } catch (ConfigurationException e) {
-            throw new RuntimeException( "could not bootstrap the OpenSAML2 library" );
-        }
+        AuthnRequestFactory.bootstrapSaml2();
     }
 
     private LogoutResponseFactory() {
@@ -45,31 +33,33 @@ public class LogoutResponseFactory {
         // empty
     }
 
-    public static LogoutResponse createLogoutResponse(boolean partialLogout, LogoutProtocolRequestContext logoutRequest, String issuer, String destination) {
+    public static LogoutResponse createLogoutResponse(boolean partialLogout, LogoutProtocolRequestContext logoutRequest, String issuer,
+                                                      String destination) {
 
-        LogoutResponse response = LinkIDSaml2Utils.buildXMLObject( LogoutResponse.DEFAULT_ELEMENT_NAME );
+        LogoutResponse response = SamlUtils.buildXMLObject( LogoutResponse.DEFAULT_ELEMENT_NAME );
 
         DateTime now = new DateTime();
 
         SecureRandomIdentifierGenerator idGenerator;
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException( "secure random init error: " + e.getMessage(), e );
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new InternalInconsistencyException( String.format( "secure random init error: %s", e.getMessage() ), e );
         }
         response.setID( idGenerator.generateIdentifier() );
         response.setVersion( SAMLVersion.VERSION_20 );
         response.setInResponseTo( logoutRequest.getId() );
         response.setIssueInstant( now );
 
-        Issuer responseIssuer = LinkIDSaml2Utils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
+        Issuer responseIssuer = SamlUtils.buildXMLObject( Issuer.DEFAULT_ELEMENT_NAME );
         responseIssuer.setValue( issuer );
         response.setIssuer( responseIssuer );
 
         response.setDestination( destination );
 
-        Status status = LinkIDSaml2Utils.buildXMLObject( Status.DEFAULT_ELEMENT_NAME );
-        StatusCode statusCode = LinkIDSaml2Utils.buildXMLObject( StatusCode.DEFAULT_ELEMENT_NAME );
+        Status status = SamlUtils.buildXMLObject( Status.DEFAULT_ELEMENT_NAME );
+        StatusCode statusCode = SamlUtils.buildXMLObject( StatusCode.DEFAULT_ELEMENT_NAME );
         if (partialLogout)
             statusCode.setValue( StatusCode.PARTIAL_LOGOUT_URI );
         else

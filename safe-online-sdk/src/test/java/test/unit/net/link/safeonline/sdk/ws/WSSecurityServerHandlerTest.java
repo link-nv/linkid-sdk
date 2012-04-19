@@ -10,11 +10,12 @@ package test.unit.net.link.safeonline.sdk.ws;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
+import com.google.common.collect.Lists;
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.InputStream;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.util.Set;
-import java.util.Vector;
+import java.util.List;
+import javax.xml.crypto.dsig.Reference;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.soap.*;
@@ -29,9 +30,8 @@ import net.link.util.pkix.ServerCrypto;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
-import net.link.util.ws.security.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.WSSecurityHandler;
 import org.apache.ws.security.*;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.message.*;
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 
 public class WSSecurityServerHandlerTest {
 
-    private static final Log LOG = LogFactory.getLog( WSSecurityServerHandlerTest.class );
+    private static final Logger logger = Logger.get( WSSecurityServerHandlerTest.class );
 
     private WSSecurityHandler testedInstance;
 
@@ -100,7 +100,7 @@ public class WSSecurityServerHandlerTest {
         // Verify
         SOAPMessage resultMessage = soapMessageContext.getMessage();
         SOAPPart resultSoapPart = resultMessage.getSOAPPart();
-        LOG.debug( "result SOAP part: " + DomTestUtils.domToString( resultSoapPart ) );
+        logger.dbg( "result SOAP part: %s", DomTestUtils.domToString( resultSoapPart ) );
         verify( mockObjects );
         Element nsElement = resultSoapPart.createElement( "nsElement" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
@@ -151,7 +151,7 @@ public class WSSecurityServerHandlerTest {
         // verify signed message
         SOAPMessage signedMessage = soapMessageContext.getMessage();
         SOAPPart signedSoapPart = signedMessage.getSOAPPart();
-        LOG.debug( "signed SOAP part:" + DomTestUtils.domToString( signedSoapPart ) );
+        logger.dbg( "signed SOAP part: %s", DomTestUtils.domToString( signedSoapPart ) );
         soapMessageContext.put( MessageContext.MESSAGE_OUTBOUND_PROPERTY, false );
 
         testedInstance.handleMessage( soapMessageContext );
@@ -160,9 +160,9 @@ public class WSSecurityServerHandlerTest {
         verify( mockObjects );
         CertificateChain resultCertificateChain = WSSecurityHandler.findCertificateChain( soapMessageContext );
         assertTrue( !resultCertificateChain.isEmpty() );
-        Set<String> signedElements = (Set<String>) soapMessageContext.get( WSSecurityHandler.SIGNED_ELEMENTS_CONTEXT_KEY );
+        List<WSDataRef> signedElements = (List<WSDataRef>) soapMessageContext.get( WSSecurityHandler.SIGNED_ELEMENTS_CONTEXT_KEY );
         assertEquals( 2, signedElements.size() );
-        LOG.debug( "signed elements: " + signedElements );
+        logger.dbg( "signed elements: %s", signedElements );
     }
 
     @Test
@@ -242,44 +242,38 @@ public class WSSecurityServerHandlerTest {
         Document document = documentBuilder.parse( WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" ) );
 
         // use WSSecurityClientHandler to sign message
-        LOG.debug( "adding WS-Security SOAP header" );
         WSSecSignature wsSecSignature = new WSSecSignature();
         wsSecSignature.setKeyIdentifierType( WSConstants.BST_DIRECT_REFERENCE );
         Crypto crypto = new ClientCrypto( certificateChain, keyPair.getPrivate() );
         WSSecHeader wsSecHeader = new WSSecHeader();
         wsSecHeader.insertSecurityHeader( document );
-        try {
-            wsSecSignature.prepare( document, crypto, wsSecHeader );
+        wsSecSignature.prepare( document, crypto, wsSecHeader );
 
-            org.apache.ws.security.SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants( document.getDocumentElement() );
+        org.apache.ws.security.SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants( document.getDocumentElement() );
 
-            Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
-            WSEncryptionPart wsEncryptionPart = new WSEncryptionPart( soapConstants.getBodyQName().getLocalPart(),
-                    soapConstants.getEnvelopeURI(), "Content" );
-            wsEncryptionParts.add( wsEncryptionPart );
+        List<WSEncryptionPart> wsEncryptionParts = Lists.newLinkedList();
+        WSEncryptionPart wsEncryptionPart = new WSEncryptionPart( soapConstants.getBodyQName().getLocalPart(),
+                soapConstants.getEnvelopeURI(), "Content" );
+        wsEncryptionParts.add( wsEncryptionPart );
 
-            WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
-            wsSecTimeStamp.setTimeToLive( 0 );
-            /*
-             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
-             * decide how long the message validity period is.
-             */
-            wsSecTimeStamp.prepare( document );
-            wsSecTimeStamp.prependToHeader( wsSecHeader );
+        WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+        wsSecTimeStamp.setTimeToLive( 0 );
+        /*
+        * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
+        * decide how long the message validity period is.
+        */
+        wsSecTimeStamp.prepare( document );
+        wsSecTimeStamp.prependToHeader( wsSecHeader );
 
-            wsSecSignature.addReferencesToSign( wsEncryptionParts, wsSecHeader );
+        List<Reference> references = wsSecSignature.addReferencesToSign( wsEncryptionParts, wsSecHeader );
 
-            wsSecSignature.prependToHeader( wsSecHeader );
+        //            wsSecSignature.prependToHeader( wsSecHeader );
 
-            wsSecSignature.prependBSTElementToHeader( wsSecHeader );
+        wsSecSignature.prependBSTElementToHeader( wsSecHeader );
 
-            wsSecSignature.computeSignature();
-        }
-        catch (WSSecurityException e) {
-            throw new RuntimeException( "WSS4J error: " + e.getMessage(), e );
-        }
+        wsSecSignature.computeSignature( references );
 
-        LOG.debug( "document: " + DomTestUtils.domToString( document ) );
+        logger.dbg( "document: %s", DomTestUtils.domToString( document ) );
 
         // Setup Mocks
         expect( mockWSSecurityConfiguration.getMaximumAge() ).andStubReturn( new Duration( Long.MAX_VALUE ) );
@@ -304,7 +298,7 @@ public class WSSecurityServerHandlerTest {
             fail();
         }
         catch (RuntimeException e) {
-            LOG.debug( "expected exception: ", e );
+            logger.dbg( "expected exception: ", e );
             assertEquals( "Timestamp not signed", e.getMessage() );
             // Expected
             verify( mockObjects );
@@ -326,86 +320,59 @@ public class WSSecurityServerHandlerTest {
         Document document = documentBuilder.parse( WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" ) );
 
         // use WSSecurityClientHandler to sign message
-        LOG.debug( "adding WS-Security SOAP header" );
         WSSecSignature wsSecSignature = new WSSecSignature();
         wsSecSignature.setKeyIdentifierType( WSConstants.BST_DIRECT_REFERENCE );
         Crypto clientCrypto = new ClientCrypto( certificateChain, keyPair.getPrivate() );
         WSSecHeader wsSecHeader = new WSSecHeader();
         wsSecHeader.insertSecurityHeader( document );
-        try {
-            wsSecSignature.prepare( document, clientCrypto, wsSecHeader );
+        wsSecSignature.prepare( document, clientCrypto, wsSecHeader );
 
-            String testId = "test-id";
-            Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
-            WSEncryptionPart wsBodyEncryptionPart = new WSEncryptionPart( testId );
-            wsEncryptionParts.add( wsBodyEncryptionPart );
+        String testId = "test-id";
+        List<WSEncryptionPart> wsEncryptionParts = Lists.newLinkedList();
+        WSEncryptionPart wsBodyEncryptionPart = new WSEncryptionPart( testId );
+        wsEncryptionParts.add( wsBodyEncryptionPart );
 
-            WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
-            wsSecTimeStamp.setTimeToLive( 0 );
-            /*
-             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
-             * decide how long the message validity period is.
-             */
-            wsSecTimeStamp.prepare( document );
-            wsSecTimeStamp.prependToHeader( wsSecHeader );
-            wsEncryptionParts.add( new WSEncryptionPart( wsSecTimeStamp.getId() ) );
+        WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+        wsSecTimeStamp.setTimeToLive( 0 );
+        /*
+        * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
+        * decide how long the message validity period is.
+        */
+        wsSecTimeStamp.prepare( document );
+        wsSecTimeStamp.prependToHeader( wsSecHeader );
+        wsEncryptionParts.add( new WSEncryptionPart( wsSecTimeStamp.getId() ) );
 
-            wsSecSignature.addReferencesToSign( wsEncryptionParts, wsSecHeader );
+        List<Reference> references = wsSecSignature.addReferencesToSign( wsEncryptionParts, wsSecHeader );
 
-            wsSecSignature.prependToHeader( wsSecHeader );
+        //            wsSecSignature.prependToHeader( wsSecHeader );
 
-            wsSecSignature.prependBSTElementToHeader( wsSecHeader );
+        wsSecSignature.prependBSTElementToHeader( wsSecHeader );
 
-            wsSecSignature.computeSignature();
+        wsSecSignature.computeSignature( references );
 
-            LOG.debug( "document: " + DomTestUtils.domToString( document ) );
+        logger.dbg( "document: %s", DomTestUtils.domToString( document ) );
 
-            // Test
-            MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-            SOAPMessage message = messageFactory.createMessage();
-            DOMSource domSource = new DOMSource( document );
-            SOAPPart soapPart = message.getSOAPPart();
-            soapPart.setContent( domSource );
-            soapPart = message.getSOAPPart();
-            WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
-            Crypto serverCrypto = new ServerCrypto();
-            Vector<WSSecurityEngineResult> wsSecurityEngineResults;
-            wsSecurityEngineResults = securityEngine.processSecurityHeader( soapPart, null, null, serverCrypto );
+        // Test
+        MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
+        SOAPMessage message = messageFactory.createMessage();
+        DOMSource domSource = new DOMSource( document );
+        SOAPPart soapPart = message.getSOAPPart();
+        soapPart.setContent( domSource );
+        soapPart = message.getSOAPPart();
+        WSSecurityEngine securityEngine = new WSSecurityEngine();
+        Crypto serverCrypto = new ServerCrypto();
+        List<WSSecurityEngineResult> wsSecurityEngineResults;
+        wsSecurityEngineResults = securityEngine.processSecurityHeader( soapPart, null, null, serverCrypto );
 
-            assertNotNull( wsSecurityEngineResults );
-            for (WSSecurityEngineResult result : wsSecurityEngineResults) {
-                Set<String> signedElements = (Set<String>) result.get( WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS );
-                if (null != signedElements) {
-                    LOG.debug( "signed elements: " + signedElements );
-                    assertTrue( signedElements.contains( testId ) );
-                    assertTrue( signedElements.contains( wsSecTimeStamp.getId() ) );
-                }
+        assertNotNull( wsSecurityEngineResults );
+        for (WSSecurityEngineResult result : wsSecurityEngineResults) {
+            List<WSDataRef> signedElements = (List<WSDataRef>) result.get( WSSecurityEngineResult.TAG_DATA_REF_URIS );
+            if (null != signedElements) {
+                logger.dbg( "# signed elements: %d", signedElements.size() );
+                assertEquals( 2, signedElements.size() );
+                assertTrue( WSSecurityHandler.isElementSigned( signedElements, testId ) );
+                assertTrue( WSSecurityHandler.isElementSigned( signedElements, wsSecTimeStamp.getId() ) );
             }
-        }
-        catch (WSSecurityException e) {
-            throw new RuntimeException( "WSS4J error: " + e.getMessage(), e );
-        }
-    }
-
-    private static class TestWSSecurityConfiguration extends AbstractWSSecurityConfiguration {
-
-        public boolean          trusted;
-        public CertificateChain certificateChain;
-        public PrivateKey       privateKey;
-
-        public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
-
-            return trusted;
-        }
-
-        public CertificateChain getIdentityCertificateChain() {
-
-            return certificateChain;
-        }
-
-        public PrivateKey getPrivateKey() {
-
-            return privateKey;
         }
     }
 }

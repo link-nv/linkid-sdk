@@ -46,63 +46,7 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-container-saml</artifactId>
-            <type>pom</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-attrib-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-auth-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-data-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-idmapping-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sts-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-xkms2-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-notification-consumer-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-notification-producer-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-notification-subscription-manager-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-session-ws</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-saml-authn-context</artifactId>
+            <artifactId>safe-online-ws</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -208,6 +152,34 @@
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-example-wicket</artifactId>
             <type>war</type>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Attribute Provider SDKs -->
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk.attribute</groupId>
+            <artifactId>safe-online-attribute-provider-profile-sdk</artifactId>
+            <type>jar</type>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Device SDKs -->
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk.device</groupId>
+            <artifactId>safe-online-qr-sdk</artifactId>
+            <type>jar</type>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk.device</groupId>
+            <artifactId>safe-online-beid-sdk</artifactId>
+            <type>jar</type>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk.device</groupId>
+            <artifactId>safe-online-password-sdk</artifactId>
+            <type>jar</type>
             <version>${project.version}</version>
         </dependency>
 
