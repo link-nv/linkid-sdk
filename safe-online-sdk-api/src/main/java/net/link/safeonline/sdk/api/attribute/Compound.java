@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.attribute;
 import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -22,10 +23,17 @@ import java.util.List;
  */
 public class Compound extends MetaObject implements Serializable {
 
+    private final String                          description;
     private final List<? extends AttributeSDK<?>> members;
 
-    public Compound(List<? extends AttributeSDK<?>> members) {
+    public Compound(final List<? extends AttributeSDK<?>> members) {
 
+        this( null, members );
+    }
+
+    public Compound(@Nullable final String description, final List<? extends AttributeSDK<?>> members) {
+
+        this.description = null != description? description: "";
         this.members = members;
     }
 
@@ -42,6 +50,8 @@ public class Compound extends MetaObject implements Serializable {
      *
      * @return specific member with specified attribute name
      */
+    @Nullable
+    @SuppressWarnings("unchecked")
     public <T extends Serializable> AttributeSDK<T> findMember(String attributeName) {
 
         for (AttributeSDK<?> member : members) {
@@ -50,6 +60,11 @@ public class Compound extends MetaObject implements Serializable {
         }
 
         return null;
+    }
+
+    public String getDescription() {
+
+        return description;
     }
 }
 
