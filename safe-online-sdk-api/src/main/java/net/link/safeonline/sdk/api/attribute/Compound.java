@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Compound extends MetaObject implements Serializable {
 
-    private final String                          description;
+    private       String                          description;
     private final List<? extends AttributeSDK<?>> members;
 
     public Compound(final List<? extends AttributeSDK<?>> members) {
@@ -33,7 +33,7 @@ public class Compound extends MetaObject implements Serializable {
 
     public Compound(@Nullable final String description, final List<? extends AttributeSDK<?>> members) {
 
-        this.description = null != description? description: "";
+        this.description = description;
         this.members = members;
     }
 
@@ -62,9 +62,18 @@ public class Compound extends MetaObject implements Serializable {
         return null;
     }
 
+    @Nullable
     public String getDescription() {
 
-        return description;
+        if (null != description && !description.isEmpty())
+            return description;
+
+        return null;
+    }
+
+    public void setDescription(final String description) {
+
+        this.description = description;
     }
 }
 
