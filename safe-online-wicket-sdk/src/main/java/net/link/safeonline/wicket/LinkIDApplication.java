@@ -36,7 +36,7 @@ public abstract class LinkIDApplication extends WebApplication {
         switch (ApplicationMode.get()) {
             case DEBUG:
             case DEMO:
-                getDebugSettings().setOutputComponentPath( true );
+                getDebugSettings().setOutputComponentPath( false );
                 break;
             case DEPLOYMENT:
                 break;
