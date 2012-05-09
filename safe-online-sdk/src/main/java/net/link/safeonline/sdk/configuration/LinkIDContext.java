@@ -209,6 +209,7 @@ public abstract class LinkIDContext implements Serializable {
 
         saml = new SAMLContext();
         openID = new OpenIDContext( sslCertificate );
+        oauth2 = new OAuth2Context( sslCertificate );
 
         this.applicationName = ifNotNullElse( applicationName, config().linkID().app().name() );
         this.applicationFriendlyName = applicationFriendlyName;
@@ -506,6 +507,9 @@ public abstract class LinkIDContext implements Serializable {
             this.sslCertificate = sslCertificate;
         }
 
+        public OAuth2Context(final X509Certificate sslCertificate) {
 
+            this.sslCertificate = sslCertificate;
+        }
     }
 }

@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth.protocol;
 
 import java.lang.reflect.InvocationTargetException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.OAuth2ProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.openid.OpenIdProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler;
 
@@ -20,7 +21,8 @@ import net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler;
 public enum Protocol {
 
     SAML2( Saml2ProtocolHandler.class ),
-    OPENID( OpenIdProtocolHandler.class );
+    OPENID( OpenIdProtocolHandler.class ),
+    OAUTH2( OAuth2ProtocolHandler.class);
 
     private final Class<? extends ProtocolHandler> protocolHandler;
 
