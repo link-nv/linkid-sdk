@@ -59,6 +59,7 @@ public abstract class LinkIDContext implements Serializable {
     private Protocol                    protocol;
     private SAMLContext                 saml;
     private OpenIDContext               openID;
+    private OAuth2Context               oauth2;
     private LoginMode                   loginMode;
 
     private Map<String, String> deviceContext;
@@ -365,6 +366,16 @@ public abstract class LinkIDContext implements Serializable {
         this.openID = openID;
     }
 
+    public OAuth2Context getOauth2() {
+
+        return oauth2;
+    }
+
+    public void setOauth2(final OAuth2Context oauth2) {
+
+        this.oauth2 = oauth2;
+    }
+
     public void setLoginMode(final LoginMode loginMode) {
 
         this.loginMode = loginMode;
@@ -479,5 +490,22 @@ public abstract class LinkIDContext implements Serializable {
             }
             return manager;
         }
+    }
+
+    public static class OAuth2Context implements Serializable{
+
+        private X509Certificate sslCertificate;
+
+        public X509Certificate getSslCertificate() {
+
+            return sslCertificate;
+        }
+
+        public void setSslCertificate(final X509Certificate sslCertificate) {
+
+            this.sslCertificate = sslCertificate;
+        }
+
+
     }
 }
