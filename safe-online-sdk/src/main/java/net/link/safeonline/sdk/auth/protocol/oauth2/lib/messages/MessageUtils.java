@@ -1,9 +1,13 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages;
 
+import com.google.gson.*;
 import java.io.*;
-import java.net.URLEncoder;
+import java.net.*;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
@@ -11,6 +15,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 
 /**
@@ -25,6 +30,19 @@ public class MessageUtils {
 
     private static final Log LOG = LogFactory.getLog( MessageUtils.class );
 
+    private static final Gson gson;
+
+    static {
+        GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping()
+                                                   .generateNonExecutableJson()
+                                                   .setFieldNamingPolicy( FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES );
+
+        if (LOG.isDebugEnabled())
+            gsonBuilder.setPrettyPrinting();
+
+        gson = gsonBuilder.create();
+    }
+
     private static String authenticationRequiredHeader = "Basic realm=\"oauth\"";
 
     public static String getAuthenticationRequiredHeader() {
@@ -36,6 +54,12 @@ public class MessageUtils {
 
         MessageUtils.authenticationRequiredHeader = authenticationRequiredHeader;
     }
+
+    /*
+    --------------------------------------------------------------------------------------------
+    | Methods for server side message handling
+    --------------------------------------------------------------------------------------------
+     */
 
     /**
      * Gets an authorization request from servlet request.
@@ -68,6 +92,8 @@ public class MessageUtils {
         }
         return authRequest;
     }
+
+
 
     /**
      * Gets a token request from the http request. If present, extracts either http basic auth client credentials  or form-based auth
@@ -201,25 +227,6 @@ public class MessageUtils {
         return validationRequest;
     }
 
-    /**
-     * Throws an exception if the connection is not secure, or the http method does not equal get or post
-     * @param request
-     * @throws OauthInvalidMessageException
-     */
-    protected static final void validateHttpRequest(HttpServletRequest request)
-            throws OauthInvalidMessageException {
-
-        LOG.debug( "checking http for TLS and correct methods" );
-        if (!request.isSecure() || (!stringEmpty( request.getHeader( "X-Forwarded-Proto" ) ) && request.getHeader( "X-Forwarded-Proto" )
-                                                                                                       .contains( HttpScheme.HTTPS )))
-            throw new OauthInvalidMessageException( "TLS is mandatory" );
-
-        if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod().equalsIgnoreCase(
-                HttpMethod.POST.toString() )){
-            throw new OauthInvalidMessageException("invalid http method type: " + request.getMethod());
-        }
-    }
-
     public static void sendResponseMessage(final HttpServletResponse servletResponse, ResponseMessage responseMessage)
             throws IOException {
 
@@ -234,7 +241,7 @@ public class MessageUtils {
             LOG.error( "Authorization codes must be returned by redirect" );
             return;
         } else if (responseMessage instanceof AccessTokenResponse){
-            servletResponse.getWriter().print( toJson( (AccessTokenResponse) responseMessage ) );
+            gson.toJson( (AccessTokenResponse) responseMessage , servletResponse.getWriter() );
         } else if (responseMessage instanceof ErrorResponse){
             if (responseMessage instanceof CredentialsRequiredResponse){
                 servletResponse.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
@@ -243,21 +250,10 @@ public class MessageUtils {
                 servletResponse.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
             } else
                 servletResponse.setStatus( HttpServletResponse.SC_BAD_REQUEST );
-            servletResponse.getWriter().print( toJson( (ErrorResponse)responseMessage ) );
+            gson.toJson( (ErrorResponse) responseMessage , servletResponse.getWriter() );
         } else if (responseMessage instanceof ValidationResponse ){
-            servletResponse.getWriter().print( toJson( (ValidationResponse) responseMessage ) );
+            gson.toJson( (ValidationResponse) responseMessage , servletResponse.getWriter() );
         }
-    }
-
-    /**
-     * Sends a request message to an oauth2 endpoint
-     *
-     * @param endpoint
-     * @param requestMessage
-     * @param sslCertificate ssl certificate to trust. May be null, in which case all certificates are trusted.
-     */
-    public static void sendRequestMessage(String endpoint, RequestMessage requestMessage, final X509Certificate sslCertificate){
-        //TODO
     }
 
     public static void sendRedirectMessage(final String redirectUri, ResponseMessage responseMessage,
@@ -266,12 +262,6 @@ public class MessageUtils {
 
         if(null == responseMessage){
             return;
-        }
-
-        if (paramsInBody){
-            servletResponse.setHeader( "Cache-Control", "no-store" );
-            servletResponse.setHeader( "Pragma", "no-cache" );
-            servletResponse.setContentType( "text/html;charset=UTF-8" );
         }
 
         List<String> names = new ArrayList<String>(  );
@@ -319,110 +309,184 @@ public class MessageUtils {
         if (!paramsInBody){
             servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
         } else {
+            servletResponse.setHeader( "Cache-Control", "no-store" );
+            servletResponse.setHeader( "Pragma", "no-cache" );
+            servletResponse.setContentType( "text/html;charset=UTF-8" );
             servletResponse.getWriter().print( encodeInHTMLForm( redirectUri, names, values ) );
         }
     }
 
-    public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
-                                           final HttpServletResponse servletResponse, boolean paramsInBody){
+    /*
+   --------------------------------------------------------------------------------------------
+   | Methods for client side message handling
+   --------------------------------------------------------------------------------------------
+    */
 
-    }
+    /**
+     * Gets an authorization code response (or error message) from the servlet request.
+     * @param request
+     * @return
+     */
+    public static ResponseMessage getAuthorizationCodeResponse(final HttpServletRequest request)
+            throws OauthInvalidMessageException {
+        // validate the servlet request, throw an error if code has been sent out in the open (non-SSL)
+        validateHttpRequest( request );
 
-    private static String toJson(AccessTokenResponse response){
-        StringBuffer sb = new StringBuffer(  );
-        sb.append( "{\n" );
-        jsonAppend( sb, OAuth2Message.ACCESS_TOKEN, response.getAccessToken() );
-        jsonAppend( sb, OAuth2Message.TOKEN_TYPE, response.getTokenType() );
-        jsonAppend( sb, OAuth2Message.EXPIRES_IN, response.getExpiresIn() );
-        jsonAppend( sb, OAuth2Message.REFRESH_TOKEN, response.getRefreshToken() );
-        jsonAppend( sb, OAuth2Message.SCOPE, stringify( response.getScope() ) );
-        sb.append( "}" );
-        return sb.toString();
-    }
+        ResponseMessage responseMessage = null;
 
-    private static String toJson(ErrorResponse response){
-        StringBuffer sb = new StringBuffer(  );
-        sb.append( "{\n" );
-        jsonAppend( sb, OAuth2Message.ERROR, response.getErrorType().toString() );
-        jsonAppend( sb, OAuth2Message.ERROR_DESCRIPTION, response.getErrorDescription() );
-        jsonAppend( sb, OAuth2Message.ERROR_URI, response.getErrorUri() );
-        sb.append( "}" );
-        return sb.toString();
-    }
-
-    private static String toJson(ValidationResponse response){
-        StringBuffer sb = new StringBuffer(  );
-        sb.append( "{\n" );
-        jsonAppend( sb, OAuth2Message.AUDIENCE, response.getAudience() );
-        jsonAppend( sb, OAuth2Message.USER_ID, response.getUserId() );
-        jsonAppend( sb, OAuth2Message.EXPIRES_IN, response.getExpiresIn() );
-        jsonAppend( sb, OAuth2Message.SCOPE, stringify( response.getScope() ) );
-        sb.append( "}" );
-        return sb.toString();
-    }
-
-    private static void jsonAppend(StringBuffer sb, String name, String value){
-        if (!stringEmpty( value )){
-            sb.append( "\"" + name + "\":\""+ escape( value ) + "\"\n" );
+        if ( !stringEmpty( request.getParameter( OAuth2Message.CODE ) ) ){
+            responseMessage = new AuthorizationCodeResponse( request.getParameter( OAuth2Message.CODE ) );
+            ((AuthorizationCodeResponse)responseMessage).setState( request.getParameter( OAuth2Message.STATE ) );
+        } else if ( !stringEmpty( request.getParameter( OAuth2Message.ERROR ) ) ){
+            responseMessage = new ErrorResponse( OAuth2Message.ErrorType.valueOf( request.getParameter( OAuth2Message.ERROR ) ),
+                    request.getParameter( OAuth2Message.ERROR_DESCRIPTION ), request.getParameter( OAuth2Message.ERROR_URI ),
+                    request.getParameter( OAuth2Message.STATE ));
+        } else {
+            throw new OauthInvalidMessageException( "The response message was not recognized" );
         }
-    }
 
-    private static void jsonAppend(StringBuffer sb, String name, Long value){
-        if (null != value){
-            sb.append( "\"" + name + "\":" + value + "\n" );
-        }
+        return responseMessage;
     }
 
     /**
-     * JSON escaping, see JSONObject from json-simple http://code.google.com/p/json-simple/
-     * @param s
+     * Sends a request message to an oauth2 endpoint
+     *
+     * @param endpoint
+     * @param requestMessage
+     * @param trustedSslCertificate ssl certificate to trust. May be null, in which case all certificates are trusted. Only for testing!
      */
-    private static String escape(String s) {
-        StringBuffer sb = new StringBuffer(  );
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt( i );
-            switch (ch) {
-                case '"':
-                    sb.append( "\\\"" );
-                    break;
-                case '\\':
-                    sb.append( "\\\\" );
-                    break;
-                case '\b':
-                    sb.append( "\\b" );
-                    break;
-                case '\f':
-                    sb.append( "\\f" );
-                    break;
-                case '\n':
-                    sb.append( "\\n" );
-                    break;
-                case '\r':
-                    sb.append( "\\r" );
-                    break;
-                case '\t':
-                    sb.append( "\\t" );
-                    break;
-                case '/':
-                    sb.append( "\\/" );
-                    break;
-                default:
-                    //Reference: http://www.unicode.org/versions/Unicode5.1.0/
-                    if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
-                        String ss = Integer.toHexString( ch );
-                        sb.append( "\\u" );
-                        for (int k = 0; k < 4 - ss.length(); k++) {
-                            sb.append( '0' );
-                        }
-                        sb.append( ss.toUpperCase() );
-                    } else {
-                        sb.append( ch );
-                    }
+    public static ResponseMessage sendRequestMessage(String endpoint, RequestMessage requestMessage, final X509Certificate trustedSslCertificate,
+                                          String clientId, String clientSecret)
+            throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+        // using HTTP(s)URlConnection here to avoid additional dependencies, but httpclient 4 might be faster
+
+        // set up connection and ssl socket factory based on provided certificate
+        URL endpointURL = new URL(endpoint);
+        HttpsURLConnection connection = (HttpsURLConnection)endpointURL.openConnection();
+        SSLContext sslContext = SSLContext.getInstance( "SSL" );
+        TrustManager trustManager = new OAuthCustomTrustManager( trustedSslCertificate );
+        TrustManager[] trustManagers = { trustManager };
+        sslContext.init( null, trustManagers, null );
+        connection.setSSLSocketFactory( sslContext.getSocketFactory() );
+        connection.setDoOutput( true );
+        connection.setDoInput( true );
+        connection.setAllowUserInteraction( false );
+        connection.setUseCaches( false );
+        connection.setInstanceFollowRedirects( false );
+        connection.setRequestMethod( HttpMethod.POST.toString() );
+        PrintWriter contentWriter = new PrintWriter( connection.getOutputStream() );
+
+        // send message based on type
+        if (requestMessage instanceof AccessTokenRequest){
+            if (!stringEmpty( clientSecret )){
+                connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
             }
+            connection.setRequestProperty( "Content-Type", "application/json; charset=UTF-8" );
+            gson.toJson( (AccessTokenRequest) requestMessage, contentWriter );
+        } else if (requestMessage instanceof ValidationRequest){
+            if (!stringEmpty( clientSecret )){
+                connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
+            }
+            connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
+            String content = "access_token=" + URLEncoder.encode( ((ValidationRequest) requestMessage).getAccessToken(), "UTF-8" );
+            contentWriter.write( content );
+        } else {
+            LOG.error( "Unsupported message type: " + requestMessage.getClass().getName() );
+            contentWriter.close();
+            return null;
         }
-        return sb.toString();
+        contentWriter.close();
+
+        ResponseMessage responseMessage = null;
+        InputStreamReader reader = new InputStreamReader( connection.getInputStream() );
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK){
+            responseMessage = gson.fromJson( reader, ErrorResponse.class );
+        } else if (requestMessage instanceof AccessTokenRequest){
+            responseMessage = gson.fromJson( reader, AccessTokenResponse.class );
+        } else if (requestMessage instanceof ValidationRequest){
+            responseMessage = gson.fromJson( reader, ValidationResponse.class );
+        }
+        reader.close();
+
+        return responseMessage;
     }
 
+    public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
+                                           final HttpServletResponse servletResponse, boolean paramsInBody)
+            throws IOException {
+        if(null == requestMessage){
+            return;
+        }
+
+        List<String> names = new ArrayList<String>(  );
+        List<Object> values = new ArrayList<Object>(  );
+        if (requestMessage instanceof AuthorizationRequest){
+
+            AuthorizationRequest authorizationRequest = (AuthorizationRequest) requestMessage;
+            names.add( OAuth2Message.RESPONSE_TYPE );
+            names.add( OAuth2Message.CLIENT_ID );
+            names.add( OAuth2Message.REDIRECT_URI );
+            names.add( OAuth2Message.SCOPE );
+            names.add( OAuth2Message.STATE );
+            values.add( authorizationRequest.getResponseType());
+            values.add( authorizationRequest.getClientId());
+            values.add( authorizationRequest.getRedirectUri());
+            values.add( stringify( authorizationRequest.getScope() ) );
+            values.add( authorizationRequest.getState());
+        } else {
+            LOG.error( "This message type is not supported in a redirect" );
+            return;
+        }
+
+        if (!paramsInBody){
+            servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
+        } else {
+            servletResponse.setHeader( "Cache-Control", "no-store" );
+            servletResponse.setHeader( "Pragma", "no-cache" );
+            servletResponse.setContentType( "text/html;charset=UTF-8" );
+            servletResponse.getWriter().print( encodeInHTMLForm( redirectUri, names, values ) );
+        }
+    }
+
+    /*
+   --------------------------------------------------------------------------------------------
+   | Helper methods
+   --------------------------------------------------------------------------------------------
+    */
+
+    /**
+     * Throws an exception if the connection is not secure, or the http method does not equal get or post
+     * @param request
+     * @throws OauthInvalidMessageException
+     */
+    protected static final void validateHttpRequest(HttpServletRequest request)
+            throws OauthInvalidMessageException {
+
+        LOG.debug( "checking http for TLS and correct methods" );
+        if (!request.isSecure() || (!stringEmpty( request.getHeader( "X-Forwarded-Proto" ) ) && request.getHeader( "X-Forwarded-Proto" )
+                                                                                                       .contains( HttpScheme.HTTPS )))
+            throw new OauthInvalidMessageException( "TLS is mandatory" );
+
+        if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod().equalsIgnoreCase(
+                HttpMethod.POST.toString() )){
+            throw new OauthInvalidMessageException("invalid http method type: " + request.getMethod());
+        }
+    }
+
+    protected static String encodeBasicHttpAuth(String clientId, String clientSecret){
+        if (!stringEmpty( clientSecret ) && !stringEmpty( clientId )){
+            String credentials = null;
+            try {
+                credentials = new BASE64Encoder().encode( new String(clientId + ":" +clientSecret).getBytes( "UTF-8" ));
+            }
+            catch (UnsupportedEncodingException e) {
+                LOG.error( e );
+            }
+            return credentials;
+        }
+        return "";
+    }
 
     protected static String encodeInQuery(String redirectUri, List<String> names, List<Object> values){
         if (names.size() != names.size()){
@@ -515,7 +579,6 @@ public class MessageUtils {
         return collection == null || collection.size() == 0;
     }
 
-
     public static enum HttpMethod {
         POST, GET, DELETE, PUT, HEAD
     }
@@ -523,5 +586,89 @@ public class MessageUtils {
 
     public static final class HttpScheme {
         public static final String HTTPS = "https";
+    }
+
+    public static class OAuthCustomTrustManager implements X509TrustManager {
+
+        private static final Log LOG = LogFactory.getLog( OAuthCustomTrustManager.class );
+
+        private final X509Certificate serverCertificate;
+
+        private X509TrustManager defaultTrustManager;
+
+        /**
+         * Allows all server certificates.
+         */
+        public OAuthCustomTrustManager() {
+            serverCertificate = null;
+            defaultTrustManager = null;
+        }
+
+        /**
+         * Trust only the given server certificate, and the default trusted server certificates.
+         *
+         * @param serverCertificate SSL certificate to trust
+         *
+         * @throws NoSuchAlgorithmException could not get an SSLContext instance
+         * @throws KeyStoreException        failed to intialize the {@link OAuthCustomTrustManager}
+         */
+        public OAuthCustomTrustManager(X509Certificate serverCertificate)
+                throws NoSuchAlgorithmException, KeyStoreException {
+            this.serverCertificate = serverCertificate;
+            String algorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance( algorithm );
+            trustManagerFactory.init( (KeyStore) null );
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+            for (TrustManager trustManager : trustManagers) {
+                if (trustManager instanceof X509TrustManager) {
+                    defaultTrustManager = (X509TrustManager) trustManager;
+                    break;
+                }
+            }
+            if (null == defaultTrustManager) {
+                throw new IllegalStateException( "no default X509 trust manager found" );
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+
+            LOG.error( "checkClientTrusted" );
+            if (null != defaultTrustManager) {
+                defaultTrustManager.checkClientTrusted( chain, authType );
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+
+            LOG.debug( "check server trusted" );
+            LOG.debug( "auth type: " + authType );
+            if (null == serverCertificate) {
+                LOG.debug( "trusting all server certificates" );
+                return;
+            }
+            if (!serverCertificate.equals( chain[0] )) {
+                throw new CertificateException( "untrusted server certificate" );
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public X509Certificate[] getAcceptedIssuers() {
+
+            LOG.error( "getAcceptedIssuers" );
+            if (null == defaultTrustManager) {
+                return null;
+            }
+            return defaultTrustManager.getAcceptedIssuers();
+        }
     }
 }

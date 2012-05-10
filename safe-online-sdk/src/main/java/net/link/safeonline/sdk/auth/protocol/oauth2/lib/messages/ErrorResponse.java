@@ -69,4 +69,15 @@ public class ErrorResponse implements ResponseMessage{
 
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+
+        return "ErrorResponse{" +
+               "errorType=" + errorType +
+               ", errorDescription='" + errorDescription + '\'' +
+               ", errorUri='" + errorUri + '\'' +
+               ", state='" + state + '\'' +
+               '}';
+    }
 }

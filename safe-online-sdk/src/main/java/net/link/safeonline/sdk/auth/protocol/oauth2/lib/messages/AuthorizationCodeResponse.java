@@ -10,8 +10,8 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages;
  */
 public class AuthorizationCodeResponse implements ResponseMessage {
     
-    protected String code;
-    protected String state;
+    protected String code; //required
+    protected String state; //required if included in request
 
     public String getCode() {
 
@@ -31,5 +31,14 @@ public class AuthorizationCodeResponse implements ResponseMessage {
     public void setState(final String state) {
 
         this.state = state;
+    }
+
+    public AuthorizationCodeResponse(final String code) {
+
+        this.code = code;
+    }
+
+    public AuthorizationCodeResponse() {
+
     }
 }

@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages;
 
 import java.util.List;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 
 
 /**
@@ -19,6 +20,16 @@ public class AuthorizationRequest implements RequestMessage {
     protected String redirectUri;
     protected List<String> scope;
     protected String state;
+
+    public AuthorizationRequest(final ResponseType responseType, final String clientId) {
+
+        this.responseType = responseType;
+        this.clientId = clientId;
+    }
+
+    public AuthorizationRequest() {
+
+    }
 
     public ResponseType getResponseType() {
 

@@ -496,6 +496,7 @@ public abstract class LinkIDContext implements Serializable {
     public static class OAuth2Context implements Serializable{
 
         private X509Certificate sslCertificate;
+        private String state;
 
         public X509Certificate getSslCertificate() {
 
@@ -510,6 +511,16 @@ public abstract class LinkIDContext implements Serializable {
         public OAuth2Context(final X509Certificate sslCertificate) {
 
             this.sslCertificate = sslCertificate;
+        }
+
+        public String getState() {
+
+            return state;
+        }
+
+        public void setState(final String state) {
+
+            this.state = state;
         }
     }
 }
