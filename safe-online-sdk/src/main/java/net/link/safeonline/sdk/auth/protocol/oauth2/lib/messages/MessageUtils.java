@@ -369,34 +369,49 @@ public class MessageUtils {
         TrustManager[] trustManagers = { trustManager };
         sslContext.init( null, trustManagers, null );
         connection.setSSLSocketFactory( sslContext.getSocketFactory() );
+        if ( null == trustedSslCertificate){
+            connection.setHostnameVerifier( new HostnameVerifier() {
+                @Override
+                public boolean verify(final String s, final SSLSession sslSession) {
+
+                    LOG.warn( "Warning: URL Host: " + s + " vs. " + sslSession.getPeerHost() );
+                    return true;
+                }
+            } );
+        }
         connection.setDoOutput( true );
         connection.setDoInput( true );
         connection.setAllowUserInteraction( false );
         connection.setUseCaches( false );
         connection.setInstanceFollowRedirects( false );
         connection.setRequestMethod( HttpMethod.POST.toString() );
-        PrintWriter contentWriter = new PrintWriter( connection.getOutputStream() );
+        PrintWriter contentWriter = null;
 
         // send message based on type
         if (requestMessage instanceof AccessTokenRequest){
             if (!stringEmpty( clientSecret )){
                 connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
             }
-            connection.setRequestProperty( "Content-Type", "application/json; charset=UTF-8" );
-            gson.toJson( (AccessTokenRequest) requestMessage, contentWriter );
+            connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
+            contentWriter = new PrintWriter( connection.getOutputStream() );
+            contentWriter.write( "grant_type=" + ((AccessTokenRequest) requestMessage).getGrantType().toString() );
+            contentWriter.write( "&code=" + URLEncoder.encode(((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) );
+            if (((AccessTokenRequest) requestMessage).getRedirectUri() != null)
+                contentWriter.write( "&redirect_uri=" + URLEncoder.encode(((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) );
         } else if (requestMessage instanceof ValidationRequest){
             if (!stringEmpty( clientSecret )){
                 connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
             }
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
             String content = "access_token=" + URLEncoder.encode( ((ValidationRequest) requestMessage).getAccessToken(), "UTF-8" );
+            contentWriter = new PrintWriter( connection.getOutputStream() );
             contentWriter.write( content );
         } else {
             LOG.error( "Unsupported message type: " + requestMessage.getClass().getName() );
-            contentWriter.close();
             return null;
         }
-        contentWriter.close();
+        if (null != contentWriter)
+            contentWriter.close();
 
         ResponseMessage responseMessage = null;
         InputStreamReader reader = new InputStreamReader( connection.getInputStream() );

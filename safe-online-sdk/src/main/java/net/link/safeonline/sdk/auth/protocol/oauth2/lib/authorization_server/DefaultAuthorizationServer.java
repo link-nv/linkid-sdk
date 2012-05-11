@@ -39,6 +39,7 @@ public class DefaultAuthorizationServer {
         this.clientAccessRequestService = clientAccessRequestService;
 
         requestValidators = new LinkedList<Validator>(  );
+        requestValidators.add( new ClientValidator() );
         requestValidators.add( new RequiredFieldsValidator() );
         requestValidators.add( new RedirectionURIValidator() );
         requestValidators.add( new ScopeValidator() );

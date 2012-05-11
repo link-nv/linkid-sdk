@@ -83,13 +83,16 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
             LoginMode mode = LoginMode.fromString( modeParam );
 
-            if (mode == LoginMode.POPUP) {
+            if (mode == LoginMode.POPUP || mode == LoginMode.FRAMED) {
                 response.setContentType( "text/html" );
                 PrintWriter out = response.getWriter();
                 out.println( "<html>" );
                 out.println( "<head>" );
                 out.println( "<script type=\"text/javascript\">" );
-                out.println( "window.opener.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
+                if (mode == LoginMode.POPUP)
+                    out.println( "window.opener.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
+                else
+                    out.println( "window.top.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
                 out.println( "window.close();" );
                 out.println( "</script>" );
                 out.println( "</head>" );
@@ -98,7 +101,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                         "<noscript><p>You are successfully logged in. Since your browser does not support JavaScript, you must close this popup window and refresh the original window manually.</p></noscript>" );
                 out.println( "</body>" );
                 out.println( "</html>" );
-            } else {
+            }else {
                 response.sendRedirect( authnResponse.getRequest().getTarget() );
             }
         }

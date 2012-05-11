@@ -2,6 +2,9 @@ package net.link.safeonline.sdk.auth.protocol;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import net.link.safeonline.sdk.api.auth.LoginMode;
+
+
 /**
  * <h2>{@link ProtocolRequestContext}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -17,6 +20,7 @@ public class ProtocolRequestContext extends ProtocolContext {
     private final String target;
     private final String issuer;
     private final ProtocolHandler protocolHandler;
+    private LoginMode loginMode;
 
     /**
      * @param id A unique ID that will match the response to this request.
@@ -60,5 +64,15 @@ public class ProtocolRequestContext extends ProtocolContext {
     public String toString() {
 
         return String.format( "{%s: %s, issuer: %s, handler: %s, target: %s}", getClass().getSimpleName(), getId(), issuer, protocolHandler, target );
+    }
+
+    public LoginMode getLoginMode() {
+
+        return loginMode;
+    }
+
+    public void setLoginMode(final LoginMode loginMode) {
+
+        this.loginMode = loginMode;
     }
 }

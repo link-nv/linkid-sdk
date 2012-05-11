@@ -20,7 +20,7 @@ public interface ProtocolConfig {
 
     SAMLProtocolConfig saml();
 
-    OAuth2ProtocolConfig oauth();
+    OAuth2ProtocolConfig oauth2();
 
     /**
      * The authentication protocol used to begin the session with the linkID authentication web application. See {@link Protocol} for the

@@ -29,6 +29,11 @@ public class AccessToken extends Token {
         super( tokenData, expirationDate );
     }
 
+    public AccessToken(final String tokenData) {
+
+        this( tokenData, null );
+    }
+
     public String getAccessTokenType () {
         return TYPE;
     }

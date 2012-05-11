@@ -29,13 +29,13 @@ public abstract class AbstractValidator implements Validator {
     @Override
     public void validate(final AccessTokenRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
             throws OauthValidationException {
-        // default empty implementation
+
     }
 
     @Override
     public void validate(final ValidationRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
             throws OauthValidationException {
-        // default empty implementation
+
     }
 
     protected void requiredClientApplication(final ClientApplication application, OAuth2Message.ErrorType typeToThrow) throws OauthValidationException{
@@ -50,7 +50,7 @@ public abstract class AbstractValidator implements Validator {
         }
     }
 
-    protected final void requiredField(Object field, String name) throws OauthValidationException{
+    protected void requiredField(Object field, String name) throws OauthValidationException{
         if (field == null
             || (field instanceof String && "".equals( field.toString() ))
             || (field instanceof Collection && ((Collection) field).size() == 0 ) )

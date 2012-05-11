@@ -11,7 +11,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.*;
 import java.security.*;
-import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +47,6 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
     }
 
     private AuthenticationContext authnContext;
-    private String state;
 
     @Override
     public AuthnProtocolRequestContext sendAuthnRequest(final HttpServletResponse response, final AuthenticationContext context)
@@ -58,30 +56,18 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         authnContext = context;
 
-        String targetURL = context.getTarget();
-        if (targetURL == null || !URI.create( targetURL ).isAbsolute())
-            targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
-        logger.dbg( "target url: %s", targetURL );
+        String targetURL = getTargetUrl();
+        String landingURL = getLandingUrl();
 
-        String landingURL = null;
-        if (config().web().landingPath() != null)
-            landingURL = ConfigUtils.getApplicationConfidentialURLFromPath( config().web().landingPath() );
-        logger.dbg( "landing url: %s", landingURL );
-
-        if (landingURL == null) {
-            // If no landing URL is configured, land on target.
-            landingURL = targetURL;
-        }
-
-        String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth().authorizationPath() );
+        String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().authorizationPath() );
 
         // create oauht2 authorization request ( authorization grant code flow)
         AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, context.getApplicationName());
-        authorizationRequest.setRedirectUri( targetURL );
+        authorizationRequest.setRedirectUri( landingURL );
         String state = UUID.randomUUID().toString();
         authorizationRequest.setState( state );
         // TODO set scope
-        boolean paramsInBody = config().proto().oauth().binding().contains( "POST" );
+        boolean paramsInBody = config().proto().oauth2().binding().contains( "POST" );
         MessageUtils.sendRedirectMessage( authnService,authorizationRequest,response, paramsInBody );
 
         return new AuthnProtocolRequestContext( authorizationRequest.getState(), authorizationRequest.getClientId() , this, targetURL );
@@ -126,12 +112,12 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         String userId = "";
         String applicationName = authnRequest.getIssuer();
-        Map<String, List<AttributeSDK<?>>> attributes = Collections.emptyMap();
+        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>(  );
         if (!(responseMessage instanceof ErrorResponse)) {
             try{
                 //ok, got a response, and it's valid, now for the rest of the OAuth flow
                 //fetch access + refresh token using the code (include credentials)
-                AccessTokenResponse tokenResponse = getAccessToken( ((AuthorizationCodeResponse) responseMessage).getCode(), authnRequest )
+                AccessTokenResponse tokenResponse = getAccessToken( ((AuthorizationCodeResponse) responseMessage).getCode(), authnRequest );
                 String accessToken = tokenResponse.getAccessToken();
 
                 //validate access token (we need to get the linkid userid (and verify application name), this is provided here)
@@ -166,12 +152,12 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         AccessTokenRequest tokenRequest = new AccessTokenRequest();
         tokenRequest.setCode( code );
         tokenRequest.setGrantType( OAuth2Message.GrantType.AUTHORIZATION_CODE );
-        tokenRequest.setRedirectUri( authnRequest.getTarget() );
+        tokenRequest.setRedirectUri( getLandingUrl() );
 
-        String endpoint = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth().authorizationPath() );
+        String endpoint = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().tokenPath() );
 
         ResponseMessage tokenResponse = MessageUtils.sendRequestMessage( endpoint, tokenRequest,
-                authnContext.getOauth2().getSslCertificate(), authnRequest.getTarget(), config().proto().oauth().clientSecret() );
+                authnContext.getOauth2().getSslCertificate(), authnRequest.getIssuer(), config().proto().oauth2().clientSecret() );
 
         if (tokenResponse instanceof ErrorResponse) {
             logger.err( "Received error response for OAuth authorization request: " + tokenResponse.toString() );
@@ -182,21 +168,43 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         return (AccessTokenResponse) tokenResponse;
     }
 
+    protected String getTargetUrl(){
+        String targetURL = authnContext.getTarget();
+        if (targetURL == null || !URI.create( targetURL ).isAbsolute())
+            targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
+        logger.dbg( "target url: %s", targetURL );
+        return targetURL;
+    }
+
+    protected String getLandingUrl(){
+        String targetURL = getTargetUrl();
+        String landingURL = null;
+        if (config().web().landingPath() != null)
+            landingURL = ConfigUtils.getApplicationConfidentialURLFromPath( config().web().landingPath() );
+        logger.dbg( "landing url: %s", landingURL );
+
+        if (landingURL == null) {
+            // If no landing URL is configured, land on target.
+            landingURL = targetURL;
+        }
+        return landingURL;
+    }
+
     protected ValidationResponse validateToken(String accessToken, AuthnProtocolRequestContext authnRequest)
             throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, ValidationFailedException {
 
         ValidationRequest validationRequest = new ValidationRequest();
         validationRequest.setAccessToken( accessToken );
-        String endpoint = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth().validationPath() );
+        String endpoint = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().validationPath() );
         ResponseMessage validationResponse = MessageUtils.sendRequestMessage( endpoint, validationRequest,
-                authnContext.getOauth2().getSslCertificate(), authnRequest.getTarget(), config().proto().oauth().clientSecret() );
+                authnContext.getOauth2().getSslCertificate(), authnRequest.getIssuer(), config().proto().oauth2().clientSecret() );
 
         if (validationResponse instanceof ErrorResponse) {
             logger.err( "Received error response for OAuth authorization request: " + validationResponse.toString() );
             throw new ValidationFailedException( "Error response returned for OAuth authorization request: "
                                                  + ((ErrorResponse) validationResponse).getErrorDescription() );
         }
-        if ( !authnRequest.getTarget().equals( ((ValidationResponse) validationResponse).getAudience() ) ){
+        if ( !authnRequest.getIssuer().equals( ((ValidationResponse) validationResponse).getAudience() ) ){
             throw new ValidationFailedException( "OAuth token is not for this application" );
         }
         Long expiresIn = ((ValidationResponse)validationResponse).getExpiresIn();
@@ -215,26 +223,37 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
     protected Map<String, List<AttributeSDK<?>>> getAttributes(String accessToken)
             throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, ValidationFailedException {
 
-        URL endpointURL = new URL( ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth().attributesPath() ));
+        URL endpointURL = new URL( ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().attributesPath() ));
         HttpsURLConnection connection = (HttpsURLConnection)endpointURL.openConnection();
         SSLContext sslContext = SSLContext.getInstance( "SSL" );
         TrustManager trustManager = new MessageUtils.OAuthCustomTrustManager( authnContext.getOauth2().getSslCertificate() );
         TrustManager[] trustManagers = { trustManager };
         sslContext.init( null, trustManagers, null );
         connection.setSSLSocketFactory( sslContext.getSocketFactory() );
+        if ( null == authnContext.getOauth2().getSslCertificate()){
+            connection.setHostnameVerifier( new HostnameVerifier() {
+                @Override
+                public boolean verify(final String s, final SSLSession sslSession) {
+
+                    logger.wrn( "Warning: URL Host: " + s + " vs. " + sslSession.getPeerHost() );
+                    return true;
+                }
+            } );
+        }
         connection.setDoOutput( true );
         connection.setDoInput( true );
         connection.setAllowUserInteraction( false );
         connection.setUseCaches( false );
         connection.setInstanceFollowRedirects( false );
         connection.setRequestMethod( MessageUtils.HttpMethod.GET.toString() );
-        connection.addRequestProperty( "Authorization", "Bearer " + accessToken );
+        connection.setRequestProperty( "Authorization", "Bearer " + accessToken );
         PrintWriter contentWriter = new PrintWriter( connection.getOutputStream() );
         contentWriter.close();
 
         InputStreamReader reader = new InputStreamReader( connection.getInputStream() );
-        Type type = new TypeToken<Map<String, List<AttributeSDK<Serializable>>>>(){}.getType();
+        Type type = new TypeToken<HashMap<String, ArrayList<AttributeSDK<Serializable>>>>(){}.getType();
         Map<String, List<AttributeSDK<?>>> attributes = gson.fromJson( reader, type );
+        logger.dbg( "attributes: " + attributes );
         reader.close();
         return attributes;
     }
