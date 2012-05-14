@@ -16,6 +16,8 @@ import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.attribute.*;
+import net.link.safeonline.sdk.api.auth.LoginMode;
+import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
@@ -70,9 +72,17 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         authorizationRequest.setState( state );
         // note: scope is not set in the authorization request, this is preconfigured by the linkid operator
         boolean paramsInBody = config().proto().oauth2().binding().contains( "POST" );
-        MessageUtils.sendRedirectMessage( authnService,authorizationRequest,response, paramsInBody );
+        // add login mode (this is not part of oauth, but linkid)
+        List<String> loginParams = new ArrayList<String>( 2 );
+        loginParams.add( RequestConstants.LOGINMODE_REQUEST_PARAM );
+        loginParams.add( context.getLoginMode().toString() );
 
-        return new AuthnProtocolRequestContext( authorizationRequest.getState(), authorizationRequest.getClientId() , this, targetURL );
+        MessageUtils.sendRedirectMessage( authnService,authorizationRequest,response, paramsInBody, loginParams );
+
+        AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(),
+                authorizationRequest.getClientId(), this, targetURL );
+        requestContext.setLoginMode( context.getLoginMode() );
+        return requestContext;
     }
 
     @Override
@@ -326,7 +336,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                                                                       final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        logger.dbg( "OAuth2 implementation does not support detached authentication yet" );
+        return null;
     }
 
     @Override
@@ -334,14 +345,14 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                                                           final LogoutContext context)
             throws IOException {
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException( "OAuth2 implementation does not support single logout yet" );
     }
 
     @Override
     public LogoutProtocolResponseContext findAndValidateLogoutResponse(final HttpServletRequest request)
             throws ValidationFailedException {
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException( "OAuth2 implementation does not support single logout yet" );
     }
 
     @Override
@@ -349,7 +360,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                                                                      final Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
             throws ValidationFailedException {
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -358,6 +369,6 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                                                             final boolean partialLogout)
             throws IOException {
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException( "OAuth2 implementation does not support single logout yet" );
     }
 }

@@ -82,6 +82,8 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
             String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
             LoginMode mode = LoginMode.fromString( modeParam );
+            if (mode == null)
+                mode = authnResponse.getRequest().getLoginMode();
 
             if (mode == LoginMode.POPUP || mode == LoginMode.FRAMED) {
                 response.setContentType( "text/html" );

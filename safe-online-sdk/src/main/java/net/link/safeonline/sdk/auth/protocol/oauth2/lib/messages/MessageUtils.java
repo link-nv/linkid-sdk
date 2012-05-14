@@ -227,6 +227,13 @@ public class MessageUtils {
         return validationRequest;
     }
 
+    /**
+     * Send a response message back
+     *
+     * @param servletResponse
+     * @param responseMessage
+     * @throws IOException
+     */
     public static void sendResponseMessage(final HttpServletResponse servletResponse, ResponseMessage responseMessage)
             throws IOException {
 
@@ -256,6 +263,16 @@ public class MessageUtils {
         }
     }
 
+    /**
+     * Send an oauth response message (authorization code, access token, error message) back to the client
+     * via user-agent redirect.
+     *
+     * @param redirectUri
+     * @param responseMessage
+     * @param servletResponse
+     * @param paramsInBody
+     * @throws IOException
+     */
     public static void sendRedirectMessage(final String redirectUri, ResponseMessage responseMessage,
                                            final HttpServletResponse servletResponse, boolean paramsInBody)
             throws IOException {
@@ -348,12 +365,15 @@ public class MessageUtils {
         return responseMessage;
     }
 
+
     /**
-     * Sends a request message to an oauth2 endpoint
+     * Sends a request message (access token request or validation request) to an oauth2 endpoint
      *
      * @param endpoint
      * @param requestMessage
      * @param trustedSslCertificate ssl certificate to trust. May be null, in which case all certificates are trusted. Only for testing!
+     * @param clientId
+     * @param clientSecret
      */
     public static ResponseMessage sendRequestMessage(String endpoint, RequestMessage requestMessage, final X509Certificate trustedSslCertificate,
                                           String clientId, String clientSecret)
@@ -395,7 +415,7 @@ public class MessageUtils {
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
             contentWriter = new PrintWriter( connection.getOutputStream() );
             contentWriter.write( "grant_type=" + ((AccessTokenRequest) requestMessage).getGrantType().toString() );
-            contentWriter.write( "&code=" + URLEncoder.encode(((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) );
+            contentWriter.write( "&code=" + URLEncoder.encode( ((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) );
             if (((AccessTokenRequest) requestMessage).getRedirectUri() != null)
                 contentWriter.write( "&redirect_uri=" + URLEncoder.encode(((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) );
         } else if (requestMessage instanceof ValidationRequest){
@@ -410,8 +430,9 @@ public class MessageUtils {
             LOG.error( "Unsupported message type: " + requestMessage.getClass().getName() );
             return null;
         }
-        if (null != contentWriter)
+        if (null != contentWriter){
             contentWriter.close();
+        }
 
         ResponseMessage responseMessage = null;
         InputStreamReader reader = new InputStreamReader( connection.getInputStream() );
@@ -427,8 +448,35 @@ public class MessageUtils {
         return responseMessage;
     }
 
+    /**
+     * Sends a request message to the authorization server, using user-agent redirection
+     *
+     * @param redirectUri
+     * @param requestMessage
+     * @param servletResponse
+     * @param paramsInBody
+     * @throws IOException
+     */
     public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
                                            final HttpServletResponse servletResponse, boolean paramsInBody)
+            throws IOException {
+        sendRedirectMessage( redirectUri, requestMessage, servletResponse, paramsInBody, Collections.<String>emptyList() );
+    }
+
+    /**
+     * Sends a request message to the authorization server, using user-agent redirection. Allows additional (non-oauth)
+     * parameters to be added ( alternate the names and values in the list, ie {"paramname", "value", "paramname2", "value2" } )
+     *
+     * @param redirectUri
+     * @param requestMessage
+     * @param servletResponse
+     * @param paramsInBody
+     * @param additionalParams
+     * @throws IOException
+     */
+    public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
+                                           final HttpServletResponse servletResponse, boolean paramsInBody,
+                                           final List<String> additionalParams)
             throws IOException {
         if(null == requestMessage){
             return;
@@ -454,6 +502,15 @@ public class MessageUtils {
             return;
         }
 
+        // additional params specified by user
+        if (additionalParams.size() % 2 == 0){
+            for (int i =0; i < additionalParams.size(); i = i +2){
+                names.add( additionalParams.get( i ) );
+                values.add( additionalParams.get( i + 1 ) );
+            }
+        }
+
+        // do redirect, either using http 302, or an auto-submitting http form
         if (!paramsInBody){
             servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
         } else {
