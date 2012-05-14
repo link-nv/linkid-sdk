@@ -15,13 +15,15 @@ import java.util.*;
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.attribute.*;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 import net.link.safeonline.sdk.configuration.*;
 import net.link.util.error.ValidationFailedException;
+import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
 
 
 /**
@@ -66,7 +68,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         authorizationRequest.setRedirectUri( landingURL );
         String state = UUID.randomUUID().toString();
         authorizationRequest.setState( state );
-        // TODO set scope
+        // note: scope is not set in the authorization request, this is preconfigured by the linkid operator
         boolean paramsInBody = config().proto().oauth2().binding().contains( "POST" );
         MessageUtils.sendRedirectMessage( authnService,authorizationRequest,response, paramsInBody );
 
@@ -133,8 +135,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         } else {
             success = userRefusedAccess( (ErrorResponse) responseMessage );
         }
-
-        return new AuthnProtocolResponseContext( authnRequest, state, userId, applicationName, null, attributes, success, null );
+        // note: oauth does not support returning authenticated devices
+        return new AuthnProtocolResponseContext( authnRequest, state, userId, applicationName, new LinkedList<String>(  ), attributes, success, null );
     }
 
     protected boolean userRefusedAccess(ErrorResponse errorResponse) throws ValidationFailedException{
@@ -251,11 +253,72 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         contentWriter.close();
 
         InputStreamReader reader = new InputStreamReader( connection.getInputStream() );
-        Type type = new TypeToken<HashMap<String, ArrayList<AttributeSDK<Serializable>>>>(){}.getType();
-        Map<String, List<AttributeSDK<?>>> attributes = gson.fromJson( reader, type );
-        logger.dbg( "attributes: " + attributes );
+
+        Type type = new TypeToken<Map<String, List<JSONAttribute>>>(){}.getType();
+        Map<String, List<JSONAttribute>> jsonAttributes = gson.fromJson( reader, type );
+        logger.dbg( "attributes: " + jsonAttributes );
+
+        Map<String, List<AttributeSDK<?>>> attributes = convertToSDK(jsonAttributes);
+
         reader.close();
         return attributes;
+    }
+
+    private Map<String, List<AttributeSDK<?>>> convertToSDK(final Map<String, List<JSONAttribute>> jsonAttributes) {
+
+        if (jsonAttributes == null)
+            return null;
+        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>(  );
+        for (String name : jsonAttributes.keySet()){
+            List<AttributeSDK<?>> values = new ArrayList<AttributeSDK<?>>( jsonAttributes.get( name ).size() );
+            for(JSONAttribute jsonAttribute : jsonAttributes.get( name )){
+                values.add( convertToSDK( jsonAttribute ) );
+            }
+            attributes.put( name, values );
+        }
+        return attributes;
+    }
+
+    private static AttributeSDK<Serializable> convertToSDK(JSONAttribute jsonAttribute){
+        if (jsonAttribute == null)
+            return null;
+        AttributeSDK<Serializable> attributeSDK = new AttributeSDK<Serializable>(  );
+        attributeSDK.setId( jsonAttribute.getId() );
+        attributeSDK.setName( jsonAttribute.getName() );
+        if (jsonAttribute.getType() != DataType.COMPOUNDED){
+            attributeSDK.setValue( convertValue( jsonAttribute.getValue(), jsonAttribute.getType() ) );
+        } else {
+            List<AttributeSDK<Serializable>> members = new ArrayList<AttributeSDK<Serializable>>( jsonAttribute.getMembers().size() );
+            for (JSONAttribute jsonMember : jsonAttribute.getMembers()){
+                members.add( convertToSDK( jsonMember ) );
+            }
+            Compound compound = new Compound( members );
+            attributeSDK.setValue( compound );
+        }
+        return attributeSDK;
+    }
+
+    private static Serializable convertValue(String stringValue, final DataType attributeType) {
+
+        if (null == stringValue)
+            return null;
+
+        switch (attributeType) {
+            case STRING:
+                return stringValue;
+            case BOOLEAN:
+                return Boolean.valueOf( stringValue );
+            case INTEGER:
+                return Integer.valueOf( stringValue );
+            case DOUBLE:
+                return Double.valueOf( stringValue );
+            case DATE:
+                return new DateTime( stringValue ).toDate();
+            case COMPOUNDED:
+                throw new InternalInconsistencyException( String.format( "Unexpected data type: %s", attributeType ) );
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected data type: %s", attributeType ) );
     }
 
     @Override
