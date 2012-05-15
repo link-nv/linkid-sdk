@@ -10,6 +10,7 @@ import java.util.*;
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientApplication;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import org.apache.commons.logging.Log;
@@ -270,11 +271,13 @@ public class MessageUtils {
      * @param redirectUri
      * @param responseMessage
      * @param servletResponse
-     * @param paramsInBody
+     * @param flowType
+     * @param codeInBody
      * @throws IOException
      */
     public static void sendRedirectMessage(final String redirectUri, ResponseMessage responseMessage,
-                                           final HttpServletResponse servletResponse, boolean paramsInBody)
+                                           final HttpServletResponse servletResponse, ClientApplication.FlowType flowType,
+                                           boolean codeInBody)
             throws IOException {
 
         if(null == responseMessage){
@@ -293,8 +296,18 @@ public class MessageUtils {
             names.add( OAuth2Message.STATE );
             values.add( authorizationCodeResponse.getCode());
             values.add( authorizationCodeResponse.getState());
-        } else if (responseMessage instanceof AccessTokenResponse){
 
+            if (!codeInBody){
+                servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
+            } else {
+                servletResponse.setHeader( "Cache-Control", "no-store" );
+                servletResponse.setHeader( "Pragma", "no-cache" );
+                servletResponse.setContentType( "text/html;charset=UTF-8" );
+                servletResponse.getWriter().print( encodeInHTMLForm( redirectUri, names, values ) );
+            }
+
+        } else if (responseMessage instanceof AccessTokenResponse){
+            // this can only be implicit grant flow, access token must be encoded in fragment (per oauth2 spec)
             AccessTokenResponse accessTokenResponse = (AccessTokenResponse) responseMessage;
 
             names.add( OAuth2Message.ACCESS_TOKEN );
@@ -307,6 +320,8 @@ public class MessageUtils {
             values.add (accessTokenResponse.getTokenType());
             names.add( OAuth2Message.SCOPE );
             values.add (stringify( accessTokenResponse.getScope() ));
+
+            servletResponse.sendRedirect( encodeInFragment( redirectUri, names, values ) );
 
         } else if (responseMessage instanceof ErrorResponse){
 
@@ -321,16 +336,20 @@ public class MessageUtils {
             names.add( OAuth2Message.STATE);
             values.add( errorResponse.getState());
             servletResponse.setStatus( HttpServletResponse.SC_BAD_REQUEST );
+
+            if (flowType == ClientApplication.FlowType.IMPLICIT){
+                servletResponse.sendRedirect( encodeInFragment( redirectUri, names, values ) );
+            } else if (!codeInBody){
+                servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
+            } else {
+                servletResponse.setHeader( "Cache-Control", "no-store" );
+                servletResponse.setHeader( "Pragma", "no-cache" );
+                servletResponse.setContentType( "text/html;charset=UTF-8" );
+                servletResponse.getWriter().print( encodeInHTMLForm( redirectUri, names, values ) );
+            }
         }
 
-        if (!paramsInBody){
-            servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
-        } else {
-            servletResponse.setHeader( "Cache-Control", "no-store" );
-            servletResponse.setHeader( "Pragma", "no-cache" );
-            servletResponse.setContentType( "text/html;charset=UTF-8" );
-            servletResponse.getWriter().print( encodeInHTMLForm( redirectUri, names, values ) );
-        }
+
     }
 
     /*
@@ -561,6 +580,14 @@ public class MessageUtils {
     }
 
     protected static String encodeInQuery(String redirectUri, List<String> names, List<Object> values){
+        return encodeInURL( redirectUri, names, values, '?' );
+    }
+
+    protected static String encodeInFragment(String redirectUri, List<String> names, List<Object> values){
+        return encodeInURL( redirectUri, names, values, '#' );
+    }
+
+    protected static String encodeInURL(String redirectUri, List<String> names, List<Object> values, char symbol){
         if (names.size() != names.size()){
             LOG.error( "names and values lists are not equal size" );
             return "";
@@ -571,15 +598,15 @@ public class MessageUtils {
             String name =  names.get( i );
             String value =  values.get( i ) != null ? values.get( i ).toString() : null;
             if (!stringEmpty( value ) && !stringEmpty( name )){
-                encodeInQuery( redirectBuff, name, value );
+                encodeInURL( redirectBuff, name, value, symbol );
             }
         }
         return redirectBuff.toString();
     }
 
-    protected static void encodeInQuery(StringBuffer sb, String name, String value){
+    protected static void encodeInURL(StringBuffer sb, String name, String value, char bindSymbol){
         if(value != null){
-            char symbol = sb.indexOf( "?" ) > 0 ? '&' : '?';
+            char symbol = sb.indexOf( "" + bindSymbol ) > 0 ? '&' : bindSymbol;
             try {
                 sb.append( symbol + URLEncoder.encode( name, "UTF-8" ) +"=" + URLEncoder.encode( value, "UTF-8" ) );
             }
@@ -589,8 +616,8 @@ public class MessageUtils {
         }
     }
 
-    protected static void encodeInQuery(StringBuffer sb, String name, Number value){
-        encodeInQuery( sb, name, value.toString());
+    protected static void encodeInQuery(StringBuffer sb, String name, Number value, char bindSymbol){
+        encodeInURL( sb, name, value.toString(), bindSymbol );
     }
 
     protected static String stringify(List<String> scope){
