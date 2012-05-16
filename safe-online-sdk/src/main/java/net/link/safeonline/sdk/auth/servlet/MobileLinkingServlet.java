@@ -8,8 +8,7 @@ import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.RequestConstants;
+import net.link.safeonline.sdk.api.auth.*;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
@@ -110,6 +109,8 @@ public class MobileLinkingServlet extends AbstractLinkIDInjectionServlet {
         List<String> loginParams = new ArrayList<String>( 2 );
         loginParams.add( RequestConstants.LOGINMODE_REQUEST_PARAM );
         loginParams.add( loginMode );
+        loginParams.add( RequestConstants.OAUTH2_FORCE_AUTHN );
+        loginParams.add( ForceAuth.AUTO.toString() );
 
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
     }
