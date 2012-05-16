@@ -16,8 +16,7 @@ import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.attribute.*;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.RequestConstants;
+import net.link.safeonline.sdk.api.auth.*;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
@@ -76,8 +75,10 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         List<String> loginParams = new ArrayList<String>( 2 );
         loginParams.add( RequestConstants.LOGINMODE_REQUEST_PARAM );
         loginParams.add( context.getLoginMode().toString() );
+        loginParams.add( RequestConstants.OAUTH2_FORCE_AUTHN );
+        loginParams.add( authnContext.isForceAuthentication()? ForceAuth.FORCE.toString() : ForceAuth.AUTO.toString() );
 
-        MessageUtils.sendRedirectMessage( authnService,authorizationRequest,response, paramsInBody, loginParams );
+        MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
 
         AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(),
                 authorizationRequest.getClientId(), this, targetURL );
