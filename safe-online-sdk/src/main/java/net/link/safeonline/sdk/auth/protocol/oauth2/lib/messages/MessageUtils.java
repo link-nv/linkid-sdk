@@ -560,7 +560,7 @@ public class MessageUtils {
             throw new OauthInvalidMessageException( "TLS is mandatory" );
 
         if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod().equalsIgnoreCase(
-                HttpMethod.POST.toString() )){
+                HttpMethod.POST.toString() ) && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )){
             throw new OauthInvalidMessageException("invalid http method type: " + request.getMethod());
         }
     }

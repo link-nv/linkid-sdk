@@ -134,8 +134,10 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                 String accessToken = tokenResponse.getAccessToken();
 
                 //validate access token (we need to get the linkid userid (and verify application name), this is provided here)
-                ValidationResponse validationResponse = validateToken( accessToken, authnRequest );
-                userId = validationResponse.getUserId();
+                OAuth2TokenValidationHandler handler = OAuth2TokenValidationHandler.getInstance( authnContext.getApplicationName() );
+                handler.setSslCertificate( authnContext.getOauth2().getSslCertificate() );
+                handler.validateAccessToken( accessToken, null, authnContext.getApplicationName(), true );
+                userId = handler.getUserId(accessToken);
 
                 //call attribute service with our token
                 attributes = getAttributes( accessToken );

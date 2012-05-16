@@ -110,7 +110,7 @@ public class MobileLinkingServlet extends AbstractLinkIDInjectionServlet {
         loginParams.add( RequestConstants.LOGINMODE_REQUEST_PARAM );
         loginParams.add( loginMode );
         loginParams.add( RequestConstants.OAUTH2_FORCE_AUTHN );
-        loginParams.add( ForceAuth.AUTO.toString() );
+        loginParams.add( ForceAuth.AUTO.toString() ); //use SSO if possible
 
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
     }
