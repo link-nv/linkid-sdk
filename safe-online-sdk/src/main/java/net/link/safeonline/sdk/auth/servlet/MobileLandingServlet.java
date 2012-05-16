@@ -36,7 +36,7 @@ public class MobileLandingServlet extends AbstractConfidentialLinkIDInjectionSer
 
     private static final Log LOG = LogFactory.getLog( MobileLandingServlet.class );
 
-    private static final int QR_SIZE = 256;
+    private static final int QR_SIZE = 512;
 
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
