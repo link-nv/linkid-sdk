@@ -192,7 +192,7 @@ public class MessageUtils {
                 StringTokenizer st = new StringTokenizer( authHeader.trim() );
                 if (st.hasMoreTokens()){
                     String type = st.nextToken();
-                    if ("Bearer".equalsIgnoreCase( type )){
+                    if ("Bearer".equalsIgnoreCase( type ) || "OAuth2".equalsIgnoreCase( type )){ //oauth2 is legacy
                         accessToken = st.hasMoreTokens() ? st.nextToken() : null;
                     } else if ("Basic".equalsIgnoreCase( type )){
                         if (st.hasMoreTokens()){
