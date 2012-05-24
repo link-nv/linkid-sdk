@@ -35,7 +35,6 @@ public class MessageUtils {
 
     static {
         GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping()
-                                                   .generateNonExecutableJson()
                                                    .setFieldNamingPolicy( FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES );
 
         if (LOG.isDebugEnabled())
