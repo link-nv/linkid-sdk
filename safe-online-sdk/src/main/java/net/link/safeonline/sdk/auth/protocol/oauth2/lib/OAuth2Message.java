@@ -76,8 +76,7 @@ public interface OAuth2Message extends Serializable {
         SERVER_ERROR("server_error"),
         TEMPORARILY_UNAVAILABLE("temporarily_unavailable"),
         INVALID_GRANT("invalid_grant"),
-        UNSUPPORTED_GRANT_TYPE("unsupported_grant_type"),
-        INVALID_TOKEN("invalid_token");
+        UNSUPPORTED_GRANT_TYPE("unsupported_grant_type");
 
         private String type;
 

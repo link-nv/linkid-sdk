@@ -64,7 +64,7 @@ public class TokenRequestValidator extends AbstractValidator {
                             //invalid token, throw error
                             LOG.error( "ATTENTION: Attempt detected to get an access token using an invalid refresh token: "
                                        + request.getRefreshToken() );
-                            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_TOKEN,
+                            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_GRANT,
                                     "refresh token is invalid, expired, revoked or already used" );
                         } else {
                             // token is ok, hurah
@@ -75,7 +75,7 @@ public class TokenRequestValidator extends AbstractValidator {
                     // we didn't find that particular token, it would seem
                     LOG.error( "ATTENTION: Attempt detected to get an access token using an invalid refresh token: "
                                + request.getRefreshToken() );
-                    throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_TOKEN,
+                    throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_GRANT,
                             "refresh token is invalid, expired, revoked or already used" );
                 }
                 break;
@@ -97,7 +97,7 @@ public class TokenRequestValidator extends AbstractValidator {
         if (!valid){
             LOG.error( "ATTENTION: invalid access token used: "
                        + request.getAccessToken() );
-            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_TOKEN );
+            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_GRANT );
         }
     }
 }
