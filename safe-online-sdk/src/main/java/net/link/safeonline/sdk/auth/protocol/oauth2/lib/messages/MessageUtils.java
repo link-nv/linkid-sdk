@@ -453,7 +453,11 @@ public class MessageUtils {
         }
 
         ResponseMessage responseMessage = null;
-        InputStreamReader reader = new InputStreamReader( connection.getInputStream() );
+        InputStreamReader reader;
+        if (connection.getResponseCode() < 300)
+            reader = new InputStreamReader( connection.getInputStream() );
+        else
+            reader = new InputStreamReader( connection.getErrorStream() );
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK){
             responseMessage = gson.fromJson( reader, ErrorResponse.class );
         } else if (requestMessage instanceof AccessTokenRequest){
