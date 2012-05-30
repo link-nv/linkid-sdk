@@ -17,13 +17,8 @@
 
     <build>
         <plugins>
-            <!-- Needed for copying the endorsed JAXB 2.2 JAXWS 2.2 jars -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <executions>
                     <execution>
@@ -36,6 +31,7 @@
                     <verbose>true</verbose>
                     <xdebug>true</xdebug>
                     <extension>true</extension>
+                    <target>2.1</target>
                     <wsdlFiles>
                         <wsdlFile>saml-protocol-2.0.wsdl</wsdlFile>
                         <wsdlFile>liberty-idwsf-dst-ref-v2.1-link.wsdl</wsdlFile>
@@ -52,13 +48,6 @@
                         <bindingFile>jaxb-bindings.xml</bindingFile>
                     </bindingFiles>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun.xml.ws</groupId>
-                        <artifactId>jaxws-tools</artifactId>
-                        <version>${jaxws-tools.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
         <resources>
@@ -81,15 +70,6 @@
         </dependency>
 
         <!-- Specific Dependencies: External -->
-        <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>jaxws-tools</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>jaxws-rt</artifactId>
-        </dependency>
         <dependency>
             <groupId>javax.jws</groupId>
             <artifactId>jsr181-api</artifactId>

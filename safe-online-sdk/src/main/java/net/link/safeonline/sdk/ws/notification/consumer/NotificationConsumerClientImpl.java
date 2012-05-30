@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.notification.consumer;
 
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.notification.consumer.*;
@@ -40,18 +40,18 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
      * Main constructor.
      *
      * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not <code>null</code> will verify the server SSL {@link X509Certificate}.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      * @param configuration  The WS-Security configuration.
      */
     public NotificationConsumerClientImpl(String location, X509Certificate sslCertificate, WSSecurityConfiguration configuration) {
 
-        super( NotificationConsumerServiceFactory.newInstance().getNotificationConsumerPort() );
+        super( NotificationConsumerServiceFactory.newInstance().getNotificationConsumerPort(), sslCertificate );
         getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location );
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
+    @Override
     public void sendNotification(String topic, String destination, String subject, String content)
             throws WSClientTransportException {
 

@@ -41,12 +41,10 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
      */
     public Xkms2ClientImpl(String location, X509Certificate sslCertificate) {
 
-        super( Xkms2ServiceFactory.newInstance().getXKMSPort() );
+        super( Xkms2ServiceFactory.newInstance().getXKMSPort(), sslCertificate );
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.xkms2.path" ) ) );
-
-        registerTrustManager( sslCertificate );
     }
 
     @Override

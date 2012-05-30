@@ -17,6 +17,7 @@ import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.util.ws.security.WSSecurityConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -30,7 +31,7 @@ import net.link.util.ws.security.WSSecurityConfiguration;
  */
 public abstract class ServiceFactory {
 
-    protected abstract AttributeClient _getAttributeService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+    protected abstract AttributeClient _getAttributeService(WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate);
 
     protected abstract DataClient _getDataService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
 

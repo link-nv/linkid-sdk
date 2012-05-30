@@ -19,7 +19,7 @@ public class SafeOnlineConfigHolder extends ConfigHolder {
 
     public SafeOnlineConfigHolder(SafeOnlineConfig customConfig) {
 
-        super( new SafeOnlineDefaultConfigFactory(), SafeOnlineConfig.class, customConfig );
+        super( SafeOnlineConfig.class, new SafeOnlineDefaultConfigFactory(), customConfig );
     }
 
     public static SafeOnlineConfig config() {

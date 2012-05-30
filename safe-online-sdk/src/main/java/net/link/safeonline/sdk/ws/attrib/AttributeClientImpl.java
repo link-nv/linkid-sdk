@@ -9,7 +9,7 @@ package net.link.safeonline.sdk.ws.attrib;
 
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -49,12 +49,11 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
      */
     public AttributeClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super( SAMLAttributeServiceFactory.newInstance().getSAMLAttributePort() );
+        super( SAMLAttributeServiceFactory.newInstance().getSAMLAttributePort(), sslCertificate );
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.attribute.path" ) ) );
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 

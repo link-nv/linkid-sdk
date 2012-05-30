@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jxb:bindings version="2.1" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
-        xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
-        http://java.sun.com/xml/ns/jaxws http://java.sun.com/xml/ns/jaxws/wsdl_customizationschema_2_0.xsd">
-
-    <jxb:globalBindings>
-        <jxb:serializable uid="1"/>
-    </jxb:globalBindings>
-
-</jxb:bindings>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" elementFormDefault="qualified" attributeFormDefault="unqualified"
+           jaxb:extensionBindingPrefixes="xjc" jaxb:version="2.1">
+    <xs:annotation>
+        <xs:appinfo>
+            <jaxb:globalBindings>
+                <xjc:serializable />
+            </jaxb:globalBindings>
+        </xs:appinfo>
+    </xs:annotation>
+</xs:schema>

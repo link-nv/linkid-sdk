@@ -7,7 +7,7 @@
 package net.link.safeonline.sdk.ws.session;
 
 import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.xml.ws.BindingProvider;
@@ -48,12 +48,11 @@ public class SessionTrackingClientImpl extends AbstractWSClient<SessionTrackingP
      */
     public SessionTrackingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super( SessionTrackingServiceFactory.newInstance().getSessionTrackingPort() );
+        super( SessionTrackingServiceFactory.newInstance().getSessionTrackingPort(), sslCertificate );
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.session.tracking.path" ) ) );
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 

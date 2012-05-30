@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.jetbrains.annotations.Nullable;
 
 
 public class AttributeType extends MetaObject implements Serializable {
@@ -19,33 +20,34 @@ public class AttributeType extends MetaObject implements Serializable {
     private final boolean  multivalued;
     private final boolean  mappable;
 
-    // only sensible for compound members
+    // only sensible for compounds
+    private final boolean             compoundMember;
     private final boolean             required;
     private final List<AttributeType> members;
 
     public AttributeType(final String name) {
 
-        this( name, null, null, false, false, false, false, false, false );
+        this( name, null, null, false, false, false, false, false, false, false );
     }
 
     public AttributeType(final String name, final DataType dataType) {
 
-        this( name, dataType, null, false, false, false, false, false, false );
+        this( name, dataType, null, false, false, false, false, false, false, false );
     }
 
     public AttributeType(final String name, final DataType dataType, boolean multivalued) {
 
-        this( name, dataType, null, false, false, false, multivalued, false, false );
+        this( name, dataType, null, false, false, false, multivalued, false, false, false );
     }
 
     public AttributeType(String name, DataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean multivalued,
                          boolean mappable, boolean required) {
 
-        this( name, type, providerJndi, userVisible, userEditable, false, multivalued, mappable, required );
+        this( name, type, providerJndi, userVisible, userEditable, false, multivalued, mappable, false, required );
     }
 
-    public AttributeType(String name, DataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean userRemovable,
-                         boolean multivalued, boolean mappable, boolean required) {
+    public AttributeType(String name, @Nullable DataType type, @Nullable String providerJndi, boolean userVisible, boolean userEditable,
+                         boolean userRemovable, boolean multivalued, boolean mappable, boolean compoundMember, boolean required) {
 
         this.name = name;
         this.type = type;
@@ -55,6 +57,7 @@ public class AttributeType extends MetaObject implements Serializable {
         this.userRemovable = userRemovable;
         this.multivalued = multivalued;
         this.mappable = mappable;
+        this.compoundMember = compoundMember;
         this.required = required;
         members = new LinkedList<AttributeType>();
     }
@@ -102,6 +105,11 @@ public class AttributeType extends MetaObject implements Serializable {
     public boolean isMappable() {
 
         return mappable;
+    }
+
+    public boolean isCompoundMember() {
+
+        return compoundMember;
     }
 
     public boolean isRequired() {
