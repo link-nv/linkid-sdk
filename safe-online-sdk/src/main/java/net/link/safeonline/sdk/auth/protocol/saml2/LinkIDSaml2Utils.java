@@ -17,8 +17,7 @@ import net.link.safeonline.sdk.api.attribute.Compound;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.util.saml.Saml2Utils;
 import org.opensaml.saml2.core.*;
-import org.opensaml.xml.Namespace;
-import org.opensaml.xml.XMLObject;
+import org.opensaml.xml.*;
 import org.w3c.dom.Element;
 
 
@@ -39,7 +38,8 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         // TODO: Is this really still necessary?
 
         X xmlObject = Saml2Utils.<X>unmarshall( xmlElement );
-        xmlObject.addNamespace(
+        NamespaceManager xmlObjectNSM = new NamespaceManager( xmlObject );
+        xmlObjectNSM.registerNamespace(
                 new Namespace( WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, WebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
 
         return xmlObject;

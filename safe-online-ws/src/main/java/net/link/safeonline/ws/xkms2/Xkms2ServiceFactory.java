@@ -7,6 +7,7 @@
 
 package net.link.safeonline.ws.xkms2;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.net.URL;
 import javax.xml.namespace.QName;
 import org.w3._2002._03.xkms.XKMSService;
@@ -24,8 +25,7 @@ public class Xkms2ServiceFactory {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL wsdlUrl = classLoader.getResource( "xkms.wsdl" );
         if (null == wsdlUrl)
-            throw new RuntimeException( "XKMS WSDL not found" );
-        XKMSService service = new XKMSService( wsdlUrl, new QName( "http://www.w3.org/2002/03/xkms#wsdl", "XKMSService" ) );
-        return service;
+            throw new InternalInconsistencyException( "XKMS WSDL not found" );
+        return new XKMSService( wsdlUrl, new QName( "http://www.w3.org/2002/03/xkms#wsdl", "XKMSService" ) );
     }
 }

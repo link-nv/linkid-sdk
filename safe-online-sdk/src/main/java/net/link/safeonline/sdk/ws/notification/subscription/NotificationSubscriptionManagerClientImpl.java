@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.ws.notification.subscription;
 
 import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
@@ -46,13 +46,12 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<
     public NotificationSubscriptionManagerClientImpl(String location, X509Certificate sslCertificate,
                                                      final WSSecurityConfiguration configuration) {
 
-        super( NotificationSubscriptionManagerServiceFactory.newInstance().getNotificationSubscriptionManagerPort() );
+        super( NotificationSubscriptionManagerServiceFactory.newInstance().getNotificationSubscriptionManagerPort(), sslCertificate );
 
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.notification.subscription.path" ) ) );
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
