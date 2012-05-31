@@ -106,7 +106,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
     protected void onBeforeRender() {
 
         super.onBeforeRender();
-        if (loginMode != null){
+        if (loginMode != null) {
             add( new AttributeAppender( "login-mode", new Model<String>( loginMode.toString().toLowerCase() ), " " ) );
         }
         if (addJS) {
@@ -115,7 +115,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
                 @Override
                 public void renderHead(IHeaderResponse response) {
 
-                    response.renderJavascriptReference( config().web().authBase() + "/resources/common/js/linkid.login-min.js",
+                    response.renderJavascriptReference( String.format( "%s/js/linkid.login-min.js", config().web().staticBase() ),
                             "linkid-login-script" );
                 }
             } ) );

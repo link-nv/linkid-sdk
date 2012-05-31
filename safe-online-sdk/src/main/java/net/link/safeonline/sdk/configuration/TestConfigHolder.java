@@ -143,6 +143,7 @@ public class TestConfigHolder extends ConfigHolder {
             public String appPath;
             public String authBase;
             public String userBase;
+            public String staticBase;
             public String wsBase;
             public String authWsBase;
             public String landingPath;
@@ -169,6 +170,12 @@ public class TestConfigHolder extends ConfigHolder {
             public String authBase() {
 
                 return authBase;
+            }
+
+            @Override
+            public String staticBase() {
+
+                return staticBase;
             }
 
             @Override
