@@ -111,6 +111,8 @@
         <module>device</module>
         <module>attribute</module>
 
+        <module>safe-online-nfc-sdk</module>
+
         <module>repo.linkid.be</module>
 
     </modules>
