@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.auth.filter;
 
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import java.util.List;
 import javax.security.auth.callback.*;
@@ -17,8 +18,6 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import net.link.util.common.URLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -29,22 +28,25 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JAASLoginFilter implements Filter {
 
-    private static final Log LOG = LogFactory.getLog( JAASLoginFilter.class );
+    private static final Logger logger = Logger.get( JAASLoginFilter.class );
 
     private static final String REDIRECTED_SESSION_ATTRIBUTE = JAASLoginFilter.class.getName() + ".redirected";
 
     public static final String JAAS_LOGIN_CONTEXT_SESSION_ATTRIB = JAASLoginFilter.class.getName() + ".LOGIN_CONTEXT";
 
+    @Override
     public void init(FilterConfig filterConfig)
             throws ServletException {
 
     }
 
+    @Override
     public void destroy() {
 
-        LOG.debug( "destroy" );
+        logger.dbg( "destroy" );
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
@@ -73,13 +75,13 @@ public class JAASLoginFilter implements Filter {
         if (userId == null) {
             if (session.getAttribute( REDIRECTED_SESSION_ATTRIBUTE ) != null) {
                 session.removeAttribute( REDIRECTED_SESSION_ATTRIBUTE );
-                LOG.debug( "already redirected" );
+                logger.dbg( "already redirected" );
                 return true;
             }
             String requestPath = URLUtils.concat( config().web().appPath(), request.getServletPath() );
 
             if (null != loginPath && !loginPath.equals( requestPath ) && !publicPaths.contains( requestPath )) {
-                LOG.debug( "redirect to " + loginPath + ", requestPath: " + requestPath );
+                logger.dbg( "redirect to %s, requestPath=%s", loginPath, requestPath );
                 setRedirected( session );
                 response.sendRedirect( loginPath );
                 return false;
@@ -99,6 +101,7 @@ public class JAASLoginFilter implements Filter {
         try {
             LoginContext loginContext = new LoginContext( loginContextName, new CallbackHandler() {
 
+                @Override
                 public void handle(Callback[] callbacks)
                         throws IOException, UnsupportedCallbackException {
 
@@ -115,15 +118,15 @@ public class JAASLoginFilter implements Filter {
                     }
                 }
             } );
-            LOG.debug( "login to " + loginContextName + " with " + userId + " for " + request.getRequestURL() );
+            logger.dbg( "login to %s with %s for %s", loginContextName, userId, request.getRequestURL() );
             loginContext.login();
             request.setAttribute( JAAS_LOGIN_CONTEXT_SESSION_ATTRIB, loginContext );
         }
         catch (SecurityException e) {
-            LOG.warn( "During JAAS Login", e );
+            logger.err( e, "During JAAS Login: %s", e.getMessage() );
         }
         catch (LoginException e) {
-            LOG.error( "During JAAS Login", e );
+            logger.err( e, "During JAAS Login: %s", e.getMessage() );
         }
     }
 
@@ -134,11 +137,11 @@ public class JAASLoginFilter implements Filter {
             return;
 
         try {
-            LOG.debug( "logout" );
+            logger.dbg( "logout" );
             loginContext.logout();
         }
         catch (LoginException e) {
-            LOG.error( "logout error: " + e.getMessage(), e );
+            logger.err( e, "logout error: %s", e.getMessage() );
         }
     }
 
