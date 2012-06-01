@@ -65,7 +65,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().authorizationPath() );
 
         // create oauht2 authorization request ( authorization grant code flow)
-        AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, context.getApplicationName());
+        AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, config().proto().oauth2().clientId());
         authorizationRequest.setRedirectUri( landingURL );
         String state = UUID.randomUUID().toString();
         authorizationRequest.setState( state );
@@ -124,7 +124,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         logger.dbg( "OAuth2 response matches request: " + authnRequest );
 
         String userId = "";
-        String applicationName = authnRequest.getIssuer();
+        String clientId = authnRequest.getIssuer();
         Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>(  );
         if (!(responseMessage instanceof ErrorResponse)) {
             try{
@@ -136,7 +136,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                 //validate access token (we need to get the linkid userid (and verify application name), this is provided here)
                 OAuth2TokenValidationHandler handler = OAuth2TokenValidationHandler.getInstance( authnContext.getApplicationName() );
                 handler.setSslCertificate( authnContext.getOauth2().getSslCertificate() );
-                handler.validateAccessToken( accessToken, null, authnContext.getApplicationName(), true );
+                handler.validateAccessToken( accessToken, null, config().proto().oauth2().clientId(), true );
                 userId = handler.getUserId(accessToken);
 
                 //call attribute service with our token
@@ -149,7 +149,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
             success = userRefusedAccess( (ErrorResponse) responseMessage );
         }
         // note: oauth does not support returning authenticated devices
-        return new AuthnProtocolResponseContext( authnRequest, state, userId, applicationName, new LinkedList<String>(  ), attributes, success, null );
+        return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(  ), attributes, success, null );
     }
 
     protected boolean userRefusedAccess(ErrorResponse errorResponse) throws ValidationFailedException{
