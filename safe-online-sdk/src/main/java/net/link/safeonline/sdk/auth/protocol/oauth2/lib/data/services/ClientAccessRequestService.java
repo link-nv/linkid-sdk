@@ -3,8 +3,6 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.services;
 import java.util.Date;
 import java.util.List;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.ClientAccessRequestNotFoundException;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AccessTokenRequest;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AuthorizationRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.*;
 
 
@@ -20,47 +18,29 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.*;
  */
 public interface ClientAccessRequestService {
 
-    //TODO add/invalidate access token for user/app combo
 
-    //TODO add/invalidate refresh token for user/app combo
-
-    /**
-     * Create and store an authorization request. This is typically done at the start of the authorization flow, so the identity of the
-     * resource owner/user is probably not yet known.
-     *
-     * @param authRequest
-     * @param validatedRedirectionURI
-     * @return
-     */
-    public String create(AuthorizationRequest authRequest, String validatedRedirectionURI);
-
-    /**
-     * Create and store a request. Used for authorization-skipping flows such as client-credentials and resource owner credentials flows
-     * @param request
-     * @return
-     */
-    public String create(AccessTokenRequest request);
+    public String create(ClientConfiguration clientConfiguration, ClientConfiguration.FlowType flowType, List<String> requestedScope, String state, String validatedRedirectionURI);
 
     /**
      * Get the request with the specified id
      * @param clientAccessId
      * @return
      */
-    public ClientAccess findClientAccessRequest(String clientAccessId);
+    public ClientAccessRequest findClientAccessRequest(String clientAccessId);
 
     /**
      * Find the request with the specified request token, access token or authorization code
      * @param token
      * @return
      */
-    public ClientAccess findClientAccessRequestByToken(Token token);
+    public ClientAccessRequest findClientAccessRequestByToken(Token token);
 
     /**
      * Get the request with the specified id
      * @param clientAccessId
      * @return
      */
-    public ClientAccess getClientAccessRequest(String clientAccessId) throws ClientAccessRequestNotFoundException;
+    public ClientAccessRequest getClientAccessRequest(String clientAccessId) throws ClientAccessRequestNotFoundException;
 
 
     /**

@@ -22,23 +22,23 @@ public class SimpleUUIDCodeGenerator implements TokenGenerator {
     }
 
     @Override
-    public CodeToken createCode(final ClientAccess access) {
+    public CodeToken createCode(final ClientAccessRequest accessRequest) {
 
         return new CodeToken( generateCode(),
-                new Date( System.currentTimeMillis() + access.getClient().getDefaultCodeLifeTime() * 1000 ) );
+                new Date( System.currentTimeMillis() + accessRequest.getClient().getDefaultCodeLifeTime() * 1000 ) );
     }
 
     @Override
-    public AccessToken createAccessToken(final ClientAccess access) {
+    public AccessToken createAccessToken(final ClientAccessRequest accessRequest) {
 
         return new AccessToken( generateCode(),
-                new Date( System.currentTimeMillis() + access.getClient().getDefaultAccessTokenLifeTime() * 1000 ) );
+                new Date( System.currentTimeMillis() + accessRequest.getClient().getDefaultAccessTokenLifeTime() * 1000 ) );
     }
 
     @Override
-    public RefreshToken createRefreshToken(final ClientAccess access) {
+    public RefreshToken createRefreshToken(final ClientAccessRequest accessRequest) {
 
         return new RefreshToken( generateCode(),
-                new Date( System.currentTimeMillis() + access.getClient().getDefaultRefreshTokenLifeTime() * 1000 ) );
+                new Date( System.currentTimeMillis() + accessRequest.getClient().getDefaultRefreshTokenLifeTime() * 1000 ) );
     }
 }

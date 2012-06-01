@@ -2,8 +2,8 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.va
 
 import static net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message.*;
 
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccess;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientApplication;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AccessTokenRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AuthorizationRequest;
@@ -20,42 +20,42 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AuthorizationRe
 public class FlowValidator extends AbstractValidator {
 
     @Override
-    public void validate(final AuthorizationRequest request, final ClientApplication application)
+    public void validate(final AuthorizationRequest request, final ClientConfiguration configuration)
             throws OauthValidationException {
 
-        requiredClientApplication( application, ErrorType.INVALID_CLIENT );
+        requiredClientApplication( configuration, ErrorType.INVALID_CLIENT );
         switch (request.getResponseType()) {
             case CODE:
-                if (!application.getAllowedFlows().contains( ClientApplication.FlowType.AUTHORIZATION ))
+                if (!configuration.getAllowedFlows().contains( ClientConfiguration.FlowType.AUTHORIZATION ))
                     throw new OauthValidationException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case TOKEN:
-                if (!application.getAllowedFlows().contains( ClientApplication.FlowType.IMPLICIT ))
+                if (!configuration.getAllowedFlows().contains( ClientConfiguration.FlowType.IMPLICIT ))
                     throw new OauthValidationException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
         }
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
 
         switch ( request.getGrantType() ){
             case AUTHORIZATION_CODE:
-                if (!clientApplication.getAllowedFlows().contains( ClientApplication.FlowType.AUTHORIZATION ))
+                if (!clientConfiguration.getAllowedFlows().contains( ClientConfiguration.FlowType.AUTHORIZATION ))
                     throw new OauthValidationException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case CLIENT_CREDENTIALS:
-                if (!clientApplication.getAllowedFlows().contains( ClientApplication.FlowType.CLIENT_CREDENTIALS ))
+                if (!clientConfiguration.getAllowedFlows().contains( ClientConfiguration.FlowType.CLIENT_CREDENTIALS ))
                     throw new OauthValidationException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case PASSWORD:
-                if (!clientApplication.getAllowedFlows().contains( ClientApplication.FlowType.RESOURCE_CREDENTIALS ))
+                if (!clientConfiguration.getAllowedFlows().contains( ClientConfiguration.FlowType.RESOURCE_CREDENTIALS ))
                     throw new OauthValidationException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case REFRESH_TOKEN:
-                if (clientAccess == null || clientAccess.getFlowType() == ClientApplication.FlowType.CLIENT_CREDENTIALS
-                    || clientAccess.getFlowType() == ClientApplication.FlowType.IMPLICIT)
+                if (clientAccessRequest == null || clientAccessRequest.getFlowType() == ClientConfiguration.FlowType.CLIENT_CREDENTIALS
+                    || clientAccessRequest.getFlowType() == ClientConfiguration.FlowType.IMPLICIT)
                     throw new OauthValidationException( ErrorType.UNAUTHORIZED_CLIENT, "flow type does not support refresh tokens" );
                 break;
         }

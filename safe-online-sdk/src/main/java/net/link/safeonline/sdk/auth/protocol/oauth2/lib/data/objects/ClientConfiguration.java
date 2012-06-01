@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author: sgdesmet
  */
-public class ClientApplication implements Serializable{
+public class ClientConfiguration implements Serializable{
 
     protected boolean confidential;
     protected String clientId;
@@ -21,17 +21,22 @@ public class ClientApplication implements Serializable{
     protected List<String> configuredScope;
     protected List<FlowType> allowedFlows;
 
+    /**
+     * Include a refresh token for authorization grant and password credential flows?
+     */
+    protected boolean includeRefreshToken;
+
     protected long defaultCodeLifeTime;
     protected long defaultAccessTokenLifeTime;
     protected long defaultRefreshTokenLifeTime;
 
     public static enum FlowType {AUTHORIZATION, IMPLICIT, RESOURCE_CREDENTIALS, CLIENT_CREDENTIALS}
 
-    public ClientApplication() {
+    public ClientConfiguration() {
 
     }
 
-    public ClientApplication(final String clientId) {
+    public ClientConfiguration(final String clientId) {
 
         this.clientId = clientId;
     }
@@ -124,5 +129,15 @@ public class ClientApplication implements Serializable{
     public void setDefaultRefreshTokenLifeTime(final long defaultRefreshTokenLifeTime) {
 
         this.defaultRefreshTokenLifeTime = defaultRefreshTokenLifeTime;
+    }
+
+    public boolean isIncludeRefreshToken() {
+
+        return includeRefreshToken;
+    }
+
+    public void setIncludeRefreshToken(final boolean includeRefreshToken) {
+
+        this.includeRefreshToken = includeRefreshToken;
     }
 }

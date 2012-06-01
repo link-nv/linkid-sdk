@@ -3,8 +3,8 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.va
 import java.util.LinkedList;
 import java.util.List;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccess;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientApplication;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AccessTokenRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AuthorizationRequest;
@@ -22,23 +22,23 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AuthorizationRe
 public class ScopeValidator extends AbstractValidator {
 
     @Override
-    public void validate(final AuthorizationRequest request, final ClientApplication application)
+    public void validate(final AuthorizationRequest request, final ClientConfiguration configuration)
             throws OauthValidationException {
 
         List<String> requestedScope = request.getScope() != null? request.getScope(): new LinkedList<String>();
         List<String> configuredScope =
-                application.getConfiguredScope() != null? application.getConfiguredScope(): new LinkedList<String>();
+                configuration.getConfiguredScope() != null? configuration.getConfiguredScope(): new LinkedList<String>();
         validate( requestedScope, configuredScope );
 
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
 
         List<String> requestedScope = request.getScope() != null? request.getScope(): new LinkedList<String>();
         List<String> configuredScope =
-                clientApplication.getConfiguredScope() != null? clientApplication.getConfiguredScope(): new LinkedList<String>();
+                clientConfiguration.getConfiguredScope() != null? clientConfiguration.getConfiguredScope(): new LinkedList<String>();
         validate( requestedScope, configuredScope );
     }
 

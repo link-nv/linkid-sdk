@@ -1,8 +1,8 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.validators;
 
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccess;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientApplication;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 
@@ -18,14 +18,14 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 public class RequiredFieldsValidator extends AbstractValidator {
 
     @Override
-    public void validate(final AuthorizationRequest request, final ClientApplication application)
+    public void validate(final AuthorizationRequest request, final ClientConfiguration configuration)
             throws OauthValidationException {
         requiredField( request.getResponseType(), OAuth2Message.RESPONSE_TYPE );
         requiredField( request.getClientId(), OAuth2Message.CLIENT_ID );
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
         requiredField( request.getGrantType(), OAuth2Message.GRANT_TYPE );
         requiredField( request.getClientId(), OAuth2Message.CLIENT_ID );
@@ -37,10 +37,10 @@ public class RequiredFieldsValidator extends AbstractValidator {
 
         switch ( request.getGrantType() ){
             case AUTHORIZATION_CODE:
-                if (clientAccess == null)
+                if (clientAccessRequest == null)
                     throw new OauthValidationException( OAuth2Message.ErrorType.UNAUTHORIZED_CLIENT, "no client request present");
                 requiredField( request.getCode(), OAuth2Message.CODE );
-                if ( !MessageUtils.stringEmpty( clientAccess.getValidatedRedirectionURI() ) ){
+                if ( !MessageUtils.stringEmpty( clientAccessRequest.getValidatedRedirectionURI() ) ){
                     requiredField( request.getRedirectUri(), OAuth2Message.REDIRECT_URI );
                 }
                 break;
@@ -59,7 +59,7 @@ public class RequiredFieldsValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final ValidationRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
 
         requiredField( request.getAccessToken(), OAuth2Message.ACCESS_TOKEN );

@@ -6,7 +6,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.gen
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.validators.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.services.ClientAccessRequestService;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.services.ClientApplicationStore;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.services.ClientConfigurationStore;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 import org.apache.commons.logging.Log;
@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DefaultAuthorizationServer {
 
-    protected ClientApplicationStore clientApplicationStore;
+    protected ClientConfigurationStore clientConfigurationStore;
     protected ClientAccessRequestService clientAccessRequestService;
 
     protected List<Validator> requestValidators;
@@ -32,10 +32,10 @@ public class DefaultAuthorizationServer {
 
     static final Log LOG = LogFactory.getLog( DefaultAuthorizationServer.class );
 
-    public DefaultAuthorizationServer(final ClientApplicationStore clientApplicationStore,
+    public DefaultAuthorizationServer(final ClientConfigurationStore clientConfigurationStore,
                                       final ClientAccessRequestService clientAccessRequestService) {
 
-        this.clientApplicationStore = clientApplicationStore;
+        this.clientConfigurationStore = clientConfigurationStore;
         this.clientAccessRequestService = clientAccessRequestService;
 
         requestValidators = new LinkedList<Validator>(  );
@@ -70,14 +70,14 @@ public class DefaultAuthorizationServer {
         this.clientAccessRequestService = clientAccessRequestService;
     }
 
-    public ClientApplicationStore getClientApplicationStore() {
+    public ClientConfigurationStore getClientConfigurationStore() {
 
-        return clientApplicationStore;
+        return clientConfigurationStore;
     }
 
-    public void setClientApplicationStore(final ClientApplicationStore clientApplicationStore) {
+    public void setClientConfigurationStore(final ClientConfigurationStore clientConfigurationStore) {
 
-        this.clientApplicationStore = clientApplicationStore;
+        this.clientConfigurationStore = clientConfigurationStore;
     }
 
     /**
@@ -90,11 +90,11 @@ public class DefaultAuthorizationServer {
     public String initFlow(AuthorizationRequest authRequest) throws OauthValidationException{
 
         LOG.debug( "init a authorization code or implicit flow" );
-        ClientApplication client = null;
+        ClientConfiguration client = null;
         if (authRequest.getClientId() == null)
             throw new OauthInvalidMessageException("Missing client_id");
         try {
-            client = clientApplicationStore.getClient( authRequest.getClientId() );
+            client = clientConfigurationStore.getClient( authRequest.getClientId() );
         }
         catch (ClientNotFoundException e) {
             throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST, "Client application configuration not found", e );
@@ -104,11 +104,19 @@ public class DefaultAuthorizationServer {
         for (Validator validator : requestValidators){
             validator.validate( authRequest, client );
         }
-        // redirect URI validation passed, choose a preconfigured redirection URI if the request does not contain one
-        String redirectURI = !MessageUtils.stringEmpty( authRequest.getRedirectUri() ) ? authRequest.getRedirectUri() : null;
 
         // store the client access request
-        return clientAccessRequestService.create( authRequest, redirectURI );
+        ClientConfiguration.FlowType requestFlowType = null;
+        switch (authRequest.getResponseType()) {
+            case CODE:
+                requestFlowType= ClientConfiguration.FlowType.AUTHORIZATION;
+                break;
+            case TOKEN:
+                requestFlowType= ClientConfiguration.FlowType.IMPLICIT;
+                break;
+        }
+        String validatedURI = !MessageUtils.stringEmpty( authRequest.getRedirectUri() ) ? authRequest.getRedirectUri() : null; //don't store empty string as redirection uri
+        return clientAccessRequestService.create( client, requestFlowType, authRequest.getScope(), authRequest.getState(), validatedURI );
     }
 
     /**
@@ -140,19 +148,20 @@ public class DefaultAuthorizationServer {
         clientAccessRequestService.setAuthorizationResult( clientAccessId, authorized, approvedScope, expireTime );
 
         if (authorized){
-            ClientAccess clientAccess = clientAccessRequestService.getClientAccessRequest( clientAccessId );
-            switch (clientAccess.getFlowType()) {
+            ClientAccessRequest clientAccessRequest = clientAccessRequestService.getClientAccessRequest( clientAccessId );
+            switch (clientAccessRequest.getFlowType()) {
                 case AUTHORIZATION:
-                    if (clientAccess.getAuthorizationCode() == null || MessageUtils.stringEmpty(
-                            clientAccess.getAuthorizationCode().getTokenData() )) {
-                        clientAccessRequestService.setAuthorizationCode( clientAccessId, codeGenerator.createCode( clientAccess ) );
+                    if (clientAccessRequest.getAuthorizationCode() == null || MessageUtils.stringEmpty(
+                            clientAccessRequest.getAuthorizationCode().getTokenData() )) {
+                        clientAccessRequestService.setAuthorizationCode( clientAccessId, codeGenerator.createCode( clientAccessRequest ) );
                     } else {
                         throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "trying to set authorization code twice");
                     }
                     break;
                 case IMPLICIT:
-                    if (MessageUtils.collectionEmpty( clientAccess.getAccessTokens() ))
-                        clientAccessRequestService.addToken( clientAccess.getId(), codeGenerator.createAccessToken( clientAccess ));
+                    if (MessageUtils.collectionEmpty( clientAccessRequest.getAccessTokens() ))
+                        clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createAccessToken(
+                                clientAccessRequest ));
                     else
                         throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "more than one access token for implicit flow");
                     break;
@@ -172,22 +181,23 @@ public class DefaultAuthorizationServer {
     public ResponseMessage getAuthorizationResponseMessage(String clientAccessId) throws OAuthException{
 
         LOG.debug( "get authorization response message for flow instance " + clientAccessId );
-        ClientAccess clientAccess = clientAccessRequestService.getClientAccessRequest( clientAccessId );
+        ClientAccessRequest clientAccessRequest = clientAccessRequestService.getClientAccessRequest( clientAccessId );
 
-        if (!clientAccess.isGranted()){
-            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null, clientAccess.getState() );
+        if (!clientAccessRequest.isGranted()){
+            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null, clientAccessRequest
+                    .getState() );
         }
 
-        switch (clientAccess.getFlowType()) {
+        switch (clientAccessRequest.getFlowType()) {
             case AUTHORIZATION:{
                 AuthorizationCodeResponse response = new AuthorizationCodeResponse();
-                response.setCode( clientAccess.getAuthorizationCode().getTokenData() );
-                response.setState( clientAccess.getState() );
+                response.setCode( clientAccessRequest.getAuthorizationCode().getTokenData() );
+                response.setState( clientAccessRequest.getState() );
                 return response;
             }
             case IMPLICIT:{
                 AccessTokenResponse response = new AccessTokenResponse();
-                AccessToken accessToken = clientAccess.getAccessTokens().get( clientAccess.getAccessTokens().size() - 1 );
+                AccessToken accessToken = clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 );
                 response.setAccessToken( accessToken.getTokenData() );
                 long expiresIn =
                         (accessToken.getExpirationDate().getTime() - new Date().getTime()) / 1000;
@@ -227,10 +237,21 @@ public class DefaultAuthorizationServer {
 
         LOG.debug( "resume or init flow instance" );
 
+        // can't continue without knowing grant type
         if ( accessTokenRequest.getGrantType() == null )
             throw new OauthInvalidMessageException("Missing fields in message");
+
+        // get the client config
+        ClientConfiguration client = null;
+        try {
+            client = clientConfigurationStore.getClient( accessTokenRequest.getClientId() );
+        }
+        catch (ClientNotFoundException e) {
+            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST, "Client application configuration not found", e );
+        }
+
         //find existing flow instance or create a new one, depening on requested flow type
-        ClientAccess clientAccessRequest = null;
+        ClientAccessRequest clientAccessRequest = null;
         switch ( accessTokenRequest.getGrantType() ){
             case AUTHORIZATION_CODE:
                 clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken(
@@ -240,21 +261,16 @@ public class DefaultAuthorizationServer {
                 clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken(
                         new RefreshToken( accessTokenRequest.getRefreshToken(), null ) );
                 break;
-            case CLIENT_CREDENTIALS:
-            case PASSWORD:
-                String clientAccessId = clientAccessRequestService.create( accessTokenRequest );
+            case CLIENT_CREDENTIALS:{
+                String clientAccessId = clientAccessRequestService.create( client, ClientConfiguration.FlowType.CLIENT_CREDENTIALS, accessTokenRequest.getScope(), null, null );
                 clientAccessRequest = clientAccessRequestService.findClientAccessRequest( clientAccessId );
                 break;
-
-        }
-
-        // get the client config
-        ClientApplication client = null;
-        try {
-            client = clientApplicationStore.getClient( accessTokenRequest.getClientId() );
-        }
-        catch (ClientNotFoundException e) {
-            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST, "Client application configuration not found", e );
+            }
+            case PASSWORD:{
+                String clientAccessId = clientAccessRequestService.create( client, ClientConfiguration.FlowType.RESOURCE_CREDENTIALS, accessTokenRequest.getScope(), null, null );
+                clientAccessRequest = clientAccessRequestService.findClientAccessRequest( clientAccessId );
+                break;
+            }
         }
 
         // validations (check redirect URI, scope, flow type,...)
@@ -270,8 +286,9 @@ public class DefaultAuthorizationServer {
                     code.setInvalid( true );
                     clientAccessRequestService.setAuthorizationCode( clientAccessRequest.getId(), code );
                     clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createAccessToken( clientAccessRequest ));
-                    clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createRefreshToken(
-                            clientAccessRequest ));
+                    if (client.isIncludeRefreshToken())
+                        clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createRefreshToken(
+                                clientAccessRequest ));
                 }
                 catch (ClientAccessRequestNotFoundException e) {
                     LOG.error( e );
@@ -288,7 +305,8 @@ public class DefaultAuthorizationServer {
                     }
 
                     clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createAccessToken( clientAccessRequest ));
-                    clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createRefreshToken( clientAccessRequest ));
+                    if (client.isIncludeRefreshToken())
+                        clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createRefreshToken( clientAccessRequest ));
                 }
                 catch (ClientAccessRequestNotFoundException e) {
                     LOG.error( e );
@@ -330,28 +348,29 @@ public class DefaultAuthorizationServer {
      */
     public ResponseMessage getAccessToken(String clientAccessId) throws OAuthException{
 
-        ClientAccess clientAccess = clientAccessRequestService.getClientAccessRequest( clientAccessId );
+        ClientAccessRequest clientAccessRequest = clientAccessRequestService.getClientAccessRequest( clientAccessId );
 
-        if (!clientAccess.isGranted()){
-            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null, clientAccess.getState() );
+        if (!clientAccessRequest.isGranted()){
+            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null, clientAccessRequest
+                    .getState() );
         }
 
-        if (MessageUtils.collectionEmpty( clientAccess.getAccessTokens() ) ){
+        if (MessageUtils.collectionEmpty( clientAccessRequest.getAccessTokens() ) ){
             LOG.error( "No access tokens found at this stage, but they should be here. Did you call this methods at the correct time?" );
             throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "no access token available" );
         }
 
         AccessTokenResponse response = new AccessTokenResponse();
-        AccessToken accessToken = clientAccess.getAccessTokens().get( clientAccess.getAccessTokens().size() - 1 );
-        RefreshToken refreshToken = !MessageUtils.collectionEmpty( clientAccess.getRefreshTokens() ) ?
-                clientAccess.getRefreshTokens().get( clientAccess.getRefreshTokens().size() - 1 ) : null;
+        AccessToken accessToken = clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 );
+        RefreshToken refreshToken = !MessageUtils.collectionEmpty( clientAccessRequest.getRefreshTokens() ) ?
+                clientAccessRequest.getRefreshTokens().get( clientAccessRequest.getRefreshTokens().size() - 1 ) : null;
         if (!accessToken.isInvalid() && accessToken.getExpirationDate().after( new Date(  ) ) ){
-            response.setAccessToken( clientAccess.getAccessTokens().get( clientAccess.getAccessTokens().size() - 1 ).getTokenData() );
-            long expiresIn = clientAccess.getAccessTokens().get( clientAccess.getAccessTokens().size() - 1 ).getExpirationDate().getTime() -
+            response.setAccessToken( clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getTokenData() );
+            long expiresIn = clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getExpirationDate().getTime() -
                              new Date(  ).getTime();
             expiresIn /= 1000; //need seconds
             response.setExpiresIn( expiresIn );
-            response.setTokenType( clientAccess.getAccessTokens().get( clientAccess.getAccessTokens().size() - 1 ).getAccessTokenType() );
+            response.setTokenType( clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getAccessTokenType() );
         } else {
             LOG.error( "No valid access tokens found at this stage, but they should be here. Did you call this methods at the correct time?" );
             throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "no access token available" );
@@ -376,7 +395,7 @@ public class DefaultAuthorizationServer {
             throw new OauthInvalidMessageException( "Missing access token" );
         }
 
-        ClientAccess clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken(
+        ClientAccessRequest clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken(
                 new AccessToken( request.getAccessToken(), null ) );
 
         // validations (check redirect URI, scope, flow type,...)

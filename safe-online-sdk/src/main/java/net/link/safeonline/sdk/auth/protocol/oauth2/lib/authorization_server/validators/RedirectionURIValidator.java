@@ -3,8 +3,8 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.va
 import java.net.URI;
 import java.net.URISyntaxException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccess;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientApplication;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 
@@ -50,11 +50,11 @@ public class RedirectionURIValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final AuthorizationRequest request, final ClientApplication application) throws OauthValidationException {
+    public void validate(final AuthorizationRequest request, final ClientConfiguration configuration) throws OauthValidationException {
         URI redirectURI = null;
-        if (!MessageUtils.collectionEmpty( application.getRedirectUris() ) && !MessageUtils.stringEmpty( request.getRedirectUri() )){
+        if (!MessageUtils.collectionEmpty( configuration.getRedirectUris() ) && !MessageUtils.stringEmpty( request.getRedirectUri() )){
 
-            for (String configuredURI :  application.getRedirectUris()){
+            for (String configuredURI :  configuration.getRedirectUris()){
                 try {
                     if ( uriEquals( configuredURI, request.getRedirectUri() ) ){
                         redirectURI = new URI( request.getRedirectUri() );
@@ -67,8 +67,8 @@ public class RedirectionURIValidator extends AbstractValidator {
             if (redirectURI == null){
                 throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "return_uri in request does not match any return_uri in application configuration" );
             }
-        } else if (MessageUtils.collectionEmpty( application.getRedirectUris() )){
-            if (!application.isConfidential() || request.getResponseType() == OAuth2Message.ResponseType.TOKEN ){
+        } else if (MessageUtils.collectionEmpty( configuration.getRedirectUris() )){
+            if (!configuration.isConfidential() || request.getResponseType() == OAuth2Message.ResponseType.TOKEN ){
                 throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST,"Public applications and/or implicit grant flows must have a pre-registered redirection URI");
             } else {
                 try {
@@ -80,7 +80,7 @@ public class RedirectionURIValidator extends AbstractValidator {
             }
         } else if (MessageUtils.stringEmpty( request.getRedirectUri() )){
             try {
-                redirectURI = new URI( application.getRedirectUris().get( 0 ) ); // pick the first configured
+                redirectURI = new URI( configuration.getRedirectUris().get( 0 ) ); // pick the first configured
             }
             catch (URISyntaxException e) {
                 throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "Invalid return_uri: " + e.getMessage() );
@@ -113,10 +113,10 @@ public class RedirectionURIValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication) throws OauthValidationException {
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration) throws OauthValidationException {
 
         if (request.getGrantType() == OAuth2Message.GrantType.AUTHORIZATION_CODE) {
-            if ( request.getRedirectUri() != null && !request.getRedirectUri().equals( clientAccess.getValidatedRedirectionURI() ))
+            if ( request.getRedirectUri() != null && !request.getRedirectUri().equals( clientAccessRequest.getValidatedRedirectionURI() ))
                 throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST,
                         "redirect_uri does not match previous value" );
         }

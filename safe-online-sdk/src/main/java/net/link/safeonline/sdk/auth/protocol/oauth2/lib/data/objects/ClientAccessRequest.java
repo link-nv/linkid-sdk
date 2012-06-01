@@ -13,18 +13,18 @@ import java.util.List;
  *
  * @author: sgdesmet
  */
-public class ClientAccess implements Serializable {
+public class ClientAccessRequest implements Serializable {
 
     protected String id;
     protected String userId;
-    protected ClientApplication client;
+    protected ClientConfiguration          client;
     protected CodeToken authorizationCode;
     protected String state;
     protected boolean granted;
     protected List<String> approvedScope;
     protected String validatedRedirectionURI;
     protected Date userDefinedExpirationDate;
-    protected ClientApplication.FlowType flowType;
+    protected ClientConfiguration.FlowType flowType;
     
     protected List<AccessToken> accessTokens;
     protected List<RefreshToken> refreshTokens;
@@ -49,12 +49,12 @@ public class ClientAccess implements Serializable {
         this.userId = userId;
     }
 
-    public ClientApplication getClient() {
+    public ClientConfiguration getClient() {
 
         return client;
     }
 
-    public void setClient(final ClientApplication client) {
+    public void setClient(final ClientConfiguration client) {
 
         this.client = client;
     }
@@ -109,12 +109,12 @@ public class ClientAccess implements Serializable {
         this.userDefinedExpirationDate = userDefinedExpirationDate;
     }
 
-    public ClientApplication.FlowType getFlowType() {
+    public ClientConfiguration.FlowType getFlowType() {
 
         return flowType;
     }
 
-    public void setFlowType(final ClientApplication.FlowType flowType) {
+    public void setFlowType(final ClientConfiguration.FlowType flowType) {
 
         this.flowType = flowType;
     }

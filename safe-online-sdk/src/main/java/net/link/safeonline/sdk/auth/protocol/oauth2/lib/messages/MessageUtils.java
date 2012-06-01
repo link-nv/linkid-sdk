@@ -10,7 +10,7 @@ import java.util.*;
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientApplication;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import org.apache.commons.logging.Log;
@@ -275,7 +275,7 @@ public class MessageUtils {
      * @throws IOException
      */
     public static void sendRedirectMessage(final String redirectUri, ResponseMessage responseMessage,
-                                           final HttpServletResponse servletResponse, ClientApplication.FlowType flowType,
+                                           final HttpServletResponse servletResponse, ClientConfiguration.FlowType flowType,
                                            boolean codeInBody)
             throws IOException {
 
@@ -336,7 +336,7 @@ public class MessageUtils {
             values.add( errorResponse.getState());
             servletResponse.setStatus( HttpServletResponse.SC_BAD_REQUEST );
 
-            if (flowType == ClientApplication.FlowType.IMPLICIT){
+            if (flowType == ClientConfiguration.FlowType.IMPLICIT){
                 servletResponse.sendRedirect( encodeInFragment( redirectUri, names, values ) );
             } else if (!codeInBody){
                 servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );

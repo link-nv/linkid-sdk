@@ -13,10 +13,10 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.*;
  */
 public interface TokenGenerator {
     
-    public CodeToken createCode(ClientAccess access);
+    public CodeToken createCode(ClientAccessRequest accessRequest);
 
-    public AccessToken createAccessToken(ClientAccess access);
+    public AccessToken createAccessToken(ClientAccessRequest accessRequest);
 
-    public RefreshToken createRefreshToken(ClientAccess access);
+    public RefreshToken createRefreshToken(ClientAccessRequest accessRequest);
 
 }

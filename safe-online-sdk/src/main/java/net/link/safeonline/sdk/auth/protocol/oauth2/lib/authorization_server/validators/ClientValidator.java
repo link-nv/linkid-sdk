@@ -1,8 +1,8 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.validators;
 
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccess;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientApplication;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 
@@ -18,45 +18,45 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 public class ClientValidator extends AbstractValidator {
 
     @Override
-    public void validate(final AuthorizationRequest request, final ClientApplication application)
+    public void validate(final AuthorizationRequest request, final ClientConfiguration configuration)
             throws OauthValidationException {
 
-        checkConfiguration( application );
+        checkConfiguration( configuration );
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
 
-        checkConfiguration( clientApplication );
-        checkCorrectMatch( clientAccess, clientApplication);
+        checkConfiguration( clientConfiguration );
+        checkCorrectMatch( clientAccessRequest, clientConfiguration );
     }
 
     @Override
-    public void validate(final ValidationRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
 
-        checkConfiguration( clientApplication );
-        checkCorrectMatch( clientAccess, clientApplication);
+        checkConfiguration( clientConfiguration );
+        checkCorrectMatch( clientAccessRequest, clientConfiguration );
     }
 
-    protected void checkConfiguration(ClientApplication application) throws OauthValidationException{
-        if (application != null){
-            if (application.isConfidential() && MessageUtils.stringEmpty( application.getClientSecret() )){
+    protected void checkConfiguration(ClientConfiguration configuration) throws OauthValidationException{
+        if (configuration != null){
+            if (configuration.isConfidential() && MessageUtils.stringEmpty( configuration.getClientSecret() )){
                 throw new OauthValidationException( OAuth2Message.ErrorType.SERVER_ERROR,
-                        "client " + application.getClientId() + "is not properly configured" );
+                        "client " + configuration.getClientId() + "is not properly configured" );
             }
-            if (!application.isConfidential() && MessageUtils.collectionEmpty( application.getRedirectUris() )){
+            if (!configuration.isConfidential() && MessageUtils.collectionEmpty( configuration.getRedirectUris() )){
                 throw new OauthValidationException( OAuth2Message.ErrorType.SERVER_ERROR,
-                        "client " + application.getClientId() + "is not properly configured" );
+                        "client " + configuration.getClientId() + "is not properly configured" );
             }
         }
     }
 
-    protected void checkCorrectMatch(ClientAccess accessRequest, ClientApplication clientApplication)
+    protected void checkCorrectMatch(ClientAccessRequest accessRequest, ClientConfiguration clientConfiguration)
             throws OauthValidationException {
-        if (accessRequest != null && clientApplication != null
-            && !clientApplication.getClientId().equals( accessRequest.getClient().getClientId() ) ){
+        if (accessRequest != null && clientConfiguration != null
+            && !clientConfiguration.getClientId().equals( accessRequest.getClient().getClientId() ) ){
             throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST, "token is not meant for this client" );
         }
     }

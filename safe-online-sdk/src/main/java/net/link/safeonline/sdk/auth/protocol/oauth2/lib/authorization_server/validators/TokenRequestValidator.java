@@ -23,10 +23,10 @@ public class TokenRequestValidator extends AbstractValidator {
     static final Log LOG = LogFactory.getLog( TokenRequestValidator.class );
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
 
-        if (clientAccess != null && clientAccess.getUserDefinedExpirationDate() != null && clientAccess.getUserDefinedExpirationDate()
+        if (clientAccessRequest != null && clientAccessRequest.getUserDefinedExpirationDate() != null && clientAccessRequest.getUserDefinedExpirationDate()
                                                                                                        .before( new Date() )) {
             throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_GRANT, "user authorization expired or revoked" );
         }
@@ -34,14 +34,14 @@ public class TokenRequestValidator extends AbstractValidator {
         switch ( request.getGrantType() ){
             case AUTHORIZATION_CODE:
                 // see if auth grant code has not yet expired, is not already used, or is invoked
-                if ( clientAccess == null )
+                if ( clientAccessRequest == null )
                     throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_GRANT, "missing authorization grant" );
-                if (!clientAccess.getAuthorizationCode().getTokenData().equals( request.getCode() )
-                    || clientAccess.getAuthorizationCode().isInvalid()
-                    || clientAccess.getAuthorizationCode().getExpirationDate().before( new Date() )){
+                if (!clientAccessRequest.getAuthorizationCode().getTokenData().equals( request.getCode() )
+                    || clientAccessRequest.getAuthorizationCode().isInvalid()
+                    || clientAccessRequest.getAuthorizationCode().getExpirationDate().before( new Date() )){
 
                     LOG.error( "ATTENTION: Attempt detected to get an access token using an invalid authorization code: "
-                               + clientAccess.getAuthorizationCode() );
+                               + clientAccessRequest.getAuthorizationCode() );
                     throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_GRANT,
                             "authorization grant is invalid, expired, revoked or already used" );
                 }
@@ -51,12 +51,12 @@ public class TokenRequestValidator extends AbstractValidator {
             case PASSWORD:
                 throw new UnsupportedOperationException( "not yet implemented" ); //TODO
             case REFRESH_TOKEN:
-                if (clientAccess == null)
+                if (clientAccessRequest == null)
                     throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_GRANT, "missing authorization grant" );
                 // see if auth grant code has not yet expired, is not already used, or is invoked
                 // note: check _all_ tokens
                 Boolean validToken = false;
-                for (RefreshToken refreshToken : clientAccess.getRefreshTokens()){
+                for (RefreshToken refreshToken : clientAccessRequest.getRefreshTokens()){
                     if (refreshToken.getTokenData().equals( request.getRefreshToken() ) )
                         if (refreshToken.isInvalid() || ( refreshToken.getExpirationDate() != null
                                                            && refreshToken.getExpirationDate().before( new Date(  ) ) ) ) {
@@ -83,11 +83,11 @@ public class TokenRequestValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final ValidationRequest request, final ClientAccess clientAccess, final ClientApplication clientApplication)
+    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OauthValidationException {
 
         boolean valid = false;
-        for (AccessToken token : clientAccess.getAccessTokens()){
+        for (AccessToken token : clientAccessRequest.getAccessTokens()){
             if ( request.getAccessToken().equals( token.getTokenData() )
                  && token.getExpirationDate().after( new Date(  ) )
                  && !token.isInvalid()){
