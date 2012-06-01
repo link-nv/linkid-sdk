@@ -43,7 +43,7 @@ public interface OAuth2ProtocolConfig {
     @Property( required = false)
     String clientSecret();
 
-    @Property( required = true)
+    @Property( required = false)
     String clientId();
 
 

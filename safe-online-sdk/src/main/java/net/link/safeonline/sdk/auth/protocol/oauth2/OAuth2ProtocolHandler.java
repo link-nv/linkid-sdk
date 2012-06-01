@@ -64,8 +64,10 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().authorizationPath() );
 
+        String clientId = MessageUtils.stringEmpty( config().proto().oauth2().clientId() ) ? context.getApplicationName() : config().proto().oauth2().clientId();
+
         // create oauht2 authorization request ( authorization grant code flow)
-        AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, config().proto().oauth2().clientId());
+        AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, clientId);
         authorizationRequest.setRedirectUri( landingURL );
         String state = UUID.randomUUID().toString();
         authorizationRequest.setState( state );
@@ -81,7 +83,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
 
         AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(),
-                authorizationRequest.getClientId(), this, targetURL );
+                clientId, this, targetURL );
         requestContext.setLoginMode( context.getLoginMode() );
         return requestContext;
     }
@@ -136,7 +138,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                 //validate access token (we need to get the linkid userid (and verify application name), this is provided here)
                 OAuth2TokenValidationHandler handler = OAuth2TokenValidationHandler.getInstance( authnContext.getApplicationName() );
                 handler.setSslCertificate( authnContext.getOauth2().getSslCertificate() );
-                handler.validateAccessToken( accessToken, null, config().proto().oauth2().clientId(), true );
+                handler.validateAccessToken( accessToken, null, clientId, true );
                 userId = handler.getUserId(accessToken);
 
                 //call attribute service with our token
@@ -161,6 +163,17 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         }
     }
 
+    /**
+     * Request the oauth access token from the linkID server
+     * @param code
+     * @param authnRequest
+     * @return
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     * @throws KeyStoreException
+     * @throws ValidationFailedException
+     */
     protected AccessTokenResponse getAccessToken(String code, AuthnProtocolRequestContext authnRequest)
             throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, ValidationFailedException {
 
@@ -183,6 +196,10 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         return (AccessTokenResponse) tokenResponse;
     }
 
+    /**
+     * get target url. For redirection after landing
+     * @return
+     */
     protected String getTargetUrl(){
         String targetURL = authnContext.getTarget();
         if (targetURL == null || !URI.create( targetURL ).isAbsolute())
@@ -191,6 +208,10 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         return targetURL;
     }
 
+    /**
+     * get landing url (=url where linkid response needs to go, ie. in oauth term the redirection URI)
+     * @return
+     */
     protected String getLandingUrl(){
         String targetURL = getTargetUrl();
         String landingURL = null;
@@ -205,7 +226,19 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         return landingURL;
     }
 
-    protected ValidationResponse validateToken(String accessToken, AuthnProtocolRequestContext authnRequest)
+    /**
+     * Request info on the accesstoken at the linkid server. Returns userid, intended application, and so on
+     *
+     * @param accessToken
+     * @param authnRequest
+     * @return
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     * @throws KeyStoreException
+     * @throws ValidationFailedException
+     */
+    protected ValidationResponse getTokenInfo(String accessToken, AuthnProtocolRequestContext authnRequest)
             throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, ValidationFailedException {
 
         ValidationRequest validationRequest = new ValidationRequest();
