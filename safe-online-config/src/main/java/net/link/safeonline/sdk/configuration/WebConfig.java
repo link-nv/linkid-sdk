@@ -27,7 +27,8 @@ import net.link.util.config.Property;
 public interface WebConfig {
 
     /**
-     * Property that defines the base URL for applications on this host.  It will be used to create absolute URLs that point the user to the
+     * Property that defines the base URL for applications on this host.  It will be used to create absolute URLs that point the user to
+     * the
      * application.
      * <p/>
      * <i>[required]</i>
@@ -104,6 +105,23 @@ public interface WebConfig {
     String authBase();
 
     /**
+     * Property that defines the base URL to the linkID static web application.
+     * This houses for example the javascript for running the linkID authentication process in a modal window.
+     * <p/>
+     * <i>[optional, default: http://demo.linkid.be/linkid-static]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-static]} (eg. {@code http://my.linkid.be/linkid-static})
+     * </p>
+     * <p/>
+     * <p>
+     * <b>NOTE:</b> Do not terminate with a slash.
+     * </p>
+     */
+    @Property(required = false, unset = "http://demo.linkid.be/linkid-static")
+    String staticBase();
+
+    /**
      * Property that defines the base URL to the linkID web services to use.
      * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-ws]</i>
@@ -136,7 +154,8 @@ public interface WebConfig {
     String authWsBase();
 
     /**
-     * PATH within our application where linkID's authentication response will be posted to.  Absolute URLs to this path will use the {@link
+     * PATH within our application where linkID's authentication response will be posted to.  Absolute URLs to this path will use the
+     * {@link
      * #appConfidentialBase()}.
      * <p/>
      * <i>[optional, default: post the response straight to the authentication's target URL]</i>

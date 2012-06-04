@@ -9,18 +9,18 @@ package net.link.safeonline.sdk.ws.idmapping;
 
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.idmapping.LinkIDNameIDMappingRequestType;
 import net.lin_k.safe_online.idmapping.NameIdentifierMappingPort;
-import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
 import net.link.safeonline.sdk.SDKUtils;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.SamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.SamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingConstants;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.WSSecurityConfiguration;
 import net.link.util.ws.security.WSSecurityHandler;
@@ -46,12 +46,11 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
      */
     public NameIdentifierMappingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort() );
+        super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort(), sslCertificate );
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.idmapping.path" ) ) );
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 

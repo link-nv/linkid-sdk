@@ -9,7 +9,7 @@ package net.link.safeonline.sdk.ws.auth;
 
 import com.google.common.collect.Maps;
 import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -51,10 +51,9 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
     public AuthenticationClientImpl(W3CEndpointReference endpoint, X509Certificate sslCertificate,
                                     final WSSecurityConfiguration configuration) {
 
-        super( WSAuthenticationServiceFactory.newInstance()
-                                             .getPort( endpoint, WSAuthenticationPort.class, new AddressingFeature( true ) ) );
+        super( WSAuthenticationServiceFactory.newInstance().getPort( endpoint, WSAuthenticationPort.class, new AddressingFeature( true ) ),
+                sslCertificate );
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 

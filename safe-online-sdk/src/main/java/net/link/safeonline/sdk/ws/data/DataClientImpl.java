@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.data;
 
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -55,7 +55,7 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
      */
     public DataClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ) );
+        super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ), sslCertificate );
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.data.path" ) ) );
@@ -67,7 +67,6 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         targetIdentityHandler = new TargetIdentityClientHandler();
         initTargetIdentityHandler();
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
@@ -323,29 +322,31 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
                 LOG.debug( "second level status comment: " + secondLevelStatus.getComment() );
                 switch (secondLevelStatusCode) {
                     case INVALID_DATA:
-                        throw new RequestDeniedException( "Invalid data: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Invalid data: %s", secondLevelStatus.getComment() ) );
                     case DOES_NOT_EXIST:
-                        throw new RequestDeniedException( "Does not exist: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Does not exist: %s", secondLevelStatus.getComment() ) );
                     case NOT_AUTHORIZED:
-                        throw new RequestDeniedException( "Not authorized: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Not authorized: %s", secondLevelStatus.getComment() ) );
                     case UNSUPPORTED_OBJECT_TYPE:
-                        throw new RequestDeniedException( "Object type unsupported: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Object type unsupported: %s", secondLevelStatus.getComment() ) );
                     case PAGINATION_NOT_SUPPORTED:
-                        throw new RequestDeniedException( "Pagination not unsupported: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException(
+                                String.format( "Pagination not unsupported: %s", secondLevelStatus.getComment() ) );
                     case MISSING_OBJECT_TYPE:
-                        throw new RequestDeniedException( "Missing object type: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Missing object type: %s", secondLevelStatus.getComment() ) );
                     case EMPTY_REQUEST:
-                        throw new RequestDeniedException( "Empty request: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Empty request: %s", secondLevelStatus.getComment() ) );
                     case MISSING_SELECT:
-                        throw new RequestDeniedException( "Missing select: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Missing select: %s", secondLevelStatus.getComment() ) );
                     case MISSING_CREDENTIALS:
-                        throw new RequestDeniedException( "Missing credentials: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Missing credentials: %s", secondLevelStatus.getComment() ) );
                     case MISSING_NEW_DATA_ELEMENT:
-                        throw new RequestDeniedException( "Missing NewData element: " + secondLevelStatus.getComment() );
+                        throw new RequestDeniedException( String.format( "Missing NewData element: %s", secondLevelStatus.getComment() ) );
                 }
             }
             LOG.debug( "status comment: " + status.getComment() );
-            throw new RequestDeniedException( "Request failed: errorCode=" + status.getCode() + " errorMessage=" + status.getComment() );
+            throw new RequestDeniedException(
+                    String.format( "Request failed: errorCode=%s errorMessage=%s", status.getCode(), status.getComment() ) );
         }
     }
 

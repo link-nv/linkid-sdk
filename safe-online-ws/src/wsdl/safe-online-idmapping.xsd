@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:idmapping" xmlns:tns="urn:net:lin-k:safe-online:idmapping" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:idmapping"
+        xmlns:tns="urn:net:lin-k:safe-online:idmapping" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -9,6 +10,8 @@
 			Initial Standard Schema.
 		</documentation>
 	</annotation>
+
+    <import namespace="urn:oasis:names:tc:SAML:2.0:protocol" schemaLocation="saml-schema-protocol-2.0.xsd" />
 
 	<element name="LinkIDNameIDMappingRequest" type="tns:LinkIDNameIDMappingRequestType" />
 	<complexType name="LinkIDNameIDMappingRequestType">

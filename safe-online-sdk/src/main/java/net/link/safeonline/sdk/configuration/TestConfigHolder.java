@@ -29,6 +29,7 @@ import org.joda.time.Duration;
  *
  * @author lhunath
  */
+@SuppressWarnings("PublicField")
 public class TestConfigHolder extends ConfigHolder {
 
     private static TestSDKConfig testConfig;
@@ -55,7 +56,7 @@ public class TestConfigHolder extends ConfigHolder {
 
     public TestConfigHolder(final String appBase, final AppConfig appConfig, final ServletContext servletContext) {
 
-        super( new SafeOnlineDefaultConfigFactory() {
+        super( TestSDKConfig.class, new SafeOnlineDefaultConfigFactory() {
 
             @Override
             protected ServletContext getServletContext() {
@@ -80,7 +81,7 @@ public class TestConfigHolder extends ConfigHolder {
                     }
                 };
             }
-        }, TestSDKConfig.class, testConfig = new TestSDKConfig( appBase, appConfig ) );
+        }, testConfig = new TestSDKConfig( appBase, appConfig ) );
     }
 
     public void install() {
@@ -142,6 +143,7 @@ public class TestConfigHolder extends ConfigHolder {
             public String appPath;
             public String authBase;
             public String userBase;
+            public String staticBase;
             public String wsBase;
             public String authWsBase;
             public String landingPath;
@@ -168,6 +170,12 @@ public class TestConfigHolder extends ConfigHolder {
             public String authBase() {
 
                 return authBase;
+            }
+
+            @Override
+            public String staticBase() {
+
+                return staticBase;
             }
 
             @Override

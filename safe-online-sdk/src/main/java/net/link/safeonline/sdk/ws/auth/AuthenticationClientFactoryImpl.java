@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.ws.auth;
 
 import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.wsaddressing.W3CEndpointReference;
@@ -32,12 +32,10 @@ public class AuthenticationClientFactoryImpl extends AbstractWSClient<GetWSAuthe
      */
     public AuthenticationClientFactoryImpl(String location, X509Certificate sslCertificate) {
 
-        super( GetWSAuthenticationServiceFactory.newInstance().getGetWSAuthenticationPort() );
+        super( GetWSAuthenticationServiceFactory.newInstance().getGetWSAuthenticationPort(), sslCertificate );
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.get.auth.path" ) ) );
-
-        registerTrustManager( sslCertificate );
     }
 
     @Override

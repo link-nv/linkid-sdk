@@ -12,6 +12,9 @@ public interface ProfileConstants {
     String PHONE         = "profile.phone";
     String NRN           = "profile.nrn";               // national registry number
 
+    // attribute group
+    String GROUP = "profile";
+
     // address
     String ADDRESS               = "profile.address";
     String ADDRESS_STREET        = "profile.address.street";

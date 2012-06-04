@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.ws.sts;
 
 import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.xml.bind.JAXBElement;
@@ -50,12 +50,11 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
      */
     public SecurityTokenServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super( SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort() );
+        super( SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort(), sslCertificate );
         getBindingProvider().getRequestContext()
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.sts.path" ) ) );
 
-        registerTrustManager( sslCertificate );
         WSSecurityHandler.install( getBindingProvider(), configuration );
     }
 
