@@ -33,6 +33,7 @@ public class OAuth2TokenValidationHandler {
 
     private static Map<String, OAuth2TokenValidationHandler> handlers;
 
+    //TODO replace this by a real cache (e.g. google Cache and CacheBuilder)
     protected ConcurrentHashMap<String,CacheEntry> cache;
 
     protected X509Certificate sslCertificate;

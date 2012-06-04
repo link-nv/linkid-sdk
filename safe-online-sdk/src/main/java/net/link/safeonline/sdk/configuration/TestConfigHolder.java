@@ -292,6 +292,7 @@ public class TestConfigHolder extends ConfigHolder {
                 public String attributesPath;
                 public String binding;
                 public String clientSecret;
+                public String clientId;
 
                 @Override
                 public String authorizationPath() {
@@ -327,6 +328,11 @@ public class TestConfigHolder extends ConfigHolder {
                 public String clientSecret() {
 
                     return clientSecret;
+                }
+
+                @Override
+                public String clientId(){
+                    return clientId;
                 }
             }
         }
