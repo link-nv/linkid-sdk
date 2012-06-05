@@ -10,7 +10,7 @@ require_once('../_include.php');
     <head>
 
     <!-- linkID login js for running the authentication process in framed/popup mode -->
-    <script type="text/javascript" id="linkid-login-script" src="https://demo.linkid.be:443/linkid-auth/resources/common/js/linkid.login-min.js"></script>
+    <script type="text/javascript" id="linkid-login-script" src="http://demo.linkid.be/linkid-static/js/linkid.login-min.js"></script>
 
     <h1>Example webapp</h1>
     </head>
