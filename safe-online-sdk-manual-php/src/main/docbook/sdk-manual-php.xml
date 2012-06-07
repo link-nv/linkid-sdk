@@ -174,7 +174,7 @@ if (!$as->isAuthenticated()) {
            <programlisting>
                 <![CDATA[
 
-<script type="text/javascript" id="linkid-login-script" src="https://demo.linkid.be:443/linkid-auth/resources/common/js/linkid.login-min.js"></script>
+<script type="text/javascript" id="linkid-login-script" src="http://demo.linkid.be/linkid-static/js/linkid.login-min.js"></script>
 
                 ]]>
            </programlisting>
