@@ -91,11 +91,13 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                 out.println( "<html>" );
                 out.println( "<head>" );
                 out.println( "<script type=\"text/javascript\">" );
-                if (mode == LoginMode.POPUP)
+                if (mode == LoginMode.POPUP){
                     out.println( "window.opener.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
-                else
-                    out.println( "window.top.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
-                out.println( "window.close();" );
+                    out.println( "window.close();" );
+                }
+                else{
+                    out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
+                }
                 out.println( "</script>" );
                 out.println( "</head>" );
                 out.println( "<body>" );
