@@ -1,5 +1,6 @@
 package net.link.safeonline.sdk.api.auth.oauth2;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -11,15 +12,11 @@ import java.util.Date;
  *
  * @author: sgdesmet
  */
-public class PublicRefreshToken {
+public class PublicClientRequest implements Serializable {
 
-    private long id;
+    private String clientAccessEntityId;
 
     private String deviceSpecificName;
-
-    private Date expirationDate;
-
-    private Boolean invalidated;
 
     private long applicationId;
 
@@ -27,34 +24,33 @@ public class PublicRefreshToken {
 
     private String clientConfigurationFriendlyName;
 
-    private String clientAccessEntityId;
+    private Date created;
 
-    public PublicRefreshToken() {
+    public PublicClientRequest() {
 
     }
 
-    public PublicRefreshToken(final long id, final String deviceSpecificName, final Date expirationDate, final Boolean invalidated,
-                              final long applicationId, final long clientConfigurationId, final String clientConfigurationFriendlyName,
-                              final String clientAccessEntityId) {
+    public PublicClientRequest(final String clientAccessEntityId, final String deviceSpecificName, final long applicationId,
+                               final long clientConfigurationId, final String clientConfigurationFriendlyName, Date created) {
 
-        this.id = id;
+        this.clientAccessEntityId = clientAccessEntityId;
         this.deviceSpecificName = deviceSpecificName;
-        this.expirationDate = expirationDate;
-        this.invalidated = invalidated;
         this.applicationId = applicationId;
         this.clientConfigurationId = clientConfigurationId;
         this.clientConfigurationFriendlyName = clientConfigurationFriendlyName;
-        this.clientAccessEntityId = clientAccessEntityId;
+        this.created = created;
     }
 
-    public long getId() {
 
-        return id;
+
+    public Date getCreated() {
+
+        return created;
     }
 
-    public void setId(final long id) {
+    public void setCreated(final Date created) {
 
-        this.id = id;
+        this.created = created;
     }
 
     public String getDeviceSpecificName() {
@@ -65,26 +61,6 @@ public class PublicRefreshToken {
     public void setDeviceSpecificName(final String deviceSpecificName) {
 
         this.deviceSpecificName = deviceSpecificName;
-    }
-
-    public Date getExpirationDate() {
-
-        return expirationDate;
-    }
-
-    public void setExpirationDate(final Date expirationDate) {
-
-        this.expirationDate = expirationDate;
-    }
-
-    public Boolean getInvalidated() {
-
-        return invalidated;
-    }
-
-    public void setInvalidated(final Boolean invalidated) {
-
-        this.invalidated = invalidated;
     }
 
     public long getApplicationId() {
@@ -126,4 +102,5 @@ public class PublicRefreshToken {
 
         this.clientConfigurationFriendlyName = clientConfigurationFriendlyName;
     }
+
 }
