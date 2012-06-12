@@ -1,5 +1,6 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server;
 
+import java.io.Serializable;
 import java.util.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.generators.SimpleUUIDCodeGenerator;
@@ -21,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author: sgdesmet
  */
-public class DefaultAuthorizationServer {
+public class DefaultAuthorizationServer implements Serializable {
 
     protected ClientConfigurationStore clientConfigurationStore;
     protected ClientAccessRequestService clientAccessRequestService;
@@ -48,6 +49,10 @@ public class DefaultAuthorizationServer {
         requestValidators.add( new TokenRequestValidator() );
 
         this.codeGenerator = new SimpleUUIDCodeGenerator();
+    }
+
+    public DefaultAuthorizationServer() {
+
     }
 
     public List<Validator> getRequestValidators() {
