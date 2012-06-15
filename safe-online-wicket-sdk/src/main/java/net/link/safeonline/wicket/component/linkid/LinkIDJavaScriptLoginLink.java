@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LoginMode;
@@ -16,11 +14,6 @@ import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import org.apache.wicket.*;
-import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.behavior.HeaderContributor;
-import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author sgdesmet
  */
-public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
+public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
     protected boolean addJS;
     protected LoginMode loginMode = null;
@@ -74,52 +67,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
      */
     public LinkIDJavaScriptLoginLink(String id, @Nullable Class<? extends Page> target, boolean addJS) {
 
-        super( id, target );
-        this.addJS = addJS;
-        add( new AttributeAppender( "class", new Model<String>( "linkid-login" ), " " ) );
-    }
-
-    public LoginMode getLoginMode() {
-
-        return loginMode;
-    }
-
-    /**
-     * Set the login style (redirect, popup window, modal window). Only used if this parameter has not already been set by linkid.login.js
-     */
-    public void setLoginMode(final LoginMode loginMode) {
-
-        this.loginMode = loginMode;
-    }
-
-    public boolean isAddJS() {
-
-        return addJS;
-    }
-
-    public void setAddJS(final boolean addJS) {
-
-        this.addJS = addJS;
-    }
-
-    @Override
-    protected void onBeforeRender() {
-
-        super.onBeforeRender();
-        if (loginMode != null) {
-            add( new AttributeAppender( "login-mode", new Model<String>( loginMode.toString().toLowerCase() ), " " ) );
-        }
-        if (addJS) {
-            //LinkID JavaScript which handles login look
-            add( new HeaderContributor( new IHeaderContributor() {
-                @Override
-                public void renderHead(IHeaderResponse response) {
-
-                    response.renderJavascriptReference( String.format( "%s/js/linkid.login-min.js", config().web().staticBase() ),
-                            "linkid-login-script" );
-                }
-            } ) );
-        }
+        super( id, "login", target, addJS );
     }
 
     @Override
