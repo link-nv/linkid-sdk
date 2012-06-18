@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.api.auth.RequestConstants;
+import net.link.safeonline.sdk.auth.servlet.InitiateLoginServlet;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
@@ -106,9 +107,15 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
     protected void onBeforeRender() {
 
         super.onBeforeRender();
-        if (loginMode != null) {
-            add( new AttributeAppender( "login-mode", new Model<String>( loginMode.toString().toLowerCase() ), " " ) );
-        }
+
+        String loginModeArg = null != loginMode? String.format( "'%s'", loginMode ): "null";
+        String loginUrlArg = null != findLoginUrl()? String.format( "'%s'", findLoginUrl() ): "null";
+        String redirectToOnCompleteArg = null != findRedirectToInComplete()? String.format( "'%s'", findRedirectToInComplete() ): "null";
+
+        add( new AttributeAppender( "onclick", true,
+                new Model<String>( String.format( "startLinkIDLogin(%s, %s, %s);", loginModeArg, loginUrlArg, redirectToOnCompleteArg ) ),
+                ";" ) );
+
         if (addJS) {
             //LinkID JavaScript which handles login look
             add( new HeaderContributor( new IHeaderContributor() {
@@ -171,5 +178,25 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
     public boolean isVisible() {
 
         return !LinkIDWicketUtils.isLinkIDAuthenticated();
+    }
+
+    /**
+     * @return URL to use for initiating a linkID login request ( {@link InitiateLoginServlet}.
+     *         If {@code null} the default URL in the linkig login js ( /startlogin ) will be used.
+     */
+    @Nullable
+    public String findLoginUrl() {
+
+        return null;
+    }
+
+    /**
+     * @return URL to redirect to when the linkID authentication process has completed.
+     *         If {@code null} will redirect back to current location
+     */
+    @Nullable
+    public String findRedirectToInComplete() {
+
+        return null;
     }
 }
