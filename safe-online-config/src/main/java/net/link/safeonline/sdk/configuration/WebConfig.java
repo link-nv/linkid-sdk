@@ -118,7 +118,7 @@ public interface WebConfig {
      * <b>NOTE:</b> Do not terminate with a slash.
      * </p>
      */
-    @Property(required = false, unset = "http://demo.linkid.be/linkid-static")
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-static")
     String staticBase();
 
     /**

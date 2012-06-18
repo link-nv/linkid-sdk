@@ -34,4 +34,5 @@ public interface RequestConstants {
     String APPLICATION_ID_REQUEST_PARAM = "ApplicationId";
     String CANCELLED_REQUEST_PARAM      = "cancelled";
     String TIMEOUT_REQUEST_PARAM        = "timeout";
+    String OAUTH2_FORCE_AUTHN           = "approval_prompt";
 }

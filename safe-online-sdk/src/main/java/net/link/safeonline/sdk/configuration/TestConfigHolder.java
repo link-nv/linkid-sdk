@@ -208,6 +208,7 @@ public class TestConfigHolder extends ConfigHolder {
 
             private final TestOpenIDProtocolConfig openid = new TestOpenIDProtocolConfig();
             private final TestSAMLProtocolConfig   saml   = new TestSAMLProtocolConfig();
+            private final TestOAuthProtocolConfig oauth = new TestOAuthProtocolConfig();
             public Protocol defaultProtocol;
             public Duration maxTimeOffset;
 
@@ -221,6 +222,12 @@ public class TestConfigHolder extends ConfigHolder {
             public TestSAMLProtocolConfig saml() {
 
                 return saml;
+            }
+
+            @Override
+            public OAuth2ProtocolConfig oauth2() {
+
+                return oauth;
             }
 
             @Override
@@ -283,6 +290,57 @@ public class TestConfigHolder extends ConfigHolder {
                 public String discoveryPath() {
 
                     return discoveryPath;
+                }
+            }
+
+            public static class TestOAuthProtocolConfig implements OAuth2ProtocolConfig{
+                public String authorizationPath;
+                public String tokenPath;
+                public String validationPath;
+                public String attributesPath;
+                public String binding;
+                public String clientSecret;
+                public String clientId;
+
+                @Override
+                public String authorizationPath() {
+
+                    return authorizationPath;
+                }
+
+                @Override
+                public String tokenPath() {
+
+                    return tokenPath;
+                }
+
+                @Override
+                public String validationPath() {
+
+                    return validationPath;
+                }
+
+                @Override
+                public String attributesPath() {
+
+                    return attributesPath;
+                }
+
+                @Override
+                public String binding() {
+
+                    return binding;
+                }
+
+                @Override
+                public String clientSecret() {
+
+                    return clientSecret;
+                }
+
+                @Override
+                public String clientId(){
+                    return clientId;
                 }
             }
         }

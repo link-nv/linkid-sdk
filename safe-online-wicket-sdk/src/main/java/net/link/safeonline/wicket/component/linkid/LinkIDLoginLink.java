@@ -34,6 +34,7 @@ public class LinkIDLoginLink extends AbstractLinkIDAuthLink {
         super( id, target );
     }
 
+    @Override
     public void delegate(final HttpServletRequest request, final HttpServletResponse response, final Class<? extends Page> target,
                          final PageParameters targetPageParameters) {
 
@@ -59,9 +60,6 @@ public class LinkIDLoginLink extends AbstractLinkIDAuthLink {
         return new AuthenticationContext( null, null, null, targetURL );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isVisible() {
 

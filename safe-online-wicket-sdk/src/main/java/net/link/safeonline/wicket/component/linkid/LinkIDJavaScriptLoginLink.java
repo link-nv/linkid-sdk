@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LoginMode;
@@ -17,11 +15,6 @@ import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import org.apache.wicket.*;
-import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.behavior.HeaderContributor;
-import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +30,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author sgdesmet
  */
-public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
+public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
-    protected boolean addJS;
-    protected LoginMode loginMode = null;
+    protected LoginMode loginMode;
 
     /**
      * Constructor. Adds 'linkid.login.js' to the page.
@@ -75,58 +67,20 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
      */
     public LinkIDJavaScriptLoginLink(String id, @Nullable Class<? extends Page> target, boolean addJS) {
 
-        super( id, target );
-        this.addJS = addJS;
-        add( new AttributeAppender( "class", new Model<String>( "linkid-login" ), " " ) );
-    }
-
-    public LoginMode getLoginMode() {
-
-        return loginMode;
+        super( id, "login", target, addJS );
     }
 
     /**
-     * Set the login style (redirect, popup window, modal window). Only used if this parameter has not already been set by linkid.login.js
+     * Set the login style (redirect, popup window, modal window). Only used if this parameter has not already been set by linkid.js
      */
     public void setLoginMode(final LoginMode loginMode) {
 
         this.loginMode = loginMode;
     }
 
-    public boolean isAddJS() {
+    public LoginMode getLoginMode() {
 
-        return addJS;
-    }
-
-    public void setAddJS(final boolean addJS) {
-
-        this.addJS = addJS;
-    }
-
-    @Override
-    protected void onBeforeRender() {
-
-        super.onBeforeRender();
-
-        String loginModeArg = null != loginMode? String.format( "'%s'", loginMode ): "null";
-        String loginUrlArg = null != findLoginUrl()? String.format( "'%s'", findLoginUrl() ): "null";
-        String redirectToOnCompleteArg = null != findRedirectToInComplete()? String.format( "'%s'", findRedirectToInComplete() ): "null";
-
-        add( new AttributeAppender( "onclick", true,
-                new Model<String>( String.format( "startLinkIDLogin(%s, %s, %s);", loginModeArg, loginUrlArg, redirectToOnCompleteArg ) ),
-                ";" ) );
-
-        if (addJS) {
-            //LinkID JavaScript which handles login look
-            add( new HeaderContributor( new IHeaderContributor() {
-                @Override
-                public void renderHead(IHeaderResponse response) {
-
-                    response.renderJavascriptReference( String.format( "%s/js/linkid.login-min.js", config().web().staticBase() ),
-                            "linkid-login-script" );
-                }
-            } ) );
-        }
+        return loginMode;
     }
 
     @Override
@@ -153,15 +107,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
         WebRequest request = getWebRequest();
         String targetURL = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
         String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
-        LoginMode mode = null;
-        if (modeParam != null) {
-            for (LoginMode val : LoginMode.values()) {
-                if (modeParam.trim().equalsIgnoreCase( val.name() )) {
-                    mode = val;
-                    break;
-                }
-            }
-        }
+        LoginMode mode = LoginMode.fromString( modeParam );
 
         if (targetURL == null) {
             targetURL = RequestCycle.get().urlFor( targetPage, targetPageParameters ).toString();
@@ -195,7 +141,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthLink {
      *         If {@code null} will redirect back to current location
      */
     @Nullable
-    public String findRedirectToInComplete() {
+    public String findRedirectToOnComplete() {
 
         return null;
     }

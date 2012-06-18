@@ -23,8 +23,12 @@ import org.jetbrains.annotations.Nullable;
 public class AttributeSDK<T extends Serializable> extends MetaObject implements Serializable {
 
     private       String id;
-    private final String name;
+    private       String name;
     private       T      value;
+
+    public AttributeSDK() {
+
+    }
 
     public AttributeSDK(final String name) {
 
@@ -67,5 +71,11 @@ public class AttributeSDK<T extends Serializable> extends MetaObject implements 
 
         this.value = value;
     }
+
+    public void setName(final String name) {
+
+        this.name = name;
+    }
+
 }
 

@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -13,8 +14,6 @@ import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.LogoutContext;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import net.link.util.wicket.util.RedirectToPageException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.*;
 
 
@@ -28,7 +27,7 @@ import org.apache.wicket.*;
  */
 public class LinkIDLogoutLink extends AbstractLinkIDAuthLink {
 
-    private static Log LOG = LogFactory.getLog( LinkIDLogoutLink.class );
+    private static final Logger logger = Logger.get( LinkIDLogoutLink.class );
 
     private boolean logoutEnabled;
 
@@ -69,7 +68,7 @@ public class LinkIDLogoutLink extends AbstractLinkIDAuthLink {
             redirected = AuthenticationUtils.logout( request, response, newContext( target, targetPageParameters ) );
 
         if (!redirected) {
-            LOG.debug( "Logout handled locally; invalidating sessionId." );
+            logger.dbg( "Logout handled locally; invalidating sessionId." );
             Session.get().invalidateNow();
 
             throw new RedirectToPageException( target, targetPageParameters );
