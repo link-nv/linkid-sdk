@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth.servlet;
 
 import com.google.common.base.Function;
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -19,16 +20,14 @@ import net.link.util.error.ValidationFailedException;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 import net.link.util.servlet.annotation.Init;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
  * Abstract Logout Servlet. This servlet contains the landing page to finalize the logout process initiated by the web application. This
- * servlet also removes the <code>userId</code> attribute and redirects to the specified target when the logout request was made.
- *
+ * servlet also removes the {@code userId} attribute and redirects to the specified target when the logout request was made.
+ * <p/>
  * This servlet also handles a logout request sent by the link ID authentication web application due to a single logout request sent by an
- * linkID application. After handling the request, it will redirect to <code>LogoutPath</code>. To finalize this, the web application should
+ * linkID application. After handling the request, it will redirect to {@code LogoutPath}. To finalize this, the web application should
  * redirect back to this page using Http GET, which will trigger this landing page to send back a logout response to the link ID
  * authentication web application.
  *
@@ -36,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
-    private static final Log LOG = LogFactory.getLog( AbstractLogoutServlet.class );
+    private static final Logger logger = Logger.get( AbstractLogoutServlet.class );
 
     public static final String ERROR_PAGE_PARAM = "ErrorPage";
 
@@ -47,7 +46,7 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        LOG.debug( "POST: " + request.getParameterMap().keySet() );
+        logger.dbg( "POST: %s", request.getParameterMap().keySet() );
 
         try {
             // Check for a linkID logout response (response to the application's logout request).
@@ -74,8 +73,9 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
                 logoutRequest.getProtocolHandler().sendLogoutResponse( response, logoutRequest, !logoutAllowed );
                 return;
             }
-        } catch (ValidationFailedException e) {
-            LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null, new ErrorMessage( e ) ) );
+        }
+        catch (ValidationFailedException e) {
+            logger.err( e, ServletUtils.redirectToErrorPage( request, response, errorPage, null, new ErrorMessage( e ) ) );
             return;
         }
 
@@ -84,7 +84,7 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
 
     /**
      * Override this method if you want to create a custom context for logout responses depending on the logout request.
-     *
+     * <p/>
      * The standard implementation uses {@link LogoutContext#LogoutContext()}.
      *
      * @return A function that provides the context for validating and creating a logout response to a given logout request.
@@ -92,6 +92,7 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
     protected Function<LogoutProtocolRequestContext, LogoutContext> getContextFunction() {
 
         return new Function<LogoutProtocolRequestContext, LogoutContext>() {
+            @Override
             public LogoutContext apply(LogoutProtocolRequestContext from) {
 
                 return new LogoutContext();
@@ -101,12 +102,15 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
 
     /**
      * Invoked when a logout request is received from linkID as a result of another application in the pool requesting a single logout.
-     *
+     * <p/>
      * Implement this to log the application user out of the session and perform any other possible user session cleanup.
-     *
-     * A successful logout will also cause the SDK to remove its credentials from the HTTP session.  Return false here if the application state requires the user is not logged out.  The SDK will leave its credentials on the HTTP session and the single logout process initiated by the other pool application will be marked as 'partial'.
-     *
-     * You are allowed to invalidate the HTTP session from here for a quick and thorough logout; if that makes sense in your application logic.
+     * <p/>
+     * A successful logout will also cause the SDK to remove its credentials from the HTTP session.  Return false here if the application
+     * state requires the user is not logged out.  The SDK will leave its credentials on the HTTP session and the single logout process
+     * initiated by the other pool application will be marked as 'partial'.
+     * <p/>
+     * You are allowed to invalidate the HTTP session from here for a quick and thorough logout; if that makes sense in your application
+     * logic.
      *
      * @param logoutRequest linkID's logout request.
      *
@@ -116,12 +120,14 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
 
     /**
      * Invoked after a logout request from this application has been handled by linkID and a logout response from linkID is received.
-     *
+     * <p/>
      * Implement this to log the application user out of the session and perform any other possible user session cleanup.
-     *
-     * A successful logout will also cause the SDK to remove its credentials from the HTTP session.  Return false here if the application state requires the user is not logged out.  The SDK will leave its credentials on the HTTP session.
-     *
-     * You are allowed to invalidate the HTTP session from here for a quick and thorough logout; if that makes sense in your application logic.
+     * <p/>
+     * A successful logout will also cause the SDK to remove its credentials from the HTTP session.  Return false here if the application
+     * state requires the user is not logged out.  The SDK will leave its credentials on the HTTP session.
+     * <p/>
+     * You are allowed to invalidate the HTTP session from here for a quick and thorough logout; if that makes sense in your application
+     * logic.
      *
      * @param logoutResponse linkID's response to our logout request.
      *
