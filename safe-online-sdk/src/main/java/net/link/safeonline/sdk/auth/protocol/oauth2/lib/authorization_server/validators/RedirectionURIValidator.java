@@ -89,6 +89,7 @@ public class RedirectionURIValidator extends AbstractValidator {
             throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "No return_uri found in request or application configuration" );
         }
         // redirect URI must be safe
+        // TODO: Don't blacklist, whitelist.  if ! equals https.
 //        if (redirectURI.getScheme().equals( "http" )){
 //            throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "Unsafe redirection URI: " + redirectURI);
 //        }

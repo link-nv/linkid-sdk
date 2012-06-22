@@ -13,10 +13,6 @@ import java.util.Date;
  */
 public class CodeToken extends Token {
 
-    public CodeToken() {
-
-    }
-
     public CodeToken(final String tokenData, final Date expirationDate, final boolean invalid) {
 
         super( tokenData, expirationDate, invalid );

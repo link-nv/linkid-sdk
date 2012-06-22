@@ -13,10 +13,6 @@ import java.util.Date;
  */
 public class RefreshToken extends Token {
 
-    public RefreshToken() {
-
-    }
-
     public RefreshToken(final String tokenData, final Date expirationDate, final boolean invalid) {
 
         super( tokenData, expirationDate, invalid );

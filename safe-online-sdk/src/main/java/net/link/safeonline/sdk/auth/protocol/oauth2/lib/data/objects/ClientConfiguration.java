@@ -32,10 +32,6 @@ public class ClientConfiguration implements Serializable{
 
     public static enum FlowType {AUTHORIZATION, IMPLICIT, RESOURCE_CREDENTIALS, CLIENT_CREDENTIALS}
 
-    public ClientConfiguration() {
-
-    }
-
     public ClientConfiguration(final String clientId) {
 
         this.clientId = clientId;

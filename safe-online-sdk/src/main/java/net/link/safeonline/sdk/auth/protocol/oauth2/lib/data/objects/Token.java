@@ -17,10 +17,6 @@ public class Token {
     protected Date expirationDate;
     protected boolean invalid;
 
-    public Token() {
-
-    }
-
     public Token(final String tokenData, final Date expirationDate, final boolean invalid) {
 
         this.tokenData = tokenData;
