@@ -15,10 +15,6 @@ public class AccessToken extends Token {
 
     public static String TYPE = "Bearer";
 
-    public AccessToken() {
-
-    }
-
     public AccessToken(final String tokenData, final Date expirationDate, final boolean invalid) {
 
         super( tokenData, expirationDate, invalid );
