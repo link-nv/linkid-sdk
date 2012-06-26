@@ -15,6 +15,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfi
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -512,23 +513,27 @@ public class MessageUtils {
             throws OauthInvalidMessageException {
 
         LOG.debug( "checking http for TLS and correct methods" );
-        if (!request.isSecure() || !stringEmpty( request.getHeader( "X-Forwarded-Proto" ) ) && request.getHeader( "X-Forwarded-Proto" )
-                                                                                                      .contains( HttpScheme.HTTPS ))
-            throw new OauthInvalidMessageException( "TLS is mandatory" );
+        if (!request.getScheme().toLowerCase().equals( HttpScheme.HTTPS )
+            || !stringEmpty( request.getHeader( "X-Forwarded-Proto" ) ) && !request.getHeader( "X-Forwarded-Proto" )
+                                                                                   .contains( HttpScheme.HTTPS ))
+            throw new OauthInvalidMessageException(
+                    String.format( "TLS is mandatory: request.protocol=%s,  X-Forwarded-Proto=%s", request.getProtocol(),
+                            request.getHeader( "X-Forwarded-Proto" ) ) );
 
         if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod()
                                                                                           .equalsIgnoreCase( HttpMethod.POST.toString() )
             && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )) {
-            throw new OauthInvalidMessageException( "invalid http method type: " + request.getMethod() );
+            throw new OauthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
         }
     }
 
+    @Nullable
     protected static String encodeBasicHttpAuth(String clientId, String clientSecret) {
 
         if (!stringEmpty( clientSecret ) && !stringEmpty( clientId )) {
             String credentials = null;
             try {
-                credentials = new BASE64Encoder().encode( new String( clientId + ":" + clientSecret ).getBytes( "UTF-8" ) );
+                credentials = new BASE64Encoder().encode( String.format( "%s:%s", clientId, clientSecret ).getBytes( "UTF-8" ) );
             }
             catch (UnsupportedEncodingException e) {
                 LOG.error( e );
@@ -632,22 +637,22 @@ public class MessageUtils {
 
     public static boolean stringEmpty(String string) {
 
-        return string == null || string.length() == 0;
+        return string == null || string.isEmpty();
     }
 
     public static boolean collectionEmpty(Collection collection) {
 
-        return collection == null || collection.size() == 0;
+        return collection == null || collection.isEmpty();
     }
 
-    public static enum HttpMethod {
+    public enum HttpMethod {
         POST, GET, DELETE, PUT, HEAD
     }
 
 
-    public static final class HttpScheme {
+    public interface HttpScheme {
 
-        public static final String HTTPS = "https";
+        String HTTPS = "https";
     }
 
 
