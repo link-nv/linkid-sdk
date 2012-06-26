@@ -10,9 +10,9 @@ import java.util.*;
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sun.misc.BASE64Decoder;
@@ -64,9 +64,6 @@ public class MessageUtils {
     /**
      * Gets an authorization request from servlet request.
      * Throws an exception if the request is invalid.
-     * @param request
-     * @return
-     * @throws OauthInvalidMessageException
      */
     public static AuthorizationRequest getAuthorizationRequest(final HttpServletRequest request)
             throws OauthInvalidMessageException {
@@ -74,18 +71,17 @@ public class MessageUtils {
         // do some validation of the http connection
         validateHttpRequest( request );
         // just to make sure the client secret is not present here, or it would be exposed
-        if (!stringEmpty( request.getParameter( OAuth2Message.CLIENT_SECRET ) )){
-            throw new OauthInvalidMessageException("Client secret is exposed, never include it in an authorization request");
+        if (!stringEmpty( request.getParameter( OAuth2Message.CLIENT_SECRET ) )) {
+            throw new OauthInvalidMessageException( "Client secret is exposed, never include it in an authorization request" );
         }
 
         AuthorizationRequest authRequest = new AuthorizationRequest();
-        authRequest.setResponseType( OAuth2Message.ResponseType
-                                                  .fromString( request.getParameter( OAuth2Message.RESPONSE_TYPE ) ) );
+        authRequest.setResponseType( OAuth2Message.ResponseType.fromString( request.getParameter( OAuth2Message.RESPONSE_TYPE ) ) );
         authRequest.setClientId( request.getParameter( OAuth2Message.CLIENT_ID ) );
         authRequest.setState( request.getParameter( OAuth2Message.STATE ) );
         authRequest.setRedirectUri( request.getParameter( OAuth2Message.REDIRECT_URI ) );
         String scope = request.getParameter( OAuth2Message.SCOPE );
-        if ( !stringEmpty( scope ) ){
+        if (!stringEmpty( scope )) {
             authRequest.setScope( Arrays.asList( scope.split( " " ) ) );
         } else {
             authRequest.setScope( Collections.<String>emptyList() );
@@ -93,19 +89,13 @@ public class MessageUtils {
         return authRequest;
     }
 
-
-
     /**
      * Gets a token request from the http request. If present, extracts either http basic auth client credentials  or form-based auth
      * client credentials, and stores them in the AccessTokenRequest return message. Note that client credentials in the query string
      * are not allowed.
-     *
-     * @param request
-     * @return
-     * @throws OauthInvalidMessageException
      */
     public static AccessTokenRequest getTokenRequest(final HttpServletRequest request)
-            throws OauthInvalidMessageException{
+            throws OauthInvalidMessageException {
 
         // do some validation of the http connection
         validateHttpRequest( request );
@@ -123,7 +113,7 @@ public class MessageUtils {
         accessTokenRequest.setPassword( request.getParameter( OAuth2Message.PASSWORD ) );
 
         String scope = request.getParameter( OAuth2Message.SCOPE );
-        if (!stringEmpty( scope )){
+        if (!stringEmpty( scope )) {
             accessTokenRequest.setScope( Arrays.asList( scope.split( " " ) ) );
         } else {
             accessTokenRequest.setScope( Collections.<String>emptyList() );
@@ -135,19 +125,19 @@ public class MessageUtils {
 
         //get credentials from either authorization header or x-www-form-encoded
         String authHeader = request.getHeader( "Authorization" );
-        if (!stringEmpty( authHeader )){
+        if (!stringEmpty( authHeader )) {
             StringTokenizer st = new StringTokenizer( authHeader.trim() );
-            if (st.hasMoreTokens()){
+            if (st.hasMoreTokens()) {
                 String type = st.nextToken();
-                if ("Basic".equalsIgnoreCase( type )){
-                    if (st.hasMoreTokens()){
-                        String credentials =  st.nextToken();
+                if ("Basic".equalsIgnoreCase( type )) {
+                    if (st.hasMoreTokens()) {
+                        String credentials = st.nextToken();
                         try {
                             credentials = new String( new BASE64Decoder().decodeBuffer( credentials ) );
-                            int index =  credentials.indexOf( ":" );
-                            if (index >= 0){
-                                accessTokenRequest.setClientId( credentials.substring(0, index) );
-                                accessTokenRequest.setClientSecret( credentials.substring(index+1) );
+                            int index = credentials.indexOf( ":" );
+                            if (index >= 0) {
+                                accessTokenRequest.setClientId( credentials.substring( 0, index ) );
+                                accessTokenRequest.setClientSecret( credentials.substring( index + 1 ) );
                             }
                         }
                         catch (IOException e) {
@@ -157,7 +147,7 @@ public class MessageUtils {
                 }
             }
         }
-        if (accessTokenRequest.getClientId() == null || accessTokenRequest.getClientSecret() == null){
+        if (accessTokenRequest.getClientId() == null || accessTokenRequest.getClientSecret() == null) {
             accessTokenRequest.setClientId( request.getParameter( OAuth2Message.CLIENT_ID ) );
             accessTokenRequest.setClientSecret( request.getParameter( OAuth2Message.CLIENT_SECRET ) );
         }
@@ -168,11 +158,9 @@ public class MessageUtils {
     /**
      * Gets a token validation request from the servlet request. Supports fetching the access_token parameter encoded
      * in the request with x-www-form-encoded, and supports Bearer tokens in the authorization header.
-     * @param request
-     * @return
-     * @throws OauthInvalidMessageException
      */
-    public static ValidationRequest getValidationMessage(final HttpServletRequest request) throws OauthInvalidMessageException{
+    public static ValidationRequest getValidationMessage(final HttpServletRequest request)
+            throws OauthInvalidMessageException {
 
         LOG.debug( "get access token" );
         // do some validation of the http connection
@@ -185,23 +173,23 @@ public class MessageUtils {
         // if client credentials are present, add them
         ValidationRequest validationRequest = new ValidationRequest();
         String accessToken = request.getParameter( OAuth2Message.ACCESS_TOKEN );
-        if (null == accessToken){
+        if (null == accessToken) {
             String authHeader = request.getHeader( "Authorization" );
-            if (!stringEmpty( authHeader )){
+            if (!stringEmpty( authHeader )) {
                 StringTokenizer st = new StringTokenizer( authHeader.trim() );
-                if (st.hasMoreTokens()){
+                if (st.hasMoreTokens()) {
                     String type = st.nextToken();
-                    if ("Bearer".equalsIgnoreCase( type ) || "OAuth2".equalsIgnoreCase( type )){ //oauth2 is legacy
-                        accessToken = st.hasMoreTokens() ? st.nextToken() : null;
-                    } else if ("Basic".equalsIgnoreCase( type )){
-                        if (st.hasMoreTokens()){
-                            String credentials =  st.nextToken();
+                    if ("Bearer".equalsIgnoreCase( type ) || "OAuth2".equalsIgnoreCase( type )) { //oauth2 is legacy
+                        accessToken = st.hasMoreTokens()? st.nextToken(): null;
+                    } else if ("Basic".equalsIgnoreCase( type )) {
+                        if (st.hasMoreTokens()) {
+                            String credentials = st.nextToken();
                             try {
                                 credentials = new String( new BASE64Decoder().decodeBuffer( credentials ) );
-                                int index =  credentials.indexOf( ":" );
-                                if (index >= 0){
-                                    validationRequest.setClientId( credentials.substring(0, index) );
-                                    validationRequest.setClientSecret( credentials.substring(index+1) );
+                                int index = credentials.indexOf( ":" );
+                                if (index >= 0) {
+                                    validationRequest.setClientId( credentials.substring( 0, index ) );
+                                    validationRequest.setClientSecret( credentials.substring( index + 1 ) );
                                 }
                             }
                             catch (IOException e) {
@@ -213,13 +201,13 @@ public class MessageUtils {
             }
         }
 
-        if ( null != accessToken )
+        if (null != accessToken)
             validationRequest.setAccessToken( accessToken );
         else
-            throw new OauthInvalidMessageException("Authorization required");
+            throw new OauthInvalidMessageException( "Authorization required" );
 
         // in case of form based auth
-        if (validationRequest.getClientId() == null || validationRequest.getClientSecret() == null){
+        if (validationRequest.getClientId() == null || validationRequest.getClientSecret() == null) {
             validationRequest.setClientId( request.getParameter( OAuth2Message.CLIENT_ID ) );
             validationRequest.setClientSecret( request.getParameter( OAuth2Message.CLIENT_SECRET ) );
         }
@@ -229,74 +217,63 @@ public class MessageUtils {
 
     /**
      * Send a response message back
-     *
-     * @param servletResponse
-     * @param responseMessage
-     * @throws IOException
      */
     public static void sendResponseMessage(final HttpServletResponse servletResponse, ResponseMessage responseMessage)
             throws IOException {
 
-        if (null == responseMessage){
+        if (null == responseMessage) {
             return;
         }
         servletResponse.setContentType( "application/json;charset=UTF-8" );
         servletResponse.setHeader( "Cache-Control", "no-store" );
         servletResponse.setHeader( "Pragma", "no-cache" );
 
-        if (responseMessage instanceof AuthorizationCodeResponse){
+        if (responseMessage instanceof AuthorizationCodeResponse) {
             LOG.error( "Authorization codes must be returned by redirect" );
             return;
-        } else if (responseMessage instanceof AccessTokenResponse){
-            gson.toJson( (AccessTokenResponse) responseMessage , servletResponse.getWriter() );
-        } else if (responseMessage instanceof ErrorResponse){
-            if (responseMessage instanceof CredentialsRequiredResponse){
+        } else if (responseMessage instanceof AccessTokenResponse) {
+            gson.toJson( (AccessTokenResponse) responseMessage, servletResponse.getWriter() );
+        } else if (responseMessage instanceof ErrorResponse) {
+            if (responseMessage instanceof CredentialsRequiredResponse) {
                 servletResponse.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
                 servletResponse.setHeader( "WWW-Authenticate", authenticationRequiredHeader );
-            } else if (((ErrorResponse) responseMessage).getErrorType() == OAuth2Message.ErrorType.SERVER_ERROR){
+            } else if (((ErrorResponse) responseMessage).getErrorType() == OAuth2Message.ErrorType.SERVER_ERROR) {
                 servletResponse.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
             } else
                 servletResponse.setStatus( HttpServletResponse.SC_BAD_REQUEST );
-            gson.toJson( (ErrorResponse) responseMessage , servletResponse.getWriter() );
-        } else if (responseMessage instanceof ValidationResponse ){
-            gson.toJson( (ValidationResponse) responseMessage , servletResponse.getWriter() );
+            gson.toJson( (ErrorResponse) responseMessage, servletResponse.getWriter() );
+        } else if (responseMessage instanceof ValidationResponse) {
+            gson.toJson( (ValidationResponse) responseMessage, servletResponse.getWriter() );
         }
     }
 
     /**
      * Send an oauth response message (authorization code, access token, error message) back to the client
      * via user-agent redirect.
-     *
-     * @param redirectUri
-     * @param responseMessage
-     * @param servletResponse
-     * @param flowType
-     * @param codeInBody
-     * @throws IOException
      */
     public static void sendRedirectMessage(final String redirectUri, ResponseMessage responseMessage,
                                            final HttpServletResponse servletResponse, ClientConfiguration.FlowType flowType,
                                            boolean codeInBody)
             throws IOException {
 
-        if(null == responseMessage){
+        if (null == responseMessage) {
             return;
         }
 
-        List<String> names = new ArrayList<String>(  );
-        List<Object> values = new ArrayList<Object>(  );
-        if (responseMessage instanceof ValidationResponse){
+        List<String> names = new ArrayList<String>();
+        List<Object> values = new ArrayList<Object>();
+        if (responseMessage instanceof ValidationResponse) {
             LOG.error( "Access token validations cannot be returned by redirect" );
             return;
-        } else if (responseMessage instanceof AuthorizationCodeResponse){
+        } else if (responseMessage instanceof AuthorizationCodeResponse) {
 
             AuthorizationCodeResponse authorizationCodeResponse = (AuthorizationCodeResponse) responseMessage;
             names.add( OAuth2Message.CODE );
             names.add( OAuth2Message.STATE );
-            values.add( authorizationCodeResponse.getCode());
-            values.add( authorizationCodeResponse.getState());
+            values.add( authorizationCodeResponse.getCode() );
+            values.add( authorizationCodeResponse.getState() );
 
-            if (!codeInBody){
+            if (!codeInBody) {
                 servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
             } else {
                 servletResponse.setHeader( "Cache-Control", "no-store" );
@@ -304,41 +281,39 @@ public class MessageUtils {
                 servletResponse.setContentType( "text/html;charset=UTF-8" );
                 servletResponse.getWriter().print( encodeInHTMLForm( redirectUri, names, values ) );
             }
-
-        } else if (responseMessage instanceof AccessTokenResponse){
+        } else if (responseMessage instanceof AccessTokenResponse) {
             // this can only be implicit grant flow, access token must be encoded in fragment (per oauth2 spec)
             AccessTokenResponse accessTokenResponse = (AccessTokenResponse) responseMessage;
 
             names.add( OAuth2Message.ACCESS_TOKEN );
-            values.add (accessTokenResponse.getAccessToken());
+            values.add( accessTokenResponse.getAccessToken() );
             names.add( OAuth2Message.REFRESH_TOKEN );
-            values.add (accessTokenResponse.getRefreshToken());
+            values.add( accessTokenResponse.getRefreshToken() );
             names.add( OAuth2Message.EXPIRES_IN );
-            values.add (accessTokenResponse.getExpiresIn());
+            values.add( accessTokenResponse.getExpiresIn() );
             names.add( OAuth2Message.TOKEN_TYPE );
-            values.add (accessTokenResponse.getTokenType());
+            values.add( accessTokenResponse.getTokenType() );
             names.add( OAuth2Message.SCOPE );
-            values.add (stringify( accessTokenResponse.getScope() ));
+            values.add( stringify( accessTokenResponse.getScope() ) );
 
             servletResponse.sendRedirect( encodeInFragment( redirectUri, names, values ) );
-
-        } else if (responseMessage instanceof ErrorResponse){
+        } else if (responseMessage instanceof ErrorResponse) {
 
             ErrorResponse errorResponse = (ErrorResponse) responseMessage;
 
-            names.add( OAuth2Message.ERROR);
-            values.add( errorResponse.getErrorType());
-            names.add( OAuth2Message.ERROR_DESCRIPTION);
-            values.add( errorResponse.getErrorDescription());
-            names.add( OAuth2Message.ERROR_URI);
-            values.add( errorResponse.getErrorUri());
-            names.add( OAuth2Message.STATE);
-            values.add( errorResponse.getState());
+            names.add( OAuth2Message.ERROR );
+            values.add( errorResponse.getErrorType() );
+            names.add( OAuth2Message.ERROR_DESCRIPTION );
+            values.add( errorResponse.getErrorDescription() );
+            names.add( OAuth2Message.ERROR_URI );
+            values.add( errorResponse.getErrorUri() );
+            names.add( OAuth2Message.STATE );
+            values.add( errorResponse.getState() );
             servletResponse.setStatus( HttpServletResponse.SC_BAD_REQUEST );
 
-            if (flowType == ClientConfiguration.FlowType.IMPLICIT){
+            if (flowType == ClientConfiguration.FlowType.IMPLICIT) {
                 servletResponse.sendRedirect( encodeInFragment( redirectUri, names, values ) );
-            } else if (!codeInBody){
+            } else if (!codeInBody) {
                 servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
             } else {
                 servletResponse.setHeader( "Cache-Control", "no-store" );
@@ -347,8 +322,6 @@ public class MessageUtils {
                 servletResponse.getWriter().print( encodeInHTMLForm( redirectUri, names, values ) );
             }
         }
-
-
     }
 
     /*
@@ -359,8 +332,6 @@ public class MessageUtils {
 
     /**
      * Gets an authorization code response (or error message) from the servlet request.
-     * @param request
-     * @return
      */
     public static ResponseMessage getAuthorizationCodeResponse(final HttpServletRequest request)
             throws OauthInvalidMessageException {
@@ -369,13 +340,13 @@ public class MessageUtils {
 
         ResponseMessage responseMessage = null;
 
-        if ( !stringEmpty( request.getParameter( OAuth2Message.CODE ) ) ){
+        if (!stringEmpty( request.getParameter( OAuth2Message.CODE ) )) {
             responseMessage = new AuthorizationCodeResponse( request.getParameter( OAuth2Message.CODE ) );
-            ((AuthorizationCodeResponse)responseMessage).setState( request.getParameter( OAuth2Message.STATE ) );
-        } else if ( !stringEmpty( request.getParameter( OAuth2Message.ERROR ) ) ){
+            ((AuthorizationCodeResponse) responseMessage).setState( request.getParameter( OAuth2Message.STATE ) );
+        } else if (!stringEmpty( request.getParameter( OAuth2Message.ERROR ) )) {
             responseMessage = new ErrorResponse( OAuth2Message.ErrorType.valueOf( request.getParameter( OAuth2Message.ERROR ) ),
                     request.getParameter( OAuth2Message.ERROR_DESCRIPTION ), request.getParameter( OAuth2Message.ERROR_URI ),
-                    request.getParameter( OAuth2Message.STATE ));
+                    request.getParameter( OAuth2Message.STATE ) );
         } else {
             throw new OauthInvalidMessageException( "The response message was not recognized" );
         }
@@ -383,31 +354,26 @@ public class MessageUtils {
         return responseMessage;
     }
 
-
     /**
      * Sends a request message (access token request or validation request) to an oauth2 endpoint
      *
-     * @param endpoint
-     * @param requestMessage
      * @param trustedSslCertificate ssl certificate to trust. May be null, in which case all certificates are trusted. Only for testing!
-     * @param clientId
-     * @param clientSecret
      */
-    public static ResponseMessage sendRequestMessage(String endpoint, RequestMessage requestMessage, final X509Certificate trustedSslCertificate,
-                                          String clientId, String clientSecret)
+    public static ResponseMessage sendRequestMessage(String endpoint, RequestMessage requestMessage,
+                                                     final X509Certificate trustedSslCertificate, String clientId, String clientSecret)
             throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 
         // using HTTP(s)URlConnection here to avoid additional dependencies, but httpclient 4 might be faster
 
         // set up connection and ssl socket factory based on provided certificate
-        URL endpointURL = new URL(endpoint);
-        HttpsURLConnection connection = (HttpsURLConnection)endpointURL.openConnection();
+        URL endpointURL = new URL( endpoint );
+        HttpsURLConnection connection = (HttpsURLConnection) endpointURL.openConnection();
         SSLContext sslContext = SSLContext.getInstance( "SSL" );
         TrustManager trustManager = new OAuthCustomTrustManager( trustedSslCertificate );
         TrustManager[] trustManagers = { trustManager };
         sslContext.init( null, trustManagers, null );
         connection.setSSLSocketFactory( sslContext.getSocketFactory() );
-        if ( null == trustedSslCertificate){
+        if (null == trustedSslCertificate) {
             connection.setHostnameVerifier( new HostnameVerifier() {
                 @Override
                 public boolean verify(final String s, final SSLSession sslSession) {
@@ -426,8 +392,8 @@ public class MessageUtils {
         PrintWriter contentWriter = null;
 
         // send message based on type
-        if (requestMessage instanceof AccessTokenRequest){
-            if (!stringEmpty( clientSecret )){
+        if (requestMessage instanceof AccessTokenRequest) {
+            if (!stringEmpty( clientSecret )) {
                 connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
             }
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
@@ -435,9 +401,10 @@ public class MessageUtils {
             contentWriter.write( "grant_type=" + ((AccessTokenRequest) requestMessage).getGrantType().toString() );
             contentWriter.write( "&code=" + URLEncoder.encode( ((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) );
             if (((AccessTokenRequest) requestMessage).getRedirectUri() != null)
-                contentWriter.write( "&redirect_uri=" + URLEncoder.encode(((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) );
-        } else if (requestMessage instanceof ValidationRequest){
-            if (!stringEmpty( clientSecret )){
+                contentWriter.write(
+                        "&redirect_uri=" + URLEncoder.encode( ((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) );
+        } else if (requestMessage instanceof ValidationRequest) {
+            if (!stringEmpty( clientSecret )) {
                 connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
             }
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
@@ -448,7 +415,7 @@ public class MessageUtils {
             LOG.error( "Unsupported message type: " + requestMessage.getClass().getName() );
             return null;
         }
-        if (null != contentWriter){
+        if (null != contentWriter) {
             contentWriter.close();
         }
 
@@ -458,11 +425,11 @@ public class MessageUtils {
             reader = new InputStreamReader( connection.getInputStream() );
         else
             reader = new InputStreamReader( connection.getErrorStream() );
-        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK){
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             responseMessage = gson.fromJson( reader, ErrorResponse.class );
-        } else if (requestMessage instanceof AccessTokenRequest){
+        } else if (requestMessage instanceof AccessTokenRequest) {
             responseMessage = gson.fromJson( reader, AccessTokenResponse.class );
-        } else if (requestMessage instanceof ValidationRequest){
+        } else if (requestMessage instanceof ValidationRequest) {
             responseMessage = gson.fromJson( reader, ValidationResponse.class );
         }
         reader.close();
@@ -472,41 +439,30 @@ public class MessageUtils {
 
     /**
      * Sends a request message to the authorization server, using user-agent redirection
-     *
-     * @param redirectUri
-     * @param requestMessage
-     * @param servletResponse
-     * @param paramsInBody
-     * @throws IOException
      */
     public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
                                            final HttpServletResponse servletResponse, boolean paramsInBody)
             throws IOException {
+
         sendRedirectMessage( redirectUri, requestMessage, servletResponse, paramsInBody, Collections.<String>emptyList() );
     }
 
     /**
      * Sends a request message to the authorization server, using user-agent redirection. Allows additional (non-oauth)
      * parameters to be added ( alternate the names and values in the list, ie {"paramname", "value", "paramname2", "value2" } )
-     *
-     * @param redirectUri
-     * @param requestMessage
-     * @param servletResponse
-     * @param paramsInBody
-     * @param additionalParams
-     * @throws IOException
      */
     public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
                                            final HttpServletResponse servletResponse, boolean paramsInBody,
                                            final List<String> additionalParams)
             throws IOException {
-        if(null == requestMessage){
+
+        if (null == requestMessage) {
             return;
         }
 
-        List<String> names = new ArrayList<String>(  );
-        List<Object> values = new ArrayList<Object>(  );
-        if (requestMessage instanceof AuthorizationRequest){
+        List<String> names = new ArrayList<String>();
+        List<Object> values = new ArrayList<Object>();
+        if (requestMessage instanceof AuthorizationRequest) {
 
             AuthorizationRequest authorizationRequest = (AuthorizationRequest) requestMessage;
             names.add( OAuth2Message.RESPONSE_TYPE );
@@ -514,26 +470,26 @@ public class MessageUtils {
             names.add( OAuth2Message.REDIRECT_URI );
             names.add( OAuth2Message.SCOPE );
             names.add( OAuth2Message.STATE );
-            values.add( authorizationRequest.getResponseType());
-            values.add( authorizationRequest.getClientId());
-            values.add( authorizationRequest.getRedirectUri());
+            values.add( authorizationRequest.getResponseType() );
+            values.add( authorizationRequest.getClientId() );
+            values.add( authorizationRequest.getRedirectUri() );
             values.add( stringify( authorizationRequest.getScope() ) );
-            values.add( authorizationRequest.getState());
+            values.add( authorizationRequest.getState() );
         } else {
             LOG.error( "This message type is not supported in a redirect" );
             return;
         }
 
         // additional params specified by user
-        if (additionalParams.size() % 2 == 0){
-            for (int i =0; i < additionalParams.size(); i = i +2){
+        if (additionalParams.size() % 2 == 0) {
+            for (int i = 0; i < additionalParams.size(); i = i + 2) {
                 names.add( additionalParams.get( i ) );
                 values.add( additionalParams.get( i + 1 ) );
             }
         }
 
         // do redirect, either using http 302, or an auto-submitting http form
-        if (!paramsInBody){
+        if (!paramsInBody) {
             servletResponse.sendRedirect( encodeInQuery( redirectUri, names, values ) );
         } else {
             servletResponse.setHeader( "Cache-Control", "no-store" );
@@ -551,28 +507,28 @@ public class MessageUtils {
 
     /**
      * Throws an exception if the connection is not secure, or the http method does not equal get or post
-     * @param request
-     * @throws OauthInvalidMessageException
      */
-    protected static final void validateHttpRequest(HttpServletRequest request)
+    protected static void validateHttpRequest(HttpServletRequest request)
             throws OauthInvalidMessageException {
 
         LOG.debug( "checking http for TLS and correct methods" );
-        if (!request.isSecure() || (!stringEmpty( request.getHeader( "X-Forwarded-Proto" ) ) && request.getHeader( "X-Forwarded-Proto" )
-                                                                                                       .contains( HttpScheme.HTTPS )))
+        if (!request.isSecure() || !stringEmpty( request.getHeader( "X-Forwarded-Proto" ) ) && request.getHeader( "X-Forwarded-Proto" )
+                                                                                                      .contains( HttpScheme.HTTPS ))
             throw new OauthInvalidMessageException( "TLS is mandatory" );
 
-        if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod().equalsIgnoreCase(
-                HttpMethod.POST.toString() ) && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )){
-            throw new OauthInvalidMessageException("invalid http method type: " + request.getMethod());
+        if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod()
+                                                                                          .equalsIgnoreCase( HttpMethod.POST.toString() )
+            && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )) {
+            throw new OauthInvalidMessageException( "invalid http method type: " + request.getMethod() );
         }
     }
 
-    protected static String encodeBasicHttpAuth(String clientId, String clientSecret){
-        if (!stringEmpty( clientSecret ) && !stringEmpty( clientId )){
+    protected static String encodeBasicHttpAuth(String clientId, String clientSecret) {
+
+        if (!stringEmpty( clientSecret ) && !stringEmpty( clientId )) {
             String credentials = null;
             try {
-                credentials = new BASE64Encoder().encode( new String(clientId + ":" +clientSecret).getBytes( "UTF-8" ));
+                credentials = new BASE64Encoder().encode( new String( clientId + ":" + clientSecret ).getBytes( "UTF-8" ) );
             }
             catch (UnsupportedEncodingException e) {
                 LOG.error( e );
@@ -582,36 +538,40 @@ public class MessageUtils {
         return "";
     }
 
-    protected static String encodeInQuery(String redirectUri, List<String> names, List<Object> values){
+    protected static String encodeInQuery(String redirectUri, List<String> names, List<Object> values) {
+
         return encodeInURL( redirectUri, names, values, '?' );
     }
 
-    protected static String encodeInFragment(String redirectUri, List<String> names, List<Object> values){
+    protected static String encodeInFragment(String redirectUri, List<String> names, List<Object> values) {
+
         return encodeInURL( redirectUri, names, values, '#' );
     }
 
-    protected static String encodeInURL(String redirectUri, List<String> names, List<Object> values, char symbol){
-        if (names.size() != names.size()){
+    protected static String encodeInURL(String redirectUri, List<String> names, List<Object> values, char symbol) {
+
+        if (names.size() != names.size()) {
             LOG.error( "names and values lists are not equal size" );
             return "";
         }
 
         StringBuffer redirectBuff = new StringBuffer( redirectUri );
-        for (int i = 0; i < names.size(); i++){
-            String name =  names.get( i );
-            String value =  values.get( i ) != null ? values.get( i ).toString() : null;
-            if (!stringEmpty( value ) && !stringEmpty( name )){
+        for (int i = 0; i < names.size(); i++) {
+            String name = names.get( i );
+            String value = values.get( i ) != null? values.get( i ).toString(): null;
+            if (!stringEmpty( value ) && !stringEmpty( name )) {
                 encodeInURL( redirectBuff, name, value, symbol );
             }
         }
         return redirectBuff.toString();
     }
 
-    protected static void encodeInURL(StringBuffer sb, String name, String value, char bindSymbol){
-        if(value != null){
-            char symbol = sb.indexOf( "" + bindSymbol ) > 0 ? '&' : bindSymbol;
+    protected static void encodeInURL(StringBuffer sb, String name, String value, char bindSymbol) {
+
+        if (value != null) {
+            char symbol = sb.indexOf( "" + bindSymbol ) > 0? '&': bindSymbol;
             try {
-                sb.append( symbol + URLEncoder.encode( name, "UTF-8" ) +"=" + URLEncoder.encode( value, "UTF-8" ) );
+                sb.append( symbol + URLEncoder.encode( name, "UTF-8" ) + "=" + URLEncoder.encode( value, "UTF-8" ) );
             }
             catch (UnsupportedEncodingException e) {
                 LOG.error( e );
@@ -619,14 +579,16 @@ public class MessageUtils {
         }
     }
 
-    protected static void encodeInQuery(StringBuffer sb, String name, Number value, char bindSymbol){
+    protected static void encodeInQuery(StringBuffer sb, String name, Number value, char bindSymbol) {
+
         encodeInURL( sb, name, value.toString(), bindSymbol );
     }
 
-    protected static String stringify(List<String> scope){
+    protected static String stringify(List<String> scope) {
+
         StringBuffer buff = new StringBuffer( "" );
-        if ( scope != null)
-            for (Iterator<String> iterator = scope.iterator(); iterator.hasNext();){
+        if (scope != null)
+            for (Iterator<String> iterator = scope.iterator(); iterator.hasNext(); ) {
                 buff.append( iterator.next() );
                 if (iterator.hasNext())
                     buff.append( ' ' );
@@ -634,50 +596,47 @@ public class MessageUtils {
         return buff.toString();
     }
 
-    protected static String encodeInHTMLForm(String redirectUri, List<String> names, List<Object> values){
+    protected static String encodeInHTMLForm(String redirectUri, List<String> names, List<Object> values) {
 
         // okay, i'll be the first to admit that this method looks positively nasty. I'll get round to improving it, promise
 
-        if (names.size() != names.size() ){
+        if (names.size() != names.size()) {
             LOG.error( "names and values lists are not equal size" );
             return "";
         }
 
-        StringBuffer html = new StringBuffer(  );
+        StringBuffer html = new StringBuffer();
         html.append( "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">" );
         html.append( "<head>\n" + "\t\t<meta http-equiv=\"pragma\" content=\"no-cache\"/>\n"
                      + "\t\t<meta http-equiv=\"cache-control\" content=\"no-cache, must-revalidate\"/>\n"
                      + "\t\t<meta http-equiv=\"expires\" content=\"-1\"/>\n" + "\t</head>" );
-        html.append( "<body onload=\"document.forms[0].submit()\">\n"
-                     + "<noscript>\n" + "            <p>\n"
+        html.append( "<body onload=\"document.forms[0].submit()\">\n" + "<noscript>\n" + "            <p>\n"
                      + "    <strong>Note:</strong> Since your browser does not support JavaScript,\n"
-                     + "    you must press the Continue button once to proceed.\n" + "            </p>\n"
-                     + "</noscript>" );
+                     + "    you must press the Continue button once to proceed.\n" + "            </p>\n" + "</noscript>" );
         html.append( "<form action=\"" + redirectUri + "\" method=\"post\" autocomplete=\"off\" target=\"_self\">" );
 
-        for (int i = 0; i < names.size(); i++){
-            String name =  names.get( i );
-            String value =  values.get( i ) != null ? values.get( i ).toString() : null;
-            if (!stringEmpty( value ) && !stringEmpty( name )){
+        for (int i = 0; i < names.size(); i++) {
+            String name = names.get( i );
+            String value = values.get( i ) != null? values.get( i ).toString(): null;
+            if (!stringEmpty( value ) && !stringEmpty( name )) {
                 html.append( " <input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\"/>" );
             }
         }
 
-        html.append( " <noscript>\n"
-                     + "    <input type=\"submit\" value=\"Continue\"/>\n"
-                     + " </noscript>\n"
-                     + "</form>");
+        html.append( " <noscript>\n" + "    <input type=\"submit\" value=\"Continue\"/>\n" + " </noscript>\n" + "</form>" );
         html.append( "</body>" );
         html.append( "</html>" );
 
         return html.toString();
     }
 
-    public static final boolean stringEmpty(String string){
+    public static boolean stringEmpty(String string) {
+
         return string == null || string.length() == 0;
     }
 
-    public static final boolean collectionEmpty(Collection collection){
+    public static boolean collectionEmpty(Collection collection) {
+
         return collection == null || collection.size() == 0;
     }
 
@@ -687,8 +646,10 @@ public class MessageUtils {
 
 
     public static final class HttpScheme {
+
         public static final String HTTPS = "https";
     }
+
 
     public static class OAuthCustomTrustManager implements X509TrustManager {
 
@@ -702,6 +663,7 @@ public class MessageUtils {
          * Allows all server certificates.
          */
         public OAuthCustomTrustManager() {
+
             serverCertificate = null;
             defaultTrustManager = null;
         }
@@ -716,6 +678,7 @@ public class MessageUtils {
          */
         public OAuthCustomTrustManager(X509Certificate serverCertificate)
                 throws NoSuchAlgorithmException, KeyStoreException {
+
             this.serverCertificate = serverCertificate;
             String algorithm = TrustManagerFactory.getDefaultAlgorithm();
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance( algorithm );
