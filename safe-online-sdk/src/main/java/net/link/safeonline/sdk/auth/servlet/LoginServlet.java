@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth.servlet;
 
 import com.google.common.base.Function;
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -23,8 +24,6 @@ import net.link.util.error.ValidationFailedException;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 import net.link.util.servlet.annotation.Init;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -34,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
-    private static final Log LOG = LogFactory.getLog( LoginServlet.class );
+    private static final Logger logger = Logger.get( LoginServlet.class );
 
     public static final String ERROR_PAGE_PARAM   = "ErrorPage";
     public static final String TIMEOUT_PAGE_PARAM = "TimeoutPage";
@@ -69,11 +68,11 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             if (null == authnResponse) {
                 // if we don't have a response, check if perhaps the session has expired
                 if (request.getSession( false ) == null || request.getSession().isNew()) {
-                    LOG.warn( ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
+                    logger.wrn( ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
                             new ErrorMessage( "Session timeout, authentication took too long." ) ) );
                 }
                 //nope, it's something else
-                LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
+                logger.err( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
                         new ErrorMessage( "No expected or detached authentication responses found in request." ) ) );
                 return;
             }
@@ -91,11 +90,10 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                 out.println( "<html>" );
                 out.println( "<head>" );
                 out.println( "<script type=\"text/javascript\">" );
-                if (mode == LoginMode.POPUP){
+                if (mode == LoginMode.POPUP) {
                     out.println( "window.opener.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
                     out.println( "window.close();" );
-                }
-                else{
+                } else {
                     out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
                 }
                 out.println( "</script>" );
@@ -105,13 +103,13 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                         "<noscript><p>You are successfully logged in. Since your browser does not support JavaScript, you must close this popup window and refresh the original window manually.</p></noscript>" );
                 out.println( "</body>" );
                 out.println( "</html>" );
-            }else {
+            } else {
                 response.sendRedirect( authnResponse.getRequest().getTarget() );
             }
         }
-        catch (ValidationFailedException ignored) {
-            LOG.error( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
-                    new ErrorMessage( "Validation of authentication response failed." ) ) );
+        catch (ValidationFailedException e) {
+            logger.err( e, ServletUtils.redirectToErrorPage( request, response, errorPage, null,
+                    new ErrorMessage( String.format( "Validation of authentication response failed: %s", e.getMessage() ) ) ) );
         }
     }
 
@@ -142,7 +140,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
     protected static void onLogin(HttpSession session, AuthnProtocolResponseContext authnResponse) {
 
         if (authnResponse.isSuccess()) {
-            LOG.debug( "username: " + authnResponse.getUserId() );
+            logger.dbg( "username: " + authnResponse.getUserId() );
             LoginManager.set( session, authnResponse.getUserId(), authnResponse.getAttributes(), authnResponse.getAuthenticatedDevices(),
                     authnResponse.getCertificateChain() );
         }

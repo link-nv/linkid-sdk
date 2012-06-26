@@ -9,7 +9,7 @@ import java.util.Date;
  * Date: 21/03/12
  * Time: 11:29
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class RefreshToken extends Token {
 

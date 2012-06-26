@@ -9,7 +9,7 @@ import java.util.List;
  * Date: 07/05/12
  * Time: 11:24
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class ValidationResponse implements ResponseMessage {
 

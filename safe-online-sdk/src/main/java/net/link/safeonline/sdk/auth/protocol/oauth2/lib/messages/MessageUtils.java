@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages;
 
 import com.google.gson.*;
+import com.lyndir.lhunath.opal.system.util.StringUtils;
 import java.io.*;
 import java.net.*;
 import java.security.*;
@@ -513,17 +514,22 @@ public class MessageUtils {
             throws OauthInvalidMessageException {
 
         LOG.debug( "checking http for TLS and correct methods" );
-        if (!request.getScheme().toLowerCase().equals( HttpScheme.HTTPS )
-            || !stringEmpty( request.getHeader( "X-Forwarded-Proto" ) ) && !request.getHeader( "X-Forwarded-Proto" )
-                                                                                   .contains( HttpScheme.HTTPS ))
-            throw new OauthInvalidMessageException(
-                    String.format( "TLS is mandatory: request.protocol=%s,  X-Forwarded-Proto=%s", request.getProtocol(),
-                            request.getHeader( "X-Forwarded-Proto" ) ) );
 
-        if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod()
-                                                                                          .equalsIgnoreCase( HttpMethod.POST.toString() )
-            && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )) {
-            throw new OauthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
+        String xForwardedProto = request.getHeader( "X-Forwarded-Proto" );
+        if (request.getScheme().toLowerCase().equals( HttpScheme.HTTPS )
+            || !StringUtils.isEmpty( xForwardedProto ) && xForwardedProto.contains( HttpScheme.HTTPS )) {
+
+            if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod()
+                                                                                              .equalsIgnoreCase(
+                                                                                                      HttpMethod.POST.toString() )
+                && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )) {
+                throw new OauthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
+            }
+        } else {
+
+            throw new OauthInvalidMessageException(
+                    String.format( "TLS is mandatory: request.scheme=%s,  X-Forwarded-Proto=%s", request.getScheme(),
+                            request.getHeader( "X-Forwarded-Proto" ) ) );
         }
     }
 
