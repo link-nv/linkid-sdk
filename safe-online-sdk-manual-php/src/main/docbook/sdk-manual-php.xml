@@ -38,6 +38,15 @@
                 <listitem><para>modules/saml/lib/Auth/Source/SP.php</para></listitem>
             </itemizedlist>
         </para>
+        <para>
+            Please note that in order for the SimpleSAMLphp library to work, you will
+            need to set an alias simplesaml to simplesamlphp/www in your webserver configuration. So e.g.
+            <programlisting>
+                <![CDATA[
+Alias /simplesaml <your-sites-path>/simplesamlphp-1.8.2/www
+                        ]]>
+            </programlisting>
+        </para>
         <para>SAML v2.0 is a protocol that describes the means for applications to
             authenticate themselves in a standard way with external authentication
             and identity providers. This relieves the burden of identity management

@@ -1,5 +1,6 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -9,12 +10,12 @@ import java.util.Date;
  * Date: 03/05/12
  * Time: 15:45
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
-public class Token {
+public class Token implements Serializable {
 
-    protected String tokenData;
-    protected Date expirationDate;
+    protected String  tokenData;
+    protected Date    expirationDate;
     protected boolean invalid;
 
     public Token(final String tokenData, final Date expirationDate, final boolean invalid) {
@@ -26,7 +27,7 @@ public class Token {
 
     public Token(final String tokenData, final Date expirationDate) {
 
-        this(tokenData, expirationDate, false);
+        this( tokenData, expirationDate, false );
     }
 
     public boolean isInvalid() {
@@ -69,10 +70,7 @@ public class Token {
 
         Token token = (Token) o;
 
-        if (tokenData != null? !tokenData.equals( token.tokenData ): token.tokenData != null)
-            return false;
-
-        return true;
+        return !(tokenData != null? !tokenData.equals( token.tokenData ): token.tokenData != null);
     }
 
     @Override
@@ -84,10 +82,7 @@ public class Token {
     @Override
     public String toString() {
 
-        return getClass().getName() + "{" +
-               "tokenData='" + tokenData + '\'' +
-               ", expirationDate=" + expirationDate +
-               ", invalid=" + invalid +
-               '}';
+        return String.format( "%s{tokenData='%s', expirationDate=%s, invalid=%s}", getClass().getName(), tokenData, expirationDate,
+                invalid );
     }
 }

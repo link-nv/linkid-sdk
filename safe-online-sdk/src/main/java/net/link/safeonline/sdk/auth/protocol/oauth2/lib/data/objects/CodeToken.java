@@ -9,7 +9,7 @@ import java.util.Date;
  * Date: 03/05/12
  * Time: 15:46
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class CodeToken extends Token {
 

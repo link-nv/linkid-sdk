@@ -2,6 +2,7 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.lib;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -10,54 +11,60 @@ import java.util.EnumSet;
  * Date: 15/03/12
  * Time: 16:10
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public interface OAuth2Message extends Serializable {
-    public static final String RESPONSE_TYPE = "response_type";
-    public static final String CLIENT_ID = "client_id";
-    public static final String CLIENT_SECRET = "client_secret";
-    public static final String REDIRECT_URI = "redirect_uri";
-    public static final String SCOPE = "scope";
-    public static final String STATE = "state";
 
-    public static final String GRANT_TYPE = "grant_type";
+    String RESPONSE_TYPE = "response_type";
+    String CLIENT_ID     = "client_id";
+    String CLIENT_SECRET = "client_secret";
+    String REDIRECT_URI  = "redirect_uri";
+    String SCOPE         = "scope";
+    String STATE         = "state";
 
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    
-    public static final String CODE = "code";
-    
-    public static final String ERROR = "error";
-    public static final String ERROR_DESCRIPTION = "error_description";
-    public static final String ERROR_URI = "error_uri";
+    String GRANT_TYPE = "grant_type";
 
-    public static final String REFRESH_TOKEN = "refresh_token";
+    String USERNAME = "username";
+    String PASSWORD = "password";
 
-    public static final String ACCESS_TOKEN = "access_token";
-    public static final String TOKEN_TYPE = "token_type";
-    public static final String EXPIRES_IN = "expires_in";
+    String CODE = "code";
 
-    public static final String AUDIENCE = "audience"; //not official oauth, used for token validation, used same name as Google API (https://developers.google.com/accounts/docs/OAuth2Login)
-    public static final String USER_ID = "user_id";
+    String ERROR             = "error";
+    String ERROR_DESCRIPTION = "error_description";
+    String ERROR_URI         = "error_uri";
 
-    public enum ResponseType {
+    String REFRESH_TOKEN = "refresh_token";
 
-        CODE("code"),
-        TOKEN("token");
+    String ACCESS_TOKEN = "access_token";
+    String TOKEN_TYPE   = "token_type";
+    String EXPIRES_IN   = "expires_in";
 
-        private String code;
+    String AUDIENCE = "audience"; //not official oauth, used for token validation, used same name as Google API (https://developers.google.com/accounts/docs/OAuth2Login)
+    String USER_ID  = "user_id";
+
+
+    enum ResponseType {
+
+        CODE( "code" ),
+        TOKEN( "token" );
+
+        private final String code;
 
         ResponseType(String code) {
+
             this.code = code;
         }
 
         @Override
         public String toString() {
+
             return code;
         }
 
-        public static ResponseType fromString(String text){
-            for (ResponseType type : EnumSet.allOf( ResponseType.class )){
+        @Nullable
+        public static ResponseType fromString(String text) {
+
+            for (ResponseType type : EnumSet.allOf( ResponseType.class )) {
                 if (type.toString().equals( text ))
                     return type;
             }
@@ -65,32 +72,36 @@ public interface OAuth2Message extends Serializable {
         }
     }
 
-    public enum ErrorType{
 
-        INVALID_REQUEST("invalid_request"),
-        INVALID_CLIENT("invalid_client"),
-        UNAUTHORIZED_CLIENT("unauthorized_client"),
-        ACCESS_DENIED("access_denied"),
-        UNSUPPORTED_RESPONSE_TYPE ("unsupported_response_type"),
-        INVALID_SCOPE ("invalid_scope"),
-        SERVER_ERROR("server_error"),
-        TEMPORARILY_UNAVAILABLE("temporarily_unavailable"),
-        INVALID_GRANT("invalid_grant"),
-        UNSUPPORTED_GRANT_TYPE("unsupported_grant_type");
+    enum ErrorType {
 
-        private String type;
+        INVALID_REQUEST( "invalid_request" ),
+        INVALID_CLIENT( "invalid_client" ),
+        UNAUTHORIZED_CLIENT( "unauthorized_client" ),
+        ACCESS_DENIED( "access_denied" ),
+        UNSUPPORTED_RESPONSE_TYPE( "unsupported_response_type" ),
+        INVALID_SCOPE( "invalid_scope" ),
+        SERVER_ERROR( "server_error" ),
+        TEMPORARILY_UNAVAILABLE( "temporarily_unavailable" ),
+        INVALID_GRANT( "invalid_grant" ),
+        UNSUPPORTED_GRANT_TYPE( "unsupported_grant_type" );
+
+        private final String type;
 
         ErrorType(String type) {
+
             this.type = type;
         }
 
         @Override
         public String toString() {
+
             return type;
         }
 
-        public static ErrorType fromString(String text){
-            for (ErrorType type : EnumSet.allOf( ErrorType.class )){
+        public static ErrorType fromString(String text) {
+
+            for (ErrorType type : EnumSet.allOf( ErrorType.class )) {
                 if (type.toString().equals( text ))
                     return type;
             }
@@ -99,25 +110,30 @@ public interface OAuth2Message extends Serializable {
 
     }
 
-    public enum GrantType{
-        AUTHORIZATION_CODE ("authorization_code"),
-        PASSWORD ("password"),
-        CLIENT_CREDENTIALS ("client_credentials"),
-        REFRESH_TOKEN ("refresh_token");
+
+    enum GrantType {
+        AUTHORIZATION_CODE( "authorization_code" ),
+        PASSWORD( "password" ),
+        CLIENT_CREDENTIALS( "client_credentials" ),
+        REFRESH_TOKEN( "refresh_token" );
 
         private String type;
 
         GrantType(String type) {
+
             this.type = type;
         }
 
         @Override
         public String toString() {
+
             return type;
         }
 
-        public static GrantType fromString(String text){
-            for (GrantType type : EnumSet.allOf( GrantType.class )){
+        @Nullable
+        public static GrantType fromString(String text) {
+
+            for (GrantType type : EnumSet.allOf( GrantType.class )) {
                 if (type.toString().equals( text ))
                     return type;
             }

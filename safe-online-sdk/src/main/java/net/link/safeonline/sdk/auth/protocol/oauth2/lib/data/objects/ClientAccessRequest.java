@@ -11,22 +11,22 @@ import java.util.List;
  * Date: 20/03/12
  * Time: 15:30
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class ClientAccessRequest implements Serializable {
 
-    protected String id;
-    protected String userId;
+    protected String                       id;
+    protected String                       userId;
     protected ClientConfiguration          client;
-    protected CodeToken authorizationCode;
-    protected String state;
-    protected boolean granted;
-    protected List<String> approvedScope;
-    protected String validatedRedirectionURI;
-    protected Date userDefinedExpirationDate;
+    protected CodeToken                    authorizationCode;
+    protected String                       state;
+    protected boolean                      granted;
+    protected List<String>                 approvedScope;
+    protected String                       validatedRedirectionURI;
+    protected Date                         userDefinedExpirationDate;
     protected ClientConfiguration.FlowType flowType;
-    
-    protected List<AccessToken> accessTokens;
+
+    protected List<AccessToken>  accessTokens;
     protected List<RefreshToken> refreshTokens;
 
     public String getId() {
@@ -152,16 +152,8 @@ public class ClientAccessRequest implements Serializable {
     @Override
     public String toString() {
 
-        return "ClientAccess{" +
-               "flowType=" + flowType +
-               ", id=" + id +
-               ", userId='" + userId + '\'' +
-               ", client=" + client +
-               ", state='" + state + '\'' +
-               ", granted=" + granted +
-               ", approvedScope=" + approvedScope +
-               ", validatedRedirectionURI='" + validatedRedirectionURI + '\'' +
-               ", userDefinedExpirationDate=" + userDefinedExpirationDate +
-               '}';
+        return String.format(
+                "ClientAccess{flowType=%s, id=%s, userId='%s', client=%s, state='%s', granted=%s, approvedScope=%s, validatedRedirectionURI='%s', userDefinedExpirationDate=%s}",
+                flowType, id, userId, client, state, granted, approvedScope, validatedRedirectionURI, userDefinedExpirationDate );
     }
 }
