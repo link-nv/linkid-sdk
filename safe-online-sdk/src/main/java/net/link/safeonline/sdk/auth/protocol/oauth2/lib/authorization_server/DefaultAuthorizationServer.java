@@ -92,17 +92,17 @@ public class DefaultAuthorizationServer implements Serializable {
      * @return ClientAccess id
      * @throws OauthValidationException
      */
-    public String initFlow(AuthorizationRequest authRequest) throws OauthValidationException{
+    public String initFlow(AuthorizationRequest authRequest) throws OAuthException {
 
         LOG.debug( "init a authorization code or implicit flow" );
         ClientConfiguration client = null;
         if (authRequest.getClientId() == null)
-            throw new OauthInvalidMessageException("Missing client_id");
+            throw new OAuthInvalidMessageException("Missing client_id");
         try {
             client = clientConfigurationStore.getClient( authRequest.getClientId() );
         }
         catch (ClientNotFoundException e) {
-            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST, "Client application configuration not found", e );
+            throw new OAuthException( OAuth2Message.ErrorType.INVALID_REQUEST, "Client application configuration not found", e );
         }
 
         // validations (check redirect URI, scope, flow type,...)
@@ -220,8 +220,8 @@ public class DefaultAuthorizationServer implements Serializable {
 
     public ErrorResponse getErrorMessage(Exception exception){
 
-        if (exception instanceof AuthorizationException){
-            return new CredentialsRequiredResponse( ( (AuthorizationException)exception).getErrorType(), exception.getMessage(), null, null );
+        if (exception instanceof OAuthAuthorizationException){
+            return new CredentialsRequiredResponse( ( (OAuthAuthorizationException)exception).getErrorType(), exception.getMessage(), null, null );
         } else if (exception instanceof OAuthException) {
             return new ErrorResponse( ( (OAuthException)exception).getErrorType(), exception.getMessage(), null, null );
         } else {
@@ -238,13 +238,13 @@ public class DefaultAuthorizationServer implements Serializable {
      * @param accessTokenRequest
      * @return
      */
-    public String initOrResumeFlow(AccessTokenRequest accessTokenRequest) throws OauthValidationException{
+    public String initOrResumeFlow(AccessTokenRequest accessTokenRequest) throws OAuthException {
 
         LOG.debug( "resume or init flow instance" );
 
         // can't continue without knowing grant type
         if ( accessTokenRequest.getGrantType() == null )
-            throw new OauthInvalidMessageException("Missing fields in message");
+            throw new OAuthInvalidMessageException("Missing fields in message");
 
         // get the client config
         ClientConfiguration client = null;
@@ -252,7 +252,7 @@ public class DefaultAuthorizationServer implements Serializable {
             client = clientConfigurationStore.getClient( accessTokenRequest.getClientId() );
         }
         catch (ClientNotFoundException e) {
-            throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST, "Client application configuration not found", e );
+            throw new OAuthException( OAuth2Message.ErrorType.INVALID_REQUEST, "Client application configuration not found", e );
         }
 
         //find existing flow instance or create a new one, depening on requested flow type
@@ -297,13 +297,13 @@ public class DefaultAuthorizationServer implements Serializable {
                 }
                 catch (ClientAccessRequestNotFoundException e) {
                     LOG.error( e );
-                    throw new OauthValidationException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
+                    throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
                 }
                 break;
             case REFRESH_TOKEN:
                 try {
                     for (RefreshToken refreshToken : clientAccessRequest.getRefreshTokens()){
-                        clientAccessRequestService.invalidateToken( clientAccessRequest.getId(), refreshToken );    
+                        clientAccessRequestService.invalidateToken( clientAccessRequest.getId(), refreshToken );
                     }
                     for (AccessToken accessToken : clientAccessRequest.getAccessTokens()){
                         clientAccessRequestService.invalidateToken( clientAccessRequest.getId(), accessToken );
@@ -315,7 +315,7 @@ public class DefaultAuthorizationServer implements Serializable {
                 }
                 catch (ClientAccessRequestNotFoundException e) {
                     LOG.error( e );
-                    throw new OauthValidationException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
+                    throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
                 }
 
                 break;
@@ -330,7 +330,7 @@ public class DefaultAuthorizationServer implements Serializable {
                 }
                 catch (ClientAccessRequestNotFoundException e) {
                     LOG.error( e );
-                    throw new OauthValidationException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
+                    throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
                 }
                 break;
             case PASSWORD:
@@ -394,10 +394,10 @@ public class DefaultAuthorizationServer implements Serializable {
      * @return clientAccessId
      * @throws OauthValidationException
      */
-    public ResponseMessage validateAccessToken(ValidationRequest request) throws OauthValidationException{
+    public ResponseMessage validateAccessToken(ValidationRequest request) throws OAuthException {
 
         if (MessageUtils.stringEmpty( request.getAccessToken() )){
-            throw new OauthInvalidMessageException( "Missing access token" );
+            throw new OAuthInvalidMessageException( "Missing access token" );
         }
 
         ClientAccessRequest clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken(

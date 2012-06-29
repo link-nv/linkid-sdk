@@ -5,7 +5,8 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.Validator;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthInvalidMessageException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 
@@ -22,38 +23,38 @@ public abstract class AbstractValidator implements Validator {
 
     @Override
     public void validate(final AuthorizationRequest request, final ClientConfiguration configuration)
-            throws OauthValidationException {
+            throws OAuthException {
         // default empty implementation
     }
 
     @Override
     public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
-            throws OauthValidationException {
+            throws OAuthException {
 
     }
 
     @Override
     public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
-            throws OauthValidationException {
+            throws OAuthException {
 
     }
 
-    protected void requiredClientApplication(final ClientConfiguration configuration, OAuth2Message.ErrorType typeToThrow) throws OauthValidationException{
+    protected void requiredClientApplication(final ClientConfiguration configuration, OAuth2Message.ErrorType typeToThrow) throws OAuthException{
         if (configuration == null){
-            throw new OauthValidationException( typeToThrow, "missing or invalid client application configuration" );
+            throw new OAuthException( typeToThrow, "missing or invalid client application configuration" );
         }
     }
 
-    protected void requiredClientAccessRequest(final ClientAccessRequest clientAccessRequest, OAuth2Message.ErrorType typeToThrow) throws OauthValidationException{
+    protected void requiredClientAccessRequest(final ClientAccessRequest clientAccessRequest, OAuth2Message.ErrorType typeToThrow) throws OAuthException{
         if (clientAccessRequest == null){
-            throw new OauthValidationException( typeToThrow, "invalid state, missing resource owner authorization" );
+            throw new OAuthException( typeToThrow, "invalid state, missing resource owner authorization" );
         }
     }
 
-    protected void requiredField(Object field, String name) throws OauthValidationException{
+    protected void requiredField(Object field, String name) throws OAuthException  {
         if (field == null
             || (field instanceof String && "".equals( field.toString() ))
             || (field instanceof Collection && ((Collection) field).size() == 0 ) )
-            throw new OauthInvalidMessageException("Missing field: " + name);
+            throw new OAuthInvalidMessageException("Missing field: " + name);
     }
 }

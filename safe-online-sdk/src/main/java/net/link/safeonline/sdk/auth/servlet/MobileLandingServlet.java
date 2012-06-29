@@ -7,19 +7,14 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Map;
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthInvalidMessageException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
-import net.link.util.error.ValidationFailedException;
-import net.link.util.servlet.annotation.Init;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -62,7 +57,7 @@ public class MobileLandingServlet extends AbstractConfidentialLinkIDInjectionSer
         try {
             responseMessage = MessageUtils.getAuthorizationCodeResponse( request );
         }
-        catch (OauthInvalidMessageException e) {
+        catch (OAuthInvalidMessageException e) {
             throw new InternalInconsistencyException( "Bad response message: ", e );
         }
 

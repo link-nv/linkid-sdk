@@ -3,7 +3,7 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server.va
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.AuthorizationException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthAuthorizationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 import org.apache.commons.logging.Log;
@@ -30,7 +30,7 @@ public class CredentialsValidator extends AbstractValidator {
         if ((clientConfiguration.isConfidential() || !MessageUtils.stringEmpty( clientConfiguration.getClientSecret() )
                 || request.getGrantType().equals( OAuth2Message.GrantType.CLIENT_CREDENTIALS ) )
                 && MessageUtils.stringEmpty( request.getClientSecret() ) ) {
-            throw new AuthorizationException( "authorization required" );
+            throw new OAuthAuthorizationException( "authorization required" );
         }
         checkCredentials( request.getClientId(), request.getClientSecret(), clientAccessRequest );
     }
@@ -51,14 +51,14 @@ public class CredentialsValidator extends AbstractValidator {
      * @param clientId
      * @param clientSecret
      * @param clientAccessRequest
-     * @throws AuthorizationException
+     * @throws OAuthAuthorizationException
      */
     protected void checkCredentials(String clientId, String clientSecret, final ClientAccessRequest clientAccessRequest)
-            throws AuthorizationException {
+            throws OAuthAuthorizationException {
 
         if (  (clientId != null && !clientId.equals( clientAccessRequest.getClient().getClientId() ) )
                 || (clientSecret != null && !clientSecret.equals( clientAccessRequest.getClient().getClientSecret() ) ) ){
-            throw new AuthorizationException( "client authorization failed" );
+            throw new OAuthAuthorizationException( "client authorization failed" );
 
         }
     }
