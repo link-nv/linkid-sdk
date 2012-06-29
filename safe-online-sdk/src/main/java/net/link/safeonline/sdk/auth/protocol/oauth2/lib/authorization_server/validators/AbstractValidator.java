@@ -7,7 +7,6 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAcces
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthInvalidMessageException;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 
 

@@ -4,7 +4,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthAuthorizationException;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +24,7 @@ public class CredentialsValidator extends AbstractValidator {
 
     @Override
     public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
-            throws OauthValidationException {
+            throws OAuthException {
 
         //if a client is confidential or has credentials, or the flow used is client credentials, require client authentication
         if ((clientConfiguration.isConfidential() || !MessageUtils.stringEmpty( clientConfiguration.getClientSecret() )
@@ -37,7 +37,7 @@ public class CredentialsValidator extends AbstractValidator {
 
     @Override
     public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
-            throws OauthValidationException {
+            throws OAuthException {
 
         // don't require credentials, but validate them if they are present
         checkCredentials( request.getClientId(), request.getClientSecret(), clientAccessRequest );
