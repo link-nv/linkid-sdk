@@ -25,7 +25,7 @@
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>target/files/sdk-manual-dotnet.pdf</source>
+            <source>target/files/sdk-manual-php.pdf</source>
             <outputDirectory>/</outputDirectory>
         </file>
         <file>

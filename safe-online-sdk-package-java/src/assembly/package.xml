@@ -23,6 +23,10 @@
                 <exclude>META-INF/**</exclude>
             </excludes>
         </fileSet>
+        <fileSet>
+            <directory>target/files/resources</directory>
+            <outputDirectory>/resources</outputDirectory>
+        </fileSet>
     </fileSets>
 
     <files>

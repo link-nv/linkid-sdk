@@ -8,13 +8,13 @@
         <version>GIT-SNAPSHOT</version>
     </parent>
 
-    <name>SafeOnline .NET SDK Package</name>
+    <name>SafeOnline PHP SDK Package</name>
     <description>
-        SafeOnline .NET SDK Package.
+        SafeOnline PHP SDK Package.
     </description>
 
     <groupId>net.lin-k.safe-online.client.sdk</groupId>
-    <artifactId>safe-online-sdk-package-dotnet</artifactId>
+    <artifactId>safe-online-sdk-package-php</artifactId>
     <packaging>pom</packaging>
 
     <build>
@@ -45,7 +45,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>unpack-manual-dotnet</id>
+                        <id>unpack-manual-php</id>
                         <phase>package</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -54,7 +54,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                                    <artifactId>safe-online-sdk-manual-dotnet</artifactId>
+                                    <artifactId>safe-online-sdk-manual-php</artifactId>
                                     <version>GIT-SNAPSHOT</version>
                                     <classifier>package</classifier>
                                     <type>zip</type>
@@ -75,7 +75,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                                    <artifactId>safe-online-sdk-dotnet</artifactId>
+                                    <artifactId>safe-online-sdk-php</artifactId>
                                     <version>GIT-SNAPSHOT</version>
                                     <classifier>package</classifier>
                                     <type>zip</type>
