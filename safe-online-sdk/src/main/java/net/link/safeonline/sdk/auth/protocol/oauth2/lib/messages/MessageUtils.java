@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthInvalidMessageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
@@ -68,13 +69,13 @@ public class MessageUtils {
      * Throws an exception if the request is invalid.
      */
     public static AuthorizationRequest getAuthorizationRequest(final HttpServletRequest request)
-            throws OauthInvalidMessageException {
+            throws OAuthInvalidMessageException {
 
         // do some validation of the http connection
         validateHttpRequest( request );
         // just to make sure the client secret is not present here, or it would be exposed
-        if (!stringEmpty( request.getParameter( OAuth2Message.CLIENT_SECRET ) )) {
-            throw new OauthInvalidMessageException( "Client secret is exposed, never include it in an authorization request" );
+        if (!stringEmpty( request.getParameter( OAuth2Message.CLIENT_SECRET ) )){
+            throw new OAuthInvalidMessageException("Client secret is exposed, never include it in an authorization request");
         }
 
         AuthorizationRequest authRequest = new AuthorizationRequest();
@@ -97,7 +98,7 @@ public class MessageUtils {
      * are not allowed.
      */
     public static AccessTokenRequest getTokenRequest(final HttpServletRequest request)
-            throws OauthInvalidMessageException {
+            throws OAuthInvalidMessageException {
 
         // do some validation of the http connection
         validateHttpRequest( request );
@@ -123,7 +124,7 @@ public class MessageUtils {
 
         // make sure the client secret is not exposed, as per OAuth2 spec
         if (!stringEmpty( request.getQueryString() ) && request.getQueryString().contains( OAuth2Message.CLIENT_SECRET ))
-            throw new OauthInvalidMessageException( "Client secret is exposed in the query string, this is not allowed" );
+            throw new OAuthInvalidMessageException( "Client secret is exposed in the query string, this is not allowed" );
 
         //get credentials from either authorization header or x-www-form-encoded
         String authHeader = request.getHeader( "Authorization" );
@@ -161,15 +162,14 @@ public class MessageUtils {
      * Gets a token validation request from the servlet request. Supports fetching the access_token parameter encoded
      * in the request with x-www-form-encoded, and supports Bearer tokens in the authorization header.
      */
-    public static ValidationRequest getValidationMessage(final HttpServletRequest request)
-            throws OauthInvalidMessageException {
+    public static ValidationRequest getValidationMessage(final HttpServletRequest request) throws OAuthException {
 
         LOG.debug( "get access token" );
         // do some validation of the http connection
         validateHttpRequest( request );
         // just to be sure
         if (!stringEmpty( request.getQueryString() ) && request.getQueryString().contains( OAuth2Message.CLIENT_SECRET ))
-            throw new OauthInvalidMessageException( "Client secret is exposed in the query string, this is not allowed" );
+            throw new OAuthInvalidMessageException( "Client secret is exposed in the query string, this is not allowed" );
 
         // get access token from parameter or authorization header
         // if client credentials are present, add them
@@ -203,10 +203,10 @@ public class MessageUtils {
             }
         }
 
-        if (null != accessToken)
-            validationRequest.setAccessToken( accessToken );
-        else
-            throw new OauthInvalidMessageException( "Authorization required" );
+        if (accessToken == null)
+            throw new OAuthException( OAuth2Message.ErrorType.UNAUTHORIZED_CLIENT);
+
+        validationRequest.setAccessToken( accessToken );
 
         // in case of form based auth
         if (validationRequest.getClientId() == null || validationRequest.getClientSecret() == null) {
@@ -336,7 +336,7 @@ public class MessageUtils {
      * Gets an authorization code response (or error message) from the servlet request.
      */
     public static ResponseMessage getAuthorizationCodeResponse(final HttpServletRequest request)
-            throws OauthInvalidMessageException {
+            throws OAuthInvalidMessageException {
         // validate the servlet request, throw an error if code has been sent out in the open (non-SSL)
         validateHttpRequest( request );
 
@@ -350,7 +350,7 @@ public class MessageUtils {
                     request.getParameter( OAuth2Message.ERROR_DESCRIPTION ), request.getParameter( OAuth2Message.ERROR_URI ),
                     request.getParameter( OAuth2Message.STATE ) );
         } else {
-            throw new OauthInvalidMessageException( "The response message was not recognized" );
+            throw new OAuthInvalidMessageException( "The response message was not recognized" );
         }
 
         return responseMessage;
@@ -511,7 +511,7 @@ public class MessageUtils {
      * Throws an exception if the connection is not secure, or the http method does not equal get or post
      */
     protected static void validateHttpRequest(HttpServletRequest request)
-            throws OauthInvalidMessageException {
+            throws OAuthInvalidMessageException {
 
         LOG.debug( "checking http for TLS and correct methods" );
 
@@ -523,11 +523,11 @@ public class MessageUtils {
                                                                                               .equalsIgnoreCase(
                                                                                                       HttpMethod.POST.toString() )
                 && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )) {
-                throw new OauthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
+                throw new OAuthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
             }
         } else {
 
-            throw new OauthInvalidMessageException(
+            throw new OAuthInvalidMessageException(
                     String.format( "TLS is mandatory: request.scheme=%s,  X-Forwarded-Proto=%s", request.getScheme(),
                             request.getHeader( "X-Forwarded-Proto" ) ) );
         }

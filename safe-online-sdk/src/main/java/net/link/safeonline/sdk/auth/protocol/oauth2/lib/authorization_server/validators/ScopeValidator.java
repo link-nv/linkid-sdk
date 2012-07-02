@@ -5,7 +5,7 @@ import java.util.List;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AccessTokenRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AuthorizationRequest;
 
@@ -23,7 +23,7 @@ public class ScopeValidator extends AbstractValidator {
 
     @Override
     public void validate(final AuthorizationRequest request, final ClientConfiguration configuration)
-            throws OauthValidationException {
+            throws OAuthException {
 
         List<String> requestedScope = request.getScope() != null? request.getScope(): new LinkedList<String>();
         List<String> configuredScope =
@@ -34,7 +34,7 @@ public class ScopeValidator extends AbstractValidator {
 
     @Override
     public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
-            throws OauthValidationException {
+            throws OAuthException {
 
         List<String> requestedScope = request.getScope() != null? request.getScope(): new LinkedList<String>();
         List<String> configuredScope =
@@ -43,10 +43,10 @@ public class ScopeValidator extends AbstractValidator {
     }
 
     private void validate (List<String> requestedScope, List<String> configuredScope)
-            throws OauthValidationException {
+            throws OAuthException {
         for (String attribute : requestedScope) {
             if (!configuredScope.contains( attribute ))
-                throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_SCOPE,
+                throw new OAuthException( OAuth2Message.ErrorType.INVALID_SCOPE,
                         "Requested scope extends pre-configured scope: " + attribute );
         }
     }

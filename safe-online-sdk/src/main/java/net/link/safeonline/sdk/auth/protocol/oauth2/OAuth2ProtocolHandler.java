@@ -19,11 +19,10 @@ import net.link.safeonline.sdk.api.attribute.*;
 import net.link.safeonline.sdk.api.auth.*;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthInvalidMessageException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthInvalidMessageException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 import net.link.safeonline.sdk.configuration.*;
 import net.link.util.error.ValidationFailedException;
-import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 
 
@@ -104,7 +103,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         try {
             responseMessage = MessageUtils.getAuthorizationCodeResponse( request );
         }
-        catch (OauthInvalidMessageException e) {
+        catch (OAuthInvalidMessageException e) {
             throw new ValidationFailedException( "Unexpected response message: ", e );
         }
 

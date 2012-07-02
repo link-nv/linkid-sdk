@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientAccessRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.data.objects.ClientConfiguration;
-import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OauthValidationException;
+import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.*;
 
 
@@ -50,7 +50,7 @@ public class RedirectionURIValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final AuthorizationRequest request, final ClientConfiguration configuration) throws OauthValidationException {
+    public void validate(final AuthorizationRequest request, final ClientConfiguration configuration) throws OAuthException {
         URI redirectURI = null;
         if (!MessageUtils.collectionEmpty( configuration.getRedirectUris() ) && !MessageUtils.stringEmpty( request.getRedirectUri() )){
 
@@ -61,21 +61,21 @@ public class RedirectionURIValidator extends AbstractValidator {
                     }
                 }
                 catch (URISyntaxException e) {
-                    throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST, "Invalid return_uri: " + e.getMessage() );
+                    throw new OAuthException( OAuth2Message.ErrorType.INVALID_REQUEST, "Invalid return_uri: " + e.getMessage() );
                 }
             }
             if (redirectURI == null){
-                throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "return_uri in request does not match any return_uri in application configuration" );
+                throw new OAuthException(OAuth2Message.ErrorType.INVALID_REQUEST, "return_uri in request does not match any return_uri in application configuration" );
             }
         } else if (MessageUtils.collectionEmpty( configuration.getRedirectUris() )){
             if (!configuration.isConfidential() || request.getResponseType() == OAuth2Message.ResponseType.TOKEN ){
-                throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST,"Public applications and/or implicit grant flows must have a pre-registered redirection URI");
+                throw new OAuthException(OAuth2Message.ErrorType.INVALID_REQUEST,"Public applications and/or implicit grant flows must have a pre-registered redirection URI");
             } else {
                 try {
                     redirectURI = new URI( request.getRedirectUri() );
                 }
                 catch (URISyntaxException e) {
-                    throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "Invalid return_uri: " + e.getMessage() );
+                    throw new OAuthException(OAuth2Message.ErrorType.INVALID_REQUEST, "Invalid return_uri: " + e.getMessage() );
                 }
             }
         } else if (MessageUtils.stringEmpty( request.getRedirectUri() )){
@@ -83,10 +83,10 @@ public class RedirectionURIValidator extends AbstractValidator {
                 redirectURI = new URI( configuration.getRedirectUris().get( 0 ) ); // pick the first configured
             }
             catch (URISyntaxException e) {
-                throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "Invalid return_uri: " + e.getMessage() );
+                throw new OAuthException(OAuth2Message.ErrorType.INVALID_REQUEST, "Invalid return_uri: " + e.getMessage() );
             }
         } else {
-            throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "No return_uri found in request or application configuration" );
+            throw new OAuthException(OAuth2Message.ErrorType.INVALID_REQUEST, "No return_uri found in request or application configuration" );
         }
         // redirect URI must be safe
         // TODO: Don't blacklist, whitelist.  if ! equals https.
@@ -95,7 +95,7 @@ public class RedirectionURIValidator extends AbstractValidator {
 //        }
         // redirect URI must be absolute and not contain a fragment
         if (!redirectURI.isAbsolute() || !MessageUtils.stringEmpty( redirectURI.getFragment() )){
-            throw new OauthValidationException(OAuth2Message.ErrorType.INVALID_REQUEST, "A redirection URI must be absolute and must not contain a fragment: " + redirectURI);
+            throw new OAuthException(OAuth2Message.ErrorType.INVALID_REQUEST, "A redirection URI must be absolute and must not contain a fragment: " + redirectURI);
         }
     }
 
@@ -114,11 +114,11 @@ public class RedirectionURIValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration) throws OauthValidationException {
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration) throws OAuthException {
 
         if (request.getGrantType() == OAuth2Message.GrantType.AUTHORIZATION_CODE) {
             if ( request.getRedirectUri() != null && !request.getRedirectUri().equals( clientAccessRequest.getValidatedRedirectionURI() ))
-                throw new OauthValidationException( OAuth2Message.ErrorType.INVALID_REQUEST,
+                throw new OAuthException( OAuth2Message.ErrorType.INVALID_REQUEST,
                         "redirect_uri does not match previous value" );
         }
     }

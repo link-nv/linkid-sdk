@@ -11,24 +11,24 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
  *
  * @author: sgdesmet
  */
-public class AuthorizationException extends OauthValidationException {
+public class OAuthAuthorizationException extends OAuthException {
 
-    public AuthorizationException() {
+    public OAuthAuthorizationException() {
 
         super( OAuth2Message.ErrorType.INVALID_CLIENT );
     }
 
-    public AuthorizationException(final String s) {
+    public OAuthAuthorizationException(final String s) {
 
         super( OAuth2Message.ErrorType.INVALID_CLIENT, s );
     }
 
-    public AuthorizationException(final String s, final Throwable throwable) {
+    public OAuthAuthorizationException(final String s, final Throwable throwable) {
 
         super( OAuth2Message.ErrorType.INVALID_CLIENT, s, throwable );
     }
 
-    public AuthorizationException(final Throwable throwable) {
+    public OAuthAuthorizationException(final Throwable throwable) {
 
         super( OAuth2Message.ErrorType.INVALID_CLIENT, throwable );
     }
