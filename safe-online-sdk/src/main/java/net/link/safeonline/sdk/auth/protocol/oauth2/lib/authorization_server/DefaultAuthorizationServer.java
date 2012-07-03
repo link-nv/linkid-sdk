@@ -84,12 +84,13 @@ public class DefaultAuthorizationServer implements Serializable {
      *
      * @return ClientAccess id
      */
-    public String initFlow(AuthorizationRequest authRequest) throws OAuthException {
+    public String initFlow(AuthorizationRequest authRequest)
+            throws OAuthException {
 
         LOG.debug( "init a authorization code or implicit flow" );
-        ClientConfiguration client = null;
+        ClientConfiguration client;
         if (authRequest.getClientId() == null)
-            throw new OAuthInvalidMessageException("Missing client_id");
+            throw new OAuthInvalidMessageException( "Missing client_id" );
         try {
             client = clientConfigurationStore.getClient( authRequest.getClientId() );
         }
@@ -112,8 +113,8 @@ public class DefaultAuthorizationServer implements Serializable {
                 requestFlowType = ClientConfiguration.FlowType.IMPLICIT;
                 break;
         }
-        String validatedURI = !MessageUtils.stringEmpty( authRequest.getRedirectUri() )? authRequest.getRedirectUri()
-                : null; //don't store empty string as redirection uri
+        String validatedURI = MessageUtils.stringEmpty( authRequest.getRedirectUri() )? null
+                : authRequest.getRedirectUri(); //don't store empty string as redirection uri
         return clientAccessRequestService.create( client, requestFlowType, authRequest.getScope(), authRequest.getState(), validatedURI );
     }
 
@@ -208,8 +209,9 @@ public class DefaultAuthorizationServer implements Serializable {
 
     public ErrorResponse getErrorMessage(Exception exception) {
 
-        if (exception instanceof OAuthAuthorizationException){
-            return new CredentialsRequiredResponse( ( (OAuthAuthorizationException)exception).getErrorType(), exception.getMessage(), null, null );
+        if (exception instanceof OAuthAuthorizationException) {
+            return new CredentialsRequiredResponse( ((OAuthAuthorizationException) exception).getErrorType(), exception.getMessage(), null,
+                    null );
         } else if (exception instanceof OAuthException) {
             return new ErrorResponse( ((OAuthException) exception).getErrorType(), exception.getMessage(), null, null );
         } else {
@@ -222,16 +224,17 @@ public class DefaultAuthorizationServer implements Serializable {
      * or refresh token), or create a new one in case the request message is part of a client credentials or
      * resource owner credentials flow. Returns the associated id.
      */
-    public String initOrResumeFlow(AccessTokenRequest accessTokenRequest) throws OAuthException {
+    public String initOrResumeFlow(AccessTokenRequest accessTokenRequest)
+            throws OAuthException {
 
         LOG.debug( "resume or init flow instance" );
 
         // can't continue without knowing grant type
-        if ( accessTokenRequest.getGrantType() == null )
-            throw new OAuthInvalidMessageException("Missing fields in message");
+        if (accessTokenRequest.getGrantType() == null)
+            throw new OAuthInvalidMessageException( "Missing fields in message" );
 
         // get the client config
-        ClientConfiguration client = null;
+        ClientConfiguration client;
         try {
             client = clientConfigurationStore.getClient( accessTokenRequest.getClientId() );
         }
@@ -381,7 +384,8 @@ public class DefaultAuthorizationServer implements Serializable {
      *
      * @return clientAccessId
      */
-    public ResponseMessage validateAccessToken(ValidationRequest request) throws OAuthException {
+    public ResponseMessage validateAccessToken(ValidationRequest request)
+            throws OAuthException {
 
         if (MessageUtils.stringEmpty( request.getAccessToken() )) {
             throw new OAuthInvalidMessageException( "Missing access token" );

@@ -9,9 +9,9 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
  * Date: 20/03/12
  * Time: 11:40
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
-public class ClientNotFoundException extends OAuthException{
+public class ClientNotFoundException extends OAuthException {
 
     public ClientNotFoundException() {
 

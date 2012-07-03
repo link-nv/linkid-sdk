@@ -16,50 +16,48 @@ import org.apache.commons.logging.LogFactory;
  * Date: 03/05/12
  * Time: 14:49
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class CredentialsValidator extends AbstractValidator {
 
     static final Log LOG = LogFactory.getLog( CredentialsValidator.class );
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest,
+                         final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
         //if a client is confidential or has credentials, or the flow used is client credentials, require client authentication
         if ((clientConfiguration.isConfidential() || !MessageUtils.stringEmpty( clientConfiguration.getClientSecret() )
-                || request.getGrantType().equals( OAuth2Message.GrantType.CLIENT_CREDENTIALS ) )
-                && MessageUtils.stringEmpty( request.getClientSecret() ) ) {
-            throw new OAuthAuthorizationException( "authorization required" );
+             || request.getGrantType() == OAuth2Message.GrantType.CLIENT_CREDENTIALS) && MessageUtils.stringEmpty(
+                request.getClientSecret() )) {
+            throw new OAuthAuthorizationException(
+                    String.format( "Authorization required for client %s", clientAccessRequest.getClient().getClientId() ) );
         }
-        checkCredentials( request.getClientId(), request.getClientSecret(), clientAccessRequest );
+        validateCredentials( request.getClientId(), request.getClientSecret(), clientAccessRequest );
     }
 
     @Override
-    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
+    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest,
+                         final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
         // don't require credentials, but validate them if they are present
-        checkCredentials( request.getClientId(), request.getClientSecret(), clientAccessRequest );
-        if ( MessageUtils.stringEmpty( request.getClientId() ) || MessageUtils.stringEmpty( request.getClientSecret() )){
+        validateCredentials( request.getClientId(), request.getClientSecret(), clientAccessRequest );
+        if (MessageUtils.stringEmpty( request.getClientId() ) || MessageUtils.stringEmpty( request.getClientSecret() )) {
             LOG.warn( "Access Token validation without client credentials present" ); //TODO require credentials here too?
         }
     }
 
     /**
      * Checks credentials IF they are present. Does not error if they are not present
-     * @param clientId
-     * @param clientSecret
-     * @param clientAccessRequest
-     * @throws OAuthAuthorizationException
      */
-    protected void checkCredentials(String clientId, String clientSecret, final ClientAccessRequest clientAccessRequest)
+    protected void validateCredentials(String clientId, String clientSecret, final ClientAccessRequest clientAccessRequest)
             throws OAuthAuthorizationException {
 
-        if (  (clientId != null && !clientId.equals( clientAccessRequest.getClient().getClientId() ) )
-                || (clientSecret != null && !clientSecret.equals( clientAccessRequest.getClient().getClientSecret() ) ) ){
-            throw new OAuthAuthorizationException( "client authorization failed" );
-
+        if (clientId != null && !clientId.equals( clientAccessRequest.getClient().getClientId() )
+            || clientSecret != null && !clientSecret.equals( clientAccessRequest.getClient().getClientSecret() )) {
+            throw new OAuthAuthorizationException( String.format( "Client authorization failed for client %s", clientId ) );
         }
     }
 }
