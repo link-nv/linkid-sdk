@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.26</version>
     </parent>
 
     <name>SafeOnline SDK JSP Example</name>
@@ -15,14 +15,14 @@
 
     <groupId>net.lin-k.safe-online.client.sdk</groupId>
     <artifactId>safe-online-sdk-example-jsp</artifactId>
-    <version>GIT-SNAPSHOT</version>
+    <version>1.26</version>
     <packaging>war</packaging>
 
     <dependencies>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.26</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
