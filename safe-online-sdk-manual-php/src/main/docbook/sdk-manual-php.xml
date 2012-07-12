@@ -208,11 +208,16 @@ if (!$as->isAuthenticated()) {
                 'ReturnTo' => 'http://localhost/linkid-example/index.php'
                 // This parameter is optional for running the linkID authentication process in a framed/popup mode.
                 // Please refer to the linkID SDK Manual for more information on this.
-                'DestinationParams' => '?login_mode=FRAMED'
+                'DestinationParams' => '?login_mode=FRAMED',
+                'ErrorURL' => 'http://localhost/linkid-example/error.php'
             ));
 
                 ]]>
            </programlisting>
+
+           The ErrorURL page is where simplesamlphp will redirect to when a failed SAML response is sent back by linkID.
+           Note that a failed SAML response can just be that the user has cancelled the authentication process.
+           In that case the SAML Response StatusCode URI will be urn:oasis:names:tc:SAML:2.0:status:AuthnFailed.
        </para>
 
    </section>
