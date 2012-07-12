@@ -276,7 +276,8 @@ $attributes['compound.attribute'][0]['compound.member.attribute'][0]
         <title>SSL</title>
         <para>
             When a user has completed the linkID authentication process, linkID will post a SAML2 authentication response back to the SP.
-            The SimpleSAMLphp library constructs this path ( the SAML v2.0 Assertion consumer service URL ) to something like
+            The SimpleSAMLphp library constructs th path to where the POST is done ( the SAML v2.0 Assertion consumer service URL )
+            to something like
             <programlisting>
                 <![CDATA[
             <host>/simplesaml/module.php/saml/sp/saml2-acs.php/listlist
