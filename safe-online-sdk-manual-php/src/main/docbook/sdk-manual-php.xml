@@ -272,4 +272,22 @@ $attributes['compound.attribute'][0]['compound.member.attribute'][0]
         </para>
     </section>
 
+    <section>
+        <title>SSL</title>
+        <para>
+            When a user has completed the linkID authentication process, linkID will post a SAML2 authentication response back to the SP.
+            The SimpleSAMLphp library constructs this path ( the SAML v2.0 Assertion consumer service URL ) to something like
+            <programlisting>
+                <![CDATA[
+            <host>/simplesaml/module.php/saml/sp/saml2-acs.php/listlist
+                ]]>
+            </programlisting>
+            This URL is included in the SAML v2.0 authentication request that SimpleSAMLphp constructs.
+            To make sure that this URL is over SSL, so the HTTP Post occurs safely over SSL, you should go to the
+            "login.php" page ( where the SAML authentication process is initiated ) over SSL.
+            Not doing so will result in a browser warning and moreover sending the SAML response which contains the user's ID and attributes
+            unencrypted.
+        </para>
+    </section>
+
 </article>
