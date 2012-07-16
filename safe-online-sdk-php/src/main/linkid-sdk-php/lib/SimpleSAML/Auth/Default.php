@@ -267,8 +267,6 @@ class SimpleSAML_Auth_Default {
 		$session->doLogin($authId, self::extractPersistentAuthState($state));
 		
         SimpleSAML_Utilities::redirect($redirectTo);
-        //SimpleSAML_Utilities::redirect('./login.php');
-
 	}
 
 }

@@ -21,11 +21,7 @@
 		<meta http-equiv="expires" content="-1"/>
 	</head>
 
-##    #if($popup)
-##        <body onload="document.forms[0].submit(); setTimeout('self.close()',1000)">
-##    #else
         <body onload="document.forms[0].submit()">
-##    #end
         <noscript>
             <p>
                 <strong>Note:</strong> Since your browser does not support JavaScript,
@@ -35,8 +31,6 @@
 
         #if($BreakFrame)
             <form action="${action}" method="post" autocomplete="off" target="_top">
-##        #elseif($popup)
-##            <form action="${action}" method="post" autocomplete="off" target="${popupTarget}">
         #else
             <form action="${action}" method="post" autocomplete="off" target="_self">
         #end
