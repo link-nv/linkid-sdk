@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client.sdk</groupId>
         <artifactId>attribute</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.27</version>
     </parent>
     <name>SafeOnline Attribute Provider Profile SDK</name>
     <description>SafeOnline Attribute Provider Profile SDK</description>
