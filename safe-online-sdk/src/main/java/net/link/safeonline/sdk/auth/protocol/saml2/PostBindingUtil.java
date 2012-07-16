@@ -63,7 +63,7 @@ public abstract class PostBindingUtil {
      *
      * @throws IOException IO Exception
      */
-    @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
+    @SuppressWarnings({ "UseOfPropertiesAsHashtable" })
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
                                    Locale language, String themeName, LoginMode loginMode)
@@ -104,13 +104,12 @@ public abstract class PostBindingUtil {
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
         if (null != themeName)
             velocityContext.put( RequestConstants.THEME_REQUEST_PARAM, themeName );
-        if ( loginMode != null){
+        if (loginMode != null) {
             velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
         }
-//        if (breakFrame)
+        //        if (breakFrame)
         if (loginMode != null && loginMode == LoginMode.FRAMED)
             velocityContext.put( "IsBreakFrame", "true" );
-
 
         Template template;
         try {
@@ -138,14 +137,16 @@ public abstract class PostBindingUtil {
      *
      * @throws IOException IO Exception
      */
-    @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
+    @SuppressWarnings("UseOfPropertiesAsHashtable")
     public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain,
                                     String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
                                     Locale language, LoginMode loginMode)
             throws IOException {
 
-        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + (loginMode != null && loginMode == LoginMode.FRAMED) + "):\n"
-                   + DomUtils.domToString( LinkIDSaml2Utils.marshall( samlResponse ), true ) );
+        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + (loginMode != null
+                                                                                                                       && loginMode
+                                                                                                                          == LoginMode.FRAMED)
+                   + "):\n" + DomUtils.domToString( LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
         String encodedSamlResponseToken = new String( Base64.encode(
                 DomUtils.domToString( LinkIDSaml2Utils.sign( samlResponse, signingKeyPair, certificateChain ) )
@@ -175,11 +176,17 @@ public abstract class PostBindingUtil {
             velocityContext.put( "RelayState", relayState );
         if (null != language)
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
-        if ( loginMode != null){
+        if (loginMode != null) {
             velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
         }
         if (loginMode != null && loginMode == LoginMode.FRAMED)
             velocityContext.put( "BreakFrame", "true" );
+
+        if (loginMode != null && loginMode == LoginMode.POPUP) {
+            velocityContext.put( "popup", "true" );
+            // TODO: change to the random thingie...
+            velocityContext.put( "popupTarget", "linkIDParent" );
+        }
 
         Template template;
         try {

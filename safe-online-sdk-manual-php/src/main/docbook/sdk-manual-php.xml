@@ -36,6 +36,8 @@
                 <listitem><para>lib/SAML2/HTTPRedirect.php</para></listitem>
                 <listitem><para>lib/SAML2/Assertion.php</para></listitem>
                 <listitem><para>modules/saml/lib/Auth/Source/SP.php</para></listitem>
+                <listitem><para>lib/SimpleSAML/Auth/Default.php</para></listitem>
+                <listitem><para>modules/saml/www/sp/saml2-acs.php</para></listitem>
             </itemizedlist>
         </para>
         <para>
