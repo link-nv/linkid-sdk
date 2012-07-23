@@ -10,7 +10,6 @@ public interface ProfileConstants {
     String LANGUAGE      = "profile.language";
     String MOBILE        = "profile.mobile";
     String PHONE         = "profile.phone";
-    String NRN           = "profile.nrn";               // national registry number
 
     // attribute group
     String GROUP = "profile";
