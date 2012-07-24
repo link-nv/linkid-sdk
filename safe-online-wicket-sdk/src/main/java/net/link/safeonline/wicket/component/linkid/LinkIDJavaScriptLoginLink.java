@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
     protected LoginMode loginMode;
+    protected boolean   forceRegistration;
 
     /**
      * Constructor. Adds 'linkid.login.js' to the page.
@@ -83,6 +84,19 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
         return loginMode;
     }
 
+    /*
+     * Skip the "do you have an account page" and go straight to register even when deflowered.
+     */
+    public void setForceRegistration(final boolean forceRegistration) {
+
+        this.forceRegistration = forceRegistration;
+    }
+
+    public boolean isForceRegistration() {
+
+        return forceRegistration;
+    }
+
     @Override
     public void delegate(final HttpServletRequest request, final HttpServletResponse response, final Class<? extends Page> target,
                          final PageParameters targetPageParameters) {
@@ -117,7 +131,9 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
             mode = loginMode;
         }
 
-        return new AuthenticationContext( null, null, null, targetURL, mode );
+        AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURL, mode );
+        authenticationContext.setForceRegistration( forceRegistration );
+        return authenticationContext;
     }
 
     @Override

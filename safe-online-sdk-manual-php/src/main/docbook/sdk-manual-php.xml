@@ -179,8 +179,9 @@ if (!$as->isAuthenticated()) {
            process using the <code>ReturnTo</code> configuration parameter.
        </para>
        <para>
-           It is also possible to run the linkID authentication process in a framed(modal window) or popup window mode.
-           To achieve this you will first have to add the following javascript file to the page were you start the login.
+           The default "login mode" of linkID is running the authentication process in a popup window. An alternative is running it
+           in redirect mode.
+           You need to add the following javascript file to the page were you start the login.
 
            <programlisting>
                 <![CDATA[
@@ -199,8 +200,8 @@ if (!$as->isAuthenticated()) {
 
                 ]]>
            </programlisting>
-            As an additional step you will have to add extra HTTP Request parameters towards the linkID service, indicating which
-           mode you wish to use. Do this as follows:
+           If you wish to override the default popup mode, you can specify so by adding an extra HTTP Request parameter in the SAML
+           redirect binding request towards the linkID service. Do this as follows:
 
            <programlisting>
                 <![CDATA[
@@ -208,8 +209,6 @@ if (!$as->isAuthenticated()) {
             $as->login(array(
                 'saml:idp' => 'linkID',
                 'ReturnTo' => 'http://localhost/linkid-example/index.php'
-                // This parameter is optional for running the linkID authentication process in a framed/popup mode.
-                // Please refer to the linkID SDK Manual for more information on this.
                 'DestinationParams' => '?login_mode=POPUP',
                 'ErrorURL' => 'http://localhost/linkid-example/error.php'
             ));
@@ -217,9 +216,46 @@ if (!$as->isAuthenticated()) {
                 ]]>
            </programlisting>
 
+           Allowed values for login_mode are: <code>REDIRECT, POPUP</code>
            The ErrorURL page is where simplesamlphp will redirect to when a failed SAML response is sent back by linkID.
            Note that a failed SAML response can just be that the user has cancelled the authentication process.
            In that case the SAML Response StatusCode URI will be urn:oasis:names:tc:SAML:2.0:status:AuthnFailed.
+       </para>
+       <para>
+           To set the language for the linkID authentication process, you can optionally add the <code>Language</code> request parameter
+           just as you do with the login_mode. Note that in case the user has explicitly set his language during the linkID authentication
+           process, this setting will allways be preferred. Allowed values are <code>nl,en,fr</code>.
+           Example:
+
+           <programlisting>
+                <![CDATA[
+
+            $as->login(array(
+                'saml:idp' => 'linkID',
+                'ReturnTo' => 'http://localhost/linkid-example/index.php'
+                'DestinationParams' => '?login_mode=POPUP&Language=nl',
+            ));
+
+                ]]>
+           </programlisting>
+       </para>
+       <para>
+           There is an optional HTTP request parameter for forcing the linkID authentication process to go to the "register device" page,
+           regardless of whether the user has successfully authenticated himself in the browser ( a "deflowered" cookie is set then )
+           This can be achieved by setting the parameter <code>ForceRegistration</code>.
+           Example:
+
+           <programlisting>
+                <![CDATA[
+
+            $as->login(array(
+                'saml:idp' => 'linkID',
+                'ReturnTo' => 'http://localhost/linkid-example/index.php'
+                'DestinationParams' => '?login_mode=POPUP&ForceRegistration=true',
+            ));
+
+                ]]>
+           </programlisting>
        </para>
 
    </section>

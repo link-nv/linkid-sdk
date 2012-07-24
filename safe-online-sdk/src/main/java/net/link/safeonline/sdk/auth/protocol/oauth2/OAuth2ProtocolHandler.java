@@ -1,6 +1,6 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Function;
 import com.google.gson.*;
@@ -9,14 +9,16 @@ import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.net.*;
+import java.net.URI;
+import java.net.URL;
 import java.security.*;
 import java.util.*;
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.attribute.*;
-import net.link.safeonline.sdk.api.auth.*;
+import net.link.safeonline.sdk.api.auth.ForceAuth;
+import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthInvalidMessageException;
@@ -63,10 +65,11 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().authorizationPath() );
 
-        String clientId = MessageUtils.stringEmpty( config().proto().oauth2().clientId() ) ? context.getApplicationName() : config().proto().oauth2().clientId();
+        String clientId = MessageUtils.stringEmpty( config().proto().oauth2().clientId() )? context.getApplicationName()
+                : config().proto().oauth2().clientId();
 
         // create oauht2 authorization request ( authorization grant code flow)
-        AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, clientId);
+        AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, clientId );
         authorizationRequest.setRedirectUri( landingURL );
         String state = UUID.randomUUID().toString();
         authorizationRequest.setState( state );
@@ -77,12 +80,16 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         loginParams.add( RequestConstants.LOGINMODE_REQUEST_PARAM );
         loginParams.add( context.getLoginMode().toString() );
         loginParams.add( RequestConstants.OAUTH2_FORCE_AUTHN );
-        loginParams.add( authnContext.isForceAuthentication()? ForceAuth.FORCE.toString() : ForceAuth.AUTO.toString() );
+        loginParams.add( authnContext.isForceAuthentication()? ForceAuth.FORCE.toString(): ForceAuth.AUTO.toString() );
+        if (context.isForceRegistration()) {
+            loginParams.add( RequestConstants.FORCE_REGISTRATION_PARAM );
+            loginParams.add( "true" );
+        }
 
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
 
-        AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(),
-                clientId, this, targetURL );
+        AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(), clientId, this,
+                targetURL );
         requestContext.setLoginMode( context.getLoginMode() );
         return requestContext;
     }
@@ -126,9 +133,9 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         String userId = "";
         String clientId = authnRequest.getIssuer();
-        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>(  );
+        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>();
         if (!(responseMessage instanceof ErrorResponse)) {
-            try{
+            try {
                 //ok, got a response, and it's valid, now for the rest of the OAuth flow
                 //fetch access + refresh token using the code (include credentials)
                 AccessTokenResponse tokenResponse = getAccessToken( ((AuthorizationCodeResponse) responseMessage).getCode(), authnRequest );
@@ -138,40 +145,37 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                 OAuth2TokenValidationHandler handler = OAuth2TokenValidationHandler.getInstance( authnContext.getApplicationName() );
                 handler.setSslCertificate( authnContext.getOauth2().getSslCertificate() );
                 handler.validateAccessToken( accessToken, null, clientId, true );
-                userId = handler.getUserId(accessToken);
+                userId = handler.getUserId( accessToken );
 
                 //call attribute service with our token
                 attributes = getAttributes( accessToken );
                 success = true;
-            }catch (Exception e){
+            }
+            catch (Exception e) {
                 throw new InternalInconsistencyException( e );
             }
         } else {
             success = userRefusedAccess( (ErrorResponse) responseMessage );
         }
         // note: oauth does not support returning authenticated devices
-        return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(  ), attributes, success, null );
+        return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success,
+                null );
     }
 
-    protected boolean userRefusedAccess(ErrorResponse errorResponse) throws ValidationFailedException{
+    protected boolean userRefusedAccess(ErrorResponse errorResponse)
+            throws ValidationFailedException {
+
         if (OAuth2Message.ErrorType.ACCESS_DENIED == errorResponse.getErrorType())
             return true;
-        else{
+        else {
             logger.err( "Received error response for OAuth authorization request: " + errorResponse.toString() );
-            throw new ValidationFailedException( "Error response returned for OAuth authorization request: " +errorResponse.getErrorDescription() );
+            throw new ValidationFailedException(
+                    "Error response returned for OAuth authorization request: " + errorResponse.getErrorDescription() );
         }
     }
 
     /**
      * Request the oauth access token from the linkID server
-     * @param code
-     * @param authnRequest
-     * @return
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
-     * @throws KeyStoreException
-     * @throws ValidationFailedException
      */
     protected AccessTokenResponse getAccessToken(String code, AuthnProtocolRequestContext authnRequest)
             throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, ValidationFailedException {
@@ -188,8 +192,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         if (tokenResponse instanceof ErrorResponse) {
             logger.err( "Received error response for OAuth authorization request: " + tokenResponse.toString() );
-            throw new ValidationFailedException( "Error response returned for OAuth authorization request: "
-                                                 + ((ErrorResponse) tokenResponse).getErrorDescription() );
+            throw new ValidationFailedException(
+                    "Error response returned for OAuth authorization request: " + ((ErrorResponse) tokenResponse).getErrorDescription() );
         }
 
         return (AccessTokenResponse) tokenResponse;
@@ -197,9 +201,9 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
     /**
      * get target url. For redirection after landing
-     * @return
      */
-    protected String getTargetUrl(){
+    protected String getTargetUrl() {
+
         String targetURL = authnContext.getTarget();
         if (targetURL == null || !URI.create( targetURL ).isAbsolute())
             targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
@@ -209,9 +213,9 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
     /**
      * get landing url (=url where linkid response needs to go, ie. in oauth term the redirection URI)
-     * @return
      */
-    protected String getLandingUrl(){
+    protected String getLandingUrl() {
+
         String targetURL = getTargetUrl();
         String landingURL = null;
         if (config().web().landingPath() != null)
@@ -227,15 +231,6 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
     /**
      * Request info on the accesstoken at the linkid server. Returns userid, intended application, and so on
-     *
-     * @param accessToken
-     * @param authnRequest
-     * @return
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
-     * @throws KeyStoreException
-     * @throws ValidationFailedException
      */
     protected ValidationResponse getTokenInfo(String accessToken, AuthnProtocolRequestContext authnRequest)
             throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, ValidationFailedException {
@@ -251,11 +246,11 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
             throw new ValidationFailedException( "Error response returned for OAuth authorization request: "
                                                  + ((ErrorResponse) validationResponse).getErrorDescription() );
         }
-        if ( !authnRequest.getIssuer().equals( ((ValidationResponse) validationResponse).getAudience() ) ){
+        if (!authnRequest.getIssuer().equals( ((ValidationResponse) validationResponse).getAudience() )) {
             throw new ValidationFailedException( "OAuth token is not for this application" );
         }
-        Long expiresIn = ((ValidationResponse)validationResponse).getExpiresIn();
-        if ( null == expiresIn || expiresIn <= 0 ){
+        Long expiresIn = ((ValidationResponse) validationResponse).getExpiresIn();
+        if (null == expiresIn || expiresIn <= 0) {
             throw new ValidationFailedException( "OAuth access token has expired" );
         }
 
@@ -265,19 +260,18 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
     /**
      * Get attributes from the OAuth attribte service. This service is not part of the oauth spec, so
      * this method is not present in {@code MessageUtils} from the OAuth lib
-     * @return
      */
     protected Map<String, List<AttributeSDK<?>>> getAttributes(String accessToken)
             throws IOException, NoSuchAlgorithmException, KeyManagementException, KeyStoreException, ValidationFailedException {
 
-        URL endpointURL = new URL( ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().attributesPath() ));
-        HttpsURLConnection connection = (HttpsURLConnection)endpointURL.openConnection();
+        URL endpointURL = new URL( ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().attributesPath() ) );
+        HttpsURLConnection connection = (HttpsURLConnection) endpointURL.openConnection();
         SSLContext sslContext = SSLContext.getInstance( "SSL" );
         TrustManager trustManager = new MessageUtils.OAuthCustomTrustManager( authnContext.getOauth2().getSslCertificate() );
         TrustManager[] trustManagers = { trustManager };
         sslContext.init( null, trustManagers, null );
         connection.setSSLSocketFactory( sslContext.getSocketFactory() );
-        if ( null == authnContext.getOauth2().getSslCertificate()){
+        if (null == authnContext.getOauth2().getSslCertificate()) {
             connection.setHostnameVerifier( new HostnameVerifier() {
                 @Override
                 public boolean verify(final String s, final SSLSession sslSession) {
@@ -299,11 +293,12 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         InputStreamReader reader = new InputStreamReader( connection.getInputStream() );
 
-        Type type = new TypeToken<Map<String, List<JSONAttribute>>>(){}.getType();
+        Type type = new TypeToken<Map<String, List<JSONAttribute>>>() {
+        }.getType();
         Map<String, List<JSONAttribute>> jsonAttributes = gson.fromJson( reader, type );
         logger.dbg( "attributes: " + jsonAttributes );
 
-        Map<String, List<AttributeSDK<?>>> attributes = convertToSDK(jsonAttributes);
+        Map<String, List<AttributeSDK<?>>> attributes = convertToSDK( jsonAttributes );
 
         reader.close();
         return attributes;
@@ -313,10 +308,10 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         if (jsonAttributes == null)
             return null;
-        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>(  );
-        for (String name : jsonAttributes.keySet()){
+        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>();
+        for (String name : jsonAttributes.keySet()) {
             List<AttributeSDK<?>> values = new ArrayList<AttributeSDK<?>>( jsonAttributes.get( name ).size() );
-            for(JSONAttribute jsonAttribute : jsonAttributes.get( name )){
+            for (JSONAttribute jsonAttribute : jsonAttributes.get( name )) {
                 values.add( convertToSDK( jsonAttribute ) );
             }
             attributes.put( name, values );
@@ -324,17 +319,18 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         return attributes;
     }
 
-    private static AttributeSDK<Serializable> convertToSDK(JSONAttribute jsonAttribute){
+    private static AttributeSDK<Serializable> convertToSDK(JSONAttribute jsonAttribute) {
+
         if (jsonAttribute == null)
             return null;
-        AttributeSDK<Serializable> attributeSDK = new AttributeSDK<Serializable>(  );
+        AttributeSDK<Serializable> attributeSDK = new AttributeSDK<Serializable>();
         attributeSDK.setId( jsonAttribute.getId() );
         attributeSDK.setName( jsonAttribute.getName() );
-        if (jsonAttribute.getType() != DataType.COMPOUNDED){
+        if (jsonAttribute.getType() != DataType.COMPOUNDED) {
             attributeSDK.setValue( convertValue( jsonAttribute.getValue(), jsonAttribute.getType() ) );
         } else {
             List<AttributeSDK<Serializable>> members = new ArrayList<AttributeSDK<Serializable>>( jsonAttribute.getMembers().size() );
-            for (JSONAttribute jsonMember : jsonAttribute.getMembers()){
+            for (JSONAttribute jsonMember : jsonAttribute.getMembers()) {
                 members.add( convertToSDK( jsonMember ) );
             }
             Compound compound = new Compound( members );

@@ -25,6 +25,12 @@ import java.util.Locale;
 public interface RequestConstants {
 
     /**
+     * Override the deflowered cookie which is set upon a successful authentication and triggers the "Do you have a linkID account" question
+     * page to be skipped
+     */
+    String FORCE_REGISTRATION_PARAM = "ForceRegistration";
+
+    /**
      * @see Locale#Locale(String)
      */
     String LANGUAGE_REQUEST_PARAM       = "Language";

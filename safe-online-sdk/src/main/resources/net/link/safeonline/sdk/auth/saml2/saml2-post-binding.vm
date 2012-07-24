@@ -62,6 +62,10 @@
                 <input type="hidden" name="login_mode" value="${login_mode}"/>
             #end
 
+            #if($ForceRegistration)
+                <input type="hidden" name="ForceRegistration" value="${ForceRegistration}"/>
+            #end
+
             <noscript>
                 <input type="submit" value="Continue"/>
             </noscript>

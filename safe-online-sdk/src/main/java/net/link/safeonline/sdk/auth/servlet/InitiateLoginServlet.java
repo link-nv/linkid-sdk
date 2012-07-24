@@ -7,14 +7,16 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
-import net.link.safeonline.sdk.configuration.*;
+import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
 
 
 /**
- * A simple Servlet to initiate the login procedure on LinkID (i.e. this servlet represents a 'protected resource' which requires auhtenication).
- * Landing on this servlet will return a redirect url to LinkID authentication service, an authentication Request, and possibly additional parameters.
- *
+ * A simple Servlet to initiate the login procedure on LinkID (i.e. this servlet represents a 'protected resource' which requires
+ * auhtenication).
+ * Landing on this servlet will return a redirect url to LinkID authentication service, an authentication Request, and possibly additional
+ * parameters.
+ * <p/>
  * User: sgdesmet
  * Date: 03/11/11
  * Time: 10:21
@@ -25,27 +27,34 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-
         delegate( request, response );
     }
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         delegate( request, response );
     }
 
     /**
      * create authentication context and start login
-     * @param request
-     * @param response
      */
     public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
+
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
+
+        // optional login mode
         String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
         LoginMode mode = LoginMode.fromString( modeParam );
-        AuthenticationUtils.login( request, response,  new AuthenticationContext(null, null, null, targetURI, mode) );
-    }
 
+        // optional force registration
+        boolean forceRegistration = null != request.getParameter( RequestConstants.FORCE_REGISTRATION_PARAM );
+
+        AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURI, mode );
+        authenticationContext.setForceRegistration( forceRegistration );
+
+        AuthenticationUtils.login( request, response, authenticationContext );
+    }
 }

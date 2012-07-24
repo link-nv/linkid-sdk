@@ -68,7 +68,7 @@ public abstract class PostBindingUtil {
     @SuppressWarnings("UseOfPropertiesAsHashtable")
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                   Locale language, String themeName, LoginMode loginMode)
+                                   Locale language, String themeName, LoginMode loginMode, boolean forceRegistration)
             throws IOException {
 
         logger.dbg( "sendRequest[HTTP POST] (RelayState: %s, To: %s)\n%s", relayState, consumerUrl,
@@ -112,6 +112,9 @@ public abstract class PostBindingUtil {
         //        if (breakFrame)
         if (loginMode != null && loginMode == LoginMode.FRAMED)
             velocityContext.put( "IsBreakFrame", "true" );
+
+        if (forceRegistration)
+            velocityContext.put( RequestConstants.FORCE_REGISTRATION_PARAM, "true" );
 
         Template template;
         //noinspection OverlyBroadCatchBlock
