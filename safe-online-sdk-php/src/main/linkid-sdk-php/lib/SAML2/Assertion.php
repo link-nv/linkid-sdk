@@ -97,7 +97,6 @@ class SAML2_Assertion implements SAML2_SignedElement {
 	 */
 	private $sessionNotOnOrAfter;
 
-
 	/**
 	 * The session index for this user on the IdP.
 	 *
@@ -130,6 +129,13 @@ class SAML2_Assertion implements SAML2_SignedElement {
 	 */
 	private $AuthenticatingAuthority;
 
+
+    /**
+     * All authentication statements, an array
+     *
+     * @var array
+     */
+    private $allAuthnStatements;
 
 	/**
 	 * The attributes, as an associative array.
@@ -355,14 +361,13 @@ class SAML2_Assertion implements SAML2_SignedElement {
 	 */
 	private function parseAuthnStatement(DOMElement $xml) {
 
-		$as = SAML2_Utils::xpQuery($xml, './saml_assertion:AuthnStatement');
-		if (empty($as)) {
+		$asNodes = SAML2_Utils::xpQuery($xml, './saml_assertion:AuthnStatement');
+		if (empty($asNodes)) {
 			$this->authnInstant = NULL;
 			return;
-		} elseif (count($as) > 1) {
-			throw new Exception('More that one <saml:AuthnStatement> in <saml:Assertion> not supported.');
 		}
-		$as = $as[0];
+
+		$as = $asNodes[0];
 		$this->authnStatement = array();
 
 		if (!$as->hasAttribute('AuthnInstant')) {
@@ -400,8 +405,16 @@ class SAML2_Assertion implements SAML2_SignedElement {
 		} else {
 			$this->authnContext = trim($accr[0]->textContent);
 		}
-		
-		$this->AuthenticatingAuthority = SAML2_Utils::extractStrings($ac, './saml_assertion:AuthenticatingAuthority');		
+
+		$this->AuthenticatingAuthority = SAML2_Utils::extractStrings($ac, './saml_assertion:AuthenticatingAuthority');
+
+        if (count($asNodes) > 1) {
+            $this->allAuthnStatements = array();
+            foreach ($asNodes as $as) {
+               $this->allAuthnStatements[] = new SAML2_AuthnStatement($as);
+            }
+        }
+
 	}
 
 
@@ -980,6 +993,16 @@ class SAML2_Assertion implements SAML2_SignedElement {
 	public function getAttributes() {
 
 		return $this->attributes;
+	}
+
+	/**
+	 * Retrieve all authentication statements.
+	 *
+	 * @return array  All authentication statements, an array
+	 */
+	public function getAuthnStatements() {
+
+		return $this->allAuthnStatements;
 	}
 
 
