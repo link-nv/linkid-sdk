@@ -31,6 +31,7 @@ public enum AuthenticationStatusCode {
     INSUFFICIENT_CREDENTIALS( "urn:net:lin-k:safe-online:ws:auth:status:InsufficientCredentials" ),
     INSUFFICIENT_DEVICE( "urn:net:lin-k:safe-online:ws:auth:status:InsufficientDevice" ),
     REQUIRED_DEVICE_MISSING( "urn:net:lin-k:safe-online:ws:auth:status:RequiredDeviceMissing" ),
+    PUSH_REGISTER_ANOTHER( "urn:net:lin-k:safe-online:ws:auth:status:PushRegisterAnother" ),
     INVALID_CREDENTIALS( "urn:net:lin-k:safe-online:ws:auth:status:InvalidCredentials" ),
     INTERNAL_ERROR( "urn:net:lin-k:safe-online:ws:auth:status:InternalError" ),
     NOT_AUTHENTICATED( "urn:net:lin-k:safe-online:ws:auth:status:NotAuthenticated" ),
