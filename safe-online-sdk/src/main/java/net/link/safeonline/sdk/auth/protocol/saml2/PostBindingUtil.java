@@ -109,9 +109,6 @@ public abstract class PostBindingUtil {
         if (loginMode != null) {
             velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
         }
-        //        if (breakFrame)
-        if (loginMode != null && loginMode == LoginMode.FRAMED)
-            velocityContext.put( "IsBreakFrame", "true" );
 
         if (forceRegistration)
             velocityContext.put( RequestConstants.FORCE_REGISTRATION_PARAM, "true" );
@@ -149,8 +146,8 @@ public abstract class PostBindingUtil {
                                     Locale language, LoginMode loginMode)
             throws IOException {
 
-        logger.dbg( "sendResponse[HTTP POST] (RelayState: %s, To: %s, breakFrame: %s)\n%s", relayState, consumerUrl,
-                loginMode != null && loginMode == LoginMode.FRAMED, DomUtils.domToString( SamlUtils.marshall( samlResponse ), true ) );
+        logger.dbg( "sendResponse[HTTP POST] (RelayState: %s, To: %s, loginMode: %s)\n%s", relayState, consumerUrl, loginMode,
+                DomUtils.domToString( SamlUtils.marshall( samlResponse ), true ) );
 
         String encodedSamlResponseToken = new String( Base64.encode(
                 DomUtils.domToString( SamlUtils.sign( samlResponse, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
@@ -183,8 +180,6 @@ public abstract class PostBindingUtil {
         if (loginMode != null) {
             velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
         }
-        if (loginMode != null && loginMode == LoginMode.FRAMED)
-            velocityContext.put( "BreakFrame", "true" );
 
         Template template;
         //noinspection OverlyBroadCatchBlock

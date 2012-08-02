@@ -29,11 +29,7 @@
             </p>
         </noscript>
 
-        #if($BreakFrame)
-            <form action="${action}" method="post" autocomplete="off" target="_top">
-        #else
-            <form action="${action}" method="post" autocomplete="off" target="_self">
-        #end
+        <form action="${action}" method="post" autocomplete="off" target="_self">
 
             #if($RelayState)
                 <input type="hidden" name="RelayState" value="${RelayState}"/>

@@ -208,7 +208,7 @@ public class TestConfigHolder extends ConfigHolder {
 
             private final TestOpenIDProtocolConfig openid = new TestOpenIDProtocolConfig();
             private final TestSAMLProtocolConfig   saml   = new TestSAMLProtocolConfig();
-            private final TestOAuthProtocolConfig oauth = new TestOAuthProtocolConfig();
+            private final TestOAuthProtocolConfig  oauth  = new TestOAuthProtocolConfig();
             public Protocol defaultProtocol;
             public Duration maxTimeOffset;
 
@@ -247,7 +247,6 @@ public class TestConfigHolder extends ConfigHolder {
                 public String      postBindingTemplate;
                 public SAMLBinding binding;
                 public String      relayState;
-                public boolean     breakFrame;
 
                 @Override
                 public String postBindingTemplate() {
@@ -265,12 +264,6 @@ public class TestConfigHolder extends ConfigHolder {
                 public String relayState() {
 
                     return relayState;
-                }
-
-                @Override
-                public Boolean breakFrame() {
-
-                    return breakFrame;
                 }
             }
 
@@ -293,7 +286,9 @@ public class TestConfigHolder extends ConfigHolder {
                 }
             }
 
-            public static class TestOAuthProtocolConfig implements OAuth2ProtocolConfig{
+
+            public static class TestOAuthProtocolConfig implements OAuth2ProtocolConfig {
+
                 public String authorizationPath;
                 public String tokenPath;
                 public String validationPath;
@@ -339,7 +334,8 @@ public class TestConfigHolder extends ConfigHolder {
                 }
 
                 @Override
-                public String clientId(){
+                public String clientId() {
+
                     return clientId;
                 }
             }

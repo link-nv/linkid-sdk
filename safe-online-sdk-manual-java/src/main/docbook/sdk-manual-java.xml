@@ -1132,28 +1132,6 @@ public class MyConfigFilter extends SDKConfigFilter {
                             </para>
                         </listitem>
                     </varlistentry>
-                    <varlistentry>
-                        <term>Framed</term>
-                        <listitem>
-                            <para>
-                                This indicates to linkID that the authentication process will run inside an <code>iframe</code> (for example
-                                in a JavaScript modal window). The iframe is assumed to be 640x480 pixels. LinkID will set an appropriate
-                                style for the framed login process, and upon completion of the authentication process submits to result back
-                                to the frame's parent, instead of the frame itself.
-                            </para>
-                        </listitem>
-                    </varlistentry>
-                    <varlistentry>
-                        <term>Framed_no_breakframe</term>
-                        <listitem>
-                            <para>
-                                The same as before, but the result of the authentication processes is submitted to the frame itself, and
-                                not the parent. If you have used the 'linkid.js' javascript provided by LinkID to show the login iframe
-                                in a modal window, then you can use the following javascript from within the iframe to close the window:
-                                <code>parent.$.fn.colorbox.close()</code>
-                            </para>
-                        </listitem>
-                    </varlistentry>
                 </variablelist>
             </para>
             <para>
@@ -1220,7 +1198,7 @@ public class MyConfigFilter extends SDKConfigFilter {
                         <listitem>
                             <para>
                                 The type of login which will be set on the <code>AuthenticationContext</code> (see earlier). Possible values are:
-                                'redirect', 'framed', 'popup' (see also the <code>LoginMode</code> and
+                                'redirect', 'popup' (see also the <code>LoginMode</code> and
                                 <code>AuthenticationContext</code> classes in the SDK).
                                 Defaults to redirect.
                             </para>
@@ -1253,8 +1231,7 @@ public class MyConfigFilter extends SDKConfigFilter {
                         <listitem>
                             <para>
                                 Sets the login mode and adds the <code>login_mode</code> query parameter to the login URL. Possible values are:
-                                'redirect', 'framed', 'popup' (default is framed). If the value is 'popup', a popup will be opened, if the value
-                                is 'framed', a modal window containing an iframe will be opened.
+                                'redirect', 'popup', 'popup_no_close' (default is popup). If the value is 'popup', a popup will be opened.
                             </para>
                         </listitem>
                     </varlistentry>

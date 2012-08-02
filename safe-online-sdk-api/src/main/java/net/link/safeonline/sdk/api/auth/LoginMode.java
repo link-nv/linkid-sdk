@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 
 public enum LoginMode {
-    REDIRECT, POPUP, FRAMED, FRAMED_NO_BREAKFRAME, POPUP_NO_CLOSE;
+    REDIRECT, POPUP, POPUP_NO_CLOSE;
 
     @Nullable
     public static LoginMode fromString(String text) {
