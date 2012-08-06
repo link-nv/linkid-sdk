@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.sdk.api.attribute;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.util.List;
@@ -60,6 +61,21 @@ public class Compound extends MetaObject implements Serializable {
         }
 
         return null;
+    }
+
+    /**
+     * @param attributeName attribute name of member attribute we are fetching.
+     *
+     * @return specific member with specified attribute name
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Serializable> AttributeSDK<T> getMember(String attributeName) {
+
+        AttributeSDK<T> member = findMember( attributeName );
+        if (null == member)
+            throw new InternalInconsistencyException( String.format( "Unknown compound member %s", attributeName ) );
+
+        return member;
     }
 
     @Nullable
