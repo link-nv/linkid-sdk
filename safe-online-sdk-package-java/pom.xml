@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>1.33</version>
     </parent>
 
     <name>SafeOnline Java SDK Package</name>
@@ -145,7 +145,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.33</version>
         </dependency>
 
     </dependencies>
