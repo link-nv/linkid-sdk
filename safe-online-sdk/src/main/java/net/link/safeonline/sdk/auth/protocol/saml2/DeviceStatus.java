@@ -22,7 +22,8 @@ public enum DeviceStatus {
 
     SUCCESS( StatusCode.SUCCESS_URI ),
     FAIL( StatusCode.AUTHN_FAILED_URI ),
-    REGISTER( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:register" );
+    REGISTER( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:register" ),
+    ALREADY_REGISTERED( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:alreadyRegistered" );
 
     private final String statusCode;
     private       String secondLevelStatusCode;
