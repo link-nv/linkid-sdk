@@ -11,7 +11,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
  *
  * @author: sgdesmet
  */
-public class OAuthException extends Exception{
+public class OAuthException extends Exception {
 
     protected OAuth2Message.ErrorType errorType;
 
@@ -27,6 +27,7 @@ public class OAuthException extends Exception{
 
     public OAuthException(final OAuth2Message.ErrorType errorType) {
 
+        super( errorType.toString() );
         this.errorType = errorType;
     }
 

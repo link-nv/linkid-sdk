@@ -526,9 +526,7 @@ public class MessageUtils {
                 throw new OAuthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
             }
         } else {
-
-            throw new OAuthInvalidMessageException(
-                    String.format( "TLS is mandatory: request.scheme=%s,  X-Forwarded-Proto=%s", request.getScheme(),
+            LOG.warn( String.format( "TLS is recommended: request.scheme=%s,  X-Forwarded-Proto=%s", request.getScheme(),
                             request.getHeader( "X-Forwarded-Proto" ) ) );
         }
     }
