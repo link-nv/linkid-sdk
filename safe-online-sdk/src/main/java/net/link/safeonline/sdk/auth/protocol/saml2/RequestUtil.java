@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.util.common.CertificateChain;
 import net.link.util.error.ValidationFailedException;
+import net.link.util.saml.Saml2Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
@@ -55,14 +56,14 @@ public abstract class RequestUtil {
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
                                    CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState,
-                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName, @Nullable
-    LoginMode loginMode)
+                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName,
+                                   @Nullable LoginMode loginMode, boolean forceRegistration)
             throws IOException {
 
         switch (requestBinding) {
             case HTTP_POST:
                 PostBindingUtil.sendRequest( samlRequest, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                        response, language, themeName, loginMode );
+                        response, language, themeName, loginMode, forceRegistration );
                 break;
 
             case HTTP_REDIRECT:
@@ -72,7 +73,7 @@ public abstract class RequestUtil {
     }
 
     /**
-     * The SAML {@link LogoutRequest} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the HTTP request.
+     * The SAML {@link LogoutRequest} that is in the HTTP request<br> {@code null} if there is no SAML message in the HTTP request.
      *
      * @param request       HTTP Servlet Request
      * @param logoutRequest SAML v2.0 Request
@@ -81,13 +82,13 @@ public abstract class RequestUtil {
      *
      * @throws ValidationFailedException validation failed for some reason
      */
+    @Nullable
     public static CertificateChain validateRequest(HttpServletRequest request, LogoutRequest logoutRequest,
                                                    Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         // validate signature
-        CertificateChain certificateChain = LinkIDSaml2Utils.validateSignature( logoutRequest.getSignature(), request,
-                trustedCertificates );
+        CertificateChain certificateChain = Saml2Utils.validateSignature( logoutRequest.getSignature(), request, trustedCertificates );
 
         // validate logout request
         if (null == logoutRequest.getIssuer() || null == logoutRequest.getIssuer().getValue()) {
@@ -103,7 +104,7 @@ public abstract class RequestUtil {
     /**
      * @param request HTTP Servlet Request
      *
-     * @return The SAML {@link AuthnRequest} that is in the HTTP request<br> <code>null</code> if there is no SAML message in the HTTP
+     * @return The SAML {@link AuthnRequest} that is in the HTTP request<br> {@code null} if there is no SAML message in the HTTP
      *         request.
      */
     public static AuthnRequest findAuthnRequest(HttpServletRequest request) {
@@ -114,7 +115,7 @@ public abstract class RequestUtil {
     /**
      * @param request HTTP Servlet Request
      *
-     * @return The {@link LogoutRequest} in the HTTP request.<br> <code>null</code> if there is no SAML message in the HTTP request.
+     * @return The {@link LogoutRequest} in the HTTP request.<br> {@code null} if there is no SAML message in the HTTP request.
      */
     public static LogoutRequest findLogoutRequest(HttpServletRequest request) {
 

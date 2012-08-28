@@ -12,7 +12,6 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
@@ -25,9 +24,7 @@ import net.link.util.common.CertificateChain;
 import net.link.util.error.ValidationFailedException;
 import net.link.util.saml.Saml2Utils;
 import org.jetbrains.annotations.Nullable;
-import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.*;
-import org.opensaml.xml.ConfigurationException;
 
 
 /**
@@ -80,7 +77,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( authnService, authnContext.getSAML().getBinding(), samlRequest, authnContext.getApplicationKeyPair(),
                 certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName, authnContext.getLanguage(),
-                authnContext.getThemeName(), authnContext.getLoginMode() );
+                authnContext.getThemeName(), authnContext.getLoginMode(), authnContext.isForceRegistration() );
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL );
@@ -178,7 +175,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( logoutService, logoutContext.getSAML().getBinding(), samlRequest, logoutContext.getApplicationKeyPair(),
                 certificateChain, response, logoutContext.getSAML().getRelayState(), templateResourceName, logoutContext.getLanguage(),
-                logoutContext.getThemeName(), logoutContext.getLoginMode() );
+                logoutContext.getThemeName(), logoutContext.getLoginMode(), false );
 
         return new LogoutProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL,
                 samlRequest.getNameID().getValue() );

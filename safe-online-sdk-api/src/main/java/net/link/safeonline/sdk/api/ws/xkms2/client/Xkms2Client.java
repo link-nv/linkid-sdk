@@ -20,15 +20,29 @@ import net.link.util.common.CertificateChain;
  */
 public interface Xkms2Client {
 
+    String USE_KEY_WITH_APPLICATION_IDENTIFIER = "urn:net:lin-k:safe-online";
+
     /**
-     * Validate the linkID certificate chain.
+     * Validate the certificate chain.
      *
-     * @param certificateChain the linkID certificate chain.
+     * @param certificateChain the  certificate chain.
      *
      * @throws WSClientTransportException   something went wrong sending the XKMS 2.0 Validation Request.
      * @throws ValidationFailedException    validation failed.
      * @throws CertificateEncodingException failed to encode a certificate in the chain.
      */
     void validate(CertificateChain certificateChain)
+            throws WSClientTransportException, ValidationFailedException, CertificateEncodingException;
+
+    /**
+     * Validate the certificate chain.
+     *
+     * @param certificateChain the certificate chain.
+     *
+     * @throws WSClientTransportException   something went wrong sending the XKMS 2.0 Validation Request.
+     * @throws ValidationFailedException    validation failed.
+     * @throws CertificateEncodingException failed to encode a certificate in the chain.
+     */
+    void validate(String useKeyWithApplication, String useKeyWithIdentifier, CertificateChain certificateChain)
             throws WSClientTransportException, ValidationFailedException, CertificateEncodingException;
 }

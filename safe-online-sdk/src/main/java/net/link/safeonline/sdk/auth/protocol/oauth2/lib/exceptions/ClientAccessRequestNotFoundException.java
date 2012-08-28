@@ -9,7 +9,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
  * Date: 02/05/12
  * Time: 13:43
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class ClientAccessRequestNotFoundException extends OAuthException {
 

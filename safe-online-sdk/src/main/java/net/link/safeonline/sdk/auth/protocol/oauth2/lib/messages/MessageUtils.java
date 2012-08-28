@@ -17,9 +17,8 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthExceptio
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.exceptions.OAuthInvalidMessageException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.util.encoders.Base64;
 import org.jetbrains.annotations.Nullable;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 
 /**
@@ -28,7 +27,7 @@ import sun.misc.BASE64Encoder;
  * Date: 22/03/12
  * Time: 16:34
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class MessageUtils {
 
@@ -74,8 +73,8 @@ public class MessageUtils {
         // do some validation of the http connection
         validateHttpRequest( request );
         // just to make sure the client secret is not present here, or it would be exposed
-        if (!stringEmpty( request.getParameter( OAuth2Message.CLIENT_SECRET ) )){
-            throw new OAuthInvalidMessageException("Client secret is exposed, never include it in an authorization request");
+        if (!stringEmpty( request.getParameter( OAuth2Message.CLIENT_SECRET ) )) {
+            throw new OAuthInvalidMessageException( "Client secret is exposed, never include it in an authorization request" );
         }
 
         AuthorizationRequest authRequest = new AuthorizationRequest();
@@ -84,10 +83,10 @@ public class MessageUtils {
         authRequest.setState( request.getParameter( OAuth2Message.STATE ) );
         authRequest.setRedirectUri( request.getParameter( OAuth2Message.REDIRECT_URI ) );
         String scope = request.getParameter( OAuth2Message.SCOPE );
-        if (!stringEmpty( scope )) {
-            authRequest.setScope( Arrays.asList( scope.split( " " ) ) );
-        } else {
+        if (stringEmpty( scope )) {
             authRequest.setScope( Collections.<String>emptyList() );
+        } else {
+            authRequest.setScope( Arrays.asList( scope.split( " " ) ) );
         }
         return authRequest;
     }
@@ -135,16 +134,11 @@ public class MessageUtils {
                 if ("Basic".equalsIgnoreCase( type )) {
                     if (st.hasMoreTokens()) {
                         String credentials = st.nextToken();
-                        try {
-                            credentials = new String( new BASE64Decoder().decodeBuffer( credentials ) );
-                            int index = credentials.indexOf( ":" );
-                            if (index >= 0) {
-                                accessTokenRequest.setClientId( credentials.substring( 0, index ) );
-                                accessTokenRequest.setClientSecret( credentials.substring( index + 1 ) );
-                            }
-                        }
-                        catch (IOException e) {
-                            LOG.error( "While decoding basic auth credentials string", e );
+                        credentials = new String( Base64.decode( credentials ) );
+                        int index = credentials.indexOf( ':' );
+                        if (index >= 0) {
+                            accessTokenRequest.setClientId( credentials.substring( 0, index ) );
+                            accessTokenRequest.setClientSecret( credentials.substring( index + 1 ) );
                         }
                     }
                 }
@@ -162,7 +156,8 @@ public class MessageUtils {
      * Gets a token validation request from the servlet request. Supports fetching the access_token parameter encoded
      * in the request with x-www-form-encoded, and supports Bearer tokens in the authorization header.
      */
-    public static ValidationRequest getValidationMessage(final HttpServletRequest request) throws OAuthException {
+    public static ValidationRequest getValidationMessage(final HttpServletRequest request)
+            throws OAuthException {
 
         LOG.debug( "get access token" );
         // do some validation of the http connection
@@ -186,16 +181,11 @@ public class MessageUtils {
                     } else if ("Basic".equalsIgnoreCase( type )) {
                         if (st.hasMoreTokens()) {
                             String credentials = st.nextToken();
-                            try {
-                                credentials = new String( new BASE64Decoder().decodeBuffer( credentials ) );
-                                int index = credentials.indexOf( ":" );
-                                if (index >= 0) {
-                                    validationRequest.setClientId( credentials.substring( 0, index ) );
-                                    validationRequest.setClientSecret( credentials.substring( index + 1 ) );
-                                }
-                            }
-                            catch (IOException e) {
-                                LOG.error( "While decoding basic auth credentials string", e );
+                            credentials = new String( Base64.decode( credentials ) );
+                            int index = credentials.indexOf( ':' );
+                            if (index >= 0) {
+                                validationRequest.setClientId( credentials.substring( 0, index ) );
+                                validationRequest.setClientSecret( credentials.substring( index + 1 ) );
                             }
                         }
                     }
@@ -204,7 +194,7 @@ public class MessageUtils {
         }
 
         if (accessToken == null)
-            throw new OAuthException( OAuth2Message.ErrorType.UNAUTHORIZED_CLIENT);
+            throw new OAuthException( OAuth2Message.ErrorType.UNAUTHORIZED_CLIENT );
 
         validationRequest.setAccessToken( accessToken );
 
@@ -266,7 +256,6 @@ public class MessageUtils {
         List<Object> values = new ArrayList<Object>();
         if (responseMessage instanceof ValidationResponse) {
             LOG.error( "Access token validations cannot be returned by redirect" );
-            return;
         } else if (responseMessage instanceof AuthorizationCodeResponse) {
 
             AuthorizationCodeResponse authorizationCodeResponse = (AuthorizationCodeResponse) responseMessage;
@@ -361,6 +350,7 @@ public class MessageUtils {
      *
      * @param trustedSslCertificate ssl certificate to trust. May be null, in which case all certificates are trusted. Only for testing!
      */
+    @Nullable
     public static ResponseMessage sendRequestMessage(String endpoint, RequestMessage requestMessage,
                                                      final X509Certificate trustedSslCertificate, String clientId, String clientSecret)
             throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
@@ -400,26 +390,26 @@ public class MessageUtils {
             }
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
             contentWriter = new PrintWriter( connection.getOutputStream() );
-            contentWriter.write( "grant_type=" + ((AccessTokenRequest) requestMessage).getGrantType().toString() );
-            contentWriter.write( "&code=" + URLEncoder.encode( ((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) );
+            contentWriter.write( String.format( "grant_type=%s", ((AccessTokenRequest) requestMessage).getGrantType().toString() ) );
+            contentWriter.write(
+                    String.format( "&code=%s", URLEncoder.encode( ((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) ) );
             if (((AccessTokenRequest) requestMessage).getRedirectUri() != null)
-                contentWriter.write(
-                        "&redirect_uri=" + URLEncoder.encode( ((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) );
+                contentWriter.write( String.format( "&redirect_uri=%s",
+                        URLEncoder.encode( ((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) ) );
         } else if (requestMessage instanceof ValidationRequest) {
             if (!stringEmpty( clientSecret )) {
                 connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
             }
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
-            String content = "access_token=" + URLEncoder.encode( ((ValidationRequest) requestMessage).getAccessToken(), "UTF-8" );
+            String content = String.format( "access_token=%s",
+                    URLEncoder.encode( ((ValidationRequest) requestMessage).getAccessToken(), "UTF-8" ) );
             contentWriter = new PrintWriter( connection.getOutputStream() );
             contentWriter.write( content );
         } else {
             LOG.error( "Unsupported message type: " + requestMessage.getClass().getName() );
             return null;
         }
-        if (null != contentWriter) {
-            contentWriter.close();
-        }
+        contentWriter.close();
 
         ResponseMessage responseMessage = null;
         InputStreamReader reader;
@@ -431,7 +421,7 @@ public class MessageUtils {
             responseMessage = gson.fromJson( reader, ErrorResponse.class );
         } else if (requestMessage instanceof AccessTokenRequest) {
             responseMessage = gson.fromJson( reader, AccessTokenResponse.class );
-        } else if (requestMessage instanceof ValidationRequest) {
+        } else {
             responseMessage = gson.fromJson( reader, ValidationResponse.class );
         }
         reader.close();
@@ -537,7 +527,7 @@ public class MessageUtils {
         if (!stringEmpty( clientSecret ) && !stringEmpty( clientId )) {
             String credentials = null;
             try {
-                credentials = new BASE64Encoder().encode( String.format( "%s:%s", clientId, clientSecret ).getBytes( "UTF-8" ) );
+                credentials = new String( Base64.encode( String.format( "%s:%s", clientId, clientSecret ).getBytes( "UTF-8" ) ), "UTF-8" );
             }
             catch (UnsupportedEncodingException e) {
                 LOG.error( e );
@@ -578,9 +568,9 @@ public class MessageUtils {
     protected static void encodeInURL(StringBuffer sb, String name, String value, char bindSymbol) {
 
         if (value != null) {
-            char symbol = sb.indexOf( "" + bindSymbol ) > 0? '&': bindSymbol;
+            char symbol = sb.indexOf( String.format( "%s", bindSymbol ) ) > 0? '&': bindSymbol;
             try {
-                sb.append( symbol + URLEncoder.encode( name, "UTF-8" ) + "=" + URLEncoder.encode( value, "UTF-8" ) );
+                sb.append( String.format( "%s%s=%s", symbol, URLEncoder.encode( name, "UTF-8" ), URLEncoder.encode( value, "UTF-8" ) ) );
             }
             catch (UnsupportedEncodingException e) {
                 LOG.error( e );
@@ -704,9 +694,7 @@ public class MessageUtils {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType)
                 throws CertificateException {
 
@@ -716,9 +704,7 @@ public class MessageUtils {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType)
                 throws CertificateException {
 
@@ -733,9 +719,8 @@ public class MessageUtils {
             }
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Nullable
+        @Override
         public X509Certificate[] getAcceptedIssuers() {
 
             LOG.error( "getAcceptedIssuers" );

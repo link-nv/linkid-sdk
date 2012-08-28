@@ -22,9 +22,10 @@ require_once('../_include.php');
         
         if ($as->isAuthenticated()) {
 
-            $authDataArray = $as->getAuthDataArray();
-            $userId        = $authDataArray['saml:sp:NameID']['Value'];
-            $attributes    = $as->getAttributes();
+            $authDataArray   = $as->getAuthDataArray();
+            $userId          = $authDataArray['saml:sp:NameID']['Value'];
+            $attributes      = $as->getAttributes();
+            $authnStatements = $authDataArray['saml:sp:AuthnStatements'];
         ?>
 
         <p>
@@ -35,6 +36,16 @@ require_once('../_include.php');
         <p>
           <?php print_r($as->getAttributes()); ?>
         </p>
+
+        <h3>AuthenticationStatements</h3>
+
+        <?php
+
+          foreach ($authnStatements as $as) {
+              print "Device: " . $as->getAuthnContext() . " @ " . $as->getAuthnInstant() . "<br/>";
+          }
+
+        ?>
 
         <!--
 

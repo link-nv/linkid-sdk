@@ -119,6 +119,21 @@ class SimpleSAML_Auth_Default {
 		$session = SimpleSAML_Session::getInstance();
 		$session->doLogin($state['SimpleSAML_Auth_Default.id'], self::extractPersistentAuthState($state));
 
+        /**
+         * Check if linkID LoginMode was set, if so and is popup, put returnURI in window.opener en close the popup
+         */
+        $linkIDLoginMode = $state['linkID:loginMode']; 
+        if (!empty($linkIDLoginMode) && 0 == strcasecmp('popup',$linkIDLoginMode)) {
+
+            echo "<script type=\"text/javascript\">";
+            echo "window.opener.location.href = \"" . $return . "\";";
+            echo "window.close();";
+            echo "</script>";
+            return;
+
+//throw new SimpleSAML_Error_BadRequest('Debugging...: ' . $return . ' -state:' . print_r($state));
+        }
+
 		if (is_string($return)) {
 			/* Redirect... */
 			SimpleSAML_Utilities::redirect($return);
@@ -250,8 +265,8 @@ class SimpleSAML_Auth_Default {
 
 		$session = SimpleSAML_Session::getInstance();
 		$session->doLogin($authId, self::extractPersistentAuthState($state));
-
-		SimpleSAML_Utilities::redirect($redirectTo);
+		
+        SimpleSAML_Utilities::redirect($redirectTo);
 	}
 
 }

@@ -37,6 +37,12 @@ if (!empty($stateId)) {
 	);
 }
 
+/**
+ * Check to see if linkID loginMode is sent
+ */
+$linkIDLoginMode =  $_POST['login_mode'];
+$state['linkID:loginMode'] = $linkIDLoginMode;
+
 $idp = $response->getIssuer();
 if ($idp === NULL) {
 	throw new Exception('Missing <saml:Issuer> in message delivered to AssertionConsumerService.');
@@ -60,6 +66,7 @@ $nameId = NULL;
 $sessionIndex = NULL;
 $expire = NULL;
 $attributes = array();
+$authnStatements = array();
 $foundAuthnStatement = FALSE;
 foreach ($assertions as $assertion) {
 
@@ -97,6 +104,7 @@ foreach ($assertions as $assertion) {
 	}
 
 	$attributes = array_merge($attributes, $assertion->getAttributes());
+	$authnStatements = array_merge($authnStatements, $assertion->getAuthnStatements());
 
 	if ($assertion->getAuthnInstant() !== NULL) {
 		/* Assertion contains AuthnStatement, since AuthnInstant is a required attribute. */
@@ -136,6 +144,8 @@ $state['PersistentAuthData'][] = 'saml:sp:NameID';
 $state['saml:sp:SessionIndex'] = $sessionIndex;
 $state['PersistentAuthData'][] = 'saml:sp:SessionIndex';
 
+$state['saml:sp:AuthnStatements'] = $authnStatements;
+$state['PersistentAuthData'][] = 'saml:sp:AuthnStatements';
 
 $source->handleResponse($state, $idp, $attributes);
 assert('FALSE');

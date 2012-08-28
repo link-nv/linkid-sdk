@@ -199,8 +199,7 @@ public abstract class LinkIDContext implements Serializable {
      *                                redirect to the LinkID login, inside a popup window, or inside an (i)frame (e.g with a modal window).
      *                                Based on this information, LinkID services can make decisions on which theme to use, and
      *                                wether or not authorisation responses should try to break out of an iframe (needed when showing the
-     *                                login inside an iframe). If {@code null}, will default to redirect mode, unless the legacy breakFrame
-     *                                configuration option for saml2 has been set to true, in which case it will be set to 'framed' mode.
+     *                                login inside an iframe). If {@code null}, will default to redirect mode.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                             X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
@@ -222,11 +221,7 @@ public abstract class LinkIDContext implements Serializable {
         this.target = target;
         this.protocol = ifNotNullElse( protocol, config().proto().defaultProtocol() );
         if (loginMode == null) {
-            if (config().proto().saml().breakFrame()) { //legacy breakFrame option support
-                this.loginMode = LoginMode.FRAMED;
-            } else {
-                this.loginMode = LoginMode.REDIRECT;
-            }
+            this.loginMode = LoginMode.REDIRECT;
         } else {
             this.loginMode = loginMode;
         }
@@ -394,7 +389,6 @@ public abstract class LinkIDContext implements Serializable {
 
         private final SAMLBinding binding;
         private final String      relayState;
-        private final boolean     breakFrame;
 
         public SAMLContext() {
 
@@ -413,7 +407,6 @@ public abstract class LinkIDContext implements Serializable {
 
             this.binding = ifNotNullElse( binding, config().proto().saml().binding() );
             this.relayState = ifNotNullElseNullable( relayState, config().proto().saml().relayState() );
-            this.breakFrame = ifNotNullElse( breakFrame, config().proto().saml().breakFrame() );
         }
 
         public SAMLBinding getBinding() {
@@ -424,11 +417,6 @@ public abstract class LinkIDContext implements Serializable {
         public String getRelayState() {
 
             return relayState;
-        }
-
-        public boolean isBreakFrame() {
-
-            return breakFrame;
         }
     }
 
@@ -493,10 +481,11 @@ public abstract class LinkIDContext implements Serializable {
         }
     }
 
-    public static class OAuth2Context implements Serializable{
+
+    public static class OAuth2Context implements Serializable {
 
         private X509Certificate sslCertificate;
-        private String state;
+        private String          state;
 
         public X509Certificate getSslCertificate() {
 

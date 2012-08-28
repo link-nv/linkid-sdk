@@ -84,18 +84,14 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             if (mode == null)
                 mode = authnResponse.getRequest().getLoginMode();
 
-            if (mode == LoginMode.POPUP || mode == LoginMode.FRAMED) {
+            if (mode == LoginMode.POPUP) {
                 response.setContentType( "text/html" );
                 PrintWriter out = response.getWriter();
                 out.println( "<html>" );
                 out.println( "<head>" );
                 out.println( "<script type=\"text/javascript\">" );
-                if (mode == LoginMode.POPUP) {
-                    out.println( "window.opener.location.href = \"" + authnResponse.getRequest().getTarget() + "\";" );
-                    out.println( "window.close();" );
-                } else {
-                    out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
-                }
+                out.println( String.format( "window.opener.location.href = \"%s\";", authnResponse.getRequest().getTarget() ) );
+                out.println( "window.close();" );
                 out.println( "</script>" );
                 out.println( "</head>" );
                 out.println( "<body>" );
@@ -123,6 +119,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
     protected Function<AuthnProtocolResponseContext, AuthenticationContext> getContextFunction() {
 
         return new Function<AuthnProtocolResponseContext, AuthenticationContext>() {
+            @Override
             public AuthenticationContext apply(final AuthnProtocolResponseContext from) {
 
                 return new AuthenticationContext();
@@ -140,7 +137,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
     protected static void onLogin(HttpSession session, AuthnProtocolResponseContext authnResponse) {
 
         if (authnResponse.isSuccess()) {
-            logger.dbg( "username: " + authnResponse.getUserId() );
+            logger.dbg( "username: %s", authnResponse.getUserId() );
             LoginManager.set( session, authnResponse.getUserId(), authnResponse.getAttributes(), authnResponse.getAuthenticatedDevices(),
                     authnResponse.getCertificateChain() );
         }

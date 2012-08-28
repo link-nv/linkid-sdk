@@ -10,7 +10,6 @@ public interface ProfileConstants {
     String LANGUAGE      = "profile.language";
     String MOBILE        = "profile.mobile";
     String PHONE         = "profile.phone";
-    String NRN           = "profile.nrn";               // national registry number
 
     // attribute group
     String GROUP = "profile";
@@ -28,4 +27,9 @@ public interface ProfileConstants {
     String EMAIL           = "profile.email";
     String EMAIL_ADDRESS   = "profile.email.address";
     String EMAIL_CONFIRMED = "profile.email.confirmed";
+
+    // social data
+    String FACEBOOK = "profile.social.facebook";
+    String TWITTER  = "profile.social.twitter";
+    String LINKEDIN = "profile.social.linkedin";
 }

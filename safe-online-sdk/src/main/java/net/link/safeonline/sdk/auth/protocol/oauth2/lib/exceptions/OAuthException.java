@@ -9,16 +9,11 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
  * Date: 22/03/12
  * Time: 14:36
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class OAuthException extends Exception {
 
-    protected OAuth2Message.ErrorType errorType;
-
-    public void setErrorType(final OAuth2Message.ErrorType errorType) {
-
-        this.errorType = errorType;
-    }
+    protected final OAuth2Message.ErrorType errorType;
 
     public OAuth2Message.ErrorType getErrorType() {
 

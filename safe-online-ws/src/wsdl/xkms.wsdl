@@ -129,7 +129,7 @@
 
 	<service name="XKMSService">
 		<port name="XKMSPort" binding="tns:SOAPBinding">
-			<wsdlsoap:address location="http://localhost:8080/eid-trust-service-ws/xkms2" />
+			<wsdlsoap:address location="http://localhost:8080/safe-online-ws/xkms2" />
 		</port>
 	</service>
 

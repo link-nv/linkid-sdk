@@ -1,0 +1,1 @@
+../../../../../../../server/common/application/webapp/safe-online-static-webapp/src/main/webapp/js/linkid-min.js

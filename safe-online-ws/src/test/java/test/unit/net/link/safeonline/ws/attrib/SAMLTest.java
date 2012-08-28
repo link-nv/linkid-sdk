@@ -81,6 +81,7 @@ public class SAMLTest {
         Element nsElement = document.createElement( "nsElement" );
         nsElement.setAttributeNS( XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion" );
         nsElement.setAttributeNS( XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+
         Node resultNode = XPathAPI.selectSingleNode( document,
                 "/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue[@xsi:type='AttributeType']/saml:AttributeValue",
                 nsElement );

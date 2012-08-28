@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class AuthenticationContext extends LinkIDContext {
 
     private boolean                         forceAuthentication;
+    private boolean                         forceRegistration;
     private Set<String>                     devices;
     private Map<String, List<Serializable>> subjectAttributes;
 
@@ -316,19 +317,34 @@ public class AuthenticationContext extends LinkIDContext {
         this.devices = devices;
     }
 
+    public boolean isForceRegistration() {
+
+        return forceRegistration;
+    }
+
+    /**
+     * Setting this flag to true will force the linkID authentication webapp to override the page "do you have an account" and go straight
+     * to the register device page. It will also disregard any "deflowered" cookie which is a cookie set upon the first successful
+     * authentication which will also skip the "do you have an account" page and go straight to the login device page.
+     */
+    public void setForceRegistration(final boolean forceRegistration) {
+
+        this.forceRegistration = forceRegistration;
+    }
+
     public boolean isForceAuthentication() {
 
         return forceAuthentication;
     }
 
-    public Set<String> getDevices() {
-
-        return devices;
-    }
-
     public void setForceAuthentication(final boolean forceAuthentication) {
 
         this.forceAuthentication = forceAuthentication;
+    }
+
+    public Set<String> getDevices() {
+
+        return devices;
     }
 
     public void setDevices(final Set<String> devices) {
@@ -349,7 +365,7 @@ public class AuthenticationContext extends LinkIDContext {
     @Override
     public String toString() {
 
-        return String.format( "{authn: %s, force=%s, dev=%s}", //
-                super.toString(), isForceAuthentication(), getDevices() );
+        return String.format( "{authn: %s, forceReg=%s forceAuth=%s, dev=%s}", //
+                super.toString(), isForceRegistration(), isForceAuthentication(), getDevices() );
     }
 }

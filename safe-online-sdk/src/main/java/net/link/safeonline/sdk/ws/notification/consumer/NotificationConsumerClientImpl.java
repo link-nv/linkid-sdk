@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.ws.notification.consumer;
 
-import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.notification.consumer.*;
@@ -75,7 +74,7 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
         try {
             getPort().notify( notifications );
         }
-        catch (ClientTransportException e) {
+        catch (Exception e) {
             LOG.debug( "Failed to send notification" );
             throw new WSClientTransportException( getBindingProvider(), e );
         }

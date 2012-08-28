@@ -107,6 +107,7 @@
         <module>safe-online-sdk-dotnet</module>
         <module>safe-online-sdk-php</module>
 
+        <module>safe-online-sdk-resources</module>
         <module>safe-online-sdk-manual</module>
         <module>safe-online-sdk-manual-java</module>
         <module>safe-online-sdk-manual-dotnet</module>
@@ -114,6 +115,7 @@
         
         <module>safe-online-sdk-package-java</module>
         <module>safe-online-sdk-package-dotnet</module>
+        <module>safe-online-sdk-package-php</module>
         
         <module>safe-online-sdk-example-jsp</module>
         <module>safe-online-sdk-example-wicket</module>

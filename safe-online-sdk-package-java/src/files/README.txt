@@ -1,5 +1,5 @@
-README for linkID SDK
-===================
+README for linkID Java SDK
+==========================
 
 === 1. Overview
 
@@ -20,14 +20,17 @@ The linkID Java SDK manual can be found in sdk-manual-java.pdf
 
 The API documentation can be found in the 'javadoc' directory.
 
+==- 5. linkID Resources
+The static linkID resources like Javascript files and CSS files can be found
+in the resources directory.
 
-=== 5. License
+=== 6. License
 
-Copyright 2006-2007 Lin.k N.V. All rights reserved.
+Copyright 2006-2012 Lin.k N.V. All rights reserved.
 Lin.k N.V. proprietary/confidential. Use is subject to license terms.
 
 
-=== 6. License for 3th party libraries
+=== 7. License for 3th party libraries
 
 Sun JAX-WS RI distributed under CDDL v1.0.
 Apache Commons libraries distributed under Apache License version 2.0.

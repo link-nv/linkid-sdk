@@ -65,7 +65,7 @@ public abstract class LinkIDSession extends WebSession {
         return postAuthenticationPage;
     }
 
-    public void setPostAuthenticationPage(Class<? extends Page> postAuthenticationPage) {
+    public void setPostAuthenticationPage(@Nullable Class<? extends Page> postAuthenticationPage) {
 
         this.postAuthenticationPage = postAuthenticationPage;
     }
@@ -75,7 +75,7 @@ public abstract class LinkIDSession extends WebSession {
         return postAuhtenticationParameters;
     }
 
-    public void setPostAuhtenticationParameters(final PageParameters postAuhtenticationParameters) {
+    public void setPostAuhtenticationParameters(@Nullable final PageParameters postAuhtenticationParameters) {
 
         this.postAuhtenticationParameters = postAuhtenticationParameters;
     }

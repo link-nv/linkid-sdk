@@ -9,7 +9,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
  * Date: 08/05/12
  * Time: 14:35
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class OAuthAuthorizationException extends OAuthException {
 

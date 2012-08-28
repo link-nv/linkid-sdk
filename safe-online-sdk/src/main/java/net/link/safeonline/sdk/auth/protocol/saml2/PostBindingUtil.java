@@ -8,6 +8,8 @@
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import com.google.common.base.Charsets;
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.util.*;
@@ -17,14 +19,14 @@ import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.link.util.saml.SamlUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.JdkLogChute;
 import org.bouncycastle.util.encoders.Base64;
+import org.jetbrains.annotations.Nullable;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
@@ -46,7 +48,7 @@ import org.opensaml.xml.security.SecurityException;
  */
 public abstract class PostBindingUtil {
 
-    private static final Log LOG = LogFactory.getLog( PostBindingUtil.class );
+    private static final Logger logger = Logger.get( PostBindingUtil.class );
 
     /**
      * Sends a SAML2 authentication or logout Request using the specified Velocity template.
@@ -63,17 +65,17 @@ public abstract class PostBindingUtil {
      *
      * @throws IOException IO Exception
      */
-    @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
+    @SuppressWarnings("UseOfPropertiesAsHashtable")
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                   Locale language, String themeName, LoginMode loginMode)
+                                   Locale language, String themeName, LoginMode loginMode, boolean forceRegistration)
             throws IOException {
 
-        LOG.debug( "sendRequest[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                LinkIDSaml2Utils.marshall( samlRequest ), true ) );
+        logger.dbg( "sendRequest[HTTP POST] (RelayState: %s, To: %s)\n%s", relayState, consumerUrl,
+                DomUtils.domToString( SamlUtils.marshall( samlRequest ), true ) );
 
         String encodedSamlRequestToken = new String( Base64.encode(
-                DomUtils.domToString( LinkIDSaml2Utils.sign( samlRequest, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
+                DomUtils.domToString( SamlUtils.sign( samlRequest, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
                 Charsets.UTF_8 );
 
         /*
@@ -93,7 +95,7 @@ public abstract class PostBindingUtil {
             velocityEngine.init();
         }
         catch (Exception e) {
-            throw new RuntimeException( "could not initialize velocity engine", e );
+            throw new InternalInconsistencyException( "could not initialize velocity engine", e );
         }
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put( "action", consumerUrl );
@@ -104,20 +106,20 @@ public abstract class PostBindingUtil {
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
         if (null != themeName)
             velocityContext.put( RequestConstants.THEME_REQUEST_PARAM, themeName );
-        if ( loginMode != null){
+        if (loginMode != null) {
             velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
         }
-//        if (breakFrame)
-        if (loginMode != null && loginMode == LoginMode.FRAMED)
-            velocityContext.put( "IsBreakFrame", "true" );
 
+        if (forceRegistration)
+            velocityContext.put( RequestConstants.FORCE_REGISTRATION_PARAM, "true" );
 
         Template template;
+        //noinspection OverlyBroadCatchBlock
         try {
             template = velocityEngine.getTemplate( templateResource );
         }
         catch (Exception e) {
-            throw new RuntimeException( "Velocity template error: " + e.getMessage(), e );
+            throw new InternalInconsistencyException( String.format( "Velocity template error: %s", e.getMessage() ), e );
         }
 
         response.setContentType( "text/html; charset=UTF-8" );
@@ -138,18 +140,18 @@ public abstract class PostBindingUtil {
      *
      * @throws IOException IO Exception
      */
-    @SuppressWarnings( { "UseOfPropertiesAsHashtable" })
+    @SuppressWarnings("UseOfPropertiesAsHashtable")
     public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain,
                                     String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
                                     Locale language, LoginMode loginMode)
             throws IOException {
 
-        LOG.debug( "sendResponse[HTTP POST] (RelayState: " + relayState + ", To: " + consumerUrl + ", breakFrame: " + (loginMode != null && loginMode == LoginMode.FRAMED) + "):\n"
-                   + DomUtils.domToString( LinkIDSaml2Utils.marshall( samlResponse ), true ) );
+        logger.dbg( "sendResponse[HTTP POST] (RelayState: %s, To: %s, loginMode: %s)\n%s", relayState, consumerUrl, loginMode,
+                DomUtils.domToString( SamlUtils.marshall( samlResponse ), true ) );
 
         String encodedSamlResponseToken = new String( Base64.encode(
-                DomUtils.domToString( LinkIDSaml2Utils.sign( samlResponse, signingKeyPair, certificateChain ) )
-                        .getBytes( Charsets.UTF_8 ) ), Charsets.UTF_8 );
+                DomUtils.domToString( SamlUtils.sign( samlResponse, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
+                Charsets.UTF_8 );
 
         /*
          * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just too complex in
@@ -166,7 +168,7 @@ public abstract class PostBindingUtil {
             velocityEngine.init();
         }
         catch (Exception e) {
-            throw new RuntimeException( "could not initialize velocity engine", e );
+            throw new InternalInconsistencyException( "could not initialize velocity engine", e );
         }
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put( "action", consumerUrl );
@@ -175,18 +177,17 @@ public abstract class PostBindingUtil {
             velocityContext.put( "RelayState", relayState );
         if (null != language)
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
-        if ( loginMode != null){
+        if (loginMode != null) {
             velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
         }
-        if (loginMode != null && loginMode == LoginMode.FRAMED)
-            velocityContext.put( "BreakFrame", "true" );
 
         Template template;
+        //noinspection OverlyBroadCatchBlock
         try {
             template = velocityEngine.getTemplate( templateResource );
         }
         catch (Exception e) {
-            throw new RuntimeException( "Velocity template error: " + e.getMessage(), e );
+            throw new InternalInconsistencyException( String.format( "Velocity template error: %s", e.getMessage() ), e );
         }
 
         response.setContentType( "text/html; charset=UTF-8" );
@@ -197,8 +198,9 @@ public abstract class PostBindingUtil {
      * @param request HTTP Servlet Request
      *
      * @return The {@link SAMLObject} that is in the given {@link HttpServletRequest} which is parsed as using the SAML HTTP POST Binding
-     *         protocol.<br> <code>null</code>: There is no SAML request or response.
+     *         protocol.<br> {@code null}: There is no SAML request or response.
      */
+    @Nullable
     public static SAMLObject getSAMLObject(HttpServletRequest request) {
 
         // Check whether there is a SAML request or SAML response in the HTTP request.
@@ -210,14 +212,14 @@ public abstract class PostBindingUtil {
 
         messageContext.setSecurityPolicyResolver( new SecurityPolicyResolver() {
 
-            public Iterable<SecurityPolicy> resolve(MessageContext context)
-                    throws SecurityException {
+            @Override
+            public Iterable<SecurityPolicy> resolve(MessageContext context) {
 
                 return Collections.singletonList( resolveSingle( context ) );
             }
 
-            public SecurityPolicy resolveSingle(MessageContext context)
-                    throws SecurityException {
+            @Override
+            public SecurityPolicy resolveSingle(MessageContext context) {
 
                 SecurityPolicy securityPolicy = new BasicSecurityPolicy();
                 securityPolicy.getPolicyRules().add( new MandatoryIssuerRule() );
@@ -230,13 +232,13 @@ public abstract class PostBindingUtil {
             new HTTPPostDecoder().decode( messageContext );
         }
         catch (MessageDecodingException e) {
-            throw new RuntimeException( "SAML message decoding error", e );
+            throw new InternalInconsistencyException( "SAML message decoding error", e );
         }
         catch (SecurityPolicyException e) {
-            throw new RuntimeException( "security policy error", e );
+            throw new InternalInconsistencyException( "security policy error", e );
         }
         catch (SecurityException e) {
-            throw new RuntimeException( "security error", e );
+            throw new InternalInconsistencyException( "security error", e );
         }
 
         return messageContext.getInboundSAMLMessage();

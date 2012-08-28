@@ -20,8 +20,8 @@
 		<meta http-equiv="cache-control" content="no-cache, must-revalidate"/>
 		<meta http-equiv="expires" content="-1"/>
 	</head>
-	
-    <body onload="document.forms[0].submit()">
+
+        <body onload="document.forms[0].submit()">
         <noscript>
             <p>
                 <strong>Note:</strong> Since your browser does not support JavaScript,
@@ -29,11 +29,7 @@
             </p>
         </noscript>
 
-        #if($BreakFrame)
-            <form action="${action}" method="post" autocomplete="off" target="_top">
-        #else
-            <form action="${action}" method="post" autocomplete="off" target="_self">
-        #end
+        <form action="${action}" method="post" autocomplete="off" target="_self">
 
             #if($RelayState)
                 <input type="hidden" name="RelayState" value="${RelayState}"/>
@@ -60,6 +56,10 @@
 
             #if($login_mode)
                 <input type="hidden" name="login_mode" value="${login_mode}"/>
+            #end
+
+            #if($ForceRegistration)
+                <input type="hidden" name="ForceRegistration" value="${ForceRegistration}"/>
             #end
 
             <noscript>
