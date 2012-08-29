@@ -22,6 +22,7 @@ public class OAuthException extends Exception {
 
     public OAuthException(final OAuth2Message.ErrorType errorType) {
 
+        super( errorType.toString() );
         this.errorType = errorType;
     }
 
