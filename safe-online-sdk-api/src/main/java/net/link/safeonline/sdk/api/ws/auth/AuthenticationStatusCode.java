@@ -49,6 +49,7 @@ public enum AuthenticationStatusCode {
     SUBSCRIPTION_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:SubscriptionNotFound" ),
     LANGUAGE_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:LanguageNotFound" ),
     CANCELLED( "urn:net:lin-k:safe-online:ws:auth:status:Cancelled" ),
+    FAILED( "urn:oasis:names:tc:SAML:2.0:status:AuthnFailed" ),
     SUCCESS( "urn:oasis:names:tc:SAML:2.0:status:Success" );
 
     private final String urn;
