@@ -1,22 +1,24 @@
 package net.link.safeonline.sdk.auth.servlet;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.*;
+import net.link.safeonline.sdk.api.auth.ForceAuth;
+import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.AuthorizationRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.messages.MessageUtils;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
 import net.link.util.servlet.annotation.Init;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -26,53 +28,53 @@ import org.apache.commons.logging.LogFactory;
  * Date: 15/05/12
  * Time: 15:27
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class MobileLinkingServlet extends AbstractLinkIDInjectionServlet {
 
-    private static final Log LOG = LogFactory.getLog( MobileLinkingServlet.class );
+    private static final Logger logger = Logger.get( MobileLinkingServlet.class );
 
     public static final String MOBILE_CLIENTID_PARAM = "clientId";
-    public static final String LANDING_URL_PARAM   = "LandingURL";
-    public static final String ASK_STATE_PARAM = "AskState";
-    public static final String MODE_PARAM = "LoginMode";
+    public static final String LANDING_URL_PARAM     = "LandingURL";
+    public static final String ASK_STATE_PARAM       = "AskState";
+    public static final String MODE_PARAM            = "LoginMode";
 
-
-    @Init(name = MOBILE_CLIENTID_PARAM, optional = false )
+    @Init(name = MOBILE_CLIENTID_PARAM, optional = false)
     private String clientId;
 
     /**
      * Path of {@code MobileLandingServlet}
      */
-    @Init(name = LANDING_URL_PARAM, optional = false )
+    @Init(name = LANDING_URL_PARAM, optional = false)
     private String landingURL;
 
     @Init(name = ASK_STATE_PARAM, optional = true, defaultValue = "false")
     private String askState;
 
-    @Init(name = ASK_STATE_PARAM, optional = true, defaultValue = "FRAMED")
+    @Init(name = MODE_PARAM, optional = true, defaultValue = "FRAMED")
     private String loginMode;
 
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-
-        delegate( request, response );
+        delegate( response );
     }
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        delegate( request, response );
+
+        delegate( response );
     }
 
     /**
      * create oauth request and send
-     * @param request
-     * @param response
      */
-    public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
+    public void delegate(final HttpServletResponse response) {
+
+        logger.dbg( "mobile linking request" );
+
         //optional target URL: when login is complete, user will be redirected to this location
         if (clientId == null || clientId.length() == 0)
             throw new InternalInconsistencyException( "AppName parameter must be set" );
@@ -83,14 +85,14 @@ public class MobileLinkingServlet extends AbstractLinkIDInjectionServlet {
         //TODO ask for state
 
         try {
-            sendOAuthRequestMessage(request, response, null);
+            sendOAuthRequestMessage( response, null );
         }
         catch (IOException e) {
             throw new InternalInconsistencyException( e );
         }
     }
 
-    private void sendOAuthRequestMessage(HttpServletRequest request, HttpServletResponse response, String state)
+    private void sendOAuthRequestMessage(HttpServletResponse response, @Nullable String state)
             throws IOException {
 
         String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().authorizationPath() );
@@ -110,5 +112,4 @@ public class MobileLinkingServlet extends AbstractLinkIDInjectionServlet {
 
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
     }
-
 }
