@@ -175,17 +175,13 @@
         <section>
             <title>Attributes</title>
             <para>Every subject (i.e. user) has different attributes. An
-                attribute is composed of a name and a value. For example: the
-                attribute with name 'Age' has value '18'. Different types of
-                attributes are possible. We define the following attribute
-                categories:
+                attribute is composed of a name, a UUID and a value.
+                For example: the attribute with name 'profile.givenName' has value 'Richard'
+                and has a UUID '0e05ffbc-94f9-4a29-a0b0-3bbe9a83a79e'.
             </para>
-            <section>
-                <title>Single-valued Attributes</title>
-                <para>
-                    A single-valued attribute is, as the name suggests, an attribute
-                    with only one single value attached to it. This value of the
-                    attribute is of a certain type. Supported types are:
+            <para>
+                A linkID attribute's value has a certain attribute type.
+                Supported types are:
                     <itemizedlist>
                         <listitem>
                             <para>String</para>
@@ -203,14 +199,24 @@
                             <para>Date</para>
                         </listitem>
                     </itemizedlist>
-                    An example of a single-valued attribute is 'Age' with value '18'.
+            </para>
+            <para>
+                Besides the value type, different types of attributes are possible.
+                We define the following attribute categories:
+            </para>
+            <section>
+                <title>Single-valued Attributes</title>
+                <para>
+                    A single-valued attribute is, as the name suggests, an attribute
+                    with only one single value attached to it.
                 </para>
             </section>
             <section>
                 <title>Multi-valued Attributes</title>
                 <para>A multi-valued attribute is an attribute where the attribute
-                    value is a collection of primitive values. An example is the 'GSM'
-                    attribute with values '1234' and '5678'.
+                    value is a collection of primitive values.
+                    For example a mobile phone attribute where a user can have multiple mobile phones.
+                    Note that each value has a UUID linked to it.
                 </para>
             </section>
             <section>
@@ -228,6 +234,13 @@
                         </imageobject>
                         <caption>The attribute matrix.</caption>
                     </mediaobject>
+                </para>
+                <para>
+                    As in multivalued attributes, each compound attribute value has its UUID.
+                    Note that the members of a specific compound value have the same UUID as
+                    the compound itself.
+                </para>
+                <para>
                     The operator can define new attribute types within the linkID
                     system. Every subject can have values for these attributes. A
                     multi-valued attribute is simply a grouping of attribute values
@@ -533,6 +546,23 @@
                     </listitem>
                 </orderedlist>
             </para>
+        </section>
+    </chapter>
+    <chapter id="attributes">
+        <title>Standard linkID attributes</title>
+        <abstract>
+            linkID has a default set of attributes configured in its core. Also certain devices like
+            the Belgian eID card provide certain attributes. Below we list them and provide some more info
+            on what to expect in those attributes.
+        </abstract>
+        <section>
+            <title>Profile attributes</title>
+            <section>
+                <title>profile.givenName</title>
+                <para>
+                    A single valued, STRING attribute containing the given name as specified by the user.
+                </para>
+            </section>
         </section>
     </chapter>
 </book>
