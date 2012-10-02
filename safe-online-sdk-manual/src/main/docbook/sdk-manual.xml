@@ -563,6 +563,197 @@
                     A single valued, STRING attribute containing the given name as specified by the user.
                 </para>
             </section>
+            <section>
+                <title>profile.familyName</title>
+                <para>
+                    A single valued, STRING attribute containing the family name as specified by the user.
+                </para>
+            </section>
+            <section>
+                <title>profile.dob</title>
+                <para>
+                    A single valued, DATE attribute containing the date of birth as specified by the user.
+                </para>
+            </section>
+            <section>
+                <title>profile.gender</title>
+                <para>
+                    A single valued, STRING attribute containing the gender as specified by the user.
+                    Possible values are <code>MALE</code> and <code>FEMALE</code>.
+                </para>
+            </section>
+            <section>
+                <title>profile.language</title>
+                <para>
+                    A single valued, STRING attribute containing the language as specified by the user.
+                    The value is specified in <code>ISO-639-1</code> format.
+                </para>
+            </section>
+            <section>
+                <title>profile.mobile</title>
+                <para>
+                    A single valued, STRING attribute containing the mobile as specified by the user.
+                </para>
+            </section>
+            <section>
+                <title>profile.phone</title>
+                <para>
+                    A single valued, STRING attribute containing the phone as specified by the user.
+                </para>
+            </section>
+            <section>
+                <title>profile.address</title>
+                <para>
+                    A compound attribute containing the user's specified addresses.
+                    The compound consists of following members:
+                    <variablelist>
+                        <varlistentry>
+                            <term>profile.address.street</term>
+                            <listitem>
+                                <para>
+                                    STRING attribute containing the address street name.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>profile.address.streetNumber</term>
+                            <listitem>
+                                <para>
+                                    STRING attribute containing the address street number.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>profile.address.streetBus</term>
+                            <listitem>
+                                <para>
+                                    optional STRING attribute containing the address street bus.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>profile.address.postalCode</term>
+                            <listitem>
+                                <para>
+                                    STRING attribute containing the address postal code.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>profile.address.city</term>
+                            <listitem>
+                                <para>
+                                    STRING attribute containing the address city.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>profile.address.country</term>
+                            <listitem>
+                                <para>
+                                    STRING attribute containing the address country.
+                                    The value is returned in <code>ISO-3166 alpha-2</code> format.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+                </para>
+            </section>
+            <section>
+                <title>profile.email</title>
+                <para>
+                    A compound attribute containing the user's email addresses.
+                    The compound consists of following members:
+                    <variablelist>
+                        <varlistentry>
+                            <term>profile.email.address</term>
+                            <listitem>
+                                <para>
+                                    STRING attribute containing the email address
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>profile.email.confirmed</term>
+                            <listitem>
+                                <para>
+                                    BOOLEAN attribute telling if the user has confirmed this email address.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+                </para>
+            </section>
+        </section>
+        <section>
+            <title>Belgian eID card attributes</title>
+            <section>
+                <title>device.beid.nrn</title>
+                <para>
+                    A single valued, STRING attribute containing the national registry number of the user's eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.maskedNrn</title>
+                <para>
+                    A single valued, STRING attribute containing the hash of the national registry number of the user's eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.surname</title>
+                <para>
+                    A single valued, STRING attribute containing the family name of the user as specified on the eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.givenName</title>
+                <para>
+                    A single valued, STRING attribute containing the given name of the user as specified on the eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.nationality</title>
+                <para>
+                    A single valued, STRING attribute containing the nationality of the user as specified on the eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.placeOfBirth</title>
+                <para>
+                    A single valued, DATE attribute containing the place of birth of the user as specified on the eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.dateOfBirth</title>
+                <para>
+                    A single valued, DATE attribute containing the place of birth of the user as specified on the eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.gender</title>
+                <para>
+                    A single valued, DATE attribute containing the gender of the user as specified on the eID card.
+                    Possible values are <code>MALE</code> and <code>FEMALE</code>.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.streetAndNumber</title>
+                <para>
+                    A single valued, STRING attribute containing the street and number of the user as specified on the eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.zip</title>
+                <para>
+                    A single valued, STRING attribute containing the postal code of the user as specified on the eID card.
+                </para>
+            </section>
+            <section>
+                <title>device.beid.municipality</title>
+                <para>
+                    A single valued, STRING attribute containing the city of the user as specified on the eID card.
+                </para>
+            </section>
         </section>
     </chapter>
 </book>
