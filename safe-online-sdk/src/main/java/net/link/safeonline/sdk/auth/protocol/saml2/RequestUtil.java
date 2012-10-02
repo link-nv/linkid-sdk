@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.util.common.CertificateChain;
 import net.link.util.error.ValidationFailedException;
@@ -57,13 +58,13 @@ public abstract class RequestUtil {
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
                                    CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState,
                                    String postTemplateResource, @Nullable Locale language, @Nullable String themeName,
-                                   @Nullable LoginMode loginMode, boolean forceRegistration)
+                                   @Nullable LoginMode loginMode, @Nullable StartPage startPage)
             throws IOException {
 
         switch (requestBinding) {
             case HTTP_POST:
                 PostBindingUtil.sendRequest( samlRequest, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                        response, language, themeName, loginMode, forceRegistration );
+                        response, language, themeName, loginMode, startPage );
                 break;
 
             case HTTP_REDIRECT:

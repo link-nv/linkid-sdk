@@ -81,9 +81,9 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         loginParams.add( context.getLoginMode().toString() );
         loginParams.add( RequestConstants.OAUTH2_FORCE_AUTHN );
         loginParams.add( authnContext.isForceAuthentication()? ForceAuth.FORCE.toString(): ForceAuth.AUTO.toString() );
-        if (context.isForceRegistration()) {
-            loginParams.add( RequestConstants.FORCE_REGISTRATION_PARAM );
-            loginParams.add( "true" );
+        if (null != context.getStartPage()) {
+            loginParams.add( RequestConstants.START_PAGE_REQUEST_PARAM );
+            loginParams.add( context.getStartPage().name() );
         }
 
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );

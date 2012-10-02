@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.auth.protocol.Protocol;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class AuthenticationContext extends LinkIDContext {
 
     private boolean                         forceAuthentication;
-    private boolean                         forceRegistration;
+    private StartPage                       startPage;
     private Set<String>                     devices;
     private Map<String, List<Serializable>> subjectAttributes;
 
@@ -317,19 +318,19 @@ public class AuthenticationContext extends LinkIDContext {
         this.devices = devices;
     }
 
-    public boolean isForceRegistration() {
-
-        return forceRegistration;
-    }
-
     /**
      * Setting this flag to true will force the linkID authentication webapp to override the page "do you have an account" and go straight
-     * to the register device page. It will also disregard any "deflowered" cookie which is a cookie set upon the first successful
-     * authentication which will also skip the "do you have an account" page and go straight to the login device page.
+     * to the register or authentication device page. It will also disregard any "deflowered" cookie which is a cookie set upon the first
+     * successful authentication which will also skip the "do you have an account" page and go straight to the login device page.
      */
-    public void setForceRegistration(final boolean forceRegistration) {
+    public void setStartPage(final StartPage startPage) {
 
-        this.forceRegistration = forceRegistration;
+        this.startPage = startPage;
+    }
+
+    public StartPage getStartPage() {
+
+        return startPage;
     }
 
     public boolean isForceAuthentication() {
@@ -365,7 +366,7 @@ public class AuthenticationContext extends LinkIDContext {
     @Override
     public String toString() {
 
-        return String.format( "{authn: %s, forceReg=%s forceAuth=%s, dev=%s}", //
-                super.toString(), isForceRegistration(), isForceAuthentication(), getDevices() );
+        return String.format( "{authn: %s, startPage=%s forceAuth=%s, dev=%s}", //
+                super.toString(), startPage, isForceAuthentication(), getDevices() );
     }
 }

@@ -77,7 +77,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( authnService, authnContext.getSAML().getBinding(), samlRequest, authnContext.getApplicationKeyPair(),
                 certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName, authnContext.getLanguage(),
-                authnContext.getThemeName(), authnContext.getLoginMode(), authnContext.isForceRegistration() );
+                authnContext.getThemeName(), authnContext.getLoginMode(), authnContext.getStartPage() );
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL );
@@ -175,7 +175,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         RequestUtil.sendRequest( logoutService, logoutContext.getSAML().getBinding(), samlRequest, logoutContext.getApplicationKeyPair(),
                 certificateChain, response, logoutContext.getSAML().getRelayState(), templateResourceName, logoutContext.getLanguage(),
-                logoutContext.getThemeName(), logoutContext.getLoginMode(), false );
+                logoutContext.getThemeName(), logoutContext.getLoginMode(), null );
 
         return new LogoutProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL,
                 samlRequest.getNameID().getValue() );

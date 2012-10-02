@@ -25,10 +25,9 @@ import java.util.Locale;
 public interface RequestConstants {
 
     /**
-     * Override the deflowered cookie which is set upon a successful authentication and triggers the "Do you have a linkID account" question
-     * page to be skipped
+     * Case we want to force the auth webapp to go straight to register or authentication page.
      */
-    String FORCE_REGISTRATION_PARAM = "ForceRegistration";
+    String START_PAGE_REQUEST_PARAM = "start_page";
 
     /**
      * @see Locale#Locale(String)

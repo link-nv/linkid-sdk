@@ -8,8 +8,7 @@ package net.link.safeonline.wicket.component.linkid;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.RequestConstants;
+import net.link.safeonline.sdk.api.auth.*;
 import net.link.safeonline.sdk.auth.servlet.InitiateLoginServlet;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
@@ -30,10 +29,11 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author sgdesmet
  */
+@SuppressWarnings("UnusedDeclaration")
 public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
-    protected LoginMode loginMode;
-    protected boolean   forceRegistration;
+    protected LoginMode      loginMode;
+    protected StartPage startPage;
 
     /**
      * Constructor. Adds 'linkid.login.js' to the page.
@@ -85,16 +85,17 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
     }
 
     /*
-     * Skip the "do you have an account page" and go straight to register even when deflowered.
+     * Skip the "do you have an account page" and go straight to register or authenticate even when deflowered.
      */
-    public void setForceRegistration(final boolean forceRegistration) {
 
-        this.forceRegistration = forceRegistration;
+    public StartPage getStartPage() {
+
+        return startPage;
     }
 
-    public boolean isForceRegistration() {
+    public void setStartPage(final StartPage startPage) {
 
-        return forceRegistration;
+        this.startPage = startPage;
     }
 
     @Override
@@ -132,7 +133,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
         }
 
         AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURL, mode );
-        authenticationContext.setForceRegistration( forceRegistration );
+        authenticationContext.setStartPage( startPage );
         return authenticationContext;
     }
 
@@ -144,7 +145,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
     /**
      * @return URL to use for initiating a linkID login request ( {@link InitiateLoginServlet}.
-     *         If {@code null} the default URL in the linkig login js ( /startlogin ) will be used.
+     *         If {@code null} the default URL in the linkid login js ( /startlogin ) will be used.
      */
     @Nullable
     public String findLoginUrl() {

@@ -4,8 +4,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.RequestConstants;
+import net.link.safeonline.sdk.api.auth.*;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
@@ -50,10 +49,10 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         LoginMode mode = LoginMode.fromString( modeParam );
 
         // optional force registration
-        boolean forceRegistration = null != request.getParameter( RequestConstants.FORCE_REGISTRATION_PARAM );
+        StartPage startPage = StartPage.fromString( request.getParameter( RequestConstants.START_PAGE_REQUEST_PARAM ), StartPage.NONE );
 
         AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURI, mode );
-        authenticationContext.setForceRegistration( forceRegistration );
+        authenticationContext.setStartPage( startPage );
 
         AuthenticationUtils.login( request, response, authenticationContext );
     }

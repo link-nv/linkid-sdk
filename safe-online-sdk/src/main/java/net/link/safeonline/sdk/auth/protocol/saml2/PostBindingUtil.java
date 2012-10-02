@@ -15,8 +15,7 @@ import java.security.KeyPair;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.RequestConstants;
+import net.link.safeonline.sdk.api.auth.*;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.saml.SamlUtils;
@@ -68,7 +67,7 @@ public abstract class PostBindingUtil {
     @SuppressWarnings("UseOfPropertiesAsHashtable")
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                   Locale language, String themeName, LoginMode loginMode, boolean forceRegistration)
+                                   Locale language, String themeName, LoginMode loginMode, StartPage startPage)
             throws IOException {
 
         logger.dbg( "sendRequest[HTTP POST] (RelayState: %s, To: %s)\n%s", relayState, consumerUrl,
@@ -109,9 +108,8 @@ public abstract class PostBindingUtil {
         if (loginMode != null) {
             velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
         }
-
-        if (forceRegistration)
-            velocityContext.put( RequestConstants.FORCE_REGISTRATION_PARAM, "true" );
+        if (null != startPage)
+            velocityContext.put( RequestConstants.START_PAGE_REQUEST_PARAM, startPage.name() );
 
         Template template;
         //noinspection OverlyBroadCatchBlock
