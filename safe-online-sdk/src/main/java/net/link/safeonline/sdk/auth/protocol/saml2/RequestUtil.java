@@ -68,7 +68,8 @@ public abstract class RequestUtil {
                 break;
 
             case HTTP_REDIRECT:
-                RedirectBindingUtil.sendRequest( samlRequest, signingKeyPair, relayState, consumerUrl, response );
+                RedirectBindingUtil.sendRequest( samlRequest, signingKeyPair, relayState, consumerUrl, response, language, themeName,
+                        loginMode, startPage );
                 break;
         }
     }

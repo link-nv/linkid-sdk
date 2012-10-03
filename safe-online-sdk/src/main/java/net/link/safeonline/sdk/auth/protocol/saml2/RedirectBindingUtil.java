@@ -9,8 +9,11 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import java.security.KeyPair;
 import java.util.Collections;
+import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.api.auth.LoginMode;
+import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.util.common.DomUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +59,8 @@ public abstract class RedirectBindingUtil {
      * @param response       HTTP Servlet Response
      */
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, @Nullable String relayState, String consumerUrl,
-                                   HttpServletResponse response) {
+                                   HttpServletResponse response, Locale language, String themeName, LoginMode loginMode,
+                                   StartPage startPage) {
 
         LOG.debug( "sendRequest[HTTP Redirect] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
                 LinkIDSaml2Utils.marshall( samlRequest ), true ) );
@@ -72,7 +76,9 @@ public abstract class RedirectBindingUtil {
         consumerService.setLocation( consumerUrl );
         messageContext.setPeerEntityEndpoint( consumerService );
 
-        messageContext.setOutboundMessageTransport( new HttpServletResponseAdapter( response, consumerUrl.startsWith( "https" ) ) );
+        messageContext.setOutboundMessageTransport(
+                new LinkIDHttpServletResponseAdapter( response, consumerUrl.startsWith( "https" ), language, themeName, loginMode,
+                        startPage ) );
         messageContext.setOutboundSAMLMessage( samlRequest );
         messageContext.setRelayState( relayState );
 
@@ -169,7 +175,8 @@ public abstract class RedirectBindingUtil {
 
         try {
             new HTTPRedirectDeflateEncoder().encode( messageContext );
-        } catch (MessageEncodingException e) {
+        }
+        catch (MessageEncodingException e) {
             throw new RuntimeException( "SAML message encoding error", e );
         }
     }
@@ -178,11 +185,14 @@ public abstract class RedirectBindingUtil {
 
         try {
             new HTTPRedirectDeflateDecoder().decode( messageContext );
-        } catch (MessageDecodingException e) {
+        }
+        catch (MessageDecodingException e) {
             throw new RuntimeException( "SAML message decoding error", e );
-        } catch (SecurityPolicyException e) {
+        }
+        catch (SecurityPolicyException e) {
             throw new RuntimeException( "security policy error", e );
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             throw new RuntimeException( "security error", e );
         }
     }
