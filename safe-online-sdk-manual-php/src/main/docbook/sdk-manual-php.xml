@@ -240,9 +240,10 @@ if (!$as->isAuthenticated()) {
            </programlisting>
        </para>
        <para>
-           There is an optional HTTP request parameter for forcing the linkID authentication process to go to the "register device" page,
-           regardless of whether the user has successfully authenticated himself in the browser ( a "deflowered" cookie is set then )
-           This can be achieved by setting the parameter <code>ForceRegistration</code>.
+           There is an optional HTTP request parameter for forcing the linkID authentication process to go to the "register device" page
+           or the "authenticate device" page regardless of whether the user has successfully authenticated himself in the browser
+           ( a "deflowered" cookie is set then )
+           This can be achieved by setting the parameter <code>start_page</code>. Possible values are <code>NONE, REGISTER, AUTHENTICATE</code>
            Example:
 
            <programlisting>
@@ -251,7 +252,7 @@ if (!$as->isAuthenticated()) {
             $as->login(array(
                 'saml:idp' => 'linkID',
                 'ReturnTo' => 'http://localhost/linkid-example/index.php'
-                'DestinationParams' => '?login_mode=POPUP&ForceRegistration=true',
+                'DestinationParams' => '?login_mode=POPUP&start_page=REGISTER',
             ));
 
                 ]]>
