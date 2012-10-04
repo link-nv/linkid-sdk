@@ -59,8 +59,8 @@ public abstract class RedirectBindingUtil {
      * @param response       HTTP Servlet Response
      */
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, @Nullable String relayState, String consumerUrl,
-                                   HttpServletResponse response, Locale language, String themeName, LoginMode loginMode,
-                                   StartPage startPage) {
+                                   HttpServletResponse response, @Nullable Locale language, @Nullable String themeName, @Nullable LoginMode loginMode,
+                                   @Nullable StartPage startPage) {
 
         LOG.debug( "sendRequest[HTTP Redirect] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
                 LinkIDSaml2Utils.marshall( samlRequest ), true ) );
