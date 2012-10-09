@@ -21,8 +21,9 @@ import org.jetbrains.annotations.Nullable;
 public interface ClientAccessRequestService {
 
     @Nullable
-    String create(ClientConfiguration clientConfiguration, ClientConfiguration.FlowType flowType, List<String> requestedScope, String state,
-                  String validatedRedirectionURI);
+    String create(ClientConfiguration clientConfiguration, ClientConfiguration.FlowType flowType, List<String> requestedScope, @Nullable
+    String state,
+                  @Nullable String validatedRedirectionURI);
 
     /**
      * Get the request with the specified id

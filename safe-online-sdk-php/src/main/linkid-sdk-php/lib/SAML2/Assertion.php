@@ -408,7 +408,7 @@ class SAML2_Assertion implements SAML2_SignedElement {
 
 		$this->AuthenticatingAuthority = SAML2_Utils::extractStrings($ac, './saml_assertion:AuthenticatingAuthority');
 
-        if (count($asNodes) > 1) {
+        if (count($asNodes) >= 1) {
             $this->allAuthnStatements = array();
             foreach ($asNodes as $as) {
                $this->allAuthnStatements[] = new SAML2_AuthnStatement($as);

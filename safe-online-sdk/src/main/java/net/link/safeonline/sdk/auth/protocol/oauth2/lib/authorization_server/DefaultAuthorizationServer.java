@@ -1,5 +1,6 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.lib.authorization_server;
 
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.Serializable;
 import java.util.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.lib.OAuth2Message;
@@ -137,7 +138,7 @@ public class DefaultAuthorizationServer implements Serializable {
      * @param expireTime     expiration time of the authorization
      */
     public void setAuthorizationResult(String clientAccessId, boolean authorized, List<String> approvedScope, @Nullable Date expireTime)
-            throws ClientAccessRequestNotFoundException, OAuthException {
+            throws OAuthException {
 
         LOG.debug( "set user authorization result for flow instance " + clientAccessId );
         clientAccessRequestService.setAuthorizationResult( clientAccessId, authorized, approvedScope, expireTime );
@@ -404,6 +405,10 @@ public class DefaultAuthorizationServer implements Serializable {
             if (request.getAccessToken().equals( token.getTokenData() )) {
                 expirationDate = token.getExpirationDate();
             }
+        }
+
+        if (null == expirationDate) {
+            throw new InternalInconsistencyException( "No expiration date found ?!" );
         }
 
         ValidationResponse response = new ValidationResponse();
