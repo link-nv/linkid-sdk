@@ -79,7 +79,7 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
             return;
         }
 
-        throw new UnsupportedOperationException( "No logout request or response in the request." );
+        ServletUtils.redirectToErrorPage( request, response, errorPage, null, new ErrorMessage( "Invalid logout request" ) );
     }
 
     /**
