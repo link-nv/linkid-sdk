@@ -18,12 +18,14 @@ import net.link.util.config.Property;
 @Group(prefix = "saml")
 public interface SAMLProtocolConfig {
 
+    public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm";
+
     /**
      * Resource path to a custom velocity template to build the browser POST that contains the SAML2 ticket.
      * <p/>
      * <i>[required, default: A built-in template]</i>
      */
-    @Property(required = true, unset = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm")
+    @Property(required = true, unset = SAML2_POST_BINDING_VM_RESOURCE)
     String postBindingTemplate();
 
     /**
