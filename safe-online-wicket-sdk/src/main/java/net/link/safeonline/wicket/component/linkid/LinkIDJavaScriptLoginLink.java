@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
-    protected LoginMode      loginMode;
+    protected LoginMode loginMode;
     protected StartPage startPage;
 
     /**
@@ -120,6 +120,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
     protected AuthenticationContext newContext(final Class<? extends Page> targetPage, final PageParameters targetPageParameters) {
 
         WebRequest request = getWebRequest();
+        boolean mobileAuthentication = null != request.getParameter( RequestConstants.MOBILE_AUTHN_REQUEST_PARAM );
         String targetURL = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
         String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
         LoginMode mode = LoginMode.fromString( modeParam );
@@ -134,6 +135,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
         AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURL, mode );
         authenticationContext.setStartPage( startPage );
+        authenticationContext.setMobileAuthentication( mobileAuthentication );
         return authenticationContext;
     }
 

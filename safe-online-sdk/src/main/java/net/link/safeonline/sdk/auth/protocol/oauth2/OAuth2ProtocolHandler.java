@@ -89,7 +89,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
 
         AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(), clientId, this,
-                targetURL );
+                targetURL, context.isMobileAuthentication() );
         requestContext.setLoginMode( context.getLoginMode() );
         return requestContext;
     }

@@ -84,7 +84,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                 authnContext.getThemeName(), authnContext.getLoginMode(), authnContext.getStartPage() );
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
-        return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL );
+        return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL,
+                authnContext.isMobileAuthentication() );
     }
 
     @Nullable
@@ -129,7 +130,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( null, null, userId, applicationName, authenticatedDevices, attributes, true, null ) );
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), null,
-                authnContext.getTarget() );
+                authnContext.getTarget(), false );
 
         CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request,
                 authnContext.getTrustedCertificates() );

@@ -84,14 +84,18 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             if (mode == null)
                 mode = authnResponse.getRequest().getLoginMode();
 
-            if (mode == LoginMode.POPUP) {
+            if (mode == LoginMode.POPUP || authnResponse.getRequest().isMobileAuthentication()) {
                 response.setContentType( "text/html" );
                 PrintWriter out = response.getWriter();
                 out.println( "<html>" );
                 out.println( "<head>" );
                 out.println( "<script type=\"text/javascript\">" );
-                out.println( String.format( "window.opener.location.href = \"%s\";", authnResponse.getRequest().getTarget() ) );
-                out.println( "window.close();" );
+                if (mode == LoginMode.POPUP) {
+                    out.println( String.format( "window.opener.location.href = \"%s\";", authnResponse.getRequest().getTarget() ) );
+                    out.println( "window.close();" );
+                } else {
+                    out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
+                }
                 out.println( "</script>" );
                 out.println( "</head>" );
                 out.println( "<body>" );

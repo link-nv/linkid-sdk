@@ -3,7 +3,7 @@ package net.link.safeonline.sdk.auth.protocol;
 /**
  * <h2>{@link AuthnProtocolRequestContext}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * <p/>
  * <p>
  * <i>08 17, 2010</i>
  * </p>
@@ -12,8 +12,18 @@ package net.link.safeonline.sdk.auth.protocol;
  */
 public class AuthnProtocolRequestContext extends ProtocolRequestContext {
 
-    public AuthnProtocolRequestContext(String id, String issuer, ProtocolHandler protocolHandler, String target) {
+    private final boolean mobileAuthentication;
 
-        super(id, issuer, protocolHandler, target);
+    public AuthnProtocolRequestContext(String id, String issuer, ProtocolHandler protocolHandler, String target,
+                                       boolean mobileAuthentication) {
+
+        super( id, issuer, protocolHandler, target );
+
+        this.mobileAuthentication = mobileAuthentication;
+    }
+
+    public boolean isMobileAuthentication() {
+
+        return mobileAuthentication;
     }
 }

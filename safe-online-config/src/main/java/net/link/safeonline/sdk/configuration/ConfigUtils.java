@@ -14,11 +14,11 @@ import net.link.util.common.URLUtils;
 /**
  * <h2>{@link ConfigUtils}<br>
  * <sub>Utility class for {@link SafeOnlineConfig}.</sub></h2>
- *
+ * <p/>
  * <p>
  * This utility class provides convenience methods that uses properties defined in {@link SafeOnlineConfig}.
  * </p>
- *
+ * <p/>
  * <p>
  * <i>Sep 8, 2009</i>
  * </p>
@@ -40,19 +40,25 @@ public abstract class ConfigUtils {
     /**
      * <b>URLs returned by this method are not confidentiality-safe.</b>
      *
-     * @param path    The path relative to the application's context path to generate a URL for.
+     * @param path The path relative to the application's context path to generate a URL for.
      *
      * @return The absolute URL to the given path within the application that was activated by the given servlet request.
      */
     public static String getApplicationURLForPath(String path) {
 
-        return URLUtils.concat( getApplicationURL(), path );
+        String applicationURL = getApplicationURL();
+        if (applicationURL.endsWith( path ))
+            return applicationURL;
+
+        return URLUtils.concat( applicationURL, path );
     }
 
     /**
-     * <b>You can rely on the fact that URLs returned by this method are configured by the user to protect the confidentiality between server and client (eg. they're on HTTPS).</b>
+     * <b>You can rely on the fact that URLs returned by this method are configured by the user to protect the confidentiality between
+     * server and client (eg. they're on HTTPS).</b>
      *
-     * @return The absolute confidential base URL for the application that was activated by the given servlet request (URL to its context path).
+     * @return The absolute confidential base URL for the application that was activated by the given servlet request (URL to its context
+     *         path).
      */
     public static String getApplicationConfidentialURL() {
 
@@ -60,9 +66,10 @@ public abstract class ConfigUtils {
     }
 
     /**
-     * <b>You can rely on the fact that URLs returned by this method are configured by the user to protect the confidentiality between server and client (eg. they're on HTTPS).</b>
+     * <b>You can rely on the fact that URLs returned by this method are configured by the user to protect the confidentiality between
+     * server and client (eg. they're on HTTPS).</b>
      *
-     * @param path    The path relative to the application's context path to generate a URL for.
+     * @param path The path relative to the application's context path to generate a URL for.
      *
      * @return The absolute URL to the given path within the application that was activated by the given servlet request.
      */
