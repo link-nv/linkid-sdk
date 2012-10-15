@@ -93,34 +93,18 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             return null;
 
         Map<String, ProtocolContext> contexts = ProtocolContext.getContexts( request.getSession() );
-        Saml2ResponseContext saml2ResponseContext = ResponseUtil.findAndValidateAuthnResponse( request, contexts,
+        Saml2AuthnResponseContext saml2ResponseContext = ResponseUtil.findAndValidateAuthnResponse( request, contexts,
                 authnContext.getTrustedCertificates() );
         if (null == saml2ResponseContext)
             // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
             return null;
 
-        Response samlResponse = (Response) saml2ResponseContext.getResponse();
+        Response samlResponse = saml2ResponseContext.getResponse();
 
-        String userId = null, applicationName = null;
-        List<String> authenticatedDevices = new LinkedList<String>();
-        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>();
-        if (!samlResponse.getAssertions().isEmpty()) {
-            Assertion assertion = samlResponse.getAssertions().get( 0 );
-            userId = assertion.getSubject().getNameID().getValue();
-            for (AuthnStatement authnStatement : assertion.getAuthnStatements()) {
-                authenticatedDevices.add( authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
-                logger.dbg( "authenticated device %s",
-                        authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
-            }
-            attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
-            applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
-        }
-        logger.dbg( "userId: %s", userId );
-
-        boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
         AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
-        return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, authenticatedDevices,
-                attributes, success, saml2ResponseContext.getCertificateChain() );
+        return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), saml2ResponseContext.getUserId(),
+                saml2ResponseContext.getApplicationName(), saml2ResponseContext.getAuthenticatedDevices(),
+                saml2ResponseContext.getAttributes(), saml2ResponseContext.isSuccess(), saml2ResponseContext.getCertificateChain() );
     }
 
     @Override
@@ -191,19 +175,19 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             return null;
 
         Map<String, ProtocolContext> contexts = ProtocolContext.getContexts( request.getSession() );
-        Saml2ResponseContext saml2ResponseContext = ResponseUtil.findAndValidateLogoutResponse( request, contexts,
+        Saml2LogoutResponseContext logoutResponseContext = ResponseUtil.findAndValidateLogoutResponse( request, contexts,
                 logoutContext.getTrustedCertificates() );
-        if (null == saml2ResponseContext)
+        if (null == logoutResponseContext)
             // The request does not contain a logout response or it didn't match the request sent by this protocol handler.
             return null;
 
-        LogoutResponse samlResponse = (LogoutResponse) saml2ResponseContext.getResponse();
+        LogoutResponse samlResponse = (LogoutResponse) logoutResponseContext.getResponse();
 
         String status = samlResponse.getStatus().getStatusCode().getValue();
         boolean success = !(!status.equals( StatusCode.SUCCESS_URI ) && !status.equals( StatusCode.PARTIAL_LOGOUT_URI ));
         LogoutProtocolRequestContext logoutRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
         return new LogoutProtocolResponseContext( logoutRequest, samlResponse.getID(), success,
-                saml2ResponseContext.getCertificateChain() );
+                logoutResponseContext.getCertificateChain() );
     }
 
     @Override
