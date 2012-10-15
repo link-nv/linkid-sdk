@@ -105,6 +105,19 @@ public interface WebConfig {
     String authBase();
 
     /**
+     * Property that defines the URL to the linkID QR authentication web application to use for application authentication.
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-qr/auth]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/auth]} (eg. {@code https://my.linkid.be/linkid-qr/auth})
+     * </p>
+     * <p/>
+     */
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/auth")
+    String qrAuthURL();
+
+    /**
      * Property that defines the base URL to the linkID static web application.
      * This houses for example the javascript for running the linkID authentication process in a modal window.
      * <p/>

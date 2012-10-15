@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class AuthenticationContext extends LinkIDContext {
 
+    private boolean                         mobileAuthentication;
     private boolean                         forceAuthentication;
     private StartPage                       startPage;
     private Set<String>                     devices;
@@ -316,6 +317,19 @@ public class AuthenticationContext extends LinkIDContext {
 
         this.forceAuthentication = forceAuthentication;
         this.devices = devices;
+    }
+
+    public boolean isMobileAuthentication() {
+
+        return mobileAuthentication;
+    }
+
+    /**
+     * Mark this authentication context to use the QR mobile authentication flow
+     */
+    public void setMobileAuthentication(final boolean mobileAuthentication) {
+
+        this.mobileAuthentication = mobileAuthentication;
     }
 
     /**

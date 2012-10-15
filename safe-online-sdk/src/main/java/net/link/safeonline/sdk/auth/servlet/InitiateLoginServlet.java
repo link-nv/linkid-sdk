@@ -41,6 +41,8 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
      */
     public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
 
+        boolean mobileAuthn = null != request.getParameter( RequestConstants.MOBILE_AUTHN_REQUEST_PARAM );
+
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
 
@@ -53,6 +55,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
 
         AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURI, mode );
         authenticationContext.setStartPage( startPage );
+        authenticationContext.setMobileAuthentication( mobileAuthn );
 
         AuthenticationUtils.login( request, response, authenticationContext );
     }

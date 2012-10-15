@@ -61,7 +61,11 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             targetURL = null;
         }
 
-        String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().authPath() );
+        String authnService;
+        if (authnContext.isMobileAuthentication())
+            authnService = config().web().qrAuthURL();
+        else
+            authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().authPath() );
 
         String templateResourceName = config().proto().saml().postBindingTemplate();
 
@@ -181,7 +185,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             // The request does not contain a logout response or it didn't match the request sent by this protocol handler.
             return null;
 
-        LogoutResponse samlResponse = (LogoutResponse) logoutResponseContext.getResponse();
+        LogoutResponse samlResponse = logoutResponseContext.getResponse();
 
         String status = samlResponse.getStatus().getStatusCode().getValue();
         boolean success = !(!status.equals( StatusCode.SUCCESS_URI ) && !status.equals( StatusCode.PARTIAL_LOGOUT_URI ));

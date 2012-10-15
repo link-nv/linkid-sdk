@@ -25,6 +25,11 @@ import java.util.Locale;
 public interface RequestConstants {
 
     /**
+     * Trigger the QR Mobile authentication flow
+     */
+    String MOBILE_AUTHN_REQUEST_PARAM = "mobileAuthn";
+
+    /**
      * Case we want to force the auth webapp to go straight to register or authentication page.
      */
     String START_PAGE_REQUEST_PARAM = "start_page";

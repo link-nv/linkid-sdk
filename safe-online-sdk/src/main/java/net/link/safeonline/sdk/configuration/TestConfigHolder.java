@@ -142,6 +142,7 @@ public class TestConfigHolder extends ConfigHolder {
             public String appConfidentialBase;
             public String appPath;
             public String authBase;
+            public String qrAuthURL;
             public String userBase;
             public String staticBase;
             public String wsBase;
@@ -170,6 +171,12 @@ public class TestConfigHolder extends ConfigHolder {
             public String authBase() {
 
                 return authBase;
+            }
+
+            @Override
+            public String qrAuthURL() {
+
+                return qrAuthURL;
             }
 
             @Override
