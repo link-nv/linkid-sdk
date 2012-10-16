@@ -114,8 +114,8 @@ public interface WebConfig {
      * </p>
      * <p/>
      */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/auth")
-    String qrAuthURL();
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-mobile-auth/auth")
+    String mobileAuthURL();
 
     /**
      * Property that defines the base URL to the linkID static web application.

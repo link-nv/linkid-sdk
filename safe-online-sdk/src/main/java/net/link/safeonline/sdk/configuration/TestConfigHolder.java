@@ -174,7 +174,7 @@ public class TestConfigHolder extends ConfigHolder {
             }
 
             @Override
-            public String qrAuthURL() {
+            public String mobileAuthURL() {
 
                 return qrAuthURL;
             }

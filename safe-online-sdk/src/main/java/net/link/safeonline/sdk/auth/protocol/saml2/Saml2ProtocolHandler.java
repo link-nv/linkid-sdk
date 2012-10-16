@@ -63,7 +63,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         String authnService;
         if (authnContext.isMobileAuthentication())
-            authnService = config().web().qrAuthURL();
+            authnService = config().web().mobileAuthURL();
         else
             authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().authPath() );
 
