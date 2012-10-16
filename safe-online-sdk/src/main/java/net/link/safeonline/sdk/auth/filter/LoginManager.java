@@ -25,10 +25,10 @@ import net.link.util.common.CertificateChain;
  */
 public abstract class LoginManager {
 
-    public static final String USERID_SESSION_ATTRIBUTE                = LogManager.class.getName() + ".userId";
-    public static final String AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE = LogManager.class.getName() + ".authenticatedDevices";
-    public static final String ATTRIBUTES_SESSION_ATTRIBUTE            = LogManager.class.getName() + ".attributes";
-    public static final String CERTIFCATE_CHAIN_SESSION_ATTRIBUTE      = LogManager.class.getName() + ".certificateChain";
+    public static final String USERID_SESSION_ATTRIBUTE                = LoginManager.class.getName() + ".userId";
+    public static final String AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE = LoginManager.class.getName() + ".authenticatedDevices";
+    public static final String ATTRIBUTES_SESSION_ATTRIBUTE            = LoginManager.class.getName() + ".attributes";
+    public static final String CERTIFCATE_CHAIN_SESSION_ATTRIBUTE      = LoginManager.class.getName() + ".certificateChain";
 
     /**
      * Checks whether the user is logged in via the SafeOnline authentication web application or not.
