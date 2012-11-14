@@ -2,7 +2,7 @@ package net.link.safeonline.wicket;
 
 import net.link.safeonline.wicket.component.linkid.LinkIDPageAuthenticationListener;
 import net.link.util.common.ApplicationMode;
-import net.link.util.j2ee.FieldNamingStrategy;
+import net.link.util.j2ee.NamingStrategy;
 import net.link.util.wicket.util.WicketUtils;
 import org.apache.wicket.Application;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -20,7 +20,9 @@ public abstract class LinkIDApplication extends WebApplication {
     protected void init() {
 
         // Java EE annotations injector.
-        WicketUtils.addInjector( this, new FieldNamingStrategy() );
+        NamingStrategy namingStrategy = findNamingStrategy();
+        if (null != namingStrategy)
+            WicketUtils.addInjector( this, namingStrategy );
 
         // Poll resources, even in PRODUCTION.
         getResourceSettings().setResourcePollFrequency( Duration.ONE_MINUTE );
@@ -56,4 +58,9 @@ public abstract class LinkIDApplication extends WebApplication {
 
         return Application.DEPLOYMENT;
     }
+
+    /**
+     * @return optional naming strategy to be used for injection of EJB's
+     */
+    protected abstract NamingStrategy findNamingStrategy();
 }

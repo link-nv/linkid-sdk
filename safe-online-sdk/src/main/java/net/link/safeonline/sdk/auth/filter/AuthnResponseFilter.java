@@ -16,10 +16,8 @@ import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.util.error.ValidationFailedException;
-import net.link.util.j2ee.AbstractInjectionFilter;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
-import net.link.util.servlet.annotation.Init;
 
 
 /**
@@ -27,18 +25,26 @@ import net.link.util.servlet.annotation.Init;
  *
  * @author fcorneli
  */
-public class AuthnResponseFilter extends AbstractInjectionFilter {
+public class AuthnResponseFilter implements Filter {
 
     private static final Logger logger = Logger.get( AuthnResponseFilter.class );
 
     public static final String ERROR_PAGE = "ErrorPage";
 
-    @Init(name = ERROR_PAGE, optional = true)
     private String errorPage;
 
     @Override
     public void destroy() {
 
+    }
+
+    @Override
+    public void init(final FilterConfig filterConfig)
+            throws ServletException {
+
+        this.errorPage = filterConfig.getInitParameter( ERROR_PAGE );
+        if (null == this.errorPage)
+            this.errorPage = filterConfig.getServletContext().getInitParameter( ERROR_PAGE );
     }
 
     @Override

@@ -58,12 +58,6 @@
 
     <dependencies>
 
-        <!-- Dependency Groups -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.ejb</groupId>
-            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-        </dependency>
-
         <!-- Specific Dependencies: linkID -->
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
@@ -88,10 +82,6 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
-            <artifactId>util-j2ee-jboss6</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.util</groupId>
             <artifactId>util-j2ee</artifactId>
         </dependency>
         <dependency>
@@ -100,10 +90,6 @@
         </dependency>
 
         <!-- Specific Dependencies: External -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
