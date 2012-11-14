@@ -12,6 +12,7 @@ import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.notification.consumer.*;
 import net.lin_k.safe_online.notification.consumer.NotificationMessageHolderType.Message;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.ws.NotificationTopic;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.safeonline.ws.notification.NotificationConsumerServiceFactory;
 import net.link.util.ws.AbstractWSClient;
@@ -51,7 +52,7 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
     }
 
     @Override
-    public void sendNotification(String topic, String destination, String subject, String content)
+    public void sendNotification(NotificationTopic topic, String destination, String subject, String content)
             throws WSClientTransportException {
 
         LOG.debug( "send notification to " + location + " for topic: " + topic + ", destination:" + destination + ", subject:" + subject
@@ -59,7 +60,7 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
 
         TopicExpressionType topicExpression = new TopicExpressionType();
         topicExpression.setDialect( TOPIC_DIALECT_SIMPLE );
-        topicExpression.getContent().add( topic );
+        topicExpression.getContent().add( topic.getTopicUri() );
 
         Notify notifications = new Notify();
         NotificationMessageHolderType notification = new NotificationMessageHolderType();
