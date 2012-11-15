@@ -6,22 +6,21 @@
         <format>zip</format>
     </formats>
     <dependencySets>
-        <dependencySet />
+        <dependencySet>
+            <excludes>
+                <exclude>*:sources</exclude>
+                <exclude>*:javadoc</exclude>
+            </excludes>
+        </dependencySet>
     </dependencySets>
     <fileSets>
         <fileSet>
             <directory>target/files/javadoc</directory>
             <outputDirectory>/javadoc</outputDirectory>
-            <excludes>
-                <exclude>META-INF/**</exclude>
-            </excludes>
         </fileSet>
         <fileSet>
             <directory>target/files/sources</directory>
             <outputDirectory>/sources</outputDirectory>
-            <excludes>
-                <exclude>META-INF/**</exclude>
-            </excludes>
         </fileSet>
         <fileSet>
             <directory>target/files/resources</directory>
