@@ -48,6 +48,13 @@
 
     <dependencies>
 
+        <!-- linkID Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-config</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+
         <!-- Specific Dependencies: External -->
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -67,8 +74,6 @@
             <groupId>com.lyndir.lhunath.opal</groupId>
             <artifactId>opal-system</artifactId>
         </dependency>
-
-        <!-- Test Dependencies -->
 
     </dependencies>
 

@@ -71,76 +71,8 @@
             <classifier>sources</classifier>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-config</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-ws</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-j2ee</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.util</groupId>
-            <artifactId>util-protocol</artifactId>
-        </dependency>
-
-        <!-- Specific Dependencies: External -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ws.security</groupId>
-            <artifactId>wss4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xalan</groupId>
-            <artifactId>xalan</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.santuario</groupId>
-            <artifactId>xmlsec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openid4java</groupId>
-            <artifactId>openid4java-nodeps</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>be.fedict</groupId>
-            <artifactId>jtrust</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->

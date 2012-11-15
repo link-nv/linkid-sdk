@@ -101,6 +101,10 @@
         <module>safe-online-config</module>
         <module>safe-online-sdk-api</module>
         <module>safe-online-sdk</module>
+        <module>safe-online-sdk-ws</module>
+        <module>safe-online-sdk-saml2</module>
+        <module>safe-online-sdk-openid</module>
+        <module>safe-online-sdk-oauth2</module>
         <module>safe-online-ws</module>
         <module>safe-online-wicket-sdk</module>
 

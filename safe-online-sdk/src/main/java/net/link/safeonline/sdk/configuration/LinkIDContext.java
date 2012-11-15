@@ -10,30 +10,14 @@ package net.link.safeonline.sdk.configuration;
 import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.Serializable;
-import java.security.*;
+import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.*;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.auth.protocol.Protocol;
-import net.link.safeonline.sdk.auth.protocol.openid.OpenIDSSLSocketFactory;
-import net.link.safeonline.sdk.auth.protocol.openid.OpenIDTrustManager;
-import net.link.safeonline.sdk.auth.protocol.saml2.SAMLBinding;
-import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.openid4java.consumer.ConsumerManager;
-import org.openid4java.discovery.Discovery;
-import org.openid4java.discovery.html.HtmlResolver;
-import org.openid4java.discovery.xri.XriResolver;
-import org.openid4java.discovery.yadis.YadisResolver;
-import org.openid4java.server.RealmVerifierFactory;
-import org.openid4java.util.HttpFetcherFactory;
 
 
 /**
@@ -43,6 +27,7 @@ import org.openid4java.util.HttpFetcherFactory;
  *
  * @author lhunath
  */
+@SuppressWarnings("UnusedDeclaration")
 public abstract class LinkIDContext implements Serializable {
 
     private String                      applicationName;
@@ -130,7 +115,7 @@ public abstract class LinkIDContext implements Serializable {
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
                 keyProvider.getTrustedCertificates(), //
-                keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ), sessionTrackingId, themeName, language, target, null );
+                keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ), sessionTrackingId, themeName, language, target, null );
     }
 
     /**
@@ -423,12 +408,7 @@ public abstract class LinkIDContext implements Serializable {
 
     public static class OpenIDContext implements Serializable {
 
-        /*
-         * Consumer Manager cannot be included in the OpenIDContext as it is not serializable.
-         */
-        private static ConsumerManager manager;
-
-        private final X509Certificate sslCertificate;
+        private X509Certificate sslCertificate;
 
         /**
          * @param sslCertificate optional SSL certificate of the LinkID Service. If {@code null} all SSL certificates are considered
@@ -439,45 +419,14 @@ public abstract class LinkIDContext implements Serializable {
             this.sslCertificate = sslCertificate;
         }
 
-        public ConsumerManager getManager() {
+        public X509Certificate getSslCertificate() {
 
-            if (null == manager) {
+            return sslCertificate;
+        }
 
-                // ConsumerManager initialization
-                try {
+        public void setSslCertificate(final X509Certificate sslCertificate) {
 
-                    TrustManager trustManager;
-                    if (null == sslCertificate) {
-                        OpenIDSSLSocketFactory.installAllTrusted();
-                        trustManager = new OpenIDTrustManager();
-                    } else {
-                        OpenIDSSLSocketFactory.install( sslCertificate );
-                        trustManager = new OpenIDTrustManager( sslCertificate );
-                    }
-
-                    SSLContext sslContext = SSLContext.getInstance( "SSL" );
-                    TrustManager[] trustManagers = { trustManager };
-                    sslContext.init( null, trustManagers, null );
-                    HttpFetcherFactory httpFetcherFactory = new HttpFetcherFactory( sslContext,
-                            SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER );
-                    YadisResolver yadisResolver = new YadisResolver( httpFetcherFactory );
-                    RealmVerifierFactory realmFactory = new RealmVerifierFactory( yadisResolver );
-                    HtmlResolver htmlResolver = new HtmlResolver( httpFetcherFactory );
-                    XriResolver xriResolver = Discovery.getXriResolver();
-                    Discovery discovery = new Discovery( htmlResolver, yadisResolver, xriResolver );
-                    manager = new ConsumerManager( realmFactory, discovery, httpFetcherFactory );
-                }
-                catch (KeyManagementException e) {
-                    throw new InternalInconsistencyException( e );
-                }
-                catch (NoSuchAlgorithmException e) {
-                    throw new InternalInconsistencyException( e );
-                }
-                catch (KeyStoreException e) {
-                    throw new InternalInconsistencyException( e );
-                }
-            }
-            return manager;
+            this.sslCertificate = sslCertificate;
         }
     }
 

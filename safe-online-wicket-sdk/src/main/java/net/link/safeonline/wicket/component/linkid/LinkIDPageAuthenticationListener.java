@@ -11,9 +11,9 @@ import net.link.safeonline.wicket.annotation.linkid.ForceLogout;
 import net.link.safeonline.wicket.annotation.linkid.RequireLogin;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import net.link.util.wicket.util.RedirectToPageException;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpStatus;
 import org.apache.wicket.*;
 import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.application.IComponentOnBeforeRenderListener;
@@ -22,11 +22,11 @@ import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
 
 /**
  * <h2>{@link LinkIDPageAuthenticationListener}</h2>
- *
+ * <p/>
  * <p>
  * [description / usage].
  * </p>
- *
+ * <p/>
  * <p>
  * <i>Apr 2, 2009</i>
  * </p>
@@ -36,7 +36,6 @@ import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
 public class LinkIDPageAuthenticationListener implements IComponentOnBeforeRenderListener, IComponentInstantiationListener {
 
     static final Log LOG = LogFactory.getLog( LinkIDPageAuthenticationListener.class );
-
 
     @Override
     public void onInstantiation(Component component) {
@@ -49,7 +48,8 @@ public class LinkIDPageAuthenticationListener implements IComponentOnBeforeRende
 
         try {
             handle( component );
-        } finally {
+        }
+        finally {
             // Enforce page requirements for user authentication.
             if (component.getClass().isAnnotationPresent( RequireLogin.class ) && !LinkIDSession.get().isUserSet()) {
                 RequireLogin authAnnotation = component.getClass().getAnnotation( RequireLogin.class );
@@ -61,10 +61,13 @@ public class LinkIDPageAuthenticationListener implements IComponentOnBeforeRende
 
                     LinkIDSession.get().setPostAuthenticationPage( component.getPage().getClass() );
 
-                    if (component.getRequestCycle().getPageParameters() != null && component.getRequestCycle().getPageParameters().size() > 0 ){
-                        LinkIDSession.get().setPostAuhtenticationParameters( new PageParameters( component.getRequestCycle().getPageParameters() ) );
+                    if (component.getRequestCycle().getPageParameters() != null
+                        && component.getRequestCycle().getPageParameters().size() > 0) {
+                        LinkIDSession.get()
+                                     .setPostAuhtenticationParameters(
+                                             new PageParameters( component.getRequestCycle().getPageParameters() ) );
                     }
-                    
+
                     throw new RedirectToPageException( loginPageClass );
                 }
 
@@ -106,7 +109,8 @@ public class LinkIDPageAuthenticationListener implements IComponentOnBeforeRende
                     }
                 }
             }
-        } catch (IllegalStateException e) {
+        }
+        catch (IllegalStateException e) {
             // Log out the wicket sessionId.
             LOG.debug( "[LinkIDWicketAuth] Logging out wicket session because: " + e.getMessage() );
             if (!LinkIDSession.get().logout()) {

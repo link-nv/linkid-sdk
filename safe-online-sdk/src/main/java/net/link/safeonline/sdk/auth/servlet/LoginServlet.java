@@ -20,7 +20,7 @@ import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
-import net.link.util.error.ValidationFailedException;
+import net.link.util.exception.ValidationFailedException;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 import net.link.util.servlet.annotation.Init;

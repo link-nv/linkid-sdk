@@ -9,8 +9,6 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.auth.protocol.Protocol;
-import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author lhunath
  */
+@SuppressWarnings("UnusedDeclaration")
 public class AuthenticationContext extends LinkIDContext {
 
     private boolean                         forceAuthentication;
@@ -213,7 +212,7 @@ public class AuthenticationContext extends LinkIDContext {
                 null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
                 null != keyProvider? keyProvider.getIdentityCertificate(): null,//
                 null != keyProvider? keyProvider.getTrustedCertificates(): null, //
-                null != keyProvider? keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ): null, //
+                null != keyProvider? keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ): null, //
                 forceAuthentication, themeName, language, target, devices, sessionTrackingId, protocol, loginMode );
     }
 
