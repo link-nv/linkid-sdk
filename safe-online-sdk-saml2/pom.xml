@@ -63,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
-            <artifactId>util-protocol</artifactId>
+            <artifactId>util-saml2</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->

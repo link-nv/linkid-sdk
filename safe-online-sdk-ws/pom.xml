@@ -81,7 +81,11 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
-            <artifactId>util-protocol</artifactId>
+            <artifactId>util-ws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>be.fedict</groupId>
+            <artifactId>jtrust</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->
