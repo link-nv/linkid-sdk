@@ -32,7 +32,7 @@
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-common</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>1.48</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
