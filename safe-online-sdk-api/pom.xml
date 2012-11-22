@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>1.38</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>SafeOnline SDK API</name>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-config</artifactId>
-            <version>1.38</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
 
         <!-- Specific Dependencies: External -->
