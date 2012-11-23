@@ -13,6 +13,7 @@ namespace safe_online_sdk_dotnet
 	/// <summary>
 	/// Authentication Exception class. Throw if violations are detected in the authentication protocol.
 	/// </summary>
+	[Serializable]
 	public class AuthenticationException : System.Exception
 	{
 		private string messsage;
