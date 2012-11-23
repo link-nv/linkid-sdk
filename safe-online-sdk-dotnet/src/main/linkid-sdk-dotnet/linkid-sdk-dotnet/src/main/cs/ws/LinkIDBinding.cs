@@ -33,7 +33,8 @@ namespace safe_online_sdk_dotnet
 			TextMessageEncodingBindingElement encoding = new TextMessageEncodingBindingElement();
 			encoding.MessageVersion = MessageVersion.Soap11;
 
-			AsymmetricSecurityBindingElement securityBinding = SecurityBindingElement.CreateMutualCertificateDuplexBindingElement();
+
+            AsymmetricSecurityBindingElement securityBinding = SecurityBindingElement.CreateMutualCertificateDuplexBindingElement(MessageSecurityVersion.WSSecurity11WSTrustFebruary2005WSSecureConversationFebruary2005WSSecurityPolicy11BasicSecurityProfile10); 
 			securityBinding.LocalClientSettings.IdentityVerifier = new DnsIdentityVerifier(new DnsEndpointIdentity(cn));
 			securityBinding.AllowSerializedSigningTokenOnReply = true;
 			securityBinding.SecurityHeaderLayout = SecurityHeaderLayout.Lax;
