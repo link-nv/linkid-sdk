@@ -114,7 +114,7 @@ public interface WebConfig {
      * </p>
      * <p/>
      */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-mobile-auth/auth")
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/auth")
     String mobileAuthURL();
 
     /**
