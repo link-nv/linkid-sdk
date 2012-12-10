@@ -12,7 +12,7 @@ import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
 
 /**
  * A simple Servlet to initiate the login procedure on LinkID (i.e. this servlet represents a 'protected resource' which requires
- * auhtenication).
+ * authentication).
  * Landing on this servlet will return a redirect url to LinkID authentication service, an authentication Request, and possibly additional
  * parameters.
  * <p/>
@@ -57,6 +57,16 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         authenticationContext.setStartPage( startPage );
         authenticationContext.setMobileAuthentication( mobileAuthn );
 
+        configureAuthenticationContext( authenticationContext );
+
         AuthenticationUtils.login( request, response, authenticationContext );
+    }
+
+    /**
+     * Override this if you want to configure the authentication context
+     */
+    protected void configureAuthenticationContext(AuthenticationContext authenticationContext) {
+
+        // do nothing
     }
 }

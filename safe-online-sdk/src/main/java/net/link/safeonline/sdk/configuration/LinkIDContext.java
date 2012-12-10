@@ -47,7 +47,7 @@ public abstract class LinkIDContext implements Serializable {
     private OAuth2Context               oauth2;
     private LoginMode                   loginMode;
 
-    private Map<String, String> deviceContext;
+    private Map<String, String> deviceContext = new HashMap<String, String>();
 
     /**
      * @see #LinkIDContext(String, KeyProvider, String)
