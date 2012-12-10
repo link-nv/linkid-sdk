@@ -63,32 +63,10 @@
 
     <dependencies>
 
-        <!-- Specific Dependencies: linkID -->
-        <dependency>
-            <groupId>net.lin-k.util</groupId>
-            <artifactId>util-j2ee-jboss6</artifactId>
-        </dependency>
-
         <!-- Specific Dependencies: External -->
         <dependency>
             <groupId>javax.jws</groupId>
             <artifactId>jsr181-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->

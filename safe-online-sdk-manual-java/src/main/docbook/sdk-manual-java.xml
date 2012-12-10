@@ -18,6 +18,10 @@
                 <personname>Maarten Billemont</personname>
                 <email>maarten.billemont@lin-k.net</email>
             </author>
+            <author>
+                <personname>Wim Vandenhaute</personname>
+                <email>wim.vandenhaute@lin-k.net</email>
+            </author>
         </authorgroup>
 
         <abstract>
@@ -35,9 +39,9 @@
             configuring, authenticating for and accessing the identity services of linkID.
         </para>
         <para>
-            Currently, linkID supports two standard protocols for applications to communicate with its services: OpenID and SAML2. The SDK
-            provides a consistent API for using either protocol, allowing you to effortlessly switch between them if desired. You are,
-            however, strongly recommended to use the more featureful and secure SAML2 protocol.
+            Currently, linkID supports three standard protocols for applications to communicate with its services: SAML2, OpenID and OAuth 2.0.
+            The SDK provides a consistent API for using either protocol, allowing you to effortlessly switch between them if desired.
+            You are, however, strongly recommended to use the more featureful and secure SAML2 protocol.
         </para>
 
 
@@ -99,6 +103,15 @@
 
         <section>
             <?dbfo-need height="10cm" ?>
+            <title>OAuth 2</title>
+            <para>
+                TBD
+            </para>
+        </section>
+
+
+        <section>
+            <?dbfo-need height="10cm" ?>
             <title>Choosing a protocol</title>
             <para>
                 By default, the linkID SDK will use the SAML2 protocol.  It is the preferred protocol because it is the most versatile and
@@ -111,6 +124,90 @@
             </para>
         </section>
     </chapter>
+
+    <chapter>
+        <title>SDK structure</title>
+        <para>
+            The linkID Java SDK is fully mavenized and available from our public repository @ http://repo.linkid.be
+            It consists several maven artifacts listed below ( next to all the dependencies it has to third party libraries ).
+            The reason it was split up was to make the dependency hell a little bit less hellish.
+            Say for example you only want to use OpenID and no web services, there is no need for you to have to cleanup dependencies due
+            to libraries such as OpenSAML, WSS4j, etc. messing your own classpath up.
+
+            <?dbfo-need height="5cm" ?>
+            <variablelist>
+                    <varlistentry>
+                        <term>safe-online-sdk</term>
+                        <listitem>
+                            <para>
+                                This core linkID Java SDK Artifact. Depending on what functionality/protocols you wish to use you need to
+                                include one or more of the following artifacts along with this core SDK artifact.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+            <?dbfo-need height="5cm" ?>
+                <varlistentry>
+                        <term>safe-online-sdk-ws</term>
+                        <listitem>
+                            <para>
+                                Contains Web Service clients for linkID's application web services.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                <?dbfo-need height="5cm" ?>
+                <varlistentry>
+                        <term>safe-online-sdk-saml2</term>
+                        <listitem>
+                            <para>
+                                Contains a protocol handler for the SAML v2.0 authentication protocol.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                <?dbfo-need height="5cm" ?>
+                <varlistentry>
+                        <term>safe-online-sdk-openid</term>
+                        <listitem>
+                            <para>
+                                Contains a protocol handler for the OpenID authentication protocol.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                <?dbfo-need height="5cm" ?>
+                <varlistentry>
+                        <term>safe-online-sdk-oauth2</term>
+                        <listitem>
+                            <para>
+                                Contains a protocol handler for the OAuth 2 authentication protocol.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                <?dbfo-need height="5cm" ?>
+            </variablelist>
+        </para>
+
+        <para>
+
+            So say for example you wish to use the SAML v2.0 protocol and have no need for our web service clients,
+            you'd add following dependencies to your maven artifact:
+
+                <programlisting language="xml" linenumbering="numbered"><![CDATA[
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk</artifactId>
+            <version>${linkid-sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-saml2</artifactId>
+            <version>${linkid-sdk.version}</version>
+        </dependency>
+                ]]></programlisting>
+
+
+        </para>
+    </chapter>
+
+
 
     <chapter>
         <title>Configuring the SDK</title>
@@ -1359,4 +1456,37 @@ public class MyConfigFilter extends SDKConfigFilter {
             session.
         </para>
     </chapter>
+
+    <appendix>
+        <title>Revision history</title>
+        <table>
+                <title>Revision history</title>
+                <tgroup cols="3">
+                        <colspec colwidth="1*" />
+                        <colspec colwidth="1*" />
+                        <colspec colwidth="2*" />
+                        <thead>
+                                <row>
+                                        <entry>Date</entry>
+                                        <entry>Author</entry>
+                                        <entry>Description</entry>
+                                </row>
+                        </thead>
+                        <tbody>
+                                <row>
+                                        <entry>29 Sep 2010</entry>
+                                        <entry>Maarten Billemont</entry>
+                                        <entry>Initial version.</entry>
+                                </row>
+                                <row>
+                                        <entry>15 Nov 2012</entry>
+                                        <entry>Wim Vandenhaute</entry>
+                                        <entry>Update for Java SDK split up.</entry>
+                                </row>
+                        </tbody>
+                </tgroup>
+        </table>
+</appendix>
+
+
 </book>

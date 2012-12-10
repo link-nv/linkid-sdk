@@ -9,7 +9,7 @@ package test.unit.net.link.safeonline.sdk.auth;
 
 import static org.junit.Assert.*;
 
-import net.link.safeonline.sdk.auth.protocol.Protocol;
+import net.link.safeonline.sdk.configuration.Protocol;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;

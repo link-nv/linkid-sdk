@@ -23,6 +23,34 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
+                    <!-- Copy -sources to sources -->
+                    <execution>
+                        <id>copy-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeTypes>jar</includeTypes>
+                            <includeClassifiers>sources</includeClassifiers>
+                            <excludeScope>provided</excludeScope>
+                            <outputDirectory>${project.build.directory}/files/sources</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Copy -javadoc to javadoc -->
+                    <execution>
+                        <id>copy-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeTypes>jar</includeTypes>
+                            <includeClassifiers>javadoc</includeClassifiers>
+                            <excludeScope>provided</excludeScope>
+                            <outputDirectory>${project.build.directory}/files/javadoc</outputDirectory>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>unpack-manual</id>
                         <phase>package</phase>
@@ -59,42 +87,6 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/files</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>unpack-javadoc</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                                    <artifactId>safe-online-sdk</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
-                                    <classifier>javadoc</classifier>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/files/javadoc</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>unpack-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                                    <artifactId>safe-online-sdk</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
-                                    <classifier>sources</classifier>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/files/sources</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -146,6 +138,108 @@
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
             <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-api</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-api</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-api</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-ws</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-ws</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-ws</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-saml2</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-saml2</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-saml2</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-openid</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-openid</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-openid</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>javadoc</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-oauth2</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-oauth2</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-oauth2</artifactId>
+            <version>GIT-SNAPSHOT</version>
+            <classifier>javadoc</classifier>
         </dependency>
 
     </dependencies>

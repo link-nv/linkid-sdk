@@ -13,10 +13,9 @@ import java.util.Locale;
 import javax.security.auth.x500.X500Principal;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
-import net.link.safeonline.sdk.auth.protocol.Protocol;
-import net.link.safeonline.sdk.auth.protocol.saml2.SAMLBinding;
 import net.link.util.common.DummyServletRequest;
 import net.link.util.config.*;
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.Duration;
 
 
@@ -49,12 +48,12 @@ public class TestConfigHolder extends ConfigHolder {
         this( null, null );
     }
 
-    public TestConfigHolder(final String appBase, final ServletContext servletContext) {
+    public TestConfigHolder(@Nullable final String appBase, @Nullable final ServletContext servletContext) {
 
         this( appBase, null, servletContext );
     }
 
-    public TestConfigHolder(final String appBase, final AppConfig appConfig, final ServletContext servletContext) {
+    public TestConfigHolder(final String appBase, @Nullable final AppConfig appConfig, final ServletContext servletContext) {
 
         super( TestSDKConfig.class, new SafeOnlineDefaultConfigFactory() {
 

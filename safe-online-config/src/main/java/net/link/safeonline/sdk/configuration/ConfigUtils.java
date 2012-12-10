@@ -27,6 +27,8 @@ import net.link.util.common.URLUtils;
  */
 public abstract class ConfigUtils {
 
+    public static final String SSL_ALIAS = "ws-ssl";
+
     /**
      * <b>URLs returned by this method are not confidentiality-safe.</b>
      *

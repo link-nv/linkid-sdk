@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.LogoutContext;
-import net.link.util.error.ValidationFailedException;
+import net.link.util.exception.ValidationFailedException;
 import org.jetbrains.annotations.Nullable;
 
 

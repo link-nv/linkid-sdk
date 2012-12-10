@@ -7,10 +7,9 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Locale;
-import net.link.safeonline.sdk.auth.protocol.Protocol;
-import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.config.KeyProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -43,7 +42,7 @@ public class LogoutContext extends LinkIDContext {
      *
      * @see #LogoutContext(String, String, KeyProvider, String, String, Locale, String)
      */
-    public LogoutContext(String applicationName, KeyProvider keyProvider, String target) {
+    public LogoutContext(@Nullable String applicationName, @Nullable KeyProvider keyProvider, @Nullable String target) {
 
         this( applicationName, null, keyProvider, null, null, null, target );
     }
@@ -69,10 +68,11 @@ public class LogoutContext extends LinkIDContext {
      *
      * @see #LogoutContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, String, String, Locale, String, Protocol)
      */
-    public LogoutContext(String applicationName, String applicationFriendlyName, KeyProvider keyProvider, String sessionTrackingId,
-                         String themeName, Locale language, String target) {
+    public LogoutContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider,
+                         @Nullable String sessionTrackingId, @Nullable String themeName, @Nullable Locale language, String target) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
+            @NotNull
             public KeyProvider get() {
 
                 return config().linkID().app().keyProvider();
@@ -81,11 +81,11 @@ public class LogoutContext extends LinkIDContext {
     }
 
     private LogoutContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider,
-                          String sessionTrackingId, String themeName, Locale language, String target, Void v) {
+                          String sessionTrackingId, String themeName, Locale language, String target, @Nullable Void v) {
 
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
-                keyProvider.getTrustedCertificates(), keyProvider.getTrustedCertificate( LinkIDServiceFactory.SSL_ALIAS ), //
+                keyProvider.getTrustedCertificates(), keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ), //
                 sessionTrackingId, themeName, language, target, null );
     }
 
@@ -120,7 +120,7 @@ public class LogoutContext extends LinkIDContext {
     public LogoutContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                          X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
                          X509Certificate sslCertificate, String sessionTrackingId, String themeName, Locale language, String target,
-                         Protocol protocol) {
+                         @Nullable Protocol protocol) {
 
         super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
                 sessionTrackingId, themeName, language, target, protocol );

@@ -1,0 +1,68 @@
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
+package net.link.safeonline.sdk.configuration;
+
+import com.lyndir.lhunath.opal.system.logging.Logger;
+import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import java.lang.reflect.InvocationTargetException;
+import org.jetbrains.annotations.Nullable;
+
+
+/**
+ * Enumeration of all supported authentication protocols.
+ *
+ * @author fcorneli
+ */
+public enum Protocol {
+
+    SAML2( "net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler" ),
+
+    OPENID( "net.link.safeonline.sdk.auth.protocol.openid.OpenIdProtocolHandler" ),
+
+    OAUTH2( "net.link.safeonline.sdk.auth.protocol.oauth2.OAuth2ProtocolHandler" );
+
+    private static final Logger logger = Logger.get( Protocol.class );
+
+    private final String protocolHandlerClass;
+
+    Protocol(final String protocolHandlerClass) {
+
+        this.protocolHandlerClass = protocolHandlerClass;
+    }
+
+    public String getProtocolHandlerClass() {
+
+        return protocolHandlerClass;
+    }
+
+    @Nullable
+    public Object newHandler() {
+
+        try {
+            Class<?> protocolHandler = getClass().getClassLoader().loadClass( protocolHandlerClass );
+
+            return protocolHandler.getConstructor().newInstance();
+        }
+        catch (InstantiationException e) {
+            throw new InternalInconsistencyException( e );
+        }
+        catch (IllegalAccessException e) {
+            throw new InternalInconsistencyException( e );
+        }
+        catch (NoSuchMethodException e) {
+            throw new InternalInconsistencyException( e );
+        }
+        catch (InvocationTargetException e) {
+            throw new InternalInconsistencyException( e );
+        }
+        catch (ClassNotFoundException e) {
+            logger.err( "Protocol handler class %s not found.", protocolHandlerClass );
+            return null;
+        }
+    }
+}
