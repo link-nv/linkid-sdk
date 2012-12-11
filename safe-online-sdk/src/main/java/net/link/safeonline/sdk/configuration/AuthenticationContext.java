@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class AuthenticationContext extends LinkIDContext {
 
     private boolean                         mobileAuthentication;
+    private boolean                         mobileAuthenticationMinimal;
     private boolean                         forceAuthentication;
     private StartPage                       startPage;
     private Set<String>                     devices;
@@ -329,6 +330,19 @@ public class AuthenticationContext extends LinkIDContext {
     public void setMobileAuthentication(final boolean mobileAuthentication) {
 
         this.mobileAuthentication = mobileAuthentication;
+    }
+
+    public boolean isMobileAuthenticationMinimal() {
+
+        return mobileAuthenticationMinimal;
+    }
+
+    /**
+     * Mark this authentication context to use the QR mobile authentication 'minimal' flow
+     */
+    public void setMobileAuthenticationMinimal(final boolean mobileAuthenticationMinimal) {
+
+        this.mobileAuthenticationMinimal = mobileAuthenticationMinimal;
     }
 
     /**

@@ -141,7 +141,8 @@ public class TestConfigHolder extends ConfigHolder {
             public String appConfidentialBase;
             public String appPath;
             public String authBase;
-            public String qrAuthURL;
+            public String mobileAuthURL;
+            public String mobileAuthMinimalURL;
             public String userBase;
             public String staticBase;
             public String wsBase;
@@ -175,7 +176,13 @@ public class TestConfigHolder extends ConfigHolder {
             @Override
             public String mobileAuthURL() {
 
-                return qrAuthURL;
+                return mobileAuthURL;
+            }
+
+            @Override
+            public String mobileAuthMinimalURL() {
+
+                return mobileAuthMinimalURL;
             }
 
             @Override

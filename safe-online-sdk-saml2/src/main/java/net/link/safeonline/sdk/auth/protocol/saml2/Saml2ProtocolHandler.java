@@ -64,6 +64,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         String authnService;
         if (authnContext.isMobileAuthentication())
             authnService = config().web().mobileAuthURL();
+        else if (authnContext.isMobileAuthenticationMinimal())
+            authnService = config().web().mobileAuthMinimalURL();
         else
             authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().authPath() );
 
@@ -85,7 +87,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL,
-                authnContext.isMobileAuthentication() );
+                authnContext.isMobileAuthentication(), authnContext.isMobileAuthenticationMinimal() );
     }
 
     @Nullable
@@ -146,7 +148,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( null, null, userId, applicationName, authenticatedDevices, attributes, true, null ) );
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), null,
-                authnContext.getTarget(), false );
+                authnContext.getTarget(), false, false );
 
         CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request,
                 authnContext.getTrustedCertificates() );

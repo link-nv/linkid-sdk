@@ -30,6 +30,11 @@ public interface RequestConstants {
     String MOBILE_AUTHN_REQUEST_PARAM = "mobileAuthn";
 
     /**
+     * Trigger the QR Mobile 'minimal' authentication flow
+     */
+    String MOBILE_AUTHN_MINIMAL_REQUEST_PARAM = "mobileAuthnMinimal";
+
+    /**
      * Case we want to force the auth webapp to go straight to register or authentication page.
      */
     String START_PAGE_REQUEST_PARAM = "start_page";

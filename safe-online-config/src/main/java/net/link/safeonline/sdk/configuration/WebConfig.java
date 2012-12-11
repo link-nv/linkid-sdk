@@ -118,6 +118,19 @@ public interface WebConfig {
     String mobileAuthURL();
 
     /**
+     * Property that defines the URL to the linkID QR authentication web application to use for application authentication, in minimal mode
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-qr/auth-min]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/auth-min]} (eg. {@code https://my.linkid.be/linkid-qr/auth-min})
+     * </p>
+     * <p/>
+     */
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/auth-min")
+    String mobileAuthMinimalURL();
+
+    /**
      * Property that defines the base URL to the linkID static web application.
      * This houses for example the javascript for running the linkID authentication process in a modal window.
      * <p/>

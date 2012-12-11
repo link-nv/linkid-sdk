@@ -121,6 +121,8 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
         WebRequest request = getWebRequest();
         boolean mobileAuthentication = null != request.getParameter( RequestConstants.MOBILE_AUTHN_REQUEST_PARAM );
+        boolean mobileAuthenticationMinimal = null != request.getParameter( RequestConstants.MOBILE_AUTHN_MINIMAL_REQUEST_PARAM );
+
         String targetURL = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
         String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
         LoginMode mode = LoginMode.fromString( modeParam );
@@ -136,6 +138,7 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
         AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURL, mode );
         authenticationContext.setStartPage( startPage );
         authenticationContext.setMobileAuthentication( mobileAuthentication );
+        authenticationContext.setMobileAuthenticationMinimal( mobileAuthenticationMinimal );
         return authenticationContext;
     }
 

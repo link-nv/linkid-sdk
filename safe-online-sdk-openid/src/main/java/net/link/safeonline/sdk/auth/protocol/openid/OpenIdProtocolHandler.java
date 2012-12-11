@@ -112,7 +112,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             AuthRequest authReq = manager.authenticate( discovered, landingURL, realm );
             response.sendRedirect( authReq.getDestinationUrl( true ) );
 
-            return new AuthnProtocolRequestContext( realm, realm, this, targetURL, context.isMobileAuthentication() );
+            return new AuthnProtocolRequestContext( realm, realm, this, targetURL, context.isMobileAuthentication(),
+                    context.isMobileAuthenticationMinimal() );
         }
         catch (OpenIDException e) {
             logger.err( "OpenID OpenIDException", e );

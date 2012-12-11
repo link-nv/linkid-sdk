@@ -84,7 +84,9 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             if (mode == null)
                 mode = authnResponse.getRequest().getLoginMode();
 
-            if (mode == LoginMode.POPUP || authnResponse.getRequest().isMobileAuthentication()) {
+            if (mode == LoginMode.POPUP || authnResponse.getRequest().isMobileAuthentication() ||   //
+                authnResponse.getRequest().isMobileAuthenticationMinimal()) {
+
                 response.setContentType( "text/html" );
                 PrintWriter out = response.getWriter();
                 out.println( "<html>" );
