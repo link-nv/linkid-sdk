@@ -1,15 +1,11 @@
 package net.link.safeonline.sdk.api.attribute;
 
-import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.jetbrains.annotations.Nullable;
 
 
-public class AttributeType extends MetaObject implements Serializable {
+public class AttributeType implements Serializable {
 
     private final String   name;
     private final DataType type;
@@ -46,8 +42,8 @@ public class AttributeType extends MetaObject implements Serializable {
         this( name, type, providerJndi, userVisible, userEditable, false, multivalued, mappable, false, required );
     }
 
-    public AttributeType(String name, @Nullable DataType type, @Nullable String providerJndi, boolean userVisible, boolean userEditable,
-                         boolean userRemovable, boolean multivalued, boolean mappable, boolean compoundMember, boolean required) {
+    public AttributeType(String name, DataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean userRemovable,
+                         boolean multivalued, boolean mappable, boolean compoundMember, boolean required) {
 
         this.name = name;
         this.type = type;
@@ -133,22 +129,12 @@ public class AttributeType extends MetaObject implements Serializable {
             return false;
         AttributeType rhs = (AttributeType) obj;
 
-        return new EqualsBuilder().append( name, rhs.name )
-                                  .append( type, rhs.type )
-                                  .append( providerJndi, rhs.providerJndi )
-                                  .append( userVisible, rhs.userVisible )
-                                  .append( userEditable, rhs.userEditable )
-                                  .append( userRemovable, rhs.userRemovable )
-                                  .append( multivalued, rhs.multivalued )
-                                  .append( mappable, rhs.mappable )
-                                  .append( required, rhs.required )
-                                  .append( members, rhs.members )
-                                  .isEquals();
+        return name.equals( rhs.getName() );
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append( name ).append( type ).toHashCode();
+        return name.hashCode();
     }
 }
