@@ -6,11 +6,8 @@
  */
 package net.link.safeonline.sdk.api.attribute;
 
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
-import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -22,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author wvdhaute
  */
-public class Compound extends MetaObject implements Serializable {
+public class Compound implements Serializable {
 
     private       String                          description;
     private final List<? extends AttributeSDK<?>> members;
@@ -32,7 +29,7 @@ public class Compound extends MetaObject implements Serializable {
         this( null, members );
     }
 
-    public Compound(@Nullable final String description, final List<? extends AttributeSDK<?>> members) {
+    public Compound(final String description, final List<? extends AttributeSDK<?>> members) {
 
         this.description = description;
         this.members = members;
@@ -51,7 +48,6 @@ public class Compound extends MetaObject implements Serializable {
      *
      * @return specific member with specified attribute name
      */
-    @Nullable
     @SuppressWarnings("unchecked")
     public <T extends Serializable> AttributeSDK<T> findMember(String attributeName) {
 
@@ -73,12 +69,11 @@ public class Compound extends MetaObject implements Serializable {
 
         AttributeSDK<T> member = findMember( attributeName );
         if (null == member)
-            throw new InternalInconsistencyException( String.format( "Unknown compound member %s", attributeName ) );
+            throw new RuntimeException( String.format( "Unknown compound member %s", attributeName ) );
 
         return member;
     }
 
-    @Nullable
     public String getDescription() {
 
         if (null != description && !description.isEmpty())
