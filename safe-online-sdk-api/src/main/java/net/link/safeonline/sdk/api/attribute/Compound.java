@@ -76,7 +76,7 @@ public class Compound implements Serializable {
 
     public String getDescription() {
 
-        if (null != description && !description.isEmpty())
+        if (null != description && description.length() > 0)
             return description;
 
         return null;
