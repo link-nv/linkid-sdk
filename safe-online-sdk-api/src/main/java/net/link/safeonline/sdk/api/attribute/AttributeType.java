@@ -137,4 +137,10 @@ public class AttributeType implements Serializable {
 
         return name.hashCode();
     }
+
+    @Override
+    public String toString() {
+
+        return String.format( "%s, type=%s", name, type );
+    }
 }
