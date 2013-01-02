@@ -7,14 +7,13 @@
 
 package net.link.safeonline.sdk.api.ws.config;
 
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
-import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
 
 
-public class PublicApplicationConfiguration extends MetaObject implements Serializable {
+@SuppressWarnings("UnusedDeclaration")
+public class PublicApplicationConfiguration implements Serializable {
 
     private final String                          name;
     private final String                          friendlyName;
@@ -75,6 +74,6 @@ public class PublicApplicationConfiguration extends MetaObject implements Serial
             }
         }
 
-        throw new InternalInconsistencyException( String.format( "Unable to reject unknown attribute :%s", attributeName ) );
+        throw new RuntimeException( String.format( "Unable to reject unknown attribute :%s", attributeName ) );
     }
 }

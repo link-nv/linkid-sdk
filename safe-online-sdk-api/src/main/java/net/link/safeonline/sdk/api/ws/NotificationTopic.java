@@ -1,8 +1,5 @@
 package net.link.safeonline.sdk.api.ws;
 
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
-
-
 public enum NotificationTopic {
 
     REMOVE_USER( "urn:net:lin-k:safe-online:topic:user:remove" ),
@@ -27,6 +24,6 @@ public enum NotificationTopic {
                 return topic;
         }
 
-        throw new InternalInconsistencyException( String.format( "Invalid topic URI: %s", topicString ) );
+        throw new RuntimeException( String.format( "Invalid topic URI: %s", topicString ) );
     }
 }
