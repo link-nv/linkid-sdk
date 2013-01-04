@@ -194,6 +194,12 @@
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk.attribute</groupId>
+            <artifactId>safe-online-attribute-provider-avatar-sdk</artifactId>
+            <type>jar</type>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Device SDKs -->
         <dependency>
