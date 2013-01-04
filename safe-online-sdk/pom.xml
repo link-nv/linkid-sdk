@@ -61,6 +61,11 @@
         <!-- Specific Dependencies: linkID -->
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-config</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-api</artifactId>
             <version>GIT-SNAPSHOT</version>
         </dependency>
@@ -69,6 +74,10 @@
             <artifactId>safe-online-sdk-api</artifactId>
             <version>GIT-SNAPSHOT</version>
             <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.util</groupId>
+            <artifactId>util-common</artifactId>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>

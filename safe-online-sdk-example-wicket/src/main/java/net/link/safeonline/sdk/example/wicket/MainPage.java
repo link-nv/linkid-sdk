@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
-import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
+import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.safeonline.wicket.component.linkid.*;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import net.link.util.common.CertificateChain;
@@ -110,7 +110,7 @@ public class MainPage extends LinkIDApplicationPage {
         // validate PKI via XKMS
         CertificateChain linkIDCertificateChain = LinkIDWicketUtils.findCertificateChain();
         if (null != linkIDCertificateChain) {
-            Xkms2Client xkms2Client = LinkIDServiceFactory.getXkms2Client();
+            Xkms2ClientImpl xkms2Client = (Xkms2ClientImpl) LinkIDServiceFactory.getXkms2Client();
             try {
                 xkms2Client.validate( linkIDCertificateChain );
             }

@@ -199,7 +199,7 @@ public class AuthenticationUtil {
 
         AttributeType attributeType = new AttributeType();
         attributeType.setNameFormat( WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC );
-        attributeType.setName( attributeType.getName() );
+        attributeType.setName( attributeIdentitySDK.getName() );
         attributeType.setFriendlyName( attributeIdentitySDK.getFriendlyName() );
 
         if (attributeIdentitySDK.getAttributeType().isCompound()) {

@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.api.ws.config;
 
-import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
 import net.link.safeonline.sdk.api.attribute.AttributeType;
 
@@ -23,7 +22,8 @@ import net.link.safeonline.sdk.api.attribute.AttributeType;
  *
  * @author wvdhaute
  */
-public class PublicApplicationAttribute extends MetaObject implements Serializable {
+@SuppressWarnings("UnusedDeclaration")
+public class PublicApplicationAttribute implements Serializable {
 
     private final String  name;
     private final String  friendly;

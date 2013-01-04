@@ -6,9 +6,7 @@
  */
 package net.link.safeonline.sdk.api.attribute;
 
-import com.lyndir.lhunath.opal.system.util.MetaObject;
 import java.io.Serializable;
-import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -20,11 +18,11 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author wvdhaute
  */
-public class AttributeSDK<T extends Serializable> extends MetaObject implements Serializable {
+public class AttributeSDK<T extends Serializable> implements Serializable {
 
-    private       String id;
-    private       String name;
-    private       T      value;
+    private String id;
+    private String name;
+    private T      value;
 
     public AttributeSDK() {
 
@@ -40,7 +38,7 @@ public class AttributeSDK<T extends Serializable> extends MetaObject implements 
         this( null, name, value );
     }
 
-    public AttributeSDK(@Nullable final String id, final String name, @Nullable final T value) {
+    public AttributeSDK(final String id, final String name, final T value) {
 
         this.id = id;
         this.name = name;
@@ -67,7 +65,7 @@ public class AttributeSDK<T extends Serializable> extends MetaObject implements 
         this.id = id;
     }
 
-    public void setValue(@Nullable final T value) {
+    public void setValue(final T value) {
 
         this.value = value;
     }
@@ -77,5 +75,24 @@ public class AttributeSDK<T extends Serializable> extends MetaObject implements 
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (null == obj)
+            return false;
+        if (!(obj instanceof AttributeSDK))
+            return false;
+        AttributeSDK rhs = (AttributeSDK) obj;
+
+        return id.equals( rhs.getId() );
+    }
+
+    @Override
+    public int hashCode() {
+
+        return id.hashCode();
+    }
 }
 
