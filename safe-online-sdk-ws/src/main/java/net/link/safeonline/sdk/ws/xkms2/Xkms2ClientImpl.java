@@ -59,13 +59,25 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
     }
 
     @Override
+    public void validate(final X509Certificate... certificateChain)
+            throws WSClientTransportException, ValidationFailedException, CertificateEncodingException {
+
+        validate( new CertificateChain( certificateChain ) );
+    }
+
+    @Override
+    public void validate(final String useKeyWithApplication, final String useKeyWithIdentifier, final X509Certificate... certificateChain)
+            throws WSClientTransportException, ValidationFailedException, CertificateEncodingException {
+
+        validate( useKeyWithApplication, useKeyWithIdentifier, new CertificateChain( certificateChain ) );
+    }
+
     public void validate(final CertificateChain certificateChain)
             throws WSClientTransportException, ValidationFailedException, CertificateEncodingException {
 
         validate( null, null, certificateChain );
     }
 
-    @Override
     public void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier,
                          final CertificateChain certificateChain)
             throws WSClientTransportException, ValidationFailedException, CertificateEncodingException {
