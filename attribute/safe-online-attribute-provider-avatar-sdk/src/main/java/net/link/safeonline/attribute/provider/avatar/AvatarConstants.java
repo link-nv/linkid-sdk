@@ -10,7 +10,7 @@ package net.link.safeonline.attribute.provider.avatar;
  */
 public interface AvatarConstants {
 
-    static final String PROFILE_PICTURE = "avatar.picture";
+    static final String PROFILE_PICTURE_ATTRIB = "avatar.picture";
 
     static final String GROUP = "avatar";
 
