@@ -15,4 +15,6 @@ public interface AvatarConstants {
     static final String GROUP = "avatar";
 
     static final int PICTURE_SIZE = 128;
+
+    static final String MISSING_PROFILE_PICTURE = "no-profile-picture.png";
 }
