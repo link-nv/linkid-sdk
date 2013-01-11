@@ -49,7 +49,7 @@ public abstract class ConfigUtils {
     public static String getApplicationURLForPath(String path) {
 
         String applicationURL = getApplicationURL();
-        if (applicationURL.endsWith( path ))
+        if (path == null || applicationURL.endsWith( path ))
             return applicationURL;
 
         return URLUtils.concat( applicationURL, path );
