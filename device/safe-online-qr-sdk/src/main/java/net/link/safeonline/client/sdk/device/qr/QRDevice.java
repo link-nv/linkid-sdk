@@ -8,4 +8,8 @@ public interface QRDevice {
     String WS_REGISTRATION_ID = "urn:net:lin-k:safe-online:qr:ws:auth:registrationId";
     String WS_SESSION_ID      = "urn:net:lin-k:safe-online:qr:ws:auth:sessionId";
     String WS_QR_CODE         = "urn:net:lin-k:safe-online:qr:ws:auth:qrCode";
+    String WS_QR_CODE_URL     = "urn:net:lin-k:safe-online:qr:ws:auth:qrCodeURL";
+
+    // format to get QR code in
+    String WS_QR_CODE_FORMAT_URL = "urn:net:lin-k:safe-online:qr:ws:auth:qrCodeFormatURL";
 }
