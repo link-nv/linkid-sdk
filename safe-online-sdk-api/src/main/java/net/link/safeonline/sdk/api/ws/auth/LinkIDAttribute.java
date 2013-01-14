@@ -23,6 +23,9 @@ public class LinkIDAttribute implements Serializable {
     private       Object                value;
     private       List<LinkIDAttribute> members;
 
+    // state info
+    private boolean removed;
+
     public LinkIDAttribute(final String id, final AttributeType attributeType, final String friendlyName, final String groupName,
                            final boolean anonymous, final boolean optional, final boolean confirmationNeeded, final boolean confirmed,
                            final Object value, final List<LinkIDAttribute> members) {
@@ -37,6 +40,7 @@ public class LinkIDAttribute implements Serializable {
         this.confirmed = confirmed;
         this.value = value;
         this.members = members;
+        this.removed = false;
     }
 
     // helper methods
@@ -134,5 +138,15 @@ public class LinkIDAttribute implements Serializable {
     public String getId() {
 
         return id;
+    }
+
+    public boolean isRemoved() {
+
+        return removed;
+    }
+
+    public void setRemoved(final boolean removed) {
+
+        this.removed = removed;
     }
 }
