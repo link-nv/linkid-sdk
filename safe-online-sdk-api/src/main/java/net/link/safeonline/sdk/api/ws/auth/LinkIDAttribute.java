@@ -19,9 +19,9 @@ public class LinkIDAttribute implements Serializable {
     private       boolean confirmed;
 
     // value info
-    private final String                id;
-    private       Object                value;
-    private       List<LinkIDAttribute> members;
+    private String                id;
+    private Object                value;
+    private List<LinkIDAttribute> members;
 
     // state info
     private boolean removed;
@@ -133,6 +133,11 @@ public class LinkIDAttribute implements Serializable {
     public boolean isConfirmationNeeded() {
 
         return confirmationNeeded;
+    }
+
+    public void setId(final String id) {
+
+        this.id = id;
     }
 
     public String getId() {
