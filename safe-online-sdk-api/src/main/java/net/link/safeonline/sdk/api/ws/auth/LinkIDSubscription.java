@@ -8,10 +8,11 @@ import java.util.List;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDSubscription implements Serializable {
 
-    private final long   id;
-    private final String friendlyName;
-    private final String encodedDescription;
-    private final String url;
+    private final long    id;
+    private final String  friendlyName;
+    private final String  encodedDescription;
+    private final String  url;
+    private final boolean canUnsubscribe;
 
     private final Date lastLogin;
     private final int  authentications;
@@ -22,14 +23,15 @@ public class LinkIDSubscription implements Serializable {
     private final String encodedUA;
     private final Date   lastUsageConfirmation;
 
-    public LinkIDSubscription(final long id, final String friendlyName, final String encodedDescription, final String url, final Date lastLogin,
-                              final int authentications, final List<LinkIDAttribute> identity, final Date lastIdentityConfirmation,
-                              final String encodedUA, final Date lastUsageConfirmation) {
+    public LinkIDSubscription(final long id, final String friendlyName, final String encodedDescription, final String url,
+                              final boolean canUnsubscribe, final Date lastLogin, final int authentications, final List<LinkIDAttribute> identity,
+                              final Date lastIdentityConfirmation, final String encodedUA, final Date lastUsageConfirmation) {
 
         this.id = id;
         this.friendlyName = friendlyName;
         this.encodedDescription = encodedDescription;
         this.url = url;
+        this.canUnsubscribe = canUnsubscribe;
 
         this.lastLogin = lastLogin;
         this.authentications = authentications;
@@ -59,6 +61,11 @@ public class LinkIDSubscription implements Serializable {
     public String getUrl() {
 
         return url;
+    }
+
+    public boolean isCanUnsubscribe() {
+
+        return canUnsubscribe;
     }
 
     public Date getLastLogin() {
