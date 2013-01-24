@@ -7,18 +7,18 @@ import java.util.Date;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDHistory implements Serializable {
 
-    private final Date   date;
+    private final Date   when;
     private final String message;
 
-    public LinkIDHistory(final Date date, final String message) {
+    public LinkIDHistory(final Date when, final String message) {
 
-        this.date = date;
+        this.when = when;
         this.message = message;
     }
 
-    public Date getDate() {
+    public Date getWhen() {
 
-        return date;
+        return when;
     }
 
     public String getMessage() {
