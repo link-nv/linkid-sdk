@@ -61,16 +61,56 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Default.aspx" />
+    <Content Include="LinkIDLogout.aspx" />
+    <Content Include="LoggedIn.aspx" />
+    <Content Include="LoginPopup.aspx" />
+    <Content Include="LoginRedirect.aspx" />
+    <Content Include="LoginMobile.aspx" />
+    <Content Include="LinkIDLogin.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Default.aspx.cs">
+    <Compile Include="LinkIDLogout.aspx.cs">
+      <DependentUpon>LinkIDLogout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="LinkIDLogout.aspx.designer.cs">
+      <DependentUpon>LinkIDLogout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LoggedIn.aspx.cs">
+      <DependentUpon>LoggedIn.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LoggedIn.aspx.designer.cs">
+      <DependentUpon>LoggedIn.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LoginPopup.aspx.cs">
+      <DependentUpon>LoginPopup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LoginPopup.aspx.designer.cs">
+      <DependentUpon>LoginPopup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LoginRedirect.aspx.cs">
+      <DependentUpon>LoginRedirect.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LoginRedirect.aspx.designer.cs">
+      <DependentUpon>LoginRedirect.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LoginMobile.aspx.cs">
+      <DependentUpon>LoginMobile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LoginMobile.aspx.designer.cs">
+      <DependentUpon>LoginMobile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LinkIDLogin.aspx.cs">
+      <DependentUpon>LinkIDLogin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LinkIDLogin.aspx.designer.cs">
+      <DependentUpon>LinkIDLogin.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

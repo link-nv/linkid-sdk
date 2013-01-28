@@ -16,18 +16,21 @@ namespace safe_online_sdk_dotnet_test.test.cs
         public static readonly string testCrtIssuerName = "DemoTest";
         public static readonly string testApplicationName = "demo-test";
         public static readonly string testPfxPath = workDir + "\\demotest.p12";
-        public static readonly string linkidCertPath = workDir + "\\linkid.crt";
+        public static readonly string linkidCertPath = workDir + "\\linkid-local.crt";
+//        public static readonly string linkidCertPath = workDir + "\\linkid.crt";
         public static readonly string testPfxPassword = "secret";
         public static readonly string testCrtPath = workDir + "\\demotest.crt";
         public static readonly string testKeyPath = workDir + "\\demotest.key";
         public static readonly string testFooPath = workDir + "\\foo.crt";
 
-        public static readonly string linkidHost = "demo.linkid.be";
-        public static readonly string wsLocation = linkidHost;
+//        public static readonly string linkidHost = "demo.linkid.be";
+        public static readonly string linkidHost = "192.168.5.14";
+//        public static readonly string wsLocation = linkidHost;
+        public static readonly string wsLocation = linkidHost + ":8443";
         public static readonly string linkidAuthEntry = "https://" + wsLocation + "/linkid-auth/entry";
         public static readonly string linkidLogoutEntry = "https://" + wsLocation + "/linkid-auth/logoutentry";
 
-        public static readonly string localhost = "192.168.5.1";
+        public static readonly string localhost = "192.168.5.20";
 
         public static readonly string loginAttribute = "device.password.login";
 		

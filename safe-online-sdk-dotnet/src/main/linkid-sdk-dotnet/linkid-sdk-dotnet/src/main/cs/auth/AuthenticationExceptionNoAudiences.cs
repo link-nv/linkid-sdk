@@ -13,16 +13,16 @@ namespace safe_online_sdk_dotnet
 	/// <summary>
 	/// Authentication Exception class. Throw if violations are detected in the authentication protocol.
 	/// </summary>
-	[Serializable]
-	public class AuthenticationException : System.Exception
+    [Serializable]
+	public class AuthenticationExceptionNoAudiences : System.Exception
 	{
 		private string messsage;
 		
-		public AuthenticationException()
+		public AuthenticationExceptionNoAudiences()
 		{
 		}
 		
-		public AuthenticationException(string message) {
+		public AuthenticationExceptionNoAudiences(string message) {
 			this.messsage = message;
 		}
 		
@@ -31,7 +31,8 @@ namespace safe_online_sdk_dotnet
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="context"></param>
-		protected AuthenticationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) {
+        protected AuthenticationExceptionNoAudiences(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        {
 		}
 		
 		public string getMessage() {

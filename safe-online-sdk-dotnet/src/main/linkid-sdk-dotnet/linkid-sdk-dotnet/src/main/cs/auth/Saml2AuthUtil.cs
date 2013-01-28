@@ -203,7 +203,7 @@ namespace safe_online_sdk_dotnet
 
             if (!response.InResponseTo.Equals(this.expectedChallenge))
             {
-                throw new AuthenticationException("SAML response is not a response belonging to the original request.");
+                throw new AuthenticationExceptionInvalidInResponseTo("SAML response is not a response belonging to the original request.");
             }
 
             if (!response.Status.StatusCode.Value.Equals(Saml2Constants.SAML2_STATUS_SUCCESS))
@@ -222,12 +222,12 @@ namespace safe_online_sdk_dotnet
                 AudienceRestrictionType audienceRestriction = (AudienceRestrictionType)assertion.Conditions.Items[0];
                 if (null == audienceRestriction.Audience)
                 {
-                    throw new AuthenticationException("No Audiences found in AudienceRestriction");
+                    throw new AuthenticationExceptionNoAudiences("No Audiences found in AudienceRestriction");
                 }
 
                 if (!audienceRestriction.Audience[0].Equals(this.expectedAudience))
                 {
-                    throw new AuthenticationException("Audience name not correct, expected: " + this.expectedAudience);
+                    throw new AuthenticationExceptionInvalidAudience("Audience name not correct, expected: " + this.expectedAudience);
                 }
 
                 List<String> authenticatedDevices = new List<String>();
