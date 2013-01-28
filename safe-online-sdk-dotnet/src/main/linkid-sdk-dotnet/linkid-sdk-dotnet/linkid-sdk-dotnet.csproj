@@ -48,9 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\main\cs\auth\AuthenticationProtocolContext.cs" />
-    <Compile Include="src\main\cs\auth\AuthenticationException.cs" />
+    <Compile Include="src\main\cs\auth\AuthenticationExceptionInvalidAudience.cs" />
     <Compile Include="src\main\cs\auth\AttributeSDK.cs" />
     <Compile Include="src\main\cs\auth\Compound.cs" />
+    <Compile Include="src\main\cs\auth\AuthenticationExceptionInvalidInResponseTo.cs" />
+    <Compile Include="src\main\cs\auth\AuthenticationExceptionNoAudiences.cs" />
     <Compile Include="src\main\cs\auth\Saml2Constants.cs" />
     <Compile Include="src\main\cs\auth\Saml2AuthUtil.cs" />
     <Compile Include="src\main\cs\auth\RequestConstants.cs" />

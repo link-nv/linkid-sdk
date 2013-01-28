@@ -157,7 +157,7 @@ namespace safe_online_sdk_dotnet
 
             if (!response.InResponseTo.Equals(this.expectedChallenge))
             {
-                throw new AuthenticationException("SAML logout response is not a response belonging to the original request.");
+                throw new AuthenticationExceptionInvalidInResponseTo("SAML logout response is not a response belonging to the original request.");
             }
 
             if (response.Status.StatusCode.Value.Equals(Saml2Constants.SAML2_STATUS_SUCCESS))
