@@ -41,74 +41,151 @@
             can be found at
             <ulink url="http://www.bouncycastle.org/csharp/"></ulink>
         </para>
-        <para>
-            The .NET SDK provides 2 utility classes for authentication and logout
-            respectively
-            <code>Saml2AuthUtil.cs</code>
-            and
-            <code>Saml2LogoutUtil.cs</code>
-            . Instantiating both classes requires one argument, a
-            <code>RSACryptoServiceProvider</code>
-            containing the private key that will be used to sign the
-            authentication/logout request. The
-            <code>KeyStoreUtil</code>
-            class provides 2 methods returning such an
-            <code>RSACryptoServiceProvider</code>
-            . One takes a .pfx ( i.e. PKCS12 ) keystore + password as input, the
-            other one reads out the private key in PEM format.
-        </para>
-        <para>
-            To start an authentication with linkID, first you will have to send a
-            SAML v2.0 authentication request to linkID. This request can be
-            generated using
-            <code>Saml2AuthUtil.generateEncodedAuthnRequest</code>
-            . This returns the request already Base64 encoded, ready to be sent
-            to linkID. The
-            <code>issuerName</code>
-            is the issuer of your application's certificate. The
-            <code>serviceProviderUrl</code>
-            is the path to which linkID will send a SAML v2.0 authentication
-            response back after a successfull ( or not ) authentication. The
-            <code>identityProviderUrl</code>
-            is the linkID path that accepts your SAML v2.0 authentication
-            request. The request has to be sent to linkID using browser POST.
-            There is a good example to see all the magic happen in
-            <code>WebServerTest.cs</code>
-            .
-        </para>
-        <para>
-            The logout process is similar to authentication, all necessary
-            methods can be found in
-            <code>Saml2LogoutUtil</code>
-            .
-        </para>
-        <para>
-            After successful authentication using linkID, an
-            authentication/logout response will be sent back. This response can
-            be validated using the 2 utility classes.
-            For an authentication
-            response, a
-            <code>AuthenticationProtocolContext</code>
-            instance will be returned, containing the user identifier, used
-            authentication devices and optionally a dictionary containing the
-            application identity. Returning the application identity in the SAML
-            v2.0 Authentication Response is something that can be configured by
-            the linkID operator only.
-        </para>
-        <para>
-            For Single Logout, the
-            <code>Saml2LogoutUtil.cs</code>
-            utility class also contains extra methods for validating incoming
-            logout request sent out by linkID ( due to another application in the
-            same application pool triggering a single logout ) and also sending
-            out a logout response for these requests. Please consult the linkID
-            global SDK manual for more info on the SAML v2.0 Single Logout
-            profile.
-        </para>
-        <para>
-            In all cases, validation of SAML v2.0 requests and response is
-            done using the STS web service.
-        </para>
+
+        <section>
+            <title>linkID Login Modes</title>
+            <para>
+                The .NET SDK Contains 2 Projects, the linkid-sdk-dotnet project en linkid-example project.
+                The linkid-example project shows a very basic example of how to integrate the linkID authentication process in your webapp.
+                There are 3 login 'modes' linkID supports.
+
+                    <variablelist>
+                        <varlistentry>
+                            <term>redirect</term>
+                            <listitem>
+                                <para>
+                                    The linkID authentication starts, the user leaves the original page and is redirected to the linkID authentication
+                                    page. When linkID authentication has finished, the user will be redirected back to the original page.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>popup</term>
+                            <listitem>
+                                <para>
+                                    The linkID authentication will take place in a popup window. The linkID authentication page has a responsive design
+                                    to adapt to this. When completed, the 'LinkIDLogin.aspx' will handle the linkID authentication response, close the
+                                    popup window and refresh the parent page ( window.opener.location.href  ).
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>mobile</term>
+                            <listitem>
+                                <para>
+                                    This is a special linkID authentication mode, where the user will solely be able to login with the linkID QR device.
+                                    This login mode will load in an iframe a QR code, the user will scan this QR code with the linkID smartphone app.
+                                    Whilst he does this and optionally confirms the application identity on his smartphone, the page showing the QR code
+                                    in that iframe will poll to see if the user has finished. When so, it'll send an authentication response in the iframe
+                                    back to 'LinkIDLogin.aspx' which will refresh the parent page ( window.top.location.replace )
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+            </para>
+
+            <para>
+                The linkID example project shows how to implement these 3 linkID login modes. (LoginRedirect.aspx, LoginPopup.aspx, LoginMobile.aspx).
+                All 3 pages will include the linkid.js which does most of the magic. ( https://demo.linkid.be/linkid-static/js/linkid-min.js ).
+                All 3 pages will have a link with a special CSS class named <code>linkid-login</code> on it. This is important, as the linkID JS will
+                look for that class.
+                The <code>data-login-href</code> attribute on those links points to the <code>LinkIDLogin.aspx</code> page, which handles the different
+                login modes, creation of the SAML v2.0 authentication request, handling incoming SAML v2.0 authentication response.
+                The <code>data-completion-href</code> attribute on those links points to the page you want to land on after a successfull authentication.
+            </para>
+
+            <para>
+                For the 'popup' and 'redirect' login mode, you need to specify the <code>data-mode</code> attribute so the linkID JS knows what to do.
+                For The 'mobile' login mode, you'll need to add an iframe to your page which id matches the <code>data-mobile-minimal</code> attribute's
+                value that you'll have to place on the linkID login link.
+            </para>
+
+            <para>
+                After a successfull authentication, and LinkIDLogin.aspx has redirected the user to the page you have configured, you will find a
+                AuthenticationProtocolContext instance on the session. This class contains the userId, the device he used to authenticate, and the
+                linkID attributes configuration for your application within linkID. You can find this @ <code>Session['linkID.authContext']</code>.
+                or <code>Session[LinkIDLogin.SESSION_AUTH_CONTEXT]</code>.
+            </para>
+        </section>
+
+        <section>
+            <title>LinkIDLogin.aspx configuration</title>
+
+            <para>
+                The LinkIDLogin.aspx page included in the linkid-example project handle all the magic of creating the SAML v2.0 authentication
+                requests, handling the incoming SAML v2.0 authentication responses, the different login modes, ...
+                A SAML v2.0 authentication request is a token that needs to be digitally signed so linkID knows for which application the user is
+                authenticating. For this you'll need to specify in some way to this page your keypair you have received from a linkID operator, ...
+            </para>
+
+            <para>
+                Below are the configuration parameters you'll need to modify for your application to connect successfully against linkID.
+                These parameters are specified @ the top of <code>LinkIDLogin.aspx.cs</code>.
+                <variablelist>
+                    <varlistentry>
+                        <term>LINKID_HOST</term>
+                        <listitem>
+                            <para>
+                                The linkID host you are connecting to. In a development phase typically this will be <code>demo.linkid.be</code>, when
+                                going to production this'll be <code>service.linkid.be</code>.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>LOGINPAGE_LOCATION</term>
+                        <listitem>
+                            <para>
+                                The location of the <code>LinkIDLogin.aspx</code> page. It needs so it can tell linkID where to ultimately send its
+                                SAML v2.0 authentication response to.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>APP_NAME</term>
+                        <listitem>
+                            <para>
+                                The linkID application name for your application. This will be provided by the linkID operator.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>CERT_LINKID</term>
+                        <listitem>
+                            <para>
+                                The location of the linkID certificate in PEM format. This certificate can be found @
+                                http://demo.linkid.be/linkid-auth/pki-cert.pem ( or service.lin... ).
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>CERT_APP</term>
+                        <listitem>
+                            <para>
+                                The location of your application's certificate in PEM format. This will be provided by the linkID operator.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term>KEY_APP</term>
+                        <listitem>
+                            <para>
+                                The location of your application private key in PEM format. This will be provided by the linkID operator.
+                            </para>
+                        </listitem>
+                    </varlistentry>
+                </variablelist>
+            </para>
+
+        </section>
+
+        <section>
+            <title>linkID Single Logout</title>
+            <para>
+                linkID's Single Logout profile is only needed in case a Single Sign On (SSO) pool is configured @ linkID with your application in it.
+                You can find an example page that implements this profile @ <code>LinkIDLogout.aspx</code>.
+                Note that this page will re-use the above configuration from <code>LinkIDLogin.aspx</code>.
+            </para>
+        </section>
     </chapter>
     <chapter id="webservices">
         <title>Web Services</title>
