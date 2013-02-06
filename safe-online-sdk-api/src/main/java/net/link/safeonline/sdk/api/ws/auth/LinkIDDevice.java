@@ -9,7 +9,7 @@ public class LinkIDDevice implements Serializable {
     private final String  friendlyName;
     private final String  id;
     private final String  info;
-    private final boolean disabled;
+    private       boolean disabled;
 
     public LinkIDDevice(final String name, final String friendlyName, final String id, final String info, final boolean disabled) {
 
@@ -43,5 +43,10 @@ public class LinkIDDevice implements Serializable {
     public boolean isDisabled() {
 
         return disabled;
+    }
+
+    public void setDisabled(final boolean disabled) {
+
+        this.disabled = disabled;
     }
 }
