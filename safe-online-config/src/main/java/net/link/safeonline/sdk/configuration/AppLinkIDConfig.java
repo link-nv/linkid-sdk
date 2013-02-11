@@ -35,6 +35,6 @@ public interface AppLinkIDConfig {
     /**
      * @return The DN of the end certificate with which incoming messages should be signed.
      */
-    @Property(required = true, unset = "CN=SafeOnline Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE")
+    @Property(required = true, unset = "CN=linkID Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE")
     X500Principal trustedDN();
 }
