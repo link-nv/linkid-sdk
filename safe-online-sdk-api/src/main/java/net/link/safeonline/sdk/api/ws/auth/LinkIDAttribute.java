@@ -127,7 +127,17 @@ public class LinkIDAttribute implements Serializable {
 
     public boolean isOptional() {
 
-        return optional;
+        if (!optional)
+            return optional;
+
+        // optional -> check if it is a member, if so check member requiredness
+        if (attributeType.isCompoundMember()) {
+
+            return !attributeType.isRequired();
+        } else {
+
+            return optional;
+        }
     }
 
     public boolean isConfirmationNeeded() {
