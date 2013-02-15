@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.api.ws.auth;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import net.link.safeonline.sdk.api.attribute.AttributeType;
 import net.link.safeonline.sdk.api.attribute.DataType;
@@ -44,6 +45,21 @@ public class LinkIDAttribute implements Serializable {
     }
 
     // helper methods
+
+    public LinkIDAttribute getTemplate() {
+
+        LinkIDAttribute templateAttribute = new LinkIDAttribute( null, attributeType, friendlyName, groupName, anonymous, optional,
+                confirmationNeeded, confirmed, null, null );
+        if (templateAttribute.getAttributeType().isCompound()) {
+            List<LinkIDAttribute> templateMembers = new LinkedList<LinkIDAttribute>();
+            for (LinkIDAttribute member : members) {
+                templateMembers.add( member.getTemplate() );
+            }
+            templateAttribute.setMembers( templateMembers );
+        }
+
+        return templateAttribute;
+    }
 
     public boolean isEmpty() {
 
