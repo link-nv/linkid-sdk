@@ -10,14 +10,17 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LoginMode;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
 import net.link.safeonline.sdk.configuration.SAMLBinding;
+import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.exception.ValidationFailedException;
@@ -59,19 +62,19 @@ public abstract class ResponseUtil {
      * @param postTemplateResource The resource that contains the template of the SAML HTTP POST Binding message.
      * @param language             A language hint to make the application retrieving the response use the same locale as the requesting
      *                             application.
-     * @param loginMode           Used in browser post form to jump out of an iframe if wanted ( target="_top" ), or jump out of a popup window
+     * @param loginMode            Used in browser post form to jump out of an iframe if wanted ( target="_top" ), or jump out of a popup window
      *
      * @throws IOException IO Exception
      */
-    public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse,
-                                    KeyPair signingKeyPair, CertificateChain certificateChain, HttpServletResponse response,
-                                    String relayState, String postTemplateResource, @Nullable Locale language, @Nullable LoginMode loginMode)
+    public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse, KeyPair signingKeyPair,
+                                    CertificateChain certificateChain, HttpServletResponse response, String relayState, String postTemplateResource,
+                                    @Nullable Locale language, @Nullable LoginMode loginMode)
             throws IOException {
 
         switch (responseBinding) {
             case HTTP_POST:
-                PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                        response, language, loginMode );
+                PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl, response,
+                        language, loginMode );
                 break;
 
             case HTTP_REDIRECT:
@@ -88,7 +91,9 @@ public abstract class ResponseUtil {
      * @param request             HTTP Servlet Request
      * @param contexts            map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
      * @param trustedCertificates The linkID service certificates for validation of the HTTP-Redirect signature (else can be
-     *                            {@code null} or empty)
+     *                            {@code null} or empty).
+     *                            If trusted certificates are specified and the binding is HTTP POST, the chain will be validated using the
+     *                            linkID XKMS 2.0 WS.
      *
      * @return The SAML {@link Saml2ResponseContext} that is in the HTTP request<br> {@code null} if there is no SAML message in the
      *         HTTP request. Also contains (if present) the certificate chain embedded in the SAML {@link Response}'s signature.
@@ -114,6 +119,22 @@ public abstract class ResponseUtil {
 
         // validate signature
         CertificateChain certificateChain = Saml2Utils.validateSignature( authnResponse.getSignature(), request, trustedCertificates );
+
+        if (null != trustedCertificates && !trustedCertificates.isEmpty() && null != authnResponse.getSignature() && null != certificateChain) {
+            // validate using XKMS v2.0
+            try {
+                LinkIDServiceFactory.getXkms2Client().validate( certificateChain.toArray() );
+            }
+            catch (WSClientTransportException e) {
+                throw new ValidationFailedException( String.format( "SAML2 Certificate chain validation failure: %s", e.getMessage() ), e );
+            }
+            catch (net.link.safeonline.sdk.api.exception.ValidationFailedException e) {
+                throw new ValidationFailedException( String.format( "SAML2 Certificate chain validation failure: %s", e.getMessage() ), e );
+            }
+            catch (CertificateEncodingException e) {
+                throw new ValidationFailedException( String.format( "SAML2 Certificate chain validation failure: %s", e.getMessage() ), e );
+            }
+        }
 
         // validate response
         validateResponse( authnResponse, authnRequest.getIssuer() );
@@ -215,13 +236,11 @@ public abstract class ResponseUtil {
                 throw new ValidationFailedException(
                         "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
         } else if (now.isBefore( notBefore ) || now.isAfter( notOnOrAfter ))
-            throw new ValidationFailedException(
-                    "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
+            throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
 
         Subject subject = assertion.getSubject();
         if (null == subject)
-            throw new ValidationFailedException(
-                    "SAML2 assertion validation audience=" + expectedAudience + " : missing Assertion Subject" );
+            throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing Assertion Subject" );
 
         if (assertion.getAuthnStatements().isEmpty())
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnStatement" );
@@ -231,8 +250,7 @@ public abstract class ResponseUtil {
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnContext" );
 
         if (null == authnStatement.getAuthnContext().getAuthnContextClassRef())
-            throw new ValidationFailedException(
-                    "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnContextClassRef" );
+            throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnContextClassRef" );
 
         if (expectedAudience != null)
             validateAudienceRestriction( conditions, expectedAudience );
@@ -258,8 +276,7 @@ public abstract class ResponseUtil {
         Audience audience = audiences.get( 0 );
         if (!expectedAudience.equals( audience.getAudienceURI() ))
             throw new ValidationFailedException(
-                    "SAML2 assertion validation: audience name not correct, expected: " + expectedAudience + " was: "
-                    + audience.getAudienceURI() );
+                    "SAML2 assertion validation: audience name not correct, expected: " + expectedAudience + " was: " + audience.getAudienceURI() );
     }
 
     /**

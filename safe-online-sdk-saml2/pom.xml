@@ -62,6 +62,11 @@
             <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-ws</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-saml2</artifactId>
         </dependency>
