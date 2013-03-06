@@ -65,7 +65,7 @@
         <!-- Specific Dependencies: external -->
         <dependency>
             <groupId>org.openid4java</groupId>
-            <artifactId>openid4java-nodeps</artifactId>
+            <artifactId>openid4java</artifactId>
         </dependency>
 
     </dependencies>
