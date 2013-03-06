@@ -13,7 +13,7 @@ public class LinkIDSubscription implements Serializable {
     private final String  encodedDescription;
     private final String  url;
     private final boolean canUnsubscribe;
-    private final String  encodedLogo;
+    private final String  logo;
 
     private final Date lastLogin;
     private final int  authentications;
@@ -25,7 +25,7 @@ public class LinkIDSubscription implements Serializable {
     private final Date   lastUsageConfirmation;
 
     public LinkIDSubscription(final long id, final String friendlyName, final String encodedDescription, final String url,
-                              final boolean canUnsubscribe, final String encodedLogo, final Date lastLogin, final int authentications,
+                              final boolean canUnsubscribe, final String logo, final Date lastLogin, final int authentications,
                               final List<LinkIDAttribute> identity, final Date lastIdentityConfirmation, final String encodedUA,
                               final Date lastUsageConfirmation) {
 
@@ -34,7 +34,7 @@ public class LinkIDSubscription implements Serializable {
         this.encodedDescription = encodedDescription;
         this.url = url;
         this.canUnsubscribe = canUnsubscribe;
-        this.encodedLogo = encodedLogo;
+        this.logo = logo;
 
         this.lastLogin = lastLogin;
         this.authentications = authentications;
@@ -71,9 +71,9 @@ public class LinkIDSubscription implements Serializable {
         return canUnsubscribe;
     }
 
-    public String getEncodedLogo() {
+    public String getLogo() {
 
-        return encodedLogo;
+        return logo;
     }
 
     public Date getLastLogin() {
