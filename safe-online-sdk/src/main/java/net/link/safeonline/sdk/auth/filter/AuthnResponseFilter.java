@@ -100,8 +100,8 @@ public class AuthnResponseFilter implements Filter {
 
         if (authnResponse.isSuccess()) {
             logger.dbg( "userId: %s", authnResponse.getUserId() );
-            LoginManager.set( session, authnResponse.getUserId(), authnResponse.getAttributes(), authnResponse.getAuthenticatedDevices(),
-                    authnResponse.getCertificateChain() );
+
+            LoginManager.set( session, authnResponse );
         }
     }
 }

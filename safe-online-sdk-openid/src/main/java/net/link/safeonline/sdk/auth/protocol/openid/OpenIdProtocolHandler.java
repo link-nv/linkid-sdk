@@ -77,6 +77,12 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
     private AuthenticationContext authnContext;
 
     @Override
+    public Protocol getProtocol() {
+
+        return Protocol.OPENID;
+    }
+
+    @Override
     public AuthnProtocolRequestContext sendAuthnRequest(HttpServletResponse response, AuthenticationContext context)
             throws IOException {
 
@@ -140,8 +146,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         // (static) instance used to place the authentication request
         VerificationResult verification;
         try {
-            verification = getManager( authnContext.getOpenID().getSslCertificate() ).verify( receivingURL.toString(), parameterList,
-                    discovered );
+            verification = getManager( authnContext.getOpenID().getSslCertificate() ).verify( receivingURL.toString(), parameterList, discovered );
             logger.dbg( "discovered: %s", discovered.getOPEndpoint().toString() );
             logger.dbg( "verification: %s", verification.getStatusMsg() );
         }
@@ -190,8 +195,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         }
 
         boolean success = verification.getAuthResponse() instanceof AuthSuccess;
-        return new AuthnProtocolResponseContext( requestContext, realm, userId, requestContext.getIssuer(), authenticatedDevices,
-                attributes, success, null );
+        return new AuthnProtocolResponseContext( requestContext, realm, userId, requestContext.getIssuer(), authenticatedDevices, attributes, success,
+                null );
     }
 
     @Nullable

@@ -12,8 +12,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.configuration.LogoutContext;
+import net.link.safeonline.sdk.configuration.*;
 import net.link.util.exception.ValidationFailedException;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
  * @author fcorneli
  */
 public interface ProtocolHandler extends Serializable {
+
+    Protocol getProtocol();
 
     /**
      * Initiates the authentication request towards the SafeOnline authentication web application.
@@ -66,7 +67,7 @@ public interface ProtocolHandler extends Serializable {
 
     /**
      * Initiates the logout request towards the SafeOnline authentication web application.
-     *
+     * <p/>
      * The landing code is at a URL specified by the linkID configuration for this application. (SSO Logout URL)
      *
      * @param response HTTP Servlet Response.

@@ -144,8 +144,8 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
         if (authnResponse.isSuccess()) {
             logger.dbg( "username: %s", authnResponse.getUserId() );
-            LoginManager.set( session, authnResponse.getUserId(), authnResponse.getAttributes(), authnResponse.getAuthenticatedDevices(),
-                    authnResponse.getCertificateChain() );
+
+            LoginManager.set( session, authnResponse );
         }
     }
 }

@@ -54,6 +54,12 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
     private AuthenticationContext authnContext;
 
     @Override
+    public Protocol getProtocol() {
+
+        return Protocol.OAUTH2;
+    }
+
+    @Override
     public AuthnProtocolRequestContext sendAuthnRequest(final HttpServletResponse response, final AuthenticationContext context)
             throws IOException {
 
@@ -66,8 +72,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().authorizationPath() );
 
-        String clientId = MessageUtils.stringEmpty( config().proto().oauth2().clientId() )? context.getApplicationName()
-                : config().proto().oauth2().clientId();
+        String clientId =
+                MessageUtils.stringEmpty( config().proto().oauth2().clientId() )? context.getApplicationName(): config().proto().oauth2().clientId();
 
         // create oauht2 authorization request ( authorization grant code flow)
         AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, clientId );
@@ -89,8 +95,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
 
-        AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(), clientId, this,
-                targetURL, context.isMobileAuthentication(), context.isMobileAuthenticationMinimal() );
+        AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(), clientId, this, targetURL,
+                context.isMobileAuthentication(), context.isMobileAuthenticationMinimal() );
         requestContext.setLoginMode( context.getLoginMode() );
         return requestContext;
     }
@@ -159,8 +165,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
             success = userRefusedAccess( (ErrorResponse) responseMessage );
         }
         // note: oauth does not support returning authenticated devices
-        return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success,
-                null );
+        return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success, null );
     }
 
     protected boolean userRefusedAccess(ErrorResponse errorResponse)
@@ -170,8 +175,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
             return true;
         else {
             logger.err( "Received error response for OAuth authorization request: " + errorResponse.toString() );
-            throw new ValidationFailedException(
-                    "Error response returned for OAuth authorization request: " + errorResponse.getErrorDescription() );
+            throw new ValidationFailedException( "Error response returned for OAuth authorization request: " + errorResponse.getErrorDescription() );
         }
     }
 
@@ -188,8 +192,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         String endpoint = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().tokenPath() );
 
-        ResponseMessage tokenResponse = MessageUtils.sendRequestMessage( endpoint, tokenRequest,
-                authnContext.getOauth2().getSslCertificate(), authnRequest.getIssuer(), config().proto().oauth2().clientSecret() );
+        ResponseMessage tokenResponse = MessageUtils.sendRequestMessage( endpoint, tokenRequest, authnContext.getOauth2().getSslCertificate(),
+                authnRequest.getIssuer(), config().proto().oauth2().clientSecret() );
 
         if (tokenResponse instanceof ErrorResponse) {
             logger.err( "Received error response for OAuth authorization request: " + tokenResponse.toString() );
@@ -244,8 +248,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         if (validationResponse instanceof ErrorResponse) {
             logger.err( "Received error response for OAuth authorization request: " + validationResponse.toString() );
-            throw new ValidationFailedException( "Error response returned for OAuth authorization request: "
-                                                 + ((ErrorResponse) validationResponse).getErrorDescription() );
+            throw new ValidationFailedException(
+                    "Error response returned for OAuth authorization request: " + ((ErrorResponse) validationResponse).getErrorDescription() );
         }
         if (!authnRequest.getIssuer().equals( ((ValidationResponse) validationResponse).getAudience() )) {
             throw new ValidationFailedException( "OAuth token is not for this application" );
@@ -373,8 +377,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
     }
 
     @Override
-    public LogoutProtocolRequestContext sendLogoutRequest(final HttpServletResponse response, final String userId,
-                                                          final LogoutContext context)
+    public LogoutProtocolRequestContext sendLogoutRequest(final HttpServletResponse response, final String userId, final LogoutContext context)
             throws IOException {
 
         throw new UnsupportedOperationException( "OAuth2 implementation does not support single logout yet" );
@@ -397,8 +400,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
     @Override
     public LogoutProtocolResponseContext sendLogoutResponse(final HttpServletResponse response,
-                                                            final LogoutProtocolRequestContext logoutRequestContext,
-                                                            final boolean partialLogout)
+                                                            final LogoutProtocolRequestContext logoutRequestContext, final boolean partialLogout)
             throws IOException {
 
         throw new UnsupportedOperationException( "OAuth2 implementation does not support single logout yet" );

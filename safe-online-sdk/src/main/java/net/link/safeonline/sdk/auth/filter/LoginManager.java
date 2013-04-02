@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.util.common.CertificateChain;
 
 
@@ -29,6 +30,9 @@ public abstract class LoginManager {
     public static final String AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE = LoginManager.class.getName() + ".authenticatedDevices";
     public static final String ATTRIBUTES_SESSION_ATTRIBUTE            = LoginManager.class.getName() + ".attributes";
     public static final String CERTIFCATE_CHAIN_SESSION_ATTRIBUTE      = LoginManager.class.getName() + ".certificateChain";
+    public static final String PROTOCOL_SESSION_ATTRIBUTE              = LoginManager.class.getName() + ".protocol";
+    // e.g. SAML2 assertion sent directly to SP after authentication done from a client app
+    public static final String PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE   = LoginManager.class.getName() + ".protocolNoRequest";
 
     /**
      * Checks whether the user is logged in via the SafeOnline authentication web application or not.
@@ -108,24 +112,28 @@ public abstract class LoginManager {
         cleanupAttributes( httpSession );
         httpSession.removeAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
+        httpSession.removeAttribute( PROTOCOL_SESSION_ATTRIBUTE );
+        httpSession.removeAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE );
     }
 
     /**
      * This method is invoked by the SDK after handling an authentication response to make the authentication data available to the
      * application.
      *
-     * @param httpSession          The session on which the credentials will be made available.
-     * @param userId               the userId of the SafeOnline authenticated principal.
-     * @param attributes           the attributes from the identity of the authenticated application.
-     * @param authenticatedDevices the devices the SafeOnline authenticated principal used to authenticate with.
-     * @param certificateChain     the certificate chain optionally present if response was signed and contained it embedded
+     * @param httpSession     The session on which the credentials will be made available.
+     * @param responseContext response context containing e.g.
+     *                        the userId of the SafeOnline authenticated principal.
+     *                        the attributes from the identity of the authenticated application.
+     *                        the devices the SafeOnline authenticated principal used to authenticate with.
+     *                        the certificate chain optionally present if response was signed and contained it embedded
      */
-    public static void set(HttpSession httpSession, String userId, Map<String, List<AttributeSDK<?>>> attributes,
-                           List<String> authenticatedDevices, CertificateChain certificateChain) {
+    public static void set(final HttpSession httpSession, final AuthnProtocolResponseContext responseContext) {
 
-        httpSession.setAttribute( USERID_SESSION_ATTRIBUTE, userId );
-        httpSession.setAttribute( ATTRIBUTES_SESSION_ATTRIBUTE, attributes );
-        httpSession.setAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE, authenticatedDevices );
-        httpSession.setAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE, certificateChain );
+        httpSession.setAttribute( USERID_SESSION_ATTRIBUTE, responseContext.getUserId() );
+        httpSession.setAttribute( ATTRIBUTES_SESSION_ATTRIBUTE, responseContext.getAttributes() );
+        httpSession.setAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE, responseContext.getAuthenticatedDevices() );
+        httpSession.setAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE, responseContext.getCertificateChain() );
+        httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, responseContext.getRequest().getProtocolHandler().getProtocol() );
+        httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, null == responseContext.getRequest().getId() );
     }
 }
