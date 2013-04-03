@@ -59,7 +59,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         authenticationContext.setMobileAuthentication( mobileAuthn );
         authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
 
-        configureAuthenticationContext( authenticationContext );
+        configureAuthenticationContext( authenticationContext, request, response );
 
         AuthenticationUtils.login( request, response, authenticationContext );
     }
@@ -67,7 +67,8 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
     /**
      * Override this if you want to configure the authentication context
      */
-    protected void configureAuthenticationContext(AuthenticationContext authenticationContext) {
+    protected void configureAuthenticationContext(final AuthenticationContext authenticationContext, final HttpServletRequest request,
+                                                  final HttpServletResponse response) {
 
         // do nothing
     }
