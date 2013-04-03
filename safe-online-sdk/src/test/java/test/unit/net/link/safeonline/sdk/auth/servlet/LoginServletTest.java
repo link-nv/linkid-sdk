@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.servlet.LoginServlet;
+import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.safeonline.sdk.configuration.TestConfigHolder;
 import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
@@ -128,11 +129,12 @@ public class LoginServletTest {
         LOG.debug( "servlet location: " + servletLocation );
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
-        AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId,
-                null, Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null );
+        AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
+                Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null );
 
         // Setup Mocks
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( authnResponse );
+        expect( mockProtocolHandler.getProtocol() ).andReturn( Protocol.SAML2 );
         replay( mockProtocolHandler );
 
         // Test
