@@ -8,13 +8,10 @@ package net.link.safeonline.wicket.component.linkid;
 
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
-import org.apache.wicket.Page;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.HeaderContributor;
-import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.html.*;
 import org.apache.wicket.model.Model;
-import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -28,46 +25,28 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author sgdesmet
  */
-public abstract class AbstractLinkIDAuthJSLink extends AbstractLinkIDAuthLink {
+public abstract class AbstractLinkIDAuthJSLink extends WebMarkupContainer {
 
     protected boolean addJS;
 
     /**
-     * Constructor. Adds 'linkid.login.js' to the page.
+     * Constructor. Adds 'linkid-min.js' to the page.
      */
-    protected AbstractLinkIDAuthJSLink(String id, String linkClass) {
+    protected AbstractLinkIDAuthJSLink(String id) {
 
-        this( id, linkClass, null, true );
+        this( id, true );
     }
 
     /**
-     * Constructor. Adds 'linkid.login.js' to the page.
-     */
-    protected AbstractLinkIDAuthJSLink(String id, String linkClass, Class<? extends Page> target) {
-
-        this( id, linkClass, target, true );
-    }
-
-    /**
-     * Constructor. If addJS is true, the 'linkid.login.js' javascript will be added automatically to the page.
+     * Constructor. If addJS is true, the 'linkid-min.js' javascript will be added automatically to the page.
      * If false, it is the task of the web developer to ensure that this JavaScript is added. This component will not work
      * without it.
      */
-    protected AbstractLinkIDAuthJSLink(String id, String linkClass, boolean addJS) {
+    protected AbstractLinkIDAuthJSLink(String id, boolean addJS) {
 
-        this( id, linkClass, null, addJS );
-    }
-
-    /**
-     * Constructor. If addJS is true, the 'linkid.login.js' javascript will be added automatically to the page.
-     * If false, it is the task of the web developer to ensure that this JavaScript is added. This component will not work
-     * without it.
-     */
-    protected AbstractLinkIDAuthJSLink(String id, String linkClass, @Nullable Class<? extends Page> target, boolean addJS) {
-
-        super( id, target );
+        super( id );
         this.addJS = addJS;
-        add( new AttributeAppender( "class", new Model<String>( String.format( "linkid-%s", linkClass ) ), " " ) );
+        add( new AttributeAppender( "class", new Model<String>( "linkid-login" ), " " ) );
     }
 
     public boolean isAddJS() {
@@ -90,8 +69,7 @@ public abstract class AbstractLinkIDAuthJSLink extends AbstractLinkIDAuthLink {
                 @Override
                 public void renderHead(IHeaderResponse response) {
 
-                    response.renderJavascriptReference( String.format( "%s/js/linkid-min.js", config().web().staticBase() ),
-                            "linkid-login-script" );
+                    response.renderJavascriptReference( String.format( "%s/js/linkid-min.js", config().web().staticBase() ), "linkid-login-script" );
                 }
             } ) );
         }
