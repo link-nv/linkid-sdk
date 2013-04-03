@@ -1,7 +1,5 @@
 package net.link.safeonline.sdk.auth.protocol;
 
-import static com.google.common.base.Preconditions.*;
-
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -37,7 +35,8 @@ public class ProtocolContext implements Serializable {
      */
     public String getId() {
 
-        return checkNotNull( id, "Id not set for %s", this );
+        return id;
+        //        return checkNotNull( id, "Id not set for %s", this );
     }
 
     public static void addContext(HttpSession session, ProtocolContext protocolContext) {
