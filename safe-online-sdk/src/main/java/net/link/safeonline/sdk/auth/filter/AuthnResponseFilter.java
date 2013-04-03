@@ -62,7 +62,8 @@ public class AuthnResponseFilter implements Filter {
                 onLogin( httpRequest.getSession(), authnResponse );
         }
         catch (ValidationFailedException e) {
-            logger.err( e, ServletUtils.redirectToErrorPage( httpRequest, httpResponse, errorPage, null, new ErrorMessage( e ) ) );
+            logger.err( e, "Validation failed: %s", e.getMessage() );
+            ServletUtils.redirectToErrorPage( httpRequest, httpResponse, errorPage, null, new ErrorMessage( e ) );
         }
         catch (RuntimeException e) {
             logger.err( e, e.getMessage() );

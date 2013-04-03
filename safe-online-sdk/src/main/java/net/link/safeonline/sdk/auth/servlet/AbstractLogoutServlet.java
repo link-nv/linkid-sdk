@@ -75,7 +75,10 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
             }
         }
         catch (ValidationFailedException e) {
-            logger.err( e, ServletUtils.redirectToErrorPage( request, response, errorPage, null, new ErrorMessage( e ) ) );
+
+            logger.err( e, "Validation failed: %s", e.getMessage() );
+
+            ServletUtils.redirectToErrorPage( request, response, errorPage, null, new ErrorMessage( e ) );
             return;
         }
 

@@ -68,12 +68,14 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             if (null == authnResponse) {
                 // if we don't have a response, check if perhaps the session has expired
                 if (request.getSession( false ) == null || request.getSession().isNew()) {
-                    logger.wrn( ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
-                            new ErrorMessage( "Session timeout, authentication took too long." ) ) );
+                    logger.wrn( "Session timeout, authentication took too long." );
+                    ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
+                            new ErrorMessage( "Session timeout, authentication took too long." ) );
                 }
                 //nope, it's something else
-                logger.err( ServletUtils.redirectToErrorPage( request, response, errorPage, null,
-                        new ErrorMessage( "No expected or detached authentication responses found in request." ) ) );
+                logger.err( "No expected or detached authentication responses found in request." );
+                ServletUtils.redirectToErrorPage( request, response, errorPage, null,
+                        new ErrorMessage( "No expected or detached authentication responses found in request." ) );
                 return;
             }
 
@@ -110,8 +112,11 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             }
         }
         catch (ValidationFailedException e) {
-            logger.err( e, ServletUtils.redirectToErrorPage( request, response, errorPage, null,
-                    new ErrorMessage( String.format( "Validation of authentication response failed: %s", e.getMessage() ) ) ) );
+
+            logger.err( e, "Validation failed: %s", e.getMessage() );
+
+            ServletUtils.redirectToErrorPage( request, response, errorPage, null,
+                    new ErrorMessage( String.format( "Validation of authentication response failed: %s", e.getMessage() ) ) );
         }
     }
 
