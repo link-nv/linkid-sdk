@@ -6,9 +6,10 @@
  */
 package net.link.safeonline.wicket.component.linkid;
 
-import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.model.Model;
 
 
 /**
@@ -25,8 +26,11 @@ import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
-    protected LoginMode loginMode;
-    protected StartPage startPage;
+    boolean   mobileAuthentication;
+    boolean   mobileAuthenticationMinimal;
+    String    targetURI;
+    StartPage startPage;
+    String    initLoginPath;
 
     /**
      * Constructor. Adds 'linkid-min.js' to the page.
@@ -47,8 +51,80 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
     }
 
     @Override
+    protected void onBeforeRender() {
+
+        super.onBeforeRender();
+
+        configureLoginLink();
+    }
+
+    private void configureLoginLink() {
+
+        if (mobileAuthentication)
+            add( new AttributeModifier( "data-mobile", true, new Model<String>( "true" ) ) );
+        if (mobileAuthenticationMinimal)
+            add( new AttributeModifier( "data-mobile-minimal", true, new Model<String>( "true" ) ) );
+        if (null != targetURI)
+            add( new AttributeModifier( "data-completion-href", true, new Model<String>( targetURI ) ) );
+        if (null != startPage)
+            add( new AttributeModifier( "data-start-page", true, new Model<String>( startPage.name() ) ) );
+        if (null != initLoginPath)
+            add( new AttributeModifier( "data-login-href", true, new Model<String>( initLoginPath ) ) );
+    }
+
+    @Override
     public boolean isVisible() {
 
         return !LinkIDWicketUtils.isLinkIDAuthenticated();
+    }
+
+    public boolean isMobileAuthentication() {
+
+        return mobileAuthentication;
+    }
+
+    public void setMobileAuthentication(final boolean mobileAuthentication) {
+
+        this.mobileAuthentication = mobileAuthentication;
+    }
+
+    public boolean isMobileAuthenticationMinimal() {
+
+        return mobileAuthenticationMinimal;
+    }
+
+    public void setMobileAuthenticationMinimal(final boolean mobileAuthenticationMinimal) {
+
+        this.mobileAuthenticationMinimal = mobileAuthenticationMinimal;
+    }
+
+    public String getTargetURI() {
+
+        return targetURI;
+    }
+
+    public void setTargetURI(final String targetURI) {
+
+        this.targetURI = targetURI;
+    }
+
+    public StartPage getStartPage() {
+
+        return startPage;
+    }
+
+    public void setStartPage(final StartPage startPage) {
+
+        this.startPage = startPage;
+    }
+
+    public String getInitLoginPath() {
+
+        return initLoginPath;
+    }
+
+    public void setInitLoginPath(final String initLoginPath) {
+
+        this.initLoginPath = initLoginPath;
     }
 }

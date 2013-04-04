@@ -102,7 +102,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
     }
 
     @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnResponse(final HttpServletRequest request)
+    public AuthnProtocolResponseContext findAndValidateAuthnResponse(final HttpServletRequest request,
+                                                                     final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
 
         logger.dbg( "Find and validate OAuth2 response" );
@@ -165,6 +166,11 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
             success = userRefusedAccess( (ErrorResponse) responseMessage );
         }
         // note: oauth does not support returning authenticated devices
+        AuthenticationContext authnContext = responseToContext.apply(
+                new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), null, attributes, true, null ) );
+        authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this,
+                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), false, false );
+
         return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success, null );
     }
 

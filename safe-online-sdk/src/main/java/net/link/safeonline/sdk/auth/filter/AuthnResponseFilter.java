@@ -55,7 +55,7 @@ public class AuthnResponseFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         try {
-            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( httpRequest );
+            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( httpRequest, getContextFunction() );
             if (null == authnResponse)
                 authnResponse = ProtocolManager.findAndValidateAuthnAssertion( httpRequest, getContextFunction() );
             if (null != authnResponse)

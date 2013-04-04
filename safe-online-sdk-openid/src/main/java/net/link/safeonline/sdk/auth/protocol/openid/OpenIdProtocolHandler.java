@@ -129,7 +129,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
+    public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request,
+                                                                     final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
 
         ParameterList parameterList = new ParameterList( request.getParameterMap() );
@@ -189,13 +190,19 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
         }
 
         String realm = getRealm();
-        AuthnProtocolRequestContext requestContext = ProtocolContext.findContext( request.getSession(), realm );
-        if (null == requestContext) {
+        AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), realm );
+        if (null == authnRequest) {
             throw new ValidationFailedException( "OpenID response returned but no matching request found?!" );
         }
 
+        AuthenticationContext authnContext = responseToContext.apply(
+                new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), authenticatedDevices, attributes, true,
+                        null ) );
+        authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this,
+                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), false, false );
+
         boolean success = verification.getAuthResponse() instanceof AuthSuccess;
-        return new AuthnProtocolResponseContext( requestContext, realm, userId, requestContext.getIssuer(), authenticatedDevices, attributes, success,
+        return new AuthnProtocolResponseContext( authnRequest, realm, userId, authnRequest.getIssuer(), authenticatedDevices, attributes, success,
                 null );
     }
 

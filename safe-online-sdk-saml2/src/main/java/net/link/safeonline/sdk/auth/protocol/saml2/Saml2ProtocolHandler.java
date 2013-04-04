@@ -97,7 +97,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
     @Nullable
     @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
+    public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request,
+                                                                     final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
 
         if (authnContext == null)
@@ -130,6 +131,12 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
         AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
+
+        AuthenticationContext authnContext = responseToContext.apply(
+                new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true, null ) );
+        authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), this,
+                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), false, false );
+
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, authenticatedDevices, attributes,
                 success, saml2ResponseContext.getCertificateChain() );
     }

@@ -62,7 +62,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             throws IOException {
 
         try {
-            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request );
+            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request, getContextFunction() );
             if (null == authnResponse)
                 authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction() );
             if (null == authnResponse) {

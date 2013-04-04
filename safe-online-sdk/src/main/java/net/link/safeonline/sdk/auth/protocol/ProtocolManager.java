@@ -56,7 +56,8 @@ public abstract class ProtocolManager {
     }
 
     @Nullable
-    public static AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
+    public static AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request,
+                                                                            final Function<AuthnProtocolResponseContext, AuthenticationContext> responseContext)
             throws ValidationFailedException {
 
         Map<String, ProtocolContext> contexts = ProtocolContext.getContexts( request.getSession() );
@@ -65,7 +66,7 @@ public abstract class ProtocolManager {
                 AuthnProtocolRequestContext protocolRequestContext = (AuthnProtocolRequestContext) protocolContext;
                 ProtocolHandler protocolHandler = protocolRequestContext.getProtocolHandler();
 
-                AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnResponse( request );
+                AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnResponse( request, responseContext );
                 if (authnResponse != null)
                     return authnResponse;
             }
@@ -162,8 +163,7 @@ public abstract class ProtocolManager {
         Object protocolHandlerObject = protocol.newHandler();
         if (null == protocolHandlerObject) {
             throw new InternalInconsistencyException(
-                    String.format( "Protocol handler not found for protocol %s (class=%s)", protocol.name(),
-                            protocol.getProtocolHandlerClass() ) );
+                    String.format( "Protocol handler not found for protocol %s (class=%s)", protocol.name(), protocol.getProtocolHandlerClass() ) );
         }
         return (ProtocolHandler) protocolHandlerObject;
     }

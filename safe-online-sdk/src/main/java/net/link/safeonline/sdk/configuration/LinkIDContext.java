@@ -109,8 +109,8 @@ public abstract class LinkIDContext implements Serializable {
         } ), sessionTrackingId, themeName, language, target, null );
     }
 
-    private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider,
-                          String sessionTrackingId, String themeName, Locale language, String target, @Nullable Void v) {
+    private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider, String sessionTrackingId,
+                          String themeName, Locale language, String target, @Nullable Void v) {
 
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
@@ -146,9 +146,8 @@ public abstract class LinkIDContext implements Serializable {
      *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                            X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
-                            X509Certificate sslCertificate, String sessionTrackingId, String themeName, Locale language, String target,
-                            @Nullable Protocol protocol) {
+                            X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
+                            String sessionTrackingId, String themeName, Locale language, String target, @Nullable Protocol protocol) {
 
         this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
                 sessionTrackingId, themeName, language, target, protocol, null );
@@ -187,9 +186,9 @@ public abstract class LinkIDContext implements Serializable {
      *                                login inside an iframe). If {@code null}, will default to redirect mode.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                            X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
-                            X509Certificate sslCertificate, String sessionTrackingId, String themeName, Locale language, String target,
-                            Protocol protocol, @Nullable LoginMode loginMode) {
+                            X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
+                            String sessionTrackingId, String themeName, Locale language, String target, Protocol protocol,
+                            @Nullable LoginMode loginMode) {
 
         saml = new SAMLContext();
         openID = new OpenIDContext( sslCertificate );
@@ -360,6 +359,13 @@ public abstract class LinkIDContext implements Serializable {
     public void setLoginMode(final LoginMode loginMode) {
 
         this.loginMode = loginMode;
+    }
+
+    public void setKeyProvider(final KeyProvider keyProvider) {
+
+        this.applicationKeyPair = keyProvider.getIdentityKeyPair();
+        this.applicationCertificate = keyProvider.getIdentityCertificate();
+        this.trustedCertificates = keyProvider.getTrustedCertificates();
     }
 
     @Override
