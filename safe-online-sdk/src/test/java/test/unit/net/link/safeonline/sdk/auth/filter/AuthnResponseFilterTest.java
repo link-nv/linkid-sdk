@@ -10,12 +10,14 @@ package test.unit.net.link.safeonline.sdk.auth.filter;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
+import com.google.common.base.Function;
 import java.util.*;
 import javax.servlet.http.*;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.*;
+import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
@@ -79,7 +81,8 @@ public class AuthnResponseFilterTest {
         GetMethod getMethod = new GetMethod( servletTestManager.getServletLocation() );
 
         // Setup Mocks
-        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( null );
+        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
+                (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( null );
         replay( mockProtocolHandler );
 
         // Test
@@ -104,7 +107,8 @@ public class AuthnResponseFilterTest {
         String authenticatedDevice = "test-device";
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
                 Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null );
-        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( authnResponse );
+        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
+                (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( authnResponse );
         expect( mockProtocolHandler.getProtocol() ).andReturn( Protocol.SAML2 );
         replay( mockProtocolHandler );
 
