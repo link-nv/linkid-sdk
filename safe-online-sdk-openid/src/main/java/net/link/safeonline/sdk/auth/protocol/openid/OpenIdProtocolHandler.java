@@ -199,7 +199,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                 new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), authenticatedDevices, attributes, true,
                         null ) );
         authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this,
-                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), false, false );
+                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
+                authnRequest.isMobileAuthenticationMinimal() );
 
         boolean success = verification.getAuthResponse() instanceof AuthSuccess;
         return new AuthnProtocolResponseContext( authnRequest, realm, userId, authnRequest.getIssuer(), authenticatedDevices, attributes, success,

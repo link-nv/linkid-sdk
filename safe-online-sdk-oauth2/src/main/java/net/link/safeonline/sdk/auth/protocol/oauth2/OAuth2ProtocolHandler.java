@@ -169,7 +169,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), null, attributes, true, null ) );
         authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this,
-                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), false, false );
+                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
+                authnRequest.isMobileAuthenticationMinimal() );
 
         return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success, null );
     }
