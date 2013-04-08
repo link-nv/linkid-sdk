@@ -135,7 +135,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true, null ) );
         authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), this,
-                null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
+                null != this.authnContext.getTarget()? this.authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
                 authnRequest.isMobileAuthenticationMinimal() );
 
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, authenticatedDevices, attributes,
