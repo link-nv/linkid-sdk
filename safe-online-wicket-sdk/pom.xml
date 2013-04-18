@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>1.41</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>SafeOnline Wicket SDK</name>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
-            <version>1.41</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
 
         <!-- Specific Dependencies: External -->
