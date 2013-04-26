@@ -123,16 +123,12 @@ namespace linkid_example
                     return;
                 }
 
-            }
+            } else {
 
-            /*
-             * No authentication context found so not yet logged in.
-             * 
-             * Generate a SAML2 authentication request and store in the hiddenfield.
-             * Put the used authentication utility class on the session.
-             */
-            if (null == Session[SESSION_AUTH_CONTEXT])
-            {
+                /*
+                 * No SAML2 response found, just start a new authentication request then...
+                 */
+
                 /*
                  * Check page's request parameters.
                  * They will contain e.g. 
