@@ -153,5 +153,6 @@
     <Exec Command="svcutil /namespace:*,NotificationProducerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-producer.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
     <Exec Command="svcutil /namespace:*,NotificationSubscriptionManagerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-subscription-manager.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
     <Exec Command="svcutil /namespace:*,SessionWSNameSpace /directory:target\services src\main\resources\session-ws\safe-online-session.wsdl src\main\resources\session-ws\safe-online-session.xsd" />
+    <Exec Command="svcutil /namespace:*,SamlExtensionNamespace /directory:target\services /dconly src\main\resources\saml-schema-extensions-2.0.xsd" />
   </Target>
 </Project>
