@@ -60,13 +60,14 @@ namespace safe_online_sdk_dotnet
         /// <param name="identityProviderUrl">The LinkID authentication entry URL</param>
         /// <param name="devices">Option device restriction list</param>
         /// <param name="ssoEnabled"></param>
+        /// <param name="deviceContextMap">Optional device context, e.g. the context title for the QR device</param>
         /// <returns>Base64 encoded SAML request</returns>
         public string generateEncodedAuthnRequest(string applicationName, List<string> applicationPools, string applicationFriendlyName,
                                           string serviceProviderUrl, string identityProviderUrl, List<string> devices,
-                                          bool ssoEnabled)
+                                          bool ssoEnabled, Dictionary<string,string> deviceContextMap)
         {
             string samlRequest = generateAuthnRequest(applicationName, applicationPools, applicationFriendlyName, serviceProviderUrl,
-                  identityProviderUrl, devices, ssoEnabled);
+                  identityProviderUrl, devices, ssoEnabled, deviceContextMap);
             return Convert.ToBase64String(Encoding.ASCII.GetBytes(samlRequest));
         }
 
@@ -81,10 +82,11 @@ namespace safe_online_sdk_dotnet
         /// <param name="identityProviderUrl">The LinkID authentication entry URL</param>
         /// <param name="devices">Option device restriction list</param>
         /// <param name="ssoEnabled"></param>
+        /// <param name="deviceContextMap">Optional device context, e.g. the context title for the QR device</param>
         /// <returns>SAML request</returns>
         public string generateAuthnRequest(string applicationName, List<string> applicationPools, string applicationFriendlyName,
                                           string serviceProviderUrl, string identityProviderUrl, List<string> devices,
-                                          bool ssoEnabled)
+                                          bool ssoEnabled, Dictionary<string,string> deviceContextMap)
         {
             this.expectedChallenge = Guid.NewGuid().ToString();
             this.expectedAudience = applicationName;
@@ -134,6 +136,29 @@ namespace safe_online_sdk_dotnet
                 authnRequest.Conditions = conditions;
             }
 
+            DeviceContextType deviceContext = null;
+            if (null != deviceContextMap && deviceContextMap.Count > 0)
+            {
+                deviceContext = new DeviceContextType();
+                List<AttributeType> attributes = new List<AttributeType>();
+                foreach (string deviceContextKey in deviceContextMap.Keys)
+                {
+                    string deviceContextValue = deviceContextMap[deviceContextKey];
+                    AttributeType attribute = new AttributeType();
+                    attribute.Name = deviceContextKey;
+                    attribute.AttributeValue = new object[] { deviceContextValue };
+                    attributes.Add(attribute);
+                    deviceContext.Items = attributes.ToArray();
+                }
+            }
+
+            if (null != deviceContext)
+            {
+                ExtensionsType extensions = new ExtensionsType();
+                extensions.Any = new XmlElement[] { toXmlElement(deviceContext) };
+                authnRequest.Extensions = extensions;
+            }
+
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("samlp", Saml2Constants.SAML2_PROTOCOL_NAMESPACE);
             ns.Add("saml", Saml2Constants.SAML2_ASSERTION_NAMESPACE);
@@ -153,6 +178,34 @@ namespace safe_online_sdk_dotnet
             string signedAuthnRequest = Saml2Util.signDocument(document, key, authnRequest.ID);
             xmlTextWriter.Close();
             return signedAuthnRequest;
+        }
+
+        private XmlElement toXmlElement(DeviceContextType deviceContext)
+        {
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("samlp", Saml2Constants.SAML2_PROTOCOL_NAMESPACE);
+            ns.Add("saml", Saml2Constants.SAML2_ASSERTION_NAMESPACE);
+            ns.Add("xs", "http://www.w3.org/2001/XMLSchema");
+
+            XmlRootAttribute xRoot = new XmlRootAttribute();
+            xRoot.ElementName = "DeviceContext";
+            xRoot.Namespace = Saml2Constants.SAML2_ASSERTION_NAMESPACE;
+            XmlSerializer serializer = new XmlSerializer(typeof(DeviceContextType), xRoot);
+            MemoryStream memoryStream = new MemoryStream();
+            XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+            serializer.Serialize(xmlTextWriter, deviceContext, ns);
+
+            XmlDocument document = new XmlDocument();
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            document.Load(memoryStream);
+
+            foreach(XmlNode node in document.ChildNodes)
+            {
+                if (node is XmlElement)
+                    return (XmlElement)node;
+            }
+
+            return null;
         }
 
 

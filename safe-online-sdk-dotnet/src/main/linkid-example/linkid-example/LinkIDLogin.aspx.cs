@@ -25,7 +25,7 @@ namespace linkid_example
          * Application specific configuration...
          */
         // linkID host to be used
-        public static string LINKID_HOST = "demo.linkid.be";
+        public static string LINKID_HOST = "192.168.5.14:8443";
 
         // location of this page, linkID will post its authentication response back to this location.
         private static string LOGINPAGE_LOCATION = "http://localhost:49162/LinkIDLogin.aspx";
@@ -35,7 +35,7 @@ namespace linkid_example
 
         // certificates and key locations
         public static string KEY_DIR = "C:\\cygwin\\home\\devel\\keystores\\";
-        public static string CERT_LINKID = KEY_DIR + "linkid.crt";
+        public static string CERT_LINKID = KEY_DIR + "linkid-local.crt";
         public static string CERT_APP = KEY_DIR + "demotest.crt";
         public static string KEY_APP = KEY_DIR + "demotest.key";
 
@@ -123,12 +123,16 @@ namespace linkid_example
                     return;
                 }
 
-            } else {
+            }
 
-                /*
-                 * No SAML2 response found, just start a new authentication request then...
-                 */
-
+            /*
+             * No authentication context found so not yet logged in.
+             * 
+             * Generate a SAML2 authentication request and store in the hiddenfield.
+             * Put the used authentication utility class on the session.
+             */
+            if (null == Session[SESSION_AUTH_CONTEXT])
+            {
                 /*
                  * Check page's request parameters.
                  * They will contain e.g. 
@@ -160,9 +164,12 @@ namespace linkid_example
 
                 this.form1.Action = linkIDLandingPage;
 
+                Dictionary<string, string> deviceContextMap = new Dictionary<string, string>();
+                deviceContextMap.Add(RequestConstants.DEVICE_CONTEXT_TITLE, "Test .NET context");
+
                 this.SAMLRequest.ID = RequestConstants.SAML2_POST_BINDING_REQUEST_PARAM;
                 this.SAMLRequest.Value = saml2AuthUtil.generateEncodedAuthnRequest(APP_NAME, null, null,
-                    LOGINPAGE_LOCATION, linkIDLandingPage, null, false);
+                    LOGINPAGE_LOCATION, linkIDLandingPage, null, false, deviceContextMap);
 
                 if (null != loginMode)
                 {

@@ -19,6 +19,8 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.X509;
 using System.Security.Cryptography;
+using System.Collections;
+using System.Collections.Generic;
 using IdMappingWSNamespace;
 
 using safe_online_sdk_dotnet_test.test.cs;
@@ -119,8 +121,10 @@ namespace safe_online_sdk_dotnet.test.cs
 			string idpUrl = "http://identity.provider.com";
 			string applicationId = "urn:application:id";
 			string[] devices = new string[] {"test-device-1", "test-device-2"};
-			
-			string result = testedInstance.generateAuthnRequest(applicationId,null,null,spUrl,idpUrl,null,false);			
+            Dictionary<string, string> deviceContextMap = new Dictionary<string, string>();
+            deviceContextMap.Add(RequestConstants.DEVICE_CONTEXT_TITLE, "Test device context");
+
+            string result = testedInstance.generateAuthnRequest(applicationId, null, null, spUrl, idpUrl, null, false, deviceContextMap);			
 			Console.WriteLine("result document: " + result);
 			
 			XmlDocument xmlDocument = new XmlDocument();

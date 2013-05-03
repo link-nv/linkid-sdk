@@ -280,4 +280,14 @@
     </complexType>
     <element name="AttributeValue" type="anyType" nillable="true"/>
     <element name="EncryptedAttribute" type="saml:EncryptedElementType"/>
+    
+    <!-- Extensions -->
+    <element name="DeviceContext" type="saml:DeviceContextType"/>
+    <complexType name="DeviceContextType">
+        <complexContent>
+            <extension base="saml:AttributeStatementType">
+            </extension>
+        </complexContent>
+    </complexType>
+
 </schema>

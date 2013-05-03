@@ -23,10 +23,10 @@ namespace safe_online_sdk_dotnet_test.test.cs
         public static readonly string testKeyPath = workDir + "\\demotest.key";
         public static readonly string testFooPath = workDir + "\\foo.crt";
 
-//        public static readonly string linkidHost = "demo.linkid.be";
-        public static readonly string linkidHost = "192.168.5.14";
-//        public static readonly string wsLocation = linkidHost;
-        public static readonly string wsLocation = linkidHost + ":8443";
+        public static readonly string linkidHost = "demo.linkid.be";
+//        public static readonly string linkidHost = "192.168.5.14";
+        public static readonly string wsLocation = linkidHost;
+//        public static readonly string wsLocation = linkidHost + ":8443";
         public static readonly string linkidAuthEntry = "https://" + wsLocation + "/linkid-auth/entry";
         public static readonly string linkidLogoutEntry = "https://" + wsLocation + "/linkid-auth/logoutentry";
 

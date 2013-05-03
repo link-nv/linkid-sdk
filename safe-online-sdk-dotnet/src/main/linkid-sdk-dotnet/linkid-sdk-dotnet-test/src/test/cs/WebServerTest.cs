@@ -112,7 +112,7 @@ namespace safe_online_sdk_dotnet_test.test.cs
         {
             string encodedSamlRequest = this.saml2AuthUtil.generateEncodedAuthnRequest(TestConstants.testApplicationName,
                     null, null, "http://" + TestConstants.localhost + ":8080",
-                    TestConstants.linkidAuthEntry, null, false);
+                    TestConstants.linkidAuthEntry, null, false, null);
             byte[] response = generateSamlRequestForm("Authenticate", TestConstants.linkidAuthEntry, encodedSamlRequest);
             Console.WriteLine("initiateAuthentication response: {0}", response);
             return response;

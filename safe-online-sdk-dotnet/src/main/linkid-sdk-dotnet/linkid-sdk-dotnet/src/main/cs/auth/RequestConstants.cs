@@ -30,6 +30,8 @@ namespace safe_online_sdk_dotnet
         public static readonly String LOGIN_MODE_REQUEST_PARAM = "login_mode";
         public static readonly String TARGET_URI_REQUEST_PARAM = "return_uri";
 
+        // Device context parameters supported by linkID devices
+        public static readonly String DEVICE_CONTEXT_TITLE = "linkID.contextTitle";
 		
 		private RequestConstants()
 		{
