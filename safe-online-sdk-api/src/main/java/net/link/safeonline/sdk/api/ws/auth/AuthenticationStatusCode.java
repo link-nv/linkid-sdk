@@ -25,6 +25,7 @@ public enum AuthenticationStatusCode {
     AUTHENTICATION_FAILED( "urn:net:lin-k:safe-online:ws:auth:status:AuthenticationFailed" ),
     DEVICE_DISABLED( "urn:net:lin-k:safe-online:ws:auth:status:DeviceDisabled" ),
     DEVICE_NOT_FOUND( "urn:net:lin-k:safe-online:ws:auth:status:DeviceNotFound" ),
+    DIFFERENT_ACCOUNTS( "urn:net:lin-k:safe-online:ws:auth:status:DifferentAccounts" ),
     EMPTY_DEVICE_POLICY( "urn:net:lin-k:safe-online:ws:auth:status:EmptyDevicePolicy" ),
     IDENTITY_UNAVAILABLE( "urn:net:lin-k:safe-online:ws:auth:status:IdentityUnavilable" ),
     INSUFFICIENT_IDENTITY( "urn:net:lin-k:safe-online:ws:auth:status:InsufficientIdentity" ),

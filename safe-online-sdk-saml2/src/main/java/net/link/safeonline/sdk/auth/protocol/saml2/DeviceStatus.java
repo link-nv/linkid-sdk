@@ -24,6 +24,7 @@ public enum DeviceStatus {
     FAIL( StatusCode.AUTHN_FAILED_URI ),
     REGISTER( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:register" ),
     ALREADY_REGISTERED( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:alreadyRegistered" ),
+    UNKNOWN_ACCOUNT( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:unknownAccount" ),
     DIFFERENT_ACCOUNTS( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:differentAccounts" );
 
     private final String statusCode;
@@ -59,7 +60,7 @@ public enum DeviceStatus {
     @Override
     public String toString() {
 
-        return statusCode;
+        return String.format( "%s - %s", statusCode, secondLevelStatusCode );
     }
 
     public static DeviceStatus getStatus(String statusCode, String secondLevelStatusCode)
