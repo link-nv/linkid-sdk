@@ -17,6 +17,15 @@ public abstract class LinkIDApplication extends WebApplication {
     }
 
     @Override
+    protected void internalInit() {
+
+        // override the "ApplicationKey", if not overridden, the name of the WicketFilter in web.xml will be used which causes issues for cleanup of expires sessions.
+        setApplicationKey( getClass().getSimpleName() );
+
+        super.internalInit();
+    }
+
+    @Override
     protected void init() {
 
         // Java EE annotations injector.
