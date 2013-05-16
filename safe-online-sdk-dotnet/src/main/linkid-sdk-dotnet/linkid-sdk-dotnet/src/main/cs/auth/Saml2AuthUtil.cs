@@ -61,13 +61,15 @@ namespace safe_online_sdk_dotnet
         /// <param name="devices">Option device restriction list</param>
         /// <param name="ssoEnabled"></param>
         /// <param name="deviceContextMap">Optional device context, e.g. the context title for the QR device</param>
+        /// <param name="attributeSuggestions">Optional attribute suggestions for certain attributes. Key is the internal linkID attributeName. The type of the values must be of the correct datatype</param>
         /// <returns>Base64 encoded SAML request</returns>
         public string generateEncodedAuthnRequest(string applicationName, List<string> applicationPools, string applicationFriendlyName,
                                           string serviceProviderUrl, string identityProviderUrl, List<string> devices,
-                                          bool ssoEnabled, Dictionary<string,string> deviceContextMap)
+                                          bool ssoEnabled, Dictionary<string,string> deviceContextMap,
+                                          Dictionary<string, List<Object>> attributeSuggestions)
         {
             string samlRequest = generateAuthnRequest(applicationName, applicationPools, applicationFriendlyName, serviceProviderUrl,
-                  identityProviderUrl, devices, ssoEnabled, deviceContextMap);
+                  identityProviderUrl, devices, ssoEnabled, deviceContextMap, attributeSuggestions);
             return Convert.ToBase64String(Encoding.ASCII.GetBytes(samlRequest));
         }
 
@@ -83,10 +85,12 @@ namespace safe_online_sdk_dotnet
         /// <param name="devices">Option device restriction list</param>
         /// <param name="ssoEnabled"></param>
         /// <param name="deviceContextMap">Optional device context, e.g. the context title for the QR device</param>
+        /// <param name="attributeSuggestions">Optional attribute suggestions for certain attributes. Key is the internal linkID attributeName. The type of the values must be of the correct datatype</param>
         /// <returns>SAML request</returns>
         public string generateAuthnRequest(string applicationName, List<string> applicationPools, string applicationFriendlyName,
-                                          string serviceProviderUrl, string identityProviderUrl, List<string> devices,
-                                          bool ssoEnabled, Dictionary<string,string> deviceContextMap)
+                                           string serviceProviderUrl, string identityProviderUrl, List<string> devices,
+                                           bool ssoEnabled, Dictionary<string, string> deviceContextMap, 
+                                           Dictionary<string, List<Object>> attributeSuggestions)
         {
             this.expectedChallenge = Guid.NewGuid().ToString();
             this.expectedAudience = applicationName;
@@ -151,11 +155,32 @@ namespace safe_online_sdk_dotnet
                     deviceContext.Items = attributes.ToArray();
                 }
             }
+            SubjectAttributesType subjectAttributes = null;
+            if (null != attributeSuggestions && attributeSuggestions.Count > 0)
+            {
+                subjectAttributes = new SubjectAttributesType();
+                List<AttributeType> attributes = new List<AttributeType>();
+                foreach (string attributeName in attributeSuggestions.Keys)
+                {
+                    List<object> values = attributeSuggestions[attributeName];
 
-            if (null != deviceContext)
+                    AttributeType attribute = new AttributeType();
+                    attribute.Name = attributeName;
+                    attribute.AttributeValue = values.ToArray();
+                    attributes.Add(attribute);
+                    subjectAttributes.Items = attributes.ToArray();
+                }
+            }
+
+            if (null != deviceContext || null != subjectAttributes)
             {
                 ExtensionsType extensions = new ExtensionsType();
-                extensions.Any = new XmlElement[] { toXmlElement(deviceContext) };
+                if (null == subjectAttributes)
+                    extensions.Any = new XmlElement[] { toXmlElement(deviceContext) };
+                else if (null == deviceContext)
+                    extensions.Any = new XmlElement[] { toXmlElement(subjectAttributes) };
+                else
+                    extensions.Any = new XmlElement[] { toXmlElement(deviceContext), toXmlElement(subjectAttributes) };
                 authnRequest.Extensions = extensions;
             }
 
@@ -208,6 +233,33 @@ namespace safe_online_sdk_dotnet
             return null;
         }
 
+        private XmlElement toXmlElement(SubjectAttributesType subjectAttributes)
+        {
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("samlp", Saml2Constants.SAML2_PROTOCOL_NAMESPACE);
+            ns.Add("saml", Saml2Constants.SAML2_ASSERTION_NAMESPACE);
+            ns.Add("xs", "http://www.w3.org/2001/XMLSchema");
+
+            XmlRootAttribute xRoot = new XmlRootAttribute();
+            xRoot.ElementName = "SubjectAttributes";
+            xRoot.Namespace = Saml2Constants.SAML2_ASSERTION_NAMESPACE;
+            XmlSerializer serializer = new XmlSerializer(typeof(SubjectAttributesType), xRoot);
+            MemoryStream memoryStream = new MemoryStream();
+            XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+            serializer.Serialize(xmlTextWriter, subjectAttributes, ns);
+
+            XmlDocument document = new XmlDocument();
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            document.Load(memoryStream);
+
+            foreach (XmlNode node in document.ChildNodes)
+            {
+                if (node is XmlElement)
+                    return (XmlElement)node;
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// Validates a Base64 encoded SAML v2.0 Response.

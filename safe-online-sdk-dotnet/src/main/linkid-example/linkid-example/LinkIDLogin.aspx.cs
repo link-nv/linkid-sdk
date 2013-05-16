@@ -167,9 +167,17 @@ namespace linkid_example
                 Dictionary<string, string> deviceContextMap = new Dictionary<string, string>();
                 deviceContextMap.Add(RequestConstants.DEVICE_CONTEXT_TITLE, "Test .NET context");
 
+                // attribute suggestions
+                Dictionary<string, List<Object>> attributeSuggestions = new Dictionary<string, List<object>>();
+                attributeSuggestions.Add("test.attribute.string", new List<Object> { "test" });
+                attributeSuggestions.Add("test.attribute.multi.date", new List<Object> { DateTime.Now });
+                attributeSuggestions.Add("test.attribute.boolean", new List<Object> { true });
+                attributeSuggestions.Add("test.attribute.integer", new List<Object> { 69 });
+                attributeSuggestions.Add("test.attribute.double", new List<Object> { 3.14159 });
+
                 this.SAMLRequest.ID = RequestConstants.SAML2_POST_BINDING_REQUEST_PARAM;
                 this.SAMLRequest.Value = saml2AuthUtil.generateEncodedAuthnRequest(APP_NAME, null, null,
-                    LOGINPAGE_LOCATION, linkIDLandingPage, null, false, deviceContextMap);
+                    LOGINPAGE_LOCATION, linkIDLandingPage, null, false, deviceContextMap, attributeSuggestions);
 
                 if (null != loginMode)
                 {

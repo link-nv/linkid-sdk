@@ -290,4 +290,12 @@
         </complexContent>
     </complexType>
 
+    <element name="SubjectAttributes" type="saml:SubjectAttributesType"/>
+    <complexType name="SubjectAttributesType">
+        <complexContent>
+            <extension base="saml:AttributeStatementType">
+            </extension>
+        </complexContent>
+    </complexType>
+
 </schema>

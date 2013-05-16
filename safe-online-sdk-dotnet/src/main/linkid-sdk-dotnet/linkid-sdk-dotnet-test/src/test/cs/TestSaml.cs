@@ -121,10 +121,21 @@ namespace safe_online_sdk_dotnet.test.cs
 			string idpUrl = "http://identity.provider.com";
 			string applicationId = "urn:application:id";
 			string[] devices = new string[] {"test-device-1", "test-device-2"};
+
+            // device context
             Dictionary<string, string> deviceContextMap = new Dictionary<string, string>();
             deviceContextMap.Add(RequestConstants.DEVICE_CONTEXT_TITLE, "Test device context");
 
-            string result = testedInstance.generateAuthnRequest(applicationId, null, null, spUrl, idpUrl, null, false, deviceContextMap);			
+            // attribute suggestions
+            Dictionary<string, List<Object>> attributeSuggestions = new Dictionary<string, List<object>>();
+            attributeSuggestions.Add("test.attribute.string", new List<Object>{"test"});
+            attributeSuggestions.Add("test.attribute.date", new List<Object> { new DateTime() });
+            attributeSuggestions.Add("test.attribute.boolean", new List<Object> { true });
+            attributeSuggestions.Add("test.attribute.integer", new List<Object> { 69 });
+            attributeSuggestions.Add("test.attribute.double", new List<Object> { 3.14159 });
+
+            string result = testedInstance.generateAuthnRequest(applicationId, null, null, spUrl, idpUrl, null, false, 
+                deviceContextMap, attributeSuggestions);			
 			Console.WriteLine("result document: " + result);
 			
 			XmlDocument xmlDocument = new XmlDocument();
