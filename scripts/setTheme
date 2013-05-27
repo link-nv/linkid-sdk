@@ -1,0 +1,28 @@
+#! /usr/bin/env bash
+source bashlib
+
+cd "${0%/*}/"
+
+theme=""
+theme="$1"
+
+if [[ ! $theme ]] ; then
+    emit -r "No theme specified!";
+    exit 1;
+fi
+
+static="../themes/$theme/static"
+staticDest="../server/common/application/webapp/safe-online-static-webapp/src/main/webapp/"
+
+emit "Setting linkID theme to $theme"
+
+emit "Copy static resources..."
+if [[ -d $static/css ]] ; then
+    cp $static/css/* $staticDest/css;
+fi    
+if [[ -d $static/img ]] ; then
+cp $static/img/* $staticDest/img;
+fi
+if [[ -d $static/js ]] ; then
+cp $static/js/* $staticDest/js;
+fi
