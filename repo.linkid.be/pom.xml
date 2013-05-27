@@ -102,13 +102,6 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-resources</artifactId>
-            <classifier>package</classifier>
-            <type>zip</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-manual</artifactId>
             <classifier>package</classifier>
             <type>zip</type>

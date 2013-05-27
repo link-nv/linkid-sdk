@@ -545,7 +545,6 @@
         <module>safe-online-sdk-dotnet</module>
         <module>safe-online-sdk-php</module>
 
-        <module>safe-online-sdk-resources</module>
         <module>safe-online-sdk-manual</module>
         <module>safe-online-sdk-manual-java</module>
         <module>safe-online-sdk-manual-dotnet</module>

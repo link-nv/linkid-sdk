@@ -1,1 +1,0 @@
-../../../../../../../server/common/application/webapp/safe-online-static-webapp/src/main/webapp/js/lazyload-min.js

@@ -86,25 +86,6 @@
                             </outputDirectory>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>unpack-resources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                                    <artifactId>safe-online-sdk-resources</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
-                                    <classifier>package</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/files</outputDirectory>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
