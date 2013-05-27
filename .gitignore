@@ -22,18 +22,7 @@
 # Compiled
 /target
 /*/target
-/client/*/target
-/client/*/*/target
-/client/*/*/*/target
-/client/*/*/*/*/target
-/client/*/*/*/*/*/target
-/server/*/target
-/server/*/*/target
-/server/*/*/*/target
-/server/*/*/*/*/target
-/server/*/*/*/*/*/target
-/server/*/*/*/*/*/*/target
-/server/*/*/*/*/*/*/*/target
+/*/*/target
 
 # Scripts
 /.mvn-tools
