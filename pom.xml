@@ -532,6 +532,8 @@
 
     <!-- MODULES -->
     <modules>
+        <module>safe-online-container-test</module>
+
         <module>safe-online-config</module>
         <module>safe-online-sdk-api</module>
         <module>safe-online-sdk</module>

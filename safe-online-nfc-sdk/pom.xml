@@ -35,7 +35,7 @@
 
         <!-- Test Dependencies -->
         <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-container-test</artifactId>
             <version>GIT-SNAPSHOT</version>
             <type>pom</type>
