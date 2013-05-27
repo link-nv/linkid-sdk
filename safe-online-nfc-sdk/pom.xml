@@ -33,15 +33,6 @@
 
     <dependencies>
 
-        <!-- Dependency Groups -->
-        <dependency>
-            <groupId>net.lin-k.safe-online.server</groupId>
-            <artifactId>container-jboss</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <!-- Specific Dependencies: linkID -->
-
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
