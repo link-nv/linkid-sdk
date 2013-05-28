@@ -4,9 +4,7 @@
 
 
     <name>SafeOnline SDK Standalon Example</name>
-    <description>
-        An example webapplication showing the use of the SDK, aka Hello World
-    </description>
+    <description>An example webapplication showing the use of the SDK, aka Hello World</description>
 
     <groupId>net.lin-k.safe-online.client.sdk</groupId>
     <artifactId>safe-online-sdk-example-standalone</artifactId>

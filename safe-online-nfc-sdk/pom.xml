@@ -9,9 +9,7 @@
     </parent>
 
     <name>SafeOnline NFC devices SDK</name>
-    <description>
-        NFC devices SDK.
-    </description>
+    <description>NFC devices SDK.</description>
 
     <groupId>net.lin-k.safe-online.client.sdk</groupId>
     <artifactId>safe-online-nfc-sdk</artifactId>
@@ -32,6 +30,11 @@
     </build>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>

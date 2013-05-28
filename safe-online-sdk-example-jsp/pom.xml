@@ -32,7 +32,6 @@
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-common</artifactId>
-            <version>1.48</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -48,12 +47,10 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <version>2.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
