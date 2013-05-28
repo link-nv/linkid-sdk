@@ -594,43 +594,6 @@
                 <type>pom</type>
             </dependency>
 
-            <!-- linkID -->
-            <dependency>
-                <groupId>net.lin-k.safe-online.server</groupId>
-                <artifactId>container-jboss</artifactId>
-                <version>GIT-SNAPSHOT</version>
-                <scope>provided</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online.server.common</groupId>
-                <artifactId>container-common</artifactId>
-                <version>GIT-SNAPSHOT</version>
-                <scope>provided</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online.server.common</groupId>
-                <artifactId>container-endorsed</artifactId>
-                <version>GIT-SNAPSHOT</version>
-                <scope>provided</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online.server.common.application</groupId>
-                <artifactId>container-core</artifactId>
-                <version>GIT-SNAPSHOT</version>
-                <scope>provided</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online.server.common.application</groupId>
-                <artifactId>container-linkid</artifactId>
-                <version>GIT-SNAPSHOT</version>
-                <scope>provided</scope>
-                <type>pom</type>
-            </dependency>
-
             <!-- lin.k util -->
             <dependency>
                 <groupId>net.lin-k.util</groupId>
