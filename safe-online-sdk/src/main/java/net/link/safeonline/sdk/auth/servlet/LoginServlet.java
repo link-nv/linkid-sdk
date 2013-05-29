@@ -145,7 +145,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
      * @param session       The HTTP session within which the response was received.
      * @param authnResponse The response that was received.
      */
-    protected static void onLogin(HttpSession session, AuthnProtocolResponseContext authnResponse) {
+    protected void onLogin(HttpSession session, AuthnProtocolResponseContext authnResponse) {
 
         if (authnResponse.isSuccess()) {
             logger.dbg( "username: %s", authnResponse.getUserId() );
