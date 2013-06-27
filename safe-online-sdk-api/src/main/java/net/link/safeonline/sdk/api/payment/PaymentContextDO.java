@@ -9,11 +9,31 @@ import org.jetbrains.annotations.Nullable;
 
 public class PaymentContextDO implements Serializable {
 
-    public static final String AMOUNT_KEY   = "PaymentContext.amount";
-    public static final String CURRENCY_KEY = "PaymentContext.currency";
+    public static final String AMOUNT_KEY      = "PaymentContext.amount";
+    public static final String CURRENCY_KEY    = "PaymentContext.currency";
+    public static final String DESCRIPTION_KEY = "PaymentContext.description";
+    public static final String PROFILE_KEY     = "PaymentContext.profile";
 
     private final double   amount;
     private final Currency currency;
+    private final String   description;
+
+    // optional payment profile
+    private final String paymentProfile;
+
+    /**
+     * @param amount         amount in cents
+     * @param currency       currency
+     * @param description    optional description
+     * @param paymentProfile optional payment profile
+     */
+    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String paymentProfile) {
+
+        this.amount = amount;
+        this.currency = currency;
+        this.description = description;
+        this.paymentProfile = paymentProfile;
+    }
 
     /**
      * @param amount   amount in cents
@@ -21,8 +41,7 @@ public class PaymentContextDO implements Serializable {
      */
     public PaymentContextDO(final double amount, final Currency currency) {
 
-        this.amount = amount;
-        this.currency = currency;
+        this( amount, currency, null, null );
     }
 
     // Helper methods
@@ -33,6 +52,10 @@ public class PaymentContextDO implements Serializable {
 
         map.put( AMOUNT_KEY, Double.toString( amount ) );
         map.put( CURRENCY_KEY, currency.name() );
+        if (null != description)
+            map.put( DESCRIPTION_KEY, description );
+        if (null != paymentProfile)
+            map.put( PROFILE_KEY, paymentProfile );
 
         return map;
     }
@@ -49,7 +72,8 @@ public class PaymentContextDO implements Serializable {
             throw new InvalidPaymentContextException( "Payment context's currency field is not present!" );
 
         // convert
-        return new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ), Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ) );
+        return new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ), Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
+                paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( PROFILE_KEY ) );
     }
 
     // Accessors
@@ -62,5 +86,15 @@ public class PaymentContextDO implements Serializable {
     public Currency getCurrency() {
 
         return currency;
+    }
+
+    public String getPaymentProfile() {
+
+        return paymentProfile;
+    }
+
+    public String getDescription() {
+
+        return description;
     }
 }

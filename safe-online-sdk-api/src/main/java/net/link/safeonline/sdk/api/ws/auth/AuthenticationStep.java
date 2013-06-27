@@ -36,6 +36,7 @@ public enum AuthenticationStep {
     IDENTITY_UNAVAILABLE( "Identity Unavailable" ),
     IDENTITY_CONFIRMATION_EXPLICIT( "Identity Confirmation (explicit)" ),
     IDENTITY_CONFIRMATION_IMPLICIT( "Identity Confirmation (implicit)" ),
+    PAYMENT( "Payment" ),
     FINALIZE( "Finalize" );
 
     private final String value;
