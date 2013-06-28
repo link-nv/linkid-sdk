@@ -2,8 +2,7 @@ package net.link.safeonline.sdk.api.payment;
 
 public enum Currency {
 
-    EUR,
-    USD;
+    EUR;
 
     public static Currency parse(final String currencyString) {
 
