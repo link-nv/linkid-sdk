@@ -8,19 +8,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class PaymentResponseDO implements Serializable {
 
-    public static final String ORDER_REF_KEY = "PaymentResponse.orderRef";
-    public static final String STATE_KEY     = "PaymentResponse.state";
+    public static final String TXN_ID_KEY = "PaymentResponse.txnId";
+    public static final String STATE_KEY  = "PaymentResponse.state";
 
-    private final String       orderReference;
+    private final String       transactionId;
     private final PaymentState paymentState;
 
     /**
-     * @param orderReference the payment order reference
-     * @param paymentState   the payment order state
+     * @param transactionId the payment order reference
+     * @param paymentState  the payment order state
      */
-    public PaymentResponseDO(final String orderReference, final PaymentState paymentState) {
+    public PaymentResponseDO(final String transactionId, final PaymentState paymentState) {
 
-        this.orderReference = orderReference;
+        this.transactionId = transactionId;
         this.paymentState = paymentState;
     }
 
@@ -30,7 +30,7 @@ public class PaymentResponseDO implements Serializable {
 
         Map<String, String> map = new HashMap<String, String>();
 
-        map.put( ORDER_REF_KEY, orderReference );
+        map.put( TXN_ID_KEY, transactionId );
         map.put( STATE_KEY, paymentState.name() );
 
         return map;
@@ -40,20 +40,20 @@ public class PaymentResponseDO implements Serializable {
     public static PaymentResponseDO fromMap(final Map<String, String> paymentResponseMap) {
 
         // check map valid
-        if (!paymentResponseMap.containsKey( ORDER_REF_KEY ))
-            throw new RuntimeException( "Payment response's order ref field is not present!" );
+        if (!paymentResponseMap.containsKey( TXN_ID_KEY ))
+            throw new RuntimeException( "Payment response's transaction ID field is not present!" );
         if (!paymentResponseMap.containsKey( STATE_KEY ))
             throw new RuntimeException( "Payment response's state field is not present!" );
 
         // convert
-        return new PaymentResponseDO( paymentResponseMap.get( ORDER_REF_KEY ), PaymentState.parse( paymentResponseMap.get( STATE_KEY ) ) );
+        return new PaymentResponseDO( paymentResponseMap.get( TXN_ID_KEY ), PaymentState.parse( paymentResponseMap.get( STATE_KEY ) ) );
     }
 
     // Accessors
 
-    public String getOrderReference() {
+    public String getTransactionId() {
 
-        return orderReference;
+        return transactionId;
     }
 
     public PaymentState getPaymentState() {

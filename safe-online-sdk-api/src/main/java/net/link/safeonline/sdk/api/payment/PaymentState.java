@@ -4,7 +4,7 @@ public enum PaymentState {
 
     STARTED,                // payment is being processed
     WAITING_FOR_UPDATE,     // linkID stopped waiting for status update
-    PAYED;                   // completed
+    PAYED;                  // completed
 
     public static PaymentState parse(final String stateString) {
 

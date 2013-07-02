@@ -13,6 +13,7 @@ import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClie
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
+import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
@@ -22,9 +23,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * <h2>{@link ServiceFactory}</h2>
- *
+ * <p/>
  * <p> [description / usage]. </p>
- *
+ * <p/>
  * <p> <i>Jan 15, 2009</i> </p>
  *
  * @author lhunath
@@ -47,6 +48,8 @@ public abstract class ServiceFactory {
                                                                                                  X509Certificate sslCertificate);
 
     protected abstract SessionTrackingClient _getSessionTrackingService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+
+    protected abstract PaymentServiceClient _getPaymentService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
 
     protected abstract Xkms2Client _getXkms2Client(X509Certificate sslCertificate);
 }

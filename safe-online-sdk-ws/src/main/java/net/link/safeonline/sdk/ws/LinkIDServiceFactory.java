@@ -16,6 +16,7 @@ import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClie
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
+import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
@@ -27,6 +28,7 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
 import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClientImpl;
 import net.link.safeonline.sdk.ws.notification.subscription.NotificationSubscriptionManagerClientImpl;
+import net.link.safeonline.sdk.ws.payment.PaymentServiceClientImpl;
 import net.link.safeonline.sdk.ws.session.SessionTrackingClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
@@ -189,18 +191,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NameIdentifierMappingClient getIdMappingService(final WSSecurityConfiguration configuration,
-                                                                  @Nullable X509Certificate sslCertificate) {
+    public static NameIdentifierMappingClient getIdMappingService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
 
         return getInstance()._getIdMappingService( configuration, sslCertificate );
     }
 
     @Override
-    protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration,
-                                                               X509Certificate sslCertificate) {
+    protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new NameIdentifierMappingClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ),
-                configuration );
+        return new NameIdentifierMappingClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -239,8 +238,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static SecurityTokenServiceClient getStsService(final WSSecurityConfiguration configuration,
-                                                           @Nullable X509Certificate sslCertificate) {
+    public static SecurityTokenServiceClient getStsService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
 
         return getInstance()._getStsService( configuration, sslCertificate );
     }
@@ -248,8 +246,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected SecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new SecurityTokenServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ),
-                configuration );
+        return new SecurityTokenServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -273,8 +270,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NotificationConsumerClient getNotificationConsumerService(final X500Principal trustedDN,
-                                                                            @NotNull final KeyProvider keyProvider,
+    public static NotificationConsumerClient getNotificationConsumerService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                                             final X509Certificate sslCertificate) {
 
         return getInstance()._getNotificationConsumerService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
@@ -296,11 +292,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
     }
 
     @Override
-    protected NotificationConsumerClient _getNotificationConsumerService(final WSSecurityConfiguration configuration,
-                                                                         X509Certificate sslCertificate) {
+    protected NotificationConsumerClient _getNotificationConsumerService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new NotificationConsumerClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ),
-                configuration );
+        return new NotificationConsumerClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -324,8 +318,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID notification producer web service.
      */
-    public static NotificationProducerClient getNotificationProducerService(final X500Principal trustedDN,
-                                                                            @NotNull final KeyProvider keyProvider,
+    public static NotificationProducerClient getNotificationProducerService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                                             final X509Certificate sslCertificate) {
 
         return getInstance()._getNotificationProducerService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
@@ -347,11 +340,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
     }
 
     @Override
-    protected NotificationProducerClient _getNotificationProducerService(final WSSecurityConfiguration configuration,
-                                                                         X509Certificate sslCertificate) {
+    protected NotificationProducerClient _getNotificationProducerService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new NotificationProducerClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ),
-                configuration );
+        return new NotificationProducerClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -379,8 +370,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
                                                                                            @NotNull final KeyProvider keyProvider,
                                                                                            final X509Certificate sslCertificate) {
 
-        return getInstance()._getNotificationSubscriptionService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ),
-                sslCertificate );
+        return getInstance()._getNotificationSubscriptionService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
     }
 
     /**
@@ -402,8 +392,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(final WSSecurityConfiguration configuration,
                                                                                         X509Certificate sslCertificate) {
 
-        return new NotificationSubscriptionManagerClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ),
-                configuration );
+        return new NotificationSubscriptionManagerClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -442,17 +431,62 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID session tracking web service.
      */
-    public static SessionTrackingClient getSessionTrackingService(final WSSecurityConfiguration configuration,
-                                                                  @Nullable X509Certificate sslCertificate) {
+    public static SessionTrackingClient getSessionTrackingService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
 
         return getInstance()._getSessionTrackingService( configuration, sslCertificate );
     }
 
     @Override
-    protected SessionTrackingClient _getSessionTrackingService(final WSSecurityConfiguration configuration,
-                                                               X509Certificate sslCertificate) {
+    protected SessionTrackingClient _getSessionTrackingService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
         return new SessionTrackingClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID session tracking web service.
+     *
+     * @return proxy to the linkID session tracking web service.
+     */
+    public static PaymentServiceClient getPaymentService() {
+
+        return getPaymentService( new SDKWSSecurityConfiguration(), null );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID session tracking web service.
+     *
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID session tracking web service.
+     */
+    public static PaymentServiceClient getPaymentService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                         final X509Certificate sslCertificate) {
+
+        return getInstance()._getPaymentService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID payment web service.
+     *
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID session tracking web service.
+     */
+    public static PaymentServiceClient getPaymentService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+
+        return getInstance()._getPaymentService( configuration, sslCertificate );
+    }
+
+    @Override
+    protected PaymentServiceClient _getPaymentService(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
+
+        return new PaymentServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**

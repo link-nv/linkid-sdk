@@ -36,6 +36,7 @@
                         <wsdlFile>saml-protocol-2.0.wsdl</wsdlFile>
                         <wsdlFile>liberty-idwsf-dst-ref-v2.1-link.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-payment.wsdl</wsdlFile>
                         <wsdlFile>safe-online-idmapping.wsdl</wsdlFile>
                         <wsdlFile>notification-consumer.wsdl</wsdlFile>
                         <wsdlFile>notification-producer.wsdl</wsdlFile>

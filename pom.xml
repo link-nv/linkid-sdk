@@ -512,6 +512,7 @@
         <safe-online.ws.xkms2.path>xkms2</safe-online.ws.xkms2.path>
         <safe-online.ws.auth.path>auth</safe-online.ws.auth.path>
         <safe-online.ws.get.auth.path>get_auth</safe-online.ws.get.auth.path>
+        <safe-online.ws.payment.path>payment</safe-online.ws.payment.path>
 
         <!-- DEFAULT VERSIONS, SEE PLUGINS -->
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
