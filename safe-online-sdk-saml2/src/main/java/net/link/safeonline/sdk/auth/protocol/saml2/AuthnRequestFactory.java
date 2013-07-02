@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.*;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.*;
 import net.link.util.saml.Saml2Utils;
@@ -69,6 +70,8 @@ public class AuthnRequestFactory {
                     new SubjectAttributesUnmarshaller() );
             Configuration.registerObjectProvider( PaymentContext.DEFAULT_ELEMENT_NAME, new PaymentContextBuilder(), new PaymentContextMarshaller(),
                     new PaymentContextUnmarshaller() );
+            Configuration.registerObjectProvider( PaymentResponse.DEFAULT_ELEMENT_NAME, new PaymentResponseBuilder(), new PaymentResponseMarshaller(),
+                    new PaymentResponseUnmarshaller() );
         }
         catch (ConfigurationException e) {
             throw new InternalInconsistencyException( "could not bootstrap the OpenSAML2 library", e );

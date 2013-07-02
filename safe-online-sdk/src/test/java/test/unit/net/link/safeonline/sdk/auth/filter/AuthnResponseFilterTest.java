@@ -106,7 +106,7 @@ public class AuthnResponseFilterTest {
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
-                Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null );
+                Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null, null );
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
                 (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( authnResponse );
         expect( mockProtocolHandler.getProtocol() ).andReturn( Protocol.SAML2 );
@@ -120,8 +120,7 @@ public class AuthnResponseFilterTest {
         String resultUserId = (String) servletTestManager.getSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE );
         LOG.debug( "result userId: " + resultUserId );
         assertEquals( userId, resultUserId );
-        List<String> resultAuthenticatedDevices = (List<String>) servletTestManager.getSessionAttribute(
-                LoginManager.AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
+        List<String> resultAuthenticatedDevices = (List<String>) servletTestManager.getSessionAttribute( LoginManager.AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
         LOG.debug( "result authenticatedDevices: " + resultAuthenticatedDevices );
         assertTrue( resultAuthenticatedDevices.contains( authenticatedDevice ) );
     }

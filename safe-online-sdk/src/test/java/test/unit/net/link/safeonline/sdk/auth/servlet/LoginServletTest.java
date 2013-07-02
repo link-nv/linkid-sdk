@@ -131,7 +131,7 @@ public class LoginServletTest {
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
-                Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null );
+                Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null, null );
 
         // Setup Mocks
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
@@ -153,8 +153,7 @@ public class LoginServletTest {
         LOG.debug( "response body: " + responseBody );
         String resultUserId = (String) servletTestManager.getSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE );
         assertEquals( userId, resultUserId );
-        List<String> resultAuthenticatedDevices = (List<String>) servletTestManager.getSessionAttribute(
-                LoginManager.AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
+        List<String> resultAuthenticatedDevices = (List<String>) servletTestManager.getSessionAttribute( LoginManager.AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
         assertTrue( resultAuthenticatedDevices.contains( authenticatedDevice ) );
         String resultTarget = getMethod.getResponseHeader( "Location" ).getValue();
         assertEquals( target, resultTarget );

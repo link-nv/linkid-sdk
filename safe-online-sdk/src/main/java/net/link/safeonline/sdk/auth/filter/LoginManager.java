@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.util.common.CertificateChain;
 
@@ -33,6 +34,7 @@ public abstract class LoginManager {
     public static final String PROTOCOL_SESSION_ATTRIBUTE              = LoginManager.class.getName() + ".protocol";
     // e.g. SAML2 assertion sent directly to SP after authentication done from a client app
     public static final String PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE   = LoginManager.class.getName() + ".protocolNoRequest";
+    public static final String PAYMENT_RESPONSE_SESSION_ATTRIBUTE      = LoginManager.class.getName() + ".paymentResponse";
 
     /**
      * Checks whether the user is logged in via the SafeOnline authentication web application or not.
@@ -102,6 +104,14 @@ public abstract class LoginManager {
     }
 
     /**
+     * Gives back the optional payment response case am authentication with payment context in it was started.
+     */
+    public static PaymentResponseDO findPaymentResponse(final HttpSession httpSession) {
+
+        return (PaymentResponseDO) httpSession.getAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE );
+    }
+
+    /**
      * Cleanup linkId session attributes.
      *
      * @param httpSession The session from which the credentials will be removed.
@@ -114,6 +124,7 @@ public abstract class LoginManager {
         httpSession.removeAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PROTOCOL_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE );
+        httpSession.removeAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE );
     }
 
     /**
@@ -135,5 +146,6 @@ public abstract class LoginManager {
         httpSession.setAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE, responseContext.getCertificateChain() );
         httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, responseContext.getRequest().getProtocolHandler().getProtocol() );
         httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, null == responseContext.getRequest().getId() );
+        httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, responseContext.getPaymentResponse() );
     }
 }

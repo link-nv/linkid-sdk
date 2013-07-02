@@ -72,8 +72,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
 
         String authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().authorizationPath() );
 
-        String clientId =
-                MessageUtils.stringEmpty( config().proto().oauth2().clientId() )? context.getApplicationName(): config().proto().oauth2().clientId();
+        String clientId = MessageUtils.stringEmpty( config().proto().oauth2().clientId() )? context.getApplicationName(): config().proto().oauth2().clientId();
 
         // create oauht2 authorization request ( authorization grant code flow)
         AuthorizationRequest authorizationRequest = new AuthorizationRequest( OAuth2Message.ResponseType.CODE, clientId );
@@ -167,12 +166,12 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         }
         // note: oauth does not support returning authenticated devices
         AuthenticationContext authnContext = responseToContext.apply(
-                new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), null, attributes, true, null ) );
+                new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), null, attributes, true, null, null ) );
         authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this,
                 null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
                 authnRequest.isMobileAuthenticationMinimal() );
 
-        return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success, null );
+        return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success, null, null );
     }
 
     protected boolean userRefusedAccess(ErrorResponse errorResponse)
@@ -250,8 +249,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         ValidationRequest validationRequest = new ValidationRequest();
         validationRequest.setAccessToken( accessToken );
         String endpoint = ConfigUtils.getLinkIDAuthURLFromPath( config().proto().oauth2().validationPath() );
-        ResponseMessage validationResponse = MessageUtils.sendRequestMessage( endpoint, validationRequest,
-                authnContext.getOauth2().getSslCertificate(), authnRequest.getIssuer(), config().proto().oauth2().clientSecret() );
+        ResponseMessage validationResponse = MessageUtils.sendRequestMessage( endpoint, validationRequest, authnContext.getOauth2().getSslCertificate(),
+                authnRequest.getIssuer(), config().proto().oauth2().clientSecret() );
 
         if (validationResponse instanceof ErrorResponse) {
             logger.err( "Received error response for OAuth authorization request: " + validationResponse.toString() );
@@ -406,8 +405,8 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
     }
 
     @Override
-    public LogoutProtocolResponseContext sendLogoutResponse(final HttpServletResponse response,
-                                                            final LogoutProtocolRequestContext logoutRequestContext, final boolean partialLogout)
+    public LogoutProtocolResponseContext sendLogoutResponse(final HttpServletResponse response, final LogoutProtocolRequestContext logoutRequestContext,
+                                                            final boolean partialLogout)
             throws IOException {
 
         throw new UnsupportedOperationException( "OAuth2 implementation does not support single logout yet" );

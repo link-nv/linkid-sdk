@@ -3,16 +3,19 @@ package net.link.safeonline.sdk.auth.protocol;
 import com.google.common.base.Preconditions;
 import java.util.*;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.util.common.CertificateChain;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
- * <h2>{@link AuthnProtocolResponseContext}<br> <sub>[in short] (TODO).</sub></h2>
+ * <h2>{@link AuthnProtocolResponseContext}<br> <sub>[in short].</sub></h2>
  * <p/>
  * <p> <i>08 19, 2010</i> </p>
  *
  * @author lhunath
  */
+@SuppressWarnings("UnusedDeclaration")
 public class AuthnProtocolResponseContext extends ProtocolResponseContext {
 
     private final String                             applicationName;
@@ -20,6 +23,7 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
     private final Map<String, List<AttributeSDK<?>>> attributes;
     private final String                             userId;
     private final boolean                            success;
+    private final PaymentResponseDO                  paymentResponse;
 
     /**
      * @param request              Authentication request this response is a response to.
@@ -34,7 +38,7 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
      */
     public AuthnProtocolResponseContext(AuthnProtocolRequestContext request, String id, String userId, String applicationName,
                                         List<String> authenticatedDevices, Map<String, List<AttributeSDK<?>>> attributes, boolean success,
-                                        CertificateChain certificateChain) {
+                                        CertificateChain certificateChain, final PaymentResponseDO paymentResponse) {
 
         super( request, id, certificateChain );
         this.userId = userId;
@@ -42,6 +46,7 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
         this.authenticatedDevices = Collections.unmodifiableList( authenticatedDevices );
         this.attributes = Collections.unmodifiableMap( attributes );
         this.success = success;
+        this.paymentResponse = paymentResponse;
     }
 
     @Override
@@ -88,5 +93,14 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
     public boolean isSuccess() {
 
         return success;
+    }
+
+    /**
+     * @return optional payment response in case payment context was part of the authentication request.
+     */
+    @Nullable
+    public PaymentResponseDO getPaymentResponse() {
+
+        return paymentResponse;
     }
 }

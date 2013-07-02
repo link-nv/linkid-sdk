@@ -15,5 +15,4 @@ public enum Currency {
 
         throw new RuntimeException( String.format( "Unsupported currency %s!", currencyString ) );
     }
-
 }
