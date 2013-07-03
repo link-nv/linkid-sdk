@@ -233,6 +233,6 @@ public class AuthnRequestFactoryTest {
         assertNotNull( paymentContexts );
         assertEquals( 1, paymentContexts.size() );
         PaymentContext paymentContextMap = (PaymentContext) paymentContexts.get( 0 );
-        assertEquals( 2, paymentContextMap.getAttributes().size() );
+        assertEquals( 3, paymentContextMap.getAttributes().size() );
     }
 }

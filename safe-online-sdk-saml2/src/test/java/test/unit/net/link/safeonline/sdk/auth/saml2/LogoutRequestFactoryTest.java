@@ -11,20 +11,16 @@ import static org.junit.Assert.*;
 
 import java.security.KeyPair;
 import java.util.UUID;
-import javax.xml.crypto.dsig.XMLSignature;
-import javax.xml.crypto.dsig.XMLSignatureFactory;
-import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import net.link.safeonline.sdk.auth.protocol.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
+import net.link.safeonline.sdk.auth.protocol.saml2.LogoutRequestFactory;
 import net.link.util.common.DomUtils;
+import net.link.util.saml.Saml2Utils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.XObject;
-import org.jcp.xml.dsig.internal.dom.XMLDSigRI;
 import org.junit.Test;
 import org.opensaml.saml2.core.LogoutRequest;
 import org.w3c.dom.*;
@@ -83,27 +79,15 @@ public class LogoutRequestFactoryTest {
         assertNotNull( formatNode );
         assertEquals( "urn:oasis:names:tc:SAML:2.0:nameid-format:entity", formatNode.getTextContent() );
 
-        Node sessionInfoNode = XPathAPI.selectSingleNode( resultDocument,
-                "/samlp2:LogoutRequest/samlp2:Extensions/samlp2:SessionInfo/@Session", nsElement );
+        Node sessionInfoNode = XPathAPI.selectSingleNode( resultDocument, "/samlp2:LogoutRequest/samlp2:Extensions/samlp2:SessionInfo/@Session", nsElement );
         assertNotNull( sessionInfoNode );
         assertEquals( session, sessionInfoNode.getTextContent() );
 
         // verify signature
-        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS( XMLSignature.XMLNS, "Signature" );
-        assertEquals( 1, signatureNodeList.getLength() );
+        assertNotNull( samlLogoutRequest.getSignature() );
+        assertNotNull( samlLogoutRequest.getSignature().getKeyInfo() );
 
-        DOMValidateContext validateContext = new DOMValidateContext( keyPair.getPublic(), signatureNodeList.item( 0 ) );
-        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance( "DOM", new XMLDSigRI() );
-
-        XMLSignature signature = signatureFactory.unmarshalXMLSignature( validateContext );
-        boolean resultValidity = signature.validate( validateContext );
-        assertTrue( resultValidity );
-
-        Element dsNsElement = resultDocument.createElement( "nsElement" );
-        dsNsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#" );
-        XObject xObject = XPathAPI.eval( resultDocument, "count(//ds:Reference)", dsNsElement );
-        LOG.debug( "count: " + xObject.num() );
-        assertEquals( 1.0, xObject.num(), 0 );
+        Saml2Utils.validateSignature( samlLogoutRequest.getSignature(), null, null );
     }
 
     private static Element createNsElement(Document document) {
