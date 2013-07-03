@@ -45,6 +45,11 @@
 					<documentation>Payment is authorized</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="FAILED">
+				<annotation>
+					<documentation>Payment has failed</documentation>
+				</annotation>
+			</enumeration>
 		</restriction>
 	</simpleType>
 
