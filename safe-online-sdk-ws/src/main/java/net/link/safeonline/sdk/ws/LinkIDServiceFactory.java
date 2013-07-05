@@ -535,7 +535,13 @@ public class LinkIDServiceFactory extends ServiceFactory {
         return ifNotNullElseNullable( sslCertificate, new NSupplier<X509Certificate>() {
             public X509Certificate get() {
 
-                return SDKConfigHolder.config().linkID().app().keyProvider().getTrustedCertificate( ConfigUtils.SSL_ALIAS );
+                try {
+                    return SDKConfigHolder.config().linkID().app().keyProvider().getTrustedCertificate( ConfigUtils.SSL_ALIAS );
+                }
+                catch (Throwable t) {
+                    // ignore
+                    return null;
+                }
             }
         } );
     }
