@@ -8,6 +8,7 @@ import net.link.safeonline.sdk.api.auth.*;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -54,14 +55,31 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         // optional force registration
         StartPage startPage = StartPage.fromString( request.getParameter( RequestConstants.START_PAGE_REQUEST_PARAM ), StartPage.NONE );
 
-        AuthenticationContext authenticationContext = new AuthenticationContext( null, null, null, targetURI, mode );
-        authenticationContext.setStartPage( startPage );
-        authenticationContext.setMobileAuthentication( mobileAuthn );
-        authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
+        AuthenticationContext authenticationContext = initAuthenticationContext( request, response, mobileAuthn, mobileAuthnMinimal, targetURI, mode,
+                startPage );
+
+        if (null == authenticationContext) {
+
+            authenticationContext = new AuthenticationContext( null, null, null, targetURI, mode );
+            authenticationContext.setStartPage( startPage );
+            authenticationContext.setMobileAuthentication( mobileAuthn );
+            authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
+        }
 
         configureAuthenticationContext( authenticationContext, request, response );
 
         AuthenticationUtils.login( request, response, authenticationContext );
+    }
+
+    /**
+     * Override this if you want to initialize then authentication context yourself
+     */
+    @Nullable
+    protected AuthenticationContext initAuthenticationContext(final HttpServletRequest request, final HttpServletResponse response, final boolean mobileAuthn,
+                                                              final boolean mobileAuthnMinimal, final String targetURI, final LoginMode mode,
+                                                              final StartPage startPage) {
+
+        return null;
     }
 
     /**

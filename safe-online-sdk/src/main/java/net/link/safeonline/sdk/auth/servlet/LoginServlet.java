@@ -62,9 +62,9 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             throws IOException {
 
         try {
-            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request, getContextFunction() );
+            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request, getContextFunction( request.getSession() ) );
             if (null == authnResponse)
-                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction() );
+                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction( request.getSession() ) );
             if (null == authnResponse) {
                 // if we don't have a response, check if perhaps the session has expired
                 if (request.getSession( false ) == null || request.getSession().isNew()) {
@@ -127,7 +127,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
      *
      * @return A function that provides the context for validating detached authentication responses (assertions).
      */
-    protected Function<AuthnProtocolResponseContext, AuthenticationContext> getContextFunction() {
+    protected Function<AuthnProtocolResponseContext, AuthenticationContext> getContextFunction(final HttpSession httpSession) {
 
         return new Function<AuthnProtocolResponseContext, AuthenticationContext>() {
             @Override
