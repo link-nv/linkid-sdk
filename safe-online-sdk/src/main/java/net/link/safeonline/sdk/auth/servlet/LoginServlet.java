@@ -58,7 +58,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
         handleLanding( request, response );
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response)
+    protected void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         try {
