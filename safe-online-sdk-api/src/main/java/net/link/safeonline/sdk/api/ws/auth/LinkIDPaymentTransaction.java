@@ -13,7 +13,7 @@ public class LinkIDPaymentTransaction implements Serializable {
 
     private final double   amount;
     private final Currency currency;
-    private final String   description;
+    private final String   encodedDescription;
     private final String   profile;
 
     private final Date   created;
@@ -21,15 +21,16 @@ public class LinkIDPaymentTransaction implements Serializable {
     private       String tokenId;
     private       String tokenPrettyPrint;
 
-    public LinkIDPaymentTransaction(final String transactionId, final boolean payed, final double amount, final Currency currency, final String description,
-                                    final String profile, final Date created, final long applicationId, final String tokenId, final String tokenPrettyPrint) {
+    public LinkIDPaymentTransaction(final String transactionId, final boolean payed, final double amount, final Currency currency,
+                                    final String encodedDescription, final String profile, final Date created, final long applicationId, final String tokenId,
+                                    final String tokenPrettyPrint) {
 
         this.transactionId = transactionId;
 
         this.payed = payed;
         this.amount = amount;
         this.currency = currency;
-        this.description = description;
+        this.encodedDescription = encodedDescription;
         this.profile = profile;
         this.created = created;
         this.applicationId = applicationId;
@@ -57,9 +58,9 @@ public class LinkIDPaymentTransaction implements Serializable {
         return currency;
     }
 
-    public String getDescription() {
+    public String getEncodedDescription() {
 
-        return description;
+        return encodedDescription;
     }
 
     public String getProfile() {
