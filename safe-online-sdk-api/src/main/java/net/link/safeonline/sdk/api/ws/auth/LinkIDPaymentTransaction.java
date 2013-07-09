@@ -16,14 +16,16 @@ public class LinkIDPaymentTransaction implements Serializable {
     private final String   encodedDescription;
     private final String   profile;
 
-    private final Date   created;
-    private final long   applicationId;
-    private       String tokenId;
-    private       String tokenPrettyPrint;
+    private final Date              created;
+    private final long              applicationId;
+    private final String            applicationName;
+    private final String            tokenId;
+    private final String            tokenPrettyPrint;
+    private final LinkIDPaymentType tokenType;
 
     public LinkIDPaymentTransaction(final String transactionId, final boolean payed, final double amount, final Currency currency,
-                                    final String encodedDescription, final String profile, final Date created, final long applicationId, final String tokenId,
-                                    final String tokenPrettyPrint) {
+                                    final String encodedDescription, final String profile, final Date created, final long applicationId,
+                                    final String applicationName, final String tokenId, final String tokenPrettyPrint, final LinkIDPaymentType tokenType) {
 
         this.transactionId = transactionId;
 
@@ -34,8 +36,10 @@ public class LinkIDPaymentTransaction implements Serializable {
         this.profile = profile;
         this.created = created;
         this.applicationId = applicationId;
+        this.applicationName = applicationName;
         this.tokenId = tokenId;
         this.tokenPrettyPrint = tokenPrettyPrint;
+        this.tokenType = tokenType;
     }
 
     public String getTransactionId() {
@@ -83,18 +87,18 @@ public class LinkIDPaymentTransaction implements Serializable {
         return tokenId;
     }
 
-    public void setTokenId(final String tokenId) {
-
-        this.tokenId = tokenId;
-    }
-
     public String getTokenPrettyPrint() {
 
         return tokenPrettyPrint;
     }
 
-    public void setTokenPrettyPrint(final String tokenPrettyPrint) {
+    public String getApplicationName() {
 
-        this.tokenPrettyPrint = tokenPrettyPrint;
+        return applicationName;
+    }
+
+    public LinkIDPaymentType getTokenType() {
+
+        return tokenType;
     }
 }
