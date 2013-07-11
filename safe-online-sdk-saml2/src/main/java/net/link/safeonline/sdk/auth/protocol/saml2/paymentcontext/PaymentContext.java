@@ -10,7 +10,7 @@ public interface PaymentContext extends AttributeStatement {
     /**
      * Element local name.
      */
-    String DEFAULT_ELEMENT_LOCAL_NAME = "PaymentContextDO";
+    String DEFAULT_ELEMENT_LOCAL_NAME = "PaymentContext";
 
     /**
      * Default element name.
