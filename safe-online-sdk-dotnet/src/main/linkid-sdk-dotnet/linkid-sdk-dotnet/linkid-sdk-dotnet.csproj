@@ -88,6 +88,8 @@
     <Compile Include="src\main\cs\ws\notification\NotificationConsumerClientImpl.cs" />
     <Compile Include="src\main\cs\ws\notification\NotificationConsumerClient.cs" />
     <Compile Include="src\main\cs\ws\LinkIDBinding.cs" />
+    <Compile Include="src\main\cs\ws\payment\PaymentClientImpl.cs" />
+    <Compile Include="src\main\cs\ws\payment\PaymentClient.cs" />
     <Compile Include="src\main\cs\ws\ping\PingClient.cs" />
     <Compile Include="src\main\cs\ws\ping\PingClientImpl.cs" />
     <Compile Include="src\main\cs\ws\session\SessionAssertion.cs" />
@@ -134,6 +136,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="target\services\SafeOnlinePaymentWebService.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="src\main\cs\AssemblyInfo.cs" />
     <None Include="src\main\resources\*" />
     <None Include="src\main\resources\attrib-ws\*" />
@@ -143,6 +149,7 @@
     <None Include="src\main\resources\idmapping-ws\*" />
     <None Include="src\main\resources\notification-ws\*" />
     <None Include="src\main\resources\session-ws\*" />
+    <None Include="src\main\resources\payment-ws\*" />
   </ItemGroup>
   <Target Name="BeforeBuild">
     <MakeDir Directories="target\services" />
@@ -155,5 +162,6 @@
     <Exec Command="svcutil /namespace:*,NotificationProducerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-producer.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
     <Exec Command="svcutil /namespace:*,NotificationSubscriptionManagerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-subscription-manager.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
     <Exec Command="svcutil /namespace:*,SessionWSNameSpace /directory:target\services src\main\resources\session-ws\safe-online-session.wsdl src\main\resources\session-ws\safe-online-session.xsd" />
+    <Exec Command="svcutil /namespace:*,PaymentWSNameSpace /directory:target\services src\main\resources\payment-ws\safe-online-payment.wsdl src\main\resources\payment-ws\safe-online-payment.xsd src\main\resources\ws-addr.xsd src\main\resources\xmldsig-core-schema.xsd src\main\resources\xenc-schema.xsd" />
   </Target>
 </Project>

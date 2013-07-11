@@ -68,6 +68,7 @@
     <Content Include="LoginRedirect.aspx" />
     <Content Include="LoginMobile.aspx" />
     <Content Include="LinkIDLogin.aspx" />
+    <Content Include="PaymentStateChanged.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +121,13 @@
     <Compile Include="LinkIDLogin.aspx.designer.cs">
       <DependentUpon>LinkIDLogin.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PaymentStateChanged.aspx.cs">
+      <DependentUpon>PaymentStateChanged.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PaymentStateChanged.aspx.designer.cs">
+      <DependentUpon>PaymentStateChanged.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -140,7 +148,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>49162</DevelopmentServerPort>
+          <DevelopmentServerPort>53825</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
