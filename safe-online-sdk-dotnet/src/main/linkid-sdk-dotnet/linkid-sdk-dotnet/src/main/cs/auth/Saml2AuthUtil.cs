@@ -62,14 +62,15 @@ namespace safe_online_sdk_dotnet
         /// <param name="ssoEnabled"></param>
         /// <param name="deviceContextMap">Optional device context, e.g. the context title for the QR device</param>
         /// <param name="attributeSuggestions">Optional attribute suggestions for certain attributes. Key is the internal linkID attributeName. The type of the values must be of the correct datatype</param>
+        /// <param name="paymentContext">Optional payment context</param>
         /// <returns>Base64 encoded SAML request</returns>
         public string generateEncodedAuthnRequest(string applicationName, List<string> applicationPools, string applicationFriendlyName,
                                           string serviceProviderUrl, string identityProviderUrl, List<string> devices,
                                           bool ssoEnabled, Dictionary<string,string> deviceContextMap,
-                                          Dictionary<string, List<Object>> attributeSuggestions)
+                                          Dictionary<string, List<Object>> attributeSuggestions, PaymentContext paymentContext)
         {
             string samlRequest = generateAuthnRequest(applicationName, applicationPools, applicationFriendlyName, serviceProviderUrl,
-                  identityProviderUrl, devices, ssoEnabled, deviceContextMap, attributeSuggestions);
+                  identityProviderUrl, devices, ssoEnabled, deviceContextMap, attributeSuggestions, paymentContext);
             return Convert.ToBase64String(Encoding.ASCII.GetBytes(samlRequest));
         }
 
@@ -86,11 +87,12 @@ namespace safe_online_sdk_dotnet
         /// <param name="ssoEnabled"></param>
         /// <param name="deviceContextMap">Optional device context, e.g. the context title for the QR device</param>
         /// <param name="attributeSuggestions">Optional attribute suggestions for certain attributes. Key is the internal linkID attributeName. The type of the values must be of the correct datatype</param>
+        /// <param name="paymentContext">Optional payment context</param>
         /// <returns>SAML request</returns>
         public string generateAuthnRequest(string applicationName, List<string> applicationPools, string applicationFriendlyName,
                                            string serviceProviderUrl, string identityProviderUrl, List<string> devices,
                                            bool ssoEnabled, Dictionary<string, string> deviceContextMap, 
-                                           Dictionary<string, List<Object>> attributeSuggestions)
+                                           Dictionary<string, List<Object>> attributeSuggestions, PaymentContext paymentContext)
         {
             this.expectedChallenge = Guid.NewGuid().ToString();
             this.expectedAudience = applicationName;
@@ -172,15 +174,35 @@ namespace safe_online_sdk_dotnet
                 }
             }
 
-            if (null != deviceContext || null != subjectAttributes)
+            PaymentContextType paymentContextType = null;
+            if (null != paymentContext)
+            {
+                Dictionary<String, String> paymentContextDict = paymentContext.toDictionary();
+                paymentContextType = new PaymentContextType();
+                List<AttributeType> attributes = new List<AttributeType>();
+                foreach (string paymentContextKey in paymentContextDict.Keys)
+                {
+                    string value = paymentContextDict[paymentContextKey];
+                    AttributeType attribute = new AttributeType();
+                    attribute.Name = paymentContextKey;
+                    attribute.AttributeValue = new object[] { value };
+                    attributes.Add(attribute);
+                    paymentContextType.Items = attributes.ToArray();
+                }
+
+            }
+
+            if (null != deviceContext || null != subjectAttributes || null != paymentContextType)
             {
                 ExtensionsType extensions = new ExtensionsType();
-                if (null == subjectAttributes)
-                    extensions.Any = new XmlElement[] { toXmlElement(deviceContext) };
-                else if (null == deviceContext)
-                    extensions.Any = new XmlElement[] { toXmlElement(subjectAttributes) };
-                else
-                    extensions.Any = new XmlElement[] { toXmlElement(deviceContext), toXmlElement(subjectAttributes) };
+                List<XmlElement> extensionsList = new List<XmlElement>();
+                if (null != subjectAttributes)
+                    extensionsList.Add(toXmlElement(subjectAttributes));
+                if (null != deviceContext)
+                    extensionsList.Add(toXmlElement(deviceContext));
+                if (null != paymentContextType)
+                    extensionsList.Add(toXmlElement(paymentContextType));
+                extensions.Any = extensionsList.ToArray();
                 authnRequest.Extensions = extensions;
             }
 
@@ -203,6 +225,34 @@ namespace safe_online_sdk_dotnet
             string signedAuthnRequest = Saml2Util.signDocument(document, key, authnRequest.ID);
             xmlTextWriter.Close();
             return signedAuthnRequest;
+        }
+
+        private XmlElement toXmlElement(PaymentContextType paymentContext)
+        {
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("samlp", Saml2Constants.SAML2_PROTOCOL_NAMESPACE);
+            ns.Add("saml", Saml2Constants.SAML2_ASSERTION_NAMESPACE);
+            ns.Add("xs", "http://www.w3.org/2001/XMLSchema");
+
+            XmlRootAttribute xRoot = new XmlRootAttribute();
+            xRoot.ElementName = "PaymentContext";
+            xRoot.Namespace = Saml2Constants.SAML2_ASSERTION_NAMESPACE;
+            XmlSerializer serializer = new XmlSerializer(typeof(PaymentContextType), xRoot);
+            MemoryStream memoryStream = new MemoryStream();
+            XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
+            serializer.Serialize(xmlTextWriter, paymentContext, ns);
+
+            XmlDocument document = new XmlDocument();
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            document.Load(memoryStream);
+
+            foreach (XmlNode node in document.ChildNodes)
+            {
+                if (node is XmlElement)
+                    return (XmlElement)node;
+            }
+
+            return null;
         }
 
         private XmlElement toXmlElement(DeviceContextType deviceContext)
@@ -351,7 +401,39 @@ namespace safe_online_sdk_dotnet
                     }
                 }
 
-                return new AuthenticationProtocolContext(subjectName, authenticatedDevices, attributes);
+                // check for optional payment response extension
+                PaymentResponse paymentResponse = findPaymentResponse(response);
+
+                return new AuthenticationProtocolContext(subjectName, authenticatedDevices, attributes, paymentResponse);
+            }
+
+            return null;
+        }
+
+        private PaymentResponse findPaymentResponse(ResponseType response)
+        {
+            if (null == response.Extensions || null == response.Extensions.Any)
+                return null;
+            if (0 == response.Extensions.Any.Length)
+                return null;
+
+            XmlElement xmlElement = response.Extensions.Any[0];
+            if (xmlElement.LocalName.Equals(PaymentResponse.LOCAL_NAME))
+            {
+                PaymentResponseType paymentResponseType = deserialize(xmlElement);
+
+                String txnId = null;
+                String paymentStateString = null;
+                foreach (object item in paymentResponseType.Items)
+                {
+                    AttributeType attributeType = (AttributeType)item;
+                    if (attributeType.Name.Equals(PaymentResponse.TXN_ID_KEY))
+                        txnId = (String)attributeType.AttributeValue[0];
+                    if (attributeType.Name.Equals(PaymentResponse.STATE_KEY))
+                        paymentStateString = (String)attributeType.AttributeValue[0];
+                }
+
+                return new PaymentResponse(txnId, PaymentResponse.parse(paymentStateString));
             }
 
             return null;
@@ -480,6 +562,16 @@ namespace safe_online_sdk_dotnet
                 }
             }
             return multivalued;
+        }
+
+        public static PaymentResponseType deserialize(XmlElement xmlElement)
+        {
+            XmlRootAttribute xRoot = new XmlRootAttribute();
+            xRoot.ElementName = "PaymentResponse";
+            xRoot.Namespace = Saml2Constants.SAML2_ASSERTION_NAMESPACE;
+
+            XmlSerializer serializer = new XmlSerializer(typeof(PaymentResponseType), xRoot);
+            return (PaymentResponseType)serializer.Deserialize(new XmlTextReader(new StringReader(xmlElement.OuterXml)));
         }
     }
 }

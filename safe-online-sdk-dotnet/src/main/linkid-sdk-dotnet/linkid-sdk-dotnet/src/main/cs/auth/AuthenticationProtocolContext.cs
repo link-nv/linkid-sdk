@@ -23,18 +23,23 @@ namespace safe_online_sdk_dotnet
 
         private readonly Dictionary<String, List<AttributeSDK>> attributes;
 
+        private readonly PaymentResponse paymentResponse;
+
         public AuthenticationProtocolContext()
         {
             this.userId = null;
             this.authenticatedDevices = null;
             this.attributes = null;
+            this.paymentResponse = null;
         }
 
-        public AuthenticationProtocolContext(string userId, List<String> authenticatedDevices, Dictionary<String, List<AttributeSDK>> attributes)
+        public AuthenticationProtocolContext(string userId, List<String> authenticatedDevices, 
+            Dictionary<String, List<AttributeSDK>> attributes, PaymentResponse paymentResponse)
 		{
 			this.userId = userId;
 			this.authenticatedDevices = authenticatedDevices;
 			this.attributes = attributes;
+            this.paymentResponse = paymentResponse;
 		}
 		
 		public string getUserId() {
@@ -49,5 +54,10 @@ namespace safe_online_sdk_dotnet
         {
 			return this.attributes;
 		}
+
+        public PaymentResponse getPaymentResponse()
+        {
+            return this.paymentResponse;
+        }
 	}
 }

@@ -134,8 +134,11 @@ namespace safe_online_sdk_dotnet.test.cs
             attributeSuggestions.Add("test.attribute.integer", new List<Object> { 69 });
             attributeSuggestions.Add("test.attribute.double", new List<Object> { 3.14159 });
 
+            // payment context
+            PaymentContext paymentContext = new PaymentContext(1, Currency.EUR);
+
             string result = testedInstance.generateAuthnRequest(applicationId, null, null, spUrl, idpUrl, null, false, 
-                deviceContextMap, attributeSuggestions);			
+                deviceContextMap, attributeSuggestions, paymentContext);			
 			Console.WriteLine("result document: " + result);
 			
 			XmlDocument xmlDocument = new XmlDocument();
@@ -174,5 +177,33 @@ namespace safe_online_sdk_dotnet.test.cs
 			Console.WriteLine("verification result: " + verificationResult);
 			Assert.IsTrue(verificationResult);
 		}
+
+        [Test]
+        public void TestPaymentResponseDeserialization()
+        {
+            String xml = "<saml2:PaymentResponse xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\"><saml2:Attribute Name=\"PaymentResponse.state\" xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\"><saml2:AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">WAITING_FOR_UPDATE</saml2:AttributeValue></saml2:Attribute><saml2:Attribute Name=\"PaymentResponse.txnId\" xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\"><saml2:AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"xs:string\">fee3880e-460c-453e-8585-15e2337b03b5</saml2:AttributeValue></saml2:Attribute></saml2:PaymentResponse>";
+
+            //XmlReaderSettings settings = new XmlReaderSettings();
+            //settings.ConformanceLevel = ConformanceLevel.Fragment;
+            //settings.IgnoreComments = true;
+            //settings.IgnoreWhitespace = true;
+
+            //NameTable nt = new NameTable();
+
+            //XmlNamespaceManager nsmgr = new XmlNamespaceManager(nt);
+            //nsmgr.AddNamespace("saml2", Saml2Constants.SAML2_ASSERTION_NAMESPACE);
+
+            //XmlParserContext ctx = new XmlParserContext(null, nsmgr, null, XmlSpace.None);
+
+            //TextReader txReader = new StringReader(xml);
+            //XmlReader reader = XmlReader.Create(txReader, settings, ctx);
+
+            XmlRootAttribute xRoot = new XmlRootAttribute();
+            xRoot.ElementName = "PaymentResponse";
+            xRoot.Namespace = Saml2Constants.SAML2_ASSERTION_NAMESPACE;
+
+            XmlSerializer serializer = new XmlSerializer(typeof(PaymentResponseType), xRoot);
+            PaymentResponseType paymentResponseType = (PaymentResponseType)serializer.Deserialize(new XmlTextReader(new StringReader(xml)));
+        }
 	}
 }

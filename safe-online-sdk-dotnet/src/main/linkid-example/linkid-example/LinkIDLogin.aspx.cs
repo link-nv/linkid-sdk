@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -22,6 +23,14 @@ namespace linkid_example
     public partial class LinkIDLogin : System.Web.UI.Page
     {
         /*
+         * Some session state keys to store optional devicecontext, attribute suggestions, 
+         * payment context, which will be added to the SAML v2.0 authentication request.
+         */
+        public static String SESSION_DEVICE_CONTEXT = "AuthnRequest.DeviceContext";
+        public static String SESSION_ATTRIBUTE_SUGGESTIONS = "AuthnRequest.AttributeSuggestions";
+        public static String SESSION_PAYMENT_CONTEXT = "AuthnRequest.PaymentContext";
+         
+        /*
          * Application specific configuration...
          */
         // linkID host to be used
@@ -35,7 +44,7 @@ namespace linkid_example
 
         // certificates and key locations
         public static string KEY_DIR = "C:\\cygwin\\home\\devel\\keystores\\";
-        public static string CERT_LINKID = KEY_DIR + "linkid-local.crt";
+        public static string CERT_LINKID = KEY_DIR + "linkid.crt";
         public static string CERT_APP = KEY_DIR + "demotest.crt";
         public static string KEY_APP = KEY_DIR + "demotest.key";
 
@@ -164,20 +173,18 @@ namespace linkid_example
 
                 this.form1.Action = linkIDLandingPage;
 
-                Dictionary<string, string> deviceContextMap = new Dictionary<string, string>();
-                deviceContextMap.Add(RequestConstants.DEVICE_CONTEXT_TITLE, "Test .NET context");
+                // device context
+                Dictionary<string, string> deviceContextMap = getDeviceContext(Session);
 
                 // attribute suggestions
-                Dictionary<string, List<Object>> attributeSuggestions = new Dictionary<string, List<object>>();
-                attributeSuggestions.Add("test.attribute.string", new List<Object> { "test" });
-                attributeSuggestions.Add("test.attribute.multi.date", new List<Object> { DateTime.Now });
-                attributeSuggestions.Add("test.attribute.boolean", new List<Object> { true });
-                attributeSuggestions.Add("test.attribute.integer", new List<Object> { 69 });
-                attributeSuggestions.Add("test.attribute.double", new List<Object> { 3.14159 });
+                Dictionary<string, List<Object>> attributeSuggestions = getAttributeSuggestions(Session);
+
+                // payment context
+                PaymentContext paymentContext = getPaymentContext(Session);
 
                 this.SAMLRequest.ID = RequestConstants.SAML2_POST_BINDING_REQUEST_PARAM;
                 this.SAMLRequest.Value = saml2AuthUtil.generateEncodedAuthnRequest(APP_NAME, null, null,
-                    LOGINPAGE_LOCATION, linkIDLandingPage, null, false, deviceContextMap, attributeSuggestions);
+                    LOGINPAGE_LOCATION, linkIDLandingPage, null, false, deviceContextMap, attributeSuggestions, paymentContext);
 
                 if (null != loginMode)
                 {
@@ -191,5 +198,36 @@ namespace linkid_example
                 }
             }
         }
+
+        public static void setDeviceContext(HttpSessionState session, Dictionary<string, string> deviceContext)
+        {
+            session.Add(SESSION_DEVICE_CONTEXT, deviceContext);
+        }
+
+        public static Dictionary<string, string> getDeviceContext(HttpSessionState session)
+        {
+            return (Dictionary<string, string>)session[SESSION_DEVICE_CONTEXT];
+        }
+
+        public static void setAttriuteSuggestions(HttpSessionState session, Dictionary<string, List<Object>> attributeSuggestions)
+        {
+            session.Add(SESSION_ATTRIBUTE_SUGGESTIONS, attributeSuggestions);
+        }
+
+        public static Dictionary<string, List<Object>> getAttributeSuggestions(HttpSessionState session)
+        {
+            return (Dictionary<string, List<Object>>)session[SESSION_ATTRIBUTE_SUGGESTIONS];
+        }
+
+        public static void setPaymentContext(HttpSessionState session, PaymentContext paymentContext)
+        {
+            session.Add(SESSION_PAYMENT_CONTEXT, paymentContext);
+        }
+
+        public static PaymentContext getPaymentContext(HttpSessionState session)
+        {
+            return (PaymentContext)session[SESSION_PAYMENT_CONTEXT];
+        }
+
     }
 }

@@ -53,6 +53,8 @@
     <Compile Include="src\main\cs\auth\Compound.cs" />
     <Compile Include="src\main\cs\auth\AuthenticationExceptionInvalidInResponseTo.cs" />
     <Compile Include="src\main\cs\auth\AuthenticationExceptionNoAudiences.cs" />
+    <Compile Include="src\main\cs\auth\PaymentResponse.cs" />
+    <Compile Include="src\main\cs\auth\PaymentContext.cs" />
     <Compile Include="src\main\cs\auth\Saml2Constants.cs" />
     <Compile Include="src\main\cs\auth\Saml2AuthUtil.cs" />
     <Compile Include="src\main\cs\auth\RequestConstants.cs" />

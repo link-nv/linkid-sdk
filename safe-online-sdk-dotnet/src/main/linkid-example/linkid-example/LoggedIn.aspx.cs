@@ -21,6 +21,16 @@ namespace linkid_example
                 this.OutputLabel.Text = "<h1>Successfully authenticated</h1>";
                 this.OutputLabel.Text += "<p>UserID=" + authContext.getUserId() + 
                     " authenticated using device " + authContext.getAuthenticatedDevices()[0] + "</p>";
+
+                if (null != authContext.getPaymentResponse())
+                {
+
+                    // log payment response
+                    this.OutputLabel.Text += "<h2>Payment response</h2>";
+                    this.OutputLabel.Text += "  * Transaction ID = " + authContext.getPaymentResponse().txnId + "<br/>";
+                    this.OutputLabel.Text += "  * Transaction ID = " + authContext.getPaymentResponse().paymentState + "<br/>";
+                }
+                
                 if (null != authContext.getAttributes())
                 {
                     // log attributes

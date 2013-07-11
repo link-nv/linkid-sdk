@@ -298,4 +298,20 @@
         </complexContent>
     </complexType>
 
+    <element name="PaymentContext" type="saml:PaymentContextType"/>
+    <complexType name="PaymentContextType">
+      <complexContent>
+        <extension base="saml:AttributeStatementType">
+        </extension>
+      </complexContent>
+    </complexType>
+
+    <element name="PaymentResponse" type="saml:PaymentResponseType"/>
+    <complexType name="PaymentResponseType">
+      <complexContent>
+        <extension base="saml:AttributeStatementType">
+        </extension>
+      </complexContent>
+    </complexType>
+
 </schema>

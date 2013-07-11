@@ -61,6 +61,7 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PaymentMobile.aspx" />
     <Content Include="LinkIDLogout.aspx" />
     <Content Include="LoggedIn.aspx" />
     <Content Include="LoginPopup.aspx" />
@@ -70,6 +71,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PaymentMobile.aspx.cs">
+      <DependentUpon>PaymentMobile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PaymentMobile.aspx.designer.cs">
+      <DependentUpon>PaymentMobile.aspx</DependentUpon>
+    </Compile>
     <Compile Include="LinkIDLogout.aspx.cs">
       <DependentUpon>LinkIDLogout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
