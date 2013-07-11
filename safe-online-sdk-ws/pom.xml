@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.0</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>SafeOnline SDK - Web Services</name>
@@ -61,23 +61,23 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-api</artifactId>
-            <version>2.0</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-api</artifactId>
-            <version>2.0</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-config</artifactId>
-            <version>2.0</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-ws</artifactId>
-            <version>2.0</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>2.0</version>
+            <version>GIT-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
 
