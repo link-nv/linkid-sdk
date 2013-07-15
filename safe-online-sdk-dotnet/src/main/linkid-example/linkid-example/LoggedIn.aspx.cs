@@ -58,7 +58,7 @@ namespace linkid_example
                 if (attribute.getValue() is Compound)
                 {
                     Compound compound = (Compound)attribute.getValue();
-                    foreach (AttributeSDK member in compound.getMembers())
+                    foreach (AttributeSDK member in compound.members)
                     {
                         this.OutputLabel.Text +=
                             "  * Member: " + member.getAttributeName() + " value=" + member.getValue() + "<br/>";

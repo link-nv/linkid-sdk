@@ -34,6 +34,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="docdata-sdk-dotnet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\docdata-sdk-dotnet\docdata-sdk-dotnet\obj\Release\docdata-sdk-dotnet.dll</HintPath>
+    </Reference>
     <Reference Include="linkid-sdk-dotnet, Version=1.0.3818.8383, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\linkid-sdk-dotnet\linkid-sdk-dotnet\obj\Release\linkid-sdk-dotnet.dll</HintPath>
@@ -61,6 +65,8 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DocData.aspx" />
+    <Content Include="DocDataLoggedIn.aspx" />
     <Content Include="PaymentMobile.aspx" />
     <Content Include="LinkIDLogout.aspx" />
     <Content Include="LoggedIn.aspx" />
@@ -72,6 +78,20 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocData.aspx.cs">
+      <DependentUpon>DocData.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DocData.aspx.designer.cs">
+      <DependentUpon>DocData.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DocDataLoggedIn.aspx.cs">
+      <DependentUpon>DocDataLoggedIn.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DocDataLoggedIn.aspx.designer.cs">
+      <DependentUpon>DocDataLoggedIn.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PaymentMobile.aspx.cs">
       <DependentUpon>PaymentMobile.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -293,7 +293,7 @@ namespace safe_online_sdk_dotnet
                     // compounded
                     Compound compound = (Compound)attribute.getValue();
                     List<AttributeType> members = new List<AttributeType>();
-                    foreach (AttributeSDK member in compound.getMembers())
+                    foreach (AttributeSDK member in compound.members)
                     {
                         AttributeType memberAttributeType = new AttributeType();
                         memberAttributeType.Name = member.getAttributeName();

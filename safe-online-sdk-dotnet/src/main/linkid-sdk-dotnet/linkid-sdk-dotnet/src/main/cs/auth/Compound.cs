@@ -6,19 +6,17 @@ namespace safe_online_sdk_dotnet
 {
     public class Compound
     {
-        private List<AttributeSDK> members;
+        public Dictionary<String, AttributeSDK> membersMap { get; set; }
+        public List<AttributeSDK> members { get; set; }
 
         public Compound(List<AttributeSDK> members)
         {
             this.members = members;
-        }
-
-        /**
-         * @return list of this compound value's members
-         */
-        public List<AttributeSDK> getMembers()
-        {
-            return members;
+            membersMap = new Dictionary<string,AttributeSDK>();
+            foreach (AttributeSDK member in members)
+            {
+                membersMap.Add(member.getAttributeName(), member);
+            }
         }
 
     }

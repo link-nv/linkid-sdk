@@ -37,7 +37,7 @@ namespace linkid_example
         public static string LINKID_HOST = "192.168.5.14:8443";
 
         // location of this page, linkID will post its authentication response back to this location.
-        private static string LOGINPAGE_LOCATION = "http://localhost:49162/LinkIDLogin.aspx";
+        private static string LOGINPAGE_LOCATION = "http://localhost:53825/LinkIDLogin.aspx";
 
         // application details
         public static string APP_NAME = "demo-test";
@@ -74,6 +74,10 @@ namespace linkid_example
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Allow any SSL certficate
+            ServicePointManager.ServerCertificateValidationCallback =
+                new RemoteCertificateValidationCallback(WCFUtil.AnyCertificateValidationCallback);
+
             // Load applications's keypair and linkID's certificate
             RSACryptoServiceProvider applicationKey = KeyStoreUtil.GetPrivateKeyFromPem(KEY_APP, true);
             X509Certificate2 applicationCert = new X509Certificate2(CERT_APP);
