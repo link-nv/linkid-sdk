@@ -29,9 +29,6 @@ namespace safe_online_sdk_dotnet
 		
         public NotificationProducerClientImpl(string location, X509Certificate2 appCertificate, X509Certificate2 linkidCertificate)
 		{
-			ServicePointManager.ServerCertificateValidationCallback = 
-				new RemoteCertificateValidationCallback(WCFUtil.AnyCertificateValidationCallback);
-			
 			string address = "https://" + location + "/linkid-ws/producer";
 			EndpointAddress remoteAddress = new EndpointAddress(address);
 					

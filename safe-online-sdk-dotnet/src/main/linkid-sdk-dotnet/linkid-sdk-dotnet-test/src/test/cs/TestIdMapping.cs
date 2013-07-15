@@ -15,6 +15,12 @@ namespace safe_online_sdk_dotnet.test.cs
 	[TestFixture]
 	public class TestIdMapping
 	{
+        [SetUp]
+        public void Init()
+        {
+            TestConstants.initForDevelopment();
+        }
+
 		[Test]
 		public void TestGetUserId()
 		{

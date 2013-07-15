@@ -45,6 +45,12 @@ namespace safe_online_sdk_dotnet_test.test.cs
 
         private string userId = null;
 
+        [SetUp]
+        public void Init()
+        {
+            TestConstants.initForDevelopment();
+        }
+
         [Test]
         public void StartWebServer()
         {

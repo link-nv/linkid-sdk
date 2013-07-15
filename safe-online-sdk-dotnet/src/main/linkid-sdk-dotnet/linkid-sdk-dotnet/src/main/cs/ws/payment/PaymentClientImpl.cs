@@ -28,9 +28,6 @@ namespace safe_online_sdk_dotnet
 
         public PaymentClientImpl(string location, X509Certificate2 appCertificate, X509Certificate2 linkidCertificate)
 		{			
-			ServicePointManager.ServerCertificateValidationCallback = 
-				new RemoteCertificateValidationCallback(WCFUtil.AnyCertificateValidationCallback);
-			
 			string address = "https://" + location + "/linkid-ws/payment";
 			EndpointAddress remoteAddress = new EndpointAddress(address);
 

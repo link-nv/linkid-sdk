@@ -24,6 +24,12 @@ namespace safe_online_sdk_dotnet.test.cs
 	[TestFixture]
 	public class TestNotificationClient
 	{
+        [SetUp]
+        public void Init()
+        {
+            TestConstants.initForDevelopment();
+        }
+
 		[Test]
 		public void testSubscribeUnsubscribe() {
 			string testAddress = "test-address";
