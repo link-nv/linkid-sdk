@@ -25,7 +25,9 @@ namespace safe_online_sdk_dotnet.test.cs
         [Test]
         public void TestDataWS()
         {
-            String attributeName = "guido.data.test.attribute";
+            String attributeName = "profile.familyName";
+            String value = "Family Name";
+            String value2 = "Family Name 2";
 
             X509Certificate2 appCertificate = KeyStoreUtil.loadCertificate(TestConstants.testPfxPath, TestConstants.testPfxPassword, false);
             X509Certificate2 linkidCertificate = new X509Certificate2(TestConstants.linkidCertPath);
@@ -42,22 +44,22 @@ namespace safe_online_sdk_dotnet.test.cs
             dataClient.removeAttributes(userId, attributeName); 
 
             // Create
-            AttributeSDK attributeSDK = new AttributeSDK(null, attributeName, true);
+            AttributeSDK attributeSDK = new AttributeSDK(null, attributeName, value);
             dataClient.createAttribute(userId, attributeSDK);
 
             // Get
             List<AttributeSDK> attributes = dataClient.getAttributes(userId, attributeName);
             Assert.AreEqual(1, attributes.Count);
-            Assert.AreEqual(true, (Boolean)attributes[0].getValue());
+            Assert.AreEqual(value, (String)attributes[0].getValue());
 
             // Set
-            attributeSDK.setValue(false);
+            attributeSDK.setValue(value2);
             dataClient.setAttributeValue(userId, attributeSDK);
 
             // Get
             attributes = dataClient.getAttributes(userId, attributeName);
             Assert.AreEqual(1, attributes.Count);
-            Assert.AreEqual(false, (Boolean)attributes[0].getValue());
+            Assert.AreEqual(value2, (String)attributes[0].getValue());
 
             // Delete
             dataClient.removeAttributes(userId, attributeName);

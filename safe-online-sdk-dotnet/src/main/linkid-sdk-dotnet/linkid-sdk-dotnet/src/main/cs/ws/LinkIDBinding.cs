@@ -30,6 +30,7 @@ namespace safe_online_sdk_dotnet
 			string cn = issuer[0].Split('=')[1];
 			
 			HttpsTransportBindingElement httpsTransport = new HttpsTransportBindingElement();
+            httpsTransport.MaxReceivedMessageSize = 2147483647;
 			TextMessageEncodingBindingElement encoding = new TextMessageEncodingBindingElement();
 			encoding.MessageVersion = MessageVersion.Soap11;
 
@@ -40,7 +41,6 @@ namespace safe_online_sdk_dotnet
 			securityBinding.AllowSerializedSigningTokenOnReply = true;
 			securityBinding.SecurityHeaderLayout = SecurityHeaderLayout.Lax;
             securityBinding.EnableUnsecuredResponse = true;
-
 
 			this.bindingElements = new BindingElementCollection();
 			this.bindingElements.Add(securityBinding);
