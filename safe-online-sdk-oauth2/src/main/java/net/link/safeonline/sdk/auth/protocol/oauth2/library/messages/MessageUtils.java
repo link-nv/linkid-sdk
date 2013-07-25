@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 22/03/12
  * Time: 16:34
@@ -36,8 +35,7 @@ public class MessageUtils {
     private static final Gson gson;
 
     static {
-        GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping()
-                                                   .setFieldNamingPolicy( FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES );
+        GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping().setFieldNamingPolicy( FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES );
 
         if (LOG.isDebugEnabled())
             gsonBuilder.setPrettyPrinting();
@@ -243,9 +241,8 @@ public class MessageUtils {
      * Send an oauth response message (authorization code, access token, error message) back to the client
      * via user-agent redirect.
      */
-    public static void sendRedirectMessage(final String redirectUri, ResponseMessage responseMessage,
-                                           final HttpServletResponse servletResponse, ClientConfiguration.FlowType flowType,
-                                           boolean codeInBody)
+    public static void sendRedirectMessage(final String redirectUri, ResponseMessage responseMessage, final HttpServletResponse servletResponse,
+                                           ClientConfiguration.FlowType flowType, boolean codeInBody)
             throws IOException {
 
         if (null == responseMessage) {
@@ -351,9 +348,8 @@ public class MessageUtils {
      * @param trustedSslCertificate ssl certificate to trust. May be null, in which case all certificates are trusted. Only for testing!
      */
     @Nullable
-    public static ResponseMessage sendRequestMessage(String endpoint, RequestMessage requestMessage,
-                                                     final X509Certificate trustedSslCertificate, @Nullable String clientId, @Nullable
-    String clientSecret)
+    public static ResponseMessage sendRequestMessage(String endpoint, RequestMessage requestMessage, final X509Certificate trustedSslCertificate,
+                                                     @Nullable String clientId, @Nullable String clientSecret)
             throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 
         // using HTTP(s)URlConnection here to avoid additional dependencies, but httpclient 4 might be faster
@@ -392,18 +388,16 @@ public class MessageUtils {
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
             contentWriter = new PrintWriter( connection.getOutputStream() );
             contentWriter.write( String.format( "grant_type=%s", ((AccessTokenRequest) requestMessage).getGrantType().toString() ) );
-            contentWriter.write(
-                    String.format( "&code=%s", URLEncoder.encode( ((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) ) );
+            contentWriter.write( String.format( "&code=%s", URLEncoder.encode( ((AccessTokenRequest) requestMessage).getCode(), "UTF-8" ) ) );
             if (((AccessTokenRequest) requestMessage).getRedirectUri() != null)
-                contentWriter.write( String.format( "&redirect_uri=%s",
-                        URLEncoder.encode( ((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) ) );
+                contentWriter.write(
+                        String.format( "&redirect_uri=%s", URLEncoder.encode( ((AccessTokenRequest) requestMessage).getRedirectUri(), "UTF-8" ) ) );
         } else if (requestMessage instanceof ValidationRequest) {
             if (!stringEmpty( clientSecret )) {
                 connection.setRequestProperty( "Authorization", "Basic " + encodeBasicHttpAuth( clientId, clientSecret ) );
             }
             connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded; charset=UTF-8" );
-            String content = String.format( "access_token=%s",
-                    URLEncoder.encode( ((ValidationRequest) requestMessage).getAccessToken(), "UTF-8" ) );
+            String content = String.format( "access_token=%s", URLEncoder.encode( ((ValidationRequest) requestMessage).getAccessToken(), "UTF-8" ) );
             contentWriter = new PrintWriter( connection.getOutputStream() );
             contentWriter.write( content );
         } else {
@@ -433,8 +427,8 @@ public class MessageUtils {
     /**
      * Sends a request message to the authorization server, using user-agent redirection
      */
-    public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
-                                           final HttpServletResponse servletResponse, boolean paramsInBody)
+    public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage, final HttpServletResponse servletResponse,
+                                           boolean paramsInBody)
             throws IOException {
 
         sendRedirectMessage( redirectUri, requestMessage, servletResponse, paramsInBody, Collections.<String>emptyList() );
@@ -444,9 +438,8 @@ public class MessageUtils {
      * Sends a request message to the authorization server, using user-agent redirection. Allows additional (non-oauth)
      * parameters to be added ( alternate the names and values in the list, ie {"paramname", "value", "paramname2", "value2" } )
      */
-    public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage,
-                                           final HttpServletResponse servletResponse, boolean paramsInBody,
-                                           final List<String> additionalParams)
+    public static void sendRedirectMessage(final String redirectUri, RequestMessage requestMessage, final HttpServletResponse servletResponse,
+                                           boolean paramsInBody, final List<String> additionalParams)
             throws IOException {
 
         if (null == requestMessage) {
@@ -507,18 +500,16 @@ public class MessageUtils {
         LOG.debug( "checking http for TLS and correct methods" );
 
         String xForwardedProto = request.getHeader( "X-Forwarded-Proto" );
-        if (request.getScheme().toLowerCase().equals( HttpScheme.HTTPS )
-            || !StringUtils.isEmpty( xForwardedProto ) && xForwardedProto.contains( HttpScheme.HTTPS )) {
+        if (request.getScheme().toLowerCase().equals( HttpScheme.HTTPS ) || !StringUtils.isEmpty( xForwardedProto ) && xForwardedProto.contains(
+                HttpScheme.HTTPS )) {
 
-            if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod()
-                                                                                              .equalsIgnoreCase(
-                                                                                                      HttpMethod.POST.toString() )
+            if (!request.getMethod().equalsIgnoreCase( HttpMethod.GET.toString() ) && !request.getMethod().equalsIgnoreCase( HttpMethod.POST.toString() )
                 && !request.getMethod().equalsIgnoreCase( HttpMethod.PUT.toString() )) {
                 throw new OAuthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
             }
         } else {
             LOG.warn( String.format( "TLS is recommended: request.scheme=%s,  X-Forwarded-Proto=%s", request.getScheme(),
-                            request.getHeader( "X-Forwarded-Proto" ) ) );
+                    request.getHeader( "X-Forwarded-Proto" ) ) );
         }
     }
 

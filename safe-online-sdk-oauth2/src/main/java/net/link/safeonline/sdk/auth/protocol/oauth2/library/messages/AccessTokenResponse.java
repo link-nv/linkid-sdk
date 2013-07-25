@@ -4,14 +4,13 @@ import java.util.List;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 22/03/12
  * Time: 16:54
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
-public class AccessTokenResponse implements ResponseMessage{
+public class AccessTokenResponse implements ResponseMessage {
 
     protected String accessToken;
 

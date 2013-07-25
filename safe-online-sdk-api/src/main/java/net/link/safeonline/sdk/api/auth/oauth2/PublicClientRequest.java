@@ -5,12 +5,11 @@ import java.util.Date;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 08/06/12
  * Time: 10:22
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class PublicClientRequest implements Serializable {
 
@@ -30,8 +29,8 @@ public class PublicClientRequest implements Serializable {
 
     }
 
-    public PublicClientRequest(final String clientAccessEntityId, final String deviceSpecificName, final long applicationId,
-                               final long clientConfigurationId, final String clientConfigurationFriendlyName, Date created) {
+    public PublicClientRequest(final String clientAccessEntityId, final String deviceSpecificName, final long applicationId, final long clientConfigurationId,
+                               final String clientConfigurationFriendlyName, Date created) {
 
         this.clientAccessEntityId = clientAccessEntityId;
         this.deviceSpecificName = deviceSpecificName;
@@ -40,8 +39,6 @@ public class PublicClientRequest implements Serializable {
         this.clientConfigurationFriendlyName = clientConfigurationFriendlyName;
         this.created = created;
     }
-
-
 
     public Date getCreated() {
 
@@ -102,5 +99,4 @@ public class PublicClientRequest implements Serializable {
 
         this.clientConfigurationFriendlyName = clientConfigurationFriendlyName;
     }
-
 }

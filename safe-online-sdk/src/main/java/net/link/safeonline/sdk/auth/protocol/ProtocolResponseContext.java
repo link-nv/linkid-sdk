@@ -6,8 +6,8 @@ import net.link.util.common.CertificateChain;
 
 
 /**
- * <h2>{@link ProtocolResponseContext}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <h2>{@link ProtocolResponseContext}<br> <sub>[in short].</sub></h2>
+ * <p/>
  * <p> <i>08 19, 2010</i> </p>
  *
  * @author lhunath
@@ -15,7 +15,7 @@ import net.link.util.common.CertificateChain;
 public class ProtocolResponseContext extends ProtocolContext {
 
     private final ProtocolRequestContext request;
-    private final CertificateChain certificateChain;
+    private final CertificateChain       certificateChain;
 
     /**
      * @param request          The request that caused this response.
@@ -41,6 +41,7 @@ public class ProtocolResponseContext extends ProtocolContext {
      *         <code>null</code> if this was not the case.
      */
     public CertificateChain getCertificateChain() {
+
         return certificateChain;
     }
 }

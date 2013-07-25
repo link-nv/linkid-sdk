@@ -8,7 +8,6 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.*;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 03/05/12
  * Time: 13:37
@@ -26,8 +25,7 @@ public class RequiredFieldsValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest,
-                         final ClientConfiguration clientConfiguration)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
         requiredField( request.getGrantType(), OAuth2Message.GRANT_TYPE );
@@ -62,8 +60,7 @@ public class RequiredFieldsValidator extends AbstractValidator {
     }
 
     @Override
-    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest,
-                         final ClientConfiguration clientConfiguration)
+    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
         requiredField( request.getAccessToken(), OAuth2Message.ACCESS_TOKEN );

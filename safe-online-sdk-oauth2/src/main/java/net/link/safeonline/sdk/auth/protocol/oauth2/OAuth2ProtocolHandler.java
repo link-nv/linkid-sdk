@@ -29,7 +29,6 @@ import org.joda.time.DateTime;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 09/05/12
  * Time: 14:46

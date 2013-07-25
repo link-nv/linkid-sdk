@@ -1,23 +1,21 @@
 package net.link.safeonline.sdk.auth.protocol;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
-import java.security.cert.X509Certificate;
-import java.util.List;
 import net.link.util.common.CertificateChain;
 
 
 /**
- * <h2>{@link LogoutProtocolRequestContext}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <h2>{@link LogoutProtocolRequestContext}<br> <sub>[in short].</sub></h2>
+ * <p/>
  * <p> <i>08 17, 2010</i> </p>
  *
  * @author lhunath
  */
 public class LogoutProtocolRequestContext extends ProtocolRequestContext {
 
-    private final String                userId;
-    private CertificateChain certificateChain;
+    private final String           userId;
+    private       CertificateChain certificateChain;
 
     /**
      * @param id              ID of the Logout Request.
@@ -44,6 +42,7 @@ public class LogoutProtocolRequestContext extends ProtocolRequestContext {
      * @return optional certificate chain embedded in the logout request's signature.
      */
     public CertificateChain getCertificateChain() {
+
         return certificateChain;
     }
 
@@ -51,6 +50,7 @@ public class LogoutProtocolRequestContext extends ProtocolRequestContext {
      * @param certificateChain optional certificate chain embedded in the logout request's signature.
      */
     public void setCertificateChain(final CertificateChain certificateChain) {
+
         this.certificateChain = certificateChain;
     }
 }

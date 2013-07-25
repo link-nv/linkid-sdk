@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 16/05/12
  * Time: 11:46
@@ -68,8 +67,7 @@ public class OAuth2TokenValidationHandler {
      * @param expectedAudience expected application the token is for
      * @param forceRefresh     don't look at the cache, but contact linkid for validation
      */
-    public boolean validateAccessToken(String accessToken, @Nullable String expectedUserId, @Nullable String expectedAudience,
-                                       boolean forceRefresh) {
+    public boolean validateAccessToken(String accessToken, @Nullable String expectedUserId, @Nullable String expectedAudience, boolean forceRefresh) {
 
         if (alwaysRefresh || forceRefresh || !cache.containsKey( accessToken )) {
             boolean validToken = true;
@@ -115,8 +113,8 @@ public class OAuth2TokenValidationHandler {
         }
 
         CacheEntry entry = cache.get( accessToken );
-        return entry.valid && entry.expirationDate.after( new Date() ) && (expectedUserId == null || expectedUserId.equals( entry.userId ))
-               && (expectedAudience == null || expectedAudience.equals( entry.audience ));
+        return entry.valid && entry.expirationDate.after( new Date() ) && (expectedUserId == null || expectedUserId.equals( entry.userId )) && (
+                expectedAudience == null || expectedAudience.equals( entry.audience ));
     }
 
     /**

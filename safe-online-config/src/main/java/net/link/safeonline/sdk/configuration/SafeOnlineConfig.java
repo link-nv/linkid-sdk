@@ -5,8 +5,8 @@ import net.link.util.config.RootConfig;
 
 /**
  * <h2>{@link SafeOnlineConfig}<br>
- * <sub>[in short] (TODO).</sub></h2>
- *
+ * <sub>[in short].</sub></h2>
+ * <p/>
  * <p>
  * <i>09 14, 2010</i>
  * </p>

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 
 /**
- * <h2>{@link LinkIDContext}<br> <sub>[in short] (TODO).</sub></h2>
+ * <h2>{@link LinkIDContext}<br> <sub>[in short].</sub></h2>
  * <p/>
  * <p> <i>09 17, 2010</i> </p>
  *
@@ -96,8 +96,8 @@ public abstract class LinkIDContext implements Serializable {
      *
      * @see #LinkIDContext(String, String, KeyProvider, String, String, Locale, String, Void)
      */
-    protected LinkIDContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider,
-                            @Nullable String sessionTrackingId, @Nullable String themeName, @Nullable Locale language, String target) {
+    protected LinkIDContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider, @Nullable String sessionTrackingId,
+                            @Nullable String themeName, @Nullable Locale language, String target) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
             @NotNull
@@ -109,8 +109,8 @@ public abstract class LinkIDContext implements Serializable {
         } ), sessionTrackingId, themeName, language, target, null );
     }
 
-    private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider, String sessionTrackingId,
-                          String themeName, Locale language, String target, @Nullable Void v) {
+    private LinkIDContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider, String sessionTrackingId, String themeName,
+                          Locale language, String target, @Nullable Void v) {
 
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
@@ -145,12 +145,12 @@ public abstract class LinkIDContext implements Serializable {
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
      *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
-    protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                            X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
-                            String sessionTrackingId, String themeName, Locale language, String target, @Nullable Protocol protocol) {
+    protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+                            Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate, String sessionTrackingId, String themeName,
+                            Locale language, String target, @Nullable Protocol protocol) {
 
-        this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
-                sessionTrackingId, themeName, language, target, protocol, null );
+        this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, sessionTrackingId,
+                themeName, language, target, protocol, null );
     }
 
     /**
@@ -185,10 +185,9 @@ public abstract class LinkIDContext implements Serializable {
      *                                wether or not authorisation responses should try to break out of an iframe (needed when showing the
      *                                login inside an iframe). If {@code null}, will default to redirect mode.
      */
-    protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                            X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
-                            String sessionTrackingId, String themeName, Locale language, String target, Protocol protocol,
-                            @Nullable LoginMode loginMode) {
+    protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+                            Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate, String sessionTrackingId, String themeName,
+                            Locale language, String target, Protocol protocol, @Nullable LoginMode loginMode) {
 
         saml = new SAMLContext();
         openID = new OpenIDContext( sslCertificate );
@@ -372,8 +371,7 @@ public abstract class LinkIDContext implements Serializable {
     public String toString() {
 
         return String.format( "{app=%s, dn=%s, session=%s, themeName=%s, target=%s, protocol=%s}", //
-                getApplicationName(), getApplicationCertificate().getSubjectDN(), getSessionTrackingId(), getThemeName(), getTarget(),
-                getProtocol() );
+                getApplicationName(), getApplicationCertificate().getSubjectDN(), getSessionTrackingId(), getThemeName(), getTarget(), getProtocol() );
     }
 
     public static class SAMLContext implements Serializable {

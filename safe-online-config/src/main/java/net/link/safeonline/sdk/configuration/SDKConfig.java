@@ -2,8 +2,8 @@ package net.link.safeonline.sdk.configuration;
 
 /**
  * <h2>{@link SDKConfig}<br>
- * <sub>[in short] (TODO).</sub></h2>
- *
+ * <sub>[in short].</sub></h2>
+ * <p/>
  * <p>
  * <i>09 14, 2010</i>
  * </p>

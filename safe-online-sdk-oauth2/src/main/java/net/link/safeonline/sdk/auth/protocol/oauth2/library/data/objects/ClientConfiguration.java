@@ -5,20 +5,19 @@ import java.util.List;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 19/03/12
  * Time: 14:39
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
-public class ClientConfiguration implements Serializable{
+public class ClientConfiguration implements Serializable {
 
-    protected boolean confidential;
-    protected String clientId;
-    protected String clientSecret;
-    protected List<String> redirectUris;
-    protected List<String> configuredScope;
+    protected boolean        confidential;
+    protected String         clientId;
+    protected String         clientSecret;
+    protected List<String>   redirectUris;
+    protected List<String>   configuredScope;
     protected List<FlowType> allowedFlows;
 
     /**
@@ -29,6 +28,7 @@ public class ClientConfiguration implements Serializable{
     protected long defaultCodeLifeTime;
     protected long defaultAccessTokenLifeTime;
     protected long defaultRefreshTokenLifeTime;
+
 
     public static enum FlowType {AUTHORIZATION, IMPLICIT, RESOURCE_CREDENTIALS, CLIENT_CREDENTIALS}
 

@@ -4,7 +4,7 @@ import net.link.util.config.ConfigHolder;
 
 
 /**
- * <h2>{@link SDKConfigHolder}<br> <sub>[in short] (TODO).</sub></h2>
+ * <h2>{@link SDKConfigHolder}<br> <sub>[in short].</sub></h2>
  * <p/>
  * <p> <i>09 17, 2010</i> </p>
  *

@@ -4,19 +4,18 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.OAuth2Message;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 23/03/12
  * Time: 14:41
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
-public class ErrorResponse implements ResponseMessage{
+public class ErrorResponse implements ResponseMessage {
 
     protected OAuth2Message.ErrorType errorType; //required
-    protected String errorDescription; //optional
-    protected String errorUri; //optional
-    protected String state; //required if included in request
+    protected String                  errorDescription; //optional
+    protected String                  errorUri; //optional
+    protected String                  state; //required if included in request
 
     public ErrorResponse() {
 

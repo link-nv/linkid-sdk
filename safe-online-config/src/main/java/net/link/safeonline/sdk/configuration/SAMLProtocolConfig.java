@@ -6,7 +6,7 @@ import net.link.util.config.Property;
 
 /**
  * <h2>{@link SAMLProtocolConfig}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>[in short].</sub></h2>
  * <p/>
  * <p>
  * <i>09 16, 2010</i>

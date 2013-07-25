@@ -21,7 +21,7 @@ import org.joda.time.Duration;
 
 
 /**
- * <h2>{@link SDKWSSecurityConfiguration}<br> <sub>[in short] (TODO).</sub></h2>
+ * <h2>{@link SDKWSSecurityConfiguration}<br> <sub>[in short].</sub></h2>
  * <p/>
  * <p> <i>03 31, 2011</i> </p>
  *
@@ -61,8 +61,7 @@ public class SDKWSSecurityConfiguration extends AbstractWSSecurityConfiguration 
             return true;
         }
         catch (CertPathValidatorException e) {
-            logger.dbg( e, "Couldn't trust certificate chain.\nChain:\n%s\nTrusted Certificates:\n%s", aCertificateChain,
-                    trustedCertificates );
+            logger.dbg( e, "Couldn't trust certificate chain.\nChain:\n%s\nTrusted Certificates:\n%s", aCertificateChain, trustedCertificates );
             return false;
         }
     }

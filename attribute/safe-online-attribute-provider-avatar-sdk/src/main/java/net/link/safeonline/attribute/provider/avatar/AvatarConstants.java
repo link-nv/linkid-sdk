@@ -1,12 +1,11 @@
 package net.link.safeonline.attribute.provider.avatar;
 
 /**
- * TODO description
  * <p/>
  * Date: 28/12/12
  * Time: 16:04
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public interface AvatarConstants {
 

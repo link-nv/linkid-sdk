@@ -2,10 +2,11 @@ package net.link.safeonline.sdk.configuration;
 
 import net.link.util.config.ConfigFilter;
 
+
 /**
  * <h2>{@link SDKConfigFilter}<br>
- * <sub>[in short] (TODO).</sub></h2>
- *
+ * <sub>[in short].</sub></h2>
+ * <p/>
  * <p>
  * <i>09 23, 2010</i>
  * </p>

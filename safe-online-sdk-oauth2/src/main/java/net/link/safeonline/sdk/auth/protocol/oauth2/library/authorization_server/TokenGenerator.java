@@ -4,7 +4,6 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.data.objects.*;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 22/03/12
  * Time: 17:15

@@ -5,7 +5,6 @@ import java.util.Date;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 03/05/12
  * Time: 15:45
@@ -82,7 +81,6 @@ public class Token implements Serializable {
     @Override
     public String toString() {
 
-        return String.format( "%s{tokenData='%s', expirationDate=%s, invalid=%s}", getClass().getName(), tokenData, expirationDate,
-                invalid );
+        return String.format( "%s{tokenData='%s', expirationDate=%s, invalid=%s}", getClass().getName(), tokenData, expirationDate, invalid );
     }
 }

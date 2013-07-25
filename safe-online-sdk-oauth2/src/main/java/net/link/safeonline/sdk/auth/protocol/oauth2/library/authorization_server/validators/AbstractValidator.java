@@ -11,7 +11,6 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.*;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 04/05/12
  * Time: 10:49
@@ -28,15 +27,13 @@ public abstract class AbstractValidator implements Validator {
     }
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest,
-                         final ClientConfiguration clientConfiguration)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
     }
 
     @Override
-    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest,
-                         final ClientConfiguration clientConfiguration)
+    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
     }
@@ -60,8 +57,7 @@ public abstract class AbstractValidator implements Validator {
     protected void requiredField(Object field, String name)
             throws OAuthException {
 
-        if (field == null || (field instanceof String && "".equals( field.toString() )) || (field instanceof Collection
-                                                                                            && ((Collection) field).size() == 0))
+        if (field == null || (field instanceof String && "".equals( field.toString() )) || (field instanceof Collection && ((Collection) field).size() == 0))
             throw new OAuthInvalidMessageException( "Missing field: " + name );
     }
 }

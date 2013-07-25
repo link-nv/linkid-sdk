@@ -1,12 +1,11 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.library.messages;
 
 /**
- * TODO description
  * <p/>
  * Date: 07/05/12
  * Time: 11:22
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class ValidationRequest implements RequestMessage {
 

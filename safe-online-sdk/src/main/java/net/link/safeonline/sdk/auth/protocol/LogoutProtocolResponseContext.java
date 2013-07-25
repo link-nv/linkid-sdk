@@ -4,8 +4,8 @@ import net.link.util.common.CertificateChain;
 
 
 /**
- * <h2>{@link LogoutProtocolResponseContext}<br> <sub>[in short] (TODO).</sub></h2>
- *
+ * <h2>{@link LogoutProtocolResponseContext}<br> <sub>[in short].</sub></h2>
+ * <p/>
  * <p> <i>08 17, 2010</i> </p>
  *
  * @author lhunath
@@ -21,8 +21,7 @@ public class LogoutProtocolResponseContext extends ProtocolResponseContext {
      * @param certificateChain Optional certificate chain if protocol response was signed and contained the chain embedded in the
      *                         signature.
      */
-    public LogoutProtocolResponseContext(LogoutProtocolRequestContext request, String id, boolean success,
-                                         CertificateChain certificateChain) {
+    public LogoutProtocolResponseContext(LogoutProtocolRequestContext request, String id, boolean success, CertificateChain certificateChain) {
 
         super( request, id, certificateChain );
 

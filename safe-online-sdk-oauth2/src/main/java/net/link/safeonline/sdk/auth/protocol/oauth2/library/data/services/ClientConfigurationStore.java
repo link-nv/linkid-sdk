@@ -5,17 +5,16 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.exceptions.ClientNot
 
 
 /**
- * TODO description
  * <p/>
  * Date: 19/03/12
  * Time: 14:39
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public interface ClientConfigurationStore {
-    
-    public ClientConfiguration getClient(String client_id) throws ClientNotFoundException;
-    
-    public boolean containsClient(String client_id);
 
+    public ClientConfiguration getClient(String client_id)
+            throws ClientNotFoundException;
+
+    public boolean containsClient(String client_id);
 }

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 
 /**
- * <h2>{@link AuthenticationContext}<br> <sub>[in short] (TODO).</sub></h2>
+ * <h2>{@link AuthenticationContext}<br> <sub>[in short].</sub></h2>
  * <p/>
  * <p> <i>09 17, 2010</i> </p>
  *
@@ -68,8 +68,8 @@ public class LogoutContext extends LinkIDContext {
      *
      * @see #LogoutContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, String, String, Locale, String, Protocol)
      */
-    public LogoutContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider,
-                         @Nullable String sessionTrackingId, @Nullable String themeName, @Nullable Locale language, String target) {
+    public LogoutContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider, @Nullable String sessionTrackingId,
+                         @Nullable String themeName, @Nullable Locale language, String target) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
             @NotNull
@@ -80,8 +80,8 @@ public class LogoutContext extends LinkIDContext {
         } ), sessionTrackingId, themeName, language, target, null );
     }
 
-    private LogoutContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider,
-                          String sessionTrackingId, String themeName, Locale language, String target, @Nullable Void v) {
+    private LogoutContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider, String sessionTrackingId, String themeName,
+                          Locale language, String target, @Nullable Void v) {
 
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
@@ -117,13 +117,12 @@ public class LogoutContext extends LinkIDContext {
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
      *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
-    public LogoutContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
-                         X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates,
-                         X509Certificate sslCertificate, String sessionTrackingId, String themeName, Locale language, String target,
-                         @Nullable Protocol protocol) {
+    public LogoutContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+                         Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate, String sessionTrackingId, String themeName,
+                         Locale language, String target, @Nullable Protocol protocol) {
 
-        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate,
-                sessionTrackingId, themeName, language, target, protocol );
+        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, sessionTrackingId,
+                themeName, language, target, protocol );
     }
 
     @Override

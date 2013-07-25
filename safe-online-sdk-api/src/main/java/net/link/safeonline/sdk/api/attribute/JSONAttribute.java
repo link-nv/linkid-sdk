@@ -1,24 +1,22 @@
 package net.link.safeonline.sdk.api.attribute;
 
-import java.util.Date;
 import java.util.List;
 
 
 /**
- * TODO description
  * <p/>
  * Date: 14/05/12
  * Time: 10:44
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class JSONAttribute {
 
-    private       String id;
-    private       String name;
-    private       DataType type;
-    private       String value;
-    private       List<JSONAttribute> members;
+    private String              id;
+    private String              name;
+    private DataType            type;
+    private String              value;
+    private List<JSONAttribute> members;
 
     public String getId() {
 
