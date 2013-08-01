@@ -7,6 +7,7 @@ import net.link.safeonline.sdk.api.attribute.AttributeType;
 import net.link.safeonline.sdk.api.attribute.DataType;
 
 
+@SuppressWarnings("UnusedDeclaration")
 public class LinkIDAttribute implements Serializable {
 
     private final AttributeType attributeType;
@@ -27,9 +28,9 @@ public class LinkIDAttribute implements Serializable {
     // state info
     private boolean removed;
 
-    public LinkIDAttribute(final String id, final AttributeType attributeType, final String friendlyName, final String groupName,
-                           final boolean anonymous, final boolean optional, final boolean confirmationNeeded, final boolean confirmed,
-                           final Object value, final List<LinkIDAttribute> members) {
+    public LinkIDAttribute(final String id, final AttributeType attributeType, final String friendlyName, final String groupName, final boolean anonymous,
+                           final boolean optional, final boolean confirmationNeeded, final boolean confirmed, final Object value,
+                           final List<LinkIDAttribute> members) {
 
         this.id = id;
         this.attributeType = attributeType;
@@ -46,14 +47,14 @@ public class LinkIDAttribute implements Serializable {
 
     // helper methods
 
-    public LinkIDAttribute getTemplate() {
+    public LinkIDAttribute createTemplate() {
 
-        LinkIDAttribute templateAttribute = new LinkIDAttribute( null, attributeType, friendlyName, groupName, anonymous, optional,
-                confirmationNeeded, confirmed, null, null );
+        LinkIDAttribute templateAttribute = new LinkIDAttribute( null, attributeType, friendlyName, groupName, anonymous, optional, confirmationNeeded,
+                confirmed, null, null );
         if (templateAttribute.getAttributeType().isCompound()) {
             List<LinkIDAttribute> templateMembers = new LinkedList<LinkIDAttribute>();
             for (LinkIDAttribute member : members) {
-                templateMembers.add( member.getTemplate() );
+                templateMembers.add( member.createTemplate() );
             }
             templateAttribute.setMembers( templateMembers );
         }
