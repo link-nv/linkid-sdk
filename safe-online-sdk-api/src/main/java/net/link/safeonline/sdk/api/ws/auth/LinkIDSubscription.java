@@ -9,6 +9,7 @@ import java.util.List;
 public class LinkIDSubscription implements Serializable {
 
     private final long    id;
+    private final String  name;
     private final String  friendlyName;
     private final String  encodedDescription;
     private final String  url;
@@ -24,12 +25,13 @@ public class LinkIDSubscription implements Serializable {
     private final String encodedUA;
     private final Date   lastUsageConfirmation;
 
-    public LinkIDSubscription(final long id, final String friendlyName, final String encodedDescription, final String url,
+    public LinkIDSubscription(final long id, final String name, final String friendlyName, final String encodedDescription, final String url,
                               final boolean canUnsubscribe, final String logo, final Date lastLogin, final int authentications,
                               final List<LinkIDAttribute> identity, final Date lastIdentityConfirmation, final String encodedUA,
                               final Date lastUsageConfirmation) {
 
         this.id = id;
+        this.name = name;
         this.friendlyName = friendlyName;
         this.encodedDescription = encodedDescription;
         this.url = url;
@@ -49,6 +51,11 @@ public class LinkIDSubscription implements Serializable {
     public long getId() {
 
         return id;
+    }
+
+    public String getName() {
+
+        return name;
     }
 
     public String getFriendlyName() {
