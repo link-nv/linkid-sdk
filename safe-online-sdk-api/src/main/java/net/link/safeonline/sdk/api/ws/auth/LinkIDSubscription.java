@@ -19,7 +19,7 @@ public class LinkIDSubscription implements Serializable {
     private final Date lastLogin;
     private final int  authentications;
 
-    private final List<LinkIDAttribute> identity;
+    private       List<LinkIDAttribute> identity;
     private final Date                  lastIdentityConfirmation;
 
     private final String encodedUA;
@@ -96,6 +96,11 @@ public class LinkIDSubscription implements Serializable {
     public List<LinkIDAttribute> getIdentity() {
 
         return identity;
+    }
+
+    public void setIdentity(final List<LinkIDAttribute> identity) {
+
+        this.identity = identity;
     }
 
     public Date getLastIdentityConfirmation() {

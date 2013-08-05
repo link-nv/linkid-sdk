@@ -483,6 +483,7 @@
 
         <module>safe-online-sdk-example-jsp</module>
         <module>safe-online-sdk-example-wicket</module>
+        <module>safe-online-sdk-example-mobile</module>
 
         <module>device</module>
         <module>attribute</module>

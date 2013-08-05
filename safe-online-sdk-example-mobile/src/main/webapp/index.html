@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl" lang="nl">
+    <head>
+        <title>linkID Mobile Example</title>
+    </head>
+
+    <body>
+
+        <div class="linkid-login">
+            <iframe id="linkid" style="display: none;" class="linkid-frame"></iframe>
+        </div>
+        <div class="linkid-login-link">
+            <a id="linkid-login-link" class="linkid-login" data-login-href="./startlogin" data-mobile-minimal="linkid"
+               data-completion-href="./authenticated.jsp" data-start-on-load="true">Start</a>
+        </div>
+
+        <div>
+            <a href="https://itunes.apple.com/us/app/linkid-for-mobile/id522371545?mt=8" target="_blank">
+                <img src="./images/appstore.png">
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=net.link.qr" target="_blank">
+                <img src="./images/playstore.png">
+            </a>
+        </div>
+
+        <!-- linkID JS -->
+        <script type="text/javascript" id="linkid-login-script" src="https://demo.linkid.be/linkid-static/js/linkid.js"></script>
+
+    </body>
+
+</html>
