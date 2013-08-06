@@ -339,8 +339,55 @@ latest() (
         [[ $file -nt $latest ]] && latest=$file
     done
     printf '%s\n' "$latest"
-)
+) # _____________________________________________________________________
 
+
+
+#  _______________________________________________________________________
+# |__ Iterate ____________________________________________________________|
+#
+#       iterate [command]
+#
+# All arguments to iterate make up a single command that will be executed.
+#
+# Any of the arguments may be of the format {x..y[..z]} which causes the command
+# to be executed in a loop, each iteration substituting the argument for the
+# current step the loop has reached from x to y.  We step from x to y by
+# walking from x's position in the ASCII character table to y's with a step of z
+# or 1 if z is not specified.
+#
+iterate() (
+    set -x
+    local command=( "$@" ) iterationCommand=() loop= a= arg= current=() step=() target=()
+    for a in "${!command[@]}"; do
+        arg=${command[a]}
+        if [[ $arg = '{'*'}' ]]; then
+            loop=${arg#'{'} loop=${loop%'}'}
+            step[a]=${loop#*..*..} current[a]=${loop%%..*} target[a]=${loop#*..} target[a]=${target[a]%.."${step[a]}"}
+            [[ ! ${step[a]} || ${step[a]} = $loop ]] && step[a]=1
+        fi
+    done
+    if (( ${#current[@]} )); then
+        for loop in "${!current[@]}"; do
+            while true; do
+                iterationCommand=()
+
+                for a in "${!command[@]}"; do
+                    (( a == loop )) \
+                        && iterationCommand+=( "${current[a]}" ) \
+                        || iterationCommand+=( "${command[a]}" )
+                done
+
+                iterate "${iterationCommand[@]}"
+
+                [[ ${current[loop]} = ${target[loop]} ]] && break
+                current[loop]="$(chr "$(( $(ord "${current[loop]}") + ${step[loop]} ))")"
+            done
+        done
+    else
+        "${command[@]}"
+    fi
+) # _____________________________________________________________________
 
 #  ______________________________________________________________________
 # |__ Logging ___________________________________________________________|
