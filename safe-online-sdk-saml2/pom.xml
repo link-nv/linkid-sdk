@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.2</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>SafeOnline SDK for SAML2.0</name>
@@ -59,12 +59,12 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
-            <version>2.2</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-ws</artifactId>
-            <version>2.2</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-container-test</artifactId>
-            <version>2.2</version>
+            <version>GIT-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
         <dependency>
