@@ -10,15 +10,15 @@ import net.link.safeonline.sdk.api.attribute.DataType;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDAttribute implements Serializable {
 
-    private final AttributeType attributeType;
+    private AttributeType attributeType;
 
     // identity info
-    private final String  friendlyName;
-    private final String  groupName;
-    private final boolean anonymous;
-    private final boolean optional;
-    private final boolean confirmationNeeded;
-    private       boolean confirmed;
+    private String  friendlyName;
+    private String  groupName;
+    private boolean anonymous;
+    private boolean optional;
+    private boolean confirmationNeeded;
+    private boolean confirmed;
 
     // value info
     private String                id;
@@ -27,6 +27,11 @@ public class LinkIDAttribute implements Serializable {
 
     // state info
     private boolean removed;
+
+    public LinkIDAttribute() {
+
+        this.members = new LinkedList<LinkIDAttribute>();
+    }
 
     public LinkIDAttribute(final String id, final AttributeType attributeType, final String friendlyName, final String groupName, final boolean anonymous,
                            final boolean optional, final boolean confirmationNeeded, final boolean confirmed, final Object value,
@@ -70,6 +75,7 @@ public class LinkIDAttribute implements Serializable {
             switch (attributeType.getType()) {
 
                 case STRING:
+                    //noinspection ConstantConditions
                     empty = 0 == ((String) value).length();
                     break;
                 case COMPOUNDED:
@@ -180,5 +186,35 @@ public class LinkIDAttribute implements Serializable {
     public void setRemoved(final boolean removed) {
 
         this.removed = removed;
+    }
+
+    public void setAttributeType(final AttributeType attributeType) {
+
+        this.attributeType = attributeType;
+    }
+
+    public void setFriendlyName(final String friendlyName) {
+
+        this.friendlyName = friendlyName;
+    }
+
+    public void setGroupName(final String groupName) {
+
+        this.groupName = groupName;
+    }
+
+    public void setAnonymous(final boolean anonymous) {
+
+        this.anonymous = anonymous;
+    }
+
+    public void setOptional(final boolean optional) {
+
+        this.optional = optional;
+    }
+
+    public void setConfirmationNeeded(final boolean confirmationNeeded) {
+
+        this.confirmationNeeded = confirmationNeeded;
     }
 }

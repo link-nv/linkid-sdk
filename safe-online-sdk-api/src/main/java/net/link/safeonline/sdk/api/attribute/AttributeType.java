@@ -5,21 +5,27 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+@SuppressWarnings("UnusedDeclaration")
 public class AttributeType implements Serializable {
 
-    private final String   name;
-    private final DataType type;
-    private final String   providerJndi;
-    private final boolean  userVisible;
-    private final boolean  userEditable;
-    private final boolean  userRemovable;
-    private final boolean  multivalued;
-    private final boolean  mappable;
+    private String   name;
+    private DataType type;
+    private String   providerJndi;
+    private boolean  userVisible;
+    private boolean  userEditable;
+    private boolean  userRemovable;
+    private boolean  multivalued;
+    private boolean  mappable;
 
     // only sensible for compounds
-    private final boolean             compoundMember;
-    private final boolean             required;
-    private final List<AttributeType> members;
+    private boolean             compoundMember;
+    private boolean             required;
+    private List<AttributeType> members;
+
+    public AttributeType() {
+
+        this.members = new LinkedList<AttributeType>();
+    }
 
     public AttributeType(final String name) {
 
@@ -36,14 +42,14 @@ public class AttributeType implements Serializable {
         this( name, dataType, null, false, false, false, multivalued, false, false, false );
     }
 
-    public AttributeType(String name, DataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean multivalued,
-                         boolean mappable, boolean required) {
+    public AttributeType(String name, DataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean multivalued, boolean mappable,
+                         boolean required) {
 
         this( name, type, providerJndi, userVisible, userEditable, false, multivalued, mappable, false, required );
     }
 
-    public AttributeType(String name, DataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean userRemovable,
-                         boolean multivalued, boolean mappable, boolean compoundMember, boolean required) {
+    public AttributeType(String name, DataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean userRemovable, boolean multivalued,
+                         boolean mappable, boolean compoundMember, boolean required) {
 
         this.name = name;
         this.type = type;
@@ -116,6 +122,61 @@ public class AttributeType implements Serializable {
     public List<AttributeType> getMembers() {
 
         return members;
+    }
+
+    public void setName(final String name) {
+
+        this.name = name;
+    }
+
+    public void setType(final DataType type) {
+
+        this.type = type;
+    }
+
+    public void setProviderJndi(final String providerJndi) {
+
+        this.providerJndi = providerJndi;
+    }
+
+    public void setUserVisible(final boolean userVisible) {
+
+        this.userVisible = userVisible;
+    }
+
+    public void setUserEditable(final boolean userEditable) {
+
+        this.userEditable = userEditable;
+    }
+
+    public void setUserRemovable(final boolean userRemovable) {
+
+        this.userRemovable = userRemovable;
+    }
+
+    public void setMultivalued(final boolean multivalued) {
+
+        this.multivalued = multivalued;
+    }
+
+    public void setMappable(final boolean mappable) {
+
+        this.mappable = mappable;
+    }
+
+    public void setCompoundMember(final boolean compoundMember) {
+
+        this.compoundMember = compoundMember;
+    }
+
+    public void setRequired(final boolean required) {
+
+        this.required = required;
+    }
+
+    public void setMembers(final List<AttributeType> members) {
+
+        this.members = members;
     }
 
     @Override
