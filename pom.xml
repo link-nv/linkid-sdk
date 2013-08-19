@@ -7,7 +7,7 @@
     <inceptionYear>2006</inceptionYear>
     <groupId>net.lin-k.safe-online.client</groupId>
     <artifactId>sdk</artifactId>
-    <version>2.3</version>
+    <version>GIT-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <organization>
@@ -591,7 +591,7 @@
             <dependency>
                 <groupId>net.lin-k.safe-online.client.sdk</groupId>
                 <artifactId>safe-online-container-test</artifactId>
-                <version>2.3</version>
+                <version>GIT-SNAPSHOT</version>
                 <scope>test</scope>
                 <type>pom</type>
             </dependency>
