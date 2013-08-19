@@ -193,7 +193,7 @@ like interfaces and abstract classes.
 <!-- The serialDataType defines the how the content of the attribute
 element is interpretted by the ServiceConfigurator. The possible values
 are:
-   + text: the content is treated as the string representation of the
+   + value: the content is treated as the string representation of the
    attribute value. It will be mapped to the attribute using the PropertyEditor
    registered for the attribute type.
    + javaBean: the content is a collection of property elements.

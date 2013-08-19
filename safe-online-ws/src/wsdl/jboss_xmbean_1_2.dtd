@@ -237,7 +237,7 @@ object, javax.management.Notification or a subclass.
 -->
 <!ELEMENT name (#PCDATA)>
 
-<!-- The description element provides human readable descriptive text for constructors,
+<!-- The description element provides human readable descriptive value for constructors,
 attributes, operations, paramters, notifications, etc.
 -->
 <!ELEMENT description (#PCDATA)>

@@ -68,7 +68,7 @@
 
 <!-- Bidirectional Text features
      This feature-test entity is used to declare elements
-     and attributes used for bidirectional text support.
+     and attributes used for bidirectional value support.
 -->
 <!ENTITY % XHTML.bidi  "INCLUDE" >
 
@@ -123,7 +123,7 @@
 <![%xhtml-text.module;[
 <!ENTITY % xhtml-text.mod
      PUBLIC "-//W3C//ELEMENTS XHTML Text 1.0//EN"
-            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-text-1.mod" >
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-value-1.mod" >
 %xhtml-text.mod;]]>
 
 <!-- Hypertext Module (required) ................................. -->

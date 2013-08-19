@@ -140,7 +140,7 @@
 <!-- internationalization attributes
   lang        language code (backwards compatible)
   xml:lang    language code (as per XML 1.0 spec)
-  dir         direction for weak/neutral text
+  dir         direction for weak/neutral value
 -->
 <!ENTITY % i18n
  "lang        %LanguageCode; #IMPLIED
@@ -187,7 +187,7 @@
 
 <!ENTITY % attrs "%coreattrs; %i18n; %events;">
 
-<!-- text alignment for p, div, h1-h6. The default is
+<!-- value alignment for p, div, h1-h6. The default is
      align="left" for ltr headings, "right" for rtl -->
 
 <!ENTITY % TextAlign "align (left|center|right|justify) #IMPLIED">
@@ -226,7 +226,7 @@
 
 <!ENTITY % inline "a | %special; | %fontstyle; | %phrase; | %inline.forms;">
 
-<!-- %Inline; covers inline or "text-level" elements -->
+<!-- %Inline; covers inline or "value-level" elements -->
 <!ENTITY % Inline "(#PCDATA | %inline; | %misc.inline;)*">
 
 <!--================== Block level elements ==============================-->
@@ -294,7 +294,7 @@
   profile     %URI;          #IMPLIED
   >
 
-<!-- The title element is not considered part of the flow of text.
+<!-- The title element is not considered part of the flow of value.
        It should be displayed, for example as the page header or
        window title. Exactly one title is required per document.
     -->
@@ -825,7 +825,7 @@
 
 <!--
    To avoid accessibility problems for people who aren't
-   able to see the image, you should provide a text
+   able to see the image, you should provide a value
    description using the alt and longdesc attributes.
    In addition, avoid the use of server-side image maps.
 -->
@@ -966,7 +966,7 @@
   value       CDATA          #IMPLIED
   >
 
-<!ELEMENT textarea (#PCDATA)>     <!-- multi-line text field -->
+<!ELEMENT textarea (#PCDATA)>     <!-- multi-line value field -->
 <!ATTLIST textarea
   %attrs;
   %focus;
@@ -1011,7 +1011,7 @@
   disabled    (disabled)     #IMPLIED
   >
 
-<!-- single-line text input control (DEPRECATED) -->
+<!-- single-line value input control (DEPRECATED) -->
 <!ELEMENT isindex EMPTY>
 <!ATTLIST isindex
   %coreattrs;

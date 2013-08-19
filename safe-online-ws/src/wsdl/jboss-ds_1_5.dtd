@@ -192,7 +192,7 @@ Each property is identified by the name attribute and the property value is
 given by the xa-datasource-property element content. The property is mapped
 onto the XADataSource implementation by looking for a JavaBeans style
 getter method for the property name. If found, the value of the property is
-set using the JavaBeans setter with the element text translated to the true
+set using the JavaBeans setter with the element value translated to the true
 property type using the java.beans.PropertyEditor for the type.
 
    Ex:

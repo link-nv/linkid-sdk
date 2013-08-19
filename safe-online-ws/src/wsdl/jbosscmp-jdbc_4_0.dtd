@@ -364,7 +364,7 @@ Contains the names of the groups that will be lazy loaded together.
 
 
 <!--
-Descriptive text.
+Descriptive value.
 -->
 <!ELEMENT description (#PCDATA)>
 
