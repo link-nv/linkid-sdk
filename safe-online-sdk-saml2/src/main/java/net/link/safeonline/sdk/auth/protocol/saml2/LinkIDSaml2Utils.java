@@ -35,12 +35,10 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
     static final Logger logger = Logger.get( LinkIDSaml2Utils.class );
 
     public static <X extends XMLObject> X unmarshall(Element xmlElement) {
-        // TODO: Is this really still necessary?
 
         X xmlObject = Saml2Utils.<X>unmarshall( xmlElement );
         NamespaceManager xmlObjectNSM = new NamespaceManager( xmlObject );
-        xmlObjectNSM.registerNamespace(
-                new Namespace( WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, WebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
+        xmlObjectNSM.registerNamespace( new Namespace( WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, WebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
 
         return xmlObject;
     }
