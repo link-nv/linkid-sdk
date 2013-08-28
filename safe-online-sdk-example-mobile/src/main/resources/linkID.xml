@@ -14,11 +14,13 @@
 
     <!-- linkID Access For Applications -->
     <!--<entry key="web.userBase">http://demo.linkid.be/linkid-user</entry>-->
+    <!--<entry key="web.mobileBase">http://demo.linkid.be/linkid-mobile</entry>-->
     <!--<entry key="web.authBase">https://demo.linkid.be/linkid-auth</entry>-->
     <!--<entry key="web.wsBase">https://demo.linkid.be/linkid-ws</entry>-->
     <!--<entry key="web.mobileAuthURL">https://demo.linkid.be/linkid-qr/auth</entry>-->
     <!--<entry key="web.mobileAuthMinimalURL">https://demo.linkid.be/linkid-qr/auth-min</entry>-->
     <entry key="web.userBase">http://192.168.5.14:8080/linkid-user</entry>
+    <entry key="web.mobileBase">http://192.168.5.14:8080/linkid-mobile</entry>
     <entry key="web.authBase">https://192.168.5.14:8443/linkid-auth</entry>
     <entry key="web.wsBase">https://192.168.5.14:8443/linkid-ws</entry>
     <entry key="web.mobileAuthURL">https://192.168.5.14:8443/linkid-qr/auth</entry>

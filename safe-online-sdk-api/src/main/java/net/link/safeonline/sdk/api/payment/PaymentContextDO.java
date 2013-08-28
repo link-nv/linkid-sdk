@@ -7,6 +7,7 @@ import net.link.safeonline.sdk.api.exception.InvalidPaymentContextException;
 import org.jetbrains.annotations.Nullable;
 
 
+@SuppressWarnings("UnusedDeclaration")
 public class PaymentContextDO implements Serializable {
 
     public static final String AMOUNT_KEY          = "PaymentContext.amount";
@@ -14,6 +15,7 @@ public class PaymentContextDO implements Serializable {
     public static final String DESCRIPTION_KEY     = "PaymentContext.description";
     public static final String PROFILE_KEY         = "PaymentContext.profile";
     public static final String VALIDATION_TIME_KEY = "PaymentContext.validationTime";
+    public static final String ADD_LINK_KEY        = "PaymentContext.addLinkKey";
 
     private final double   amount;
     private final Currency currency;
@@ -25,20 +27,25 @@ public class PaymentContextDO implements Serializable {
     // maximum time to wait for payment validation, if not specified defaults to 5s
     private final int paymentValidationTime;
 
+    // whether or not to display a link to linkID's add payment method page if the linkID user does not have any payment methods added, default is true.
+    private final boolean showAddPaymentMethodLink;
+
     /**
-     * @param amount         amount in cents
-     * @param currency       currency
-     * @param description    optional description
-     * @param paymentProfile optional payment profile
+     * @param amount                   amount in cents
+     * @param currency                 currency
+     * @param description              optional description
+     * @param paymentProfile           optional payment profile
+     * @param showAddPaymentMethodLink optional show add payment method link
      */
     public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String paymentProfile,
-                            final int paymentValidationTime) {
+                            final int paymentValidationTime, final boolean showAddPaymentMethodLink) {
 
         this.amount = amount;
         this.currency = currency;
         this.description = description;
         this.paymentProfile = paymentProfile;
         this.paymentValidationTime = paymentValidationTime;
+        this.showAddPaymentMethodLink = showAddPaymentMethodLink;
     }
 
     /**
@@ -49,7 +56,7 @@ public class PaymentContextDO implements Serializable {
      */
     public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String paymentProfile) {
 
-        this( amount, currency, description, paymentProfile, 5 );
+        this( amount, currency, description, paymentProfile, 5, true );
     }
 
     /**
@@ -58,7 +65,7 @@ public class PaymentContextDO implements Serializable {
      */
     public PaymentContextDO(final double amount, final Currency currency) {
 
-        this( amount, currency, null, null, 5 );
+        this( amount, currency, null, null, 5, true );
     }
 
     // Helper methods
@@ -74,6 +81,7 @@ public class PaymentContextDO implements Serializable {
         if (null != paymentProfile)
             map.put( PROFILE_KEY, paymentProfile );
         map.put( VALIDATION_TIME_KEY, Integer.toString( paymentValidationTime ) );
+        map.put( ADD_LINK_KEY, Boolean.toString( showAddPaymentMethodLink ) );
 
         return map;
     }
@@ -95,7 +103,7 @@ public class PaymentContextDO implements Serializable {
         // convert
         return new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ), Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
                 paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( PROFILE_KEY ),
-                Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ) );
+                Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( ADD_LINK_KEY ) ) );
     }
 
     // Accessors
@@ -123,5 +131,10 @@ public class PaymentContextDO implements Serializable {
     public int getPaymentValidationTime() {
 
         return paymentValidationTime;
+    }
+
+    public boolean isShowAddPaymentMethodLink() {
+
+        return showAddPaymentMethodLink;
     }
 }

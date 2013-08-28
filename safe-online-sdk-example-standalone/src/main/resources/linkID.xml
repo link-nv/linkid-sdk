@@ -14,9 +14,11 @@
 
     <!-- linkID Access For Applications -->
     <!--<entry key="web.userBase">http://demo.linkid.be/linkid-user</entry>-->
+    <!--<entry key="web.mobileBase">http://demo.linkid.be/linkid-mobile</entry>-->
     <!--<entry key="web.authBase">https://demo.linkid.be/linkid-auth</entry>-->
     <!--<entry key="web.wsBase">https://demo.linkid.be/linkid-ws</entry>-->
     <entry key="web.userBase">http://192.168.5.3:8080/linkid-user</entry>
+    <entry key="web.mobileBase">http://192.168.5.3:8080/linkid-mobile</entry>
     <entry key="web.authBase">https://192.168.5.3:8443/linkid-auth</entry>
     <entry key="web.wsBase">https://192.168.5.3:8443/linkid-ws</entry>
 
