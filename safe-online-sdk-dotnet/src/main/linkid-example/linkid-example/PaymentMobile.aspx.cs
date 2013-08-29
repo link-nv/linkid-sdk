@@ -15,7 +15,7 @@ namespace linkid_example
         protected void Page_Load(object sender, EventArgs e)
         {
             // payment context
-            LinkIDLogin.setPaymentContext(Session, new PaymentContext(100, Currency.EUR));
+            LinkIDLogin.setPaymentContext(Session, new PaymentContext(100, Currency.EUR, null, null, 10, true));
         }
     }
 }

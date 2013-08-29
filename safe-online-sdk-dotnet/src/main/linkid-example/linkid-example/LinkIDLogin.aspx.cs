@@ -34,7 +34,8 @@ namespace linkid_example
          * Application specific configuration...
          */
         // linkID host to be used
-        public static string LINKID_HOST = "192.168.5.14:8443";
+//        public static string LINKID_HOST = "192.168.5.14:8443";
+        public static string LINKID_HOST = "demo.linkid.be";
 
         // location of this page, linkID will post its authentication response back to this location.
         private static string LOGINPAGE_LOCATION = "http://localhost:53825/LinkIDLogin.aspx";
