@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.safe-online.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.4</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>SafeOnline SDK Wicket Example</name>
@@ -15,24 +15,24 @@
 
     <groupId>net.lin-k.safe-online.client.sdk</groupId>
     <artifactId>safe-online-sdk-example-wicket</artifactId>
-    <version>2.4</version>
+    <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <dependencies>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk</artifactId>
-            <version>2.4</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-ws</artifactId>
-            <version>2.4</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-wicket-sdk</artifactId>
-            <version>2.4</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
