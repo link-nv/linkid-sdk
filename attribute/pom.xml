@@ -17,6 +17,7 @@
     <modules>
         <module>safe-online-attribute-provider-profile-sdk</module>
         <module>safe-online-attribute-provider-avatar-sdk</module>
+        <module>safe-online-attribute-provider-docdata-sdk</module>
     </modules>
 
 </project>
