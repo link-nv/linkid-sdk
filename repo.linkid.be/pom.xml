@@ -133,6 +133,12 @@
             <type>war</type>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online.client.sdk</groupId>
+            <artifactId>safe-online-sdk-example-mobile</artifactId>
+            <type>war</type>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- PHP -->
         <dependency>
