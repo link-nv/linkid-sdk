@@ -34,11 +34,13 @@ To initiate a linkID login on your web page, you'll need to include the [linkID 
 So:
 
  ```javascript
-<script type="text/javascript" id="linkid-login-script" src="https://demo.linkid.be/linkid-static/js/linkid.js"\></script>
+<script type="text/javascript" id="linkid-login-script" 
+	src="https://demo.linkid.be/linkid-static/js/linkid.js"\></script>
  ```
 
 For the linkID login link you'll need to add
 
+ ```html
 	<div>
 	    <iframe id="linkid" style="display: none;"></iframe>
 	</div>
@@ -48,6 +50,7 @@ For the linkID login link you'll need to add
     		Login with linkID
     	</a>
 	</div>
+ ```
 
 The iframe is where the QR code will be loaded in after linkID has validated the authentication request. The id of the iframe needs to match the **data-mobile-minimal** attribute.
 
@@ -96,6 +99,7 @@ Maven
 
 First, you will need to add following maven dependencies available from our [maven repository](http://repo.linkid.be/).
 
+ ```xml
 	<dependency>
     	<groupId>net.lin-k.safe-online.client.sdk</groupId>
 	    <artifactId>safe-online-sdk</artifactId>
@@ -111,6 +115,7 @@ First, you will need to add following maven dependencies available from our [mav
 	    <artifactId>safe-online-sdk-ws</artifactId>
     	<version>2.1</version>
 	</dependency>
+ ```
 
 If you are not a big fan of maven and use ant or your own fancy build tool, you can find those jar files directly [here](http://repo.linkid.be/releases/net/lin-k/safe-online/client/sdk/).
 
@@ -142,12 +147,15 @@ You can customize the authentication context a bit tho, simply override the Init
 
 For example if you are doing an authentication without payment context, it is possible to provide a custom context which will be shown in the linkID mobile app when the user has to enter his pin. You can do this as follows:
 
+ ```java
 	authenticationContext.getDeviceContext().put( DeviceContextConstants.CONTEXT_TITLE, "Some custom login context" );
+ ```
 
 If you want to add a payment context of let's say 2 euro's, simply add the following:
 
+ ```java
 	authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
-
+ ```
 
 Authentication response
 -----------------------
