@@ -33,7 +33,9 @@ Client side
 To initiate a linkID login on your web page, you'll need to include the [linkID javascript file](https://demo.linkid.be/linkid-static/js/linkid.js) in your web page.
 So:
 
-	<script type="text/javascript" id="linkid-login-script" src="https://demo.linkid.be/linkid-static/js/linkid.js"\></script>
+ ```javascript
+<script type="text/javascript" id="linkid-login-script" src="https://demo.linkid.be/linkid-static/js/linkid.js"\></script>
+ ```
 
 For the linkID login link you'll need to add
 
