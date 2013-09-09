@@ -19,7 +19,7 @@
     <li>${attribute.key}:
         <ul>
             <c:forEach var="attributeValue" items="${attribute.value}">
-            <li>${attributeValue}</li>
+            <li>${attributeValue} : ${attributeValue.value}</li>
             </c:forEach>
         </ul>
     </li>
