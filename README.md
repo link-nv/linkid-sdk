@@ -41,15 +41,15 @@ So:
 For the linkID login link you'll need to add
 
  ```html
-	<div>
-	    <iframe id="linkid" style="display: none;"></iframe>
-	</div>
-	<div>
-    	<a id="linkid-login-link" class="linkid-login" data-mobile-minimal="linkid" 
-    		data-login-href="./startlogin" data-completion-href="./authenticated">
-    		Login with linkID
-    	</a>
-	</div>
+<div>
+	<iframe id="linkid" style="display: none;"></iframe>
+</div>
+<div>
+    <a id="linkid-login-link" class="linkid-login" data-mobile-minimal="linkid" 
+    	data-login-href="./startlogin" data-completion-href="./authenticated">
+    	Login with linkID
+    </a>
+</div>
  ```
 
 The iframe is where the QR code will be loaded in after linkID has validated the authentication request. The id of the iframe needs to match the **data-mobile-minimal** attribute.
@@ -100,21 +100,21 @@ Maven
 First, you will need to add following maven dependencies available from our [maven repository](http://repo.linkid.be/).
 
  ```xml
-	<dependency>
-    	<groupId>net.lin-k.safe-online.client.sdk</groupId>
-	    <artifactId>safe-online-sdk</artifactId>
-    	<version>2.1</version>
-	</dependency>
-	<dependency>
-    	<groupId>net.lin-k.safe-online.client.sdk</groupId>
-	    <artifactId>safe-online-sdk-saml2</artifactId>
-    	<version>2.1</version>
-	</dependency>
-	<dependency>
-    	<groupId>net.lin-k.safe-online.client.sdk</groupId>
-	    <artifactId>safe-online-sdk-ws</artifactId>
-    	<version>2.1</version>
-	</dependency>
+<dependency>
+    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+	<artifactId>safe-online-sdk</artifactId>
+    <version>2.1</version>
+</dependency>
+<dependency>
+    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+	<artifactId>safe-online-sdk-saml2</artifactId>
+    <version>2.1</version>
+</dependency>
+<dependency>
+   	<groupId>net.lin-k.safe-online.client.sdk</groupId>
+	<artifactId>safe-online-sdk-ws</artifactId>
+    <version>2.1</version>
+</dependency>
  ```
 
 If you are not a big fan of maven and use ant or your own fancy build tool, you can find those jar files directly [here](http://repo.linkid.be/releases/net/lin-k/safe-online/client/sdk/).
@@ -130,7 +130,9 @@ That keystore and specific application name we talked about before, well we'll n
 
 The key provider needs some extra mentioning. As the name hints, it points to the provider of the keys to be used to sign the authentication request. This context param will have the form of something like:
 
-	class://example-mobile:secret:secret@net.link.safeonline.sdk.example.mobile.ExampleMobileKeyProviderService
+```
+class://example-mobile:secret:secret@net.link.safeonline.sdk.example.mobile.ExampleMobileKeyProviderService
+```
 
 Here example-mobile is the key entry alias of your keystore, the first "secret" is the keystore password and the second "secret" is the key entry password. The last part is a class you need to provide that will be used to load in the keystore.
 
@@ -148,13 +150,14 @@ You can customize the authentication context a bit tho, simply override the Init
 For example if you are doing an authentication without payment context, it is possible to provide a custom context which will be shown in the linkID mobile app when the user has to enter his pin. You can do this as follows:
 
  ```java
-	authenticationContext.getDeviceContext().put( DeviceContextConstants.CONTEXT_TITLE, "Some custom login context" );
+authenticationContext.getDeviceContext().put( DeviceContextConstants.CONTEXT_TITLE, 
+"Some custom login context" );
  ```
 
 If you want to add a payment context of let's say 2 euro's, simply add the following:
 
  ```java
-	authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
+authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
  ```
 
 Authentication response
@@ -176,7 +179,9 @@ Payment status updates
 
 To receive payment status updates, you'll need to provide to us the location where we will poke your web application when we get an update. We will add a query parameter txn_id to that request with the transaction ID. So the request will look something like: 
 
-	https://your.host.com/site/paymentUpdate?txn_id=132456-78996-4563-45636
+```
+https://your.host.com/site/paymentUpdate?txn_id=132456-78996-4563-45636
+```
 
 When you'll receive such an update, you'll then have to fetch the complete status report using the linkID payment web service. The mobile example webapp contains an example servlet **PaymentStateChangedServlet** that illustrates this.
 
