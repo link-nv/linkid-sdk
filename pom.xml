@@ -128,6 +128,7 @@
                 <boot.classpath>/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jsse.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jce.jar:/Library//Java/JavaVirtualMachines/1.6.0_29-b11-402.jdk/Contents/Classes/classes.jar:/Library//Java/JavaVirtualMachines/1.6.0_29-b11-402.jdk/Contents/Classes/jsse.jar:/Library//Java/JavaVirtualMachines/1.6.0_29-b11-402.jdk/Contents/Classes/jce.jar</boot.classpath>
             </properties>
         </profile>
+        <!-- Profile to use the buildserver maven repository -->
         <profile>
             <id>linkid-devel</id>
             <properties>
@@ -351,51 +352,6 @@
                     <version>${maven-deploy-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.jboss.maven.plugins</groupId>
-                    <artifactId>maven-jdocbook-plugin</artifactId>
-                    <version>${maven-jdocbook-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.jboss</groupId>
-                            <artifactId>jbossorg-docbook-xslt</artifactId>
-                            <version>1.1.0</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.jboss</groupId>
-                            <artifactId>jbossorg-jdocbook-style</artifactId>
-                            <version>1.1.0</version>
-                            <type>jdocbook-style</type>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <formats>
-                            <format>
-                                <formatName>pdf</formatName>
-                                <stylesheetResource>
-                                    classpath:/xslt/org/jboss/pdf.xsl
-                                </stylesheetResource>
-                            </format>
-                        </formats>
-                        <sourceDocumentName>foo</sourceDocumentName>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>resources</id>
-                            <phase>process-resources</phase>
-                            <goals>
-                                <goal>resources</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>generate</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>generate</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
@@ -460,11 +416,6 @@
         <module>safe-online-sdk-dotnet</module>
         <module>safe-online-sdk-php</module>
 
-        <module>safe-online-sdk-manual</module>
-        <module>safe-online-sdk-manual-java</module>
-        <module>safe-online-sdk-manual-dotnet</module>
-        <module>safe-online-sdk-manual-php</module>
-
         <module>safe-online-sdk-package-java</module>
         <module>safe-online-sdk-package-dotnet</module>
         <module>safe-online-sdk-package-php</module>
@@ -489,7 +440,8 @@
 
         <deploy.url>scpexe://buildserver/Users/devel/maven2/repository</deploy.url>
         <repo.url>http://repo.linkid.be/releases</repo.url>
-        <repo.plugin.url>http://repo1.maven.org/maven2</repo.plugin.url>
+        <!--<repo.plugin.url>http://repo1.maven.org/maven2</repo.plugin.url>-->
+        <repo.plugin.url>http://repo.linkid.be/releases</repo.plugin.url>
 
         <!-- WS locations -->
         <safe-online.ws.attribute.path>attrib</safe-online.ws.attribute.path>
@@ -516,7 +468,6 @@
         <maven-assembly-plugin.version>2.2-beta-5</maven-assembly-plugin.version>
         <maven-dependency-plugin.version>2.2</maven-dependency-plugin.version>
         <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
-        <maven-jdocbook-plugin.version>2.1.1</maven-jdocbook-plugin.version>
         <maven-source-plugin.version>2.0.4</maven-source-plugin.version>
 
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->

@@ -21,14 +21,6 @@
 
     <files>
         <file>
-            <source>target/files/sdk-manual.pdf</source>
-            <outputDirectory>/</outputDirectory>
-        </file>
-        <file>
-            <source>target/files/sdk-manual-php.pdf</source>
-            <outputDirectory>/</outputDirectory>
-        </file>
-        <file>
             <source>src/files/README.txt</source>
             <outputDirectory>/</outputDirectory>
         </file>

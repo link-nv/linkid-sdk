@@ -24,48 +24,6 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>unpack-manual</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                                    <artifactId>safe-online-sdk-manual</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
-                                    <classifier>package</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>
-                                ${project.build.directory}/files
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>unpack-manual-php</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                                    <artifactId>safe-online-sdk-manual-php</artifactId>
-                                    <version>GIT-SNAPSHOT</version>
-                                    <classifier>package</classifier>
-                                    <type>zip</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>
-                                ${project.build.directory}/files
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>unpack-sdk</id>
                         <phase>package</phase>
                         <goals>

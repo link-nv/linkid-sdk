@@ -21,3 +21,4 @@ The Java SDK artifacts have been split up so you can keep your list of dependenc
 * [SDK OAuth2](https://github.com/link-nv/linkid-sdk/tree/master/safe-online-sdk-oauth2)
 * [SDK Wicket](https://github.com/link-nv/linkid-sdk/tree/master/safe-online-sdk-wicket)
 
+[![Build Status](https://travis-ci.org/link-nv/linkid-sdk.png)](https://travis-ci.org/link-nv/linkid-sdk.png)

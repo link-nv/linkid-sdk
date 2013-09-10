@@ -102,20 +102,6 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-manual</artifactId>
-            <classifier>package</classifier>
-            <type>zip</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-manual-java</artifactId>
-            <classifier>package</classifier>
-            <type>zip</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-package-java</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
@@ -150,13 +136,6 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-manual-php</artifactId>
-            <classifier>package</classifier>
-            <type>zip</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-package-php</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
@@ -167,13 +146,6 @@
         <dependency>
             <groupId>net.lin-k.safe-online.client.sdk</groupId>
             <artifactId>safe-online-sdk-dotnet</artifactId>
-            <classifier>package</classifier>
-            <type>zip</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-manual-dotnet</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
             <version>${project.version}</version>
