@@ -3,21 +3,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.lin-k.safe-online.client</groupId>
+        <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
         <version>GIT-SNAPSHOT</version>
     </parent>
 
     <!-- PROJECT METADATA -->
-    <name>SafeOnline Attribute Provider SDK Artifacts</name> 
-    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+    <name>linkID Attribute Provider SDK Artifacts</name> 
+    <groupId>net.lin-k.linkid.client.sdk</groupId>
     <artifactId>attribute</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>safe-online-attribute-provider-profile-sdk</module>
-        <module>safe-online-attribute-provider-avatar-sdk</module>
-        <module>safe-online-attribute-provider-docdata-sdk</module>
+        <module>linkid-attribute-provider-profile-sdk</module>
+        <module>linkid-attribute-provider-avatar-sdk</module>
+        <module>linkid-attribute-provider-docdata-sdk</module>
     </modules>
 
 </project>

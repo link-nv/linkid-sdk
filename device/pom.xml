@@ -3,22 +3,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.lin-k.safe-online.client</groupId>
+        <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
         <version>GIT-SNAPSHOT</version>
     </parent>
 
     <!-- PROJECT METADATA -->
-    <name>SafeOnline Device SDK Artifacts</name> 
-    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+    <name>linkID Device SDK Artifacts</name> 
+    <groupId>net.lin-k.linkid.client.sdk</groupId>
     <artifactId>device</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>safe-online-qr-sdk</module>
-        <module>safe-online-beid-sdk</module>
-        <module>safe-online-password-sdk</module>
-        <module>safe-online-otpoversms-sdk</module>
+        <module>linkid-qr-sdk</module>
+        <module>linkid-beid-sdk</module>
+        <module>linkid-password-sdk</module>
     </modules>
 
 </project>

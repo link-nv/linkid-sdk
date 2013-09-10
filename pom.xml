@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- PROJECT METADATA -->
-    <name>SafeOnline SDK Artifacts</name>
+    <name>linkID SDK Artifacts</name>
     <inceptionYear>2006</inceptionYear>
-    <groupId>net.lin-k.safe-online.client</groupId>
+    <groupId>net.lin-k.linkid.client</groupId>
     <artifactId>sdk</artifactId>
     <version>GIT-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -401,33 +401,33 @@
 
     <!-- MODULES -->
     <modules>
-        <module>safe-online-container-test</module>
+        <module>linkid-container-test</module>
 
-        <module>safe-online-config</module>
-        <module>safe-online-sdk-api</module>
-        <module>safe-online-sdk</module>
-        <module>safe-online-sdk-ws</module>
-        <module>safe-online-sdk-saml2</module>
-        <module>safe-online-sdk-openid</module>
-        <module>safe-online-sdk-oauth2</module>
-        <module>safe-online-ws</module>
-        <module>safe-online-wicket-sdk</module>
+        <module>linkid-config</module>
+        <module>linkid-sdk-api</module>
+        <module>linkid-sdk</module>
+        <module>linkid-sdk-ws</module>
+        <module>linkid-sdk-saml2</module>
+        <module>linkid-sdk-openid</module>
+        <module>linkid-sdk-oauth2</module>
+        <module>linkid-ws</module>
+        <module>linkid-wicket-sdk</module>
 
-        <module>safe-online-sdk-dotnet</module>
-        <module>safe-online-sdk-php</module>
+        <module>linkid-sdk-dotnet</module>
+        <module>linkid-sdk-php</module>
 
-        <module>safe-online-sdk-package-java</module>
-        <module>safe-online-sdk-package-dotnet</module>
-        <module>safe-online-sdk-package-php</module>
+        <module>linkid-sdk-package-java</module>
+        <module>linkid-sdk-package-dotnet</module>
+        <module>linkid-sdk-package-php</module>
 
-        <module>safe-online-sdk-example-jsp</module>
-        <module>safe-online-sdk-example-wicket</module>
-        <module>safe-online-sdk-example-mobile</module>
+        <module>linkid-sdk-example-jsp</module>
+        <module>linkid-sdk-example-wicket</module>
+        <module>linkid-sdk-example-mobile</module>
 
         <module>device</module>
         <module>attribute</module>
 
-        <module>safe-online-nfc-sdk</module>
+        <module>linkid-nfc-sdk</module>
 
         <module>repo.linkid.be</module>
 
@@ -444,17 +444,17 @@
         <repo.plugin.url>http://repo.linkid.be/releases</repo.plugin.url>
 
         <!-- WS locations -->
-        <safe-online.ws.attribute.path>attrib</safe-online.ws.attribute.path>
-        <safe-online.ws.data.path>data</safe-online.ws.data.path>
-        <safe-online.ws.idmapping.path>idmapping</safe-online.ws.idmapping.path>
-        <safe-online.ws.sts.path>sts</safe-online.ws.sts.path>
-        <safe-online.ws.notification.producer.path>producer</safe-online.ws.notification.producer.path>
-        <safe-online.ws.notification.subscription.path>subscription</safe-online.ws.notification.subscription.path>
-        <safe-online.ws.session.tracking.path>session</safe-online.ws.session.tracking.path>
-        <safe-online.ws.xkms2.path>xkms2</safe-online.ws.xkms2.path>
-        <safe-online.ws.auth.path>auth</safe-online.ws.auth.path>
-        <safe-online.ws.get.auth.path>get_auth</safe-online.ws.get.auth.path>
-        <safe-online.ws.payment.path>payment</safe-online.ws.payment.path>
+        <linkid.ws.attribute.path>attrib</linkid.ws.attribute.path>
+        <linkid.ws.data.path>data</linkid.ws.data.path>
+        <linkid.ws.idmapping.path>idmapping</linkid.ws.idmapping.path>
+        <linkid.ws.sts.path>sts</linkid.ws.sts.path>
+        <linkid.ws.notification.producer.path>producer</linkid.ws.notification.producer.path>
+        <linkid.ws.notification.subscription.path>subscription</linkid.ws.notification.subscription.path>
+        <linkid.ws.session.tracking.path>session</linkid.ws.session.tracking.path>
+        <linkid.ws.xkms2.path>xkms2</linkid.ws.xkms2.path>
+        <linkid.ws.auth.path>auth</linkid.ws.auth.path>
+        <linkid.ws.get.auth.path>get_auth</linkid.ws.get.auth.path>
+        <linkid.ws.payment.path>payment</linkid.ws.payment.path>
 
         <!-- DEFAULT VERSIONS, SEE PLUGINS -->
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
@@ -529,8 +529,8 @@
 
             <!-- linkID SDK -->
             <dependency>
-                <groupId>net.lin-k.safe-online.client.sdk</groupId>
-                <artifactId>safe-online-container-test</artifactId>
+                <groupId>net.lin-k.linkid.client.sdk</groupId>
+                <artifactId>linkid-container-test</artifactId>
                 <version>GIT-SNAPSHOT</version>
                 <scope>test</scope>
                 <type>pom</type>

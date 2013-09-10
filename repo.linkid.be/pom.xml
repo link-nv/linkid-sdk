@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.lin-k.safe-online.client</groupId>
+        <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
         <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>Public deployment repo.linkid.be</name>
 
-    <groupId>net.lin-k.safe-online.client.sdk</groupId>
+    <groupId>net.lin-k.linkid.client.sdk</groupId>
     <artifactId>repo.linkid.be</artifactId>
     <packaging>pom</packaging>
 
@@ -40,103 +40,103 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-config</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-config</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-ws</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-ws</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-api</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-api</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-api</artifactId>
             <classifier>javadoc</classifier>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-api</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-api</artifactId>
             <classifier>sources</classifier>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk</artifactId>
             <classifier>javadoc</classifier>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk</artifactId>
             <classifier>sources</classifier>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-wicket-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-wicket-sdk</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-wicket-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-wicket-sdk</artifactId>
             <classifier>javadoc</classifier>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-wicket-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-wicket-sdk</artifactId>
             <classifier>sources</classifier>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-package-java</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-package-java</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-example-jsp</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-example-jsp</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-example-wicket</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-example-wicket</artifactId>
             <type>war</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-example-mobile</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-example-mobile</artifactId>
             <type>war</type>
             <version>${project.version}</version>
         </dependency>
 
         <!-- PHP -->
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-php</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-php</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-package-php</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-package-php</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
             <version>${project.version}</version>
@@ -144,15 +144,15 @@
 
         <!-- .NET -->
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-dotnet</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-dotnet</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk</groupId>
-            <artifactId>safe-online-sdk-package-dotnet</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-package-dotnet</artifactId>
             <classifier>package</classifier>
             <type>zip</type>
             <version>${project.version}</version>
@@ -160,34 +160,34 @@
 
         <!-- Attribute Provider SDKs -->
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk.attribute</groupId>
-            <artifactId>safe-online-attribute-provider-profile-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.attribute</groupId>
+            <artifactId>linkid-attribute-provider-profile-sdk</artifactId>
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk.attribute</groupId>
-            <artifactId>safe-online-attribute-provider-avatar-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.attribute</groupId>
+            <artifactId>linkid-attribute-provider-avatar-sdk</artifactId>
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
 
         <!-- Device SDKs -->
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk.device</groupId>
-            <artifactId>safe-online-qr-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.device</groupId>
+            <artifactId>linkid-qr-sdk</artifactId>
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk.device</groupId>
-            <artifactId>safe-online-beid-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.device</groupId>
+            <artifactId>linkid-beid-sdk</artifactId>
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.safe-online.client.sdk.device</groupId>
-            <artifactId>safe-online-password-sdk</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.device</groupId>
+            <artifactId>linkid-password-sdk</artifactId>
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
