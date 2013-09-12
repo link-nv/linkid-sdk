@@ -414,11 +414,9 @@
         <module>linkid-wicket-sdk</module>
 
         <module>linkid-sdk-dotnet</module>
-        <module>linkid-sdk-php</module>
 
         <module>linkid-sdk-package-java</module>
         <module>linkid-sdk-package-dotnet</module>
-        <module>linkid-sdk-package-php</module>
 
         <module>linkid-sdk-example-jsp</module>
         <module>linkid-sdk-example-wicket</module>
