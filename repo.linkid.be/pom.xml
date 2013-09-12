@@ -126,22 +126,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- .NET -->
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-dotnet</artifactId>
-            <classifier>package</classifier>
-            <type>zip</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-package-dotnet</artifactId>
-            <classifier>package</classifier>
-            <type>zip</type>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- Attribute Provider SDKs -->
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk.attribute</groupId>
