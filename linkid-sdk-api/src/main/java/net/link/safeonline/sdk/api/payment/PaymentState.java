@@ -3,6 +3,7 @@ package net.link.safeonline.sdk.api.payment;
 public enum PaymentState {
 
     STARTED,                // payment is being processed
+    DEFERRED,               // deferred payment
     WAITING_FOR_UPDATE,     // linkID stopped waiting for status update, SP will be informed on payment status change
     FAILED,                 // payment has failed
     PAYED;                  // completed
