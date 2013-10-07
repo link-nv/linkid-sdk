@@ -13,6 +13,10 @@ besides the patched ones ( .orig ). Following files were patched:
 
 -   lib/SAML2/Assertion.php
 
+-   lib/SAML2/AuthnRequest.php
+
+-   lib/SAML2/Utils.php
+
 -   modules/saml/lib/Auth/Source/SP.php
 
 -   lib/SimpleSAML/Auth/Default.php
