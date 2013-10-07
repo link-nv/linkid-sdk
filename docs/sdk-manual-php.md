@@ -51,19 +51,19 @@ provides you with a default setup, using the demo.linkid.be service.
 
                         
 
-    $metadata['linkID'] = array(
-           'name'                 => array(
-               'en' => 'linkID',
-           ),
+	$metadata['linkID'] = array(
+       'name'                 => array(
+           'en' => 'linkID',
+       ),
 
-           'SingleSignOnService' => 'https://demo.linkid.be/linkid-auth/entry',
-           'SingleLogoutService' => 'https://demo.linkid.be/linkid-auth/logoutentry',
+       'SingleSignOnService' => 'https://192.168.5.14:8443/linkid-qr/auth-min',
+       'SingleLogoutService' => 'https://192.168.5.14:8443/linkid-auth/logoutentry',
 
-           'redirect.sign'       => true,
-           'redirect.validate'   => true,
-           'certificate'         => 'linkid.crt',
-           'certFingerprint'     => '26FDFF87837760F71698EA9D3E859660F70B9A6C',
-       );
+       'redirect.sign'      => true,
+       'redirect.validate'  => true,
+       'certificate'         => 'local-linkid.crt'
+       //'caFile'             => 'local-linkid-ca.crt',
+    );
 
                         
                     
@@ -85,21 +85,20 @@ SDK already provides you with an example setup.
 
                         
 
-            // // linkID Example authentication source
-            'linkid-example' => array(
-                    'saml:SP',
-            'privatekey' => 'example.pem',
-            'certificate' => 'example.crt',
-            'RelayState'  => '/www/linkid-example/index.php',
-
-                    // The entity ID of this SP.
-                    // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
-                    'entityID' => 'linkid-example',
-
-                    // The entity ID of the IdP this should SP should contact.
-                    // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
-                    'idp' => 'linkID',
+    // linkID Example authentication source
+    'example-mobile' => array('saml:SP',
+        'privatekey'    => 'example-mobile.pem',
+        'certificate'   => 'example-mobile.crt',
+        'RelayState'    => '/www/example-mobile/loggedin.php',
+        'entityID'      => 'example-mobile',
+        'idp'           => 'linkID',
+        'authproc'      => array(
+            10 => array(
+                'class' => 'core:LinkIDAttributes',
+                'removeurnprefix'
             ),
+        ),
+    )
 
                         
                     
@@ -120,8 +119,8 @@ Authentication
 
 This chapter explains how to initiate the linkID authentication process.
 
-The SDK contains a basic linkID SP example which you could use to start
-form. This example is located in `www/linkid-example`.
+The SDK contains a basic linkID Mobile example which you could use to start
+from. This example is located in `www/linkid-mobile`.
 
 If you have successfully complete the configuration of the SDK for your
 SP application, initiating the linkID authentication process is as
@@ -129,14 +128,16 @@ simple as follows:
 
                     
 
-    $as = new SimpleSAML_Auth_Simple('linkid-example');
+    $as = new SimpleSAML_Auth_Simple('linkid-mobile');
 
     if (!$as->isAuthenticated()) {
 
         // initiate linkID login
         $as->login(array(
             'saml:idp' => 'linkID',
-            'ReturnTo' => 'http://localhost/linkid-example/index.php'
+            'ReturnTo' => 'http://localhost/linkid-example/index.php',
+	        'ErrorURL'  => 'http://192.168.5.14/example-mobile/failed.php',
+	        'linkID:mobileMinimal' => 'true'
         ));
 
                     
@@ -150,87 +151,21 @@ that in this example we explicitly say which page to redirect to upon
 finalizatiton of the linkID authentication process using the `ReturnTo`
 configuration parameter.
 
-The default "login mode" of linkID is running the authentication process
-in a popup window. An alternative is running it in redirect mode. You
-need to add the following javascript file to the page were you start the
-login.
+The `linkID:mobileMinimal` configuration parameter is needed to specify to SimpleSAMLPhp to jump out of the linkID QR iframe when done.
 
-                    
+For more information on the HTML part of the linkID integration, please read the [linkID SDK docs](https://github.com/link-nv/linkid-sdk/wiki)
 
-    <script type="text/javascript" id="linkid-login-script" src="https://demo.linkid.be/linkid-static/js/linkid-min.js"></script>
+To set the language for the linkID authentication process, you can optionally add the `Language` request parameter. Supported locales are `nl,en,fr`.
+Add the `DestinationParams` to the login configuration parameters as follows:
 
-                    
-               
-
-Note to change the URL to match the linKID service you are connecting
-to. Also you will have to add the `linkid-login` CSS class to the link
-which will start the login.
-
-                    
-
-    <a href="./login.php" class="linkid-login">Login</a>
-
-                    
-               
-
-If you wish to override the default popup mode, you can specify so by
-adding an extra HTTP Request parameter in the SAML redirect binding
-request towards the linkID service. Do this as follows:
-
-                    
-
-                $as->login(array(
-                    'saml:idp' => 'linkID',
-                    'ReturnTo' => 'http://localhost/linkid-example/index.php'
-                    'DestinationParams' => '?login_mode=POPUP',
-                    'ErrorURL' => 'http://localhost/linkid-example/error.php'
-                ));
-
-                    
-               
-
-Allowed values for login\_mode are: `REDIRECT, POPUP` The ErrorURL page
-is where simplesamlphp will redirect to when a failed SAML response is
-sent back by linkID. Note that a failed SAML response can just be that
-the user has cancelled the authentication process. In that case the SAML
-Response StatusCode URI will be
-urn:oasis:names:tc:SAML:2.0:status:AuthnFailed.
-
-To set the language for the linkID authentication process, you can
-optionally add the `Language` request parameter just as you do with the
-login\_mode. Note that in case the user has explicitly set his language
-during the linkID authentication process, this setting will allways be
-preferred. Allowed values are `nl,en,fr`. Example:
-
-                    
-
-                $as->login(array(
-                    'saml:idp' => 'linkID',
-                    'ReturnTo' => 'http://localhost/linkid-example/index.php'
-                    'DestinationParams' => '?login_mode=POPUP&Language=nl',
-                ));
-
-                    
-               
-
-There is an optional HTTP request parameter for forcing the linkID
-authentication process to go to the "register device" page or the
-"authenticate device" page regardless of whether the user has
-successfully authenticated himself in the browser ( a "deflowered"
-cookie is set then ) This can be achieved by setting the parameter
-`start_page`. Possible values are `NONE, REGISTER, AUTHENTICATE`
-Example:
-
-                    
-
-                $as->login(array(
-                    'saml:idp' => 'linkID',
-                    'ReturnTo' => 'http://localhost/linkid-example/index.php'
-                    'DestinationParams' => '?login_mode=POPUP&start_page=REGISTER',
-                ));
-
-                    
-               
+        $as->login(array(
+            'saml:idp' => 'linkID',
+            'ReturnTo' => 'http://localhost/linkid-example/index.php',
+	        'ErrorURL'  => 'http://192.168.5.14/example-mobile/failed.php',
+	        'linkID:mobileMinimal' => 'true'
+            'DestinationParams' => '?Language=nl',
+        ));
+              
 
 Attributes
 ==========
@@ -299,3 +234,69 @@ HTTP Post occurs safely over SSL, you should go to the "login.php" page
 ( where the SAML authentication process is initiated ) over SSL. Not
 doing so will result in a browser warning and moreover sending the SAML
 response which contains the user's ID and attributes unencrypted.
+
+Non-mobile
+===========
+
+If you wish to use the "non-mobile" linkID authentication process in your webapp you'll need to firstly change the linkID entry location, that is the location where the SAML v2.0 authentication request will be sent to. This is specifid in `metadata/saml20-idp-remote.php`
+
+       'SingleSignOnService' => 'https://192.168.5.14:8443/linkid-auth/entry',
+
+In this authentication flow, linkID will not start in an iframe but in or a POPUP window or via a REDIRECT. The default mode is in a POPUP window.
+If you wish to override the default popup mode, you can specify so by
+adding an extra HTTP Request parameter in the SAML redirect binding
+request towards the linkID service. Do this as follows:
+
+                    
+
+                $as->login(array(
+                    'saml:idp' => 'linkID',
+                    'ReturnTo' => 'http://localhost/linkid-example/index.php'
+                    'DestinationParams' => '?login_mode=POPUP',
+                    'ErrorURL' => 'http://localhost/linkid-example/error.php'
+                ));
+
+                    
+               
+
+Allowed values for login\_mode are: `REDIRECT, POPUP` The ErrorURL page
+is where simplesamlphp will redirect to when a failed SAML response is
+sent back by linkID. Note that a failed SAML response can just be that
+the user has cancelled the authentication process. In that case the SAML
+Response StatusCode URI will be
+urn:oasis:names:tc:SAML:2.0:status:AuthnFailed.
+
+To set the language for the linkID authentication process, you can
+optionally add the `Language` request parameter just as you do with the
+login\_mode. Note that in case the user has explicitly set his language
+during the linkID authentication process, this setting will allways be
+preferred. Allowed values are `nl,en,fr`. Example:
+
+                    
+
+                $as->login(array(
+                    'saml:idp' => 'linkID',
+                    'ReturnTo' => 'http://localhost/linkid-example/index.php'
+                    'DestinationParams' => '?login_mode=POPUP&Language=nl',
+                ));
+
+                    
+               
+
+There is an optional HTTP request parameter for forcing the linkID
+authentication process to go to the "register device" page or the
+"authenticate device" page regardless of whether the user has
+successfully authenticated himself in the browser ( a "deflowered"
+cookie is set then ) This can be achieved by setting the parameter
+`start_page`. Possible values are `NONE, REGISTER, AUTHENTICATE`
+Example:
+
+                    
+
+                $as->login(array(
+                    'saml:idp' => 'linkID',
+                    'ReturnTo' => 'http://localhost/linkid-example/index.php'
+                    'DestinationParams' => '?login_mode=POPUP&start_page=REGISTER',
+                ));
+
+                    
