@@ -15,8 +15,6 @@ besides the patched ones ( .orig ). Following files were patched:
 
 -   lib/SAML2/AuthnRequest.php
 
--   lib/SAML2/Utils.php
-
 -   modules/saml/lib/Auth/Source/SP.php
 
 -   lib/SimpleSAML/Auth/Default.php
@@ -124,7 +122,7 @@ Authentication
 This chapter explains how to initiate the linkID authentication process.
 
 The SDK contains a basic linkID Mobile example which you could use to start
-from. This example is located in `www/linkid-mobile`.
+from. This example is located in `www/example-mobile`.
 
 If you have successfully complete the configuration of the SDK for your
 SP application, initiating the linkID authentication process is as
@@ -132,14 +130,14 @@ simple as follows:
 
                     
 
-    $as = new SimpleSAML_Auth_Simple('linkid-mobile');
+    $as = new SimpleSAML_Auth_Simple('example-mobile');
 
     if (!$as->isAuthenticated()) {
 
         // initiate linkID login
         $as->login(array(
             'saml:idp' => 'linkID',
-            'ReturnTo' => 'http://localhost/linkid-example/index.php',
+            'ReturnTo' => 'http://192.168.5.14/example-mobile/index.php',
 	        'ErrorURL'  => 'http://192.168.5.14/example-mobile/failed.php',
 	        'linkID:mobileMinimal' => 'true'
         ));
@@ -164,7 +162,7 @@ Add the `DestinationParams` to the login configuration parameters as follows:
 
         $as->login(array(
             'saml:idp' => 'linkID',
-            'ReturnTo' => 'http://localhost/linkid-example/index.php',
+            'ReturnTo' => 'http://192.168.5.14/example-mobile/index.php',
 	        'ErrorURL'  => 'http://192.168.5.14/example-mobile/failed.php',
 	        'linkID:mobileMinimal' => 'true'
             'DestinationParams' => '?Language=nl',
@@ -217,7 +215,32 @@ compound attribute in the following way:
     $attributes['compound.attribute'][0]['compound.member.attribute'][0]
 
                     
-               
+Payments
+========
+
+If you are not familiar with the payment part of linkID, better first read the [linkID pay section](https://github.com/link-nv/linkid-sdk/wiki#payments) in the wiki before reading on.
+
+To add a linkID payment context to the authentication request you'll have to add an extra configuration paramteter to the login call as follows:
+
+        // initiate linkID login
+        $as->login(array(
+            'saml:idp' => 'linkID',
+            'ReturnTo' => 'http://192.168.5.14/example-mobile/index.php',
+	        'ErrorURL'  => 'http://192.168.5.14/example-mobile/failed.php',
+	        'linkID:mobileMinimal' => 'true'
+	        'saml:Extensions' => SAML2_PaymentUtils::createLinkIDPaymentExtension(500, "Testing...", null, 5, true, false),
+        ));
+
+Here a payment of 5 EUR is being made with a custom payment context "Testing…" and the option to show the add payment link enabled.
+
+An example page for fetching payment status updates can be found in the `www/example-mobile/paymentUpdate.php`
+Possible return values for the payment status are:
+
+     STARTED          : Payment is being processed
+     AUTHORIZED       : Payment is authorized
+     FAILED           : Payment has failed
+
+
 
 SSL
 ===
@@ -228,7 +251,7 @@ library constructs th path to where the POST is done ( the SAML v2.0
 Assertion consumer service URL ) to something like
 
                     
-                <host>/simplesaml/module.php/saml/sp/saml2-acs.php/listlist
+                <host>/simplesaml/module.php/saml/sp/saml2-acs.php/example-mobile
                     
                 
 
