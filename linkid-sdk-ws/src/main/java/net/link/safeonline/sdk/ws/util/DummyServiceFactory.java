@@ -102,7 +102,7 @@ public class DummyServiceFactory extends ServiceFactory {
     }
 
     @Override
-    protected PaymentServiceClient _getPaymentService(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
+    protected PaymentServiceClient _getPaymentService(final X509Certificate sslCertificate) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }

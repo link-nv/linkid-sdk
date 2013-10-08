@@ -449,44 +449,26 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static PaymentServiceClient getPaymentService() {
 
-        return getPaymentService( new SDKWSSecurityConfiguration(), null );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID session tracking web service.
-     *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
-     *
-     * @return proxy to the linkID session tracking web service.
-     */
-    public static PaymentServiceClient getPaymentService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                         final X509Certificate sslCertificate) {
-
-        return getInstance()._getPaymentService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getPaymentService( null );
     }
 
     /**
      * Retrieve a proxy to the linkID payment web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
      * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
      *                       certificate.
      *
      * @return proxy to the linkID session tracking web service.
      */
-    public static PaymentServiceClient getPaymentService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+    public static PaymentServiceClient getPaymentService(@Nullable X509Certificate sslCertificate) {
 
-        return getInstance()._getPaymentService( configuration, sslCertificate );
+        return getInstance()._getPaymentService( sslCertificate );
     }
 
     @Override
-    protected PaymentServiceClient _getPaymentService(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
+    protected PaymentServiceClient _getPaymentService(final X509Certificate sslCertificate) {
 
-        return new PaymentServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new PaymentServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ) );
     }
 
     /**

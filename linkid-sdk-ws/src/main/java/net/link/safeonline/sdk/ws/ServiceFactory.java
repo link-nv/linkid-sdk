@@ -49,7 +49,7 @@ public abstract class ServiceFactory {
 
     protected abstract SessionTrackingClient _getSessionTrackingService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
 
-    protected abstract PaymentServiceClient _getPaymentService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+    protected abstract PaymentServiceClient _getPaymentService(X509Certificate sslCertificate);
 
     protected abstract Xkms2Client _getXkms2Client(X509Certificate sslCertificate);
 }
