@@ -240,6 +240,9 @@ Possible return values for the payment status are:
      AUTHORIZED       : Payment is authorized
      FAILED           : Payment has failed
 
+DONT forget to change the $linkIDHost when fetching the paymentStatus when putting your app in production.
+
+     $paymentState = SAML2_PaymentUtils::getPaymentStatus($transactionId, "https://demo.linkid.be");
 
 
 SSL
