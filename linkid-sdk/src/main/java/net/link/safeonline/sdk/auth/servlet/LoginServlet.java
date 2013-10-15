@@ -79,7 +79,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                 return;
             }
 
-            onLogin( request.getSession(), authnResponse );
+            onLogin( request.getSession(), authnResponse, response );
 
             String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
             LoginMode mode = LoginMode.fromString( modeParam );
@@ -127,6 +127,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
      *
      * @return A function that provides the context for validating detached authentication responses (assertions).
      */
+    @SuppressWarnings("UnusedParameters")
     protected Function<AuthnProtocolResponseContext, AuthenticationContext> getContextFunction(final HttpSession httpSession) {
 
         return new Function<AuthnProtocolResponseContext, AuthenticationContext>() {
@@ -145,7 +146,8 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
      * @param session       The HTTP session within which the response was received.
      * @param authnResponse The response that was received.
      */
-    protected void onLogin(HttpSession session, AuthnProtocolResponseContext authnResponse) {
+    @SuppressWarnings("UnusedParameters")
+    protected void onLogin(final HttpSession session, final AuthnProtocolResponseContext authnResponse, final HttpServletResponse httpServletResponse) {
 
         if (authnResponse.isSuccess()) {
             logger.dbg( "username: %s", authnResponse.getUserId() );
