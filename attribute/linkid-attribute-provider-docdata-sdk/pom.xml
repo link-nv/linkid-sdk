@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client.sdk</groupId>
         <artifactId>attribute</artifactId>
-        <version>2.10</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
     <name>linkID Attribute Provider DocData SDK</name>
     <description>linkID Attribute Provider DocData SDK</description>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-api</artifactId>
-            <version>2.10</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
