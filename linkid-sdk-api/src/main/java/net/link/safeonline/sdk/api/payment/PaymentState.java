@@ -6,6 +6,7 @@ public enum PaymentState {
     DEFERRED,               // deferred payment
     WAITING_FOR_UPDATE,     // linkID stopped waiting for status update, SP will be informed on payment status change
     FAILED,                 // payment has failed
+    REFUNDED,               // payment has been refunded
     PAYED;                  // completed
 
     public static PaymentState parse(final String stateString) {

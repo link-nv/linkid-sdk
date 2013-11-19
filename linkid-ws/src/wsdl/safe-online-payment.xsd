@@ -50,6 +50,11 @@
 					<documentation>Payment has failed</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="REFUNDED">
+				<annotation>
+					<documentation>Payment has been refunded</documentation>
+				</annotation>
+			</enumeration>
 		</restriction>
 	</simpleType>
 
