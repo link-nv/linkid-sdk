@@ -55,6 +55,11 @@
 					<documentation>Payment has been refunded</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="REFUND_STARTED">
+				<annotation>
+					<documentation>Payment refund operation has started</documentation>
+				</annotation>
+			</enumeration>
 		</restriction>
 	</simpleType>
 
