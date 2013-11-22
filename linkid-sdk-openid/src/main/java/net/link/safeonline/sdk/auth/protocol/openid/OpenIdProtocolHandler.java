@@ -118,7 +118,8 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
             AuthRequest authReq = manager.authenticate( discovered, landingURL, realm );
             response.sendRedirect( authReq.getDestinationUrl( true ) );
 
-            return new AuthnProtocolRequestContext( realm, realm, this, targetURL, context.isMobileAuthentication(), context.isMobileAuthenticationMinimal() );
+            return new AuthnProtocolRequestContext( realm, realm, this, targetURL, context.isMobileAuthentication(), context.isMobileAuthenticationMinimal(),
+                    context.isMobileForceRegistration() );
         }
         catch (OpenIDException e) {
             logger.err( "OpenID OpenIDException", e );
@@ -198,7 +199,7 @@ public class OpenIdProtocolHandler implements ProtocolHandler {
                 new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), authenticatedDevices, attributes, true, null, null ) );
         authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this,
                 null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
-                authnRequest.isMobileAuthenticationMinimal() );
+                authnRequest.isMobileAuthenticationMinimal(), authnRequest.isMobileForceRegistration() );
 
         boolean success = verification.getAuthResponse() instanceof AuthSuccess;
         return new AuthnProtocolResponseContext( authnRequest, realm, userId, authnRequest.getIssuer(), authenticatedDevices, attributes, success, null, null );

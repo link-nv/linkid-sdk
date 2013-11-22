@@ -134,6 +134,19 @@ public interface WebConfig {
     String mobileAuthURL();
 
     /**
+     * Property that defines the URL to the linkID QR force registration web application to use for application authentication.
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-qr/reg]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/reg]} (eg. {@code https://my.linkid.be/linkid-qr/reg})
+     * </p>
+     * <p/>
+     */
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/reg")
+    String mobileRegURL();
+
+    /**
      * Property that defines the URL to the linkID QR authentication web application to use for application authentication, in minimal mode
      * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-qr/auth-min]</i>
@@ -145,6 +158,19 @@ public interface WebConfig {
      */
     @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/auth-min")
     String mobileAuthMinimalURL();
+
+    /**
+     * Property that defines the URL to the linkID QR force registration web application to use for application authentication, in minimal mode
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-qr/reg-min]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/reg-min]} (eg. {@code https://my.linkid.be/linkid-qr/reg-min})
+     * </p>
+     * <p/>
+     */
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/reg-min")
+    String mobileRegMinimalURL();
 
     /**
      * Property that defines the base URL to the linkID static web application.

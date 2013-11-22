@@ -94,7 +94,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
         MessageUtils.sendRedirectMessage( authnService, authorizationRequest, response, paramsInBody, loginParams );
 
         AuthnProtocolRequestContext requestContext = new AuthnProtocolRequestContext( authorizationRequest.getState(), clientId, this, targetURL,
-                context.isMobileAuthentication(), context.isMobileAuthenticationMinimal() );
+                context.isMobileAuthentication(), context.isMobileAuthenticationMinimal(), context.isMobileForceRegistration() );
         requestContext.setLoginMode( context.getLoginMode() );
         return requestContext;
     }
@@ -168,7 +168,7 @@ public class OAuth2ProtocolHandler implements ProtocolHandler {
                 new AuthnProtocolResponseContext( authnRequest, null, userId, authnRequest.getIssuer(), null, attributes, true, null, null ) );
         authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this,
                 null != authnContext.getTarget()? authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
-                authnRequest.isMobileAuthenticationMinimal() );
+                authnRequest.isMobileAuthenticationMinimal(), authnRequest.isMobileForceRegistration() );
 
         return new AuthnProtocolResponseContext( authnRequest, state, userId, clientId, new LinkedList<String>(), attributes, success, null, null );
     }

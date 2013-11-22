@@ -75,12 +75,19 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         }
 
         String authnService;
-        if (authnContext.isMobileAuthentication())
-            authnService = config().web().mobileAuthURL();
-        else if (authnContext.isMobileAuthenticationMinimal())
-            authnService = config().web().mobileAuthMinimalURL();
-        else
+        if (authnContext.isMobileAuthentication()) {
+            if (authnContext.isMobileForceRegistration())
+                authnService = config().web().mobileRegURL();
+            else
+                authnService = config().web().mobileAuthURL();
+        } else if (authnContext.isMobileAuthenticationMinimal()) {
+            if (authnContext.isMobileForceRegistration())
+                authnService = config().web().mobileRegMinimalURL();
+            else
+                authnService = config().web().mobileAuthMinimalURL();
+        } else {
             authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().authPath() );
+        }
 
         String templateResourceName = config().proto().saml().postBindingTemplate();
 
@@ -99,7 +106,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, targetURL, authnContext.isMobileAuthentication(),
-                authnContext.isMobileAuthenticationMinimal() );
+                authnContext.isMobileAuthenticationMinimal(), authnContext.isMobileForceRegistration() );
     }
 
     @Nullable
@@ -143,7 +150,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                         findPaymentResponse( samlResponse ) ) );
         authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), this,
                 null != this.authnContext.getTarget()? this.authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
-                authnRequest.isMobileAuthenticationMinimal() );
+                authnRequest.isMobileAuthenticationMinimal(), authnRequest.isMobileForceRegistration() );
 
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, authenticatedDevices, attributes, success,
                 saml2ResponseContext.getCertificateChain(), findPaymentResponse( samlResponse ) );
@@ -199,7 +206,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( null, null, userId, applicationName, authenticatedDevices, attributes, true, null, null ) );
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this, authnContext.getTarget(),
-                false, false );
+                false, false, false );
 
         CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request, authnContext.getTrustedCertificates() );
 

@@ -35,6 +35,11 @@ public interface RequestConstants {
     String MOBILE_AUTHN_MINIMAL_REQUEST_PARAM = "mobileAuthnMinimal";
 
     /**
+     * Trigger the QR Mobile force registration flow
+     */
+    String MOBILE_FORCE_REG_REQUEST_PARAM = "mobileForceReg";
+
+    /**
      * Case we want to force the auth webapp to go straight to register or authentication page.
      */
     String START_PAGE_REQUEST_PARAM = "start_page";

@@ -27,6 +27,7 @@ public class AuthenticationContext extends LinkIDContext {
 
     private boolean                         mobileAuthentication;
     private boolean                         mobileAuthenticationMinimal;
+    private boolean                         mobileForceRegistration;
     private boolean                         forceAuthentication;
     private StartPage                       startPage;
     private Set<String>                     devices;
@@ -341,6 +342,19 @@ public class AuthenticationContext extends LinkIDContext {
     public void setMobileAuthenticationMinimal(final boolean mobileAuthenticationMinimal) {
 
         this.mobileAuthenticationMinimal = mobileAuthenticationMinimal;
+    }
+
+    public boolean isMobileForceRegistration() {
+
+        return mobileForceRegistration;
+    }
+
+    /**
+     * Setting this true will force the linkID client to create a new linkID account
+     */
+    public void setMobileForceRegistration(final boolean mobileForceRegistration) {
+
+        this.mobileForceRegistration = mobileForceRegistration;
     }
 
     /**

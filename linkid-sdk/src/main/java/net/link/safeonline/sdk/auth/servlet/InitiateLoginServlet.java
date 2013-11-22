@@ -44,6 +44,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
 
         boolean mobileAuthn = null != request.getParameter( RequestConstants.MOBILE_AUTHN_REQUEST_PARAM );
         boolean mobileAuthnMinimal = null != request.getParameter( RequestConstants.MOBILE_AUTHN_MINIMAL_REQUEST_PARAM );
+        boolean mobileForceRegistration = null != request.getParameter( RequestConstants.MOBILE_FORCE_REG_REQUEST_PARAM );
 
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
@@ -55,8 +56,8 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         // optional force registration
         StartPage startPage = StartPage.fromString( request.getParameter( RequestConstants.START_PAGE_REQUEST_PARAM ), StartPage.NONE );
 
-        AuthenticationContext authenticationContext = initAuthenticationContext( request, response, mobileAuthn, mobileAuthnMinimal, targetURI, mode,
-                startPage );
+        AuthenticationContext authenticationContext = initAuthenticationContext( request, response, mobileAuthn, mobileAuthnMinimal, mobileForceRegistration,
+                targetURI, mode, startPage );
 
         if (null == authenticationContext) {
 
@@ -64,6 +65,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
             authenticationContext.setStartPage( startPage );
             authenticationContext.setMobileAuthentication( mobileAuthn );
             authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
+            authenticationContext.setMobileForceRegistration( mobileForceRegistration );
         }
 
         configureAuthenticationContext( authenticationContext, request, response );
@@ -76,8 +78,8 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
      */
     @Nullable
     protected AuthenticationContext initAuthenticationContext(final HttpServletRequest request, final HttpServletResponse response, final boolean mobileAuthn,
-                                                              final boolean mobileAuthnMinimal, final String targetURI, final LoginMode mode,
-                                                              final StartPage startPage) {
+                                                              final boolean mobileAuthnMinimal, final boolean mobileForceRegistration, final String targetURI,
+                                                              final LoginMode mode, final StartPage startPage) {
 
         return null;
     }

@@ -14,14 +14,16 @@ public class AuthnProtocolRequestContext extends ProtocolRequestContext {
 
     private final boolean mobileAuthentication;
     private final boolean mobileAuthenticationMinimal;
+    private final boolean mobileForceRegistration;
 
-    public AuthnProtocolRequestContext(String id, String issuer, ProtocolHandler protocolHandler, String target, boolean mobileAuthentication,
-                                       boolean mobileAuthenticationMinimal) {
+    public AuthnProtocolRequestContext(final String id, final String issuer, final ProtocolHandler protocolHandler, final String target,
+                                       final boolean mobileAuthentication, final boolean mobileAuthenticationMinimal, final boolean mobileForceRegistration) {
 
         super( id, issuer, protocolHandler, target );
 
         this.mobileAuthentication = mobileAuthentication;
         this.mobileAuthenticationMinimal = mobileAuthenticationMinimal;
+        this.mobileForceRegistration = mobileForceRegistration;
     }
 
     public boolean isMobileAuthentication() {
@@ -32,5 +34,10 @@ public class AuthnProtocolRequestContext extends ProtocolRequestContext {
     public boolean isMobileAuthenticationMinimal() {
 
         return mobileAuthenticationMinimal;
+    }
+
+    public boolean isMobileForceRegistration() {
+
+        return mobileForceRegistration;
     }
 }
