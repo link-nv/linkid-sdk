@@ -48,6 +48,8 @@ public class PaymentServiceClientImpl extends AbstractWSClient<PaymentServicePor
                 return PaymentState.FAILED;
             case REFUNDED:
                 return PaymentState.REFUNDED;
+            case REFUND_STARTED:
+                return PaymentState.REFUND_STARTED;
         }
 
         throw new InternalInconsistencyException( String.format( "Payment state type %s it not supported!", paymentStatusType ) );
