@@ -467,7 +467,7 @@
 
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
         <release.version>1.18</release.version>
-        <link-util.version>1.49</link-util.version>
+        <link-util.version>1.52</link-util.version>
         <opal.version>1.6-p5</opal.version>
         <jtrust.version>1.1.2</jtrust.version>
 
