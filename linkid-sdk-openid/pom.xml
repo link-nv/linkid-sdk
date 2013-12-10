@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.13</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID SDK for OpenID</name>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>2.13</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
 
         <!-- Specific Dependencies: external -->
