@@ -18,7 +18,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
-import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMParser;
 
 
 /**
@@ -67,7 +67,7 @@ public class PkiClientImpl implements PkiClient {
         logger.dbg( "response body: %s", responseBody );
         StringReader stringReader = new StringReader( responseBody );
         Object obj;
-        PEMReader pemReader = new PEMReader( stringReader );
+        PEMParser pemReader = new PEMParser( stringReader );
         try {
             obj = pemReader.readObject();
         }

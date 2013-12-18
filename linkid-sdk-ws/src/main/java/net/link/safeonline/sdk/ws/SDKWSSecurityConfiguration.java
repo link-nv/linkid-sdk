@@ -2,17 +2,18 @@ package net.link.safeonline.sdk.ws;
 
 import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 
-import be.fedict.trust.MemoryCertificateRepository;
 import be.fedict.trust.TrustValidator;
+import be.fedict.trust.linker.TrustLinkerResultException;
+import be.fedict.trust.repository.MemoryCertificateRepository;
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.util.ObjectUtils;
 import java.security.PrivateKey;
-import java.security.cert.CertPathValidatorException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.util.common.CertificateChain;
+import net.link.util.common.LazyPublicKeyTrustLinker;
 import net.link.util.config.KeyProvider;
 import net.link.util.ws.security.AbstractWSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -57,10 +58,12 @@ public class SDKWSSecurityConfiguration extends AbstractWSSecurityConfiguration 
             certificateRepository.addTrustPoint( trustedCertificate );
 
         try {
-            new TrustValidator( certificateRepository ).isTrusted( aCertificateChain.getOrderedCertificateChain() );
+            TrustValidator trustValidator = new TrustValidator( certificateRepository );
+            trustValidator.addTrustLinker( new LazyPublicKeyTrustLinker() );
+            trustValidator.isTrusted( aCertificateChain.getOrderedCertificateChain() );
             return true;
         }
-        catch (CertPathValidatorException e) {
+        catch (TrustLinkerResultException e) {
             logger.dbg( e, "Couldn't trust certificate chain.\nChain:\n%s\nTrusted Certificates:\n%s", aCertificateChain, trustedCertificates );
             return false;
         }

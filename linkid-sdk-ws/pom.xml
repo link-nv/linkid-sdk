@@ -84,8 +84,12 @@
             <artifactId>util-ws</artifactId>
         </dependency>
         <dependency>
-            <groupId>be.fedict</groupId>
-            <artifactId>jtrust</artifactId>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>be.fedict.jtrust</groupId>
+            <artifactId>jtrust-lib</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->

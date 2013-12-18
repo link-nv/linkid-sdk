@@ -467,11 +467,13 @@
 
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
         <release.version>1.18</release.version>
-        <link-util.version>1.53</link-util.version>
+        <link-util.version>GIT-SNAPSHOT</link-util.version>
         <opal.version>1.6-p5</opal.version>
-        <jtrust.version>1.1.2</jtrust.version>
+        <jtrust.version>2.0.1</jtrust.version>
+        <bouncycastle.version>1.49</bouncycastle.version>
 
         <joda-time.version>1.6.2</joda-time.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
 
         <slf4j.version>1.5.11</slf4j.version>
         <logback.version>0.9.20</logback.version>
@@ -489,7 +491,6 @@
         <guava.version>r05</guava.version>
         <gson.version>2.2.2</gson.version>
         <jetbrains-annotations.version>7.0.2</jetbrains-annotations.version>
-        <bouncycastle.version>1.46</bouncycastle.version>
 
         <!-- ZXING - used in OAuth2 mobile linking servlet -->
         <zxing.version>2.0</zxing.version>
@@ -612,19 +613,32 @@
                 <artifactId>wicket</artifactId>
                 <version>${wicket.version}</version>
             </dependency>
+
+            <!-- Bouncycastle -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk16</artifactId>
+                <artifactId>bcprov-jdk15on</artifactId>
                 <version>${bouncycastle.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcmail-jdk16</artifactId>
+                <artifactId>bcmail-jdk15on</artifactId>
                 <version>${bouncycastle.version}</version>
             </dependency>
 
             <!-- External -->
 
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commons-httpclient.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-tools</artifactId>
@@ -838,8 +852,8 @@
                 <version>${opal.version}</version>
             </dependency>
             <dependency>
-                <groupId>be.fedict</groupId>
-                <artifactId>jtrust</artifactId>
+                <groupId>be.fedict.jtrust</groupId>
+                <artifactId>jtrust-lib</artifactId>
                 <version>${jtrust.version}</version>
                 <exclusions>
                     <exclusion>
