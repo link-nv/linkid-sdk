@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.14</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID SDK JSP Example</name>
@@ -15,19 +15,19 @@
 
     <groupId>net.lin-k.linkid.client.sdk</groupId>
     <artifactId>linkid-sdk-example-jsp</artifactId>
-    <version>2.14</version>
+    <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <dependencies>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>2.14</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-ws</artifactId>
-            <version>2.14</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
