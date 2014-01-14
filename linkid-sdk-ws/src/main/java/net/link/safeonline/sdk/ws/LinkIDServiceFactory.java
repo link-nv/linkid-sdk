@@ -13,6 +13,7 @@ import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
@@ -25,6 +26,7 @@ import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
+import net.link.safeonline.sdk.ws.ltqr.LTQRServiceClientImpl;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
 import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClientImpl;
 import net.link.safeonline.sdk.ws.notification.subscription.NotificationSubscriptionManagerClientImpl;
@@ -510,6 +512,25 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
 
         return new Xkms2ClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ) );
+    }
+
+    /**
+     * Retreive a proxy to the linkID long term QR web service.
+     *
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID long term QR web service.
+     */
+    public static LTQRServiceClient getLtqrServiceClient(final X509Certificate sslCertificate) {
+
+        return getInstance()._getLtqrServiceClient( sslCertificate );
+    }
+
+    @Override
+    protected LTQRServiceClient _getLtqrServiceClient(final X509Certificate sslCertificate) {
+
+        return new LTQRServiceClientImpl( SDKConfigHolder.config().web().mobileWsBase(), getSSLCertificate( sslCertificate ) );
     }
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {

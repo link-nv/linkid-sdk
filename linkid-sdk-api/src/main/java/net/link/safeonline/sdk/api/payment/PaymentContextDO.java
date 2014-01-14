@@ -115,6 +115,14 @@ public class PaymentContextDO implements Serializable {
                 Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ) );
     }
 
+    @Override
+    public String toString() {
+
+        return String.format(
+                "Amount: %f, Currency: %s, Description: \"%s\", Profile: \"%s\", validationTime: %d, addPaymentMethodLink: %s, allowDeferredPay: %s", amount,
+                currency, description, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, allowDeferredPay );
+    }
+
     // Accessors
 
     public double getAmount() {

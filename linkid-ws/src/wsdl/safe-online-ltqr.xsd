@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:ltqr" xmlns:tns="urn:net:lin-k:safe-online:ltqr"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-ltqr
+			Revision history:
+			V1.0 (January, 2014):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <!-- Push -->
+    <element name="PushRequest">
+		<complexType>
+            <sequence>
+                <element name="serviceProvider" type="tns:ServiceProvider" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Service Provider's credentials</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentContext" type="tns:PaymentContext" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment context</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="timesUsable" type="long" use="required">
+                <annotation>
+                    <documentation>Number of times the long term session can be used. 0 implies unlimited use.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="expiryDate" type="dateTime" use="optional">
+                <annotation>
+                    <documentation>Expiry date of the long term session.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="expiryDuration" type="long" use="optional">
+                <annotation>
+                    <documentation>Expiry duration of the long term session. Expressed in number of minutes starting from the creation.
+                        Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
+                </annotation>
+            </attribute>
+		</complexType>
+	</element>
+
+    <element name="PushResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PushSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PushError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PushSuccess">
+        <sequence>
+            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Content of the QR code</documentation>
+                </annotation>
+            </element>
+            <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Session ID of the created long term session. A type 4 UUID.
+                        This session ID will be used in the notifications to the Service Provider.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PushError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="PaymentContext">
+        <sequence>
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The amount to be payed ( in cents )</documentation>
+                </annotation>
+            </element>
+            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1">
+            </element>
+            <element name="description" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment description</documentation>
+                </annotation>
+            </element>
+            <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment profile</documentation>
+                </annotation>
+            </element>
+            <element name="validationTime" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional maximum time to wait for payment validation (expressed in seconds), if not specified defaults to 5s</documentation>
+                </annotation>
+            </element>
+            <element name="showAddPaymentMethodLink" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Whether or not to display a link to linkID's add payment method page if the linkID user does not have any payment methods
+                        added, default is true.</documentation>
+                </annotation>
+            </element>
+            <element name="allowDeferredPay" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Whether or not deferred payments are allowed, if a user has no payment token attached to the linkID account.
+                        linkID can allow for the user to make a deferred payment which he can complete later on from his browser.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <simpleType name="Currency">
+		<annotation>
+			<documentation>Currency</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="EUR">
+				<annotation>
+					<documentation>euro</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="ErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="ServiceProvider">
+        <attribute name="username" type="string" use="required">
+            <annotation>
+                <documentation>Service Provider's username</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="password" type="string" use="required">
+            <annotation>
+                <documentation>Service Provider's password</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <!-- Status -->
+
+</schema>

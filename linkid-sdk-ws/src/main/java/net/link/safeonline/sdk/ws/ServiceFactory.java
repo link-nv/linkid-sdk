@@ -10,6 +10,7 @@ import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
@@ -52,4 +53,6 @@ public abstract class ServiceFactory {
     protected abstract PaymentServiceClient _getPaymentService(X509Certificate sslCertificate);
 
     protected abstract Xkms2Client _getXkms2Client(X509Certificate sslCertificate);
+
+    protected abstract LTQRServiceClient _getLtqrServiceClient(X509Certificate sslCertificate);
 }

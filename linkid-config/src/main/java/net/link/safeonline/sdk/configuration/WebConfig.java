@@ -206,6 +206,22 @@ public interface WebConfig {
     String wsBase();
 
     /**
+     * Property that defines the base URL to the linkID mobile web services to use.
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-qr/ws]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/ws]} (eg. {@code https://my.linkid.be/linkid-qr/ws})
+     * </p>
+     * <p/>
+     * <p>
+     * <b>NOTE:</b> Do not terminate with a slash.
+     * </p>
+     */
+    @Property(required = true, unset = "https://demo.linkid.be/linkid-qr/ws")
+    String mobileWsBase();
+
+    /**
      * Property that defines the base URL to the linkID web services to use.
      * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-ws]</i>
