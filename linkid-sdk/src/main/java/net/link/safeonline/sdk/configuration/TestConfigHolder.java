@@ -149,7 +149,6 @@ public class TestConfigHolder extends ConfigHolder {
             public String mobileBase;
             public String staticBase;
             public String wsBase;
-            public String mobileWsBase;
             public String authWsBase;
             public String landingPath;
 
@@ -223,12 +222,6 @@ public class TestConfigHolder extends ConfigHolder {
             public String wsBase() {
 
                 return wsBase;
-            }
-
-            @Override
-            public String mobileWsBase() {
-
-                return mobileWsBase;
             }
 
             @Override

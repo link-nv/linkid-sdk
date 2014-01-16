@@ -530,7 +530,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected LTQRServiceClient _getLtqrServiceClient(final X509Certificate sslCertificate) {
 
-        return new LTQRServiceClientImpl( SDKConfigHolder.config().web().mobileWsBase(), getSSLCertificate( sslCertificate ) );
+        return new LTQRServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ) );
     }
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
