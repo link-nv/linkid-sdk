@@ -26,9 +26,9 @@
                     </annotation>
                 </element>
             </sequence>
-            <attribute name="timesUsable" type="long" use="required">
+            <attribute name="oneTimeUse" type="boolean" use="required">
                 <annotation>
-                    <documentation>Number of times the long term session can be used. 0 implies unlimited use.</documentation>
+                    <documentation>Long term QR session can only be used once</documentation>
                 </annotation>
             </attribute>
             <attribute name="expiryDate" type="dateTime" use="optional">
@@ -38,7 +38,7 @@
             </attribute>
             <attribute name="expiryDuration" type="long" use="optional">
                 <annotation>
-                    <documentation>Expiry duration of the long term session. Expressed in number of minutes starting from the creation.
+                    <documentation>Expiry duration of the long term session. Expressed in number of seconds starting from the creation.
                         Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
                 </annotation>
             </attribute>

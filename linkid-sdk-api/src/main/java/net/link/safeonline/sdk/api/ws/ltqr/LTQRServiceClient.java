@@ -18,9 +18,9 @@ public interface LTQRServiceClient {
      *
      * @param ltqrServiceProvider the service provider credentials
      * @param paymentContext      Optional payment context
-     * @param timesUsable         Number of times the long term session can be used. 0 implies unlimited use.
+     * @param oneTimeUse          Long term QR session can only be used once
      * @param expiryDate          Optional expiry date of the long term session.
-     * @param expiryDuration      Optional expiry duration of the long term session. Expressed in number of minutes starting from the creation.
+     * @param expiryDuration      Optional expiry duration of the long term session. Expressed in number of seconds starting from the creation.
      *                            Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a tyoe 4 UUID session ID of the created long term session. This
@@ -28,7 +28,7 @@ public interface LTQRServiceClient {
      *
      * @throws PushException failure
      */
-    LTQRSession push(LTQRServiceProvider ltqrServiceProvider, @Nullable PaymentContextDO paymentContext, long timesUsable, @Nullable Date expiryDate,
+    LTQRSession push(LTQRServiceProvider ltqrServiceProvider, @Nullable PaymentContextDO paymentContext, boolean oneTimeUse, @Nullable Date expiryDate,
                      @Nullable Long expiryDuration)
             throws PushException;
 }

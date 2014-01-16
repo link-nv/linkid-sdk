@@ -35,7 +35,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public LTQRSession push(final LTQRServiceProvider ltqrServiceProvider, @Nullable final PaymentContextDO paymentContextDO, final long timesUsable,
+    public LTQRSession push(final LTQRServiceProvider ltqrServiceProvider, @Nullable final PaymentContextDO paymentContextDO, final boolean oneTimeUse,
                             @Nullable final Date expiryDate, @Nullable final Long expiryDuration)
             throws PushException {
 
@@ -63,7 +63,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         }
 
         // configuration
-        pushRequest.setTimesUsable( timesUsable );
+        pushRequest.setOneTimeUse( oneTimeUse );
         if (null != expiryDate) {
             GregorianCalendar c = new GregorianCalendar();
             c.setTime( expiryDate );
