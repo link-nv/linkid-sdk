@@ -1,14 +1,14 @@
 package net.link.safeonline.sdk.ws.ltqr;
 
+import com.google.common.collect.Lists;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import javax.xml.datatype.*;
+import java.util.List;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.ltqr.*;
+import net.link.safeonline.sdk.api.ltqr.ErrorCode;
 import net.link.safeonline.sdk.api.ltqr.*;
-import net.link.safeonline.sdk.api.ltqr.LTQRSession;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
@@ -39,13 +39,13 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
                             @Nullable final Date expiryDate, @Nullable final Long expiryDuration)
             throws PushException {
 
-        PushRequest pushRequest = new PushRequest();
+        PushRequest request = new PushRequest();
 
         // service provider credentials
         ServiceProvider serviceProvider = new ServiceProvider();
         serviceProvider.setUsername( ltqrServiceProvider.getUsername() );
         serviceProvider.setPassword( ltqrServiceProvider.getPassword() );
-        pushRequest.setServiceProvider( serviceProvider );
+        request.setServiceProvider( serviceProvider );
 
         // payment context
         if (null != paymentContextDO) {
@@ -59,25 +59,18 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             paymentContext.setShowAddPaymentMethodLink( paymentContextDO.isShowAddPaymentMethodLink() );
             paymentContext.setAllowDeferredPay( paymentContextDO.isAllowDeferredPay() );
 
-            pushRequest.setPaymentContext( paymentContext );
+            request.setPaymentContext( paymentContext );
         }
 
         // configuration
-        pushRequest.setOneTimeUse( oneTimeUse );
+        request.setOneTimeUse( oneTimeUse );
         if (null != expiryDate) {
-            GregorianCalendar c = new GregorianCalendar();
-            c.setTime( expiryDate );
-            try {
-                pushRequest.setExpiryDate( DatatypeFactory.newInstance().newXMLGregorianCalendar( c ) );
-            }
-            catch (DatatypeConfigurationException e) {
-                throw new InternalInconsistencyException( e );
-            }
+            request.setExpiryDate( SDKUtils.convert( expiryDate ) );
         }
-        pushRequest.setExpiryDuration( expiryDuration );
+        request.setExpiryDuration( expiryDuration );
 
         // operate
-        PushResponse response = getPort().push( pushRequest );
+        PushResponse response = getPort().push( request );
 
         // convert response
         if (null != response.getError()) {
@@ -101,14 +94,77 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
+    @Override
+    public List<LTQRClientSession> pull(final LTQRServiceProvider ltqrServiceProvider, @Nullable final List<String> sessionIds,
+                                        @Nullable final List<String> clientSessionIds)
+            throws PullException {
+
+        PullRequest request = new PullRequest();
+
+        // service provider credentials
+        ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setUsername( ltqrServiceProvider.getUsername() );
+        serviceProvider.setPassword( ltqrServiceProvider.getPassword() );
+        request.setServiceProvider( serviceProvider );
+
+        if (null != sessionIds && !sessionIds.isEmpty()) {
+            request.getSessionIds().addAll( sessionIds );
+        }
+
+        if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
+            request.getClientSessionIds().addAll( clientSessionIds );
+        }
+
+        // operate
+        PullResponse response = getPort().pull( request );
+
+        // convert response
+        if (null != response.getError()) {
+            throw new PullException( convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LTQRClientSession> clientSessions = Lists.newLinkedList();
+
+            for (ClientSession clientSession : response.getSuccess().getSessions()) {
+
+                clientSessions.add( new LTQRClientSession( clientSession.getSessionId(), clientSession.getClientSessionId(), clientSession.getUserId(),
+                        clientSession.getCreated().toGregorianCalendar().getTime(), convert( clientSession.getPaymentStatus() ) ) );
+            }
+
+            return clientSessions;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
     // Helper methods
 
-    private PushErrorCode convert(final ErrorCode errorCode) {
+    private LTQRPaymentState convert(final LTQRPaymentStatusType wsPaymentStatusType) {
+
+        if (null == wsPaymentStatusType)
+            return null;
+
+        switch (wsPaymentStatusType) {
+
+            case STARTED:
+                return LTQRPaymentState.STARTED;
+            case AUTHORIZED:
+                return LTQRPaymentState.PAYED;
+            case FAILED:
+                return LTQRPaymentState.FAILED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected payment status type %s!", wsPaymentStatusType.name() ) );
+    }
+
+    private ErrorCode convert(final net.lin_k.safe_online.ltqr.ErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_CREDENTIALS_INVALID:
-                return PushErrorCode.ERROR_CREDENTIALS_INVALID;
+                return ErrorCode.ERROR_CREDENTIALS_INVALID;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

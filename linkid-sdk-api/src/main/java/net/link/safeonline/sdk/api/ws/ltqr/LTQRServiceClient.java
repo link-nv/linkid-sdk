@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.api.ws.ltqr;
 
 import java.util.Date;
+import java.util.List;
 import net.link.safeonline.sdk.api.ltqr.*;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import org.jetbrains.annotations.Nullable;
@@ -31,4 +32,18 @@ public interface LTQRServiceClient {
     LTQRSession push(LTQRServiceProvider ltqrServiceProvider, @Nullable PaymentContextDO paymentContext, boolean oneTimeUse, @Nullable Date expiryDate,
                      @Nullable Long expiryDuration)
             throws PushException;
+
+    /**
+     * Fetch a set of client sessions.
+     *
+     * @param ltqrServiceProvider the service provider credentials
+     * @param sessionIds          optional list of long term session Ids, if empty or null all client sessions for all ltqr sessions will be returned
+     * @param clientSessionIds    optional list of client session IDs
+     *
+     * @return list of client sessions
+     *
+     * @throws PullException failure
+     */
+    List<LTQRClientSession> pull(LTQRServiceProvider ltqrServiceProvider, @Nullable List<String> sessionIds, @Nullable List<String> clientSessionIds)
+            throws PullException;
 }

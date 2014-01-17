@@ -54,6 +54,39 @@
         </complexType>
     </element>
 
+    <!-- Pull -->
+    <element name="PullRequest">
+        <complexType>
+            <sequence>
+                <element name="serviceProvider" type="tns:ServiceProvider" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Service Provider's credentials</documentation>
+                    </annotation>
+                </element>
+                <element name="sessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of sessionIds to fetch. If none are specified, all LTQR sessions and client session are returned.
+                        Note this is the LTQR session, not the client session ID!</documentation>
+                    </annotation>
+                </element>
+                <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are fetched for the sessionIds specified above</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="PullResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PullSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PullError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
     <complexType name="PushSuccess">
         <sequence>
             <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
@@ -77,6 +110,50 @@
 
     <complexType name="PushError">
         <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="PullSuccess">
+        <sequence>
+            <element name="sessions" type="tns:ClientSession" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The client sessions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PullError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="ClientSession">
+        <sequence>
+            <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR session ID ( NOT the client session ID... )</documentation>
+                </annotation>
+            </element>
+            <element name="clientSessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR client session ID</documentation>
+                </annotation>
+            </element>
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The userId</documentation>
+                </annotation>
+            </element>
+            <element name="created" type="dateTime" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Client session creation date</documentation>
+                </annotation>
+            </element>
+            <element name="paymentStatus" minOccurs="0" maxOccurs="1" type="tns:LTQRPaymentStatusType">
+                <annotation>
+                    <documentation>Payment status (optional)</documentation>
+                </annotation>
+            </element>
+        </sequence>
     </complexType>
 
     <complexType name="PaymentContext">
@@ -157,6 +234,27 @@
         </attribute>
     </complexType>
 
-    <!-- Status -->
+    <simpleType name="LTQRPaymentStatusType">
+		<annotation>
+			<documentation>Long term QR Payment status</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="STARTED">
+				<annotation>
+					<documentation>Payment is being processed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="AUTHORIZED">
+				<annotation>
+					<documentation>Payment is authorized</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="FAILED">
+				<annotation>
+					<documentation>Payment has failed</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
 
 </schema>

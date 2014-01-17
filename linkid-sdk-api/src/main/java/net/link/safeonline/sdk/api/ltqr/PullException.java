@@ -5,11 +5,11 @@ package net.link.safeonline.sdk.api.ltqr;
  * Date: 14/01/14
  * Time: 11:03
  */
-public class PushException extends Exception {
+public class PullException extends Exception {
 
     private final ErrorCode errorCode;
 
-    public PushException(final ErrorCode errorCode) {
+    public PullException(final ErrorCode errorCode) {
 
         this.errorCode = errorCode;
     }

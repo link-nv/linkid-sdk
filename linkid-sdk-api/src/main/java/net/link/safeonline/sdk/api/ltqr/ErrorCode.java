@@ -5,7 +5,7 @@ package net.link.safeonline.sdk.api.ltqr;
  * Date: 14/01/14
  * Time: 11:04
  */
-public enum PushErrorCode {
+public enum ErrorCode {
 
     ERROR_CREDENTIALS_INVALID;
 }
