@@ -46,4 +46,16 @@ public interface LTQRServiceClient {
      */
     List<LTQRClientSession> pull(LTQRServiceProvider ltqrServiceProvider, @Nullable List<String> sessionIds, @Nullable List<String> clientSessionIds)
             throws PullException;
+
+    /**
+     * Remove a set of client sessions.
+     *
+     * @param ltqrServiceProvider the service provider credentials
+     * @param sessionIds          list of long term session Ids to remove, if list of clientSessionIds is empty, all associated ones will be removed.
+     * @param clientSessionIds    optional list of client session IDs to remove
+     *
+     * @throws RemoveException failure
+     */
+    void remove(LTQRServiceProvider ltqrServiceProvider, List<String> sessionIds, @Nullable List<String> clientSessionIds)
+            throws RemoveException;
 }

@@ -35,7 +35,7 @@ import net.link.safeonline.sdk.ws.session.SessionTrackingClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.util.config.KeyProvider;
-import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -25,6 +25,15 @@
 		<part name="response" element="tns:PullResponse" />
 	</message>
 
+    <!-- =================== Remove request ========================= -->
+
+    <message name="removeRequest">
+		<part name="request" element="tns:RemoveRequest" />
+	</message>
+	<message name="removeResponse">
+		<part name="response" element="tns:RemoveResponse" />
+	</message>
+
     <!-- =========================== Ports ========================== -->
 
     <portType name="LTQRServicePort">
@@ -35,6 +44,10 @@
 		<operation name="pull">
 			<input message="tns:pullRequest" />
 			<output message="tns:pullResponse" />
+		</operation>
+		<operation name="remove">
+			<input message="tns:removeRequest" />
+			<output message="tns:removeResponse" />
 		</operation>
     </portType>
 
@@ -53,6 +66,15 @@
         </operation>
         <operation name="pull">
             <soap:operation soapAction="urn:net:lin-k:safe-online:ltqr:pull" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="remove">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:ltqr:remove" />
             <input>
                 <soap:body use="literal" />
             </input>

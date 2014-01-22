@@ -23,8 +23,8 @@ import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.sts.SecurityTokenServiceFactory;
 import net.link.util.ws.AbstractWSClient;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.jetbrains.annotations.Nullable;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.*;
 import org.opensaml.saml2.core.*;
@@ -55,7 +55,7 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.sts.path" ) ) );
 
-        WSSecurityHandler.install( getBindingProvider(), configuration );
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     private void validate(Element token, TrustDomainType trustDomain, @Nullable Map<QName, String> otherAttributes, String queryString,

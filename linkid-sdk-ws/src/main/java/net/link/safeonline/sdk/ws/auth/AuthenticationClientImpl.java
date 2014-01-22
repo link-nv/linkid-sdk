@@ -24,8 +24,8 @@ import net.link.safeonline.sdk.api.ws.auth.client.AuthenticationClient;
 import net.link.safeonline.sdk.api.ws.auth.client.AuthenticationResult;
 import net.link.safeonline.ws.auth.WSAuthenticationServiceFactory;
 import net.link.util.ws.AbstractWSClient;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.*;
 import oasis.names.tc.saml._2_0.protocol.StatusCodeType;
 import oasis.names.tc.saml._2_0.protocol.StatusType;
@@ -54,7 +54,7 @@ public class AuthenticationClientImpl extends AbstractWSClient<WSAuthenticationP
         super( WSAuthenticationServiceFactory.newInstance().getPort( endpoint, WSAuthenticationPort.class, new AddressingFeature( true ) ),
                 sslCertificate );
 
-        WSSecurityHandler.install( getBindingProvider(), configuration );
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     @Nullable

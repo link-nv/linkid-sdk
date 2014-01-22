@@ -18,7 +18,7 @@ import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
-import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 

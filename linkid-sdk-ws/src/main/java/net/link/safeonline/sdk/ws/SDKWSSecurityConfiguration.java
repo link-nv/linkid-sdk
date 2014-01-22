@@ -15,7 +15,7 @@ import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.LazyPublicKeyTrustLinker;
 import net.link.util.config.KeyProvider;
-import net.link.util.ws.security.AbstractWSSecurityConfiguration;
+import net.link.util.ws.security.x509.AbstractWSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.Duration;

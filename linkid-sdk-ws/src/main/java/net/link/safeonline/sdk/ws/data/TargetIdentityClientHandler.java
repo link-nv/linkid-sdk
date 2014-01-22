@@ -17,7 +17,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.safeonline.sdk.api.ws.data.DataServiceConstants;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -122,7 +122,7 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
         String id = "id-" + UUID.randomUUID().toString();
         targetIdentityHeaderElement.setAttributeNS( XMLNS_NS, "xmlns:" + WSU_PREFIX, WSU_NS );
         targetIdentityHeaderElement.setAttributeNS( WSU_NS, WSU_PREFIX + ":Id", id );
-        WSSecurityHandler.addSignedElement( soapContext, id );
+        WSSecurityX509TokenHandler.addSignedElement( soapContext, id );
 
         /*
          * Create header content in JAXB.

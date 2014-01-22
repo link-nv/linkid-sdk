@@ -139,6 +139,44 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
+    @Override
+    public void remove(final LTQRServiceProvider ltqrServiceProvider, final List<String> sessionIds, @Nullable final List<String> clientSessionIds)
+            throws RemoveException {
+
+        RemoveRequest request = new RemoveRequest();
+
+        // service provider credentials
+        ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.setUsername( ltqrServiceProvider.getUsername() );
+        serviceProvider.setPassword( ltqrServiceProvider.getPassword() );
+        request.setServiceProvider( serviceProvider );
+
+        if (null == sessionIds || sessionIds.isEmpty()) {
+            throw new InternalInconsistencyException( "SessionIDs list cannot be empty!" );
+        }
+
+        request.getSessionIds().addAll( sessionIds );
+
+        if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
+            request.getClientSessionIds().addAll( clientSessionIds );
+        }
+
+        // operate
+        RemoveResponse response = getPort().remove( request );
+
+        // convert response
+        if (null != response.getError()) {
+            throw new RemoveException( convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
     // Helper methods
 
     private LTQRPaymentState convert(final LTQRPaymentStatusType wsPaymentStatusType) {

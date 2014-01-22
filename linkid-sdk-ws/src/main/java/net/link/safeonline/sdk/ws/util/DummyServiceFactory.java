@@ -21,7 +21,7 @@ import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.safeonline.sdk.ws.ServiceFactory;
-import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
 
 
 /**

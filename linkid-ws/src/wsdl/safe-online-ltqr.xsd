@@ -11,7 +11,8 @@
 		</documentation>
 	</annotation>
 
-    <!-- Push -->
+    <!-- =================== Push request ========================= -->
+
     <element name="PushRequest">
 		<complexType>
             <sequence>
@@ -54,7 +55,8 @@
         </complexType>
     </element>
 
-    <!-- Pull -->
+    <!-- =================== Pull request ========================= -->
+
     <element name="PullRequest">
         <complexType>
             <sequence>
@@ -83,6 +85,39 @@
             <sequence>
                 <element name="success" type="tns:PullSuccess" minOccurs="0" maxOccurs="1" />
                 <element name="error" type="tns:PullError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- =================== Remove request ========================= -->
+
+    <element name="RemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="serviceProvider" type="tns:ServiceProvider" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Service Provider's credentials</documentation>
+                    </annotation>
+                </element>
+                <element name="sessionIds" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>List of sessionIds to remove. If none are specified, all related client sessions will be removed.</documentation>
+                    </annotation>
+                </element>
+                <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are removed for the sessionIds specified above</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+        <element name="RemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:RemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:RemoveError" minOccurs="0" maxOccurs="1" />
             </sequence>
         </complexType>
     </element>
@@ -125,6 +160,13 @@
     <complexType name="PullError">
         <attribute name="errorCode" type="tns:ErrorCode" use="required" />
     </complexType>
+
+    <complexType name="RemoveSuccess" />
+
+    <complexType name="RemoveError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
 
     <complexType name="ClientSession">
         <sequence>
@@ -257,4 +299,4 @@
 		</restriction>
 	</simpleType>
 
-</schema>
+        </schema>
