@@ -1,9 +1,11 @@
 package net.link.safeonline.sdk.ws.payment;
 
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.payment.*;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.payment.PaymentState;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
@@ -27,16 +29,26 @@ public class PaymentServiceClientImpl extends AbstractWSClient<PaymentServicePor
     }
 
     @Override
-    public PaymentState getStatus(final String transactionId) {
+    public PaymentState getStatus(final String transactionId)
+            throws WSClientTransportException {
 
         PaymentStatusRequest statusRequest = new PaymentStatusRequest();
         statusRequest.setTransactionId( transactionId );
 
-        PaymentStatusResponse statusResponse = getPort().status( statusRequest );
-        return convert( statusResponse.getPaymentStatus() );
+        try {
+            PaymentStatusResponse statusResponse = getPort().status( statusRequest );
+            return convert( statusResponse.getPaymentStatus() );
+        }
+        catch (ClientTransportException e) {
+            throw new WSClientTransportException( getBindingProvider(), e );
+        }
     }
 
     private PaymentState convert(final PaymentStatusType paymentStatusType) {
+
+        if (null == paymentStatusType) {
+            throw new InternalInconsistencyException( "null PaymentStatusType returned, aborting..." );
+        }
 
         switch (paymentStatusType) {
 

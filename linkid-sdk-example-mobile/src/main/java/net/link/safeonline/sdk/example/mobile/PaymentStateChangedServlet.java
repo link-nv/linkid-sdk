@@ -4,6 +4,7 @@ import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.payment.PaymentConstants;
 import net.link.safeonline.sdk.api.payment.PaymentState;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
@@ -30,7 +31,14 @@ public class PaymentStateChangedServlet extends HttpServlet {
 
         // fetch the status report using the linkID payment web service
         PaymentServiceClient paymentServiceClient = LinkIDServiceFactory.getPaymentService();
-        PaymentState paymentState = paymentServiceClient.getStatus( transactionId );
+        PaymentState paymentState = null;
+        try {
+            paymentState = paymentServiceClient.getStatus( transactionId );
+        }
+        catch (WSClientTransportException e) {
+            logger.err( e, "Failed to get payment state..." );
+            return;
+        }
 
         logger.dbg( "  * state = %s", paymentState );
 
