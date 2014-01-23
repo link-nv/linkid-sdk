@@ -190,7 +190,7 @@ public interface WebConfig {
     String staticBase();
 
     /**
-     * Property that defines the base URL to the linkID web services to use.
+     * Property that defines the base URL to the linkID web services to use ( with WS-Security X509Token profile )
      * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-ws]</i>
      * <p/>
@@ -204,6 +204,22 @@ public interface WebConfig {
      */
     @Property(required = true, unset = "https://demo.linkid.be/linkid-ws")
     String wsBase();
+
+    /**
+     * Property that defines the base URL to the linkID web services to use ( with WS-Security Username profile ).
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-ws-username]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-ws-username]} (eg. {@code https://my.linkid.be/linkid-ws-username})
+     * </p>
+     * <p/>
+     * <p>
+     * <b>NOTE:</b> Do not terminate with a slash.
+     * </p>
+     */
+    @Property(required = true, unset = "https://demo.linkid.be/linkid-ws-username")
+    String wsUsernameBase();
 
     /**
      * Property that defines the base URL to the linkID web services to use.
