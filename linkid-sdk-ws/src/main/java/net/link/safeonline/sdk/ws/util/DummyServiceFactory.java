@@ -115,7 +115,7 @@ public class DummyServiceFactory extends ServiceFactory {
     }
 
     @Override
-    protected LTQRServiceClient _getLtqrServiceClient(final X509Certificate sslCertificate) {
+    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }

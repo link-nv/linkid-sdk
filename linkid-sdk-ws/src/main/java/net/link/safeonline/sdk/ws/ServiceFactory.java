@@ -54,5 +54,5 @@ public abstract class ServiceFactory {
 
     protected abstract Xkms2Client _getXkms2Client(X509Certificate sslCertificate);
 
-    protected abstract LTQRServiceClient _getLtqrServiceClient(X509Certificate sslCertificate);
+    protected abstract LTQRServiceClient _getLtqrServiceClient(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
 }

@@ -16,11 +16,6 @@
     <element name="PushRequest">
 		<complexType>
             <sequence>
-                <element name="serviceProvider" type="tns:ServiceProvider" minOccurs="1" maxOccurs="1">
-                    <annotation>
-                        <documentation>Service Provider's credentials</documentation>
-                    </annotation>
-                </element>
                 <element name="paymentContext" type="tns:PaymentContext" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>Optional payment context</documentation>
@@ -60,11 +55,6 @@
     <element name="PullRequest">
         <complexType>
             <sequence>
-                <element name="serviceProvider" type="tns:ServiceProvider" minOccurs="1" maxOccurs="1">
-                    <annotation>
-                        <documentation>Service Provider's credentials</documentation>
-                    </annotation>
-                </element>
                 <element name="sessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
                     <annotation>
                         <documentation>Optional list of sessionIds to fetch. If none are specified, all LTQR sessions and client session are returned.
@@ -94,11 +84,6 @@
     <element name="RemoveRequest">
         <complexType>
             <sequence>
-                <element name="serviceProvider" type="tns:ServiceProvider" minOccurs="1" maxOccurs="1">
-                    <annotation>
-                        <documentation>Service Provider's credentials</documentation>
-                    </annotation>
-                </element>
                 <element name="sessionIds" type="string" minOccurs="1" maxOccurs="unbounded">
                     <annotation>
                         <documentation>List of sessionIds to remove. If none are specified, all related client sessions will be removed.</documentation>
@@ -262,19 +247,6 @@
 			</enumeration>
 		</restriction>
 	</simpleType>
-
-    <complexType name="ServiceProvider">
-        <attribute name="username" type="string" use="required">
-            <annotation>
-                <documentation>Service Provider's username</documentation>
-            </annotation>
-        </attribute>
-        <attribute name="password" type="string" use="required">
-            <annotation>
-                <documentation>Service Provider's password</documentation>
-            </annotation>
-        </attribute>
-    </complexType>
 
     <simpleType name="LTQRPaymentStatusType">
 		<annotation>

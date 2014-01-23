@@ -14,6 +14,10 @@ import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.ltqr.LTQRServiceFactory;
 import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.jetbrains.annotations.Nullable;
@@ -24,10 +28,31 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     /**
      * Main constructor.
      *
+     * @param location       the location (host:port) of the attribute web service.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration  WS Security configuration
+     */
+    public LTQRServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+
+        this( location, sslCertificate );
+
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
+    }
+
+    /**
+     * Main constructor.
+     *
      * @param location       the location (host:port) of the ltqr web service.
      * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public LTQRServiceClientImpl(String location, X509Certificate sslCertificate) {
+    public LTQRServiceClientImpl(final String location, final X509Certificate sslCertificate, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+
+        this( location, sslCertificate );
+
+        WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
+    }
+
+    private LTQRServiceClientImpl(final String location, final X509Certificate sslCertificate) {
 
         super( LTQRServiceFactory.newInstance().getLTQRServicePort(), sslCertificate );
         getBindingProvider().getRequestContext()
@@ -35,17 +60,11 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public LTQRSession push(final LTQRServiceProvider ltqrServiceProvider, @Nullable final PaymentContextDO paymentContextDO, final boolean oneTimeUse,
-                            @Nullable final Date expiryDate, @Nullable final Long expiryDuration)
+    public LTQRSession push(@Nullable final PaymentContextDO paymentContextDO, final boolean oneTimeUse, @Nullable final Date expiryDate,
+                            @Nullable final Long expiryDuration)
             throws PushException {
 
         PushRequest request = new PushRequest();
-
-        // service provider credentials
-        ServiceProvider serviceProvider = new ServiceProvider();
-        serviceProvider.setUsername( ltqrServiceProvider.getUsername() );
-        serviceProvider.setPassword( ltqrServiceProvider.getPassword() );
-        request.setServiceProvider( serviceProvider );
 
         // payment context
         if (null != paymentContextDO) {
@@ -95,17 +114,10 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public List<LTQRClientSession> pull(final LTQRServiceProvider ltqrServiceProvider, @Nullable final List<String> sessionIds,
-                                        @Nullable final List<String> clientSessionIds)
+    public List<LTQRClientSession> pull(@Nullable final List<String> sessionIds, @Nullable final List<String> clientSessionIds)
             throws PullException {
 
         PullRequest request = new PullRequest();
-
-        // service provider credentials
-        ServiceProvider serviceProvider = new ServiceProvider();
-        serviceProvider.setUsername( ltqrServiceProvider.getUsername() );
-        serviceProvider.setPassword( ltqrServiceProvider.getPassword() );
-        request.setServiceProvider( serviceProvider );
 
         if (null != sessionIds && !sessionIds.isEmpty()) {
             request.getSessionIds().addAll( sessionIds );
@@ -140,16 +152,10 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public void remove(final LTQRServiceProvider ltqrServiceProvider, final List<String> sessionIds, @Nullable final List<String> clientSessionIds)
+    public void remove(final List<String> sessionIds, @Nullable final List<String> clientSessionIds)
             throws RemoveException {
 
         RemoveRequest request = new RemoveRequest();
-
-        // service provider credentials
-        ServiceProvider serviceProvider = new ServiceProvider();
-        serviceProvider.setUsername( ltqrServiceProvider.getUsername() );
-        serviceProvider.setPassword( ltqrServiceProvider.getPassword() );
-        request.setServiceProvider( serviceProvider );
 
         if (null == sessionIds || sessionIds.isEmpty()) {
             throw new InternalInconsistencyException( "SessionIDs list cannot be empty!" );

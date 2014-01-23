@@ -522,15 +522,30 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID long term QR web service.
      */
-    public static LTQRServiceClient getLtqrServiceClient(final X509Certificate sslCertificate) {
+    public static LTQRServiceClient getLtqrServiceClient(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                         final X509Certificate sslCertificate) {
 
-        return getInstance()._getLtqrServiceClient( sslCertificate );
+        return getInstance()._getLtqrServiceClient( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID Security Token web service.
+     *
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID attribute web service.
+     */
+    public static LTQRServiceClient getLtqrServiceClient(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+
+        return getInstance()._getLtqrServiceClient( configuration, sslCertificate );
     }
 
     @Override
-    protected LTQRServiceClient _getLtqrServiceClient(final X509Certificate sslCertificate) {
+    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new LTQRServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ) );
+        return new LTQRServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
