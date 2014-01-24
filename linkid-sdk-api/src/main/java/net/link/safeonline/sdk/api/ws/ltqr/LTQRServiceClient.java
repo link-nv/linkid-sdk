@@ -23,7 +23,7 @@ public interface LTQRServiceClient {
      * @param expiryDuration Optional expiry duration of the long term session. Expressed in number of seconds starting from the creation.
      *                       Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.
      *
-     * @return Success object containing the QR in PNG format, the content of the QR code and a tyoe 4 UUID session ID of the created long term session. This
+     * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      * session ID will be used in the notifications to the Service Provider.
      *
      * @throws PushException failure

@@ -46,9 +46,8 @@ public class PaymentServiceClientImpl extends AbstractWSClient<PaymentServicePor
 
     private PaymentState convert(final PaymentStatusType paymentStatusType) {
 
-        if (null == paymentStatusType) {
-            throw new InternalInconsistencyException( "null PaymentStatusType returned, aborting..." );
-        }
+        if (null == paymentStatusType)
+            return PaymentState.STARTED;
 
         switch (paymentStatusType) {
 
