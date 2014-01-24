@@ -23,8 +23,8 @@ import net.link.util.common.CertificateChain;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
-import net.link.util.ws.security.AbstractWSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.AbstractWSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
@@ -39,7 +39,7 @@ public class WSSecurityClientHandlerTest {
 
     private static final Log LOG = LogFactory.getLog( WSSecurityClientHandlerTest.class );
 
-    private WSSecurityHandler testedInstance;
+    private WSSecurityX509TokenHandler testedInstance;
 
     @Before
     public void setUp()
@@ -48,7 +48,7 @@ public class WSSecurityClientHandlerTest {
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
-        testedInstance = new WSSecurityHandler( new AbstractWSSecurityConfiguration() {
+        testedInstance = new WSSecurityX509TokenHandler( new AbstractWSSecurityConfiguration() {
             @Override
             public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
 
@@ -82,7 +82,7 @@ public class WSSecurityClientHandlerTest {
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext( message, true );
 
         // Test
-        WSSecurityHandler.addSignedElement( soapMessageContext, "test-id" );
+        WSSecurityX509TokenHandler.addSignedElement( soapMessageContext, "test-id" );
         testedInstance.handleMessage( soapMessageContext );
 
         // Verify

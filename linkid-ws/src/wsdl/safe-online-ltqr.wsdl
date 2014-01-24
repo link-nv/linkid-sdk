@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:safe-online:ltqr"
+             xmlns:tns="urn:net:lin-k:safe-online:ltqr" name="SafeOnlineLTQRWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:safe-online:ltqr" schemaLocation="safe-online-ltqr.xsd" />
+        </schema>
+    </types>
+
+    <!-- =================== Push request ========================= -->
+
+    <message name="pushRequest">
+		<part name="request" element="tns:PushRequest" />
+	</message>
+	<message name="pushResponse">
+		<part name="response" element="tns:PushResponse" />
+	</message>
+
+    <!-- =================== Pull request ========================= -->
+
+    <message name="pullRequest">
+		<part name="request" element="tns:PullRequest" />
+	</message>
+	<message name="pullResponse">
+		<part name="response" element="tns:PullResponse" />
+	</message>
+
+    <!-- =================== Remove request ========================= -->
+
+    <message name="removeRequest">
+		<part name="request" element="tns:RemoveRequest" />
+	</message>
+	<message name="removeResponse">
+		<part name="response" element="tns:RemoveResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="LTQRServicePort">
+		<operation name="push">
+			<input message="tns:pushRequest" />
+			<output message="tns:pushResponse" />
+		</operation>
+		<operation name="pull">
+			<input message="tns:pullRequest" />
+			<output message="tns:pullResponse" />
+		</operation>
+		<operation name="remove">
+			<input message="tns:removeRequest" />
+			<output message="tns:removeResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="LTQRServiceBinding" type="tns:LTQRServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="push">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:ltqr:push" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="pull">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:ltqr:pull" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="remove">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:ltqr:remove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="LTQRService">
+        <port name="LTQRServicePort" binding="tns:LTQRServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/ltqr/" />
+        </port>
+    </service>
+</definitions>

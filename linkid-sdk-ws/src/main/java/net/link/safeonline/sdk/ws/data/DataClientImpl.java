@@ -28,8 +28,8 @@ import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.data.DataServiceFactory;
 import net.link.util.ws.AbstractWSClient;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,7 +67,7 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         targetIdentityHandler = new TargetIdentityClientHandler();
         initTargetIdentityHandler();
 
-        WSSecurityHandler.install( getBindingProvider(), configuration );
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     @Override

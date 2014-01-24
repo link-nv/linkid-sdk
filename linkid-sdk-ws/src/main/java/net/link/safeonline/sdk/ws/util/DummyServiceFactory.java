@@ -11,6 +11,7 @@ import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
@@ -20,7 +21,7 @@ import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.safeonline.sdk.ws.ServiceFactory;
-import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
 
 
 /**
@@ -109,6 +110,12 @@ public class DummyServiceFactory extends ServiceFactory {
 
     @Override
     protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
+
+        throw new UnsupportedOperationException( "Not yet implemented" );
+    }
+
+    @Override
+    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }

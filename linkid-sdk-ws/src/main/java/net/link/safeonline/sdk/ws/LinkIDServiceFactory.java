@@ -13,6 +13,7 @@ import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
@@ -25,6 +26,7 @@ import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
+import net.link.safeonline.sdk.ws.ltqr.LTQRServiceClientImpl;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
 import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClientImpl;
 import net.link.safeonline.sdk.ws.notification.subscription.NotificationSubscriptionManagerClientImpl;
@@ -33,7 +35,7 @@ import net.link.safeonline.sdk.ws.session.SessionTrackingClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.util.config.KeyProvider;
-import net.link.util.ws.security.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -510,6 +512,40 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
 
         return new Xkms2ClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ) );
+    }
+
+    /**
+     * Retreive a proxy to the linkID long term QR web service.
+     *
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID long term QR web service.
+     */
+    public static LTQRServiceClient getLtqrServiceClient(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                         final X509Certificate sslCertificate) {
+
+        return getInstance()._getLtqrServiceClient( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID Security Token web service.
+     *
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID attribute web service.
+     */
+    public static LTQRServiceClient getLtqrServiceClient(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+
+        return getInstance()._getLtqrServiceClient( configuration, sslCertificate );
+    }
+
+    @Override
+    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+
+        return new LTQRServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {

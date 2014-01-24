@@ -23,8 +23,8 @@ import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.attrib.SAMLAttributeServiceFactory;
 import net.link.util.ws.AbstractWSClient;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.*;
 import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
 import oasis.names.tc.saml._2_0.protocol.*;
@@ -54,7 +54,7 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.attribute.path" ) ) );
 
-        WSSecurityHandler.install( getBindingProvider(), configuration );
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     private ResponseType getResponse(AttributeQueryType request)

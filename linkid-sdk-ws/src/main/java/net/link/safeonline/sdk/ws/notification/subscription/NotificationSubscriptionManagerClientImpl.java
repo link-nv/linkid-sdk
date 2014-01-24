@@ -21,8 +21,8 @@ import net.link.safeonline.sdk.api.ws.notification.subscription.client.Notificat
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.notification.NotificationSubscriptionManagerServiceFactory;
 import net.link.util.ws.AbstractWSClient;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 
@@ -52,7 +52,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractWSClient<
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.notification.subscription.path" ) ) );
 
-        WSSecurityHandler.install( getBindingProvider(), configuration );
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     private static W3CEndpointReference getEndpointReference(String address) {

@@ -22,8 +22,8 @@ import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClie
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
 import net.link.util.ws.AbstractWSClient;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.*;
 
@@ -51,7 +51,7 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
                 .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                         String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.idmapping.path" ) ) );
 
-        WSSecurityHandler.install( getBindingProvider(), configuration );
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     @Override

@@ -30,8 +30,8 @@ import net.link.util.pkix.ServerCrypto;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
-import net.link.util.ws.security.WSSecurityConfiguration;
-import net.link.util.ws.security.WSSecurityHandler;
+import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.apache.ws.security.*;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.message.*;
@@ -50,7 +50,7 @@ public class WSSecurityServerHandlerTest {
 
     private static final Logger logger = Logger.get( WSSecurityServerHandlerTest.class );
 
-    private WSSecurityHandler testedInstance;
+    private WSSecurityX509TokenHandler testedInstance;
 
     private WSSecurityConfiguration mockWSSecurityConfiguration;
 
@@ -62,7 +62,7 @@ public class WSSecurityServerHandlerTest {
 
         mockWSSecurityConfiguration = createMock( WSSecurityConfiguration.class );
 
-        testedInstance = new WSSecurityHandler( mockWSSecurityConfiguration );
+        testedInstance = new WSSecurityX509TokenHandler( mockWSSecurityConfiguration );
         testedInstance.postConstructCallback();
 
         mockObjects = new Object[] { mockWSSecurityConfiguration };
@@ -83,8 +83,8 @@ public class WSSecurityServerHandlerTest {
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext( message, true );
-        soapMessageContext.put( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, certificateChain );
-        soapMessageContext.setScope( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
+        soapMessageContext.put( WSSecurityX509TokenHandler.CERTIFICATE_CHAIN_PROPERTY, certificateChain );
+        soapMessageContext.setScope( WSSecurityX509TokenHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
 
         // Setup Mocks
         expect( mockWSSecurityConfiguration.isCertificateChainTrusted( certificateChain ) ).andStubReturn( true );
@@ -133,8 +133,8 @@ public class WSSecurityServerHandlerTest {
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext( message, true );
-        soapMessageContext.put( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, certificateChain );
-        soapMessageContext.setScope( WSSecurityHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
+        soapMessageContext.put( WSSecurityX509TokenHandler.CERTIFICATE_CHAIN_PROPERTY, certificateChain );
+        soapMessageContext.setScope( WSSecurityX509TokenHandler.CERTIFICATE_CHAIN_PROPERTY, Scope.APPLICATION );
 
         // Setup Mocks
         expect( mockWSSecurityConfiguration.getMaximumAge() ).andStubReturn( new Duration( Long.MAX_VALUE ) );
@@ -158,9 +158,9 @@ public class WSSecurityServerHandlerTest {
 
         // Verify
         verify( mockObjects );
-        CertificateChain resultCertificateChain = WSSecurityHandler.findCertificateChain( soapMessageContext );
+        CertificateChain resultCertificateChain = WSSecurityX509TokenHandler.findCertificateChain( soapMessageContext );
         assertTrue( !resultCertificateChain.isEmpty() );
-        List<WSDataRef> signedElements = (List<WSDataRef>) soapMessageContext.get( WSSecurityHandler.SIGNED_ELEMENTS_CONTEXT_KEY );
+        List<WSDataRef> signedElements = (List<WSDataRef>) soapMessageContext.get( WSSecurityX509TokenHandler.SIGNED_ELEMENTS_CONTEXT_KEY );
         assertEquals( 2, signedElements.size() );
         logger.dbg( "signed elements: %s", signedElements );
     }
@@ -370,8 +370,8 @@ public class WSSecurityServerHandlerTest {
             if (null != signedElements) {
                 logger.dbg( "# signed elements: %d", signedElements.size() );
                 assertEquals( 2, signedElements.size() );
-                assertTrue( WSSecurityHandler.isElementSigned( signedElements, testId ) );
-                assertTrue( WSSecurityHandler.isElementSigned( signedElements, wsSecTimeStamp.getId() ) );
+                assertTrue( WSSecurityX509TokenHandler.isElementSigned( signedElements, testId ) );
+                assertTrue( WSSecurityX509TokenHandler.isElementSigned( signedElements, wsSecTimeStamp.getId() ) );
             }
         }
     }
