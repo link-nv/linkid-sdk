@@ -75,7 +75,6 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             paymentContext.setDescription( paymentContextDO.getDescription() );
             paymentContext.setPaymentProfile( paymentContextDO.getPaymentProfile() );
             paymentContext.setValidationTime( paymentContextDO.getPaymentValidationTime() );
-            paymentContext.setShowAddPaymentMethodLink( paymentContextDO.isShowAddPaymentMethodLink() );
             paymentContext.setAllowDeferredPay( paymentContextDO.isAllowDeferredPay() );
 
             request.setPaymentContext( paymentContext );

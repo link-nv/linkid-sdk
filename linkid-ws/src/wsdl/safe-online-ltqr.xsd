@@ -207,12 +207,6 @@
                     <documentation>Optional maximum time to wait for payment validation (expressed in seconds), if not specified defaults to 5s</documentation>
                 </annotation>
             </element>
-            <element name="showAddPaymentMethodLink" type="boolean" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Whether or not to display a link to linkID's add payment method page if the linkID user does not have any payment methods
-                        added, default is true.</documentation>
-                </annotation>
-            </element>
             <element name="allowDeferredPay" type="boolean" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Whether or not deferred payments are allowed, if a user has no payment token attached to the linkID account.
