@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.*;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +47,9 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         boolean mobileAuthnMinimal = null != request.getParameter( RequestConstants.MOBILE_AUTHN_MINIMAL_REQUEST_PARAM );
         boolean mobileForceRegistration = null != request.getParameter( RequestConstants.MOBILE_FORCE_REG_REQUEST_PARAM );
 
+        //optional protocol: not specified => SAML2
+        Protocol protocol = Protocol.fromString( request.getParameter( RequestConstants.PROTOCOL_PARAM ), Protocol.SAML2 );
+
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
 
@@ -67,6 +71,9 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
             authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
             authenticationContext.setMobileForceRegistration( mobileForceRegistration );
         }
+
+        // set the protocol
+        authenticationContext.setProtocol( protocol );
 
         configureAuthenticationContext( authenticationContext, request, response );
 

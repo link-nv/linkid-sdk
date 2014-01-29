@@ -38,6 +38,7 @@
                         <wsdlFile>safe-online-auth.wsdl</wsdlFile>
                         <wsdlFile>safe-online-payment.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-haws.wsdl</wsdlFile>
                         <wsdlFile>safe-online-idmapping.wsdl</wsdlFile>
                         <wsdlFile>notification-consumer.wsdl</wsdlFile>
                         <wsdlFile>notification-producer.wsdl</wsdlFile>

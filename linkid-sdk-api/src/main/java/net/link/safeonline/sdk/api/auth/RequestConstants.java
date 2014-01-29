@@ -45,6 +45,11 @@ public interface RequestConstants {
     String START_PAGE_REQUEST_PARAM = "start_page";
 
     /**
+     * Which protocol to use, SAML2, HAWS, OPENID, OAUTH
+     */
+    String PROTOCOL_PARAM = "protocol";
+
+    /**
      * @see Locale#Locale(String)
      */
     String LANGUAGE_REQUEST_PARAM       = "Language";
@@ -55,4 +60,6 @@ public interface RequestConstants {
     String CANCELLED_REQUEST_PARAM      = "cancelled";
     String TIMEOUT_REQUEST_PARAM        = "timeout";
     String OAUTH2_FORCE_AUTHN           = "approval_prompt";
+
+    String HAWS_SESSION_ID_PARAM = "sessionId";
 }

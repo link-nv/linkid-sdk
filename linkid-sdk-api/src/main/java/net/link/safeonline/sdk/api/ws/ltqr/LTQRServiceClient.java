@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * linkID Long Term QR WS client.
  * <p/>
- * Via this interface, service provider's can push new long term QR session and fetch completed long term transactions.
+ * Via this interface, service providers can push new long term QR session and fetch completed long term transactions.
  */
 public interface LTQRServiceClient {
 

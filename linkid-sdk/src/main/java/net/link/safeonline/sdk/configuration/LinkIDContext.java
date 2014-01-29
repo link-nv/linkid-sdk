@@ -35,6 +35,9 @@ public abstract class LinkIDContext implements Serializable {
     private KeyPair                     applicationKeyPair;
     private X509Certificate             applicationCertificate;
     //
+    private String                      wsUsername;
+    private String                      wsPassword;
+    //
     private Collection<X509Certificate> trustedCertificates;
     private String                      sessionTrackingId;
     private String                      themeName;
@@ -365,6 +368,26 @@ public abstract class LinkIDContext implements Serializable {
         this.applicationKeyPair = keyProvider.getIdentityKeyPair();
         this.applicationCertificate = keyProvider.getIdentityCertificate();
         this.trustedCertificates = keyProvider.getTrustedCertificates();
+    }
+
+    public String getWsUsername() {
+
+        return wsUsername;
+    }
+
+    public void setWsUsername(final String wsUsername) {
+
+        this.wsUsername = wsUsername;
+    }
+
+    public String getWsPassword() {
+
+        return wsPassword;
+    }
+
+    public void setWsPassword(final String wsPassword) {
+
+        this.wsPassword = wsPassword;
     }
 
     @Override

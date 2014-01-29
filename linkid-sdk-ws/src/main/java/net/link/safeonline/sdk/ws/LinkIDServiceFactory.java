@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
+import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
@@ -25,6 +26,7 @@ import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.haws.HawsServiceClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.ltqr.LTQRServiceClientImpl;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
@@ -35,9 +37,12 @@ import net.link.safeonline.sdk.ws.session.SessionTrackingClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.util.config.KeyProvider;
+import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Response;
 
 
 /**
@@ -546,6 +551,83 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
         return new LTQRServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID haws web service, using the WS-Security Username token profile
+     *
+     * @return proxy to the linkID haws web service.
+     */
+    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final String wsUsername, final String wsPassword) {
+
+        return new HawsServiceClientImpl( SDKConfigHolder.config().web().wsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ),
+                new AbstractWSSecurityUsernameTokenCallback() {
+                    @Override
+                    public String getUsername() {
+
+                        return wsUsername;
+                    }
+
+                    @Override
+                    public String getPassword() {
+
+                        return wsPassword;
+                    }
+
+                    @Nullable
+                    @Override
+                    public String handle(final String username) {
+
+                        return null;
+                    }
+                } );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID haws web service.
+     *
+     * @return proxy to the linkID haws web service.
+     */
+    public static HawsServiceClient<AuthnRequest, Response> getHawsService() {
+
+        return getInstance()._getHawsService( new SDKWSSecurityConfiguration(), null );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID attribute web service.
+     *
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID attribute web service.
+     */
+    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                                           final X509Certificate sslCertificate) {
+
+        return getInstance()._getHawsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID attribute web service.
+     *
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID attribute web service.
+     */
+    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+
+        return getInstance()._getHawsService( configuration, sslCertificate );
+    }
+
+    @Override
+    protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+
+        return new HawsServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
