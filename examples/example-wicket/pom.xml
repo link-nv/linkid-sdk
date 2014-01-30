@@ -3,18 +3,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.lin-k.linkid.client</groupId>
-        <artifactId>sdk</artifactId>
+        <groupId>net.lin-k.linkid.client.sdk</groupId>
+        <artifactId>examples</artifactId>
         <version>GIT-SNAPSHOT</version>
     </parent>
 
-    <name>linkID SDK JSP Example</name>
+    <name>linkID SDK Wicket Example</name>
     <description>
-        An example webapplication showing the use of the SDK in JSP
+        An example webapplication showing the use of the SDK in Wicket
     </description>
 
-    <groupId>net.lin-k.linkid.client.sdk</groupId>
-    <artifactId>linkid-sdk-example-jsp</artifactId>
+    <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
+    <artifactId>example-wicket</artifactId>
     <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -30,8 +30,9 @@
             <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.util</groupId>
-            <artifactId>util-common</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-wicket-sdk</artifactId>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -41,16 +42,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
+            <version>2.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

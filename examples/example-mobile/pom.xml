@@ -3,16 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.lin-k.linkid.client</groupId>
-        <artifactId>sdk</artifactId>
+        <groupId>net.lin-k.linkid.client.sdk</groupId>
+        <artifactId>examples</artifactId>
         <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID SDK Mobile Example</name>
     <description>An example webapplication showing the use of the SDK  for the linkID Mobile authentication flow</description>
 
-    <groupId>net.lin-k.linkid.client.sdk</groupId>
-    <artifactId>linkid-sdk-example-mobile</artifactId>
+    <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
+    <artifactId>example-mobile</artifactId>
     <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
