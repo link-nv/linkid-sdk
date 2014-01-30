@@ -36,7 +36,38 @@
                 </includes>
             </resource>
        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp</directory>
+                            <targetPath />
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
+    <properties>
+        <linkid.host>https://demo.linkid.be</linkid.host>
+        <example.host>http://192.168.5.14:9090</example.host>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>example.local</id>
+            <properties>
+                <linkid.host>http://192.168.5.14:8080</linkid.host>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -52,6 +83,18 @@
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-common</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

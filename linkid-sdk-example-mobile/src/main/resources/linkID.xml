@@ -7,24 +7,30 @@
 <properties>
 
     <!-- Host Configuration For Applications -->
-    <entry key="web.appBase">http://192.168.0.101:8080/</entry>
+    <entry key="web.appBase">${example.host}/</entry>
     <!-- Use HTTPS here! -->
-    <entry key="web.appConfidentialBase">http://192.168.0.101:8080/</entry>
+    <entry key="web.appConfidentialBase">${example.host}/</entry>
 
     <!-- linkID Access For Applications -->
-    <entry key="web.userBase">http://demo.linkid.be/linkid-user</entry>
-    <entry key="web.mobileBase">http://demo.linkid.be/linkid-mobile</entry>
-    <entry key="web.authBase">https://demo.linkid.be/linkid-auth</entry>
-    <entry key="web.wsBase">https://demo.linkid.be/linkid-ws</entry>
-    <entry key="web.mobileAuthURL">https://demo.linkid.be/linkid-qr/auth</entry>
-    <entry key="web.mobileAuthMinimalURL">https://demo.linkid.be/linkid-qr/auth-min</entry>
+    <!--<entry key="web.userBase">http://demo.linkid.be/linkid-user</entry>-->
+    <!--<entry key="web.mobileBase">http://demo.linkid.be/linkid-mobile</entry>-->
+    <!--<entry key="web.authBase">https://demo.linkid.be/linkid-auth</entry>-->
+    <!--<entry key="web.wsBase">https://demo.linkid.be/linkid-ws</entry>-->
+    <!--<entry key="web.wsUsernameBase">https://demo.linkid.be/linkid-ws-username</entry>-->
+    <!--<entry key="web.mobileAuthURL">https://demo.linkid.be/linkid-qr/auth</entry>-->
+    <!--<entry key="web.mobileAuthMinimalURL">https://demo.linkid.be/linkid-qr/auth-min</entry>-->
+    <!--<entry key="web.mobileRegURL">https://demo.linkid.be/linkid-qr/reg</entry>-->
+    <!--<entry key="web.mobileRegMinimalURL">https://demo.linkid.be/linkid-qr/reg-min</entry>-->
 
     <!-- local linkID -->
-    <!--<entry key="web.userBase">http://192.168.5.14:8080/linkid-user</entry>-->
-    <!--<entry key="web.mobileBase">http://192.168.5.14:8080/linkid-mobile</entry>-->
-    <!--<entry key="web.authBase">https://192.168.5.14:8443/linkid-auth</entry>-->
-    <!--<entry key="web.wsBase">https://192.168.5.14:8443/linkid-ws</entry>-->
-    <!--<entry key="web.mobileAuthURL">https://192.168.5.14:8443/linkid-qr/auth</entry>-->
-    <!--<entry key="web.mobileAuthMinimalURL">https://192.168.5.14:8443/linkid-qr/auth-min</entry>-->
+    <entry key="web.userBase">${linkid.host}/linkid-user</entry>
+    <entry key="web.mobileBase">${linkid.host}/linkid-mobile</entry>
+    <entry key="web.authBase">${linkid.host}/linkid-auth</entry>
+    <entry key="web.wsBase">${linkid.host}/linkid-ws</entry>
+    <entry key="web.wsUsernameBase">${linkid.host}/linkid-ws-username</entry>
+    <entry key="web.mobileAuthURL">${linkid.host}/linkid-qr/auth</entry>
+    <entry key="web.mobileAuthMinimalURL">${linkid.host}/linkid-qr/auth-min</entry>
+    <entry key="web.mobileRegURL">${linkid.host}/linkid-qr/reg</entry>
+    <entry key="web.mobileRegMinimalURL">${linkid.host}/linkid-qr/reg-min</entry>
 
 </properties>
