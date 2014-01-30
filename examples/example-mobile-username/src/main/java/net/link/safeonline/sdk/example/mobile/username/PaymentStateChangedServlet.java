@@ -1,4 +1,4 @@
-package net.link.safeonline.sdk.example.mobile;
+package net.link.safeonline.sdk.example.mobile.username;
 
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;

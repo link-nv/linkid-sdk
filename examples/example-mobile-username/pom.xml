@@ -8,11 +8,11 @@
         <version>GIT-SNAPSHOT</version>
     </parent>
 
-    <name>linkID SDK Mobile Example</name>
-    <description>An example webapplication showing the use of the SDK  for the linkID Mobile authentication flow</description>
+    <name>linkID SDK Mobile Username Example</name>
+    <description>An example webapplication showing the use of the SDK  for the linkID Mobile authentication flow with username</description>
 
     <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
-    <artifactId>example-mobile</artifactId>
+    <artifactId>example-mobile-username</artifactId>
     <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -23,16 +23,6 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>example-mobile-keystore.jks</exclude>
-                </excludes>
-            </resource>
-             <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>example-mobile-keystore.jks</include>
                 </includes>
             </resource>
        </resources>

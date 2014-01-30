@@ -590,7 +590,13 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static HawsServiceClient<AuthnRequest, Response> getHawsService() {
 
-        return getInstance()._getHawsService( new SDKWSSecurityConfiguration(), null );
+        if (null != SDKConfigHolder.config().linkID().app().username()) {
+
+            return getHawsService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+        } else {
+
+            return getInstance()._getHawsService( new SDKWSSecurityConfiguration(), null );
+        }
     }
 
     /**

@@ -18,6 +18,7 @@
         <module>example-jsp</module>
         <module>example-wicket</module>
         <module>example-mobile</module>
+        <module>example-mobile-username</module>
     </modules>
 
 </project>

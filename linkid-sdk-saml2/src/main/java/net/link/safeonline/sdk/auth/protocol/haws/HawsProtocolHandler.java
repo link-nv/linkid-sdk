@@ -52,12 +52,12 @@ public class HawsProtocolHandler implements ProtocolHandler {
 
         // send via WS, X509 token or username token according to application key pair being available...
         HawsServiceClient<AuthnRequest, Response> wsClient;
-        if (null != authnContext.getApplicationKeyPair()) {
-            // WS-Security X509 token profile
-            wsClient = LinkIDServiceFactory.getHawsService();
-        } else {
+        if (null != authnContext.getWsUsername()) {
             // WS-Security Username token profile
             wsClient = LinkIDServiceFactory.getHawsService( authnContext.getWsUsername(), authnContext.getWsPassword() );
+        } else {
+            // look at config().linkID().app().username(), none -> X509
+            wsClient = LinkIDServiceFactory.getHawsService();
         }
 
         String sessionId;

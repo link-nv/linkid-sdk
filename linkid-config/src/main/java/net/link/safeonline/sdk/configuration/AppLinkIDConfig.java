@@ -29,12 +29,25 @@ public interface AppLinkIDConfig {
      * <p/>
      * <i>[required, default: classpath://application:secret:secret@application.jks]</i>
      */
-    @Property(required = true, unset = "classpath://application:secret:secret@application.jks")
+    //    @Property(required = false, unset = "classpath://application:secret:secret@application.jks")
+    @Property(required = false)
     KeyProvider keyProvider();
 
     /**
      * @return The DN of the end certificate with which incoming messages should be signed.
      */
-    @Property(required = true, unset = "CN=linkID Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE")
+    @Property(required = false, unset = "CN=linkID Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE")
     X500Principal trustedDN();
+
+    /**
+     * @return The username that will provide the application's identification in the WS calls to linkID using the WS-Security Username token profile
+     */
+    @Property(required = false)
+    String username();
+
+    /**
+     * @return The password that will provide the application's identification in the WS calls to linkID using the WS-Security Username token profile
+     */
+    @Property(required = false)
+    String password();
 }
