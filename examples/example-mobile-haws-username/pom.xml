@@ -12,7 +12,7 @@
     <description>An example webapplication showing the use of the SDK  for the linkID Mobile authentication flow with username</description>
 
     <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
-    <artifactId>example-mobile-username</artifactId>
+    <artifactId>example-mobile-haws-username</artifactId>
     <version>GIT-SNAPSHOT</version>
     <packaging>war</packaging>
 

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -25,8 +26,6 @@ import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.saml.Saml2Utils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.util.encoders.Base64;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
@@ -42,7 +41,7 @@ import org.w3c.dom.Element;
  */
 public abstract class ResponseUtil {
 
-    private static final Log LOG = LogFactory.getLog( ResponseUtil.class );
+    private static final Logger logger = Logger.get( ResponseUtil.class );
     private static final ParserPool parserPool;
 
     static {
@@ -73,8 +72,8 @@ public abstract class ResponseUtil {
 
         switch (responseBinding) {
             case HTTP_POST:
-                PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl, response,
-                        language, loginMode );
+                PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl, response, language,
+                        loginMode );
                 break;
 
             case HTTP_REDIRECT:
@@ -96,7 +95,7 @@ public abstract class ResponseUtil {
      *                            linkID XKMS 2.0 WS.
      *
      * @return The SAML {@link Saml2ResponseContext} that is in the HTTP request<br> {@code null} if there is no SAML message in the
-     *         HTTP request. Also contains (if present) the certificate chain embedded in the SAML {@link Response}'s signature.
+     * HTTP request. Also contains (if present) the certificate chain embedded in the SAML {@link Response}'s signature.
      *
      * @throws ValidationFailedException validation failed for some reason
      */
@@ -107,15 +106,21 @@ public abstract class ResponseUtil {
 
         Response authnResponse = findAuthnResponse( request );
         if (authnResponse == null) {
-            LOG.debug( "No Authn Response in request." );
+            logger.dbg( "No Authn Response in request." );
             return null;
         }
 
+        return validateAuthnResponse( authnResponse, request, contexts, trustedCertificates );
+    }
+
+    public static Saml2ResponseContext validateAuthnResponse(final Response authnResponse, HttpServletRequest request, Map<String, ProtocolContext> contexts,
+                                                             Collection<X509Certificate> trustedCertificates)
+            throws ValidationFailedException {
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
         AuthnProtocolRequestContext authnRequest = (AuthnProtocolRequestContext) contexts.get( authnResponse.getInResponseTo() );
         if (authnRequest == null || !authnResponse.getInResponseTo().equals( authnRequest.getId() ))
             throw new ValidationFailedException( "Request's SAML response ID does not match that of any active requests." );
-        LOG.debug( "response matches request: " + authnRequest );
+        logger.dbg( "response matches request: %s", authnRequest );
 
         // validate signature
         CertificateChain certificateChain = Saml2Utils.validateSignature( authnResponse.getSignature(), request, trustedCertificates );
@@ -148,15 +153,14 @@ public abstract class ResponseUtil {
 
         String b64Assertion = request.getParameter( "SAMLAssertion" );
         if (b64Assertion == null || b64Assertion.isEmpty()) {
-            LOG.debug( "No Authn Assertion in request." );
+            logger.dbg( "No Authn Assertion in request." );
             return null;
         }
 
         byte[] assertionBytes = Base64.decode( b64Assertion );
         try {
             Element assertionElement = parserPool.parse( new ByteArrayInputStream( assertionBytes ) ).getDocumentElement();
-            if (LOG.isDebugEnabled())
-                LOG.debug( "Found assertion:\n" + DomUtils.domToString( assertionElement ) );
+            logger.dbg( "Found assertion:\n%s", DomUtils.domToString( assertionElement ) );
 
             return (Assertion) LinkIDSaml2Utils.unmarshall( assertionElement );
         }
@@ -226,15 +230,14 @@ public abstract class ResponseUtil {
         DateTime notBefore = conditions.getNotBefore();
         DateTime notOnOrAfter = conditions.getNotOnOrAfter();
 
-        LOG.debug( "now: " + now.toString() );
-        LOG.debug( "notBefore: " + notBefore.toString() );
-        LOG.debug( "notOnOrAfter : " + notOnOrAfter.toString() );
+        logger.dbg( "now: %s", now.toString() );
+        logger.dbg( "notBefore: %s", notBefore.toString() );
+        logger.dbg( "notOnOrAfter : %s", notOnOrAfter.toString() );
 
         if (now.isBefore( notBefore )) {
             // time skew
             if (now.plusMinutes( 5 ).isBefore( notBefore ) || now.minusMinutes( 5 ).isAfter( notOnOrAfter ))
-                throw new ValidationFailedException(
-                        "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
+                throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
         } else if (now.isBefore( notBefore ) || now.isAfter( notOnOrAfter ))
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
 
@@ -270,8 +273,7 @@ public abstract class ResponseUtil {
         AudienceRestriction audienceRestriction = audienceRestrictions.get( 0 );
         List<Audience> audiences = audienceRestriction.getAudiences();
         if (audiences.isEmpty())
-            throw new ValidationFailedException(
-                    "SAML2 assertion validation audience=" + expectedAudience + " : no Audiences found in AudienceRestriction" );
+            throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : no Audiences found in AudienceRestriction" );
 
         Audience audience = audiences.get( 0 );
         if (!expectedAudience.equals( audience.getAudienceURI() ))
@@ -287,7 +289,7 @@ public abstract class ResponseUtil {
      * @param contexts map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
      *
      * @return The SAML2 response containing the {@link LogoutResponse} in the HTTP request and the optional certificate chain embedded in
-     *         the signature of the signed response..<br> {@code null} if there is no SAML message in the HTTP request.
+     * the signature of the signed response..<br> {@code null} if there is no SAML message in the HTTP request.
      *
      * @throws ValidationFailedException validation failed for some reason
      */

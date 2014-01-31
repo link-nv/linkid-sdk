@@ -5,18 +5,18 @@ package net.link.safeonline.sdk.api.haws;
  * Date: 14/01/14
  * Time: 11:03
  */
-public class PushException extends Exception {
+public class PullException extends Exception {
 
-    private final PushErrorCode errorCode;
+    private final PullErrorCode errorCode;
     private final String        info;
 
-    public PushException(final PushErrorCode errorCode, final String info) {
+    public PullException(final PullErrorCode errorCode, final String info) {
 
         this.errorCode = errorCode;
         this.info = info;
     }
 
-    public PushErrorCode getErrorCode() {
+    public PullErrorCode getErrorCode() {
 
         return errorCode;
     }

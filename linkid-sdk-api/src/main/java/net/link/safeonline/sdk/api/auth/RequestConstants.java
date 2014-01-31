@@ -61,5 +61,5 @@ public interface RequestConstants {
     String TIMEOUT_REQUEST_PARAM        = "timeout";
     String OAUTH2_FORCE_AUTHN           = "approval_prompt";
 
-    String HAWS_SESSION_ID_PARAM = "sessionId";
+    String HAWS_SESSION_ID_PARAM = "hawsId";
 }

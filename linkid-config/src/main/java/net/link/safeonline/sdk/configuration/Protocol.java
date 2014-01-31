@@ -27,7 +27,10 @@ public enum Protocol {
 
     OPENID( "net.link.safeonline.sdk.auth.protocol.openid.OpenIdProtocolHandler" ),
 
-    OAUTH2( "net.link.safeonline.sdk.auth.protocol.oauth2.OAuth2ProtocolHandler" );
+    OAUTH2( "net.link.safeonline.sdk.auth.protocol.oauth2.OAuth2ProtocolHandler" ),
+
+    // does not have a protocol handler, has to be used directly using the WS client
+    WS( null );
 
     private static final Logger logger = Logger.get( Protocol.class );
 

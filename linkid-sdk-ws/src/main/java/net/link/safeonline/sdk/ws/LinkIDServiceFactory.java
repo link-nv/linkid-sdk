@@ -580,6 +580,12 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
                         return null;
                     }
+
+                    @Override
+                    public boolean isInboundHeaderOptional() {
+
+                        return true;
+                    }
                 } );
     }
 

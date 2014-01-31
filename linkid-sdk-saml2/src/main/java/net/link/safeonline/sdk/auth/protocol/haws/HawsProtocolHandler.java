@@ -7,10 +7,12 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.RequestConstants;
+import net.link.safeonline.sdk.api.haws.PullException;
 import net.link.safeonline.sdk.api.haws.PushException;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.auth.protocol.*;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
+import net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler;
 import net.link.safeonline.sdk.configuration.*;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.common.URLUtils;
@@ -50,15 +52,7 @@ public class HawsProtocolHandler implements ProtocolHandler {
                 requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.getDevices(), authnContext.isForceAuthentication(),
                 authnContext.getSessionTrackingId(), authnContext.getDeviceContext(), authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
 
-        // send via WS, X509 token or username token according to application key pair being available...
-        HawsServiceClient<AuthnRequest, Response> wsClient;
-        if (null != authnContext.getWsUsername()) {
-            // WS-Security Username token profile
-            wsClient = LinkIDServiceFactory.getHawsService( authnContext.getWsUsername(), authnContext.getWsPassword() );
-        } else {
-            // look at config().linkID().app().username(), none -> X509
-            wsClient = LinkIDServiceFactory.getHawsService();
-        }
+        HawsServiceClient<AuthnRequest, Response> wsClient = getWsClient( authnContext );
 
         String sessionId;
         try {
@@ -66,6 +60,7 @@ public class HawsProtocolHandler implements ProtocolHandler {
                     authnContext.getStartPage() );
         }
         catch (PushException e) {
+            logger.err( e, "Failed to push SAML v2.0 authentication request: errorCode: %s - %s", e.getErrorCode(), e.getInfo() );
             throw new InternalInconsistencyException( e );
         }
 
@@ -92,13 +87,27 @@ public class HawsProtocolHandler implements ProtocolHandler {
                                                                      final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
 
-        // TODO: get session ID from request
+        if (authnContext == null)
+            // This protocol handler has not sent an authentication request.
+            return null;
 
-        // TODO: fetch SAML2 response via WS
+        // get session ID from request
+        String sessionId = request.getParameter( RequestConstants.HAWS_SESSION_ID_PARAM );
+        logger.dbg( "HAWS: response session Id: %s", sessionId );
 
-        // TODO: parse SAML2 response
+        // fetch SAML2 response via WS
+        HawsServiceClient<AuthnRequest, Response> wsClient = getWsClient( authnContext );
+        Response samlResponse;
+        try {
+            samlResponse = wsClient.pull( sessionId );
+        }
+        catch (PullException e) {
+            logger.err( e, "Failed to pull SAML v2.0 authentication response: errorCode: %s - %s", e.getErrorCode(), e.getInfo() );
+            throw new InternalInconsistencyException( e );
+        }
 
-        return null;
+        // validate SAML2 response
+        return Saml2ProtocolHandler.validateAuthnResponse( samlResponse, request, responseToContext, this.authnContext, this, null );
     }
 
     @Nullable
@@ -107,7 +116,7 @@ public class HawsProtocolHandler implements ProtocolHandler {
                                                                       final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
             throws ValidationFailedException {
 
-        logger.dbg( "HAWS implementation does not support detached authentication yet" );
+        logger.dbg( "HAWS implementation does not support detached authentication" );
         return null;
     }
 
@@ -141,5 +150,22 @@ public class HawsProtocolHandler implements ProtocolHandler {
             throws IOException {
 
         throw new UnsupportedOperationException( "HAWS implementation does not support single logout yet" );
+    }
+
+    // helper methods
+
+    private HawsServiceClient<AuthnRequest, Response> getWsClient(final AuthenticationContext authnContext) {
+
+        // send via WS, X509 token or username token according to application key pair being available...
+
+        HawsServiceClient<AuthnRequest, Response> wsClient;
+        if (null != authnContext.getWsUsername()) {
+            // WS-Security Username token profile
+            wsClient = LinkIDServiceFactory.getHawsService( authnContext.getWsUsername(), authnContext.getWsPassword() );
+        } else {
+            // look at config().linkID().app().username(), none -> X509
+            wsClient = LinkIDServiceFactory.getHawsService();
+        }
+        return wsClient;
     }
 }

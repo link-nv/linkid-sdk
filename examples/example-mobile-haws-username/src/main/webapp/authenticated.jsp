@@ -8,7 +8,7 @@
 
 <body>
 
-<jsp:useBean id="attributes" scope="request" class="net.link.safeonline.sdk.example.mobile.AttributeBean"/>
+<jsp:useBean id="attributes" scope="request" class="net.link.safeonline.sdk.example.mobile.username.AttributeBean"/>
 
 <jsp:setProperty name="attributes" property="session" value="<%= request.getSession() %>"  />
 

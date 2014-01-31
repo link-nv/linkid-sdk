@@ -96,7 +96,14 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
             return null;
 
-        Response samlResponse = (Response) saml2ResponseContext.getResponse();
+        return validateAuthnResponse( (Response) saml2ResponseContext.getResponse(), request, responseToContext, this.authnContext, this,
+                saml2ResponseContext.getCertificateChain() );
+    }
+
+    public static AuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse, final HttpServletRequest request,
+                                                                     final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext,
+                                                                     final AuthenticationContext origAuthnContext, final ProtocolHandler protocolHandler,
+                                                                     final CertificateChain certificateChain) {
 
         String userId = null, applicationName = null;
         List<String> authenticatedDevices = new LinkedList<String>();
@@ -119,12 +126,12 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true, null,
                         findPaymentResponse( samlResponse ) ) );
-        authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), this,
-                null != this.authnContext.getTarget()? this.authnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
+        authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), protocolHandler,
+                null != origAuthnContext.getTarget()? origAuthnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
                 authnRequest.isMobileAuthenticationMinimal(), authnRequest.isMobileForceRegistration() );
 
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, authenticatedDevices, attributes, success,
-                saml2ResponseContext.getCertificateChain(), findPaymentResponse( samlResponse ) );
+                certificateChain, findPaymentResponse( samlResponse ) );
     }
 
     @Nullable
