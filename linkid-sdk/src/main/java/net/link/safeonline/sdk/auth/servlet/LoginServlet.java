@@ -71,6 +71,7 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
                     logger.wrn( "Session timeout, authentication took too long." );
                     ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
                             new ErrorMessage( "Session timeout, authentication took too long." ) );
+                    return;
                 }
                 //nope, it's something else
                 logger.err( "No expected or detached authentication responses found in request." );
