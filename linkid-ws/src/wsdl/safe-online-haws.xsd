@@ -97,15 +97,21 @@
     <element name="PullResponse">
         <complexType>
             <sequence>
-                <any namespace='##any' processContents='lax' minOccurs='0' maxOccurs='1'>
-                    <annotation>
-                        <documentation>The authentication response, e.g. a SAML2 response</documentation>
-                    </annotation>
-                </any>
+                <element name="success" type="tns:PullSuccess" minOccurs="0" maxOccurs="1" />
                 <element name="error" type="tns:PullError" minOccurs="0" maxOccurs="1" />
             </sequence>
         </complexType>
     </element>
+
+    <complexType name="PullSuccess">
+        <sequence>
+            <any namespace='##any' processContents='lax' minOccurs='1' maxOccurs='1'>
+                <annotation>
+                    <documentation>The authentication response, e.g. a SAML2 response</documentation>
+                </annotation>
+            </any>
+        </sequence>
+    </complexType>
 
     <complexType name="PullError">
         <sequence>

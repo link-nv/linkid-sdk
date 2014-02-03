@@ -115,10 +115,10 @@ public class HawsServiceClientImpl extends AbstractWSClient<HawsServicePort> imp
             throw new PullException( convert( response.getError().getError() ), response.getError().getInfo() );
         }
 
-        if (null != response.getAny()) {
+        if (null != response.getSuccess()) {
 
             // parse authentication request
-            Element authnRequestElement = (Element) response.getAny();
+            Element authnRequestElement = (Element) response.getSuccess().getAny();
             if (null == authnRequestElement) {
                 throw new InternalInconsistencyException( "No SAML v2.0 authentication response found ?!" );
             }
