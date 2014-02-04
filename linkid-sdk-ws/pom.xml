@@ -84,6 +84,10 @@
             <artifactId>util-ws</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.lin-k.util</groupId>
+            <artifactId>util-saml2</artifactId>
+        </dependency>
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
         </dependency>

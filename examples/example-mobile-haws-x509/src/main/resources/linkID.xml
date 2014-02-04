@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- eLoket - Lin.k
+
+    This file specifies the linkID service configuration.
+    Words of the syntax ${foo} are expanded into the value of the System Property named 'foo'.
+-->
+<properties>
+
+    <!-- Host Configuration For Applications -->
+    <entry key="web.appBase">${example.host}/</entry>
+    <!-- Use HTTPS here! -->
+    <entry key="web.appConfidentialBase">${example.host}/</entry>
+
+    <!-- linkID Access For Applications -->
+    <!--<entry key="web.userBase">http://demo.linkid.be/linkid-user</entry>-->
+    <!--<entry key="web.mobileBase">http://demo.linkid.be/linkid-mobile</entry>-->
+    <!--<entry key="web.authBase">https://demo.linkid.be/linkid-auth</entry>-->
+    <!--<entry key="web.wsBase">https://demo.linkid.be/linkid-ws</entry>-->
+    <!--<entry key="web.wsUsernameBase">https://demo.linkid.be/linkid-ws-username</entry>-->
+    <!--<entry key="web.mobileAuthURL">https://demo.linkid.be/linkid-qr/auth</entry>-->
+    <!--<entry key="web.mobileAuthMinimalURL">https://demo.linkid.be/linkid-qr/auth-min</entry>-->
+    <!--<entry key="web.mobileRegURL">https://demo.linkid.be/linkid-qr/reg</entry>-->
+    <!--<entry key="web.mobileRegMinimalURL">https://demo.linkid.be/linkid-qr/reg-min</entry>-->
+
+    <!-- local linkID -->
+    <entry key="web.userBase">${linkid.host}/linkid-user</entry>
+    <entry key="web.mobileBase">${linkid.host}/linkid-mobile</entry>
+    <entry key="web.authBase">${linkid.host}/linkid-auth</entry>
+    <entry key="web.wsBase">${linkid.host}/linkid-ws</entry>
+    <entry key="web.wsUsernameBase">${linkid.host}/linkid-ws-username</entry>
+    <entry key="web.mobileAuthURL">${linkid.host}/linkid-qr/auth</entry>
+    <entry key="web.mobileAuthMinimalURL">${linkid.host}/linkid-qr/auth-min</entry>
+    <entry key="web.mobileRegURL">${linkid.host}/linkid-qr/reg</entry>
+    <entry key="web.mobileRegMinimalURL">${linkid.host}/linkid-qr/reg-min</entry>
+
+</properties>

@@ -108,20 +108,20 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-example-jsp</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
+            <artifactId>example-jsp</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-example-wicket</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
+            <artifactId>example-wicket</artifactId>
             <type>war</type>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-example-mobile</artifactId>
+            <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
+            <artifactId>example-mobile</artifactId>
             <type>war</type>
             <version>${project.version}</version>
         </dependency>

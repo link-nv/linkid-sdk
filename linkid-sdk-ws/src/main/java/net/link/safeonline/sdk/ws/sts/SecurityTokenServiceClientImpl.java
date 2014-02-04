@@ -22,6 +22,7 @@ import net.link.safeonline.sdk.api.ws.sts.TrustDomainType;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.sts.SecurityTokenServiceFactory;
+import net.link.util.saml.SamlUtils;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
@@ -52,14 +53,13 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
 
         super( SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort(), sslCertificate );
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.sts.path" ) ) );
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                    String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.sts.path" ) ) );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
-    private void validate(Element token, TrustDomainType trustDomain, @Nullable Map<QName, String> otherAttributes, String queryString,
-                          StringBuffer requestUrl)
+    private void validate(Element token, TrustDomainType trustDomain, @Nullable Map<QName, String> otherAttributes, String queryString, StringBuffer requestUrl)
             throws WSClientTransportException, ValidationFailedException {
 
         RequestSecurityTokenType request = new RequestSecurityTokenType();
@@ -108,27 +108,26 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
     }
 
     @Override
-    public void validateResponse(final Response response, final String requestIssuer, final String requestQueryString,
-                                 final StringBuffer requestURL)
+    public void validateResponse(final Response response, final String requestIssuer, final String requestQueryString, final StringBuffer requestURL)
             throws WSClientTransportException, ValidationFailedException {
 
         Map<QName, String> otherAttributes = new HashMap<QName, String>();
         otherAttributes.put( WebServiceConstants.SAML_AUDIENCE_ATTRIBUTE, requestIssuer );
 
-        validate( response.getDOM(), TrustDomainType.LINK_ID, otherAttributes, requestQueryString, requestURL );
+        validate( SamlUtils.marshall( response ), TrustDomainType.LINK_ID, otherAttributes, requestQueryString, requestURL );
     }
 
     @Override
     public void validateLogoutResponse(final LogoutResponse logoutResponse, final String requestQueryString, final StringBuffer requestURL)
             throws WSClientTransportException, ValidationFailedException {
 
-        validate( logoutResponse.getDOM(), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
+        validate( SamlUtils.marshall( logoutResponse ), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
     }
 
     @Override
     public void validateLogoutRequest(final LogoutRequest logoutRequest, final String requestQueryString, final StringBuffer requestURL)
             throws WSClientTransportException, ValidationFailedException {
 
-        validate( logoutRequest.getDOM(), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
+        validate( SamlUtils.marshall( logoutRequest ), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
     }
 }

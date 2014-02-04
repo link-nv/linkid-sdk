@@ -23,6 +23,7 @@
 /target
 /*/target
 /*/*/target
+/*/*/*/target
 
 # Scripts
 /.mvn-tools

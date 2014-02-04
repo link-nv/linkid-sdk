@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
@@ -14,14 +15,12 @@ import java.util.Collection;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.sdk.api.auth.LoginMode;
+import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.sdk.configuration.SAMLBinding;
 import net.link.util.common.CertificateChain;
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.saml.Saml2Utils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.*;
 
@@ -33,7 +32,7 @@ import org.opensaml.saml2.core.*;
  */
 public abstract class RequestUtil {
 
-    private static final Log LOG = LogFactory.getLog( RequestUtil.class );
+    private static final Logger logger = Logger.get( RequestUtil.class );
 
     /**
      * Sends a SAML2 Request.
@@ -57,20 +56,18 @@ public abstract class RequestUtil {
      * @throws IOException IO Exception
      */
     public static void sendRequest(String consumerUrl, SAMLBinding requestBinding, RequestAbstractType samlRequest, KeyPair signingKeyPair,
-                                   CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState,
-                                   String postTemplateResource, @Nullable Locale language, @Nullable String themeName,
-                                   @Nullable LoginMode loginMode, @Nullable StartPage startPage)
+                                   CertificateChain certificateChain, HttpServletResponse response, @Nullable String relayState, String postTemplateResource,
+                                   @Nullable Locale language, @Nullable String themeName, @Nullable LoginMode loginMode, @Nullable StartPage startPage)
             throws IOException {
 
         switch (requestBinding) {
             case HTTP_POST:
-                PostBindingUtil.sendRequest( samlRequest, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl,
-                        response, language, themeName, loginMode, startPage );
+                PostBindingUtil.sendRequest( samlRequest, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl, response, language,
+                        themeName, loginMode, startPage );
                 break;
 
             case HTTP_REDIRECT:
-                RedirectBindingUtil.sendRequest( samlRequest, signingKeyPair, relayState, consumerUrl, response, language, themeName,
-                        loginMode, startPage );
+                RedirectBindingUtil.sendRequest( samlRequest, signingKeyPair, relayState, consumerUrl, response, language, themeName, loginMode, startPage );
                 break;
         }
     }
@@ -86,8 +83,7 @@ public abstract class RequestUtil {
      * @throws ValidationFailedException validation failed for some reason
      */
     @Nullable
-    public static CertificateChain validateRequest(HttpServletRequest request, LogoutRequest logoutRequest,
-                                                   Collection<X509Certificate> trustedCertificates)
+    public static CertificateChain validateRequest(HttpServletRequest request, LogoutRequest logoutRequest, Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         // validate signature
@@ -108,7 +104,7 @@ public abstract class RequestUtil {
      * @param request HTTP Servlet Request
      *
      * @return The SAML {@link AuthnRequest} that is in the HTTP request<br> {@code null} if there is no SAML message in the HTTP
-     *         request.
+     * request.
      */
     public static AuthnRequest findAuthnRequest(HttpServletRequest request) {
 

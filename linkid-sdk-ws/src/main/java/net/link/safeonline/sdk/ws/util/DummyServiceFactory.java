@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
+import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
@@ -22,6 +23,9 @@ import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.safeonline.sdk.ws.ServiceFactory;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
+import org.jetbrains.annotations.Nullable;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Response;
 
 
 /**
@@ -116,6 +120,13 @@ public class DummyServiceFactory extends ServiceFactory {
 
     @Override
     protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
+
+        throw new UnsupportedOperationException( "Not yet implemented" );
+    }
+
+    @Override
+    protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration,
+                                                                        @Nullable final X509Certificate sslCertificate) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }

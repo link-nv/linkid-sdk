@@ -433,6 +433,8 @@ public class TestConfigHolder extends ConfigHolder {
                 public String name = "test-application";
                 public KeyProvider   keyProvider;
                 public X500Principal trustedDN;
+                public String        username;
+                public String        password;
 
                 @Override
                 public String name() {
@@ -450,6 +452,18 @@ public class TestConfigHolder extends ConfigHolder {
                 public X500Principal trustedDN() {
 
                     return trustedDN;
+                }
+
+                @Override
+                public String username() {
+
+                    return username;
+                }
+
+                @Override
+                public String password() {
+
+                    return password;
                 }
             }
         }

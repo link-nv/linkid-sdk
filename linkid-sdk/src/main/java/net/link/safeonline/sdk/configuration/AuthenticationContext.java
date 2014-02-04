@@ -1,17 +1,15 @@
 package net.link.safeonline.sdk.configuration;
 
-import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.*;
-import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.sdk.api.auth.LoginMode;
+import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.util.config.KeyProvider;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -139,20 +137,14 @@ public class AuthenticationContext extends LinkIDContext {
      *                                authenticated for by this authentication process.
      *
      * @see #AuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, String, Locale, String,
-     *      Set, String, Protocol)
+     * Set, String, Protocol)
      */
-    public AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider, boolean forceAuthentication,
-                                 Set<String> devices, @Nullable String sessionTrackingId, @Nullable String themeName, @Nullable Locale language,
-                                 String target) {
+    public AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, @Nullable KeyProvider keyProvider,
+                                 boolean forceAuthentication, Set<String> devices, @Nullable String sessionTrackingId, @Nullable String themeName,
+                                 @Nullable Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
-            @NotNull
-            @Override
-            public KeyProvider get() {
-
-                return config().linkID().app().keyProvider();
-            }
-        } ), forceAuthentication, themeName, language, target, devices, sessionTrackingId, null, null );
+        this( applicationName, applicationFriendlyName, null != keyProvider? keyProvider: config().linkID().app().keyProvider(), forceAuthentication, themeName,
+                language, target, devices, sessionTrackingId, null, null );
     }
 
     /**
@@ -191,20 +183,14 @@ public class AuthenticationContext extends LinkIDContext {
      *                                will default to redirect mode, unless the legacy breakFrame configuration option has been enabled.
      *
      * @see #AuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, String, Locale, String,
-     *      Set, String, Protocol)
+     * Set, String, Protocol)
      */
-    public AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider, boolean forceAuthentication,
-                                 Set<String> devices, @Nullable String sessionTrackingId, @Nullable String themeName, @Nullable Locale language, String target,
-                                 LoginMode loginMode) {
+    public AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, @Nullable KeyProvider keyProvider,
+                                 boolean forceAuthentication, Set<String> devices, @Nullable String sessionTrackingId, @Nullable String themeName,
+                                 @Nullable Locale language, String target, LoginMode loginMode) {
 
-        this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
-            @NotNull
-            @Override
-            public KeyProvider get() {
-
-                return config().linkID().app().keyProvider();
-            }
-        } ), forceAuthentication, themeName, language, target, devices, sessionTrackingId, null, loginMode );
+        this( applicationName, applicationFriendlyName, null != keyProvider? keyProvider: config().linkID().app().keyProvider(), forceAuthentication, themeName,
+                language, target, devices, sessionTrackingId, null, loginMode );
     }
 
     private AuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, @Nullable KeyProvider keyProvider,

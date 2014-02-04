@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.configuration;
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.EnumSet;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -22,9 +23,14 @@ public enum Protocol {
 
     SAML2( "net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler" ),
 
+    HAWS( "net.link.safeonline.sdk.auth.protocol.haws.HawsProtocolHandler" ),
+
     OPENID( "net.link.safeonline.sdk.auth.protocol.openid.OpenIdProtocolHandler" ),
 
-    OAUTH2( "net.link.safeonline.sdk.auth.protocol.oauth2.OAuth2ProtocolHandler" );
+    OAUTH2( "net.link.safeonline.sdk.auth.protocol.oauth2.OAuth2ProtocolHandler" ),
+
+    // does not have a protocol handler, has to be used directly using the WS client
+    WS( null );
 
     private static final Logger logger = Logger.get( Protocol.class );
 
@@ -65,4 +71,14 @@ public enum Protocol {
             return null;
         }
     }
+
+    public static Protocol fromString(String text, Protocol fallback) {
+
+        for (Protocol type : EnumSet.allOf( Protocol.class )) {
+            if (type.toString().equalsIgnoreCase( text ))
+                return type;
+        }
+        return fallback;
+    }
+
 }
