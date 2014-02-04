@@ -49,6 +49,9 @@ public enum Protocol {
     @Nullable
     public Object newHandler() {
 
+        if (null == protocolHandlerClass)
+            return null;
+
         try {
             Class<?> protocolHandler = getClass().getClassLoader().loadClass( protocolHandlerClass );
 
