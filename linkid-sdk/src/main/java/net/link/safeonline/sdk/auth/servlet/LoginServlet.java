@@ -156,4 +156,12 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             LoginManager.set( session, authnResponse );
         }
     }
+
+    public String getErrorPage() {
+        return errorPage;
+    }
+
+    public String getTimeoutPage() {
+        return timeoutPage;
+    }
 }
