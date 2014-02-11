@@ -30,8 +30,10 @@ public class Email implements Serializable {
         for (AttributeSDK<Serializable> emailAttribute : emailAttributes) {
 
             Compound emailCompound = (Compound) emailAttribute.getValue();
-            Email email = new Email( (String) emailCompound.getMember( ProfileConstants.EMAIL_ADDRESS ).getValue(),
-                    (Boolean) emailCompound.getMember( ProfileConstants.EMAIL_CONFIRMED ).getValue() );
+            boolean confirmed = false;
+            if (null != emailCompound.findMember( ProfileConstants.EMAIL_CONFIRMED ))
+                confirmed = (Boolean) emailCompound.getMember( ProfileConstants.EMAIL_CONFIRMED ).getValue();
+            Email email = new Email( (String) emailCompound.getMember( ProfileConstants.EMAIL_ADDRESS ).getValue(), confirmed );
             emails.add( email );
         }
 

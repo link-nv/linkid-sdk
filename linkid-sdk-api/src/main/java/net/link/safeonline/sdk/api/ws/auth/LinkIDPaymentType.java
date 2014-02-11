@@ -5,5 +5,6 @@ public enum LinkIDPaymentType {
     VISA,
     MC,
     MAESTRO,
-    NEW
+    NEW,
+    KLARNA
 }

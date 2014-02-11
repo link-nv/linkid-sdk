@@ -11,15 +11,17 @@ public class LinkIDPaymentMethod implements Serializable {
     private final LinkIDPaymentType tokenType;
     private final String            prettyPrint;
     private final int               priority;
+    private final boolean           removable;
 
-    public LinkIDPaymentMethod(final String attributeId, final String tokenId, final LinkIDPaymentType tokenType, final String prettyPrint,
-                               final int priority) {
+    public LinkIDPaymentMethod(final String attributeId, final String tokenId, final LinkIDPaymentType tokenType, final String prettyPrint, final int priority,
+                               final boolean removable) {
 
         this.attributeId = attributeId;
         this.tokenId = tokenId;
         this.tokenType = tokenType;
         this.prettyPrint = prettyPrint;
         this.priority = priority;
+        this.removable = removable;
     }
 
     public String getAttributeId() {
@@ -45,5 +47,10 @@ public class LinkIDPaymentMethod implements Serializable {
     public int getPriority() {
 
         return priority;
+    }
+
+    public boolean isRemovable() {
+
+        return removable;
     }
 }
