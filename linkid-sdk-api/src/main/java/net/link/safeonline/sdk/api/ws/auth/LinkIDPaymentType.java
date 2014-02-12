@@ -6,5 +6,19 @@ public enum LinkIDPaymentType {
     MC,
     MAESTRO,
     NEW,
-    KLARNA
+    KLARNA;
+
+    public static LinkIDPaymentType parse(final String paymentCodeTypeString) {
+
+        if (null == paymentCodeTypeString || 0 == paymentCodeTypeString.trim().length())
+            return null;
+
+        for (LinkIDPaymentType paymentCodeType : LinkIDPaymentType.values()) {
+            if (paymentCodeType.name().equals( paymentCodeTypeString )) {
+                return paymentCodeType;
+            }
+        }
+
+        return null;
+    }
 }
