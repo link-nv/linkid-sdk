@@ -34,24 +34,24 @@ public interface LTQRServiceClient {
     /**
      * Fetch a set of client sessions.
      *
-     * @param sessionIds       optional list of long term session Ids, if empty or null all client sessions for all ltqr sessions will be returned
+     * @param orderReferences  Optional list of orderReferences to fetch. If none are specified, all LTQR sessions and client session are returned.
      * @param clientSessionIds optional list of client session IDs
      *
      * @return list of client sessions
      *
      * @throws PullException failure
      */
-    List<LTQRClientSession> pull(@Nullable List<String> sessionIds, @Nullable List<String> clientSessionIds)
+    List<LTQRClientSession> pull(@Nullable List<String> orderReferences, @Nullable List<String> clientSessionIds)
             throws PullException;
 
     /**
      * Remove a set of client sessions.
      *
-     * @param sessionIds       list of long term session Ids to remove, if list of clientSessionIds is empty, all associated ones will be removed.
+     * @param orderReferences  List of orderReferences to remove. If none are specified all related client sessions will be removed.
      * @param clientSessionIds optional list of client session IDs to remove
      *
      * @throws RemoveException failure
      */
-    void remove(List<String> sessionIds, @Nullable List<String> clientSessionIds)
+    void remove(@Nullable List<String> orderReferences, @Nullable List<String> clientSessionIds)
             throws RemoveException;
 }

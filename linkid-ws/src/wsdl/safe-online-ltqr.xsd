@@ -55,15 +55,14 @@
     <element name="PullRequest">
         <complexType>
             <sequence>
-                <element name="sessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                <element name="orderReferences" type="string" minOccurs="0" maxOccurs="unbounded">
                     <annotation>
-                        <documentation>Optional list of sessionIds to fetch. If none are specified, all LTQR sessions and client session are returned.
-                        Note this is the LTQR session, not the client session ID!</documentation>
+                        <documentation>Optional list of orderReferences to fetch. If none are specified, all LTQR sessions and client session are returned.</documentation>
                     </annotation>
                 </element>
                 <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
                     <annotation>
-                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are fetched for the sessionIds specified above</documentation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are fetched for the orderReferences specified above</documentation>
                     </annotation>
                 </element>
             </sequence>
@@ -84,14 +83,14 @@
     <element name="RemoveRequest">
         <complexType>
             <sequence>
-                <element name="sessionIds" type="string" minOccurs="1" maxOccurs="unbounded">
+                <element name="orderReferences" type="string" minOccurs="0" maxOccurs="unbounded">
                     <annotation>
-                        <documentation>List of sessionIds to remove. If none are specified, all related client sessions will be removed.</documentation>
+                        <documentation>List of orderReferences to remove. If none are specified all related client sessions will be removed.</documentation>
                     </annotation>
                 </element>
                 <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
                     <annotation>
-                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are removed for the sessionIds specified above</documentation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are removed for the orderReferences specified above</documentation>
                     </annotation>
                 </element>
             </sequence>
@@ -119,10 +118,10 @@
                     <documentation>Content of the QR code</documentation>
                 </annotation>
             </element>
-            <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
-                    <documentation>Session ID of the created long term session. A type 4 UUID.
-                        This session ID will be used in the notifications to the Service Provider.</documentation>
+                    <documentation>The order reference of this long term QR payment
+                        This order reference will be used in the notifications to the Service Provider.</documentation>
                 </annotation>
             </element>
         </sequence>
@@ -155,9 +154,9 @@
 
     <complexType name="ClientSession">
         <sequence>
-            <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
-                    <documentation>The LTQR session ID ( NOT the client session ID... )</documentation>
+                    <documentation>The LTQR order reference</documentation>
                 </annotation>
             </element>
             <element name="clientSessionId" type="string" minOccurs="1" maxOccurs="1">
@@ -195,6 +194,11 @@
             <element name="description" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional payment description</documentation>
+                </annotation>
+            </element>
+            <element name="orderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional order reference</documentation>
                 </annotation>
             </element>
             <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">

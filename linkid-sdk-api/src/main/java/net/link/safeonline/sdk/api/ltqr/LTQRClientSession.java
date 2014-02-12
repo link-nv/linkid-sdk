@@ -11,16 +11,16 @@ import java.util.Date;
  */
 public class LTQRClientSession implements Serializable {
 
-    private final String           sessionId;
+    private final String           orderReference;
     private final String           clientSessionId;
     private final String           userId;
     private final Date             created;
     private final LTQRPaymentState paymentState;
 
-    public LTQRClientSession(final String sessionId, final String clientSessionId, final String userId, final Date created,
+    public LTQRClientSession(final String orderReference, final String clientSessionId, final String userId, final Date created,
                              final LTQRPaymentState paymentState) {
 
-        this.sessionId = sessionId;
+        this.orderReference = orderReference;
         this.clientSessionId = clientSessionId;
         this.userId = userId;
         this.created = created;
@@ -30,13 +30,13 @@ public class LTQRClientSession implements Serializable {
     @Override
     public String toString() {
 
-        return String.format( "SessionID: %s, ClientSessionID: %s, UserID: %s, Created: %s, PaymentState: %s", sessionId, clientSessionId, userId, created,
+        return String.format( "SessionID: %s, ClientSessionID: %s, UserID: %s, Created: %s, PaymentState: %s", orderReference, clientSessionId, userId, created,
                 paymentState );
     }
 
-    public String getSessionId() {
+    public String getOrderReference() {
 
-        return sessionId;
+        return orderReference;
     }
 
     public String getClientSessionId() {

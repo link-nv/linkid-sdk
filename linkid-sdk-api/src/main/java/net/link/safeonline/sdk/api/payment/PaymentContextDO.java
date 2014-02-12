@@ -13,6 +13,7 @@ public class PaymentContextDO implements Serializable {
     public static final String AMOUNT_KEY          = "PaymentContext.amount";
     public static final String CURRENCY_KEY        = "PaymentContext.currency";
     public static final String DESCRIPTION_KEY     = "PaymentContext.description";
+    public static final String ORDER_REFERENCE_KEY = "PaymentContext.orderReference";
     public static final String PROFILE_KEY         = "PaymentContext.profile";
     public static final String VALIDATION_TIME_KEY = "PaymentContext.validationTime";
     public static final String ADD_LINK_KEY        = "PaymentContext.addLinkKey";
@@ -21,6 +22,9 @@ public class PaymentContextDO implements Serializable {
     private final double   amount;
     private final Currency currency;
     private final String   description;
+
+    // optional order reference, if not specified linkID will generate one in UUID format
+    private final String orderReference;
 
     // optional payment profile
     private final String paymentProfile;
@@ -43,12 +47,14 @@ public class PaymentContextDO implements Serializable {
      * @param showAddPaymentMethodLink optional show add payment method link
      * @param allowDeferredPay         optional allow deferred payments flag
      */
-    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String paymentProfile,
-                            final int paymentValidationTime, final boolean showAddPaymentMethodLink, final boolean allowDeferredPay) {
+    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
+                            @Nullable final String paymentProfile, final int paymentValidationTime, final boolean showAddPaymentMethodLink,
+                            final boolean allowDeferredPay) {
 
         this.amount = amount;
         this.currency = currency;
         this.description = description;
+        this.orderReference = orderReference;
         this.paymentProfile = paymentProfile;
         this.paymentValidationTime = paymentValidationTime;
         this.showAddPaymentMethodLink = showAddPaymentMethodLink;
@@ -61,9 +67,10 @@ public class PaymentContextDO implements Serializable {
      * @param description    optional description
      * @param paymentProfile optional payment profile
      */
-    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String paymentProfile) {
+    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
+                            @Nullable final String paymentProfile) {
 
-        this( amount, currency, description, paymentProfile, 5, true, false );
+        this( amount, currency, description, orderReference, paymentProfile, 5, true, false );
     }
 
     /**
@@ -72,7 +79,7 @@ public class PaymentContextDO implements Serializable {
      */
     public PaymentContextDO(final double amount, final Currency currency) {
 
-        this( amount, currency, null, null, 5, true, false );
+        this( amount, currency, null, null, null, 5, true, false );
     }
 
     // Helper methods
@@ -85,6 +92,8 @@ public class PaymentContextDO implements Serializable {
         map.put( CURRENCY_KEY, currency.name() );
         if (null != description)
             map.put( DESCRIPTION_KEY, description );
+        if (null != orderReference)
+            map.put( ORDER_REFERENCE_KEY, orderReference );
         if (null != paymentProfile)
             map.put( PROFILE_KEY, paymentProfile );
         map.put( VALIDATION_TIME_KEY, Integer.toString( paymentValidationTime ) );
@@ -110,7 +119,7 @@ public class PaymentContextDO implements Serializable {
 
         // convert
         return new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ), Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
-                paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( PROFILE_KEY ),
+                paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ), paymentContextMap.get( PROFILE_KEY ),
                 Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( ADD_LINK_KEY ) ),
                 Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ) );
     }
@@ -119,8 +128,8 @@ public class PaymentContextDO implements Serializable {
     public String toString() {
 
         return String.format(
-                "Amount: %f, Currency: %s, Description: \"%s\", Profile: \"%s\", validationTime: %d, addPaymentMethodLink: %s, allowDeferredPay: %s", amount,
-                currency, description, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, allowDeferredPay );
+                "Amount: %f, Currency: %s, Description: \"%s\", OrderReference: \"%s\", Profile: \"%s\", validationTime: %d, addPaymentMethodLink: %s, allowDeferredPay: %s",
+                amount, currency, description, orderReference, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, allowDeferredPay );
     }
 
     // Accessors
@@ -133,6 +142,11 @@ public class PaymentContextDO implements Serializable {
     public Currency getCurrency() {
 
         return currency;
+    }
+
+    public String getOrderReference() {
+
+        return orderReference;
     }
 
     public String getPaymentProfile() {

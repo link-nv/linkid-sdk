@@ -56,7 +56,8 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
         super( LTQRServiceFactory.newInstance().getLTQRServicePort(), sslCertificate );
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.ltqr.path" ) ) );
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                    String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.ltqr.path" ) ) );
     }
 
     @Override
@@ -73,6 +74,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             paymentContext.setAmount( paymentContextDO.getAmount() );
             paymentContext.setCurrency( convert( paymentContextDO.getCurrency() ) );
             paymentContext.setDescription( paymentContextDO.getDescription() );
+            paymentContext.setOrderReference( paymentContextDO.getOrderReference() );
             paymentContext.setPaymentProfile( paymentContextDO.getPaymentProfile() );
             paymentContext.setValidationTime( paymentContextDO.getPaymentValidationTime() );
             paymentContext.setAllowDeferredPay( paymentContextDO.isAllowDeferredPay() );
@@ -106,20 +108,20 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
                 throw new InternalInconsistencyException( "Could not decode the QR image!" );
             }
 
-            return new LTQRSession( qrCodeImage, response.getSuccess().getQrContent(), response.getSuccess().getSessionId() );
+            return new LTQRSession( qrCodeImage, response.getSuccess().getQrContent(), response.getSuccess().getOrderReference() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override
-    public List<LTQRClientSession> pull(@Nullable final List<String> sessionIds, @Nullable final List<String> clientSessionIds)
+    public List<LTQRClientSession> pull(@Nullable final List<String> orderReferences, @Nullable final List<String> clientSessionIds)
             throws PullException {
 
         PullRequest request = new PullRequest();
 
-        if (null != sessionIds && !sessionIds.isEmpty()) {
-            request.getSessionIds().addAll( sessionIds );
+        if (null != orderReferences && !orderReferences.isEmpty()) {
+            request.getOrderReferences().addAll( orderReferences );
         }
 
         if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
@@ -140,7 +142,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
             for (ClientSession clientSession : response.getSuccess().getSessions()) {
 
-                clientSessions.add( new LTQRClientSession( clientSession.getSessionId(), clientSession.getClientSessionId(), clientSession.getUserId(),
+                clientSessions.add( new LTQRClientSession( clientSession.getOrderReference(), clientSession.getClientSessionId(), clientSession.getUserId(),
                         clientSession.getCreated().toGregorianCalendar().getTime(), convert( clientSession.getPaymentStatus() ) ) );
             }
 
@@ -151,16 +153,16 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public void remove(final List<String> sessionIds, @Nullable final List<String> clientSessionIds)
+    public void remove(@Nullable final List<String> orderReferences, @Nullable final List<String> clientSessionIds)
             throws RemoveException {
 
         RemoveRequest request = new RemoveRequest();
 
-        if (null == sessionIds || sessionIds.isEmpty()) {
-            throw new InternalInconsistencyException( "SessionIDs list cannot be empty!" );
+        if (null == orderReferences || orderReferences.isEmpty()) {
+            throw new InternalInconsistencyException( "orderReferences list cannot be empty!" );
         }
 
-        request.getSessionIds().addAll( sessionIds );
+        request.getOrderReferences().addAll( orderReferences );
 
         if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
             request.getClientSessionIds().addAll( clientSessionIds );

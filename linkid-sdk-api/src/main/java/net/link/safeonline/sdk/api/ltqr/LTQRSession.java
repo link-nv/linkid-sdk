@@ -12,13 +12,13 @@ public class LTQRSession implements Serializable {
 
     private final byte[] qrCodeImage;
     private final String qrCodeURL;
-    private final String sessionId;
+    private final String orderReference;
 
-    public LTQRSession(final byte[] qrCodeImage, final String qrCodeURL, final String sessionId) {
+    public LTQRSession(final byte[] qrCodeImage, final String qrCodeURL, final String orderReference) {
 
         this.qrCodeImage = qrCodeImage;
         this.qrCodeURL = qrCodeURL;
-        this.sessionId = sessionId;
+        this.orderReference = orderReference;
     }
 
     public byte[] getQrCodeImage() {
@@ -31,8 +31,8 @@ public class LTQRSession implements Serializable {
         return qrCodeURL;
     }
 
-    public String getSessionId() {
+    public String getOrderReference() {
 
-        return sessionId;
+        return orderReference;
     }
 }
