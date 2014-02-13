@@ -19,13 +19,13 @@ public class PaymentStateChangedServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String transactionId = request.getParameter( PaymentConstants.PAYMENT_CHANGED_ID_PARAM );
-        if (null == transactionId) {
-            logger.inf( "Payment status update but no txn ID..." );
+        String orderReference = request.getParameter( PaymentConstants.PAYMENT_CHANGED_ORDER_REF_PARAM );
+        if (null == orderReference) {
+            logger.inf( "Payment status update but no order reference..." );
             return;
         }
 
-        logger.inf( "Payment status update for transaction %s", transactionId );
+        logger.inf( "Payment status update for orderReference %s", orderReference );
 
         // lookup the transaction
 
@@ -33,7 +33,7 @@ public class PaymentStateChangedServlet extends HttpServlet {
         PaymentServiceClient paymentServiceClient = LinkIDServiceFactory.getPaymentService();
         PaymentState paymentState;
         try {
-            paymentState = paymentServiceClient.getStatus( transactionId );
+            paymentState = paymentServiceClient.getStatus( orderReference );
         }
         catch (WSClientTransportException e) {
             logger.err( e, "Failed to get payment state..." );
