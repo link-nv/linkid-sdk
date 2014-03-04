@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:auth" xmlns:tns="urn:net:lin-k:safe-online:auth"
-        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-        xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:wsa="http://www.w3.org/2005/08/addressing" elementFormDefault="qualified">
+        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+        xmlns:wsa="http://www.w3.org/2005/08/addressing" elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -15,6 +15,7 @@
     <import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd" />
     <import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="saml-schema-assertion-2.0.xsd" />
     <import namespace="urn:oasis:names:tc:SAML:2.0:protocol" schemaLocation="saml-schema-protocol-2.0.xsd" />
+    <import namespace="http://www.w3.org/2005/08/addressing" schemaLocation="ws-addr-1.0.xsd" />
 
 	<element name="NameValuePair" type="tns:NameValuePairType" />
 	<complexType name="NameValuePairType">
@@ -26,7 +27,7 @@
 	<element name="DeviceCredentials" type="tns:DeviceCredentialsType" />
 	<complexType name="DeviceCredentialsType">
 		<sequence>
-			<element name="NameValueMap" ref="tns:NameValuePair" minOccurs="0" maxOccurs="unbounded" />
+			<element ref="tns:NameValuePair" minOccurs="0" maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
 
@@ -48,7 +49,7 @@
 	<element name="DeviceAuthenticationInformation" type="tns:DeviceAuthenticationInformationType" />
 	<complexType name="DeviceAuthenticationInformationType">
 		<sequence>
-			<element name="NameValuePairList" ref="tns:NameValuePair" minOccurs="0" maxOccurs="unbounded" />
+			<element ref="tns:NameValuePair" minOccurs="0" maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
 
@@ -58,7 +59,7 @@
 			<extension base="samlp:StatusResponseType">
 				<sequence>
 					<element ref="tns:DeviceAuthenticationInformation" minOccurs="0" maxOccurs="1" />
-					<element name="assertions" ref="saml:Assertion" minOccurs="0" maxOccurs="unbounded" />
+					<element ref="saml:Assertion" minOccurs="0" maxOccurs="unbounded" />
 				</sequence>
 				<attribute name="DeviceName" type="string" />
 				<attribute name="UserId" type="string" />
@@ -130,7 +131,7 @@
 	<element name="WSAuthenticationIdentityRequest" type="tns:WSAuthenticationIdentityRequestType" />
 	<complexType name="WSAuthenticationIdentityRequestType">
 		<complexContent>
-			<extension base="samlp:RequestAbstractType"></extension>
+			<extension base="samlp:RequestAbstractType" />
 		</complexContent>
 	</complexType>
 
@@ -139,7 +140,7 @@
 		<complexContent>
 			<extension base="samlp:RequestAbstractType">
 				<sequence>
-					<element name="identity" ref="saml:Attribute" minOccurs="1" maxOccurs="unbounded" />
+					<element ref="saml:Attribute" minOccurs="1" maxOccurs="unbounded" />
 				</sequence>
 			</extension>
 		</complexContent>
