@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.security.cert.X509Certificate;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.api.ws.pki.PkiClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
