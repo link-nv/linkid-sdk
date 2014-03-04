@@ -50,15 +50,15 @@ public class SessionTrackingClientImpl extends AbstractWSClient<SessionTrackingP
 
         super( SessionTrackingServiceFactory.newInstance().getSessionTrackingPort(), sslCertificate );
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.session.tracking.path" ) ) );
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                    String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.session.tracking.path" ) ) );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     @Override
     public List<SessionAssertion> getAssertions(String session, String subject, List<String> applicationPools)
-            throws WSClientTransportException, ApplicationPoolNotFoundException, SubjectNotFoundException, RequestDeniedException {
+            throws WSClientTransportException, SubjectNotFoundException, RequestDeniedException {
 
         logger.dbg( "get assertions: session=%s subject=%s", session, subject );
         SessionTrackingRequestType request = new SessionTrackingRequestType();
@@ -104,14 +104,14 @@ public class SessionTrackingClientImpl extends AbstractWSClient<SessionTrackingP
     }
 
     private static void validateStatus(SessionTrackingResponseType response)
-            throws ApplicationPoolNotFoundException, SubjectNotFoundException, RequestDeniedException {
+            throws SubjectNotFoundException, RequestDeniedException {
 
         if (response.getStatus().getValue().equals( SessionTrackingErrorCode.SUCCESS.getErrorCode() )) {
-        } else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.APPLICATION_POOL_NOT_FOUND.getErrorCode() ))
-            throw new ApplicationPoolNotFoundException();
-        else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.SUBJECT_NOT_FOUND.getErrorCode() ))
+            // do nothing
+        } else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.SUBJECT_NOT_FOUND.getErrorCode() )) {
             throw new SubjectNotFoundException();
-        else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.TRUSTED_DEVICE_NOT_FOUND.getErrorCode() ))
+        } else if (response.getStatus().getValue().equals( SessionTrackingErrorCode.TRUSTED_DEVICE_NOT_FOUND.getErrorCode() )) {
             throw new RequestDeniedException();
+        }
     }
 }

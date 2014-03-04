@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public enum SessionTrackingErrorCode {
 
-    APPLICATION_POOL_NOT_FOUND( "urn:net:lin-k:safe-online:ws:session:status:ApplicationNotFound" ),
     SUBJECT_NOT_FOUND( "urn:net:lin-k:safe-online:ws:session:status:SubjectNotFound" ),
     TRUSTED_DEVICE_NOT_FOUND( "urn:net:lin-k:safe-online:ws:session:status:TrustedDeviceNotFound" ),
     SUCCESS( "urn:net:lin-k:safe-online:ws:session:status:success" );
