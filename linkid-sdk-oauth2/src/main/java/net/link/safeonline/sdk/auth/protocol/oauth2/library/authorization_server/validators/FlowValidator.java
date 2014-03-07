@@ -15,7 +15,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.Authorizati
  * Date: 23/03/12
  * Time: 15:31
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class FlowValidator extends AbstractValidator {
 
@@ -27,11 +27,11 @@ public class FlowValidator extends AbstractValidator {
         switch (request.getResponseType()) {
             case CODE:
                 if (!configuration.getAllowedFlows().contains( ClientConfiguration.FlowType.AUTHORIZATION ))
-                    throw new OAuthException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
+                    throw new OAuthException( ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case TOKEN:
                 if (!configuration.getAllowedFlows().contains( ClientConfiguration.FlowType.IMPLICIT ))
-                    throw new OAuthException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
+                    throw new OAuthException( ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
         }
     }
@@ -40,18 +40,18 @@ public class FlowValidator extends AbstractValidator {
     public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
-        switch ( request.getGrantType() ){
+        switch (request.getGrantType()) {
             case AUTHORIZATION_CODE:
                 if (!clientConfiguration.getAllowedFlows().contains( ClientConfiguration.FlowType.AUTHORIZATION ))
-                    throw new OAuthException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
+                    throw new OAuthException( ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case CLIENT_CREDENTIALS:
                 if (!clientConfiguration.getAllowedFlows().contains( ClientConfiguration.FlowType.CLIENT_CREDENTIALS ))
-                    throw new OAuthException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
+                    throw new OAuthException( ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case PASSWORD:
                 if (!clientConfiguration.getAllowedFlows().contains( ClientConfiguration.FlowType.RESOURCE_CREDENTIALS ))
-                    throw new OAuthException(ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
+                    throw new OAuthException( ErrorType.UNAUTHORIZED_CLIENT, "invalid flow type for client" );
                 break;
             case REFRESH_TOKEN:
                 if (clientAccessRequest == null || clientAccessRequest.getFlowType() == ClientConfiguration.FlowType.CLIENT_CREDENTIALS

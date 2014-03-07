@@ -9,16 +9,16 @@ import java.util.List;
  * Date: 15/03/12
  * Time: 15:53
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class AuthorizationRequest implements RequestMessage {
 
     protected ResponseType responseType; //required
-    protected String clientId; //required
-    protected String clientSecret;
-    protected String redirectUri;
+    protected String       clientId; //required
+    protected String       clientSecret;
+    protected String       redirectUri;
     protected List<String> scope;
-    protected String state;
+    protected String       state;
 
     public AuthorizationRequest(final ResponseType responseType, final String clientId) {
 

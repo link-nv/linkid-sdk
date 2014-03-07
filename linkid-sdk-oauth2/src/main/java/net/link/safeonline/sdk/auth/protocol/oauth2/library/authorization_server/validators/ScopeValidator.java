@@ -17,7 +17,7 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.Authorizati
  * Date: 23/03/12
  * Time: 15:31
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class ScopeValidator extends AbstractValidator {
 
@@ -26,10 +26,8 @@ public class ScopeValidator extends AbstractValidator {
             throws OAuthException {
 
         List<String> requestedScope = request.getScope() != null? request.getScope(): new LinkedList<String>();
-        List<String> configuredScope =
-                configuration.getConfiguredScope() != null? configuration.getConfiguredScope(): new LinkedList<String>();
+        List<String> configuredScope = configuration.getConfiguredScope() != null? configuration.getConfiguredScope(): new LinkedList<String>();
         validate( requestedScope, configuredScope );
-
     }
 
     @Override
@@ -37,17 +35,16 @@ public class ScopeValidator extends AbstractValidator {
             throws OAuthException {
 
         List<String> requestedScope = request.getScope() != null? request.getScope(): new LinkedList<String>();
-        List<String> configuredScope =
-                clientConfiguration.getConfiguredScope() != null? clientConfiguration.getConfiguredScope(): new LinkedList<String>();
+        List<String> configuredScope = clientConfiguration.getConfiguredScope() != null? clientConfiguration.getConfiguredScope(): new LinkedList<String>();
         validate( requestedScope, configuredScope );
     }
 
-    private void validate (List<String> requestedScope, List<String> configuredScope)
+    private void validate(List<String> requestedScope, List<String> configuredScope)
             throws OAuthException {
+
         for (String attribute : requestedScope) {
             if (!configuredScope.contains( attribute ))
-                throw new OAuthException( OAuth2Message.ErrorType.INVALID_SCOPE,
-                        "Requested scope extends pre-configured scope: " + attribute );
+                throw new OAuthException( OAuth2Message.ErrorType.INVALID_SCOPE, "Requested scope extends pre-configured scope: " + attribute );
         }
     }
 }

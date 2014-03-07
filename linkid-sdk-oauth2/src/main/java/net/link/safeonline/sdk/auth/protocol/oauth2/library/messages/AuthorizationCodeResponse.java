@@ -6,10 +6,10 @@ package net.link.safeonline.sdk.auth.protocol.oauth2.library.messages;
  * Date: 20/03/12
  * Time: 14:25
  *
- * @author: sgdesmet
+ * @author sgdesmet
  */
 public class AuthorizationCodeResponse implements ResponseMessage {
-    
+
     protected String code; //required
     protected String state; //required if included in request
 
