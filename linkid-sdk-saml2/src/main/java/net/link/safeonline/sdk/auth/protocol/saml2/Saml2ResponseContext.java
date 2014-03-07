@@ -1,8 +1,7 @@
 /*
- * SafeOnline project.
+ * linkID project.
  *
- * Copyright 2006-2007 Lin.k N.V. All rights reserved.
- * Copyright 2005-2006 Frank Cornelis.
+ * Copyright 2006-2014 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 

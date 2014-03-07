@@ -1,9 +1,10 @@
 /*
- * SafeOnline project.
+ * linkID project.
  *
- * Copyright 2006-2010 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2014 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
+
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import org.opensaml.saml2.core.StatusCode;

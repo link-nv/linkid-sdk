@@ -1,9 +1,9 @@
 /*
- * SafeOnline project.
+ * linkID project.
  *
- * Copyright (c) 2006-2011 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2014 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
- ******************************************************************************/
+ */
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
