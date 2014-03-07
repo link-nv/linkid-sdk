@@ -430,8 +430,6 @@
 
         <module>examples</module>
 
-        <module>linkid-nfc-sdk</module>
-
         <module>repo.linkid.be</module>
 
     </modules>
