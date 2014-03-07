@@ -17,6 +17,11 @@
 		</complexType>
 	</element>
 
+    <element name="PaymentGetStatusRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
 
 	<element name="PaymentStatusResponse">
         <complexType>

@@ -11,6 +11,6 @@ import net.link.safeonline.sdk.api.payment.PaymentState;
  */
 public interface PaymentServiceClient {
 
-    PaymentState getStatus(String transactionId)
+    PaymentState getStatus(String orderReference)
             throws WSClientTransportException;
 }

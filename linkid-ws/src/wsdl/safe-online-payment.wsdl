@@ -12,6 +12,9 @@
     <message name="statusRequest">
 		<part name="request" element="tns:PaymentStatusRequest" />
 	</message>
+    <message name="getStatusRequest">
+		<part name="request" element="tns:PaymentGetStatusRequest" />
+	</message>
 	<message name="statusResponse">
 		<part name="response" element="tns:PaymentStatusResponse" />
 	</message>
@@ -23,6 +26,10 @@
 			<input message="tns:statusRequest" />
 			<output message="tns:statusResponse" />
 		</operation>
+		<operation name="getStatus">
+			<input message="tns:getStatusRequest" />
+			<output message="tns:statusResponse" />
+		</operation>
     </portType>
 
     <!-- ========================= Bindings ======================== -->
@@ -31,6 +38,15 @@
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="status">
             <soap:operation soapAction="urn:net:lin-k:safe-online:payment:status" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getStatus">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:payment:getStatus" />
             <input>
                 <soap:body use="literal" />
             </input>

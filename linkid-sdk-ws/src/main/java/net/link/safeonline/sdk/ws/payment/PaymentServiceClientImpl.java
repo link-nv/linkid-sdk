@@ -25,18 +25,19 @@ public class PaymentServiceClientImpl extends AbstractWSClient<PaymentServicePor
 
         super( PaymentServiceFactory.newInstance().getPaymentServicePort(), sslCertificate );
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.payment.path" ) ) );
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                    String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.payment.path" ) ) );
     }
 
     @Override
-    public PaymentState getStatus(final String transactionId)
+    public PaymentState getStatus(final String orderReference)
             throws WSClientTransportException {
 
-        PaymentStatusRequest statusRequest = new PaymentStatusRequest();
-        statusRequest.setTransactionId( transactionId );
+        PaymentGetStatusRequest request = new PaymentGetStatusRequest();
+        request.setOrderReference( orderReference );
 
         try {
-            PaymentStatusResponse statusResponse = getPort().status( statusRequest );
+            PaymentStatusResponse statusResponse = getPort().getStatus( request );
             return convert( statusResponse.getPaymentStatus() );
         }
         catch (ClientTransportException e) {
