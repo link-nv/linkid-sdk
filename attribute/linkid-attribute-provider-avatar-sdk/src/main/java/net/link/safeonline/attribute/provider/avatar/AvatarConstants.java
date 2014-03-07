@@ -11,7 +11,5 @@ public interface AvatarConstants {
 
     static final String PROFILE_PICTURE_ATTRIB = "avatar.picture";
 
-    static final String GROUP = "avatar";
-
     static final int PICTURE_SIZE = 128;
 }

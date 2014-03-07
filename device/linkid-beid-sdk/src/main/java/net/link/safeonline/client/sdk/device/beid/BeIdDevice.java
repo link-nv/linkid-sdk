@@ -2,8 +2,6 @@ package net.link.safeonline.client.sdk.device.beid;
 
 public interface BeIdDevice {
 
-    String NAME = "beid";
-
     // attributes
     String ATTRIBUTE_NRN               = "device.beid.nrn";
     String ATTRIBUTE_MASKED_NRN        = "device.beid.maskedNrn";
@@ -16,8 +14,6 @@ public interface BeIdDevice {
     String ATTRIBUTE_STREET_AND_NUMBER = "device.beid.streetAndNumber";
     String ATTRIBUTE_POSTAL_CODE       = "device.beid.zip";
     String ATTRIBUTE_MUNICIPALITY      = "device.beid.municipality";
-
-    String ATTRIBUTE_GROUP = "beid";
 
     // WS-Authentication
     String WS_AUTH_SALT_ATTRIBUTE                    = "urn:net:lin-k:safe-online:beid:ws:auth:salt";

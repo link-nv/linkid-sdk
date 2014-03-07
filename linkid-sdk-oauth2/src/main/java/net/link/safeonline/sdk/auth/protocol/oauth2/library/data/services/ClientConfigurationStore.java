@@ -15,6 +15,4 @@ public interface ClientConfigurationStore {
 
     public ClientConfiguration getClient(String client_id)
             throws ClientNotFoundException;
-
-    public boolean containsClient(String client_id);
 }

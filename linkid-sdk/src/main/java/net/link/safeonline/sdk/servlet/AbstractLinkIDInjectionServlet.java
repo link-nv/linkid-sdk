@@ -11,13 +11,11 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.util.servlet.AbstractInjectionServlet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
  * Abstract Injection Servlet.
- *
+ * <p/>
  * <ul>
  * <li>Injects request parameters into servlet fields.
  * <li>Injects and outjects session parameters.
@@ -31,8 +29,6 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  */
 public abstract class AbstractLinkIDInjectionServlet extends AbstractInjectionServlet {
-
-    static final Log LOG = LogFactory.getLog( AbstractLinkIDInjectionServlet.class );
 
     protected String getWrapperEndpoint(HttpServletRequest request) {
 
