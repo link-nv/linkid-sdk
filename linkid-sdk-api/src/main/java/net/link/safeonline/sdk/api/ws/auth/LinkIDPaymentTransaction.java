@@ -30,9 +30,12 @@ public class LinkIDPaymentTransaction implements Serializable {
     private final String            tokenPrettyPrint;
     private final LinkIDPaymentType tokenType;
 
+    private final String encodedApplicationMessage;
+
     public LinkIDPaymentTransaction(final String transactionId, final boolean payed, final double amount, final Currency currency,
                                     final String encodedDescription, final String profile, final Date created, final long applicationId,
-                                    final String applicationName, final String tokenId, final String tokenPrettyPrint, final LinkIDPaymentType tokenType) {
+                                    final String applicationName, final String tokenId, final String tokenPrettyPrint, final LinkIDPaymentType tokenType,
+                                    final String encodedApplicationMessage) {
 
         this.transactionId = transactionId;
 
@@ -47,6 +50,8 @@ public class LinkIDPaymentTransaction implements Serializable {
         this.tokenId = tokenId;
         this.tokenPrettyPrint = tokenPrettyPrint;
         this.tokenType = tokenType;
+
+        this.encodedApplicationMessage = encodedApplicationMessage;
     }
 
     public String getTransactionId() {
@@ -107,5 +112,10 @@ public class LinkIDPaymentTransaction implements Serializable {
     public LinkIDPaymentType getTokenType() {
 
         return tokenType;
+    }
+
+    public String getEncodedApplicationMessage() {
+
+        return encodedApplicationMessage;
     }
 }
