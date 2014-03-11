@@ -41,14 +41,14 @@ public class MobileLandingServlet extends AbstractConfidentialLinkIDInjectionSer
     private static final int QR_SIZE = 512;
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         delegate( request, response );
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         delegate( request, response );
@@ -76,7 +76,7 @@ public class MobileLandingServlet extends AbstractConfidentialLinkIDInjectionSer
                 throw new InternalInconsistencyException( e );
             }
         } else
-            throw new InternalInconsistencyException( "Bad response message" ); //TODO cleaner error handling
+            throw new InternalInconsistencyException( "Bad response message" );
     }
 
     protected void showCodeAndState(final HttpServletResponse response, String code, String state)

@@ -19,7 +19,7 @@ import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
 
 /**
  * Simple servlet to initiate logout
- *
+ * <p/>
  * User: sgdesmet
  * Date: 14/11/11
  * Time: 15:38
@@ -27,16 +27,16 @@ import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
 public class InitiateLogoutServlet extends AbstractLinkIDInjectionServlet {
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
 
         delegate( request, response );
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         delegate( request, response );
     }
 
@@ -44,6 +44,7 @@ public class InitiateLogoutServlet extends AbstractLinkIDInjectionServlet {
      * Checkout the wicket SDK LinkIDLogoutLink
      */
     public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
+
         String targetURI = request.getParameter( "return_uri" );
         boolean redirected = false;
         if (LoginManager.isAuthenticated( request.getSession() ))

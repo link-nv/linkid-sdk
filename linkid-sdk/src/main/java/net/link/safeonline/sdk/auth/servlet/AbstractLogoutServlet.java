@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.auth.servlet;
 import com.google.common.base.Function;
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -19,7 +20,6 @@ import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServle
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
-import net.link.util.servlet.annotation.Init;
 
 
 /**
@@ -39,11 +39,19 @@ public abstract class AbstractLogoutServlet extends AbstractConfidentialLinkIDIn
 
     public static final String ERROR_PAGE_PARAM = "ErrorPage";
 
-    @Init(name = ERROR_PAGE_PARAM, optional = true)
     private String errorPage;
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+    public void init(ServletConfig config)
+            throws ServletException {
+
+        super.init( config );
+
+        errorPage = config.getInitParameter( ERROR_PAGE_PARAM );
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         logger.dbg( "POST: %s", request.getParameterMap().keySet() );

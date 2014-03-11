@@ -14,6 +14,7 @@ import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyExc
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +25,6 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.Authorizati
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.MessageUtils;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.servlet.AbstractLinkIDInjectionServlet;
-import net.link.util.servlet.annotation.Init;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -43,33 +43,38 @@ public class MobileLinkingServlet extends AbstractLinkIDInjectionServlet {
 
     public static final String MOBILE_CLIENTID_PARAM = "clientId";
     public static final String LANDING_URL_PARAM     = "LandingURL";
-    public static final String ASK_STATE_PARAM       = "AskState";
     public static final String MODE_PARAM            = "LoginMode";
 
-    @Init(name = MOBILE_CLIENTID_PARAM, optional = false)
     private String clientId;
 
     /**
      * Path of {@code MobileLandingServlet}
      */
-    @Init(name = LANDING_URL_PARAM, optional = false)
     private String landingURL;
-
-    @Init(name = ASK_STATE_PARAM, optional = true, defaultValue = "false")
-    private String askState;
-
-    @Init(name = MODE_PARAM, optional = true, defaultValue = "FRAMED")
     private String loginMode;
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+    public void init(ServletConfig config)
+            throws ServletException {
+
+        super.init( config );
+
+        clientId = config.getInitParameter( MOBILE_CLIENTID_PARAM );
+        landingURL = config.getInitParameter( LANDING_URL_PARAM );
+        loginMode = config.getInitParameter( MODE_PARAM );
+        if (null == loginMode)
+            loginMode = "FRAMED";
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         delegate( response );
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         delegate( response );
@@ -88,8 +93,6 @@ public class MobileLinkingServlet extends AbstractLinkIDInjectionServlet {
 
         if (landingURL == null || landingURL.length() == 0)
             throw new InternalInconsistencyException( "LandingURL parameter must be set" );
-
-        //TODO ask for state
 
         try {
             sendOAuthRequestMessage( response, null );

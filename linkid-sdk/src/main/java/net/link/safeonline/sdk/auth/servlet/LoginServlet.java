@@ -11,6 +11,7 @@ import com.google.common.base.Function;
 import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import net.link.safeonline.sdk.api.auth.LoginMode;
@@ -23,7 +24,6 @@ import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServle
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
-import net.link.util.servlet.annotation.Init;
 
 
 /**
@@ -38,21 +38,29 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
     public static final String ERROR_PAGE_PARAM   = "ErrorPage";
     public static final String TIMEOUT_PAGE_PARAM = "TimeoutPage";
 
-    @Init(name = ERROR_PAGE_PARAM, optional = true)
     private String errorPage;
 
-    @Init(name = TIMEOUT_PAGE_PARAM, optional = true)
     private String timeoutPage;
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+    public void init(ServletConfig config)
+            throws ServletException {
+
+        super.init( config );
+
+        errorPage = config.getInitParameter( ERROR_PAGE_PARAM );
+        timeoutPage = config.getInitParameter( TIMEOUT_PAGE_PARAM );
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         handleLanding( request, response );
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         handleLanding( request, response );
@@ -158,10 +166,12 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
     }
 
     public String getErrorPage() {
+
         return errorPage;
     }
 
     public String getTimeoutPage() {
+
         return timeoutPage;
     }
 }

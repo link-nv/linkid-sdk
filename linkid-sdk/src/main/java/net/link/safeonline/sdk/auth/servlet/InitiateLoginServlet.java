@@ -32,14 +32,14 @@ import org.jetbrains.annotations.Nullable;
 public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         delegate( request, response );
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         delegate( request, response );
