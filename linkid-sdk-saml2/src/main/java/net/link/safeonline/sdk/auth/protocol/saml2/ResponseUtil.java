@@ -125,7 +125,7 @@ public abstract class ResponseUtil {
         // validate signature
         CertificateChain certificateChain = Saml2Utils.validateSignature( authnResponse.getSignature(), request, trustedCertificates );
 
-        if (null != trustedCertificates && !trustedCertificates.isEmpty() && null != authnResponse.getSignature() && null != certificateChain) {
+        if ((null == trustedCertificates || trustedCertificates.isEmpty()) && null != authnResponse.getSignature() && null != certificateChain) {
             // validate using XKMS v2.0
             try {
                 LinkIDServiceFactory.getXkms2Client().validate( certificateChain.toArray() );
