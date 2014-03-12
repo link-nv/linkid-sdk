@@ -50,13 +50,13 @@ public class MockSAMLHttpServletRequest extends HttpServletRequestWrapper {
         this.requestURL = requestURL;
 
         try {
-            logger.dbg( "querystring   : " + queryString );
+            logger.dbg( "querystring  %s : ", queryString );
             for (String queryParameter : queryString.split( "&" )) {
-                logger.dbg( " - queryparam : " + queryParameter );
+                logger.dbg( " - queryparam : %s", queryParameter );
 
                 String[] kv = queryParameter.split( "=", 2 );
-                logger.dbg( " - - key      : " + kv[0] );
-                logger.dbg( " - - value    : " + kv[1] );
+                logger.dbg( " - - key      : %s", kv[0] );
+                logger.dbg( " - - value    : %s", kv[1] );
 
                 parameters.put( URLDecoder.decode( kv[0], "UTF-8" ), URLDecoder.decode( kv[1], "UTF-8" ) );
             }
