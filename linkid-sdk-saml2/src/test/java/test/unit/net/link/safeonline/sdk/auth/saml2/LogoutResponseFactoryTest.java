@@ -20,8 +20,6 @@ import net.link.util.common.DomUtils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
 import org.opensaml.saml2.core.LogoutResponse;
@@ -29,8 +27,6 @@ import org.w3c.dom.*;
 
 
 public class LogoutResponseFactoryTest {
-
-    private static final Log LOG = LogFactory.getLog( LogoutResponseFactoryTest.class );
 
     @Test
     public void createLogoutResponse()
@@ -43,16 +39,12 @@ public class LogoutResponseFactoryTest {
         KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
 
         // Test
-        long begin = System.currentTimeMillis();
         LogoutProtocolRequestContext logoutRequest = new LogoutProtocolRequestContext( inResponseTo, null, null, null, null );
         LogoutResponse samlLogoutResponse = LogoutResponseFactory.createLogoutResponse( false, logoutRequest, issuerName, destination );
-        String samlLogoutResponseToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutResponse, signerKeyPair, null ));
-        long end = System.currentTimeMillis();
+        String samlLogoutResponseToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutResponse, signerKeyPair, null ) );
 
         // Verify
         assertNotNull( samlLogoutResponseToken );
-        LOG.debug( "duration: " + (end - begin) + " ms" );
-        LOG.debug( "result message: " + samlLogoutResponseToken );
         File tmpFile = File.createTempFile( "saml-response-", ".xml" );
         FileOutputStream tmpOutput = new FileOutputStream( tmpFile );
         IOUtils.write( samlLogoutResponseToken, tmpOutput );

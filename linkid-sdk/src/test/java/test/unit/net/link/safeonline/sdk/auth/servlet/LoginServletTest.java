@@ -23,8 +23,6 @@ import net.link.safeonline.sdk.configuration.*;
 import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.easymock.EasyMock;
 import org.junit.*;
@@ -36,8 +34,6 @@ import org.w3c.tidy.Tidy;
 public class LoginServletTest {
 
     private ServletTestManager servletTestManager;
-
-    private static final Log LOG = LogFactory.getLog( LoginServletTest.class );
 
     private String                           servletLocation;
     private ProtocolHandler                  mockProtocolHandler;
@@ -77,7 +73,6 @@ public class LoginServletTest {
 
         // Setup Data
         contexts.clear();
-        LOG.debug( "servlet location: " + servletLocation );
 
         // Test
         HttpClient httpClient = new HttpClient();
@@ -85,7 +80,6 @@ public class LoginServletTest {
         int statusCode = httpClient.executeMethod( getMethod );
 
         // Verify
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpServletResponse.SC_BAD_REQUEST, statusCode );
         InputStream resultStream = getMethod.getResponseBodyAsStream();
 
@@ -93,7 +87,6 @@ public class LoginServletTest {
         tidy.setQuiet( true );
         tidy.setShowWarnings( false );
         Document resultDocument = tidy.parseDOM( resultStream, null );
-        LOG.debug( "result document: " + DomTestUtils.domToString( resultDocument ) );
         Node h1Node = XPathAPI.selectSingleNode( resultDocument, "//h1/text()" );
         assertNotNull( h1Node );
         assertEquals( "Error(s)", h1Node.getNodeValue() );
@@ -104,6 +97,7 @@ public class LoginServletTest {
             throws Exception {
 
         // Setup Mocks
+        //noinspection unchecked
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) EasyMock.anyObject(),
                 (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( null );
         replay( mockProtocolHandler );
@@ -115,10 +109,7 @@ public class LoginServletTest {
 
         // Verify
         verify( mockProtocolHandler );
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpServletResponse.SC_BAD_REQUEST, statusCode );
-        String responseBody = getMethod.getResponseBodyAsString();
-        LOG.debug( "response body: " + responseBody );
     }
 
     @Test
@@ -127,7 +118,6 @@ public class LoginServletTest {
             throws Exception {
 
         // Setup Data
-        LOG.debug( "servlet location: " + servletLocation );
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
@@ -147,10 +137,7 @@ public class LoginServletTest {
 
         // Verify
         verify( mockProtocolHandler );
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode );
-        String responseBody = getMethod.getResponseBodyAsString();
-        LOG.debug( "response body: " + responseBody );
         String resultUserId = (String) servletTestManager.getSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE );
         assertEquals( userId, resultUserId );
         List<String> resultAuthenticatedDevices = (List<String>) servletTestManager.getSessionAttribute( LoginManager.AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );

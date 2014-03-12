@@ -10,13 +10,9 @@ package test.unit.net.link.safeonline.ws.data;
 import junit.framework.TestCase;
 import liberty.dst._2006_08.ref.safe_online.DataService;
 import net.link.safeonline.ws.data.DataServiceFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 public class DataServiceFactoryTest extends TestCase {
-
-    private static final Log LOG = LogFactory.getLog( DataServiceFactoryTest.class );
 
     public void testNewInstance()
             throws Exception {
@@ -26,6 +22,5 @@ public class DataServiceFactoryTest extends TestCase {
 
         // Verify
         assertNotNull( result );
-        LOG.debug( "result service name: " + result.getServiceName() );
     }
 }

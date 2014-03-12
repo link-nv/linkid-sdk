@@ -13,6 +13,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,8 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.exceptions.OAuthInvalidMessageException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.*;
 import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -36,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class MobileLandingServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
-    private static final Log LOG = LogFactory.getLog( MobileLandingServlet.class );
+    private static final Logger logger = Logger.get( MobileLandingServlet.class );
 
     private static final int QR_SIZE = 512;
 
@@ -95,7 +94,7 @@ public class MobileLandingServlet extends AbstractConfidentialLinkIDInjectionSer
 
     private static BitMatrix generateQRCode(final String qrCodeContent) {
 
-        LOG.debug( "generate QR code: content=" + qrCodeContent );
+        logger.dbg( "generate QR code: content=%s", qrCodeContent );
 
         QRCodeWriter writer = new QRCodeWriter();
         try {

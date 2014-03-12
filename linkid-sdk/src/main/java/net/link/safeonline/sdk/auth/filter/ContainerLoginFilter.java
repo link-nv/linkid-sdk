@@ -7,16 +7,15 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
  * Servlet container filter that sets the servlet container user principal according to the SafeOnline authenticated user.
- *
+ * <p/>
  * <p>
  * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
  * </p>
@@ -25,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ContainerLoginFilter implements Filter {
 
-    private static final Log LOG = LogFactory.getLog( ContainerLoginFilter.class );
+    private static final Logger logger = Logger.get( ContainerLoginFilter.class );
 
     private static final String ALREADY_PROCESSED = ContainerLoginFilter.class.getName() + ".ALREADY_PROCESSED";
 
@@ -42,7 +41,7 @@ public class ContainerLoginFilter implements Filter {
             request.setAttribute( ALREADY_PROCESSED, Boolean.TRUE );
 
             String userId = LoginManager.findUserId( httpRequest.getSession() );
-            LOG.debug( "setting servlet container user principal to " + userId );
+            logger.dbg( "setting servlet container user principal to %s", userId );
 
             request = new LoginHttpServletRequestWrapper( httpRequest, userId );
         }

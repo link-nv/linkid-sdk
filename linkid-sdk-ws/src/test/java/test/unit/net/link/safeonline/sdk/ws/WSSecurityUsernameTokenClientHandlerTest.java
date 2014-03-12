@@ -19,9 +19,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
-import net.link.util.ws.security.username.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
 import org.junit.Before;
@@ -31,8 +30,6 @@ import org.w3c.dom.Node;
 
 
 public class WSSecurityUsernameTokenClientHandlerTest {
-
-    private static final Log LOG = LogFactory.getLog( WSSecurityUsernameTokenClientHandlerTest.class );
 
     private WSSecurityUsernameTokenHandler testedInstance;
     private final String username = "foo";
@@ -84,7 +81,6 @@ public class WSSecurityUsernameTokenClientHandlerTest {
         // Verify
         SOAPMessage resultMessage = soapMessageContext.getMessage();
         SOAPPart resultSoapPart = resultMessage.getSOAPPart();
-        LOG.debug( "result SOAP part: " + DomTestUtils.domToString( resultSoapPart ) );
 
         Element nsElement = resultSoapPart.createElement( "nsElement" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
@@ -261,7 +257,6 @@ public class WSSecurityUsernameTokenClientHandlerTest {
         // Verify
         SOAPMessage resultMessage = soapMessageContext.getMessage();
         SOAPPart resultSoapPart = resultMessage.getSOAPPart();
-        LOG.debug( "result SOAP part: " + DomTestUtils.domToString( resultSoapPart ) );
 
         Element nsElement = resultSoapPart.createElement( "nsElement" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );

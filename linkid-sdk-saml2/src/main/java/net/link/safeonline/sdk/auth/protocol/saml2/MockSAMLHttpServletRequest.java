@@ -7,16 +7,12 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequestWrapper;
 import net.link.util.common.DummyServletRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -30,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class MockSAMLHttpServletRequest extends HttpServletRequestWrapper {
 
-    private static final Log LOG = LogFactory.getLog( MockSAMLHttpServletRequest.class );
+    private static final Logger logger = Logger.get( MockSAMLHttpServletRequest.class );
 
     private final Map<String, String> parameters;
 
@@ -54,13 +50,13 @@ public class MockSAMLHttpServletRequest extends HttpServletRequestWrapper {
         this.requestURL = requestURL;
 
         try {
-            LOG.debug( "querystring   : " + queryString );
+            logger.dbg( "querystring   : " + queryString );
             for (String queryParameter : queryString.split( "&" )) {
-                LOG.debug( " - queryparam : " + queryParameter );
+                logger.dbg( " - queryparam : " + queryParameter );
 
                 String[] kv = queryParameter.split( "=", 2 );
-                LOG.debug( " - - key      : " + kv[0] );
-                LOG.debug( " - - value    : " + kv[1] );
+                logger.dbg( " - - key      : " + kv[0] );
+                logger.dbg( " - - value    : " + kv[1] );
 
                 parameters.put( URLDecoder.decode( kv[0], "UTF-8" ), URLDecoder.decode( kv[1], "UTF-8" ) );
             }

@@ -25,8 +25,6 @@ import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
 import net.link.util.ws.security.x509.AbstractWSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
 import org.junit.Before;
@@ -36,8 +34,6 @@ import org.w3c.dom.Node;
 
 
 public class WSSecurityClientHandlerTest {
-
-    private static final Log LOG = LogFactory.getLog( WSSecurityClientHandlerTest.class );
 
     private WSSecurityX509TokenHandler testedInstance;
 
@@ -88,7 +84,6 @@ public class WSSecurityClientHandlerTest {
         // Verify
         SOAPMessage resultMessage = soapMessageContext.getMessage();
         SOAPPart resultSoapPart = resultMessage.getSOAPPart();
-        LOG.debug( "result SOAP part: " + DomTestUtils.domToString( resultSoapPart ) );
 
         Element nsElement = resultSoapPart.createElement( "nsElement" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/" );
@@ -96,8 +91,7 @@ public class WSSecurityClientHandlerTest {
                 "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" );
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#" );
 
-        Node resultNode = XPathAPI.selectSingleNode( resultSoapPart, "/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']",
-                nsElement );
+        Node resultNode = XPathAPI.selectSingleNode( resultSoapPart, "/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']", nsElement );
         assertNotNull( resultNode );
 
         resultNode = XPathAPI.selectSingleNode( resultSoapPart,
@@ -116,8 +110,7 @@ public class WSSecurityClientHandlerTest {
 
         // Setup data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/test-ws-security-invalid-message.xml" );
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-ws-security-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );

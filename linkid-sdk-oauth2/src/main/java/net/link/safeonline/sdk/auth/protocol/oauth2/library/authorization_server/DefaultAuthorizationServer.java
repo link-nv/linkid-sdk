@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.oauth2.library.authorization_server;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.Serializable;
 import java.util.*;
@@ -18,8 +19,6 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.data.services.Client
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.data.services.ClientConfigurationStore;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.exceptions.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -33,10 +32,9 @@ public class DefaultAuthorizationServer implements Serializable {
 
     protected TokenGenerator codeGenerator;
 
-    static final Log LOG = LogFactory.getLog( DefaultAuthorizationServer.class );
+    private static final Logger logger = Logger.get( DefaultAuthorizationServer.class );
 
-    public DefaultAuthorizationServer(final ClientConfigurationStore clientConfigurationStore,
-                                      final ClientAccessRequestService clientAccessRequestService) {
+    public DefaultAuthorizationServer(final ClientConfigurationStore clientConfigurationStore, final ClientAccessRequestService clientAccessRequestService) {
 
         this.clientConfigurationStore = clientConfigurationStore;
         this.clientAccessRequestService = clientAccessRequestService;
@@ -96,7 +94,7 @@ public class DefaultAuthorizationServer implements Serializable {
     public String initFlow(AuthorizationRequest authRequest)
             throws OAuthException {
 
-        LOG.debug( "init a authorization code or implicit flow" );
+        logger.dbg( "init a authorization code or implicit flow" );
         ClientConfiguration client;
         if (authRequest.getClientId() == null)
             throw new OAuthInvalidMessageException( "Missing client_id" );
@@ -122,8 +120,8 @@ public class DefaultAuthorizationServer implements Serializable {
                 requestFlowType = ClientConfiguration.FlowType.IMPLICIT;
                 break;
         }
-        String validatedURI = MessageUtils.stringEmpty( authRequest.getRedirectUri() )? null
-                : authRequest.getRedirectUri(); //don't store empty string as redirection uri
+        String validatedURI =
+                MessageUtils.stringEmpty( authRequest.getRedirectUri() )? null: authRequest.getRedirectUri(); //don't store empty string as redirection uri
         return clientAccessRequestService.create( client, requestFlowType, authRequest.getScope(), authRequest.getState(), validatedURI );
     }
 
@@ -133,7 +131,7 @@ public class DefaultAuthorizationServer implements Serializable {
     public void setUserIdentity(String clientAccessId, String userId)
             throws ClientAccessRequestNotFoundException {
 
-        LOG.debug( "set user identity for flow instance " + clientAccessId );
+        logger.dbg( "set user identity for flow instance %s", clientAccessId );
         clientAccessRequestService.setUser( clientAccessId, userId );
     }
 
@@ -148,7 +146,7 @@ public class DefaultAuthorizationServer implements Serializable {
     public void setAuthorizationResult(String clientAccessId, boolean authorized, List<String> approvedScope, @Nullable Date expireTime)
             throws OAuthException {
 
-        LOG.debug( "set user authorization result for flow instance " + clientAccessId );
+        logger.dbg( "set user authorization result for flow instance %s", clientAccessId );
         clientAccessRequestService.setAuthorizationResult( clientAccessId, authorized, approvedScope, expireTime );
 
         if (authorized) {
@@ -164,8 +162,7 @@ public class DefaultAuthorizationServer implements Serializable {
                     break;
                 case IMPLICIT:
                     if (MessageUtils.collectionEmpty( clientAccessRequest.getAccessTokens() ))
-                        clientAccessRequestService.addToken( clientAccessRequest.getId(),
-                                codeGenerator.createAccessToken( clientAccessRequest ) );
+                        clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createAccessToken( clientAccessRequest ) );
                     else
                         throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "more than one access token for implicit flow" );
                     break;
@@ -184,12 +181,11 @@ public class DefaultAuthorizationServer implements Serializable {
     public ResponseMessage getAuthorizationResponseMessage(String clientAccessId)
             throws OAuthException {
 
-        LOG.debug( "get authorization response message for flow instance " + clientAccessId );
+        logger.dbg( "get authorization response message for flow instance %s", clientAccessId );
         ClientAccessRequest clientAccessRequest = clientAccessRequestService.getClientAccessRequest( clientAccessId );
 
         if (!clientAccessRequest.isGranted()) {
-            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null,
-                    clientAccessRequest.getState() );
+            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null, clientAccessRequest.getState() );
         }
 
         switch (clientAccessRequest.getFlowType()) {
@@ -219,8 +215,7 @@ public class DefaultAuthorizationServer implements Serializable {
     public ErrorResponse getErrorMessage(Exception exception) {
 
         if (exception instanceof OAuthAuthorizationException) {
-            return new CredentialsRequiredResponse( ((OAuthAuthorizationException) exception).getErrorType(), exception.getMessage(), null,
-                    null );
+            return new CredentialsRequiredResponse( ((OAuthAuthorizationException) exception).getErrorType(), exception.getMessage(), null, null );
         } else if (exception instanceof OAuthException) {
             return new ErrorResponse( ((OAuthException) exception).getErrorType(), exception.getMessage(), null, null );
         } else {
@@ -236,7 +231,7 @@ public class DefaultAuthorizationServer implements Serializable {
     public String initOrResumeFlow(AccessTokenRequest accessTokenRequest)
             throws OAuthException {
 
-        LOG.debug( "resume or init flow instance" );
+        logger.dbg( "resume or init flow instance" );
 
         // can't continue without knowing grant type
         if (accessTokenRequest.getGrantType() == null)
@@ -255,8 +250,7 @@ public class DefaultAuthorizationServer implements Serializable {
         ClientAccessRequest clientAccessRequest = null;
         switch (accessTokenRequest.getGrantType()) {
             case AUTHORIZATION_CODE:
-                clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken(
-                        new CodeToken( accessTokenRequest.getCode(), null ) );
+                clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken( new CodeToken( accessTokenRequest.getCode(), null ) );
                 break;
             case REFRESH_TOKEN:
                 clientAccessRequest = clientAccessRequestService.findClientAccessRequestByToken(
@@ -288,14 +282,12 @@ public class DefaultAuthorizationServer implements Serializable {
                     CodeToken code = clientAccessRequest.getAuthorizationCode();
                     code.setInvalid( true );
                     clientAccessRequestService.setAuthorizationCode( clientAccessRequest.getId(), code );
-                    clientAccessRequestService.addToken( clientAccessRequest.getId(),
-                            codeGenerator.createAccessToken( clientAccessRequest ) );
+                    clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createAccessToken( clientAccessRequest ) );
                     if (client.isIncludeRefreshToken())
-                        clientAccessRequestService.addToken( clientAccessRequest.getId(),
-                                codeGenerator.createRefreshToken( clientAccessRequest ) );
+                        clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createRefreshToken( clientAccessRequest ) );
                 }
                 catch (ClientAccessRequestNotFoundException e) {
-                    LOG.error( e );
+                    logger.err( e, e.getMessage() );
                     throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
                 }
                 break;
@@ -308,14 +300,12 @@ public class DefaultAuthorizationServer implements Serializable {
                         clientAccessRequestService.invalidateToken( clientAccessRequest.getId(), accessToken );
                     }
 
-                    clientAccessRequestService.addToken( clientAccessRequest.getId(),
-                            codeGenerator.createAccessToken( clientAccessRequest ) );
+                    clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createAccessToken( clientAccessRequest ) );
                     if (client.isIncludeRefreshToken())
-                        clientAccessRequestService.addToken( clientAccessRequest.getId(),
-                                codeGenerator.createRefreshToken( clientAccessRequest ) );
+                        clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createRefreshToken( clientAccessRequest ) );
                 }
                 catch (ClientAccessRequestNotFoundException e) {
-                    LOG.error( e );
+                    logger.err( e, e.getMessage() );
                     throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
                 }
 
@@ -327,11 +317,10 @@ public class DefaultAuthorizationServer implements Serializable {
                         clientAccessRequestService.invalidateToken( clientAccessRequest.getId(), accessToken );
                     }
 
-                    clientAccessRequestService.addToken( clientAccessRequest.getId(),
-                            codeGenerator.createAccessToken( clientAccessRequest ) );
+                    clientAccessRequestService.addToken( clientAccessRequest.getId(), codeGenerator.createAccessToken( clientAccessRequest ) );
                 }
                 catch (ClientAccessRequestNotFoundException e) {
-                    LOG.error( e );
+                    logger.err( e, e.getMessage() );
                     throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "internal server error" );
                 }
                 break;
@@ -352,12 +341,11 @@ public class DefaultAuthorizationServer implements Serializable {
         ClientAccessRequest clientAccessRequest = clientAccessRequestService.getClientAccessRequest( clientAccessId );
 
         if (!clientAccessRequest.isGranted()) {
-            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null,
-                    clientAccessRequest.getState() );
+            return new ErrorResponse( OAuth2Message.ErrorType.ACCESS_DENIED, "Resource owner refused authorization", null, clientAccessRequest.getState() );
         }
 
         if (MessageUtils.collectionEmpty( clientAccessRequest.getAccessTokens() )) {
-            LOG.error( "No access tokens found at this stage, but they should be here. Did you call this methods at the correct time?" );
+            logger.err( "No access tokens found at this stage, but they should be here. Did you call this methods at the correct time?" );
             throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "no access token available" );
         }
 
@@ -366,19 +354,14 @@ public class DefaultAuthorizationServer implements Serializable {
         RefreshToken refreshToken = MessageUtils.collectionEmpty( clientAccessRequest.getRefreshTokens() )? null
                 : clientAccessRequest.getRefreshTokens().get( clientAccessRequest.getRefreshTokens().size() - 1 );
         if (!accessToken.isInvalid() && accessToken.getExpirationDate().after( new Date() )) {
-            response.setAccessToken(
-                    clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getTokenData() );
-            long expiresIn = clientAccessRequest.getAccessTokens()
-                                                .get( clientAccessRequest.getAccessTokens().size() - 1 )
-                                                .getExpirationDate()
-                                                .getTime() - new Date().getTime();
+            response.setAccessToken( clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getTokenData() );
+            long expiresIn = clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getExpirationDate().getTime()
+                             - new Date().getTime();
             expiresIn /= 1000; //need seconds
             response.setExpiresIn( expiresIn );
-            response.setTokenType(
-                    clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getAccessTokenType() );
+            response.setTokenType( clientAccessRequest.getAccessTokens().get( clientAccessRequest.getAccessTokens().size() - 1 ).getAccessTokenType() );
         } else {
-            LOG.error(
-                    "No valid access tokens found at this stage, but they should be here. Did you call this methods at the correct time?" );
+            logger.err( "No valid access tokens found at this stage, but they should be here. Did you call this methods at the correct time?" );
             throw new OAuthException( OAuth2Message.ErrorType.SERVER_ERROR, "no access token available" );
         }
         if (null != refreshToken && !refreshToken.isInvalid() && refreshToken.getExpirationDate().after( new Date() ))

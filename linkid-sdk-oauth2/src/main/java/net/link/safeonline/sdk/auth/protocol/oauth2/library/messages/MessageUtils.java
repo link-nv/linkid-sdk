@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.library.messages;
 
 import com.google.gson.*;
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.util.StringUtils;
 import java.io.*;
 import java.net.*;
@@ -22,8 +23,6 @@ import net.link.safeonline.sdk.auth.protocol.oauth2.library.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.data.objects.ClientConfiguration;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.exceptions.OAuthException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.exceptions.OAuthInvalidMessageException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.util.encoders.Base64;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,15 +36,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MessageUtils {
 
-    private static final Log LOG = LogFactory.getLog( MessageUtils.class );
+    private static final Logger logger = Logger.get( MessageUtils.class );
 
     private static final Gson gson;
 
     static {
         GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping().setFieldNamingPolicy( FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES );
 
-        if (LOG.isDebugEnabled())
-            gsonBuilder.setPrettyPrinting();
+        gsonBuilder.setPrettyPrinting();
 
         gson = gsonBuilder.create();
     }
@@ -164,7 +162,7 @@ public class MessageUtils {
     public static ValidationRequest getValidationMessage(final HttpServletRequest request)
             throws OAuthException {
 
-        LOG.debug( "get access token" );
+        logger.dbg( "get access token" );
         // do some validation of the http connection
         validateHttpRequest( request );
         // just to be sure
@@ -226,7 +224,7 @@ public class MessageUtils {
         servletResponse.setHeader( "Pragma", "no-cache" );
 
         if (responseMessage instanceof AuthorizationCodeResponse) {
-            LOG.error( "Authorization codes must be returned by redirect" );
+            logger.err( "Authorization codes must be returned by redirect" );
             return;
         } else if (responseMessage instanceof AccessTokenResponse) {
             gson.toJson( (AccessTokenResponse) responseMessage, servletResponse.getWriter() );
@@ -259,7 +257,7 @@ public class MessageUtils {
         List<String> names = new ArrayList<String>();
         List<Object> values = new ArrayList<Object>();
         if (responseMessage instanceof ValidationResponse) {
-            LOG.error( "Access token validations cannot be returned by redirect" );
+            logger.err( "Access token validations cannot be returned by redirect" );
         } else if (responseMessage instanceof AuthorizationCodeResponse) {
 
             AuthorizationCodeResponse authorizationCodeResponse = (AuthorizationCodeResponse) responseMessage;
@@ -374,7 +372,7 @@ public class MessageUtils {
                 @Override
                 public boolean verify(final String s, final SSLSession sslSession) {
 
-                    LOG.warn( "Warning: URL Host: " + s + " vs. " + sslSession.getPeerHost() );
+                    logger.wrn( "Warning: URL Host: " + s + " vs. " + sslSession.getPeerHost() );
                     return true;
                 }
             } );
@@ -408,7 +406,7 @@ public class MessageUtils {
             contentWriter = new PrintWriter( connection.getOutputStream() );
             contentWriter.write( content );
         } else {
-            LOG.error( "Unsupported message type: " + requestMessage.getClass().getName() );
+            logger.err( "Unsupported message type: " + requestMessage.getClass().getName() );
             return null;
         }
         contentWriter.close();
@@ -469,7 +467,7 @@ public class MessageUtils {
             values.add( stringify( authorizationRequest.getScope() ) );
             values.add( authorizationRequest.getState() );
         } else {
-            LOG.error( "This message type is not supported in a redirect" );
+            logger.err( "This message type is not supported in a redirect" );
             return;
         }
 
@@ -504,7 +502,7 @@ public class MessageUtils {
     protected static void validateHttpRequest(HttpServletRequest request)
             throws OAuthInvalidMessageException {
 
-        LOG.debug( "checking http for TLS and correct methods" );
+        logger.dbg( "checking http for TLS and correct methods" );
 
         String xForwardedProto = request.getHeader( "X-Forwarded-Proto" );
         if (request.getScheme().toLowerCase().equals( HttpScheme.HTTPS ) || !StringUtils.isEmpty( xForwardedProto ) && xForwardedProto.contains(
@@ -515,7 +513,7 @@ public class MessageUtils {
                 throw new OAuthInvalidMessageException( String.format( "invalid http method type: %s", request.getMethod() ) );
             }
         } else {
-            LOG.warn( String.format( "TLS is recommended: request.scheme=%s,  X-Forwarded-Proto=%s", request.getScheme(),
+            logger.wrn( String.format( "TLS is recommended: request.scheme=%s,  X-Forwarded-Proto=%s", request.getScheme(),
                     request.getHeader( "X-Forwarded-Proto" ) ) );
         }
     }
@@ -529,7 +527,7 @@ public class MessageUtils {
                 credentials = new String( Base64.encode( String.format( "%s:%s", clientId, clientSecret ).getBytes( "UTF-8" ) ), "UTF-8" );
             }
             catch (UnsupportedEncodingException e) {
-                LOG.error( e );
+                logger.err( e, e.getMessage() );
             }
             return credentials;
         }
@@ -549,7 +547,7 @@ public class MessageUtils {
     protected static String encodeInURL(String redirectUri, List<String> names, List<Object> values, char symbol) {
 
         if (names.size() != names.size()) {
-            LOG.error( "names and values lists are not equal size" );
+            logger.err( "names and values lists are not equal size" );
             return "";
         }
 
@@ -572,7 +570,7 @@ public class MessageUtils {
                 sb.append( String.format( "%s%s=%s", symbol, URLEncoder.encode( name, "UTF-8" ), URLEncoder.encode( value, "UTF-8" ) ) );
             }
             catch (UnsupportedEncodingException e) {
-                LOG.error( e );
+                logger.err( e, e.getMessage() );
             }
         }
     }
@@ -599,7 +597,7 @@ public class MessageUtils {
         // okay, i'll be the first to admit that this method looks positively nasty. I'll get round to improving it, promise
 
         if (names.size() != names.size()) {
-            LOG.error( "names and values lists are not equal size" );
+            logger.err( "names and values lists are not equal size" );
             return "";
         }
 
@@ -651,8 +649,6 @@ public class MessageUtils {
 
     public static class OAuthCustomTrustManager implements X509TrustManager {
 
-        private static final Log LOG = LogFactory.getLog( OAuthCustomTrustManager.class );
-
         private final X509Certificate serverCertificate;
 
         private X509TrustManager defaultTrustManager;
@@ -697,7 +693,7 @@ public class MessageUtils {
         public void checkClientTrusted(X509Certificate[] chain, String authType)
                 throws CertificateException {
 
-            LOG.error( "checkClientTrusted" );
+            logger.err( "checkClientTrusted" );
             if (null != defaultTrustManager) {
                 defaultTrustManager.checkClientTrusted( chain, authType );
             }
@@ -707,10 +703,10 @@ public class MessageUtils {
         public void checkServerTrusted(X509Certificate[] chain, String authType)
                 throws CertificateException {
 
-            LOG.debug( "check server trusted" );
-            LOG.debug( "auth type: " + authType );
+            logger.dbg( "check server trusted" );
+            logger.dbg( "auth type: " + authType );
             if (null == serverCertificate) {
-                LOG.debug( "trusting all server certificates" );
+                logger.dbg( "trusting all server certificates" );
                 return;
             }
             if (!serverCertificate.equals( chain[0] )) {
@@ -722,7 +718,7 @@ public class MessageUtils {
         @Override
         public X509Certificate[] getAcceptedIssuers() {
 
-            LOG.error( "getAcceptedIssuers" );
+            logger.err( "getAcceptedIssuers" );
             if (null == defaultTrustManager) {
                 return null;
             }

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.util;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +15,6 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.LogoutContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,12 +26,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class AuthenticationUtils {
 
-    private static final Log LOG = LogFactory.getLog( AuthenticationUtils.class );
+    private static final Logger logger = Logger.get( AuthenticationUtils.class );
 
     /**
      * Initiates linkID authentication by redirecting the user to the linkID authentication application.
      */
-    public static void login( HttpServletRequest request,  HttpServletResponse response) {
+    public static void login(HttpServletRequest request, HttpServletResponse response) {
 
         login( request, response, new AuthenticationContext() );
     }
@@ -42,13 +41,13 @@ public abstract class AuthenticationUtils {
      *
      * @param context The authentication context can be used to configure the parameters of this authentication request in detail.
      */
-    public static void login(HttpServletRequest request, HttpServletResponse response,
-                             @NotNull AuthenticationContext context) {
+    public static void login(HttpServletRequest request, HttpServletResponse response, @NotNull AuthenticationContext context) {
 
         try {
             ProtocolManager.initiateAuthentication( request, response, context );
-            LOG.debug( "executed protocol" );
-        } catch (IOException e) {
+            logger.dbg( "executed protocol" );
+        }
+        catch (IOException e) {
             throw new RuntimeException( "could not initiate authentication", e );
         }
     }
@@ -73,7 +72,7 @@ public abstract class AuthenticationUtils {
      * <p>
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
      * </p>
-     *
+     * <p/>
      * Performs a SafeOnline logout using the SafeOnline authentication web application.
      *
      * @param request  The servlet request is used to access servlet configuration information.
@@ -95,14 +94,16 @@ public abstract class AuthenticationUtils {
         /* Initialize and execute the authentication protocol. */
         try {
             ProtocolManager.initiateLogout( request, response, userId, context );
-            LOG.debug( "executed protocol" );
-        } catch (IOException e) {
+            logger.dbg( "executed protocol" );
+        }
+        catch (IOException e) {
             throw new RuntimeException( "could not initiate logout", e );
         }
 
         return true;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static String getDeviceIdentifier(String deviceAuthnContextClass, String deviceId) {
 
         return deviceAuthnContextClass + ":" + deviceId;

@@ -26,8 +26,6 @@ import net.link.safeonline.sdk.auth.filter.JAASLoginFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.configuration.TestConfigHolder;
 import net.link.util.test.session.JaasTestUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,28 +66,21 @@ public class JAASLoginFilterTest {
 
     public static class TestLoginModule implements LoginModule {
 
-        private static final Log LOG = LogFactory.getLog( TestLoginModule.class );
-
         public TestLoginModule() {
 
-            LOG.debug( "constructor" );
         }
 
         public boolean abort() {
 
-            LOG.debug( "abort" );
             return true;
         }
 
         public boolean commit() {
 
-            LOG.debug( "commit" );
             return true;
         }
 
         public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
-
-            LOG.debug( "initialize" );
 
             NameCallback nameCallback = new NameCallback( "name" );
 
@@ -105,19 +96,16 @@ public class JAASLoginFilterTest {
             }
 
             String name = nameCallback.getName();
-            LOG.debug( "name: " + name );
             assertNotNull( name );
         }
 
         public boolean login() {
 
-            LOG.debug( "login" );
             return true;
         }
 
         public boolean logout() {
 
-            LOG.debug( "logout" );
             return true;
         }
     }
@@ -142,8 +130,7 @@ public class JAASLoginFilterTest {
         // expectation
         mockHttpServletRequest.setAttribute( EasyMock.eq( JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB ), EasyMock.anyObject() );
         LoginContext mockLoginContext = createMock( LoginContext.class );
-        expect( mockHttpServletRequest.getAttribute( JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB ) ).andStubReturn(
-                mockLoginContext );
+        expect( mockHttpServletRequest.getAttribute( JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB ) ).andStubReturn( mockLoginContext );
 
         mockLoginContext.logout();
 

@@ -188,6 +188,7 @@
                                         <exclude>xom:xom</exclude>
                                         <!-- We use bridges to SLF4J instead --><!-- Libraries depending on logging implementations is evil anyway -->
                                         <exclude>commons-logging:commons-logging</exclude>
+                                        <exclude>commons-logging:commons-logging-api</exclude>
                                         <exclude>log4j:log4j</exclude>
                                         <exclude>net.lin-k.util:util-j2ee-jboss4</exclude>
                                         <exclude>javax.ejb:ejb-api</exclude>
@@ -868,6 +869,10 @@
                     <exclusion>
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

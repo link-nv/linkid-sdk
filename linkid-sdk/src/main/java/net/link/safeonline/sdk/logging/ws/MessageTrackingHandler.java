@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.logging.ws;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
@@ -14,8 +15,6 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 
@@ -26,7 +25,7 @@ import org.w3c.dom.Document;
  */
 public class MessageTrackingHandler implements SOAPHandler<SOAPMessageContext> {
 
-    private static final Log LOG = LogFactory.getLog( MessageTrackingHandler.class );
+    private static final Logger logger = Logger.get( MessageTrackingHandler.class );
 
     private boolean captureMessages;
 
@@ -77,7 +76,6 @@ public class MessageTrackingHandler implements SOAPHandler<SOAPMessageContext> {
              * Nothing to do.
              */
             return true;
-        LOG.debug( "logging message" );
 
         Boolean outboundProperty = (Boolean) soapMessageContext.get( MessageContext.MESSAGE_OUTBOUND_PROPERTY );
 
@@ -89,8 +87,9 @@ public class MessageTrackingHandler implements SOAPHandler<SOAPMessageContext> {
                 outboundMessage = soapPart;
             else
                 inboundMessage = soapPart;
-        } catch (Exception e) {
-            LOG.debug( "exception caught: " + e.getMessage(), e );
+        }
+        catch (Exception e) {
+            logger.err( e, "exception caught: %s", e );
         }
 
         return true;

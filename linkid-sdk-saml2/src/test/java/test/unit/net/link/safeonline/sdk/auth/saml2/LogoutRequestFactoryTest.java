@@ -17,8 +17,6 @@ import net.link.util.common.DomUtils;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
@@ -33,8 +31,6 @@ import org.w3c.dom.*;
  */
 public class LogoutRequestFactoryTest {
 
-    private static final Log LOG = LogFactory.getLog( LogoutRequestFactoryTest.class );
-
     @Test
     public void createLogoutRequest()
             throws Exception {
@@ -47,15 +43,11 @@ public class LogoutRequestFactoryTest {
         String session = "test-session-info";
 
         // Test
-        long begin = System.currentTimeMillis();
         LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( subjectName, applicationName, destinationURL, session );
         String samlLogoutRequestToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) );
-        long end = System.currentTimeMillis();
 
         // Verify
         assertNotNull( samlLogoutRequestToken );
-        LOG.debug( "duration: " + (end - begin) + " ms" );
-        LOG.debug( "result message: " + samlLogoutRequestToken );
 
         Document resultDocument = DomTestUtils.parseDocument( samlLogoutRequestToken );
 

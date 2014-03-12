@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.auth;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
@@ -22,8 +23,6 @@ import net.link.safeonline.sdk.api.ws.auth.Confirmation;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.RequestAbstractType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.w3._2000._09.xmldsig.*;
@@ -41,7 +40,7 @@ import org.w3._2000._09.xmldsig.ObjectFactory;
  */
 public class AuthenticationUtil {
 
-    private static final Log LOG = LogFactory.getLog( AuthenticationUtil.class );
+    private static final Logger logger = Logger.get( AuthenticationUtil.class );
 
     public static WSAuthenticationRequestType getAuthenticationRequest(String applicationName, String deviceName, String language,
                                                                        Map<String, String> deviceCredentials, PublicKey publicKey) {
@@ -152,7 +151,7 @@ public class AuthenticationUtil {
             datatypeFactory = DatatypeFactory.newInstance();
         }
         catch (DatatypeConfigurationException e) {
-            LOG.error( "datatype configuration exception", e );
+            logger.err( e, "datatype configuration exception" );
             throw new InternalInconsistencyException( String.format( "datatype configuration exception: %s", e.getMessage() ), e );
         }
 
@@ -211,20 +210,14 @@ public class AuthenticationUtil {
         } else {
             attributeType.getAttributeValue().add( attributeIdentitySDK.getValue() );
         }
+        attributeType.getOtherAttributes().put( WebServiceConstants.DATATYPE_ATTRIBUTE, attributeIdentitySDK.getAttributeType().getType().getValue() );
         attributeType.getOtherAttributes()
-                     .put( WebServiceConstants.DATATYPE_ATTRIBUTE, attributeIdentitySDK.getAttributeType().getType().getValue() );
+                     .put( WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.getAttributeType().isMultivalued() ) );
+        attributeType.getOtherAttributes().put( WebServiceConstants.DATAMINING_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isAnonymous() ) );
+        attributeType.getOtherAttributes().put( WebServiceConstants.OPTIONAL_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isOptional() ) );
         attributeType.getOtherAttributes()
-                     .put( WebServiceConstants.MULTIVALUED_ATTRIBUTE,
-                             Boolean.toString( attributeIdentitySDK.getAttributeType().isMultivalued() ) );
-        attributeType.getOtherAttributes()
-                     .put( WebServiceConstants.DATAMINING_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isAnonymous() ) );
-        attributeType.getOtherAttributes()
-                     .put( WebServiceConstants.OPTIONAL_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isOptional() ) );
-        attributeType.getOtherAttributes()
-                     .put( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE,
-                             Boolean.toString( attributeIdentitySDK.isConfirmationNeeded() ) );
-        attributeType.getOtherAttributes()
-                     .put( WebServiceConstants.CONFIRMED_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isConfirmed() ) );
+                     .put( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isConfirmationNeeded() ) );
+        attributeType.getOtherAttributes().put( WebServiceConstants.CONFIRMED_ATTRIBUTE, Boolean.toString( attributeIdentitySDK.isConfirmed() ) );
         attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attributeIdentitySDK.getId() );
         attributeType.getOtherAttributes().put( WebServiceConstants.GROUP_NAME_ATTRIBUTE, attributeIdentitySDK.getGroupName() );
         return attributeType;
@@ -234,8 +227,7 @@ public class AuthenticationUtil {
 
         String id = attributeType.getOtherAttributes().get( WebServiceConstants.ATTRIBUTE_ID );
 
-        net.link.safeonline.sdk.api.attribute.AttributeType sdkAttributeType = new net.link.safeonline.sdk.api.attribute.AttributeType(
-                attributeType.getName(),
+        net.link.safeonline.sdk.api.attribute.AttributeType sdkAttributeType = new net.link.safeonline.sdk.api.attribute.AttributeType( attributeType.getName(),
                 DataType.getDataType( attributeType.getOtherAttributes().get( WebServiceConstants.DATATYPE_ATTRIBUTE ) ),
                 Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.MULTIVALUED_ATTRIBUTE ) ) );
 
@@ -243,8 +235,7 @@ public class AuthenticationUtil {
         String groupName = attributeType.getOtherAttributes().get( WebServiceConstants.GROUP_NAME_ATTRIBUTE );
         boolean anonymous = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.DATAMINING_ATTRIBUTE ) );
         boolean optional = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.OPTIONAL_ATTRIBUTE ) );
-        boolean confirmationNeeded = Boolean.valueOf(
-                attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE ) );
+        boolean confirmationNeeded = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMATION_REQUIRED_ATTRIBUTE ) );
         boolean confirmed = Boolean.valueOf( attributeType.getOtherAttributes().get( WebServiceConstants.CONFIRMED_ATTRIBUTE ) );
 
         Serializable value = null;
@@ -261,7 +252,6 @@ public class AuthenticationUtil {
             }
         }
 
-        return new AttributeIdentitySDK( id, sdkAttributeType, friendlyName, groupName, anonymous, optional, confirmationNeeded, confirmed,
-                value );
+        return new AttributeIdentitySDK( id, sdkAttributeType, friendlyName, groupName, anonymous, optional, confirmationNeeded, confirmed, value );
     }
 }

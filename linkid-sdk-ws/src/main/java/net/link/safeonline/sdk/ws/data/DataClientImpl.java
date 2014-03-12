@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.data;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
@@ -31,8 +32,6 @@ import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -42,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DataClientImpl extends AbstractWSClient<DataServicePort> implements DataClient {
 
-    private static final Log LOG = LogFactory.getLog( DataClientImpl.class );
+    private static final Logger logger = Logger.get( DataClientImpl.class );
 
     private final TargetIdentityClientHandler targetIdentityHandler;
 
@@ -57,8 +56,8 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
 
         super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ), sslCertificate );
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.data.path" ) ) );
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                    String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.data.path" ) ) );
 
         /*
          * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to come first since it
@@ -134,6 +133,7 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         List<DataType> dataList = queryResponse.getData();
         for (DataType data : dataList) {
             AttributeType attribute = data.getAttribute();
+            //noinspection unchecked
             attributes.add( (AttributeSDK<T>) getAttributeSDK( attribute ) );
         }
 
@@ -174,16 +174,15 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
     public void removeAttributes(final String userId, final String attributeName)
             throws WSClientTransportException, RequestDeniedException {
 
-        removeAttributes( userId,
-                Collections.<AttributeSDK<? extends Serializable>>singletonList( new AttributeSDK<Serializable>( attributeName, null ) ) );
+        removeAttributes( userId, Collections.<AttributeSDK<? extends Serializable>>singletonList( new AttributeSDK<Serializable>( attributeName, null ) ) );
     }
 
     @Override
     public void removeAttribute(final String userId, final String attributeName, final String attributeId)
             throws WSClientTransportException, RequestDeniedException {
 
-        removeAttributes( userId, Collections.<AttributeSDK<? extends Serializable>>singletonList(
-                new AttributeSDK<Serializable>( attributeId, attributeName, null ) ) );
+        removeAttributes( userId,
+                Collections.<AttributeSDK<? extends Serializable>>singletonList( new AttributeSDK<Serializable>( attributeId, attributeName, null ) ) );
     }
 
     @Override
@@ -310,16 +309,16 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
     private static void validateStatus(StatusType status)
             throws RequestDeniedException {
 
-        LOG.debug( "status: " + status.getCode() );
+        logger.dbg( "status: " + status.getCode() );
         TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.fromCode( status.getCode() );
 
         if (TopLevelStatusCode.OK != topLevelStatusCode) {
             List<StatusType> secondLevelStatusList = status.getStatus();
             if (!secondLevelStatusList.isEmpty()) {
                 StatusType secondLevelStatus = secondLevelStatusList.get( 0 );
-                LOG.debug( "second level status: " + secondLevelStatus.getCode() );
+                logger.dbg( "second level status: " + secondLevelStatus.getCode() );
                 SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.fromCode( secondLevelStatus.getCode() );
-                LOG.debug( "second level status comment: " + secondLevelStatus.getComment() );
+                logger.dbg( "second level status comment: " + secondLevelStatus.getComment() );
                 switch (secondLevelStatusCode) {
                     case INVALID_DATA:
                         throw new RequestDeniedException( String.format( "Invalid data: %s", secondLevelStatus.getComment() ) );
@@ -330,8 +329,7 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
                     case UNSUPPORTED_OBJECT_TYPE:
                         throw new RequestDeniedException( String.format( "Object type unsupported: %s", secondLevelStatus.getComment() ) );
                     case PAGINATION_NOT_SUPPORTED:
-                        throw new RequestDeniedException(
-                                String.format( "Pagination not unsupported: %s", secondLevelStatus.getComment() ) );
+                        throw new RequestDeniedException( String.format( "Pagination not unsupported: %s", secondLevelStatus.getComment() ) );
                     case MISSING_OBJECT_TYPE:
                         throw new RequestDeniedException( String.format( "Missing object type: %s", secondLevelStatus.getComment() ) );
                     case EMPTY_REQUEST:
@@ -344,9 +342,8 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
                         throw new RequestDeniedException( String.format( "Missing NewData element: %s", secondLevelStatus.getComment() ) );
                 }
             }
-            LOG.debug( "status comment: " + status.getComment() );
-            throw new RequestDeniedException(
-                    String.format( "Request failed: errorCode=%s errorMessage=%s", status.getCode(), status.getComment() ) );
+            logger.dbg( "status comment: " + status.getComment() );
+            throw new RequestDeniedException( String.format( "Request failed: errorCode=%s errorMessage=%s", status.getCode(), status.getComment() ) );
         }
     }
 

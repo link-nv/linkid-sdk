@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.security.KeyPair;
 import java.util.Collections;
 import java.util.Locale;
@@ -15,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.util.common.DomUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
@@ -29,9 +28,7 @@ import org.opensaml.saml2.metadata.impl.AssertionConsumerServiceBuilder;
 import org.opensaml.ws.message.MessageContext;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
 import org.opensaml.ws.message.encoder.MessageEncodingException;
-import org.opensaml.ws.security.SecurityPolicy;
-import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.ws.security.SecurityPolicyResolver;
+import org.opensaml.ws.security.*;
 import org.opensaml.ws.security.provider.BasicSecurityPolicy;
 import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
@@ -47,7 +44,7 @@ import org.opensaml.xml.security.x509.BasicX509Credential;
  */
 public abstract class RedirectBindingUtil {
 
-    private static final Log LOG = LogFactory.getLog( RedirectBindingUtil.class );
+    private static final Logger logger = Logger.get( RedirectBindingUtil.class );
 
     /**
      * Signs and sends a SAML2 authentication or logout Request using SAML2 HTTP Redirect Binding.
@@ -62,8 +59,8 @@ public abstract class RedirectBindingUtil {
                                    HttpServletResponse response, @Nullable Locale language, @Nullable String themeName, @Nullable LoginMode loginMode,
                                    @Nullable StartPage startPage) {
 
-        LOG.debug( "sendRequest[HTTP Redirect] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                LinkIDSaml2Utils.marshall( samlRequest ), true ) );
+        logger.dbg( "sendRequest[HTTP Redirect] (RelayState: %s, To: %s):\n%s", relayState, consumerUrl,
+                DomUtils.domToString( LinkIDSaml2Utils.marshall( samlRequest ), true ) );
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
 
@@ -77,8 +74,7 @@ public abstract class RedirectBindingUtil {
         messageContext.setPeerEntityEndpoint( consumerService );
 
         messageContext.setOutboundMessageTransport(
-                new LinkIDHttpServletResponseAdapter( response, consumerUrl.startsWith( "https" ), language, themeName, loginMode,
-                        startPage ) );
+                new LinkIDHttpServletResponseAdapter( response, consumerUrl.startsWith( "https" ), language, themeName, loginMode, startPage ) );
         messageContext.setOutboundSAMLMessage( samlRequest );
         messageContext.setRelayState( relayState );
 
@@ -97,8 +93,8 @@ public abstract class RedirectBindingUtil {
     public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, String relayState, String consumerUrl,
                                     HttpServletResponse response) {
 
-        LOG.debug( "sendResponse[HTTP Redirect] (RelayState: " + relayState + ", To: " + consumerUrl + "):\n" + DomUtils.domToString(
-                LinkIDSaml2Utils.marshall( samlResponse ), true ) );
+        logger.dbg( "sendResponse[HTTP Redirect] (RelayState: %s, To: %s):\n%s", relayState, consumerUrl,
+                DomUtils.domToString( LinkIDSaml2Utils.marshall( samlResponse ), true ) );
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
 
@@ -122,7 +118,7 @@ public abstract class RedirectBindingUtil {
      * @param request HTTP Servlet Request
      *
      * @return The RelayState that is in the given {@link HttpServletRequest} which is parsed as using the SAML HTTP Redirect Binding
-     *         protocol.
+     * protocol.
      */
     public static String getRelayState(HttpServletRequest request) {
 
@@ -138,7 +134,7 @@ public abstract class RedirectBindingUtil {
      * @param request HTTP Servlet Request
      *
      * @return The {@link SAMLObject} that is in the given {@link HttpServletRequest} which is parsed as using the SAML HTTP Redirect
-     *         Binding protocol.<br> <code>null</code>: There is no SAML request or response.
+     * Binding protocol.<br> <code>null</code>: There is no SAML request or response.
      */
     public static SAMLObject getSAMLObject(HttpServletRequest request) {
 

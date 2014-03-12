@@ -23,14 +23,10 @@ import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.*;
 
 
 public class AuthnResponseFilterTest {
-
-    private static final Log LOG = LogFactory.getLog( AuthnResponseFilterTest.class );
 
     private ServletTestManager servletTestManager;
 
@@ -56,12 +52,9 @@ public class AuthnResponseFilterTest {
 
     public static class LoginTestServlet extends HttpServlet {
 
-        private static final Log ltLOG = LogFactory.getLog( LoginTestServlet.class );
-
         @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
-            ltLOG.debug( "doGet" );
         }
     }
 
@@ -81,6 +74,7 @@ public class AuthnResponseFilterTest {
         GetMethod getMethod = new GetMethod( servletTestManager.getServletLocation() );
 
         // Setup Mocks
+        //noinspection unchecked
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
                 (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( null );
         replay( mockProtocolHandler );
@@ -89,7 +83,6 @@ public class AuthnResponseFilterTest {
         int statusCode = httpClient.executeMethod( getMethod );
 
         // Verify
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpStatus.SC_OK, statusCode );
     }
 
@@ -118,10 +111,8 @@ public class AuthnResponseFilterTest {
         // Verify
         assertEquals( HttpStatus.SC_OK, statusCode );
         String resultUserId = (String) servletTestManager.getSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE );
-        LOG.debug( "result userId: " + resultUserId );
         assertEquals( userId, resultUserId );
         List<String> resultAuthenticatedDevices = (List<String>) servletTestManager.getSessionAttribute( LoginManager.AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
-        LOG.debug( "result authenticatedDevices: " + resultAuthenticatedDevices );
         assertTrue( resultAuthenticatedDevices.contains( authenticatedDevice ) );
     }
 }

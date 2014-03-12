@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import java.util.Locale;
 import javax.servlet.*;
@@ -15,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.SafeOnlineConfig;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -35,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AuthnRequestFilter implements Filter {
 
-    private static final Log LOG = LogFactory.getLog( AuthnRequestFilter.class );
+    private static final Logger logger = Logger.get( AuthnRequestFilter.class );
 
     /**
      * Bind your session tracking identifier to the HTTP session attribute with this name if you want to do session tracking.
@@ -52,7 +51,7 @@ public class AuthnRequestFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        LOG.debug( "doFilter" );
+        logger.dbg( "doFilter" );
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
@@ -75,13 +74,13 @@ public class AuthnRequestFilter implements Filter {
     @NotNull
     protected static AuthenticationContext newContext(HttpServletRequest request) {
 
-        return new AuthenticationContext( null, null, null, false, null, (String) request.getAttribute( SESSION_TRACKING_ATTRIBUTE ), null,
-                null, request.getRequestURL().toString() );
+        return new AuthenticationContext( null, null, null, false, null, (String) request.getAttribute( SESSION_TRACKING_ATTRIBUTE ), null, null,
+                request.getRequestURL().toString() );
     }
 
     @Override
     public void destroy() {
 
-        LOG.debug( "destroy" );
+        logger.dbg( "destroy" );
     }
 }

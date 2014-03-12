@@ -23,27 +23,21 @@ import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.*;
 
 
 public class AuthnRequestFilterTest {
 
-    private static final Log LOG = LogFactory.getLog( AuthnRequestFilterTest.class );
-
     private ServletTestManager servletTestManager;
 
     private ClassLoader originalContextClassLoader;
-
-    private TestClassLoader testClassLoader;
 
     @Before
     public void setUp()
             throws Exception {
 
         originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        testClassLoader = new TestClassLoader();
+        TestClassLoader testClassLoader = new TestClassLoader();
         Thread.currentThread().setContextClassLoader( testClassLoader );
         servletTestManager = new ServletTestManager();
     }
@@ -83,10 +77,7 @@ public class AuthnRequestFilterTest {
         int statusCode = new HttpClient().executeMethod( getMethod );
 
         // Verify
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpStatus.SC_OK, statusCode );
-        String response = getMethod.getResponseBodyAsString();
-        LOG.debug( "response body: " + response );
     }
 
     @Test
@@ -109,10 +100,8 @@ public class AuthnRequestFilterTest {
         int statusCode = httpClient.executeMethod( getMethod );
 
         // Verify
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpStatus.SC_OK, statusCode );
         String response = getMethod.getResponseBodyAsString();
-        LOG.debug( "response body: " + response );
         assertTrue( response.contains( "custom template" ) );
     }
 }

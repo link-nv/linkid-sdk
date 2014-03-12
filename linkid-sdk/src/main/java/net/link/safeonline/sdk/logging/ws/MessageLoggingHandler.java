@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.logging.ws;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.*;
 import java.util.List;
 import java.util.Set;
@@ -23,8 +24,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 
 
@@ -36,7 +35,7 @@ import org.w3c.dom.Node;
  */
 public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
-    private static final Log LOG = LogFactory.getLog( MessageLoggingHandler.class );
+    private static final Logger logger = Logger.get( MessageLoggingHandler.class );
 
     @Override
     public Set<QName> getHeaders() {
@@ -57,7 +56,7 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
         Boolean outboundProperty = (Boolean) soapContext.get( MessageContext.MESSAGE_OUTBOUND_PROPERTY );
         SOAPMessage soapMessage = soapContext.getMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
-        LOG.debug( "SOAP fault (outbound: " + outboundProperty + "): " + toString( soapPart ) );
+        logger.dbg( "SOAP fault (outbound: %s ): %s", outboundProperty, toString( soapPart ) );
         return true;
     }
 
@@ -67,7 +66,7 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
         Boolean outboundProperty = (Boolean) soapContext.get( MessageContext.MESSAGE_OUTBOUND_PROPERTY );
         SOAPMessage soapMessage = soapContext.getMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
-        LOG.debug( "SOAP message (outbound: " + outboundProperty + "): " + toString( soapPart ) );
+        logger.dbg( "SOAP message (outbound: %s): %s", outboundProperty, toString( soapPart ) );
         try {
             File tmpFile;
             if (outboundProperty)

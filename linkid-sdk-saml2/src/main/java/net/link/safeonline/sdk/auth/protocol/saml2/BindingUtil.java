@@ -8,23 +8,19 @@
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLObject;
 
 
 /**
  * <h2>{@link BindingUtil}</h2>
- *
+ * <p/>
  * <p> [description / usage]. </p>
- *
+ * <p/>
  * <p> <i>Apr 20, 2009</i> </p>
  *
  * @author lhunath
  */
 public abstract class BindingUtil {
-
-    private static final Log LOG = LogFactory.getLog( BindingUtil.class );
 
     /**
      * Parse a SAML object out of a request. This delegates to the SAML Binding specific method of parsing SAML objects.
@@ -52,7 +48,6 @@ public abstract class BindingUtil {
         String breakFrameString = request.getParameter( "IsBreakFrame" );
         return null != breakFrameString && Boolean.parseBoolean( breakFrameString );
     }
-
 
     /**
      * Parse a SAML object out of a request. This delegates to the SAML Binding specific method of parsing SAML objects.

@@ -21,8 +21,6 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import oasis.names.tc.saml._2_0.assertion.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
 import org.w3c.dom.*;
@@ -31,16 +29,12 @@ import org.w3c.dom.Element;
 
 public class SAMLTest {
 
-    private static final Log LOG = LogFactory.getLog( SAMLTest.class );
-
     @SuppressWarnings("unchecked")
     @Test
     public void attributeValueXsiType()
             throws Exception {
 
         // Setup Data
-        LOG.debug( "xsi:type test" );
-
         ObjectFactory objectFactory = new ObjectFactory();
         AssertionType assertion = objectFactory.createAssertionType();
 
@@ -76,15 +70,12 @@ public class SAMLTest {
         marshaller.marshal( objectFactory.createAssertion( assertion ), document );
 
         // Verify
-        LOG.debug( "result document: " + domToString( document ) );
-
         Element nsElement = document.createElement( "nsElement" );
         nsElement.setAttributeNS( XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion" );
         nsElement.setAttributeNS( XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
 
         Node resultNode = XPathAPI.selectSingleNode( document,
-                "/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue[@xsi:type='AttributeType']/saml:AttributeValue",
-                nsElement );
+                "/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue[@xsi:type='AttributeType']/saml:AttributeValue", nsElement );
         assertNotNull( resultNode );
 
         Unmarshaller unmarshaller = context.createUnmarshaller();

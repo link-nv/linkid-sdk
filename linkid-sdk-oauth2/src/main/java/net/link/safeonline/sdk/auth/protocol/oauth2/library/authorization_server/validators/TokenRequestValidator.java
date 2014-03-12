@@ -7,14 +7,13 @@
 
 package net.link.safeonline.sdk.auth.protocol.oauth2.library.authorization_server.validators;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.util.Date;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.data.objects.*;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.exceptions.OAuthException;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.AccessTokenRequest;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.messages.ValidationRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -27,15 +26,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TokenRequestValidator extends AbstractValidator {
 
-    static final Log LOG = LogFactory.getLog( TokenRequestValidator.class );
+    private static final Logger logger = Logger.get( TokenRequestValidator.class );
 
     @Override
-    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest,
-                         final ClientConfiguration clientConfiguration)
+    public void validate(final AccessTokenRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
-        if (clientAccessRequest != null && clientAccessRequest.getUserDefinedExpirationDate() != null
-            && clientAccessRequest.getUserDefinedExpirationDate().before( new Date() )) {
+        if (clientAccessRequest != null && clientAccessRequest.getUserDefinedExpirationDate() != null && clientAccessRequest.getUserDefinedExpirationDate()
+                                                                                                                            .before( new Date() )) {
             throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT, "user authorization expired or revoked" );
         }
 
@@ -44,16 +42,13 @@ public class TokenRequestValidator extends AbstractValidator {
                 // see if auth grant code has not yet expired, is not already used, or is invoked
                 if (clientAccessRequest == null)
                     throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT, "missing authorization grant" );
-                if (!clientAccessRequest.getAuthorizationCode().getTokenData().equals( request.getCode() )
-                    || clientAccessRequest.getAuthorizationCode().isInvalid() || clientAccessRequest.getAuthorizationCode()
-                                                                                                    .getExpirationDate()
-                                                                                                    .before( new Date() )) {
+                if (!clientAccessRequest.getAuthorizationCode().getTokenData().equals( request.getCode() ) || clientAccessRequest.getAuthorizationCode()
+                                                                                                                                 .isInvalid()
+                    || clientAccessRequest.getAuthorizationCode().getExpirationDate().before( new Date() )) {
 
-                    LOG.error(
-                            "ATTENTION: Attempt detected to get an access token using an invalid authorization code: " + clientAccessRequest
-                                    .getAuthorizationCode() );
-                    throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT,
-                            "authorization grant is invalid, expired, revoked or already used" );
+                    logger.err( "ATTENTION: Attempt detected to get an access token using an invalid authorization code: %s",
+                            clientAccessRequest.getAuthorizationCode() );
+                    throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT, "authorization grant is invalid, expired, revoked or already used" );
                 }
                 break;
             case CLIENT_CREDENTIALS:
@@ -68,14 +63,11 @@ public class TokenRequestValidator extends AbstractValidator {
                 Boolean validToken = false;
                 for (RefreshToken refreshToken : clientAccessRequest.getRefreshTokens()) {
                     if (refreshToken.getTokenData().equals( request.getRefreshToken() ))
-                        if (refreshToken.isInvalid() || (refreshToken.getExpirationDate() != null && refreshToken.getExpirationDate()
-                                                                                                                 .before( new Date() ))) {
+                        if (refreshToken.isInvalid() || (refreshToken.getExpirationDate() != null && refreshToken.getExpirationDate().before( new Date() ))) {
 
                             //invalid token, throw error
-                            LOG.error( "ATTENTION: Attempt detected to get an access token using an invalid refresh token: "
-                                       + request.getRefreshToken() );
-                            throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT,
-                                    "refresh token is invalid, expired, revoked or already used" );
+                            logger.err( "ATTENTION: Attempt detected to get an access token using an invalid refresh token: %s", request.getRefreshToken() );
+                            throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT, "refresh token is invalid, expired, revoked or already used" );
                         } else {
                             // token is ok, hurah
                             validToken = true;
@@ -83,29 +75,25 @@ public class TokenRequestValidator extends AbstractValidator {
                 }
                 if (!validToken) {
                     // we didn't find that particular token, it would seem
-                    LOG.error( "ATTENTION: Attempt detected to get an access token using an invalid refresh token: "
-                               + request.getRefreshToken() );
-                    throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT,
-                            "refresh token is invalid, expired, revoked or already used" );
+                    logger.err( "ATTENTION: Attempt detected to get an access token using an invalid refresh token: %s", request.getRefreshToken() );
+                    throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT, "refresh token is invalid, expired, revoked or already used" );
                 }
                 break;
         }
     }
 
     @Override
-    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest,
-                         final ClientConfiguration clientConfiguration)
+    public void validate(final ValidationRequest request, final ClientAccessRequest clientAccessRequest, final ClientConfiguration clientConfiguration)
             throws OAuthException {
 
         boolean valid = false;
         for (AccessToken token : clientAccessRequest.getAccessTokens()) {
-            if (request.getAccessToken().equals( token.getTokenData() ) && token.getExpirationDate().after( new Date() )
-                && !token.isInvalid()) {
+            if (request.getAccessToken().equals( token.getTokenData() ) && token.getExpirationDate().after( new Date() ) && !token.isInvalid()) {
                 valid = true;
             }
         }
         if (!valid) {
-            LOG.error( "ATTENTION: invalid access token used: " + request.getAccessToken() );
+            logger.err( "ATTENTION: invalid access token used: %s", request.getAccessToken() );
             throw new OAuthException( OAuth2Message.ErrorType.INVALID_GRANT );
         }
     }

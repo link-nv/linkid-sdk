@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.notification.consumer;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.notification.consumer.*;
@@ -18,8 +19,6 @@ import net.link.safeonline.ws.notification.NotificationConsumerServiceFactory;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 
@@ -30,11 +29,9 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
  */
 public class NotificationConsumerClientImpl extends AbstractWSClient<NotificationConsumerPort> implements NotificationConsumerClient {
 
-    private static final Log LOG = LogFactory.getLog( NotificationConsumerClientImpl.class );
+    private static final Logger logger = Logger.get( NotificationConsumerClientImpl.class );
 
     private static final String TOPIC_DIALECT_SIMPLE = "http://docs.oasis-open.org/wsn/t-1/TopicExpression/Simple";
-
-    private final String location;
 
     /**
      * Main constructor.
@@ -46,7 +43,7 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
     public NotificationConsumerClientImpl(String location, X509Certificate sslCertificate, WSSecurityConfiguration configuration) {
 
         super( NotificationConsumerServiceFactory.newInstance().getNotificationConsumerPort(), sslCertificate );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location = location );
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -54,9 +51,6 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
     @Override
     public void sendNotification(NotificationTopic topic, String destination, String subject, String content)
             throws WSClientTransportException {
-
-        LOG.debug( "send notification to " + location + " for topic: " + topic + ", destination:" + destination + ", subject:" + subject
-                   + ", content:" + content );
 
         TopicExpressionType topicExpression = new TopicExpressionType();
         topicExpression.setDialect( TOPIC_DIALECT_SIMPLE );
@@ -76,7 +70,7 @@ public class NotificationConsumerClientImpl extends AbstractWSClient<Notificatio
             getPort().notify( notifications );
         }
         catch (Exception e) {
-            LOG.debug( "Failed to send notification" );
+            logger.err( e, "Failed to send notification" );
             throw new WSClientTransportException( getBindingProvider(), e );
         }
     }

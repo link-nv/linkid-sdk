@@ -16,8 +16,6 @@ import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.util.common.CertificateChain;
 import net.link.util.wicket.util.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -31,8 +29,6 @@ import org.jetbrains.annotations.NotNull;
  * @author lhunath
  */
 public abstract class LinkIDWicketUtils {
-
-    static final Log LOG = LogFactory.getLog( LinkIDWicketUtils.class );
 
     /**
      * Checks whether the user is logged in via the SafeOnline authentication web application or not.
@@ -48,7 +44,7 @@ public abstract class LinkIDWicketUtils {
      * Gives back the SafeOnline authenticated userId, or <code>null</code> if the user was not yet authenticated.
      *
      * @return The linkID user identifier (possibly mapped to the application or subscription) of the user that has last authenticated
-     *         himself.
+     * himself.
      */
     public static String findLinkID() {
 

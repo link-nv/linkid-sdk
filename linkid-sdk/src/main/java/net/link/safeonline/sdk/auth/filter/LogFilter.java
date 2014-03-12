@@ -7,12 +7,11 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import java.io.IOException;
 import java.util.Enumeration;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -22,43 +21,52 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogFilter implements Filter {
 
-    private static final Log LOG = LogFactory.getLog( LogFilter.class );
+    private static final Logger logger = Logger.get( LogFilter.class );
 
-    public void destroy() {
+    @Override
+    public void init(final FilterConfig filterConfig)
+            throws ServletException {
 
-        LOG.debug( "destroy" );
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        LOG.debug( "doFilter: " + httpRequest.getRequestURL() );
+        logger.dbg( "doFilter: %s", httpRequest.getRequestURL() );
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( httpRequest.getMethod() + " " + httpRequest.getProtocol() + " " + httpRequest.getServerName() + ":"
-                   + httpRequest.getServerPort() + httpRequest.getRequestURI() + "\n" );
+        sb.append( httpRequest.getMethod() )
+          .append( " " )
+          .append( httpRequest.getProtocol() )
+          .append( " " )
+          .append( httpRequest.getServerName() )
+          .append( ":" )
+          .append( httpRequest.getServerPort() )
+          .append( httpRequest.getRequestURI() )
+          .append( "\n" );
         sb.append( "Session attributes :\n" );
         Enumeration<?> sessionAttributes = httpRequest.getSession().getAttributeNames();
         while (sessionAttributes.hasMoreElements())
-            sb.append( "  * " + sessionAttributes.nextElement() + "\n" );
+            sb.append( "  * " ).append( sessionAttributes.nextElement() ).append( "\n" );
         sb.append( "Request attributes :\n" );
         Enumeration<?> requestAttributes = httpRequest.getAttributeNames();
         while (requestAttributes.hasMoreElements())
-            sb.append( "  * " + requestAttributes.nextElement() + "\n" );
+            sb.append( "  * " ).append( requestAttributes.nextElement() ).append( "\n" );
         sb.append( "Request parameter names :\n" );
         Enumeration<?> requestParameters = httpRequest.getAttributeNames();
         while (requestParameters.hasMoreElements())
-            sb.append( "  * " + requestParameters.nextElement() + "\n" );
+            sb.append( "  * " ).append( requestParameters.nextElement() ).append( "\n" );
 
         LogManager.getInstance().postLogBuffer( sb );
 
         chain.doFilter( request, response );
     }
 
-    public void init(FilterConfig config) {
+    @Override
+    public void destroy() {
 
-        LOG.debug( "init" );
     }
 }

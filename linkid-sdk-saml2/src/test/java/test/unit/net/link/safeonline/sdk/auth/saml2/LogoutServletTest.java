@@ -33,8 +33,6 @@ import net.link.util.test.web.*;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xpath.XPathAPI;
 import org.junit.*;
@@ -48,8 +46,6 @@ import org.w3c.tidy.Tidy;
 
 
 public class LogoutServletTest {
-
-    private static final Log LOG = LogFactory.getLog( LogoutServletTest.class );
 
     private ServletTestManager servletTestManager;
 
@@ -81,10 +77,9 @@ public class LogoutServletTest {
 
         new TestConfigHolder( servletTestManager.createSocketConnector(), servletTestManager.getServletContext() ).install();
         keyPair = PkiTestUtils.generateKeyPair();
-        testConfig().linkID().app().keyProvider = new KeyProviderImpl(
-                new KeyStore.PrivateKeyEntry( keyPair.getPrivate(), new Certificate[] {
-                        PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=TestApplication" )
-                } ), ImmutableMap.<String, X509Certificate>of() );
+        testConfig().linkID().app().keyProvider = new KeyProviderImpl( new KeyStore.PrivateKeyEntry( keyPair.getPrivate(), new Certificate[] {
+                PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=TestApplication" )
+        } ), ImmutableMap.<String, X509Certificate>of() );
 
         servletLocation = servletTestManager.getServletLocation();
         httpClient = new HttpClient();
@@ -104,8 +99,7 @@ public class LogoutServletTest {
         // Setup Data
 
         // Setup Mocks
-        LogoutProtocolResponseContext logoutResponse = new LogoutProtocolResponseContext( logoutRequest, UUID.randomUUID().toString(), true,
-                null );
+        LogoutProtocolResponseContext logoutResponse = new LogoutProtocolResponseContext( logoutRequest, UUID.randomUUID().toString(), true, null );
         expect( mockProtocolHandler.findAndValidateLogoutResponse( (HttpServletRequest) anyObject() ) ).andStubReturn( logoutResponse );
         replay( mockProtocolHandler );
 
@@ -114,7 +108,6 @@ public class LogoutServletTest {
         int statusCode = httpClient.executeMethod( postMethod );
 
         // Verify
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode );
         String resultTarget = postMethod.getResponseHeader( "Location" ).getValue();
         assertTrue( resultTarget.endsWith( target ) );
@@ -127,8 +120,7 @@ public class LogoutServletTest {
         // Setup Data
         String userId = UUID.randomUUID().toString();
         LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation, null );
-        String encodedSamlLogoutRequest = Base64.encode(
-                DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) ).getBytes() );
+        String encodedSamlLogoutRequest = Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) ).getBytes() );
 
         servletTestManager.setSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE, userId );
 
@@ -140,14 +132,12 @@ public class LogoutServletTest {
         int statusCode = httpClient.executeMethod( postMethod );
 
         // Verify
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpServletResponse.SC_OK, statusCode );
 
         Tidy tidy = new Tidy();
         tidy.setQuiet( true );
         tidy.setShowWarnings( false );
         Document resultDocument = tidy.parseDOM( postMethod.getResponseBodyAsStream(), null );
-        LOG.debug( "result document: " + DomTestUtils.domToString( resultDocument ) );
         String action = XPathAPI.selectSingleNode( resultDocument, "//form/@action" ).getNodeValue();
         String samlResponse = XPathAPI.selectSingleNode( resultDocument, "//form/input[@name='SAMLResponse']/@value" ).getNodeValue();
 
@@ -175,8 +165,7 @@ public class LogoutServletTest {
         String userId = UUID.randomUUID().toString();
         String notUserId = "not " + userId;
         LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation, null );
-        String encodedSamlLogoutRequest = Base64.encode(
-                DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) ).getBytes() );
+        String encodedSamlLogoutRequest = Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) ).getBytes() );
 
         servletTestManager.setSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE, notUserId );
 
@@ -188,14 +177,12 @@ public class LogoutServletTest {
         int statusCode = httpClient.executeMethod( postMethod );
 
         // Verify
-        LOG.debug( "status code: " + statusCode );
         assertEquals( HttpServletResponse.SC_OK, statusCode );
 
         Tidy tidy = new Tidy();
         tidy.setQuiet( true );
         tidy.setShowWarnings( false );
         Document resultDocument = tidy.parseDOM( postMethod.getResponseBodyAsStream(), null );
-        LOG.debug( "result document: " + DomTestUtils.domToString( resultDocument ) );
         String action = XPathAPI.selectSingleNode( resultDocument, "//form/@action" ).getNodeValue();
         String samlResponse = XPathAPI.selectSingleNode( resultDocument, "//form/input[@name='SAMLResponse']/@value" ).getNodeValue();
 

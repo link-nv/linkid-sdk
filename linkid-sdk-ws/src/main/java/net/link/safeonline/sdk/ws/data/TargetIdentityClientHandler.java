@@ -19,8 +19,6 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.safeonline.sdk.api.ws.data.DataServiceConstants;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -34,8 +32,6 @@ import org.jetbrains.annotations.Nullable;
  * @author fcorneli
  */
 public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageContext> {
-
-    private static final Log LOG = LogFactory.getLog( TargetIdentityClientHandler.class );
 
     public static final String WSU_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
@@ -107,7 +103,6 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
 
         if (null == targetIdentity)
             throw new IllegalStateException( "TargetIdentity is null" );
-        LOG.debug( "adding TargetIdentity: " + targetIdentity );
 
         /*
          * Add SOAP Header.

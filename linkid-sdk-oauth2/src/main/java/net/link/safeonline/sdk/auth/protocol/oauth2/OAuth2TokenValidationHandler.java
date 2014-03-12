@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.auth.protocol.oauth2;
 
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
+import com.lyndir.lhunath.opal.system.logging.Logger;
 import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
 import java.io.IOException;
 import java.security.*;
@@ -20,8 +21,6 @@ import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder;
 import net.link.util.config.KeyProvider;
 import net.link.util.exception.ValidationFailedException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -37,7 +36,7 @@ public class OAuth2TokenValidationHandler {
 
     public static final int EXPIRATION_SLACK_SECONDS = 60; //in seconds
 
-    private static final Log LOG = LogFactory.getLog( OAuth2TokenValidationHandler.class );
+    private static final Logger logger = Logger.get( OAuth2TokenValidationHandler.class );
 
     private static Map<String, OAuth2TokenValidationHandler> handlers;
 
@@ -98,12 +97,12 @@ public class OAuth2TokenValidationHandler {
             }
 
             if (validationResponse instanceof ErrorResponse) {
-                LOG.error( "Received error response for OAuth authorization request: " + validationResponse.toString() );
+                logger.err( "Received error response for OAuth authorization request: %s", validationResponse.toString() );
                 validToken = false;
             } else {
                 Long expiresIn = ((ValidationResponse) validationResponse).getExpiresIn();
                 if (null == expiresIn || expiresIn <= EXPIRATION_SLACK_SECONDS) {
-                    LOG.error( "Token expired: " + validationResponse.toString() );
+                    logger.err( "Token expired: %s", validationResponse.toString() );
                     validToken = false;
                 } else {
                     // add some expiration slack to account for transmitting the token and processing it
