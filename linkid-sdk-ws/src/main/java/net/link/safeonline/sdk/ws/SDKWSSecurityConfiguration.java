@@ -7,13 +7,11 @@
 
 package net.link.safeonline.sdk.ws;
 
-import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
+import static net.link.util.util.ObjectUtils.*;
 
 import be.fedict.trust.TrustValidator;
 import be.fedict.trust.linker.TrustLinkerResultException;
 import be.fedict.trust.repository.MemoryCertificateRepository;
-import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.util.ObjectUtils;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
@@ -22,6 +20,9 @@ import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.LazyPublicKeyTrustLinker;
 import net.link.util.config.KeyProvider;
+import net.link.util.logging.Logger;
+import net.link.util.util.NNSupplier;
+import net.link.util.util.ObjectUtils;
 import net.link.util.ws.security.x509.AbstractWSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -60,10 +60,6 @@
             <artifactId>util-wicket</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lyndir.lhunath.opal</groupId>
-            <artifactId>opal-wicket</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket</artifactId>
         </dependency>

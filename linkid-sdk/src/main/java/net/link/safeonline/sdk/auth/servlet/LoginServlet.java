@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.auth.servlet;
 
 import com.google.common.base.Function;
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletConfig;

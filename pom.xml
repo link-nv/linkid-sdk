@@ -478,7 +478,6 @@
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
         <release.version>1.18</release.version>
         <link-util.version>GIT-SNAPSHOT</link-util.version>
-        <opal.version>1.6-p5</opal.version>
         <jtrust.version>2.0.1</jtrust.version>
         <bouncycastle.version>1.49</bouncycastle.version>
 
@@ -832,34 +831,6 @@
                         <artifactId>xml-apis</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.lyndir.lhunath.opal</groupId>
-                <artifactId>opal-system</artifactId>
-                <version>${opal.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lyndir.lhunath.opal</groupId>
-                <artifactId>opal-struct</artifactId>
-                <version>${opal.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lyndir.lhunath.opal</groupId>
-                <artifactId>opal-network</artifactId>
-                <version>${opal.version}</version>
-
-                <!-- We use org.apache.* instead -->
-                <exclusions>
-                    <exclusion>
-                        <groupId>xom</groupId>
-                        <artifactId>xom</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.lyndir.lhunath.opal</groupId>
-                <artifactId>opal-wicket</artifactId>
-                <version>${opal.version}</version>
             </dependency>
             <dependency>
                 <groupId>be.fedict.jtrust</groupId>

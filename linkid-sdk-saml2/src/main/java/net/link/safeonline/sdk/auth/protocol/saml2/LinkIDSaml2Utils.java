@@ -9,7 +9,7 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.Serializable;
 import java.util.*;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;

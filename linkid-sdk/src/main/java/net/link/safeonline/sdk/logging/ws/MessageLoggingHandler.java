@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.logging.ws;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.*;
 import java.util.List;
 import java.util.Set;

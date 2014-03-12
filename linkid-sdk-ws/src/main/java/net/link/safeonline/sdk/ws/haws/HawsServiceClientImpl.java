@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.haws;
 
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.InternalInconsistencyException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.haws.*;

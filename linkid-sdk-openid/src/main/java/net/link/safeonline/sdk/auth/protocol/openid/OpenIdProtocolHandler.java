@@ -11,8 +11,8 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.logging.Logger;
+import net.link.util.InternalInconsistencyException;
 import java.io.IOException;
 import java.net.URI;
 import java.security.*;

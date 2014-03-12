@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.example.wicket;
 
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.cert.CertificateEncodingException;
 import java.util.List;

@@ -9,7 +9,7 @@ package net.link.safeonline.sdk.auth.filter;
 
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.IOException;
 import java.util.List;
 import javax.security.auth.callback.*;

@@ -10,8 +10,8 @@ package test.unit.net.link.safeonline.sdk.auth.saml2;
 import static org.junit.Assert.*;
 
 import com.google.common.collect.Maps;
-import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.logging.Logger;
+import net.link.util.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;

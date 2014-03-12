@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.oauth2.library.authorization_server.validators;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.util.Date;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.OAuth2Message;
 import net.link.safeonline.sdk.auth.protocol.oauth2.library.data.objects.*;

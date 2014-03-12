@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws;
 
-import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
+import static net.link.util.util.ObjectUtils.*;
 
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
@@ -38,6 +38,7 @@ import net.link.safeonline.sdk.ws.session.SessionTrackingClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.util.config.KeyProvider;
+import net.link.util.util.NSupplier;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;

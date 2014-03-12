@@ -11,7 +11,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import com.google.common.collect.Lists;
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.util.List;

@@ -7,14 +7,15 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static com.lyndir.lhunath.opal.system.util.ObjectUtils.*;
 import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
+import static net.link.util.util.ObjectUtils.*;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Locale;
 import net.link.util.config.KeyProvider;
+import net.link.util.util.NNSupplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

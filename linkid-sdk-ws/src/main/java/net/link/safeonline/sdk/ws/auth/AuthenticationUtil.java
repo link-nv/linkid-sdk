@@ -7,8 +7,8 @@
 
 package net.link.safeonline.sdk.ws.auth;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.logging.Logger;
+import net.link.util.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;

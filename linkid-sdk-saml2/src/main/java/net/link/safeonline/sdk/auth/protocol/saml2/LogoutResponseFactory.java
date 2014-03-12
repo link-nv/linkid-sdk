@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.InternalInconsistencyException;
 import java.security.NoSuchAlgorithmException;
 import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
 import net.link.util.saml.SamlUtils;

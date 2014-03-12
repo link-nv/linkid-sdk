@@ -7,7 +7,7 @@
 
 package net.link.safeonline.wicket.component.linkid;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import net.link.safeonline.wicket.LinkIDSession;
 import net.link.safeonline.wicket.annotation.linkid.ForceLogout;
 import net.link.safeonline.wicket.annotation.linkid.RequireLogin;

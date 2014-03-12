@@ -9,8 +9,8 @@ package net.link.safeonline.sdk.auth.protocol.oauth2;
 
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.logging.Logger;
+import net.link.util.InternalInconsistencyException;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.X509Certificate;

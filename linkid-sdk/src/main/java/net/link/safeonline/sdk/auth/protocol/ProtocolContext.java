@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.ws.ltqr;
 
 import com.google.common.collect.Lists;
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.InternalInconsistencyException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;

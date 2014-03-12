@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.notification.consumer;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.notification.consumer.*;

@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

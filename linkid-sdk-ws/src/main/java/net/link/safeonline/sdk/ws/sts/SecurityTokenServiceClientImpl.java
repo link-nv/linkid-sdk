@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.sts;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.*;

@@ -7,8 +7,8 @@
 
 package net.link.safeonline.sdk.ws.pkix;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.logging.exception.InternalInconsistencyException;
+import net.link.util.logging.Logger;
+import net.link.util.InternalInconsistencyException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.cert.X509Certificate;

@@ -8,8 +8,8 @@
 package net.link.safeonline.sdk.auth.protocol.oauth2.library.messages;
 
 import com.google.gson.*;
-import com.lyndir.lhunath.opal.system.logging.Logger;
-import com.lyndir.lhunath.opal.system.util.StringUtils;
+import net.link.util.logging.Logger;
+import net.link.util.util.StringUtils;
 import java.io.*;
 import java.net.*;
 import java.security.*;

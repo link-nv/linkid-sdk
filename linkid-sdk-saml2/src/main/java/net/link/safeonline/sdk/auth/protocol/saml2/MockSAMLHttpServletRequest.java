@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import com.lyndir.lhunath.opal.system.logging.Logger;
+import net.link.util.logging.Logger;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
