@@ -146,7 +146,6 @@ public class TestConfigHolder extends ConfigHolder {
             public String mobileAuthMinimalURL;
             public String mobileRegURL;
             public String mobileRegMinimalURL;
-            public String userBase;
             public String mobileBase;
             public String staticBase;
             public String wsBase;
@@ -206,12 +205,6 @@ public class TestConfigHolder extends ConfigHolder {
             public String staticBase() {
 
                 return staticBase;
-            }
-
-            @Override
-            public String userBase() {
-
-                return userBase;
             }
 
             @Override

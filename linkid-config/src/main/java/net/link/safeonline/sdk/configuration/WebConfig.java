@@ -74,22 +74,6 @@ public interface WebConfig {
     String appPath();
 
     /**
-     * Property that defines the base URL to the linkID user web application to use for user profile management.
-     * <p/>
-     * <i>[required, default: https://demo.linkid.be/linkid-user]</i>
-     * <p/>
-     * <p>
-     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-user]} (eg. {@code https://my.linkid.be/linkid-user})
-     * </p>
-     * <p/>
-     * <p>
-     * <b>NOTE:</b> Do not terminate with a slash.
-     * </p>
-     */
-    @Property(required = true, unset = "https://demo.linkid.be/linkid-user")
-    String userBase();
-
-    /**
      * Property that defines the base URL to the linkID mobile web application to use for user profile management.
      * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-mobile]</i>
