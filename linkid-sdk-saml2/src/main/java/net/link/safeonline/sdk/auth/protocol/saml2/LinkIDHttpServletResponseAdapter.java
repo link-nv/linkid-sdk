@@ -22,10 +22,7 @@ public class LinkIDHttpServletResponseAdapter extends HttpServletResponseAdapter
 
     private final HttpServletResponse httpServletResponse;
 
-    private final Locale    language;
-    private final String    themeName;
-    private final LoginMode loginMode;
-    private final StartPage startPage;
+    private final Locale language;
 
     /**
      * Constructor.
@@ -33,17 +30,13 @@ public class LinkIDHttpServletResponseAdapter extends HttpServletResponseAdapter
      * @param httpServletResponse servlet response to adapt
      * @param isSecure            whether the outbound connection is protected by SSL/TLS
      */
-    public LinkIDHttpServletResponseAdapter(final HttpServletResponse httpServletResponse, final boolean isSecure, final Locale language,
-                                            final String themeName, final LoginMode loginMode, final StartPage startPage) {
+    public LinkIDHttpServletResponseAdapter(final HttpServletResponse httpServletResponse, final boolean isSecure, final Locale language) {
 
         super( httpServletResponse, isSecure );
 
         this.httpServletResponse = httpServletResponse;
 
         this.language = language;
-        this.themeName = themeName;
-        this.loginMode = loginMode;
-        this.startPage = startPage;
     }
 
     @Override
@@ -52,12 +45,6 @@ public class LinkIDHttpServletResponseAdapter extends HttpServletResponseAdapter
         // append linkID's request params
         if (null != language)
             location = URLUtils.addParameter( location, RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
-        if (null != themeName)
-            location = URLUtils.addParameter( location, RequestConstants.THEME_REQUEST_PARAM, themeName );
-        if (null != loginMode)
-            location = URLUtils.addParameter( location, RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.name() );
-        if (null != startPage)
-            location = URLUtils.addParameter( location, RequestConstants.START_PAGE_REQUEST_PARAM, startPage.name() );
 
         logger.dbg( "location=%s", location );
 

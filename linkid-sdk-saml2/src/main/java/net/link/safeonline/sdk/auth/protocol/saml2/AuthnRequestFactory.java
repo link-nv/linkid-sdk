@@ -7,17 +7,30 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import net.link.util.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.xml.namespace.QName;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
-import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.*;
-import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.*;
-import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.*;
-import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.*;
-import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.*;
+import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContext;
+import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextBuilder;
+import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextMarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextUnmarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContext;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContextBuilder;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContextMarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContextUnmarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponse;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponseBuilder;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponseMarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponseUnmarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.SubjectAttributes;
+import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.SubjectAttributesBuilder;
+import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.SubjectAttributesMarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.SubjectAttributesUnmarshaller;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.saml.SamlUtils;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +40,15 @@ import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.common.Extensions;
-import org.opensaml.saml2.core.*;
+import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Conditions;
+import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameIDPolicy;
+import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 
@@ -62,8 +83,6 @@ public class AuthnRequestFactory {
         System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema", "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
         try {
             DefaultBootstrap.bootstrap();
-            Configuration.registerObjectProvider( SessionInfo.DEFAULT_ELEMENT_NAME, new SessionInfoBuilder(), new SessionInfoMarshaller(),
-                    new SessionInfoUnmarshaller() );
             Configuration.registerObjectProvider( DeviceContext.DEFAULT_ELEMENT_NAME, new DeviceContextBuilder(), new DeviceContextMarshaller(),
                     new DeviceContextUnmarshaller() );
             Configuration.registerObjectProvider( SubjectAttributes.DEFAULT_ELEMENT_NAME, new SubjectAttributesBuilder(), new SubjectAttributesMarshaller(),
@@ -93,7 +112,6 @@ public class AuthnRequestFactory {
      * @param destinationURL              the optional location of the destination IdP.
      * @param devices                     the optional list of allowed authentication devices.
      * @param forceAuthentication         whether authentication should be forced and SSO ignore
-     * @param sessionTrackingId           optional session info, marks application wishes to track this session
      * @param deviceContextMap            optional device context, can contain context attributes for specific device's like the iOS client
      * @param subjectAttributesMap        optional map attributes of the to be authenticated subject. These values will be used if needed
      *                                    in case of missing attributes in the linkID authentication flow. The key's are the linkID
@@ -104,8 +122,7 @@ public class AuthnRequestFactory {
      */
     public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences, @Nullable String applicationFriendlyName,
                                                   String assertionConsumerServiceURL, @Nullable String destinationURL, @Nullable Set<String> devices,
-                                                  boolean forceAuthentication, @Nullable String sessionTrackingId,
-                                                  @Nullable Map<String, String> deviceContextMap,
+                                                  boolean forceAuthentication, @Nullable Map<String, String> deviceContextMap,
                                                   @Nullable Map<String, List<Serializable>> subjectAttributesMap, @Nullable PaymentContextDO paymentContext) {
 
         if (null == issuerName)
@@ -167,20 +184,6 @@ public class AuthnRequestFactory {
                 audience.setAudienceURI( audienceName );
             }
             request.setConditions( conditions );
-        }
-
-        // add session info
-        if (null != sessionTrackingId) {
-
-            if (null == request.getExtensions()) {
-                QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
-                Extensions extensions = SamlUtils.buildXMLObject( extensionsQName );
-                request.setExtensions( extensions );
-            }
-
-            SessionInfo sessionInfo = SamlUtils.buildXMLObject( SessionInfo.DEFAULT_ELEMENT_NAME );
-            sessionInfo.setSession( sessionTrackingId );
-            request.getExtensions().getUnknownXMLObjects().add( sessionInfo );
         }
 
         // add device context

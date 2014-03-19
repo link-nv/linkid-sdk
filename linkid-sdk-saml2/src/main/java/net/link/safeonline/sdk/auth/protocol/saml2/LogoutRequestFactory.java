@@ -7,18 +7,15 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import net.link.util.InternalInconsistencyException;
 import java.security.NoSuchAlgorithmException;
-import javax.xml.namespace.QName;
-import net.link.safeonline.sdk.auth.protocol.saml2.sessiontracking.SessionInfo;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.saml.SamlUtils;
-import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.common.Extensions;
-import org.opensaml.saml2.core.*;
+import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.LogoutRequest;
+import org.opensaml.saml2.core.NameID;
 
 
 /**
@@ -46,10 +43,8 @@ public class LogoutRequestFactory {
      * Later on we could use the SAML Metadata service or a persistent server-side application field to locate this service.
      *
      * @param destinationURL the optional location of the destination IdP.
-     * @param session        the optional SSO session
      */
-    public static LogoutRequest createLogoutRequest(String subjectName, String issuerName, String destinationURL,
-                                                    @Nullable String session) {
+    public static LogoutRequest createLogoutRequest(String subjectName, String issuerName, String destinationURL) {
 
         if (null == issuerName)
             throw new IllegalArgumentException( "application name should not be null" );
@@ -78,16 +73,6 @@ public class LogoutRequestFactory {
         nameID.setValue( subjectName );
         nameID.setFormat( "urn:oasis:names:tc:SAML:2.0:nameid-format:entity" );
         request.setNameID( nameID );
-
-        // add session info
-        if (null != session) {
-            QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
-            Extensions extensions = SamlUtils.buildXMLObject( extensionsQName );
-            SessionInfo sessionInfo = SamlUtils.buildXMLObject( SessionInfo.DEFAULT_ELEMENT_NAME );
-            sessionInfo.setSession( session );
-            request.setExtensions( extensions );
-            request.getExtensions().getUnknownXMLObjects().add( sessionInfo );
-        }
 
         return request;
     }

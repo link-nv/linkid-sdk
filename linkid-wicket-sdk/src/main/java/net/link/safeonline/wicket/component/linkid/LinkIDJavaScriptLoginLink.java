@@ -7,7 +7,6 @@
 
 package net.link.safeonline.wicket.component.linkid;
 
-import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.safeonline.wicket.util.LinkIDWicketUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.model.Model;
@@ -27,11 +26,10 @@ import org.apache.wicket.model.Model;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
 
-    boolean   mobileAuthentication;
-    boolean   mobileAuthenticationMinimal;
-    String    targetURI;
-    StartPage startPage;
-    String    initLoginPath;
+    boolean mobileAuthentication;
+    boolean mobileAuthenticationMinimal;
+    String  targetURI;
+    String  initLoginPath;
 
     /**
      * Constructor. Adds 'linkid-min.js' to the page.
@@ -67,8 +65,6 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
             add( new AttributeModifier( "data-mobile-minimal", true, new Model<String>( "true" ) ) );
         if (null != targetURI)
             add( new AttributeModifier( "data-completion-href", true, new Model<String>( targetURI ) ) );
-        if (null != startPage)
-            add( new AttributeModifier( "data-start-page", true, new Model<String>( startPage.name() ) ) );
         if (null != initLoginPath)
             add( new AttributeModifier( "data-login-href", true, new Model<String>( initLoginPath ) ) );
     }
@@ -107,16 +103,6 @@ public class LinkIDJavaScriptLoginLink extends AbstractLinkIDAuthJSLink {
     public void setTargetURI(final String targetURI) {
 
         this.targetURI = targetURI;
-    }
-
-    public StartPage getStartPage() {
-
-        return startPage;
-    }
-
-    public void setStartPage(final StartPage startPage) {
-
-        this.startPage = startPage;
     }
 
     public String getInitLoginPath() {

@@ -74,7 +74,7 @@ public class AuthnRequestFilter implements Filter {
     @NotNull
     protected static AuthenticationContext newContext(HttpServletRequest request) {
 
-        return new AuthenticationContext( null, null, null, false, null, (String) request.getAttribute( SESSION_TRACKING_ATTRIBUTE ), null, null,
+        return new AuthenticationContext( null, null, null, false, null, (String) request.getAttribute( SESSION_TRACKING_ATTRIBUTE ), null,
                 request.getRequestURL().toString() );
     }
 

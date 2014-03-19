@@ -48,11 +48,11 @@ public class LogoutContext extends LinkIDContext {
      *                        if there is no landing page).  May be <code>null</code>, in which case the user is sent to the application's
      *                        context path.
      *
-     * @see #LogoutContext(String, String, KeyProvider, String, String, Locale, String)
+     * @see #LogoutContext(String, String, KeyProvider, String, Locale, String)
      */
     public LogoutContext(@Nullable String applicationName, @Nullable KeyProvider keyProvider, @Nullable String target) {
 
-        this( applicationName, null, keyProvider, null, null, null, target );
+        this( applicationName, null, keyProvider, null, null, target );
     }
 
     /**
@@ -65,19 +65,16 @@ public class LogoutContext extends LinkIDContext {
      *                                <code>null</code>, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
-     * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
-     *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
      *                                authentication response, if there is no landing page).  May be <code>null</code>, in which case the
      *                                user is sent to the application's context path.
      *
-     * @see #LogoutContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, String, String, Locale, String, Protocol)
+     * @see #LogoutContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, String, Locale, String, Protocol)
      */
     public LogoutContext(String applicationName, @Nullable String applicationFriendlyName, KeyProvider keyProvider, @Nullable String sessionTrackingId,
-                         @Nullable String themeName, @Nullable Locale language, String target) {
+                         @Nullable Locale language, String target) {
 
         this( applicationName, applicationFriendlyName, ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
             @NotNull
@@ -85,16 +82,16 @@ public class LogoutContext extends LinkIDContext {
 
                 return config().linkID().app().keyProvider();
             }
-        } ), sessionTrackingId, themeName, language, target, null );
+        } ), sessionTrackingId, language, target, null );
     }
 
-    private LogoutContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider, String sessionTrackingId, String themeName,
-                          Locale language, String target, @Nullable Void v) {
+    private LogoutContext(String applicationName, String applicationFriendlyName, @NotNull KeyProvider keyProvider, String sessionTrackingId, Locale language,
+                          String target, @Nullable Void v) {
 
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
                 keyProvider.getTrustedCertificates(), keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ), //
-                sessionTrackingId, themeName, language, target, null );
+                sessionTrackingId, language, target, null );
     }
 
     /**
@@ -114,9 +111,6 @@ public class LogoutContext extends LinkIDContext {
      *                                will take place.
      * @param sessionTrackingId       An identifier that is used when session tracking is enabled to identify the session that will be
      *                                authenticated for by this authentication process.
-     * @param themeName               The name of the theme configured at the linkID node that should be applied to the linkID
-     *                                authentication application while the user authenticates himself as a result of this call.  May be
-     *                                <code>null</code>, in which case {@link LinkIDConfig#theme()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
@@ -126,11 +120,10 @@ public class LogoutContext extends LinkIDContext {
      *                                <code>null</code>, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
      */
     public LogoutContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair, X509Certificate applicationCertificate,
-                         Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate, String sessionTrackingId, String themeName,
-                         Locale language, String target, @Nullable Protocol protocol) {
+                         Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate, String sessionTrackingId, Locale language,
+                         String target, @Nullable Protocol protocol) {
 
-        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, sessionTrackingId,
-                themeName, language, target, protocol );
+        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language, target, protocol );
     }
 
     @Override

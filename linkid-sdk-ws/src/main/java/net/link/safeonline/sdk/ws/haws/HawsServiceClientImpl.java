@@ -7,18 +7,21 @@
 
 package net.link.safeonline.sdk.ws.haws;
 
-import net.link.util.InternalInconsistencyException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.haws.*;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.StartPage;
+import net.lin_k.safe_online.haws.HawsServicePort;
+import net.lin_k.safe_online.haws.PullRequest;
+import net.lin_k.safe_online.haws.PullResponse;
+import net.lin_k.safe_online.haws.PushRequestV2;
+import net.lin_k.safe_online.haws.PushResponse;
 import net.link.safeonline.sdk.api.haws.PullErrorCode;
-import net.link.safeonline.sdk.api.haws.*;
+import net.link.safeonline.sdk.api.haws.PullException;
 import net.link.safeonline.sdk.api.haws.PushErrorCode;
+import net.link.safeonline.sdk.api.haws.PushException;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.haws.HawsServiceFactory;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.saml.SamlUtils;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
@@ -77,22 +80,17 @@ public class HawsServiceClientImpl extends AbstractWSClient<HawsServicePort> imp
     }
 
     @Override
-    public String push(final AuthnRequest authnRequest, final String language, final String theme, final LoginMode loginMode, final StartPage startPage)
+    public String push(final AuthnRequest authnRequest, final String language)
             throws PushException {
 
-        PushRequest request = new PushRequest();
+        PushRequestV2 request = new PushRequestV2();
 
         request.setAny( SamlUtils.marshall( authnRequest ) );
 
         request.setLanguage( language );
-        request.setTheme( theme );
-        if (null != loginMode)
-            request.setLoginMode( loginMode.name() );
-        if (null != startPage)
-            request.setStartPage( startPage.name() );
 
         // operate
-        PushResponse response = getPort().push( request );
+        PushResponse response = getPort().pushV2( request );
 
         // convert response
         if (null != response.getError()) {

@@ -8,20 +8,20 @@
 package net.link.safeonline.sdk.auth.servlet;
 
 import com.google.common.base.Function;
-import net.link.util.logging.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.RequestConstants;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
 import net.link.util.exception.ValidationFailedException;
+import net.link.util.logging.Logger;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 
@@ -90,25 +90,14 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
             onLogin( request.getSession(), authnResponse, response );
 
-            String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
-            LoginMode mode = LoginMode.fromString( modeParam );
-            if (mode == null)
-                mode = authnResponse.getRequest().getLoginMode();
-
-            if (mode == LoginMode.POPUP || authnResponse.getRequest().isMobileAuthentication() ||   //
-                authnResponse.getRequest().isMobileAuthenticationMinimal()) {
+            if (authnResponse.getRequest().isMobileAuthentication() || authnResponse.getRequest().isMobileAuthenticationMinimal()) {
 
                 response.setContentType( "text/html" );
                 PrintWriter out = response.getWriter();
                 out.println( "<html>" );
                 out.println( "<head>" );
                 out.println( "<script type=\"text/javascript\">" );
-                if (mode == LoginMode.POPUP) {
-                    out.println( String.format( "window.opener.location.href = \"%s\";", authnResponse.getRequest().getTarget() ) );
-                    out.println( "window.close();" );
-                } else {
-                    out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
-                }
+                out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
                 out.println( "</script>" );
                 out.println( "</head>" );
                 out.println( "<body>" );

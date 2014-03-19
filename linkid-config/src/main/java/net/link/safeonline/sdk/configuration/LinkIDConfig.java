@@ -60,16 +60,6 @@ public interface LinkIDConfig {
     String logoutExitPath();
 
     /**
-     * Specifies a name of a CSS theme that changes the looks of the linkID application.
-     * <p/>
-     * <i>[optional, default: The application's default theme configured at the linkID node]</i>
-     * <p/>
-     * <p> Accepted values are names of themes configured by the operator of the linkID node you'll be using. </p>
-     */
-    @Property(required = false)
-    String theme();
-
-    /**
      * Specifies the language that the linkID service should localize its interaction with the user in.
      * <p/>
      * <i>[optional, default: Use the locale of the current browser request]</i>

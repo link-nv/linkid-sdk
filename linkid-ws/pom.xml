@@ -35,7 +35,6 @@
                     <wsdlFiles>
                         <wsdlFile>saml-protocol-2.0.wsdl</wsdlFile>
                         <wsdlFile>liberty-idwsf-dst-ref-v2.1-link.wsdl</wsdlFile>
-                        <wsdlFile>safe-online-auth.wsdl</wsdlFile>
                         <wsdlFile>safe-online-payment.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws.wsdl</wsdlFile>
@@ -43,7 +42,6 @@
                         <wsdlFile>notification-consumer.wsdl</wsdlFile>
                         <wsdlFile>notification-producer.wsdl</wsdlFile>
                         <wsdlFile>notification-subscription-manager.wsdl</wsdlFile>
-                        <wsdlFile>safe-online-session.wsdl</wsdlFile>
                         <wsdlFile>ws-trust-1.3.wsdl</wsdlFile>
                         <wsdlFile>xkms.wsdl</wsdlFile>
                     </wsdlFiles>

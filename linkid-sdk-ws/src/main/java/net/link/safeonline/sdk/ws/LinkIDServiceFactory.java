@@ -20,7 +20,6 @@ import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationC
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
-import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
@@ -34,7 +33,6 @@ import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClie
 import net.link.safeonline.sdk.ws.notification.producer.NotificationProducerClientImpl;
 import net.link.safeonline.sdk.ws.notification.subscription.NotificationSubscriptionManagerClientImpl;
 import net.link.safeonline.sdk.ws.payment.PaymentServiceClientImpl;
-import net.link.safeonline.sdk.ws.session.SessionTrackingClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.util.config.KeyProvider;
@@ -409,53 +407,6 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID session tracking web service.
      */
-    public static SessionTrackingClient getSessionTrackingService() {
-
-        return getSessionTrackingService( new SDKWSSecurityConfiguration(), null );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID session tracking web service.
-     *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
-     *
-     * @return proxy to the linkID session tracking web service.
-     */
-    public static SessionTrackingClient getSessionTrackingService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                  final X509Certificate sslCertificate) {
-
-        return getInstance()._getSessionTrackingService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID session tracking web service.
-     *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
-     *
-     * @return proxy to the linkID session tracking web service.
-     */
-    public static SessionTrackingClient getSessionTrackingService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
-
-        return getInstance()._getSessionTrackingService( configuration, sslCertificate );
-    }
-
-    @Override
-    protected SessionTrackingClient _getSessionTrackingService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
-
-        return new SessionTrackingClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID session tracking web service.
-     *
-     * @return proxy to the linkID session tracking web service.
-     */
     public static PaymentServiceClient getPaymentService() {
 
         return getPaymentService( null );
@@ -588,7 +539,8 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
                         return true;
                     }
-                } );
+                }
+        );
     }
 
     /**

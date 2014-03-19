@@ -119,7 +119,7 @@ public class LogoutServletTest {
 
         // Setup Data
         String userId = UUID.randomUUID().toString();
-        LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation, null );
+        LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation );
         String encodedSamlLogoutRequest = Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) ).getBytes() );
 
         servletTestManager.setSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE, userId );
@@ -164,7 +164,7 @@ public class LogoutServletTest {
         // Setup Data
         String userId = UUID.randomUUID().toString();
         String notUserId = "not " + userId;
-        LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation, null );
+        LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( userId, applicationName, servletLocation );
         String encodedSamlLogoutRequest = Base64.encode( DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) ).getBytes() );
 
         servletTestManager.setSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE, notUserId );

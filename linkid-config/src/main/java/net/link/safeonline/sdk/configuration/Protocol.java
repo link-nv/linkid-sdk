@@ -25,10 +25,6 @@ public enum Protocol {
 
     HAWS( "net.link.safeonline.sdk.auth.protocol.haws.HawsProtocolHandler" ),
 
-    OPENID( "net.link.safeonline.sdk.auth.protocol.openid.OpenIdProtocolHandler" ),
-
-    OAUTH2( "net.link.safeonline.sdk.auth.protocol.oauth2.OAuth2ProtocolHandler" ),
-
     // does not have a protocol handler, has to be used directly using the WS client
     WS( null );
 

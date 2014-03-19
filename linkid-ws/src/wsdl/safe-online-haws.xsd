@@ -48,6 +48,26 @@
         </complexType>
     </element>
 
+    <element name="PushRequestV2">
+        <annotation>
+            <documentation>Submit an authentication request</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <any namespace='##any' processContents='lax' minOccurs='1' maxOccurs='1'>
+                    <annotation>
+                        <documentation>The authentication request, e.g. a SAML2 request</documentation>
+                    </annotation>
+                </any>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
     <element name="PushResponse">
         <complexType>
             <sequence>

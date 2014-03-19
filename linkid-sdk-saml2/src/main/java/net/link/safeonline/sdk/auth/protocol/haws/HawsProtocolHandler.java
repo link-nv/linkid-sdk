@@ -57,14 +57,13 @@ public class HawsProtocolHandler implements ProtocolHandler {
         // create SAML2 request
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null, authnContext.getApplicationFriendlyName(),
                 requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.getDevices(), authnContext.isForceAuthentication(),
-                authnContext.getSessionTrackingId(), authnContext.getDeviceContext(), authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
+                authnContext.getDeviceContext(), authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
 
         HawsServiceClient<AuthnRequest, Response> wsClient = getWsClient( authnContext );
 
         String sessionId;
         try {
-            sessionId = wsClient.push( samlRequest, authnContext.getLanguage().getLanguage(), authnContext.getThemeName(), authnContext.getLoginMode(),
-                    authnContext.getStartPage() );
+            sessionId = wsClient.push( samlRequest, authnContext.getLanguage().getLanguage() );
         }
         catch (PushException e) {
             logger.err( e, "Failed to push SAML v2.0 authentication request: errorCode: %s - %s", e.getErrorCode(), e.getInfo() );

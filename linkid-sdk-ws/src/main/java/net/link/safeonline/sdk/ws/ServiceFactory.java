@@ -17,7 +17,6 @@ import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationC
 import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
 import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
-import net.link.safeonline.sdk.api.ws.session.client.SessionTrackingClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
@@ -51,8 +50,6 @@ public abstract class ServiceFactory {
 
     protected abstract NotificationSubscriptionManagerClient _getNotificationSubscriptionService(WSSecurityConfiguration configuration,
                                                                                                  X509Certificate sslCertificate);
-
-    protected abstract SessionTrackingClient _getSessionTrackingService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
 
     protected abstract PaymentServiceClient _getPaymentService(X509Certificate sslCertificate);
 

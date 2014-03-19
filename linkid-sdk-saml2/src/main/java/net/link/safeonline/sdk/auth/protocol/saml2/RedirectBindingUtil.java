@@ -7,15 +7,13 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import net.link.util.logging.Logger;
 import java.security.KeyPair;
 import java.util.Collections;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.LoginMode;
-import net.link.safeonline.sdk.api.auth.StartPage;
 import net.link.util.common.DomUtils;
+import net.link.util.logging.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
@@ -28,7 +26,9 @@ import org.opensaml.saml2.metadata.impl.AssertionConsumerServiceBuilder;
 import org.opensaml.ws.message.MessageContext;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
 import org.opensaml.ws.message.encoder.MessageEncodingException;
-import org.opensaml.ws.security.*;
+import org.opensaml.ws.security.SecurityPolicy;
+import org.opensaml.ws.security.SecurityPolicyException;
+import org.opensaml.ws.security.SecurityPolicyResolver;
 import org.opensaml.ws.security.provider.BasicSecurityPolicy;
 import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
@@ -56,8 +56,7 @@ public abstract class RedirectBindingUtil {
      * @param response       HTTP Servlet Response
      */
     public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, @Nullable String relayState, String consumerUrl,
-                                   HttpServletResponse response, @Nullable Locale language, @Nullable String themeName, @Nullable LoginMode loginMode,
-                                   @Nullable StartPage startPage) {
+                                   HttpServletResponse response, @Nullable Locale language) {
 
         logger.dbg( "sendRequest[HTTP Redirect] (RelayState: %s, To: %s):\n%s", relayState, consumerUrl,
                 DomUtils.domToString( LinkIDSaml2Utils.marshall( samlRequest ), true ) );
@@ -73,8 +72,7 @@ public abstract class RedirectBindingUtil {
         consumerService.setLocation( consumerUrl );
         messageContext.setPeerEntityEndpoint( consumerService );
 
-        messageContext.setOutboundMessageTransport(
-                new LinkIDHttpServletResponseAdapter( response, consumerUrl.startsWith( "https" ), language, themeName, loginMode, startPage ) );
+        messageContext.setOutboundMessageTransport( new LinkIDHttpServletResponseAdapter( response, consumerUrl.startsWith( "https" ), language ) );
         messageContext.setOutboundSAMLMessage( samlRequest );
         messageContext.setRelayState( relayState );
 

@@ -18,13 +18,6 @@
 
 	<systemSuffix systemIdSuffix="xml.xsd" uri="xml.xsd" />
 
-	<!-- SafeOnline WS Authentication schema -->
-	<systemSuffix systemIdSuffix="safe-online-auth.xsd" uri="safe-online-auth.xsd" />
-
-	<!-- SafeOnline Session Tracking WS schema -->
-	<systemSuffix systemIdSuffix="safe-online-session.xsd"
-		uri="safe-online-session.xsd" />
-
 	<!-- SafeOnline ID Mapping WS schema -->
 	<systemSuffix systemIdSuffix="safe-online-idmapping.xsd"
 		uri="safe-online-idmapping.xsd" />

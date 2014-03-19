@@ -41,11 +41,6 @@ public interface RequestConstants {
     String MOBILE_FORCE_REG_REQUEST_PARAM = "mobileForceReg";
 
     /**
-     * Case we want to force the auth webapp to go straight to register or authentication page.
-     */
-    String START_PAGE_REQUEST_PARAM = "start_page";
-
-    /**
      * Which protocol to use, SAML2, HAWS, OPENID, OAUTH
      */
     String PROTOCOL_PARAM = "protocol";
@@ -54,13 +49,9 @@ public interface RequestConstants {
      * @see Locale#Locale(String)
      */
     String LANGUAGE_REQUEST_PARAM       = "Language";
-    String THEME_REQUEST_PARAM          = "ThemeName";
-    String LOGINMODE_REQUEST_PARAM      = "login_mode";
     String TARGETURI_REQUEST_PARAM      = "return_uri";
     String APPLICATION_ID_REQUEST_PARAM = "ApplicationId";
-    String CANCELLED_REQUEST_PARAM      = "cancelled";
     String TIMEOUT_REQUEST_PARAM        = "timeout";
-    String OAUTH2_FORCE_AUTHN           = "approval_prompt";
 
     String HAWS_SESSION_ID_PARAM = "hawsId";
 }

@@ -60,20 +60,12 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
 
-        // optional login mode
-        String modeParam = request.getParameter( RequestConstants.LOGINMODE_REQUEST_PARAM );
-        LoginMode mode = LoginMode.fromString( modeParam );
-
-        // optional force registration
-        StartPage startPage = StartPage.fromString( request.getParameter( RequestConstants.START_PAGE_REQUEST_PARAM ), StartPage.NONE );
-
         AuthenticationContext authenticationContext = initAuthenticationContext( request, response, mobileAuthn, mobileAuthnMinimal, mobileForceRegistration,
-                targetURI, mode, startPage );
+                targetURI );
 
         if (null == authenticationContext) {
 
-            authenticationContext = new AuthenticationContext( null, null, null, targetURI, mode );
-            authenticationContext.setStartPage( startPage );
+            authenticationContext = new AuthenticationContext( null, null, null, targetURI );
             authenticationContext.setMobileAuthentication( mobileAuthn );
             authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
             authenticationContext.setMobileForceRegistration( mobileForceRegistration );
@@ -92,8 +84,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
      */
     @Nullable
     protected AuthenticationContext initAuthenticationContext(final HttpServletRequest request, final HttpServletResponse response, final boolean mobileAuthn,
-                                                              final boolean mobileAuthnMinimal, final boolean mobileForceRegistration, final String targetURI,
-                                                              final LoginMode mode, final StartPage startPage) {
+                                                              final boolean mobileAuthnMinimal, final boolean mobileForceRegistration, final String targetURI) {
 
         return null;
     }

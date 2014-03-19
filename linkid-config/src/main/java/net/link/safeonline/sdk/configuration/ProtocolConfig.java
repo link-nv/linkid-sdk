@@ -22,11 +22,7 @@ import org.joda.time.Duration;
 @Group(prefix = "proto")
 public interface ProtocolConfig {
 
-    OpenIDProtocolConfig openid();
-
     SAMLProtocolConfig saml();
-
-    OAuth2ProtocolConfig oauth2();
 
     /**
      * The authentication protocol used to begin the session with the linkID authentication web application. See {@link Protocol} for the

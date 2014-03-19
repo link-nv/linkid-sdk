@@ -7,16 +7,17 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import net.link.util.logging.Logger;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.LoginMode;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
@@ -25,12 +26,24 @@ import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
 import net.link.util.exception.ValidationFailedException;
+import net.link.util.logging.Logger;
 import net.link.util.saml.Saml2Utils;
 import org.bouncycastle.util.encoders.Base64;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
-import org.opensaml.saml2.core.*;
-import org.opensaml.xml.parse.*;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.AuthnStatement;
+import org.opensaml.saml2.core.Conditions;
+import org.opensaml.saml2.core.LogoutResponse;
+import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.StatusCode;
+import org.opensaml.saml2.core.StatusResponseType;
+import org.opensaml.saml2.core.Subject;
+import org.opensaml.xml.parse.BasicParserPool;
+import org.opensaml.xml.parse.ParserPool;
+import org.opensaml.xml.parse.XMLParserException;
 import org.w3c.dom.Element;
 
 
@@ -61,19 +74,18 @@ public abstract class ResponseUtil {
      * @param postTemplateResource The resource that contains the template of the SAML HTTP POST Binding message.
      * @param language             A language hint to make the application retrieving the response use the same locale as the requesting
      *                             application.
-     * @param loginMode            Used in browser post form to jump out of an iframe if wanted ( target="_top" ), or jump out of a popup window
      *
      * @throws IOException IO Exception
      */
     public static void sendResponse(String consumerUrl, SAMLBinding responseBinding, StatusResponseType samlResponse, KeyPair signingKeyPair,
                                     CertificateChain certificateChain, HttpServletResponse response, String relayState, String postTemplateResource,
-                                    @Nullable Locale language, @Nullable LoginMode loginMode)
+                                    @Nullable Locale language)
             throws IOException {
 
         switch (responseBinding) {
             case HTTP_POST:
-                PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl, response, language,
-                        loginMode );
+                PostBindingUtil.sendResponse( samlResponse, signingKeyPair, certificateChain, relayState, postTemplateResource, consumerUrl, response,
+                        language );
                 break;
 
             case HTTP_REDIRECT:

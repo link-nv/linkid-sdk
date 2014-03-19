@@ -40,10 +40,9 @@ public class LogoutRequestFactoryTest {
         String applicationName = "test-application-id";
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         String destinationURL = "https://test.idp.com/entry";
-        String session = "test-session-info";
 
         // Test
-        LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( subjectName, applicationName, destinationURL, session );
+        LogoutRequest samlLogoutRequest = LogoutRequestFactory.createLogoutRequest( subjectName, applicationName, destinationURL );
         String samlLogoutRequestToken = DomUtils.domToString( LinkIDSaml2Utils.sign( samlLogoutRequest, keyPair, null ) );
 
         // Verify
@@ -70,10 +69,6 @@ public class LogoutRequestFactoryTest {
         Node formatNode = XPathAPI.selectSingleNode( resultDocument, "/samlp2:LogoutRequest/saml2:NameID/@Format", nsElement );
         assertNotNull( formatNode );
         assertEquals( "urn:oasis:names:tc:SAML:2.0:nameid-format:entity", formatNode.getTextContent() );
-
-        Node sessionInfoNode = XPathAPI.selectSingleNode( resultDocument, "/samlp2:LogoutRequest/samlp2:Extensions/samlp2:SessionInfo/@Session", nsElement );
-        assertNotNull( sessionInfoNode );
-        assertEquals( session, sessionInfoNode.getTextContent() );
 
         // verify signature
         assertNotNull( samlLogoutRequest.getSignature() );

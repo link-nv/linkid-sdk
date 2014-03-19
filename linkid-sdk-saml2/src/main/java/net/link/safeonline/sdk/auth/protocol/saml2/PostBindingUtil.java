@@ -60,21 +60,19 @@ public abstract class PostBindingUtil {
      * @param consumerUrl      URL of request consumer
      * @param response         HTTP Servlet Response
      * @param language         optional language
-     * @param themeName        optional theme name
      *
      * @throws IOException IO Exception
      */
     @SuppressWarnings("UseOfPropertiesAsHashtable")
-    public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain,
-                                   String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                   Locale language, String themeName, LoginMode loginMode, StartPage startPage)
+    public static void sendRequest(RequestAbstractType samlRequest, KeyPair signingKeyPair, CertificateChain certificateChain, String relayState,
+                                   String templateResource, String consumerUrl, HttpServletResponse response, Locale language)
             throws IOException {
 
         logger.dbg( "sendRequest[HTTP POST] (RelayState: %s, To: %s)\n%s", relayState, consumerUrl,
                 DomUtils.domToString( SamlUtils.marshall( samlRequest ), true ) );
 
-        String encodedSamlRequestToken = new String( Base64.encode(
-                DomUtils.domToString( SamlUtils.sign( samlRequest, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
+        String encodedSamlRequestToken = new String(
+                Base64.encode( DomUtils.domToString( SamlUtils.sign( samlRequest, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
                 Charsets.UTF_8 );
 
         /*
@@ -85,8 +83,7 @@ public abstract class PostBindingUtil {
         velocityProperties.setProperty( "resource.loader", "class" );
         velocityProperties.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, JdkLogChute.class.getName() );
         velocityProperties.setProperty( JdkLogChute.RUNTIME_LOG_JDK_LOGGER, PostBindingUtil.class.getName() );
-        velocityProperties.setProperty( "class.resource.loader.class",
-                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
+        velocityProperties.setProperty( "class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
         velocityProperties.setProperty( "file.resource.loader.cache ", "false" );
         VelocityEngine velocityEngine;
         try {
@@ -103,13 +100,6 @@ public abstract class PostBindingUtil {
             velocityContext.put( "RelayState", relayState );
         if (null != language)
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
-        if (null != themeName)
-            velocityContext.put( RequestConstants.THEME_REQUEST_PARAM, themeName );
-        if (loginMode != null) {
-            velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
-        }
-        if (null != startPage)
-            velocityContext.put( RequestConstants.START_PAGE_REQUEST_PARAM, startPage.name() );
 
         Template template;
         //noinspection OverlyBroadCatchBlock
@@ -139,16 +129,15 @@ public abstract class PostBindingUtil {
      * @throws IOException IO Exception
      */
     @SuppressWarnings("UseOfPropertiesAsHashtable")
-    public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain,
-                                    String relayState, String templateResource, String consumerUrl, HttpServletResponse response,
-                                    Locale language, LoginMode loginMode)
+    public static void sendResponse(StatusResponseType samlResponse, KeyPair signingKeyPair, CertificateChain certificateChain, String relayState,
+                                    String templateResource, String consumerUrl, HttpServletResponse response, Locale language)
             throws IOException {
 
-        logger.dbg( "sendResponse[HTTP POST] (RelayState: %s, To: %s, loginMode: %s)\n%s", relayState, consumerUrl, loginMode,
+        logger.dbg( "sendResponse[HTTP POST] (RelayState: %s, To: %s)\n%s", relayState, consumerUrl,
                 DomUtils.domToString( SamlUtils.marshall( samlResponse ), true ) );
 
-        String encodedSamlResponseToken = new String( Base64.encode(
-                DomUtils.domToString( SamlUtils.sign( samlResponse, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
+        String encodedSamlResponseToken = new String(
+                Base64.encode( DomUtils.domToString( SamlUtils.sign( samlResponse, signingKeyPair, certificateChain ) ).getBytes( Charsets.UTF_8 ) ),
                 Charsets.UTF_8 );
 
         /*
@@ -175,9 +164,6 @@ public abstract class PostBindingUtil {
             velocityContext.put( "RelayState", relayState );
         if (null != language)
             velocityContext.put( RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
-        if (loginMode != null) {
-            velocityContext.put( RequestConstants.LOGINMODE_REQUEST_PARAM, loginMode.toString() );
-        }
 
         Template template;
         //noinspection OverlyBroadCatchBlock
@@ -196,7 +182,7 @@ public abstract class PostBindingUtil {
      * @param request HTTP Servlet Request
      *
      * @return The {@link SAMLObject} that is in the given {@link HttpServletRequest} which is parsed as using the SAML HTTP POST Binding
-     *         protocol.<br> {@code null}: There is no SAML request or response.
+     * protocol.<br> {@code null}: There is no SAML request or response.
      */
     @Nullable
     public static SAMLObject getSAMLObject(HttpServletRequest request) {

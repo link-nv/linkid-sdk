@@ -147,42 +147,6 @@
             <classifier>javadoc</classifier>
         </dependency>
 
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-openid</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-openid</artifactId>
-            <version>GIT-SNAPSHOT</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-openid</artifactId>
-            <version>GIT-SNAPSHOT</version>
-            <classifier>javadoc</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-oauth2</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-oauth2</artifactId>
-            <version>GIT-SNAPSHOT</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-oauth2</artifactId>
-            <version>GIT-SNAPSHOT</version>
-            <classifier>javadoc</classifier>
-        </dependency>
-
     </dependencies>
 
 </project>

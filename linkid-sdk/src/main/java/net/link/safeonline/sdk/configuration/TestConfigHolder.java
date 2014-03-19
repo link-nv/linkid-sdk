@@ -241,28 +241,14 @@ public class TestConfigHolder extends ConfigHolder {
 
         public static class TestProtocolConfig implements ProtocolConfig {
 
-            private final TestOpenIDProtocolConfig openid = new TestOpenIDProtocolConfig();
-            private final TestSAMLProtocolConfig   saml   = new TestSAMLProtocolConfig();
-            private final TestOAuthProtocolConfig  oauth  = new TestOAuthProtocolConfig();
+            private final TestSAMLProtocolConfig saml = new TestSAMLProtocolConfig();
             public Protocol defaultProtocol;
             public Duration maxTimeOffset;
-
-            @Override
-            public TestOpenIDProtocolConfig openid() {
-
-                return openid;
-            }
 
             @Override
             public TestSAMLProtocolConfig saml() {
 
                 return saml;
-            }
-
-            @Override
-            public OAuth2ProtocolConfig oauth2() {
-
-                return oauth;
             }
 
             @Override
@@ -301,79 +287,6 @@ public class TestConfigHolder extends ConfigHolder {
                     return relayState;
                 }
             }
-
-
-            public static class TestOpenIDProtocolConfig implements OpenIDProtocolConfig {
-
-                public String realm;
-                public String discoveryPath;
-
-                @Override
-                public String realm() {
-
-                    return realm;
-                }
-
-                @Override
-                public String discoveryPath() {
-
-                    return discoveryPath;
-                }
-            }
-
-
-            public static class TestOAuthProtocolConfig implements OAuth2ProtocolConfig {
-
-                public String authorizationPath;
-                public String tokenPath;
-                public String validationPath;
-                public String attributesPath;
-                public String binding;
-                public String clientSecret;
-                public String clientId;
-
-                @Override
-                public String authorizationPath() {
-
-                    return authorizationPath;
-                }
-
-                @Override
-                public String tokenPath() {
-
-                    return tokenPath;
-                }
-
-                @Override
-                public String validationPath() {
-
-                    return validationPath;
-                }
-
-                @Override
-                public String attributesPath() {
-
-                    return attributesPath;
-                }
-
-                @Override
-                public String binding() {
-
-                    return binding;
-                }
-
-                @Override
-                public String clientSecret() {
-
-                    return clientSecret;
-                }
-
-                @Override
-                public String clientId() {
-
-                    return clientId;
-                }
-            }
         }
 
 
@@ -383,7 +296,6 @@ public class TestConfigHolder extends ConfigHolder {
             public String authPath;
             public String logoutPath;
             public String logoutExitPath;
-            public String theme;
             public Locale language;
 
             @Override
@@ -408,12 +320,6 @@ public class TestConfigHolder extends ConfigHolder {
             public String logoutExitPath() {
 
                 return logoutExitPath;
-            }
-
-            @Override
-            public String theme() {
-
-                return theme;
             }
 
             @Override
