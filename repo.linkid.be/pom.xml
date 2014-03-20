@@ -147,18 +147,6 @@
             <type>jar</type>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.device</groupId>
-            <artifactId>linkid-beid-sdk</artifactId>
-            <type>jar</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.device</groupId>
-            <artifactId>linkid-password-sdk</artifactId>
-            <type>jar</type>
-            <version>${project.version}</version>
-        </dependency>
 
     </dependencies>
 

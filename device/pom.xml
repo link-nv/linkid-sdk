@@ -16,8 +16,6 @@
 
     <modules>
         <module>linkid-qr-sdk</module>
-        <module>linkid-beid-sdk</module>
-        <module>linkid-password-sdk</module>
     </modules>
 
 </project>
