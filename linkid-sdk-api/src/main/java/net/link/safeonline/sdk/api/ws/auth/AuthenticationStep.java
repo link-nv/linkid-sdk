@@ -27,8 +27,6 @@ import java.util.Map;
 public enum AuthenticationStep {
 
     AUTHENTICATE( "Authenticate" ),
-    INSUFFICIENT_DEVICE( "Insufficient device" ),
-    REQUIRED_DEVICE_MISSING( "Required device missing" ),
     GLOBAL_USAGE_AGREEMENT( "Global Usage Agreement" ),
     USAGE_AGREEMENT( "Usage Agreement" ),
     SUBSCRIPTION_DENIED( "Subscription denied" ),
