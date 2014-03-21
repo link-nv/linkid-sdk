@@ -424,7 +424,6 @@
 
         <module>linkid-sdk-package-java</module>
 
-        <module>device</module>
         <module>attribute</module>
 
         <module>examples</module>

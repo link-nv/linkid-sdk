@@ -140,14 +140,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Device SDKs -->
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.device</groupId>
-            <artifactId>linkid-qr-sdk</artifactId>
-            <type>jar</type>
-            <version>${project.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>
