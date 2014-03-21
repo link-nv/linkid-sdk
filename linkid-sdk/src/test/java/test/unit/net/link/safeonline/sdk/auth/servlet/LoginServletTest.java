@@ -48,7 +48,7 @@ public class LoginServletTest {
 
         contexts = new HashMap<String, ProtocolContext>();
         authnRequest = new AuthnProtocolRequestContext( UUID.randomUUID().toString(), "test-application",
-                mockProtocolHandler = createMock( ProtocolHandler.class ), target = "http://test.target", false, false, false );
+                mockProtocolHandler = createMock( ProtocolHandler.class ), target = "http://test.target", false );
         contexts.put( authnRequest.getId(), authnRequest );
 
         servletTestManager = new ServletTestManager();

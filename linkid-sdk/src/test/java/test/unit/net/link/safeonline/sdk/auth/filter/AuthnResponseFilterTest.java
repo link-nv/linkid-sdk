@@ -41,7 +41,7 @@ public class AuthnResponseFilterTest {
         HashMap<String, ProtocolContext> contexts = new HashMap<String, ProtocolContext>();
 
         mockProtocolHandler = createMock( ProtocolHandler.class );
-        authnRequest = new AuthnProtocolRequestContext( UUID.randomUUID().toString(), "test-application", mockProtocolHandler, null, false, false, false );
+        authnRequest = new AuthnProtocolRequestContext( UUID.randomUUID().toString(), "test-application", mockProtocolHandler, null, false );
         contexts.put( authnRequest.getId(), authnRequest );
         servletTestManager.setUp( new ContainerSetup( //
                 new ServletSetup( LoginTestServlet.class ), //

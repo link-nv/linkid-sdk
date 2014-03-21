@@ -31,8 +31,6 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class AuthenticationContext extends LinkIDContext {
 
-    private boolean                         mobileAuthentication;
-    private boolean                         mobileAuthenticationMinimal;
     private boolean                         mobileForceRegistration;
     private boolean                         forceAuthentication;
     private Map<String, List<Serializable>> subjectAttributes;
@@ -148,32 +146,6 @@ public class AuthenticationContext extends LinkIDContext {
                 protocol );
 
         this.forceAuthentication = forceAuthentication;
-    }
-
-    public boolean isMobileAuthentication() {
-
-        return mobileAuthentication;
-    }
-
-    /**
-     * Mark this authentication context to use the QR mobile authentication flow
-     */
-    public void setMobileAuthentication(final boolean mobileAuthentication) {
-
-        this.mobileAuthentication = mobileAuthentication;
-    }
-
-    public boolean isMobileAuthenticationMinimal() {
-
-        return mobileAuthenticationMinimal;
-    }
-
-    /**
-     * Mark this authentication context to use the QR mobile authentication 'minimal' flow
-     */
-    public void setMobileAuthenticationMinimal(final boolean mobileAuthenticationMinimal) {
-
-        this.mobileAuthenticationMinimal = mobileAuthenticationMinimal;
     }
 
     public boolean isMobileForceRegistration() {

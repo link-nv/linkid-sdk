@@ -84,7 +84,7 @@ public class HawsProtocolHandler implements ProtocolHandler {
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, requestConfig.getTargetURL(),
-                authnContext.isMobileAuthentication(), authnContext.isMobileAuthenticationMinimal(), authnContext.isMobileForceRegistration() );
+                authnContext.isMobileForceRegistration() );
     }
 
     @Nullable

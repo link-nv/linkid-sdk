@@ -61,7 +61,7 @@ public abstract class ConfigUtils {
      * server and client (eg. they're on HTTPS).</b>
      *
      * @return The absolute confidential base URL for the application that was activated by the given servlet request (URL to its context
-     *         path).
+     * path).
      */
     public static String getApplicationConfidentialURL() {
 
@@ -79,15 +79,5 @@ public abstract class ConfigUtils {
     public static String getApplicationConfidentialURLFromPath(String path) {
 
         return URLUtils.concat( getApplicationConfidentialURL(), path );
-    }
-
-    /**
-     * @param path A path relative to linkID's authentication application's context path.
-     *
-     * @return An absolute URL to the given path within linkID's authentication application.
-     */
-    public static String getLinkIDAuthURLFromPath(String path) {
-
-        return URLUtils.concat( config().web().authBase(), path );
     }
 }

@@ -141,11 +141,10 @@ public class TestConfigHolder extends ConfigHolder {
             public String appBase;
             public String appConfidentialBase;
             public String appPath;
-            public String authBase;
-            public String mobileAuthURL;
             public String mobileAuthMinimalURL;
-            public String mobileRegURL;
             public String mobileRegMinimalURL;
+            public String mobileLogoutURL;
+            public String mobileLogoutExitURL;
             public String mobileBase;
             public String staticBase;
             public String wsBase;
@@ -172,24 +171,6 @@ public class TestConfigHolder extends ConfigHolder {
             }
 
             @Override
-            public String authBase() {
-
-                return authBase;
-            }
-
-            @Override
-            public String mobileAuthURL() {
-
-                return mobileAuthURL;
-            }
-
-            @Override
-            public String mobileRegURL() {
-
-                return mobileRegURL;
-            }
-
-            @Override
             public String mobileAuthMinimalURL() {
 
                 return mobileAuthMinimalURL;
@@ -199,6 +180,18 @@ public class TestConfigHolder extends ConfigHolder {
             public String mobileRegMinimalURL() {
 
                 return mobileRegMinimalURL;
+            }
+
+            @Override
+            public String mobileLogoutURL() {
+
+                return mobileLogoutURL;
+            }
+
+            @Override
+            public String mobileLogoutExitURL() {
+
+                return mobileLogoutExitURL;
             }
 
             @Override
@@ -293,33 +286,12 @@ public class TestConfigHolder extends ConfigHolder {
         public static class TestLinkIDConfig implements LinkIDConfig {
 
             public TestAppLinkIDConfig app = new TestAppLinkIDConfig();
-            public String authPath;
-            public String logoutPath;
-            public String logoutExitPath;
             public Locale language;
 
             @Override
             public TestAppLinkIDConfig app() {
 
                 return app;
-            }
-
-            @Override
-            public String authPath() {
-
-                return authPath;
-            }
-
-            @Override
-            public String logoutPath() {
-
-                return logoutPath;
-            }
-
-            @Override
-            public String logoutExitPath() {
-
-                return logoutExitPath;
             }
 
             @Override

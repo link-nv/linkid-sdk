@@ -26,16 +26,6 @@ import java.util.Locale;
 public interface RequestConstants {
 
     /**
-     * Trigger the QR Mobile authentication flow
-     */
-    String MOBILE_AUTHN_REQUEST_PARAM = "mobileAuthn";
-
-    /**
-     * Trigger the QR Mobile 'minimal' authentication flow
-     */
-    String MOBILE_AUTHN_MINIMAL_REQUEST_PARAM = "mobileAuthnMinimal";
-
-    /**
      * Trigger the QR Mobile force registration flow
      */
     String MOBILE_FORCE_REG_REQUEST_PARAM = "mobileForceReg";

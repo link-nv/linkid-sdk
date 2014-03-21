@@ -90,49 +90,7 @@ public interface WebConfig {
     String mobileBase();
 
     /**
-     * Property that defines the base URL to the linkID authentication web application to use for application authentication.
-     * <p/>
-     * <i>[required, default: https://demo.linkid.be/linkid-auth]</i>
-     * <p/>
-     * <p>
-     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-auth]} (eg. {@code https://my.linkid.be/linkid-auth})
-     * </p>
-     * <p/>
-     * <p>
-     * <b>NOTE:</b> Do not terminate with a slash.
-     * </p>
-     */
-    @Property(required = true, unset = "https://demo.linkid.be/linkid-auth")
-    String authBase();
-
-    /**
-     * Property that defines the URL to the linkID QR authentication web application to use for application authentication.
-     * <p/>
-     * <i>[required, default: https://demo.linkid.be/linkid-qr/auth]</i>
-     * <p/>
-     * <p>
-     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/auth]} (eg. {@code https://my.linkid.be/linkid-qr/auth})
-     * </p>
-     * <p/>
-     */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/auth")
-    String mobileAuthURL();
-
-    /**
-     * Property that defines the URL to the linkID QR force registration web application to use for application authentication.
-     * <p/>
-     * <i>[required, default: https://demo.linkid.be/linkid-qr/reg]</i>
-     * <p/>
-     * <p>
-     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/reg]} (eg. {@code https://my.linkid.be/linkid-qr/reg})
-     * </p>
-     * <p/>
-     */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/reg")
-    String mobileRegURL();
-
-    /**
-     * Property that defines the URL to the linkID QR authentication web application to use for application authentication, in minimal mode
+     * Property that defines the URL to the linkID QR authentication web application to use for application authentication
      * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-qr/auth-min]</i>
      * <p/>
@@ -145,7 +103,7 @@ public interface WebConfig {
     String mobileAuthMinimalURL();
 
     /**
-     * Property that defines the URL to the linkID QR force registration web application to use for application authentication, in minimal mode
+     * Property that defines the URL to the linkID QR force registration web application to use for application authentication
      * <p/>
      * <i>[required, default: https://demo.linkid.be/linkid-qr/reg-min]</i>
      * <p/>
@@ -156,6 +114,32 @@ public interface WebConfig {
      */
     @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/reg-min")
     String mobileRegMinimalURL();
+
+    /**
+     * Property that defines the URL for Single Logout ( NOT YET IMPLEMENTED FULLY ! )
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-qr/logout]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/logout]} (eg. {@code https://my.linkid.be/linkid-qr/logout})
+     * </p>
+     * <p/>
+     */
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/logout")
+    String mobileLogoutURL();
+
+    /**
+     * Property that defines the URL for Single Logout ( NOT YET IMPLEMENTED FULLY ! )
+     * <p/>
+     * <i>[required, default: https://demo.linkid.be/linkid-qr/logoutexit]</i>
+     * <p/>
+     * <p>
+     * Use the form: {@code [scheme]//[authority]/[path-to-linkid-qr/logoutexit]} (eg. {@code https://my.linkid.be/linkid-qr/logoutexit})
+     * </p>
+     * <p/>
+     */
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/logoutexit")
+    String mobileLogoutExitURL();
 
     /**
      * Property that defines the base URL to the linkID static web application.

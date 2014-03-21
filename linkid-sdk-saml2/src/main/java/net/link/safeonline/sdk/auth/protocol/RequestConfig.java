@@ -47,19 +47,10 @@ public class RequestConfig {
         }
 
         String authnService;
-        if (authnContext.isMobileAuthentication()) {
-            if (authnContext.isMobileForceRegistration())
-                authnService = config().web().mobileRegURL();
-            else
-                authnService = config().web().mobileAuthURL();
-        } else if (authnContext.isMobileAuthenticationMinimal()) {
-            if (authnContext.isMobileForceRegistration())
-                authnService = config().web().mobileRegMinimalURL();
-            else
-                authnService = config().web().mobileAuthMinimalURL();
-        } else {
-            authnService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().authPath() );
-        }
+        if (authnContext.isMobileForceRegistration())
+            authnService = config().web().mobileRegMinimalURL();
+        else
+            authnService = config().web().mobileAuthMinimalURL();
 
         return new RequestConfig( targetURL, landingURL, authnService );
     }

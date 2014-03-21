@@ -50,8 +50,6 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
      */
     public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
 
-        boolean mobileAuthn = null != request.getParameter( RequestConstants.MOBILE_AUTHN_REQUEST_PARAM );
-        boolean mobileAuthnMinimal = null != request.getParameter( RequestConstants.MOBILE_AUTHN_MINIMAL_REQUEST_PARAM );
         boolean mobileForceRegistration = null != request.getParameter( RequestConstants.MOBILE_FORCE_REG_REQUEST_PARAM );
 
         //optional protocol: not specified => SAML2
@@ -60,14 +58,11 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
 
-        AuthenticationContext authenticationContext = initAuthenticationContext( request, response, mobileAuthn, mobileAuthnMinimal, mobileForceRegistration,
-                targetURI );
+        AuthenticationContext authenticationContext = initAuthenticationContext( request, response, mobileForceRegistration, targetURI );
 
         if (null == authenticationContext) {
 
             authenticationContext = new AuthenticationContext( null, null, targetURI );
-            authenticationContext.setMobileAuthentication( mobileAuthn );
-            authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
             authenticationContext.setMobileForceRegistration( mobileForceRegistration );
         }
 
@@ -83,8 +78,8 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
      * Override this if you want to initialize then authentication context yourself
      */
     @Nullable
-    protected AuthenticationContext initAuthenticationContext(final HttpServletRequest request, final HttpServletResponse response, final boolean mobileAuthn,
-                                                              final boolean mobileAuthnMinimal, final boolean mobileForceRegistration, final String targetURI) {
+    protected AuthenticationContext initAuthenticationContext(final HttpServletRequest request, final HttpServletResponse response,
+                                                              final boolean mobileForceRegistration, final String targetURI) {
 
         return null;
     }

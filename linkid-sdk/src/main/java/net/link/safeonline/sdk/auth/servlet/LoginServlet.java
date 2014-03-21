@@ -90,24 +90,19 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
             onLogin( request.getSession(), authnResponse, response );
 
-            if (authnResponse.getRequest().isMobileAuthentication() || authnResponse.getRequest().isMobileAuthenticationMinimal()) {
-
-                response.setContentType( "text/html" );
-                PrintWriter out = response.getWriter();
-                out.println( "<html>" );
-                out.println( "<head>" );
-                out.println( "<script type=\"text/javascript\">" );
-                out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
-                out.println( "</script>" );
-                out.println( "</head>" );
-                out.println( "<body>" );
-                out.println(
-                        "<noscript><p>You are successfully logged in. Since your browser does not support JavaScript, you must close this popup window and refresh the original window manually.</p></noscript>" );
-                out.println( "</body>" );
-                out.println( "</html>" );
-            } else {
-                response.sendRedirect( authnResponse.getRequest().getTarget() );
-            }
+            response.setContentType( "text/html" );
+            PrintWriter out = response.getWriter();
+            out.println( "<html>" );
+            out.println( "<head>" );
+            out.println( "<script type=\"text/javascript\">" );
+            out.println( "window.top.location.replace(\"" + authnResponse.getRequest().getTarget() + "\");" );
+            out.println( "</script>" );
+            out.println( "</head>" );
+            out.println( "<body>" );
+            out.println(
+                    "<noscript><p>You are successfully logged in. Since your browser does not support JavaScript, you must close this popup window and refresh the original window manually.</p></noscript>" );
+            out.println( "</body>" );
+            out.println( "</html>" );
         }
         catch (ValidationFailedException e) {
 

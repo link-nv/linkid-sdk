@@ -76,7 +76,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new AuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, requestConfig.getTargetURL(),
-                authnContext.isMobileAuthentication(), authnContext.isMobileAuthenticationMinimal(), authnContext.isMobileForceRegistration() );
+                authnContext.isMobileForceRegistration() );
     }
 
     @Nullable
@@ -127,8 +127,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                         findPaymentResponse( samlResponse ) )
         );
         authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), protocolHandler,
-                null != origAuthnContext.getTarget()? origAuthnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileAuthentication(),
-                authnRequest.isMobileAuthenticationMinimal(), authnRequest.isMobileForceRegistration() );
+                null != origAuthnContext.getTarget()? origAuthnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileForceRegistration() );
 
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, authenticatedDevices, attributes, success,
                 certificateChain, findPaymentResponse( samlResponse ) );
@@ -184,7 +183,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( null, null, userId, applicationName, authenticatedDevices, attributes, true, null, null ) );
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this, authnContext.getTarget(),
-                false, false, false );
+                false );
 
         CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request, authnContext.getTrustedCertificates() );
 
@@ -202,7 +201,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
         logger.dbg( "target url: %s", targetURL );
 
-        String logoutService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().logoutPath() );
+        String logoutService = config().web().mobileLogoutURL();
 
         String templateResourceName = config().proto().saml().postBindingTemplate();
 
@@ -270,7 +269,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         Preconditions.checkNotNull( logoutContext, "This protocol handler has not received a logout request to respond to." );
 
         String templateResourceName = config().proto().saml().postBindingTemplate();
-        String logoutExitService = ConfigUtils.getLinkIDAuthURLFromPath( config().linkID().logoutExitPath() );
+        String logoutExitService = config().web().mobileLogoutExitURL();
 
         LogoutResponse samlLogoutResponse = LogoutResponseFactory.createLogoutResponse( partialLogout, logoutRequestContext, logoutContext.getApplicationName(),
                 logoutExitService );
