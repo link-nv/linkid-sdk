@@ -65,7 +65,7 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
 
         if (null == authenticationContext) {
 
-            authenticationContext = new AuthenticationContext( null, null, null, targetURI );
+            authenticationContext = new AuthenticationContext( null, null, targetURI );
             authenticationContext.setMobileAuthentication( mobileAuthn );
             authenticationContext.setMobileAuthenticationMinimal( mobileAuthnMinimal );
             authenticationContext.setMobileForceRegistration( mobileForceRegistration );

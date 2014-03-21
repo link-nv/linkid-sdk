@@ -63,8 +63,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         String templateResourceName = config().proto().saml().postBindingTemplate();
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null, authnContext.getApplicationFriendlyName(),
-                requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.getDevices(), authnContext.isForceAuthentication(),
-                authnContext.getDeviceContext(), authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
+                requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), authnContext.getDeviceContext(),
+                authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {

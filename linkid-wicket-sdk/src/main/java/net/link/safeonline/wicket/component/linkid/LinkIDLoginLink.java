@@ -58,7 +58,7 @@ public class LinkIDLoginLink extends AbstractLinkIDAuthLink {
 
         String targetURL = RequestCycle.get().urlFor( target, targetPageParameters ).toString();
 
-        return new AuthenticationContext( null, null, null, targetURL );
+        return new AuthenticationContext( null, null, targetURL );
     }
 
     @Override

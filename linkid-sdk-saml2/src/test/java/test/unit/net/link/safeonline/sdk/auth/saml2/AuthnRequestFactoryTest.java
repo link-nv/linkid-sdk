@@ -57,13 +57,11 @@ public class AuthnRequestFactoryTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
         String destinationURL = "https://test.idp.com/entry";
-        String device = "device";
 
         // Test
         long begin = System.currentTimeMillis();
-        Set<String> devices = Collections.singleton( device );
-        AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL,
-                devices, false, null, null, null );
+        AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL, false,
+                null, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
 
         logger.dbg( DomUtils.domToString( SamlUtils.marshall( samlAuthnRequest ) ) );
@@ -109,7 +107,6 @@ public class AuthnRequestFactoryTest {
         String applicationName = "test-application-id";
         String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
         String destinationURL = "https://test.idp.com/entry";
-        String device = "device";
 
         KeyPair rootKeyPair = PkiTestUtils.generateKeyPair();
         X509Certificate rootCertificate = PkiTestUtils.generateSelfSignedCertificate( rootKeyPair, "CN=Root" );
@@ -122,9 +119,8 @@ public class AuthnRequestFactoryTest {
 
         // Test
         long begin = System.currentTimeMillis();
-        Set<String> devices = Collections.singleton( device );
-        AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL,
-                devices, false, null, null, null );
+        AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL, false,
+                null, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, certificateChain ) );
         long end = System.currentTimeMillis();
 
@@ -156,7 +152,6 @@ public class AuthnRequestFactoryTest {
         String applicationName = "test-application-id";
         String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
         String destinationURL = "https://test.idp.com/entry";
-        String device = "device";
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
 
@@ -180,9 +175,8 @@ public class AuthnRequestFactoryTest {
 
         // Test
         long begin = System.currentTimeMillis();
-        Set<String> devices = Collections.singleton( device );
-        AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL,
-                devices, false, deviceContextMap, subjectAttributesMap, paymentContext );
+        AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL, false,
+                deviceContextMap, subjectAttributesMap, paymentContext );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
         long end = System.currentTimeMillis();
 

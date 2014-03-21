@@ -36,11 +36,6 @@ public class AuthnRequestFilter implements Filter {
 
     private static final Logger logger = Logger.get( AuthnRequestFilter.class );
 
-    /**
-     * Bind your session tracking identifier to the HTTP session attribute with this name if you want to do session tracking.
-     */
-    public static final String SESSION_TRACKING_ATTRIBUTE = "SessionTracking";
-
     @Override
     public void init(final FilterConfig filterConfig)
             throws ServletException {
@@ -74,8 +69,7 @@ public class AuthnRequestFilter implements Filter {
     @NotNull
     protected static AuthenticationContext newContext(HttpServletRequest request) {
 
-        return new AuthenticationContext( null, null, null, false, null, (String) request.getAttribute( SESSION_TRACKING_ATTRIBUTE ), null,
-                request.getRequestURL().toString() );
+        return new AuthenticationContext( null, null, null, false, null, request.getRequestURL().toString() );
     }
 
     @Override

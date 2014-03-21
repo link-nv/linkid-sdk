@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.xml.namespace.QName;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContext;
@@ -43,12 +42,10 @@ import org.opensaml.saml2.common.Extensions;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameIDPolicy;
-import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 
@@ -110,7 +107,6 @@ public class AuthnRequestFactory {
      *                                    send back the SAML
      *                                    response message.
      * @param destinationURL              the optional location of the destination IdP.
-     * @param devices                     the optional list of allowed authentication devices.
      * @param forceAuthentication         whether authentication should be forced and SSO ignore
      * @param deviceContextMap            optional device context, can contain context attributes for specific device's like the iOS client
      * @param subjectAttributesMap        optional map attributes of the to be authenticated subject. These values will be used if needed
@@ -121,8 +117,8 @@ public class AuthnRequestFactory {
      * @return unsigned SAML v2.0 AuthnRequest object
      */
     public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences, @Nullable String applicationFriendlyName,
-                                                  String assertionConsumerServiceURL, @Nullable String destinationURL, @Nullable Set<String> devices,
-                                                  boolean forceAuthentication, @Nullable Map<String, String> deviceContextMap,
+                                                  String assertionConsumerServiceURL, @Nullable String destinationURL, boolean forceAuthentication,
+                                                  @Nullable Map<String, String> deviceContextMap,
                                                   @Nullable Map<String, List<Serializable>> subjectAttributesMap, @Nullable PaymentContextDO paymentContext) {
 
         if (null == issuerName)
@@ -160,17 +156,6 @@ public class AuthnRequestFactory {
         NameIDPolicy nameIdPolicy = SamlUtils.buildXMLObject( NameIDPolicy.DEFAULT_ELEMENT_NAME );
         nameIdPolicy.setAllowCreate( true );
         request.setNameIDPolicy( nameIdPolicy );
-
-        if (null != devices) {
-            RequestedAuthnContext requestedAuthnContext = SamlUtils.buildXMLObject( RequestedAuthnContext.DEFAULT_ELEMENT_NAME );
-            List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
-            for (String device : devices) {
-                AuthnContextClassRef authnContextClassRef = SamlUtils.buildXMLObject( AuthnContextClassRef.DEFAULT_ELEMENT_NAME );
-                authnContextClassRef.setAuthnContextClassRef( device );
-                authnContextClassRefs.add( authnContextClassRef );
-            }
-            request.setRequestedAuthnContext( requestedAuthnContext );
-        }
 
         if (null != audiences) {
             Conditions conditions = SamlUtils.buildXMLObject( Conditions.DEFAULT_ELEMENT_NAME );
