@@ -12,7 +12,6 @@
     <entry key="web.appConfidentialBase">${example.host}/</entry>
 
     <!-- linkID Access For Applications -->
-    <!--<entry key="web.userBase">http://demo.linkid.be/linkid-user</entry>-->
     <!--<entry key="web.mobileBase">http://demo.linkid.be/linkid-mobile</entry>-->
     <!--<entry key="web.wsBase">https://demo.linkid.be/linkid-ws</entry>-->
     <!--<entry key="web.wsUsernameBase">https://demo.linkid.be/linkid-ws-username</entry>-->
@@ -22,7 +21,6 @@
     <!--<entry key="web.mobileLogoutExitURL">https://demo.linkid.be/linkid-qr/logoutexit</entry>-->
 
     <!-- local linkID -->
-    <entry key="web.userBase">${linkid.host}/linkid-user</entry>
     <entry key="web.mobileBase">${linkid.host}/linkid-mobile</entry>
     <entry key="web.wsBase">${linkid.host}/linkid-ws</entry>
     <entry key="web.wsUsernameBase">${linkid.host}/linkid-ws-username</entry>
