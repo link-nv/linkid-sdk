@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth.protocol;
 
 import com.google.common.base.Function;
+import javax.servlet.http.HttpSession;
 import net.link.util.logging.Logger;
 import net.link.util.InternalInconsistencyException;
 import java.io.IOException;
@@ -44,14 +45,17 @@ public abstract class ProtocolManager {
      * @throws IOException something went wrong sending the authentication request
      * @see ProtocolHandler#sendAuthnRequest(HttpServletResponse, AuthenticationContext)
      */
-    public static AuthnProtocolRequestContext initiateAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                                     AuthenticationContext context)
+    public static AuthnProtocolRequestContext initiateAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationContext context)
             throws IOException {
 
+        // !! need to create the HttpSession before sending the authentication request
+        // the HAWS commits the response and creating a session after a redirect is not allowed
+        // Cannot create a session after the response has been committed
+        HttpSession httpSession = request.getSession();
         ProtocolHandler protocolHandler = getProtocolHandler( context.getProtocol() );
         AuthnProtocolRequestContext authnRequest = protocolHandler.sendAuthnRequest( response, context );
 
-        ProtocolContext.addContext( request.getSession(), authnRequest );
+        ProtocolContext.addContext( httpSession, authnRequest );
         return authnRequest;
     }
 
@@ -110,8 +114,7 @@ public abstract class ProtocolManager {
      *
      * @throws IOException something went wrong sending the logout request
      */
-    public static LogoutProtocolRequestContext initiateLogout(HttpServletRequest request, HttpServletResponse response, String userId,
-                                                              LogoutContext context)
+    public static LogoutProtocolRequestContext initiateLogout(HttpServletRequest request, HttpServletResponse response, String userId, LogoutContext context)
             throws IOException {
 
         // Delegate the authentication initiation to the relevant protocol handler.
