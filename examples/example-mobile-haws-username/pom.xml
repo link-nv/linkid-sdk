@@ -54,8 +54,8 @@
         <profile>
             <id>example.local</id>
             <properties>
-                <linkid.host>http://192.168.0.198:8080</linkid.host>
-                <example.host>http://192.168.0.198:9090</example.host>
+                <linkid.host>http://192.168.5.14:8080</linkid.host>
+                <example.host>http://192.168.5.14:9090</example.host>
             </properties>
         </profile>
     </profiles>
