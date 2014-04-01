@@ -18,16 +18,16 @@ public class PaymentResponseDO implements Serializable {
     public static final String TXN_ID_KEY = "PaymentResponse.txnId";
     public static final String STATE_KEY  = "PaymentResponse.state";
 
-    private final String       transactionId;
+    private final String       orderReference;
     private final PaymentState paymentState;
 
     /**
-     * @param transactionId the payment order reference
-     * @param paymentState  the payment order state
+     * @param orderReference the payment order reference
+     * @param paymentState   the payment order state
      */
-    public PaymentResponseDO(final String transactionId, final PaymentState paymentState) {
+    public PaymentResponseDO(final String orderReference, final PaymentState paymentState) {
 
-        this.transactionId = transactionId;
+        this.orderReference = orderReference;
         this.paymentState = paymentState;
     }
 
@@ -37,7 +37,7 @@ public class PaymentResponseDO implements Serializable {
 
         Map<String, String> map = new HashMap<String, String>();
 
-        map.put( TXN_ID_KEY, transactionId );
+        map.put( TXN_ID_KEY, orderReference );
         map.put( STATE_KEY, paymentState.name() );
 
         return map;
@@ -58,9 +58,9 @@ public class PaymentResponseDO implements Serializable {
 
     // Accessors
 
-    public String getTransactionId() {
+    public String getOrderReference() {
 
-        return transactionId;
+        return orderReference;
     }
 
     public PaymentState getPaymentState() {
