@@ -7,25 +7,32 @@
 
 package net.link.safeonline.sdk.ws.idmapping;
 
-import net.link.util.logging.Logger;
-import net.link.util.InternalInconsistencyException;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.idmapping.LinkIDNameIDMappingRequestType;
 import net.lin_k.safe_online.idmapping.NameIdentifierMappingPort;
-import net.link.safeonline.sdk.api.exception.*;
+import net.link.safeonline.sdk.api.exception.RequestDeniedException;
+import net.link.safeonline.sdk.api.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.SamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.SamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingConstants;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
+import net.link.util.InternalInconsistencyException;
+import net.link.util.logging.Logger;
 import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
-import oasis.names.tc.saml._2_0.protocol.*;
+import oasis.names.tc.saml._2_0.protocol.NameIDMappingResponseType;
+import oasis.names.tc.saml._2_0.protocol.NameIDPolicyType;
+import oasis.names.tc.saml._2_0.protocol.StatusCodeType;
+import oasis.names.tc.saml._2_0.protocol.StatusType;
 
 
 /**
@@ -42,16 +49,35 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
      *
      * @param location       the location (host:port) of the attribute web service.
      * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  The WS-Security configuration.
+     * @param configuration  WS Security configuration
      */
     public NameIdentifierMappingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
 
-        super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort(), sslCertificate );
-        getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.idmapping.path" ) ) );
+        this( location, sslCertificate );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
+    }
+
+    /**
+     * Main constructor.
+     *
+     * @param location       the location (host:port) of the ltqr web service.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     */
+    public NameIdentifierMappingClientImpl(final String location, final X509Certificate sslCertificate,
+                                           final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+
+        this( location, sslCertificate );
+
+        WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
+    }
+
+    private NameIdentifierMappingClientImpl(final String location, final X509Certificate sslCertificate) {
+
+        super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort(), sslCertificate );
+        getBindingProvider().getRequestContext()
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                    String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.idmapping.path" ) ) );
     }
 
     @Override
@@ -93,8 +119,7 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
                     throw new SubjectNotFoundException();
                 if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
                     throw new RequestDeniedException();
-                throw new InternalInconsistencyException(
-                        String.format( "Error occurred on identifier mapping service: %s", secondErrorCode ) );
+                throw new InternalInconsistencyException( String.format( "Error occurred on identifier mapping service: %s", secondErrorCode ) );
             }
         }
 

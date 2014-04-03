@@ -7,28 +7,49 @@
 
 package net.link.safeonline.sdk.ws.data;
 
-import net.link.util.logging.Logger;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.AddressingFeature;
-import liberty.dst._2006_08.ref.safe_online.*;
+import liberty.dst._2006_08.ref.safe_online.AppDataType;
+import liberty.dst._2006_08.ref.safe_online.CreateItemType;
+import liberty.dst._2006_08.ref.safe_online.CreateResponseType;
+import liberty.dst._2006_08.ref.safe_online.CreateType;
+import liberty.dst._2006_08.ref.safe_online.DataServicePort;
+import liberty.dst._2006_08.ref.safe_online.DataType;
+import liberty.dst._2006_08.ref.safe_online.DeleteItemType;
+import liberty.dst._2006_08.ref.safe_online.DeleteResponseType;
+import liberty.dst._2006_08.ref.safe_online.DeleteType;
+import liberty.dst._2006_08.ref.safe_online.ModifyItemType;
+import liberty.dst._2006_08.ref.safe_online.ModifyResponseType;
+import liberty.dst._2006_08.ref.safe_online.ModifyType;
+import liberty.dst._2006_08.ref.safe_online.QueryItemType;
+import liberty.dst._2006_08.ref.safe_online.QueryResponseType;
+import liberty.dst._2006_08.ref.safe_online.QueryType;
+import liberty.dst._2006_08.ref.safe_online.SelectType;
 import liberty.util._2006_08.StatusType;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.attribute.Compound;
 import net.link.safeonline.sdk.api.exception.RequestDeniedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
-import net.link.safeonline.sdk.api.ws.data.*;
+import net.link.safeonline.sdk.api.ws.data.DataServiceConstants;
+import net.link.safeonline.sdk.api.ws.data.SecondLevelStatusCode;
+import net.link.safeonline.sdk.api.ws.data.TopLevelStatusCode;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.data.DataServiceFactory;
+import net.link.util.logging.Logger;
 import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -50,23 +71,41 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
      *
      * @param location       the location (host:port) of the attribute web service.
      * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  The WS-Security configuration.
+     * @param configuration  WS Security configuration
      */
     public DataClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+
+        this( location, sslCertificate );
+
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
+    }
+
+    /**
+     * Main constructor.
+     *
+     * @param location       the location (host:port) of the ltqr web service.
+     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     */
+    public DataClientImpl(final String location, final X509Certificate sslCertificate, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+
+        this( location, sslCertificate );
+
+        WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
+    }
+
+    private DataClientImpl(final String location, final X509Certificate sslCertificate) {
 
         super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ), sslCertificate );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.data.path" ) ) );
 
-        /*
+                /*
          * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to come first since it
          * feeds additional XML Id's to be signed by the WS-Security handler.
          */
         targetIdentityHandler = new TargetIdentityClientHandler();
         initTargetIdentityHandler();
-
-        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     @Override
