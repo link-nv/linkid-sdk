@@ -39,9 +39,6 @@
                         <wsdlFile>safe-online-ltqr.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws.wsdl</wsdlFile>
                         <wsdlFile>safe-online-idmapping.wsdl</wsdlFile>
-                        <wsdlFile>notification-consumer.wsdl</wsdlFile>
-                        <wsdlFile>notification-producer.wsdl</wsdlFile>
-                        <wsdlFile>notification-subscription-manager.wsdl</wsdlFile>
                         <wsdlFile>ws-trust-1.3.wsdl</wsdlFile>
                         <wsdlFile>xkms.wsdl</wsdlFile>
                     </wsdlFiles>

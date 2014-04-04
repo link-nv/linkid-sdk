@@ -13,9 +13,6 @@ import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
-import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
-import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
-import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
@@ -43,13 +40,6 @@ public abstract class ServiceFactory {
     protected abstract NameIdentifierMappingClient _getIdMappingService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
 
     protected abstract SecurityTokenServiceClient _getStsService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
-
-    protected abstract NotificationConsumerClient _getNotificationConsumerService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
-
-    protected abstract NotificationProducerClient _getNotificationProducerService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
-
-    protected abstract NotificationSubscriptionManagerClient _getNotificationSubscriptionService(WSSecurityConfiguration configuration,
-                                                                                                 X509Certificate sslCertificate);
 
     protected abstract PaymentServiceClient _getPaymentService(X509Certificate sslCertificate);
 

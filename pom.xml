@@ -447,12 +447,7 @@
         <linkid.ws.data.path>data</linkid.ws.data.path>
         <linkid.ws.idmapping.path>idmapping</linkid.ws.idmapping.path>
         <linkid.ws.sts.path>sts</linkid.ws.sts.path>
-        <linkid.ws.notification.producer.path>producer</linkid.ws.notification.producer.path>
-        <linkid.ws.notification.subscription.path>subscription</linkid.ws.notification.subscription.path>
-        <linkid.ws.session.tracking.path>session</linkid.ws.session.tracking.path>
         <linkid.ws.xkms2.path>xkms2</linkid.ws.xkms2.path>
-        <linkid.ws.auth.path>auth</linkid.ws.auth.path>
-        <linkid.ws.get.auth.path>get_auth</linkid.ws.get.auth.path>
         <linkid.ws.payment.path>payment</linkid.ws.payment.path>
         <linkid.ws.ltqr.path>ltqr</linkid.ws.ltqr.path>
         <linkid.ws.haws.path>haws</linkid.ws.haws.path>

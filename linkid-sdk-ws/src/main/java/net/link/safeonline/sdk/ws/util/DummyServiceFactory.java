@@ -14,9 +14,6 @@ import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
-import net.link.safeonline.sdk.api.ws.notification.consumer.client.NotificationConsumerClient;
-import net.link.safeonline.sdk.api.ws.notification.producer.client.NotificationProducerClient;
-import net.link.safeonline.sdk.api.ws.notification.subscription.client.NotificationSubscriptionManagerClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
@@ -74,24 +71,6 @@ public class DummyServiceFactory extends ServiceFactory {
     protected NameIdentifierMappingClient _getIdMappingService(WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
         return new DummyNameIdentifierMappingClient();
-    }
-
-    @Override
-    protected NotificationConsumerClient _getNotificationConsumerService(WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
-
-        throw new UnsupportedOperationException( "Not yet implemented" );
-    }
-
-    @Override
-    protected NotificationProducerClient _getNotificationProducerService(WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
-
-        throw new UnsupportedOperationException( "Not yet implemented" );
-    }
-
-    @Override
-    protected NotificationSubscriptionManagerClient _getNotificationSubscriptionService(WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
-
-        throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override

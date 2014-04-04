@@ -36,7 +36,5 @@ public abstract class WebServiceConstants {
 
     public static final String SAML_ATTRIB_NAME_FORMAT_BASIC = "urn:oasis:names:tc:SAML:2.0:attrname-format:basic";
 
-    public static final String TOPIC_DIALECT_SIMPLE = "http://docs.oasis-open.org/wsn/t-1/TopicExpression/Simple";
-
     public static final String WS_TRUST_REQUEST_TYPE = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/";
 }

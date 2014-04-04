@@ -5,12 +5,14 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws;
+package net.link.safeonline.sdk.api.notification;
 
 public enum NotificationTopic {
 
     REMOVE_USER( "urn:net:lin-k:safe-online:topic:user:remove" ),
-    UNSUBSCRIBE_USER( "urn:net:lin-k:safe-online:topic:user:unsubscribe" );
+    UNSUBSCRIBE_USER( "urn:net:lin-k:safe-online:topic:user:unsubscribe" ),
+    ATTRIBUTE_UPDATE( "urn:net:lin-k:safe-online:topic:user:attribute:update" ),
+    ATTRIBUTE_REMOVAL( "urn:net:lin-k:safe-online:topic:user:attribute:remove" );
 
     private final String topicUri;
 
