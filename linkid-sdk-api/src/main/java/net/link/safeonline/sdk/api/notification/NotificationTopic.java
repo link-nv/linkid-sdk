@@ -9,10 +9,10 @@ package net.link.safeonline.sdk.api.notification;
 
 public enum NotificationTopic {
 
-    REMOVE_USER( "urn:net:lin-k:safe-online:topic:user:remove" ),
-    UNSUBSCRIBE_USER( "urn:net:lin-k:safe-online:topic:user:unsubscribe" ),
-    ATTRIBUTE_UPDATE( "urn:net:lin-k:safe-online:topic:user:attribute:update" ),
-    ATTRIBUTE_REMOVAL( "urn:net:lin-k:safe-online:topic:user:attribute:remove" );
+    REMOVE_USER( "urn:net:lin-k:linkid:topic:user:remove" ),
+    UNSUBSCRIBE_USER( "urn:net:lin-k:linkid:topic:user:unsubscribe" ),
+    ATTRIBUTE_UPDATE( "urn:net:lin-k:linkid:topic:user:attribute:update" ),
+    ATTRIBUTE_REMOVAL( "urn:net:lin-k:linkid:topic:user:attribute:remove" );
 
     private final String topicUri;
 
