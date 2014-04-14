@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.26</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID SDK</name>
@@ -62,17 +62,17 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-config</artifactId>
-            <version>2.26</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-api</artifactId>
-            <version>2.26</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-api</artifactId>
-            <version>2.26</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
         <dependency>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-container-test</artifactId>
-            <version>2.26</version>
+            <version>GIT-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
         <dependency>
