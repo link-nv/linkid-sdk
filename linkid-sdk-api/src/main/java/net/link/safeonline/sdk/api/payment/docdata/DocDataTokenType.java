@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.attribute.provider.docdata;
+package net.link.safeonline.sdk.api.payment.docdata;
 
 public enum DocDataTokenType {
 

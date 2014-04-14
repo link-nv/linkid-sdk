@@ -17,7 +17,6 @@
     <modules>
         <module>linkid-attribute-provider-profile-sdk</module>
         <module>linkid-attribute-provider-avatar-sdk</module>
-        <module>linkid-attribute-provider-docdata-sdk</module>
     </modules>
 
 </project>
