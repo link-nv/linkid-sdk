@@ -8,10 +8,11 @@
 package net.link.safeonline.sdk.auth.servlet;
 
 import java.io.IOException;
+import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.*;
+import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.Protocol;
@@ -58,12 +59,19 @@ public class InitiateLoginServlet extends AbstractLinkIDInjectionServlet {
         //optional target URL: when login is complete, user will be redirected to this location
         String targetURI = request.getParameter( RequestConstants.TARGETURI_REQUEST_PARAM );
 
+        // optional language
+        String language = request.getParameter( RequestConstants.LANGUAGE_REQUEST_PARAM );
+
         AuthenticationContext authenticationContext = initAuthenticationContext( request, response, mobileForceRegistration, targetURI );
 
         if (null == authenticationContext) {
 
             authenticationContext = new AuthenticationContext( null, null, targetURI );
             authenticationContext.setMobileForceRegistration( mobileForceRegistration );
+        }
+
+        if (null != language) {
+            authenticationContext.setLanguage( new Locale( language ) );
         }
 
         // set the protocol

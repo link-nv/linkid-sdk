@@ -99,7 +99,7 @@ public interface WebConfig {
      * </p>
      * <p/>
      */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-mobile/auth-min")
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/auth-min")
     String mobileAuthMinimalURL();
 
     /**
@@ -112,7 +112,7 @@ public interface WebConfig {
      * </p>
      * <p/>
      */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-mobile/reg-min")
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/reg-min")
     String mobileRegMinimalURL();
 
     /**
@@ -125,7 +125,7 @@ public interface WebConfig {
      * </p>
      * <p/>
      */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-mobile/logout")
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/logout")
     String mobileLogoutURL();
 
     /**
@@ -138,7 +138,7 @@ public interface WebConfig {
      * </p>
      * <p/>
      */
-    @Property(required = false, unset = "https://demo.linkid.be/linkid-mobile/logoutexit")
+    @Property(required = false, unset = "https://demo.linkid.be/linkid-qr/logoutexit")
     String mobileLogoutExitURL();
 
     /**
