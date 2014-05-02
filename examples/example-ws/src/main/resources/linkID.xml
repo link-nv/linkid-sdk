@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- eLoket - Lin.k
+
+    This file specifies the linkID service configuration.
+    Words of the syntax ${foo} are expanded into the value of the System Property named 'foo'.
+-->
+<properties>
+
+    <!-- Host Configuration For Applications -->
+    <entry key="web.appBase">${example.host}/</entry>
+    <!-- Use HTTPS here! -->
+    <entry key="web.appConfidentialBase">${example.host}/</entry>
+
+    <!-- linkID Access For Applications -->
+    <!--<entry key="web.mobileBase">http://demo.linkid.be/linkid-mobile</entry>-->
+    <!--<entry key="web.wsBase">https://demo.linkid.be/linkid-ws</entry>-->
+    <!--<entry key="web.wsUsernameBase">https://demo.linkid.be/linkid-ws-username</entry>-->
+    <!--<entry key="web.mobileAuthMinimalURL">https://demo.linkid.be/linkid-mobile/auth-min</entry>-->
+    <!--<entry key="web.mobileRegMinimalURL">https://demo.linkid.be/linkid-mobile/reg-min</entry>-->
+    <!--<entry key="web.mobileLogoutURL">https://demo.linkid.be/linkid-mobile/logout</entry>-->
+    <!--<entry key="web.mobileLogoutExitURL">https://demo.linkid.be/linkid-mobile/logoutexit</entry>-->
+
+    <!-- local linkID -->
+    <entry key="web.mobileBase">${linkid.host}/linkid-mobile</entry>
+    <entry key="web.wsBase">${linkid.host}/linkid-ws</entry>
+    <entry key="web.wsUsernameBase">${linkid.host}/linkid-ws-username</entry>
+    <entry key="web.mobileAuthMinimalURL">${linkid.host}/linkid-qr/auth-min</entry>
+    <entry key="web.mobileRegMinimalURL">${linkid.host}/linkid-qr/reg-min</entry>
+    <entry key="web.mobileLogoutURL">${linkid.host}/linkid-qr/logout</entry>
+    <entry key="web.mobileLogoutExitURL">${linkid.host}/linkid-qr/logoutexit</entry>
+
+</properties>

@@ -12,6 +12,7 @@ import static net.link.util.util.ObjectUtils.ifNotNullElseNullable;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
+import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
@@ -22,6 +23,7 @@ import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.auth.AuthServiceClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.haws.HawsServiceClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
@@ -442,6 +444,96 @@ public class LinkIDServiceFactory extends ServiceFactory {
     protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
         return new HawsServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID auth web service, using the WS-Security Username token profile
+     *
+     * @return proxy to the linkID auth web service.
+     */
+    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final String wsUsername, final String wsPassword) {
+
+        return new AuthServiceClientImpl( SDKConfigHolder.config().web().wsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ),
+                new AbstractWSSecurityUsernameTokenCallback() {
+                    @Override
+                    public String getUsername() {
+
+                        return wsUsername;
+                    }
+
+                    @Override
+                    public String getPassword() {
+
+                        return wsPassword;
+                    }
+
+                    @Nullable
+                    @Override
+                    public String handle(final String username) {
+
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isInboundHeaderOptional() {
+
+                        return true;
+                    }
+                }
+        );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID auth web service.
+     *
+     * @return proxy to the linkID auth web service.
+     */
+    public static AuthServiceClient<AuthnRequest, Response> getAuthService() {
+
+        if (null != SDKConfigHolder.config().linkID().app().username()) {
+
+            return getAuthService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+        } else {
+
+            return getInstance()._getAuthService( new SDKWSSecurityConfiguration(), null );
+        }
+    }
+
+    /**
+     * Retrieve a proxy to the linkID auth web service.
+     *
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID auth web service.
+     */
+    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                                           final X509Certificate sslCertificate) {
+
+        return getInstance()._getAuthService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID auth web service.
+     *
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID auth web service.
+     */
+    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+
+        return getInstance()._getAuthService( configuration, sslCertificate );
+    }
+
+    @Override
+    protected AuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+
+        return new AuthServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {

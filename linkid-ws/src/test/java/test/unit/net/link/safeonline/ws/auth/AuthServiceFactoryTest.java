@@ -5,20 +5,20 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.ws.haws;
+package test.unit.net.link.safeonline.ws.auth;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.haws.HawsService;
-import net.link.safeonline.ws.haws.HawsServiceFactory;
+import net.lin_k.safe_online.auth.AuthService;
+import net.link.safeonline.ws.auth.AuthServiceFactory;
 
 
-public class HawServiceFactoryTest extends TestCase {
+public class AuthServiceFactoryTest extends TestCase {
 
     public void testNewInstance()
             throws Exception {
 
         // Test
-        HawsService result = HawsServiceFactory.newInstance();
+        AuthService result = AuthServiceFactory.newInstance();
 
         // Verify
         assertNotNull( result );

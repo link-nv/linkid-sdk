@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth.protocol;
 
 import com.google.common.base.Preconditions;
+import java.io.Serializable;
 import java.util.*;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
@@ -25,32 +26,29 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class AuthnProtocolResponseContext extends ProtocolResponseContext {
 
-    private final String                             applicationName;
-    private final List<String>                       authenticatedDevices;
-    private final Map<String, List<AttributeSDK<?>>> attributes;
-    private final String                             userId;
-    private final boolean                            success;
-    private final PaymentResponseDO                  paymentResponse;
+    private final String                                        applicationName;
+    private final Map<String, List<AttributeSDK<Serializable>>> attributes;
+    private final String                                        userId;
+    private final boolean                                       success;
+    private final PaymentResponseDO                             paymentResponse;
 
     /**
-     * @param request              Authentication request this response is a response to.
-     * @param id                   Response ID
-     * @param applicationName      The name of the application this authentication grants the user access to.
-     * @param userId               The user that has authenticated himself.
-     * @param authenticatedDevices The devices that have authenticated the user.
-     * @param attributes           The user's attributes that were sent in this response.
-     * @param success              Whether a user has successfully authenticated himself.
-     * @param certificateChain     Optional certificate chain if protocol response was signed and contained the chain embedded in the
-     *                             signature.
+     * @param request          Authentication request this response is a response to.
+     * @param id               Response ID
+     * @param applicationName  The name of the application this authentication grants the user access to.
+     * @param userId           The user that has authenticated himself.
+     * @param attributes       The user's attributes that were sent in this response.
+     * @param success          Whether a user has successfully authenticated himself.
+     * @param certificateChain Optional certificate chain if protocol response was signed and contained the chain embedded in the
+     *                         signature.
      */
     public AuthnProtocolResponseContext(AuthnProtocolRequestContext request, String id, String userId, String applicationName,
-                                        List<String> authenticatedDevices, Map<String, List<AttributeSDK<?>>> attributes, boolean success,
-                                        CertificateChain certificateChain, final PaymentResponseDO paymentResponse) {
+                                        Map<String, List<AttributeSDK<Serializable>>> attributes, boolean success, CertificateChain certificateChain,
+                                        final PaymentResponseDO paymentResponse) {
 
         super( request, id, certificateChain );
         this.userId = userId;
         this.applicationName = applicationName;
-        this.authenticatedDevices = Collections.unmodifiableList( authenticatedDevices );
         this.attributes = Collections.unmodifiableMap( attributes );
         this.success = success;
         this.paymentResponse = paymentResponse;
@@ -71,17 +69,9 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
     }
 
     /**
-     * @return The devices that have authenticated the user.
-     */
-    public List<String> getAuthenticatedDevices() {
-
-        return Preconditions.checkNotNull( authenticatedDevices, "Authenticated Devices not set for %s", this );
-    }
-
-    /**
      * @return The user's attributes that were sent in this response.
      */
-    public Map<String, List<AttributeSDK<?>>> getAttributes() {
+    public Map<String, List<AttributeSDK<Serializable>>> getAttributes() {
 
         return Preconditions.checkNotNull( attributes, "Attributes not set for %s", this );
     }

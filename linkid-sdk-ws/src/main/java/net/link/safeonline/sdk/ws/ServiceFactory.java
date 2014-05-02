@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.ws;
 
 import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
+import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
@@ -48,5 +49,8 @@ public abstract class ServiceFactory {
     protected abstract LTQRServiceClient _getLtqrServiceClient(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
 
     protected abstract HawsServiceClient<AuthnRequest, Response> _getHawsService(WSSecurityConfiguration configuration,
+                                                                                 @Nullable X509Certificate sslCertificate);
+
+    protected abstract AuthServiceClient<AuthnRequest, Response> _getAuthService(WSSecurityConfiguration configuration,
                                                                                  @Nullable X509Certificate sslCertificate);
 }

@@ -97,9 +97,8 @@ public class AuthnResponseFilterTest {
 
         // Setup Mocks
         String userId = UUID.randomUUID().toString();
-        String authenticatedDevice = "test-device";
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
-                Collections.singletonList( authenticatedDevice ), new HashMap<String, List<AttributeSDK<?>>>(), true, null, null );
+                new HashMap<String, List<AttributeSDK<?>>>(), true, null, null );
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
                 (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( authnResponse );
         expect( mockProtocolHandler.getProtocol() ).andReturn( Protocol.SAML2 );
@@ -112,7 +111,5 @@ public class AuthnResponseFilterTest {
         assertEquals( HttpStatus.SC_OK, statusCode );
         String resultUserId = (String) servletTestManager.getSessionAttribute( LoginManager.USERID_SESSION_ATTRIBUTE );
         assertEquals( userId, resultUserId );
-        List<String> resultAuthenticatedDevices = (List<String>) servletTestManager.getSessionAttribute( LoginManager.AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
-        assertTrue( resultAuthenticatedDevices.contains( authenticatedDevice ) );
     }
 }

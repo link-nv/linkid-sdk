@@ -27,14 +27,13 @@ import net.link.util.common.CertificateChain;
  */
 public abstract class LoginManager {
 
-    public static final String USERID_SESSION_ATTRIBUTE                = LoginManager.class.getName() + ".userId";
-    public static final String AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE = LoginManager.class.getName() + ".authenticatedDevices";
-    public static final String ATTRIBUTES_SESSION_ATTRIBUTE            = LoginManager.class.getName() + ".attributes";
-    public static final String CERTIFCATE_CHAIN_SESSION_ATTRIBUTE      = LoginManager.class.getName() + ".certificateChain";
-    public static final String PROTOCOL_SESSION_ATTRIBUTE              = LoginManager.class.getName() + ".protocol";
+    public static final String USERID_SESSION_ATTRIBUTE              = LoginManager.class.getName() + ".userId";
+    public static final String ATTRIBUTES_SESSION_ATTRIBUTE          = LoginManager.class.getName() + ".attributes";
+    public static final String CERTIFICATE_CHAIN_SESSION_ATTRIBUTE   = LoginManager.class.getName() + ".certificateChain";
+    public static final String PROTOCOL_SESSION_ATTRIBUTE            = LoginManager.class.getName() + ".protocol";
     // e.g. SAML2 assertion sent directly to SP after authentication done from a client app
-    public static final String PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE   = LoginManager.class.getName() + ".protocolNoRequest";
-    public static final String PAYMENT_RESPONSE_SESSION_ATTRIBUTE      = LoginManager.class.getName() + ".paymentResponse";
+    public static final String PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE = LoginManager.class.getName() + ".protocolNoRequest";
+    public static final String PAYMENT_RESPONSE_SESSION_ATTRIBUTE    = LoginManager.class.getName() + ".paymentResponse";
 
     /**
      * Checks whether the user is logged in via the SafeOnline authentication web application or not.
@@ -54,24 +53,11 @@ public abstract class LoginManager {
      * @param httpSession The session from which to look up the credentials.
      *
      * @return The linkID user identifier (possibly mapped to the application or subscription) of the user that has last authenticated
-     *         himself on the given session.
+     * himself on the given session.
      */
     public static String findUserId(HttpSession httpSession) {
 
         return (String) httpSession.getAttribute( USERID_SESSION_ATTRIBUTE );
-    }
-
-    /**
-     * Gives back the SafeOnline authenticated device, or {@code null} if the user was not yet authenticated.
-     *
-     * @param httpSession The session from which to look up the credentials.
-     *
-     * @return The linkID devices with which the user that last authenticated himself on the given session had been authenticated.
-     */
-    @SuppressWarnings("unchecked")
-    public static List<String> findAuthenticatedDevices(HttpSession httpSession) {
-
-        return (List<String>) httpSession.getAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
     }
 
     /**
@@ -100,7 +86,7 @@ public abstract class LoginManager {
     @SuppressWarnings("unchecked")
     public static CertificateChain findCertificateChain(HttpSession httpSession) {
 
-        return (CertificateChain) httpSession.getAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
+        return (CertificateChain) httpSession.getAttribute( CERTIFICATE_CHAIN_SESSION_ATTRIBUTE );
     }
 
     /**
@@ -120,8 +106,7 @@ public abstract class LoginManager {
 
         httpSession.removeAttribute( USERID_SESSION_ATTRIBUTE );
         cleanupAttributes( httpSession );
-        httpSession.removeAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE );
-        httpSession.removeAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE );
+        httpSession.removeAttribute( CERTIFICATE_CHAIN_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PROTOCOL_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE );
@@ -142,8 +127,7 @@ public abstract class LoginManager {
 
         httpSession.setAttribute( USERID_SESSION_ATTRIBUTE, responseContext.getUserId() );
         httpSession.setAttribute( ATTRIBUTES_SESSION_ATTRIBUTE, responseContext.getAttributes() );
-        httpSession.setAttribute( AUTHENTICATED_DEVICES_SESSION_ATTRIBUTE, responseContext.getAuthenticatedDevices() );
-        httpSession.setAttribute( CERTIFCATE_CHAIN_SESSION_ATTRIBUTE, responseContext.getCertificateChain() );
+        httpSession.setAttribute( CERTIFICATE_CHAIN_SESSION_ATTRIBUTE, responseContext.getCertificateChain() );
         httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, responseContext.getRequest().getProtocolHandler().getProtocol() );
         httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, null == responseContext.getRequest().getId() );
         httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, responseContext.getPaymentResponse() );

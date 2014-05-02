@@ -451,6 +451,7 @@
         <linkid.ws.payment.path>payment</linkid.ws.payment.path>
         <linkid.ws.ltqr.path>ltqr</linkid.ws.ltqr.path>
         <linkid.ws.haws.path>haws</linkid.ws.haws.path>
+        <linkid.ws.auth.path>auth</linkid.ws.auth.path>
 
         <!-- DEFAULT VERSIONS, SEE PLUGINS -->
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>

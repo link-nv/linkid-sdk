@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:safe-online:auth"
+             xmlns:tns="urn:net:lin-k:safe-online:auth" name="SafeOnlineAuthWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:safe-online:auth" schemaLocation="safe-online-auth.xsd" />
+        </schema>
+    </types>
+
+    <!-- =================== Start request ========================= -->
+
+    <message name="startRequest">
+		<part name="request" element="tns:StartRequest" />
+	</message>
+	<message name="startResponse">
+		<part name="response" element="tns:StartResponse" />
+	</message>
+
+    <!-- =================== Poll request ========================= -->
+
+    <message name="pollRequest">
+		<part name="request" element="tns:PollRequest" />
+	</message>
+	<message name="pollResponse">
+		<part name="response" element="tns:PollResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="AuthServicePort">
+		<operation name="start">
+			<input message="tns:startRequest" />
+			<output message="tns:startResponse" />
+		</operation>
+		<operation name="poll">
+			<input message="tns:pollRequest" />
+			<output message="tns:pollResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="AuthServiceBinding" type="tns:AuthServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="start">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:auth:start" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="poll">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:auth:poll" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="AuthService">
+        <port name="AuthServicePort" binding="tns:AuthServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/auth/" />
+        </port>
+    </service>
+</definitions>

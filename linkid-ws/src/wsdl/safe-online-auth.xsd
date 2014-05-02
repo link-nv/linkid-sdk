@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:auth" xmlns:tns="urn:net:lin-k:safe-online:auth"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-auth
+			Revision history:
+			V1.0 (April, 2014):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <!-- =================== Start request ========================= -->
+
+    <element name="StartRequest">
+        <annotation>
+            <documentation>Start a linkID authentication request</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <any namespace='##any' processContents='lax' minOccurs='1' maxOccurs='1'>
+                    <annotation>
+                        <documentation>The authentication request, e.g. a SAML2 request</documentation>
+                    </annotation>
+                </any>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="userAgent" type="string" use="optional">
+                <annotation>
+                    <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="forceRegistration" type="boolean" use="optional">
+                <annotation>
+                    <documentation>Force registration?</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="StartResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:StartSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:StartError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="StartSuccess">
+        <sequence>
+            <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The authentication session ID, use this in the poll operation</documentation>
+                </annotation>
+            </element>
+            <element name="encodedQRCode" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code image</documentation>
+                </annotation>
+            </element>
+            <element name="qrCodeURL" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>QR code URL, this will differ depending on the userAgent sent in the StartRequest</documentation>
+                </annotation>
+            </element>
+            <element name="authenticationContext" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Authentication context (context shown in the client)</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="StartError">
+        <sequence>
+            <element name="error" type="tns:StartErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="info" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="StartErrorCode">
+		<annotation>
+			<documentation>Error codes for a Start request</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.request.invalid">
+				<annotation>
+					<documentation>The authentication request was invalid</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- =================== Poll request ========================= -->
+
+    <element name="PollRequest">
+        <annotation>
+            <documentation>Poll the linkID authentiation</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The session ID of the linkID authentication</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="PollResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PollSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PollError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PollSuccess">
+        <sequence>
+            <element name="authenticationState" type="tns:AuthenticationState" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The authentication state</documentation>
+                </annotation>
+            </element>
+            <element name="paymentState" type="tns:PaymentState" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment state</documentation>
+                </annotation>
+            </element>
+            <element name="paymentMenuURL" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Payment menu URL case user has authenticated for a payment and chosen add a new payment method ( linkid.state.authenticated.payment.add )</documentation>
+                </annotation>
+            </element>
+            <any namespace='##any' processContents='lax' minOccurs='0' maxOccurs='1'>
+                <annotation>
+                    <documentation>The authentication response if completed, e.g. a SAML2 response</documentation>
+                </annotation>
+            </any>
+        </sequence>
+    </complexType>
+
+    <simpleType name="AuthenticationState">
+		<annotation>
+			<documentation>Authentication states</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="linkid.state.started">
+				<annotation>
+					<documentation>The linkID authentication has started but the client has not yet retrieved the session</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="linkid.state.retrieved">
+				<annotation>
+					<documentation>The linkID client has retrieved the authentication session</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="linkid.state.authenticated">
+				<annotation>
+					<documentation>Authentication was successful</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="linkid.state.expired">
+				<annotation>
+					<documentation>The authentication session has expired</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="linkid.state.failed">
+				<annotation>
+					<documentation>The linkID authentication has failed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="linkid.state.payment.add">
+				<annotation>
+					<documentation>The linkID authentication was ok, user did not have payment tokens and started the add new payment method flow</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="PaymentState">
+		<annotation>
+			<documentation>Payment states</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="linkid.payment.state.started" />
+			<enumeration value="linkid.payment.state.deferred" />
+			<enumeration value="linkid.payment.state.waiting" />
+            <enumeration value="linkid.payment.state.failed" />
+			<enumeration value="linkid.payment.state.refunded" />
+			<enumeration value="linkid.payment.state.refund_started" />
+            <enumeration value="linkid.payment.state.payed" />
+		</restriction>
+	</simpleType>
+
+    <complexType name="PollError">
+        <sequence>
+            <element name="error" type="tns:PollErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="info" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PollErrorCode">
+		<annotation>
+			<documentation>Error codes for a Poll request</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.response.invalid.sessionId">
+				<annotation>
+					<documentation>No linkID authentication was found with this sessionId</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

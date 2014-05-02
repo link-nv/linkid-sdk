@@ -9,15 +9,29 @@ package net.link.safeonline.sdk.auth.protocol.saml2;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.link.util.logging.Logger;
 import java.io.Serializable;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.attribute.Compound;
+import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponse;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.saml.Saml2Utils;
-import org.opensaml.saml2.core.*;
-import org.opensaml.xml.*;
+import net.link.util.saml.SamlUtils;
+import net.link.util.util.ConversionUtils;
+import org.jetbrains.annotations.Nullable;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.AttributeStatement;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.Response;
+import org.opensaml.xml.Namespace;
+import org.opensaml.xml.NamespaceManager;
+import org.opensaml.xml.XMLObject;
 import org.w3c.dom.Element;
 
 
@@ -32,30 +46,19 @@ import org.w3c.dom.Element;
  */
 public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
-    static final Logger logger = Logger.get( LinkIDSaml2Utils.class );
-
     public static <X extends XMLObject> X unmarshall(Element xmlElement) {
 
-        X xmlObject = Saml2Utils.<X>unmarshall( xmlElement );
+        X xmlObject = Saml2Utils.unmarshall( xmlElement );
         NamespaceManager xmlObjectNSM = new NamespaceManager( xmlObject );
         xmlObjectNSM.registerNamespace( new Namespace( WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, WebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
 
         return xmlObject;
     }
 
-    public static Map<String, Object> getAttributeValues(final Response samlResponse) {
-
-        ImmutableMap.Builder<String, Object> attributeValues = ImmutableMap.builder();
-        for (Assertion assertion : samlResponse.getAssertions())
-            attributeValues.putAll( getAttributeValues( assertion ) );
-
-        return attributeValues.build();
-    }
-
     @SuppressWarnings("unchecked")
-    public static Map<String, List<AttributeSDK<?>>> getAttributeValues(Assertion assertion) {
+    public static Map<String, List<AttributeSDK<Serializable>>> getAttributeValues(Assertion assertion) {
 
-        Map<String, List<AttributeSDK<?>>> attributeMap = Maps.newHashMap();
+        Map<String, List<AttributeSDK<Serializable>>> attributeMap = Maps.newHashMap();
         List<AttributeStatement> attrStatements = assertion.getAttributeStatements();
         if (attrStatements == null || attrStatements.isEmpty())
             return ImmutableMap.of();
@@ -64,11 +67,11 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
         for (Attribute attribute : attributeStatement.getAttributes()) {
 
-            AttributeSDK<?> attributeSDK = getAttributeSDK( attribute );
+            AttributeSDK<Serializable> attributeSDK = getAttributeSDK( attribute );
 
-            List<AttributeSDK<?>> attributes = attributeMap.get( attributeSDK.getName() );
+            List<AttributeSDK<Serializable>> attributes = attributeMap.get( attributeSDK.getName() );
             if (null == attributes) {
-                attributes = new LinkedList<AttributeSDK<?>>();
+                attributes = new LinkedList<AttributeSDK<Serializable>>();
             }
             attributes.add( attributeSDK );
             attributeMap.put( attributeSDK.getName(), attributes );
@@ -77,7 +80,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         return attributeMap;
     }
 
-    private static AttributeSDK<?> getAttributeSDK(Attribute attributeType) {
+    private static AttributeSDK<Serializable> getAttributeSDK(Attribute attributeType) {
 
         String attributeId = attributeType.getUnknownAttributes().get( WebServiceConstants.ATTRIBUTE_ID );
         AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );
@@ -109,25 +112,6 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         return attribute;
     }
 
-    public static List<String> getAuthenticatedDevices(final Response samlResponse) {
-
-        if (samlResponse.getAssertions().isEmpty())
-            return new LinkedList<String>();
-
-        return getAuthenticatedDevices( samlResponse.getAssertions().get( 0 ) );
-    }
-
-    public static List<String> getAuthenticatedDevices(final Assertion assertion) {
-
-        List<String> authenticatedDevices = new LinkedList<String>();
-        for (AuthnStatement authnStatement : assertion.getAuthnStatements()) {
-            authenticatedDevices.add( authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
-            logger.dbg( "authenticated device: %s", authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
-        }
-
-        return authenticatedDevices;
-    }
-
     public static String findApplicationName(final Assertion assertion) {
 
         String applicationName = null;
@@ -139,5 +123,37 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         }
 
         return applicationName;
+    }
+
+    @Nullable
+    public static PaymentResponseDO findPaymentResponse(final Response samlResponse) {
+
+        if (null == samlResponse.getExtensions())
+            return null;
+
+        if (null == samlResponse.getExtensions().getUnknownXMLObjects( PaymentResponse.DEFAULT_ELEMENT_NAME ))
+            return null;
+
+        List<XMLObject> paymentResponses = samlResponse.getExtensions().getUnknownXMLObjects( PaymentResponse.DEFAULT_ELEMENT_NAME );
+        if (paymentResponses.size() > 1) {
+            logger.err( "Only 1 PaymentResponse in the Response extensions element is supported" );
+            throw new InternalInconsistencyException( "Failed to parse SAML2 response: Only 1 PaymentResponse in the Response extensions element is supported",
+                    null );
+        }
+
+        if (paymentResponses.isEmpty()) {
+            return null;
+        }
+
+        PaymentResponse paymentResponse = (PaymentResponse) paymentResponses.get( 0 );
+        Map<String, String> paymentResponseMap = Maps.newHashMap();
+        for (Attribute attribute : paymentResponse.getAttributes()) {
+            String name = attribute.getName();
+            List<XMLObject> attributeValues = attribute.getAttributeValues();
+            if (!attributeValues.isEmpty()) {
+                paymentResponseMap.put( name, ConversionUtils.toString( SamlUtils.toJavaObject( attributeValues.get( 0 ) ) ) );
+            }
+        }
+        return PaymentResponseDO.fromMap( paymentResponseMap );
     }
 }

@@ -52,16 +52,6 @@ public abstract class LinkIDWicketUtils {
     }
 
     /**
-     * Gives back the SafeOnline authenticated device, or <code>null</code> if the user was not yet authenticated.
-     *
-     * @return The linkID devices with which the user that last authenticated himself had been authenticated.
-     */
-    public static List<String> findAuthenticatedDevices() {
-
-        return LoginManager.findAuthenticatedDevices( WicketUtils.getHttpSession() );
-    }
-
-    /**
      * Gives back the SafeOnline attributes, or <code>null</code> if the user was not yet authenticated or no attributes were included.
      *
      * @return The linkID attributes that were sent with the last authentication response.

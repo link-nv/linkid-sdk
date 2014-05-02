@@ -7,31 +7,41 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
-import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
-import net.link.safeonline.sdk.auth.protocol.*;
-import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponse;
-import net.link.safeonline.sdk.configuration.*;
-import net.link.util.InternalInconsistencyException;
+import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
+import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
+import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
+import net.link.safeonline.sdk.auth.protocol.LogoutProtocolResponseContext;
+import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
+import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
+import net.link.safeonline.sdk.auth.protocol.RequestConfig;
+import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.safeonline.sdk.configuration.ConfigUtils;
+import net.link.safeonline.sdk.configuration.LogoutContext;
+import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.util.common.CertificateChain;
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.logging.Logger;
 import net.link.util.saml.Saml2Utils;
-import net.link.util.saml.SamlUtils;
-import net.link.util.util.ConversionUtils;
 import org.jetbrains.annotations.Nullable;
-import org.opensaml.saml2.core.*;
-import org.opensaml.xml.XMLObject;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.LogoutRequest;
+import org.opensaml.saml2.core.LogoutResponse;
+import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.StatusCode;
 
 
 /**
@@ -105,15 +115,10 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
                                                                      final CertificateChain certificateChain) {
 
         String userId = null, applicationName = null;
-        List<String> authenticatedDevices = new LinkedList<String>();
-        Map<String, List<AttributeSDK<?>>> attributes = new HashMap<String, List<AttributeSDK<?>>>();
+        Map<String, List<AttributeSDK<Serializable>>> attributes = Maps.newHashMap();
         if (!samlResponse.getAssertions().isEmpty()) {
             Assertion assertion = samlResponse.getAssertions().get( 0 );
             userId = assertion.getSubject().getNameID().getValue();
-            for (AuthnStatement authnStatement : assertion.getAuthnStatements()) {
-                authenticatedDevices.add( authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
-                logger.dbg( "authenticated device %s", authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef() );
-            }
             attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
             applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
         }
@@ -123,46 +128,14 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
 
         AuthenticationContext authnContext = responseToContext.apply(
-                new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true, null,
-                        findPaymentResponse( samlResponse ) )
+                new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, attributes, true, null,
+                        LinkIDSaml2Utils.findPaymentResponse( samlResponse ) )
         );
         authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), protocolHandler,
                 null != origAuthnContext.getTarget()? origAuthnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileForceRegistration() );
 
-        return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, authenticatedDevices, attributes, success,
-                certificateChain, findPaymentResponse( samlResponse ) );
-    }
-
-    @Nullable
-    private static PaymentResponseDO findPaymentResponse(final Response samlResponse) {
-
-        if (null == samlResponse.getExtensions())
-            return null;
-
-        if (null == samlResponse.getExtensions().getUnknownXMLObjects( PaymentResponse.DEFAULT_ELEMENT_NAME ))
-            return null;
-
-        List<XMLObject> paymentResponses = samlResponse.getExtensions().getUnknownXMLObjects( PaymentResponse.DEFAULT_ELEMENT_NAME );
-        if (paymentResponses.size() > 1) {
-            logger.err( "Only 1 PaymentResponse in the Response extensions element is supported" );
-            throw new InternalInconsistencyException( "Failed to parse SAML2 response: Only 1 PaymentResponse in the Response extensions element is supported",
-                    null );
-        }
-
-        if (paymentResponses.isEmpty()) {
-            return null;
-        }
-
-        PaymentResponse paymentResponse = (PaymentResponse) paymentResponses.get( 0 );
-        Map<String, String> paymentResponseMap = Maps.newHashMap();
-        for (Attribute attribute : paymentResponse.getAttributes()) {
-            String name = attribute.getName();
-            List<XMLObject> attributeValues = attribute.getAttributeValues();
-            if (!attributeValues.isEmpty()) {
-                paymentResponseMap.put( name, ConversionUtils.toString( SamlUtils.toJavaObject( attributeValues.get( 0 ) ) ) );
-            }
-        }
-        return PaymentResponseDO.fromMap( paymentResponseMap );
+        return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, attributes, success, certificateChain,
+                LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
     }
 
     @Override
@@ -175,19 +148,18 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
             return null;
 
-        Map<String, List<AttributeSDK<?>>> attributes = LinkIDSaml2Utils.getAttributeValues( assertion );
+        Map<String, List<AttributeSDK<Serializable>>> attributes = LinkIDSaml2Utils.getAttributeValues( assertion );
         String userId = assertion.getSubject().getNameID().getValue();
-        List<String> authenticatedDevices = LinkIDSaml2Utils.getAuthenticatedDevices( assertion );
         String applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
 
         AuthenticationContext authnContext = responseToContext.apply(
-                new AuthnProtocolResponseContext( null, null, userId, applicationName, authenticatedDevices, attributes, true, null, null ) );
+                new AuthnProtocolResponseContext( null, null, userId, applicationName, attributes, true, null, null ) );
         AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this, authnContext.getTarget(),
                 false );
 
         CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request, authnContext.getTrustedCertificates() );
 
-        return new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, authenticatedDevices, attributes, true, certificateChain, null );
+        return new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, attributes, true, certificateChain, null );
     }
 
     @Override
