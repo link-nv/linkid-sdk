@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.lin-k.linkid.client.sdk</groupId>
+        <artifactId>examples</artifactId>
+        <version>GIT-SNAPSHOT</version>
+    </parent>
+
+    <name>linkID SDK WS Example</name>
+    <description>An example webapplication showing the use of the SDK over WS</description>
+
+    <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
+    <artifactId>example-ws-username</artifactId>
+    <version>GIT-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <build>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+       </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp</directory>
+                            <targetPath />
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <linkid.host>https://demo.linkid.be</linkid.host>
+        <linkid.app.username>demo-test</linkid.app.username>
+        <linkid.app.password>08427E9F-6355-4DE4-B992-B1AB93CEE9D4</linkid.app.password>
+        <example.host>http://192.168.5.14:9090</example.host>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>example.local</id>
+            <properties>
+                <linkid.host>http://192.168.5.14:8080</linkid.host>
+                <example.host>http://192.168.5.14:9090</example.host>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-sdk-saml2</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.util</groupId>
+            <artifactId>util-common</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

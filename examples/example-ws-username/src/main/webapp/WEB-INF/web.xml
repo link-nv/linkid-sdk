@@ -1,0 +1,58 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+
+    <display-name>SDK WS Example Webapp</display-name>
+
+    <!-- Application Context Parameters -->
+    <context-param>
+        <param-name>linkID.app.name</param-name>
+        <param-value>demo-test</param-value>
+    </context-param>
+    <context-param>
+        <param-name>linkID.app.trustedDN</param-name>
+        <param-value>${example.trusted.dn}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>linkID.app.username</param-name>
+        <param-value>${linkid.app.username}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>linkID.app.password</param-name>
+        <param-value>${linkid.app.password}</param-value>
+    </context-param>
+
+    <!-- WS Example Servlet -->
+    <servlet>
+        <servlet-name>ExampleWSServlet</servlet-name>
+        <servlet-class>net.link.safeonline.sdk.example.ws.ExampleWSServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExampleWSServlet</servlet-name>
+        <url-pattern>/ws</url-pattern>
+    </servlet-mapping>
+
+    <!-- WS Example Servlet -->
+    <servlet>
+        <servlet-name>ExampleRestartServlet</servlet-name>
+        <servlet-class>net.link.safeonline.sdk.example.ws.ExampleRestartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExampleRestartServlet</servlet-name>
+        <url-pattern>/restart</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>ConfigFilter</filter-name>
+        <filter-class>net.link.safeonline.sdk.configuration.SDKConfigFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ConfigFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+</web-app>
+

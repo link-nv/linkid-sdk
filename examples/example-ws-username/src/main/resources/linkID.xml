@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!-- eLoket - Lin.k
+
+    This file specifies the linkID service configuration.
+    Words of the syntax ${foo} are expanded into the value of the System Property named 'foo'.
+-->
+<properties>
+
+    <!-- Host Configuration For Applications -->
+    <entry key="web.appBase">${example.host}/</entry>
+    <!-- Use HTTPS here! -->
+    <entry key="web.appConfidentialBase">${example.host}/</entry>
+
+    <!-- linkID Access For Applications -->
+    <!--<entry key="web.linkIDBase">https://demo.linkid.be</entry>-->
+
+    <!-- local linkID -->
+    <entry key="web.linkIDBase">${linkid.host}</entry>
+
+</properties>
