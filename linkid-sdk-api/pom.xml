@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.28</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID SDK API</name>
