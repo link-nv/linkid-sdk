@@ -11,6 +11,7 @@ import static net.link.util.util.ObjectUtils.ifNotNullElseNullable;
 
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
+import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
@@ -64,6 +65,16 @@ public class LinkIDServiceFactory extends ServiceFactory {
         return instance;
     }
 
+    private static String getWsBase() {
+
+        return String.format( "%s/%s", SDKConfigHolder.config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_WS_BASE );
+    }
+
+    private static String getWsUsernameBase() {
+
+        return String.format( "%s/%s", SDKConfigHolder.config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_WS_USERNAME_BASE );
+    }
+
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *
@@ -108,7 +119,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new AttributeClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new AttributeClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -155,7 +166,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected DataClient _getDataService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new DataClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new DataClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -202,7 +213,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new NameIdentifierMappingClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new NameIdentifierMappingClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -249,7 +260,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected SecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new SecurityTokenServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new SecurityTokenServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -278,7 +289,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected PaymentServiceClient _getPaymentService(final X509Certificate sslCertificate) {
 
-        return new PaymentServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ) );
+        return new PaymentServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ) );
     }
 
     /**
@@ -319,7 +330,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
 
-        return new Xkms2ClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ) );
+        return new Xkms2ClientImpl( getWsBase(), getSSLCertificate( sslCertificate ) );
     }
 
     /**
@@ -353,7 +364,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new LTQRServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new LTQRServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -363,33 +374,32 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static HawsServiceClient<AuthnRequest, Response> getHawsService(final String wsUsername, final String wsPassword) {
 
-        return new HawsServiceClientImpl( SDKConfigHolder.config().web().wsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
+        return new HawsServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ), new AbstractWSSecurityUsernameTokenCallback() {
+            @Override
+            public String getUsername() {
 
-                        return wsUsername;
-                    }
+                return wsUsername;
+            }
 
-                    @Override
-                    public String getPassword() {
+            @Override
+            public String getPassword() {
 
-                        return wsPassword;
-                    }
+                return wsPassword;
+            }
 
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
+            @Nullable
+            @Override
+            public String handle(final String username) {
 
-                        return null;
-                    }
+                return null;
+            }
 
-                    @Override
-                    public boolean isInboundHeaderOptional() {
+            @Override
+            public boolean isInboundHeaderOptional() {
 
-                        return true;
-                    }
-                }
+                return true;
+            }
+        }
         );
     }
 
@@ -443,7 +453,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new HawsServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new HawsServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     /**
@@ -453,33 +463,32 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static AuthServiceClient<AuthnRequest, Response> getAuthService(final String wsUsername, final String wsPassword) {
 
-        return new AuthServiceClientImpl( SDKConfigHolder.config().web().wsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
+        return new AuthServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ), new AbstractWSSecurityUsernameTokenCallback() {
+            @Override
+            public String getUsername() {
 
-                        return wsUsername;
-                    }
+                return wsUsername;
+            }
 
-                    @Override
-                    public String getPassword() {
+            @Override
+            public String getPassword() {
 
-                        return wsPassword;
-                    }
+                return wsPassword;
+            }
 
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
+            @Nullable
+            @Override
+            public String handle(final String username) {
 
-                        return null;
-                    }
+                return null;
+            }
 
-                    @Override
-                    public boolean isInboundHeaderOptional() {
+            @Override
+            public boolean isInboundHeaderOptional() {
 
-                        return true;
-                    }
-                }
+                return true;
+            }
+        }
         );
     }
 
@@ -533,7 +542,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     @Override
     protected AuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
 
-        return new AuthServiceClientImpl( SDKConfigHolder.config().web().wsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new AuthServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 
     private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {

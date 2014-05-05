@@ -9,6 +9,7 @@ package net.link.safeonline.wicket.component.linkid;
 
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
+import net.link.safeonline.sdk.api.LinkIDConstants;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.*;
@@ -70,7 +71,8 @@ public abstract class AbstractLinkIDAuthJSLink extends WebMarkupContainer {
                 @Override
                 public void renderHead(IHeaderResponse response) {
 
-                    response.renderJavascriptReference( String.format( "%s/js/linkid-min.js", config().web().staticBase() ), "linkid-login-script" );
+                    response.renderJavascriptReference(
+                            String.format( "%s/%s/js/linkid-min.js", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_STATIC ), "linkid-login-script" );
                 }
             } ) );
         }

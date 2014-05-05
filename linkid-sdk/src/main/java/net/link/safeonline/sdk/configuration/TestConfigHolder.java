@@ -141,16 +141,8 @@ public class TestConfigHolder extends ConfigHolder {
             public String appBase;
             public String appConfidentialBase;
             public String appPath;
-            public String mobileAuthMinimalURL;
-            public String mobileRegMinimalURL;
-            public String mobileLogoutURL;
-            public String mobileLogoutExitURL;
-            public String mobileBase;
-            public String staticBase;
-            public String wsBase;
-            public String wsUsernameBase;
-            public String authWsBase;
             public String landingPath;
+            public String linkIDBase;
 
             @Override
             public String appBase() {
@@ -171,63 +163,15 @@ public class TestConfigHolder extends ConfigHolder {
             }
 
             @Override
-            public String mobileAuthMinimalURL() {
-
-                return mobileAuthMinimalURL;
-            }
-
-            @Override
-            public String mobileRegMinimalURL() {
-
-                return mobileRegMinimalURL;
-            }
-
-            @Override
-            public String mobileLogoutURL() {
-
-                return mobileLogoutURL;
-            }
-
-            @Override
-            public String mobileLogoutExitURL() {
-
-                return mobileLogoutExitURL;
-            }
-
-            @Override
-            public String staticBase() {
-
-                return staticBase;
-            }
-
-            @Override
-            public String mobileBase() {
-
-                return mobileBase;
-            }
-
-            @Override
-            public String wsBase() {
-
-                return wsBase;
-            }
-
-            @Override
-            public String wsUsernameBase() {
-
-                return wsUsernameBase;
-            }
-
-            @Override
-            public String authWsBase() {
-
-                return authWsBase;
-            }
-
-            @Override
             public String landingPath() {
 
                 return landingPath;
+            }
+
+            @Override
+            public String linkIDBase() {
+
+                return linkIDBase;
             }
         }
 

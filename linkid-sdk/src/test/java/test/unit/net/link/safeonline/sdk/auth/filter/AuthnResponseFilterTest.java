@@ -11,6 +11,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import com.google.common.base.Function;
+import java.io.Serializable;
 import java.util.*;
 import javax.servlet.http.*;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
@@ -98,7 +99,7 @@ public class AuthnResponseFilterTest {
         // Setup Mocks
         String userId = UUID.randomUUID().toString();
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
-                new HashMap<String, List<AttributeSDK<?>>>(), true, null, null );
+                new HashMap<String, List<AttributeSDK<Serializable>>>(), true, null, null );
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
                 (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( authnResponse );
         expect( mockProtocolHandler.getProtocol() ).andReturn( Protocol.SAML2 );

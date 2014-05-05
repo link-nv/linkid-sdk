@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.auth.protocol;
 
 import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
+import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.util.logging.Logger;
 import java.net.URI;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
@@ -47,10 +48,11 @@ public class RequestConfig {
         }
 
         String authnService;
-        if (authnContext.isMobileForceRegistration())
-            authnService = config().web().mobileRegMinimalURL();
-        else
-            authnService = config().web().mobileAuthMinimalURL();
+        if (authnContext.isMobileForceRegistration()) {
+            authnService = String.format( "%s/%s", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_REG_MIN );
+        } else {
+            authnService = String.format( "%s/%s", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_AUTH_MIN );
+        }
 
         return new RequestConfig( targetURL, landingURL, authnService );
     }

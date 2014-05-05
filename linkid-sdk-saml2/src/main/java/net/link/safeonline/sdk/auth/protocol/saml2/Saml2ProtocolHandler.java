@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
@@ -173,7 +174,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             targetURL = ConfigUtils.getApplicationURLForPath( targetURL );
         logger.dbg( "target url: %s", targetURL );
 
-        String logoutService = config().web().mobileLogoutURL();
+        String logoutService = String.format( "%s/%s", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_LOGOUT );
 
         String templateResourceName = config().proto().saml().postBindingTemplate();
 
@@ -241,7 +242,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         Preconditions.checkNotNull( logoutContext, "This protocol handler has not received a logout request to respond to." );
 
         String templateResourceName = config().proto().saml().postBindingTemplate();
-        String logoutExitService = config().web().mobileLogoutExitURL();
+        String logoutExitService = String.format( "%s/%s", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_LOGOUT_EXIT );
 
         LogoutResponse samlLogoutResponse = LogoutResponseFactory.createLogoutResponse( partialLogout, logoutRequestContext, logoutContext.getApplicationName(),
                 logoutExitService );
