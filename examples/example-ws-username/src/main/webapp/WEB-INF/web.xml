@@ -6,11 +6,7 @@
     <!-- Application Context Parameters -->
     <context-param>
         <param-name>linkID.app.name</param-name>
-        <param-value>demo-test</param-value>
-    </context-param>
-    <context-param>
-        <param-name>linkID.app.trustedDN</param-name>
-        <param-value>${example.trusted.dn}</param-value>
+        <param-value>example-mobile</param-value>
     </context-param>
     <context-param>
         <param-name>linkID.app.username</param-name>

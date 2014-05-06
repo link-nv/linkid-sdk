@@ -60,7 +60,6 @@
     <properties>
         <linkid.host>https://demo.linkid.be</linkid.host>
         <example.host>http://192.168.5.14:9090</example.host>
-        <example.trusted.dn>CN=linkID Node linkID-localhost, OU=Development, L=SINT-MARTENS-LATEM, ST=VL, O=LIN.K_NV, C=BE</example.trusted.dn>
         <example.keyStore>example-mobile-keystore.jks</example.keyStore>
         <example.keyEntryAlias>example-mobile</example.keyEntryAlias>
         <example.keyEntryPass>secret</example.keyEntryPass>

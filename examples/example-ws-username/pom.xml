@@ -47,8 +47,8 @@
 
     <properties>
         <linkid.host>https://demo.linkid.be</linkid.host>
-        <linkid.app.username>demo-test</linkid.app.username>
-        <linkid.app.password>08427E9F-6355-4DE4-B992-B1AB93CEE9D4</linkid.app.password>
+        <linkid.app.username>example-mobile</linkid.app.username>
+        <linkid.app.password>6E6C1CB7-965C-48A0-B2B0-6B65674BE19F</linkid.app.password>
         <example.host>http://192.168.5.14:9090</example.host>
     </properties>
 

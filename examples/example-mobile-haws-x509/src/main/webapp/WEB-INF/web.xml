@@ -9,10 +9,6 @@
         <param-value>example-mobile</param-value>
     </context-param>
     <context-param>
-        <param-name>linkID.app.trustedDN</param-name>
-        <param-value>${example.trusted.dn}</param-value>
-    </context-param>
-    <context-param>
         <param-name>linkID.app.keyProvider</param-name>
         <param-value>class://example-mobile:secret:secret@net.link.safeonline.sdk.example.mobile.x509.ExampleMobileKeyProviderService</param-value>
     </context-param>

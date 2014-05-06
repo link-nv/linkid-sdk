@@ -10,11 +10,11 @@
     </context-param>
     <context-param>
         <param-name>linkID.app.username</param-name>
-        <param-value>demo-test</param-value>
+        <param-value>example-mobile</param-value>
     </context-param>
     <context-param>
         <param-name>linkID.app.password</param-name>
-        <param-value>08427E9F-6355-4DE4-B992-B1AB93CEE9D4</param-value>
+        <param-value>6E6C1CB7-965C-48A0-B2B0-6B65674BE19F</param-value>
     </context-param>
     <context-param>
         <param-name>web.landingPath</param-name>

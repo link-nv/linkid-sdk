@@ -9,10 +9,6 @@
         <param-value>example-mobile</param-value>
     </context-param>
     <context-param>
-        <param-name>linkID.app.trustedDN</param-name>
-        <param-value>${example.trusted.dn}</param-value>
-    </context-param>
-    <context-param>
         <param-name>linkID.app.keyProvider</param-name>
         <param-value>classpath://${example.keyEntryAlias}:${example.keyEntryPass}:${example.keyStorePass}@${example.keyStore}</param-value>
     </context-param>
