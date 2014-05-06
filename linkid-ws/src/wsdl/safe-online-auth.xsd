@@ -145,6 +145,12 @@
                     <documentation>Payment menu URL case user has authenticated for a payment and chosen add a new payment method ( linkid.state.authenticated.payment.add )</documentation>
                 </annotation>
             </element>
+            <element name="authenticationResponse" type="tns:AuthenticationResponse" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="AuthenticationResponse">
+        <sequence>
             <any namespace='##any' processContents='lax' minOccurs='0' maxOccurs='1'>
                 <annotation>
                     <documentation>The authentication response if completed, e.g. a SAML2 response</documentation>

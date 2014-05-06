@@ -154,14 +154,16 @@ public class AuthServiceClientImpl extends AbstractWSClient<AuthServicePort> imp
 
             // parse authentication request
             XMLObject responseXMLObject = null;
-            Element authnResponseElement = (Element) response.getSuccess().getAny();
-            if (null != authnResponseElement) {
-                Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller( authnResponseElement );
-                try {
-                    responseXMLObject = unmarshaller.unmarshall( authnResponseElement );
-                }
-                catch (UnmarshallingException e) {
-                    throw new InternalInconsistencyException( "Failed to unmarshall SAML v2.0 authentication response?!", e );
+            if (null != response.getSuccess().getAuthenticationResponse()) {
+                Element authnResponseElement = (Element) response.getSuccess().getAuthenticationResponse().getAny();
+                if (null != authnResponseElement) {
+                    Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller( authnResponseElement );
+                    try {
+                        responseXMLObject = unmarshaller.unmarshall( authnResponseElement );
+                    }
+                    catch (UnmarshallingException e) {
+                        throw new InternalInconsistencyException( "Failed to unmarshall SAML v2.0 authentication response?!", e );
+                    }
                 }
             }
 
