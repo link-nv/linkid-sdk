@@ -39,6 +39,11 @@ public class WSClientTransportException extends Exception {
         return bindingProvider;
     }
 
+    public String getLocation() {
+
+        return location;
+    }
+
     @Override
     public String getMessage() {
 
