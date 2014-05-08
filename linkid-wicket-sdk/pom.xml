@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.31</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID Wicket SDK</name>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>2.31</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
 
         <!-- Specific Dependencies: External -->
