@@ -43,7 +43,6 @@ public class JAASLoginFilter implements Filter {
     @Override
     public void destroy() {
 
-        logger.dbg( "destroy" );
     }
 
     @Override
@@ -118,7 +117,6 @@ public class JAASLoginFilter implements Filter {
                     }
                 }
             } );
-            logger.dbg( "login to %s with %s for %s", loginContextName, userId, request.getRequestURL() );
             loginContext.login();
             request.setAttribute( JAAS_LOGIN_CONTEXT_SESSION_ATTRIB, loginContext );
         }
@@ -137,7 +135,6 @@ public class JAASLoginFilter implements Filter {
             return;
 
         try {
-            logger.dbg( "logout" );
             loginContext.logout();
         }
         catch (LoginException e) {
