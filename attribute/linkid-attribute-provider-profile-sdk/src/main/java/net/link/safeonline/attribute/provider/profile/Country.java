@@ -290,6 +290,10 @@ public enum Country {
 
     public static Country toCountryAlpha2(String isoAlpha2Code) {
 
+        if (null == isoAlpha2Code) {
+            return Country.Belgium;
+        }
+
         for (Country country : Country.values()) {
             if (country.getIsoAlpha2Code().equals( isoAlpha2Code )) {
                 return country;

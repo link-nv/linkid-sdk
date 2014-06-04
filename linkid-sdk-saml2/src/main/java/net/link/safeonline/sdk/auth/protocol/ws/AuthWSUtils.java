@@ -34,18 +34,19 @@ public abstract class AuthWSUtils {
     /**
      * Start a linkID authentication over SOAP WS.
      *
-     * @param applicationName      the technical application name, this is the name you agreed with the linkID team
-     * @param deviceContext        optional device context, e.g. custom context to be shown on the user's mobile
-     * @param attributeSuggestions optional map of attribute suggestions
-     * @param paymentContext       optional payment context
-     * @param locale               Locale of the authentication
-     * @param userAgent            optional user agent which will be used for constructing the QR code URL
-     * @param forceRegistration    force registration or not
+     * @param applicationName       the technical application name, this is the name you agreed on with the linkID team
+     * @param authenticationMessage optional authentication message, e.g. custom context to be shown on the user's mobile
+     * @param finishesMessage       optional authentication finished message, e.g. custom context to be shown on the user's mobile
+     * @param attributeSuggestions  optional map of attribute suggestions
+     * @param paymentContext        optional payment context
+     * @param locale                Locale of the authentication
+     * @param userAgent             optional user agent which will be used for constructing the QR code URL
+     * @param forceRegistration     force registration or not
      *
      * @return the {@link AuthnSession} object
      */
-    public static AuthnSession startAuthentication(final String applicationName, @Nullable final String deviceContext,
-                                                   @Nullable final Map<String, List<Serializable>> attributeSuggestions,
+    public static AuthnSession startAuthentication(final String applicationName, @Nullable final String authenticationMessage,
+                                                   @Nullable final String finishesMessage, @Nullable final Map<String, List<Serializable>> attributeSuggestions,
                                                    @Nullable final PaymentContextDO paymentContext, final Locale locale, final String userAgent,
                                                    boolean forceRegistration)
             throws AuthnException {
@@ -53,8 +54,11 @@ public abstract class AuthWSUtils {
         AuthServiceClient<AuthnRequest, Response> authServiceClient = LinkIDServiceFactory.getAuthService();
 
         Map<String, String> deviceContextMap = Maps.newHashMap();
-        if (null != deviceContext) {
-            deviceContextMap.put( DeviceContextConstants.CONTEXT_TITLE, deviceContext );
+        if (null != authenticationMessage) {
+            deviceContextMap.put( DeviceContextConstants.AUTHENTICATION_MESSAGE, authenticationMessage );
+        }
+        if (null != finishesMessage) {
+            deviceContextMap.put( DeviceContextConstants.FINISHED_MESSAGE, finishesMessage );
         }
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, "http://foo.bar", null, false, deviceContextMap,

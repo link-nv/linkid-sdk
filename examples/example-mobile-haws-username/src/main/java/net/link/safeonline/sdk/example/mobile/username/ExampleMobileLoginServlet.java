@@ -22,7 +22,8 @@ public class ExampleMobileLoginServlet extends InitiateLoginServlet {
     protected void configureAuthenticationContext(final AuthenticationContext authenticationContext, final HttpServletRequest request,
                                                   final HttpServletResponse response) {
 
-        authenticationContext.getDeviceContext().put( DeviceContextConstants.CONTEXT_TITLE, "Optional custom mobile login context" );
+        authenticationContext.getDeviceContext().put( DeviceContextConstants.AUTHENTICATION_MESSAGE, "Custom authentication message" );
+        authenticationContext.getDeviceContext().put( DeviceContextConstants.FINISHED_MESSAGE, "Custom finished message" );
 
         authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
     }
