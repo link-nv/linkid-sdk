@@ -63,12 +63,16 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-sdk-ws</artifactId>
+            <artifactId>linkid-ws</artifactId>
             <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-saml2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.util</groupId>
+            <artifactId>util-ws</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->

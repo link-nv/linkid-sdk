@@ -203,8 +203,7 @@ public class WSSecurityServerHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/test-ws-security-invalid-message.xml" );
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-ws-security-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );

@@ -417,7 +417,6 @@
         <module>linkid-config</module>
         <module>linkid-sdk-api</module>
         <module>linkid-sdk</module>
-        <module>linkid-sdk-ws</module>
         <module>linkid-sdk-saml2</module>
         <module>linkid-ws</module>
         <module>linkid-wicket-sdk</module>

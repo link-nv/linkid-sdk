@@ -119,8 +119,7 @@ public class WSSecurityUsernameTokenClientHandlerTest {
 
         // Setup data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/test-ws-security-username-token-invalid-message.xml" );
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream( "/test-ws-security-username-token-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
