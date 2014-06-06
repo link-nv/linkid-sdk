@@ -11,6 +11,7 @@ import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,7 +43,8 @@ public class ExampleWSServlet extends HttpServlet {
         AuthnSession authnSession = (AuthnSession) request.getSession().getAttribute( RESPONSE_SESSION_PARAM );
         if (null == authnSession) {
             try {
-                authnSession = AuthWSUtils.startAuthentication( config().linkID().app().name(), null, null, null, null, Locale.ENGLISH, null, false );
+                authnSession = AuthWSUtils.startAuthentication( config().linkID().app().name(), null, null, null, null,
+                        Collections.singletonList( "linkid_basic" ), Locale.ENGLISH, null, false );
 
                 // push on session
                 request.getSession().setAttribute( RESPONSE_SESSION_PARAM, authnSession );

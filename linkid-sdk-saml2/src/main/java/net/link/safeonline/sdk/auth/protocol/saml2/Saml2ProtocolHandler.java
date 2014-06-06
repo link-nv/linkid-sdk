@@ -28,6 +28,7 @@ import net.link.safeonline.sdk.auth.protocol.LogoutProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.RequestConfig;
+import net.link.safeonline.sdk.auth.util.DeviceContextUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.LogoutContext;
@@ -73,8 +74,11 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         String templateResourceName = config().proto().saml().postBindingTemplate();
 
+        Map<String, String> deviceContext = DeviceContextUtils.generate( authnContext.getAuthenticationMessage(), authnContext.getFinishedMessage(),
+                authnContext.getIdentityProfiles() );
+
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null, authnContext.getApplicationFriendlyName(),
-                requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), authnContext.getDeviceContext(),
+                requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), deviceContext,
                 authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
 
         CertificateChain certificateChain = null;
@@ -130,8 +134,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         AuthenticationContext authnContext = responseToContext.apply(
                 new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, attributes, true, null,
-                        LinkIDSaml2Utils.findPaymentResponse( samlResponse ) )
-        );
+                        LinkIDSaml2Utils.findPaymentResponse( samlResponse ) ) );
         authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), protocolHandler,
                 null != origAuthnContext.getTarget()? origAuthnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileForceRegistration() );
 

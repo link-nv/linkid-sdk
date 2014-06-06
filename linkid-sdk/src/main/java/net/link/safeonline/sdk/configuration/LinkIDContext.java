@@ -15,9 +15,8 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import net.link.util.config.KeyProvider;
 import net.link.util.util.NNSupplier;
 import org.jetbrains.annotations.NotNull;
@@ -48,8 +47,10 @@ public abstract class LinkIDContext implements Serializable {
     //
     private Protocol                    protocol;
     private SAMLContext                 saml;
-
-    private Map<String, String> deviceContext = new HashMap<String, String>();
+    //
+    private String                      authenticationMessage;
+    private String                      finishedMessage;
+    private List<String>                identityProfiles;
 
     /**
      * @see #LinkIDContext(String, KeyProvider, String)
@@ -198,14 +199,34 @@ public abstract class LinkIDContext implements Serializable {
         return saml;
     }
 
-    public Map<String, String> getDeviceContext() {
+    public String getAuthenticationMessage() {
 
-        return deviceContext;
+        return authenticationMessage;
     }
 
-    public void setDeviceContext(final Map<String, String> deviceContext) {
+    public void setAuthenticationMessage(final String authenticationMessage) {
 
-        this.deviceContext = deviceContext;
+        this.authenticationMessage = authenticationMessage;
+    }
+
+    public String getFinishedMessage() {
+
+        return finishedMessage;
+    }
+
+    public void setFinishedMessage(final String finishedMessage) {
+
+        this.finishedMessage = finishedMessage;
+    }
+
+    public List<String> getIdentityProfiles() {
+
+        return identityProfiles;
+    }
+
+    public void setIdentityProfiles(final List<String> identityProfiles) {
+
+        this.identityProfiles = identityProfiles;
     }
 
     public void setApplicationName(final String applicationName) {

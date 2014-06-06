@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.example.mobile.x509;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.device.DeviceContextConstants;
 import net.link.safeonline.sdk.auth.servlet.InitiateLoginServlet;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
 
@@ -20,8 +19,8 @@ public class ExampleMobileLoginServlet extends InitiateLoginServlet {
     protected void configureAuthenticationContext(final AuthenticationContext authenticationContext, final HttpServletRequest request,
                                                   final HttpServletResponse response) {
 
-        authenticationContext.getDeviceContext().put( DeviceContextConstants.AUTHENTICATION_MESSAGE, "Custom authentication message" );
-        authenticationContext.getDeviceContext().put( DeviceContextConstants.FINISHED_MESSAGE, "Custom finished message" );
+        authenticationContext.setAuthenticationMessage( "Custom authentication message" );
+        authenticationContext.setFinishedMessage( "Custom finished message" );
 
         //        authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
     }

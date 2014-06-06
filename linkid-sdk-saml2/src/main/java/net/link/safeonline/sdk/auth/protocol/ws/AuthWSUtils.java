@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.auth.AuthnResponseDO;
-import net.link.safeonline.sdk.api.auth.device.DeviceContextConstants;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
@@ -17,6 +16,7 @@ import net.link.safeonline.sdk.api.ws.auth.PollException;
 import net.link.safeonline.sdk.api.ws.auth.PollResponse;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
+import net.link.safeonline.sdk.auth.util.DeviceContextUtils;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.Assertion;
@@ -36,9 +36,11 @@ public abstract class AuthWSUtils {
      *
      * @param applicationName       the technical application name, this is the name you agreed on with the linkID team
      * @param authenticationMessage optional authentication message, e.g. custom context to be shown on the user's mobile
-     * @param finishesMessage       optional authentication finished message, e.g. custom context to be shown on the user's mobile
+     * @param finishedMessage       optional authentication finished message, e.g. custom context to be shown on the user's mobile
      * @param attributeSuggestions  optional map of attribute suggestions
      * @param paymentContext        optional payment context
+     * @param identityProfiles      optional list of identity profile names to use for this authentication, if null or empty, the default configured @ linkID
+     *                              will be used
      * @param locale                Locale of the authentication
      * @param userAgent             optional user agent which will be used for constructing the QR code URL
      * @param forceRegistration     force registration or not
@@ -46,20 +48,14 @@ public abstract class AuthWSUtils {
      * @return the {@link AuthnSession} object
      */
     public static AuthnSession startAuthentication(final String applicationName, @Nullable final String authenticationMessage,
-                                                   @Nullable final String finishesMessage, @Nullable final Map<String, List<Serializable>> attributeSuggestions,
-                                                   @Nullable final PaymentContextDO paymentContext, final Locale locale, final String userAgent,
-                                                   boolean forceRegistration)
+                                                   @Nullable final String finishedMessage, @Nullable final Map<String, List<Serializable>> attributeSuggestions,
+                                                   @Nullable final PaymentContextDO paymentContext, @Nullable final List<String> identityProfiles,
+                                                   final Locale locale, final String userAgent, boolean forceRegistration)
             throws AuthnException {
 
         AuthServiceClient<AuthnRequest, Response> authServiceClient = LinkIDServiceFactory.getAuthService();
 
-        Map<String, String> deviceContextMap = Maps.newHashMap();
-        if (null != authenticationMessage) {
-            deviceContextMap.put( DeviceContextConstants.AUTHENTICATION_MESSAGE, authenticationMessage );
-        }
-        if (null != finishesMessage) {
-            deviceContextMap.put( DeviceContextConstants.FINISHED_MESSAGE, finishesMessage );
-        }
+        Map<String, String> deviceContextMap = DeviceContextUtils.generate( authenticationMessage, finishedMessage, identityProfiles );
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, "http://foo.bar", null, false, deviceContextMap,
                 attributeSuggestions, paymentContext );

@@ -8,22 +8,31 @@
 package net.link.safeonline.sdk.auth.protocol.haws;
 
 import com.google.common.base.Function;
-import net.link.util.logging.Logger;
-import net.link.util.InternalInconsistencyException;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.RequestConstants;
 import net.link.safeonline.sdk.api.haws.PullException;
 import net.link.safeonline.sdk.api.haws.PushException;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
-import net.link.safeonline.sdk.auth.protocol.*;
+import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
+import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
+import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
+import net.link.safeonline.sdk.auth.protocol.LogoutProtocolResponseContext;
+import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
+import net.link.safeonline.sdk.auth.protocol.RequestConfig;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler;
-import net.link.safeonline.sdk.configuration.*;
+import net.link.safeonline.sdk.auth.util.DeviceContextUtils;
+import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.safeonline.sdk.configuration.LogoutContext;
+import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.common.URLUtils;
 import net.link.util.exception.ValidationFailedException;
+import net.link.util.logging.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Response;
@@ -54,9 +63,12 @@ public class HawsProtocolHandler implements ProtocolHandler {
 
         RequestConfig requestConfig = RequestConfig.get( authnContext );
 
+        Map<String, String> deviceContext = DeviceContextUtils.generate( authnContext.getAuthenticationMessage(), authnContext.getFinishedMessage(),
+                authnContext.getIdentityProfiles() );
+
         // create SAML2 request
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null, authnContext.getApplicationFriendlyName(),
-                requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), authnContext.getDeviceContext(),
+                requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), deviceContext,
                 authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
 
         HawsServiceClient<AuthnRequest, Response> wsClient = getWsClient( authnContext );

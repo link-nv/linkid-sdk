@@ -17,4 +17,7 @@ public interface DeviceContextConstants {
 
     String AUTHENTICATION_MESSAGE = "linkID.authenticationMessage";
     String FINISHED_MESSAGE       = "linkID.finishedMessage";
+
+    // optional identity profile(s)
+    String IDENTITY_PROFILE_PREFIX = "linkID.identityProfile";
 }
