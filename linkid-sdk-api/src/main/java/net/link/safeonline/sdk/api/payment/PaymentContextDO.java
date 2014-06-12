@@ -17,14 +17,17 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class PaymentContextDO implements Serializable {
 
-    public static final String AMOUNT_KEY          = "PaymentContext.amount";
-    public static final String CURRENCY_KEY        = "PaymentContext.currency";
-    public static final String DESCRIPTION_KEY     = "PaymentContext.description";
-    public static final String ORDER_REFERENCE_KEY = "PaymentContext.orderReference";
-    public static final String PROFILE_KEY         = "PaymentContext.profile";
-    public static final String VALIDATION_TIME_KEY = "PaymentContext.validationTime";
-    public static final String ADD_LINK_KEY        = "PaymentContext.addLinkKey";
-    public static final String DEFERRED_PAY_KEY    = "PaymentContext.deferredPay";
+    public static final String AMOUNT_KEY              = "PaymentContext.amount";
+    public static final String CURRENCY_KEY            = "PaymentContext.currency";
+    public static final String DESCRIPTION_KEY         = "PaymentContext.description";
+    public static final String ORDER_REFERENCE_KEY     = "PaymentContext.orderReference";
+    public static final String PROFILE_KEY             = "PaymentContext.profile";
+    public static final String VALIDATION_TIME_KEY     = "PaymentContext.validationTime";
+    public static final String ADD_LINK_KEY            = "PaymentContext.addLinkKey";
+    public static final String DEFERRED_PAY_KEY        = "PaymentContext.deferredPay";
+    public static final String MANDATE_KEY             = "PaymentContext.mandate";
+    public static final String MANDATE_DESCRIPTION_KEY = "PaymentContext.mandateDescription";
+    public static final String MANDATE_REFERENCE_KEY   = "PaymentContext.mandateReference";
 
     private final double   amount;
     private final Currency currency;
@@ -46,6 +49,38 @@ public class PaymentContextDO implements Serializable {
     // linkID can allow for the user to make a deferred payment which he can complete later on from his browser.
     private final boolean allowDeferredPay;
 
+    // mandates
+    private final boolean mandate;      // payment context for a mandate?
+    private final String  mandateDescription;
+    private final String  mandateReference;
+
+    /**
+     * @param amount                   amount in cents
+     * @param currency                 currency
+     * @param description              optional description
+     * @param paymentProfile           optional payment profile
+     * @param showAddPaymentMethodLink optional show add payment method link
+     * @param allowDeferredPay         optional allow deferred payments flag
+     */
+    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
+                            @Nullable final String paymentProfile, final int paymentValidationTime, final boolean showAddPaymentMethodLink,
+                            final boolean allowDeferredPay, final boolean mandate, @Nullable final String mandateDescription,
+                            @Nullable final String mandateReference) {
+
+        this.amount = amount;
+        this.currency = currency;
+        this.description = description;
+        this.orderReference = orderReference;
+        this.paymentProfile = paymentProfile;
+        this.paymentValidationTime = paymentValidationTime;
+        this.showAddPaymentMethodLink = showAddPaymentMethodLink;
+        this.allowDeferredPay = allowDeferredPay;
+
+        this.mandate = mandate;
+        this.mandateDescription = mandateDescription;
+        this.mandateReference = mandateReference;
+    }
+
     /**
      * @param amount                   amount in cents
      * @param currency                 currency
@@ -58,14 +93,8 @@ public class PaymentContextDO implements Serializable {
                             @Nullable final String paymentProfile, final int paymentValidationTime, final boolean showAddPaymentMethodLink,
                             final boolean allowDeferredPay) {
 
-        this.amount = amount;
-        this.currency = currency;
-        this.description = description;
-        this.orderReference = orderReference;
-        this.paymentProfile = paymentProfile;
-        this.paymentValidationTime = paymentValidationTime;
-        this.showAddPaymentMethodLink = showAddPaymentMethodLink;
-        this.allowDeferredPay = allowDeferredPay;
+        this( amount, currency, description, orderReference, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, allowDeferredPay, false, null,
+                null );
     }
 
     /**
@@ -107,6 +136,12 @@ public class PaymentContextDO implements Serializable {
         map.put( ADD_LINK_KEY, Boolean.toString( showAddPaymentMethodLink ) );
         map.put( DEFERRED_PAY_KEY, Boolean.toString( allowDeferredPay ) );
 
+        map.put( MANDATE_KEY, Boolean.toString( mandate ) );
+        if (null != mandateDescription)
+            map.put( MANDATE_DESCRIPTION_KEY, mandateDescription );
+        if (null != mandateReference)
+            map.put( MANDATE_REFERENCE_KEY, mandateReference );
+
         return map;
     }
 
@@ -128,15 +163,17 @@ public class PaymentContextDO implements Serializable {
         return new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ), Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
                 paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ), paymentContextMap.get( PROFILE_KEY ),
                 Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( ADD_LINK_KEY ) ),
-                Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ) );
+                Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ),
+                paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
     }
 
     @Override
     public String toString() {
 
         return String.format(
-                "Amount: %f, Currency: %s, Description: \"%s\", OrderReference: \"%s\", Profile: \"%s\", validationTime: %d, addPaymentMethodLink: %s, allowDeferredPay: %s",
-                amount, currency, description, orderReference, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, allowDeferredPay );
+                "Amount: %f, Currency: %s, Description: \"%s\", OrderReference: \"%s\", Profile: \"%s\", validationTime: %d, addPaymentMethodLink: %s, allowDeferredPay: %s, mandate: %s, mandateDescription: %s, mandateReference: %s",
+                amount, currency, description, orderReference, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, allowDeferredPay, mandate,
+                mandateDescription, mandateReference );
     }
 
     // Accessors
@@ -179,5 +216,20 @@ public class PaymentContextDO implements Serializable {
     public boolean isAllowDeferredPay() {
 
         return allowDeferredPay;
+    }
+
+    public boolean isMandate() {
+
+        return mandate;
+    }
+
+    public String getMandateDescription() {
+
+        return mandateDescription;
+    }
+
+    public String getMandateReference() {
+
+        return mandateReference;
     }
 }
