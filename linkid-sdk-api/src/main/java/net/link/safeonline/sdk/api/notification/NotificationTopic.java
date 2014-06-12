@@ -12,7 +12,8 @@ public enum NotificationTopic {
     REMOVE_USER( "urn:net:lin-k:linkid:topic:user:remove" ),
     UNSUBSCRIBE_USER( "urn:net:lin-k:linkid:topic:user:unsubscribe" ),
     ATTRIBUTE_UPDATE( "urn:net:lin-k:linkid:topic:user:attribute:update" ),
-    ATTRIBUTE_REMOVAL( "urn:net:lin-k:linkid:topic:user:attribute:remove" );
+    ATTRIBUTE_REMOVAL( "urn:net:lin-k:linkid:topic:user:attribute:remove" ),
+    IDENTITY_UPDATE( "urn:net:lin-k:linkid:topic:user:identity:update" );
 
     private final String topicUri;
 
