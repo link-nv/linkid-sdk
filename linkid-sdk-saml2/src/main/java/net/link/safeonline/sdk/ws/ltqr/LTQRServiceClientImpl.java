@@ -35,7 +35,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the attribute web service.
+     * @param location       the location (host:port) of the ltqr web service.
      * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
      * @param configuration  WS Security configuration
      */

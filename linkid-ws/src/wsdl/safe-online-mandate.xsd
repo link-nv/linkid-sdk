@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:mandate" xmlns:tns="urn:net:lin-k:safe-online:mandate"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-mandate
+			Revision history:
+			V1.0 (June, 2014):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <element name="MandatePaymentRequest">
+		<complexType>
+            <sequence>
+                <element name="paymentContext" type="tns:PaymentContext" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment context</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="mandateReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="MandatePaymentResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:MandatePaymentSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:MandatePaymentError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="MandatePaymentSuccess">
+        <sequence>
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The order reference of this mandate payment</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="MandatePaymentError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.mandate.archived">
+				<annotation>
+					<documentation>The mandate has been archived and is no longer usable.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.mandate.unknown">
+				<annotation>
+					<documentation>Mo mandate has been found with this reference.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.mandate.payment.failed">
+				<annotation>
+					<documentation>Something is wrong with the payment method for this mandate, payment failed.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
+    <complexType name="PaymentContext">
+        <sequence>
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The amount to be payed ( in cents )</documentation>
+                </annotation>
+            </element>
+            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1" />
+            <element name="description" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment description</documentation>
+                </annotation>
+            </element>
+            <element name="orderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional order reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment profile</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <simpleType name="Currency">
+		<annotation>
+			<documentation>Currency</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="EUR">
+				<annotation>
+					<documentation>euro</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

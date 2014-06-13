@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
+import net.link.safeonline.sdk.api.ws.mandate.MandateServiceClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
@@ -29,6 +30,7 @@ import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.haws.HawsServiceClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.ltqr.LTQRServiceClientImpl;
+import net.link.safeonline.sdk.ws.mandate.MandateServiceClientImpl;
 import net.link.safeonline.sdk.ws.payment.PaymentServiceClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
@@ -334,7 +336,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     }
 
     /**
-     * Retreive a proxy to the linkID long term QR web service.
+     * Retrieve a proxy to the linkID long term QR web service.
      *
      * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
      *                       certificate.
@@ -399,8 +401,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
                 return true;
             }
-        }
-        );
+        } );
     }
 
     /**
@@ -488,8 +489,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
 
                 return true;
             }
-        }
-        );
+        } );
     }
 
     /**
@@ -559,5 +559,94 @@ public class LinkIDServiceFactory extends ServiceFactory {
                 }
             }
         } );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID mandate web service, using the WS-Security Username token profile
+     *
+     * @return proxy to the linkID mandate web service.
+     */
+    public static MandateServiceClient getMandateService(final String wsUsername, final String wsPassword) {
+
+        return new MandateServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ),
+                new AbstractWSSecurityUsernameTokenCallback() {
+                    @Override
+                    public String getUsername() {
+
+                        return wsUsername;
+                    }
+
+                    @Override
+                    public String getPassword() {
+
+                        return wsPassword;
+                    }
+
+                    @Nullable
+                    @Override
+                    public String handle(final String username) {
+
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isInboundHeaderOptional() {
+
+                        return true;
+                    }
+                } );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID mandate web service.
+     *
+     * @return proxy to the linkID mandate web service.
+     */
+    public static MandateServiceClient getMandateService() {
+
+        if (null != SDKConfigHolder.config().linkID().app().username()) {
+
+            return getMandateService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+        } else {
+
+            return getInstance()._getMandateService( new SDKWSSecurityConfiguration(), null );
+        }
+    }
+
+    /**
+     * Retrieve a proxy to the linkID mandate web service.
+     *
+     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                       validation.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID mandate web service.
+     */
+    public static MandateServiceClient getMandateService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                         final X509Certificate sslCertificate) {
+
+        return getInstance()._getMandateService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID mandate web service.
+     *
+     * @param configuration  Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                       certificate.
+     *
+     * @return proxy to the linkID mandate web service.
+     */
+    public static MandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+
+        return getInstance()._getMandateService( configuration, sslCertificate );
+    }
+
+    @Override
+    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+
+        return new MandateServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
     }
 }

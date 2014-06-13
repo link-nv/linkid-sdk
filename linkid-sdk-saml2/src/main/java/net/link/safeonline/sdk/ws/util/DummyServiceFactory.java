@@ -15,6 +15,7 @@ import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
+import net.link.safeonline.sdk.api.ws.mandate.MandateServiceClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
@@ -94,6 +95,12 @@ public class DummyServiceFactory extends ServiceFactory {
 
     @Override
     protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
+
+        throw new UnsupportedOperationException( "Not yet implemented" );
+    }
+
+    @Override
+    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
