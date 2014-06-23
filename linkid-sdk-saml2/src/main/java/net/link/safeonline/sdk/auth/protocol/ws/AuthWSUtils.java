@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.auth.AuthnResponseDO;
+import net.link.safeonline.sdk.api.auth.device.DeviceContextConstants;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
@@ -53,9 +54,23 @@ public abstract class AuthWSUtils {
                                                    final Locale locale, final String userAgent, boolean forceRegistration)
             throws AuthnException {
 
+        return startAuthentication( applicationName, null, authenticationMessage, finishedMessage, attributeSuggestions, paymentContext, identityProfiles,
+                locale, userAgent, forceRegistration );
+    }
+
+    public static AuthnSession startAuthentication(final String applicationName, @Nullable final String oldAuthenticationContext,
+                                                   @Nullable final String authenticationMessage, @Nullable final String finishedMessage,
+                                                   @Nullable final Map<String, List<Serializable>> attributeSuggestions,
+                                                   @Nullable final PaymentContextDO paymentContext, @Nullable final List<String> identityProfiles,
+                                                   final Locale locale, final String userAgent, boolean forceRegistration)
+            throws AuthnException {
+
         AuthServiceClient<AuthnRequest, Response> authServiceClient = LinkIDServiceFactory.getAuthService();
 
         Map<String, String> deviceContextMap = DeviceContextUtils.generate( authenticationMessage, finishedMessage, identityProfiles );
+        if (null != oldAuthenticationContext) {
+            deviceContextMap.put( DeviceContextConstants.CONTEXT_TITLE, oldAuthenticationContext );
+        }
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, "http://foo.bar", null, false, deviceContextMap,
                 attributeSuggestions, paymentContext );
