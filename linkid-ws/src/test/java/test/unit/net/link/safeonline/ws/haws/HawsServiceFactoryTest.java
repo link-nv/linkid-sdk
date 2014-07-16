@@ -12,7 +12,7 @@ import net.lin_k.safe_online.haws.HawsService;
 import net.link.safeonline.ws.haws.HawsServiceFactory;
 
 
-public class HawServiceFactoryTest extends TestCase {
+public class HawsServiceFactoryTest extends TestCase {
 
     public void testNewInstance()
             throws Exception {
