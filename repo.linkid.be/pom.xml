@@ -137,6 +137,12 @@
             <type>war</type>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
+            <artifactId>example-rest</artifactId>
+            <type>war</type>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Attribute Provider SDKs -->
         <dependency>
