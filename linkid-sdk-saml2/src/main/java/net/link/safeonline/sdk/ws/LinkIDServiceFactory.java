@@ -77,6 +77,16 @@ public class LinkIDServiceFactory extends ServiceFactory {
         return String.format( "%s/%s", SDKConfigHolder.config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_WS_USERNAME_BASE );
     }
 
+    public static String getWsBase(final String linkIDBase) {
+
+        return String.format( "%s/%s", linkIDBase, LinkIDConstants.LINKID_PATH_WS_BASE );
+    }
+
+    public static String getWsUsernameBase(final String linkIDBase) {
+
+        return String.format( "%s/%s", linkIDBase, LinkIDConstants.LINKID_PATH_WS_USERNAME_BASE );
+    }
+
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *

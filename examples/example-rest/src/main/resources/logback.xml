@@ -1,0 +1,16 @@
+<configuration scan="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%-8relative %22c{0} [%-5level] %msg%xEx{3}%n</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="net.link.safeonline" level="DEBUG" />
+    <logger name="net.link.util" level="DEBUG" />
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

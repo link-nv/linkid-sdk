@@ -19,6 +19,9 @@ import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.safeonline.sdk.auth.util.DeviceContextUtils;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
+import net.link.safeonline.sdk.ws.LinkIDWSUsernameConfiguration;
+import net.link.safeonline.sdk.ws.auth.AuthServiceClientImpl;
+import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -31,6 +34,18 @@ import org.opensaml.saml2.core.Response;
  * Time: 11:06
  */
 public abstract class AuthWSUtils {
+
+    public static AuthnSession startAuthentication(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration,
+                                                   @Nullable final String oldAuthenticationContext, @Nullable final String authenticationMessage,
+                                                   @Nullable final String finishedMessage, @Nullable final Map<String, List<Serializable>> attributeSuggestions,
+                                                   @Nullable final PaymentContextDO paymentContext, @Nullable final List<String> identityProfiles,
+                                                   final Locale locale, final String userAgent, boolean forceRegistration)
+            throws AuthnException {
+
+        return startAuthentication( getAuthServiceClient( linkIDWSUsernameConfiguration ), linkIDWSUsernameConfiguration.getApplicationName(),
+                oldAuthenticationContext, authenticationMessage, finishedMessage, attributeSuggestions, paymentContext, identityProfiles, locale, userAgent,
+                forceRegistration );
+    }
 
     /**
      * Start a linkID authentication over SOAP WS.
@@ -65,7 +80,16 @@ public abstract class AuthWSUtils {
                                                    final Locale locale, final String userAgent, boolean forceRegistration)
             throws AuthnException {
 
-        AuthServiceClient<AuthnRequest, Response> authServiceClient = LinkIDServiceFactory.getAuthService();
+        return startAuthentication( LinkIDServiceFactory.getAuthService(), applicationName, oldAuthenticationContext, authenticationMessage, finishedMessage,
+                attributeSuggestions, paymentContext, identityProfiles, locale, userAgent, forceRegistration );
+    }
+
+    public static AuthnSession startAuthentication(AuthServiceClient<AuthnRequest, Response> authServiceClient, final String applicationName,
+                                                   @Nullable final String oldAuthenticationContext, @Nullable final String authenticationMessage,
+                                                   @Nullable final String finishedMessage, @Nullable final Map<String, List<Serializable>> attributeSuggestions,
+                                                   @Nullable final PaymentContextDO paymentContext, @Nullable final List<String> identityProfiles,
+                                                   final Locale locale, final String userAgent, boolean forceRegistration)
+            throws AuthnException {
 
         Map<String, String> deviceContextMap = DeviceContextUtils.generate( authenticationMessage, finishedMessage, identityProfiles );
         if (null != oldAuthenticationContext) {
@@ -88,9 +112,52 @@ public abstract class AuthWSUtils {
     public static PollResponse<Response> pollAuthentication(final String sessionId, final Locale locale)
             throws PollException {
 
-        AuthServiceClient<AuthnRequest, Response> authServiceClient = LinkIDServiceFactory.getAuthService();
+        return pollAuthentication( LinkIDServiceFactory.getAuthService(), sessionId, locale );
+    }
+
+    public static PollResponse<Response> pollAuthentication(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration, final String sessionId,
+                                                            final Locale locale)
+            throws PollException {
+
+        return pollAuthentication( getAuthServiceClient( linkIDWSUsernameConfiguration ), sessionId, locale );
+    }
+
+    public static PollResponse<Response> pollAuthentication(final AuthServiceClient<AuthnRequest, Response> authServiceClient, final String sessionId,
+                                                            final Locale locale)
+            throws PollException {
 
         return authServiceClient.poll( sessionId, locale.getLanguage() );
+    }
+
+    public static AuthServiceClient<AuthnRequest, Response> getAuthServiceClient(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration) {
+
+        return new AuthServiceClientImpl( LinkIDServiceFactory.getWsUsernameBase( linkIDWSUsernameConfiguration.getLinkIDBase() ),
+                linkIDWSUsernameConfiguration.getSSLCertificate(), new AbstractWSSecurityUsernameTokenCallback() {
+            @Override
+            public String getUsername() {
+
+                return linkIDWSUsernameConfiguration.getUsername();
+            }
+
+            @Override
+            public String getPassword() {
+
+                return linkIDWSUsernameConfiguration.getPassword();
+            }
+
+            @Nullable
+            @Override
+            public String handle(final String username) {
+
+                return null;
+            }
+
+            @Override
+            public boolean isInboundHeaderOptional() {
+
+                return true;
+            }
+        } );
     }
 
     /**

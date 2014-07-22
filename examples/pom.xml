@@ -20,6 +20,7 @@
         <module>example-mobile-haws-x509</module>
         <module>example-ws</module>
         <module>example-ws-username</module>
+        <module>example-rest</module>
     </modules>
 
 </project>
