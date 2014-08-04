@@ -19,11 +19,15 @@ public class PaymentResponseDO implements Serializable {
     public static final String STATE_KEY        = "PaymentResponse.state";
     public static final String MANDATE_REF_KEY  = "PaymentResponse.mandateRef";
     //
+    public static final String MENU_URL_KEY     = "PaymentResponse.menuURL";
+    //
     public static final String DOCDATA__REF_KEY = "PaymentResponse.docdataRef";
 
     private final String       orderReference;
     private final PaymentState paymentState;
     private final String       mandateReference;
+    //
+    private final String       paymentMenuURL;
     //
     private final String       docdataReference;
 
@@ -32,11 +36,13 @@ public class PaymentResponseDO implements Serializable {
      * @param paymentState   the payment order state
      */
     public PaymentResponseDO(final String orderReference, final PaymentState paymentState, @Nullable final String mandateReference,
-                             @Nullable final String docdataReference) {
+                             @Nullable final String docdataReference, @Nullable final String paymentMenuURL) {
 
         this.orderReference = orderReference;
         this.paymentState = paymentState;
         this.mandateReference = mandateReference;
+
+        this.paymentMenuURL = paymentMenuURL;
 
         this.docdataReference = docdataReference;
     }
@@ -67,7 +73,7 @@ public class PaymentResponseDO implements Serializable {
 
         // convert
         return new PaymentResponseDO( paymentResponseMap.get( ORDER_REF_KEY ), PaymentState.parse( paymentResponseMap.get( STATE_KEY ) ),
-                paymentResponseMap.get( MANDATE_REF_KEY ), paymentResponseMap.get( DOCDATA__REF_KEY ) );
+                paymentResponseMap.get( MANDATE_REF_KEY ), paymentResponseMap.get( DOCDATA__REF_KEY ), paymentResponseMap.get( MENU_URL_KEY ) );
     }
 
     // Accessors
@@ -90,5 +96,10 @@ public class PaymentResponseDO implements Serializable {
     public String getDocdataReference() {
 
         return docdataReference;
+    }
+
+    public String getPaymentMenuURL() {
+
+        return paymentMenuURL;
     }
 }
