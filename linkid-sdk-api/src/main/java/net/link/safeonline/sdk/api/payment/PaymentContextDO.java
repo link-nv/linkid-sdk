@@ -30,6 +30,11 @@ public class PaymentContextDO implements Serializable {
     public static final String MANDATE_DESCRIPTION_KEY = "PaymentContext.mandateDescription";
     public static final String MANDATE_REFERENCE_KEY   = "PaymentContext.mandateReference";
 
+    public static final String MENU_RESULT_SUCCESS_KEY  = "PaymentContext.menuResultSuccess";
+    public static final String MENU_RESULT_CANCELED_KEY = "PaymentContext.menuResultCanceled";
+    public static final String MENU_RESULT_PENDING_KEY  = "PaymentContext.menuResultPending";
+    public static final String MENU_RESULT_ERROR_KEY    = "PaymentContext.menuResultError";
+
     private final double   amount;
     private final Currency currency;
     private final String   description;
@@ -58,6 +63,12 @@ public class PaymentContextDO implements Serializable {
     private final boolean mandate;      // payment context for a mandate?
     private final String  mandateDescription;
     private final String  mandateReference;
+
+    // optional payment menu return URLs (returnPaymentMenuURL)
+    private String paymentMenuResultSuccess;
+    private String paymentMenuResultCanceled;
+    private String paymentMenuResultPending;
+    private String paymentMenuResultError;
 
     /**
      * @param amount                   amount in cents
@@ -149,6 +160,15 @@ public class PaymentContextDO implements Serializable {
         if (null != mandateReference)
             map.put( MANDATE_REFERENCE_KEY, mandateReference );
 
+        if (null != paymentMenuResultSuccess)
+            map.put( MENU_RESULT_SUCCESS_KEY, paymentMenuResultSuccess );
+        if (null != paymentMenuResultCanceled)
+            map.put( MENU_RESULT_CANCELED_KEY, paymentMenuResultCanceled );
+        if (null != paymentMenuResultPending)
+            map.put( MENU_RESULT_PENDING_KEY, paymentMenuResultPending );
+        if (null != paymentMenuResultSuccess)
+            map.put( MENU_RESULT_ERROR_KEY, paymentMenuResultError );
+
         return map;
     }
 
@@ -167,21 +187,30 @@ public class PaymentContextDO implements Serializable {
             throw new InvalidPaymentContextException( "Payment context's validation time field is not present!" );
 
         // convert
-        return new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ), Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
-                paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ), paymentContextMap.get( PROFILE_KEY ),
-                Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( ADD_LINK_KEY ) ),
-                Boolean.parseBoolean( paymentContextMap.get( RETURN_MENU_URL_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ),
-                Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ), paymentContextMap.get( MANDATE_DESCRIPTION_KEY ),
-                paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
+        PaymentContextDO paymentContextDO = new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ),
+                Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ), paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ),
+                paymentContextMap.get( PROFILE_KEY ), Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ),
+                Boolean.parseBoolean( paymentContextMap.get( ADD_LINK_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( RETURN_MENU_URL_KEY ) ),
+                Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ),
+                paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
+
+        paymentContextDO.setPaymentMenuResultSuccess( paymentContextMap.get( MENU_RESULT_SUCCESS_KEY ) );
+        paymentContextDO.setPaymentMenuResultCanceled( paymentContextMap.get( MENU_RESULT_CANCELED_KEY ) );
+        paymentContextDO.setPaymentMenuResultPending( paymentContextMap.get( MENU_RESULT_PENDING_KEY ) );
+        paymentContextDO.setPaymentMenuResultError( paymentContextMap.get( MENU_RESULT_ERROR_KEY ) );
+
+        return paymentContextDO;
     }
 
     @Override
     public String toString() {
 
         return String.format( "Amount: %f, Currency: %s, Description: \"%s\", OrderReference: \"%s\", Profile: \"%s\", validationTime: %d, "
-                              + "addPaymentMethodLink: %s, returnPaymentMenuURL: %s allowDeferredPay: %s, mandate: %s, mandateDescription: %s, mandateReference: %s",
-                amount, currency, description, orderReference, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, returnPaymentMenuURL,
-                allowDeferredPay, mandate, mandateDescription, mandateReference );
+                              + "addPaymentMethodLink: %s, returnPaymentMenuURL: %s allowDeferredPay: %s, "
+                              + "mandate: %s, mandateDescription: %s, mandateReference: %s "
+                              + "menuResultSuccess: %s, menuResultCanceled: %s, menuResultPending: %s, menuResultError: %s", amount, currency, description,
+                orderReference, paymentProfile, paymentValidationTime, showAddPaymentMethodLink, returnPaymentMenuURL, allowDeferredPay, mandate,
+                mandateDescription, mandateReference, paymentMenuResultSuccess, paymentMenuResultCanceled, paymentMenuResultPending, paymentMenuResultError );
     }
 
     // Accessors
@@ -244,5 +273,45 @@ public class PaymentContextDO implements Serializable {
     public String getMandateReference() {
 
         return mandateReference;
+    }
+
+    public String getPaymentMenuResultSuccess() {
+
+        return paymentMenuResultSuccess;
+    }
+
+    public void setPaymentMenuResultSuccess(final String paymentMenuResultSuccess) {
+
+        this.paymentMenuResultSuccess = paymentMenuResultSuccess;
+    }
+
+    public String getPaymentMenuResultCanceled() {
+
+        return paymentMenuResultCanceled;
+    }
+
+    public void setPaymentMenuResultCanceled(final String paymentMenuResultCanceled) {
+
+        this.paymentMenuResultCanceled = paymentMenuResultCanceled;
+    }
+
+    public String getPaymentMenuResultPending() {
+
+        return paymentMenuResultPending;
+    }
+
+    public void setPaymentMenuResultPending(final String paymentMenuResultPending) {
+
+        this.paymentMenuResultPending = paymentMenuResultPending;
+    }
+
+    public String getPaymentMenuResultError() {
+
+        return paymentMenuResultError;
+    }
+
+    public void setPaymentMenuResultError(final String paymentMenuResultError) {
+
+        this.paymentMenuResultError = paymentMenuResultError;
     }
 }

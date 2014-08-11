@@ -54,8 +54,14 @@ public class PaymentResponseDO implements Serializable {
         Map<String, String> map = new HashMap<String, String>();
 
         map.put( ORDER_REF_KEY, orderReference );
-        map.put( STATE_KEY, paymentState.name() );
+        if (null != paymentState) {
+            map.put( STATE_KEY, paymentState.name() );
+        } else {
+            map.put( STATE_KEY, PaymentState.STARTED.name() );
+        }
         map.put( MANDATE_REF_KEY, mandateReference );
+
+        map.put( MENU_URL_KEY, paymentMenuURL );
 
         map.put( DOCDATA__REF_KEY, docdataReference );
 
