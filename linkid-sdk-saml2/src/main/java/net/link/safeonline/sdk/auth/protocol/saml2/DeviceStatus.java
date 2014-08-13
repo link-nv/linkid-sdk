@@ -23,7 +23,7 @@ public enum DeviceStatus {
 
     SUCCESS( StatusCode.SUCCESS_URI ),
     FAIL( StatusCode.AUTHN_FAILED_URI ),
-    UNKNOWN_ACCOUNT( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:unknownAccount" );
+    EXPIRED( StatusCode.AUTHN_FAILED_URI, "urn:net:lin-k:safe-online:authentication:status:expired" );
 
     private final String statusCode;
     private       String secondLevelStatusCode;
