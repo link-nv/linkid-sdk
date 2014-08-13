@@ -117,7 +117,7 @@ public class AuthServiceClientImpl extends AbstractWSClient<AuthServicePort> imp
             }
 
             return new AuthnSession( response.getSuccess().getSessionId(), qrCodeImage, response.getSuccess().getEncodedQRCode(),
-                    response.getSuccess().getQrCodeURL(), response.getSuccess().getAuthenticationContext() );
+                    response.getSuccess().getQrCodeURL() );
         }
 
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );

@@ -10,6 +10,5 @@ package net.link.safeonline.sdk.api.ws.sts;
 public enum TrustDomainType {
 
     APPLICATION,
-    LINK_ID,
-    SSL
+    LINK_ID
 }

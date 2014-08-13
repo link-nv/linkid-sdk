@@ -13,14 +13,12 @@ public class AuthnEncodedSession implements Serializable {
     private final String sessionId;
     private final String qrCodeImageEncoded;
     private final String qrCodeURL;
-    private final String authenticationContext;
 
     public AuthnEncodedSession(final AuthnSession authnSession) {
 
         this.sessionId = authnSession.getSessionId();
         this.qrCodeImageEncoded = authnSession.getQrCodeImageEncoded();
         this.qrCodeURL = authnSession.getQrCodeURL();
-        this.authenticationContext = authnSession.getAuthenticationContext();
     }
 
     // Accessors
@@ -38,10 +36,5 @@ public class AuthnEncodedSession implements Serializable {
     public String getQrCodeURL() {
 
         return qrCodeURL;
-    }
-
-    public String getAuthenticationContext() {
-
-        return authenticationContext;
     }
 }

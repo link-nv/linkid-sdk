@@ -14,16 +14,13 @@ public class AuthnSession implements Serializable {
     private final byte[] qrCodeImage;
     private final String qrCodeImageEncoded;
     private final String qrCodeURL;
-    private final String authenticationContext;
 
-    public AuthnSession(final String sessionId, final byte[] qrCodeImage, final String qrCodeImageEncoded, final String qrCodeURL,
-                        final String authenticationContext) {
+    public AuthnSession(final String sessionId, final byte[] qrCodeImage, final String qrCodeImageEncoded, final String qrCodeURL) {
 
         this.sessionId = sessionId;
         this.qrCodeImage = qrCodeImage;
         this.qrCodeImageEncoded = qrCodeImageEncoded;
         this.qrCodeURL = qrCodeURL;
-        this.authenticationContext = authenticationContext;
     }
 
     @Override
@@ -52,10 +49,5 @@ public class AuthnSession implements Serializable {
     public String getQrCodeURL() {
 
         return qrCodeURL;
-    }
-
-    public String getAuthenticationContext() {
-
-        return authenticationContext;
     }
 }
