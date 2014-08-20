@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.auth.servlet;
 
-import com.google.common.base.Function;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletConfig;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
-import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.safeonline.sdk.servlet.AbstractConfidentialLinkIDInjectionServlet;
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.logging.Logger;
@@ -70,9 +68,9 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             throws IOException {
 
         try {
-            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request, getContextFunction( request.getSession() ) );
+            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request );
             if (null == authnResponse)
-                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request, getContextFunction( request.getSession() ) );
+                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request );
             if (null == authnResponse) {
                 // if we don't have a response, check if perhaps the session has expired
                 if (request.getSession( false ) == null || request.getSession().isNew()) {
@@ -111,25 +109,6 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
             ServletUtils.redirectToErrorPage( request, response, errorPage, null,
                     new ErrorMessage( String.format( "Validation of authentication response failed: %s", e.getMessage() ) ) );
         }
-    }
-
-    /**
-     * Override this method if you want to create a custom context for detached authentication responses.
-     * <p/>
-     * The standard implementation uses {@link AuthenticationContext#AuthenticationContext()}.
-     *
-     * @return A function that provides the context for validating detached authentication responses (assertions).
-     */
-    @SuppressWarnings("UnusedParameters")
-    protected Function<AuthnProtocolResponseContext, AuthenticationContext> getContextFunction(final HttpSession httpSession) {
-
-        return new Function<AuthnProtocolResponseContext, AuthenticationContext>() {
-            @Override
-            public AuthenticationContext apply(final AuthnProtocolResponseContext from) {
-
-                return new AuthenticationContext();
-            }
-        };
     }
 
     /**

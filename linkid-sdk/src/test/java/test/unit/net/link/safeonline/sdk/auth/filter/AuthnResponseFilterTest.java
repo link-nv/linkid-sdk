@@ -7,24 +7,37 @@
 
 package test.unit.net.link.safeonline.sdk.auth.filter;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
 
-import com.google.common.base.Function;
 import java.io.Serializable;
-import java.util.*;
-import javax.servlet.http.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.protocol.*;
-import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
+import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
+import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
+import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
 import net.link.safeonline.sdk.configuration.Protocol;
-import net.link.util.test.web.*;
+import net.link.util.test.web.ContainerSetup;
+import net.link.util.test.web.FilterSetup;
+import net.link.util.test.web.ServletSetup;
+import net.link.util.test.web.ServletTestManager;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class AuthnResponseFilterTest {
@@ -76,8 +89,7 @@ public class AuthnResponseFilterTest {
 
         // Setup Mocks
         //noinspection unchecked
-        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
-                (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( null );
+        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( null );
         replay( mockProtocolHandler );
 
         // Test
@@ -100,8 +112,7 @@ public class AuthnResponseFilterTest {
         String userId = UUID.randomUUID().toString();
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
                 new HashMap<String, List<AttributeSDK<Serializable>>>(), true, null, null );
-        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject(),
-                (Function<AuthnProtocolResponseContext, AuthenticationContext>) anyObject() ) ).andReturn( authnResponse );
+        expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( authnResponse );
         expect( mockProtocolHandler.getProtocol() ).andReturn( Protocol.SAML2 );
         replay( mockProtocolHandler );
 

@@ -60,8 +60,7 @@ public abstract class ProtocolManager {
     }
 
     @Nullable
-    public static AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request,
-                                                                            final Function<AuthnProtocolResponseContext, AuthenticationContext> responseContext)
+    public static AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException {
 
         Map<String, ProtocolContext> contexts = ProtocolContext.getContexts( request.getSession() );
@@ -70,7 +69,7 @@ public abstract class ProtocolManager {
                 AuthnProtocolRequestContext protocolRequestContext = (AuthnProtocolRequestContext) protocolContext;
                 ProtocolHandler protocolHandler = protocolRequestContext.getProtocolHandler();
 
-                AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnResponse( request, responseContext );
+                AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnResponse( request );
                 if (authnResponse != null)
                     return authnResponse;
             }
@@ -85,14 +84,13 @@ public abstract class ProtocolManager {
     }
 
     @Nullable
-    public static AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request,
-                                                                             final Function<AuthnProtocolResponseContext, AuthenticationContext> responseContext)
+    public static AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request)
             throws ValidationFailedException {
 
         for (Protocol protocol : Protocol.values()) {
             ProtocolHandler protocolHandler = findProtocolHandler( protocol );
             if (null != protocolHandler) {
-                AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnAssertion( request, responseContext );
+                AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnAssertion( request );
                 if (authnResponse != null)
                     return authnResponse;
             }

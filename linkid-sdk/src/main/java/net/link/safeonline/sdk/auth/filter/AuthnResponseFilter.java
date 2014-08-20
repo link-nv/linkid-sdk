@@ -7,15 +7,20 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
-import com.google.common.base.Function;
-import net.link.util.logging.Logger;
 import java.io.IOException;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolManager;
-import net.link.safeonline.sdk.configuration.AuthenticationContext;
 import net.link.util.exception.ValidationFailedException;
+import net.link.util.logging.Logger;
 import net.link.util.servlet.ErrorMessage;
 import net.link.util.servlet.ServletUtils;
 
@@ -55,9 +60,9 @@ public class AuthnResponseFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         try {
-            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( httpRequest, getContextFunction() );
+            AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( httpRequest );
             if (null == authnResponse)
-                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( httpRequest, getContextFunction() );
+                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( httpRequest );
             if (null != authnResponse)
                 onLogin( httpRequest.getSession(), authnResponse );
         }
@@ -70,24 +75,6 @@ public class AuthnResponseFilter implements Filter {
         }
 
         chain.doFilter( request, response );
-    }
-
-    /**
-     * Override this method if you want to create a custom context for detached authentication responses.
-     * <p/>
-     * The standard implementation uses {@link AuthenticationContext#AuthenticationContext()}.
-     *
-     * @return A function that provides the context for validating detached authentication responses (assertions).
-     */
-    protected Function<AuthnProtocolResponseContext, AuthenticationContext> getContextFunction() {
-
-        return new Function<AuthnProtocolResponseContext, AuthenticationContext>() {
-            @Override
-            public AuthenticationContext apply(final AuthnProtocolResponseContext from) {
-
-                return new AuthenticationContext();
-            }
-        };
     }
 
     /**

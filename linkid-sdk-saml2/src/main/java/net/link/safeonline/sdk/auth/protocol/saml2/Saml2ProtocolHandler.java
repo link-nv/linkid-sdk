@@ -96,8 +96,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
     @Nullable
     @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request,
-                                                                     final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
+    public AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException {
 
         if (authnContext == null)
@@ -110,13 +109,10 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
             // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
             return null;
 
-        return validateAuthnResponse( (Response) saml2ResponseContext.getResponse(), request, responseToContext, this.authnContext, this,
-                saml2ResponseContext.getCertificateChain() );
+        return validateAuthnResponse( (Response) saml2ResponseContext.getResponse(), request, saml2ResponseContext.getCertificateChain() );
     }
 
     public static AuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse, final HttpServletRequest request,
-                                                                     final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext,
-                                                                     final AuthenticationContext origAuthnContext, final ProtocolHandler protocolHandler,
                                                                      final CertificateChain certificateChain) {
 
         String userId = null, applicationName = null;
@@ -132,19 +128,12 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
         AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
 
-        AuthenticationContext authnContext = responseToContext.apply(
-                new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, attributes, true, null,
-                        LinkIDSaml2Utils.findPaymentResponse( samlResponse ) ) );
-        authnRequest = new AuthnProtocolRequestContext( samlResponse.getInResponseTo(), authnContext.getApplicationName(), protocolHandler,
-                null != origAuthnContext.getTarget()? origAuthnContext.getTarget(): authnRequest.getTarget(), authnRequest.isMobileForceRegistration() );
-
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, attributes, success, certificateChain,
                 LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
     }
 
     @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request,
-                                                                      final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
+    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request)
             throws ValidationFailedException {
 
         Assertion assertion = ResponseUtil.findAuthnAssertion( request );
@@ -156,10 +145,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         String userId = assertion.getSubject().getNameID().getValue();
         String applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
 
-        AuthenticationContext authnContext = responseToContext.apply(
-                new AuthnProtocolResponseContext( null, null, userId, applicationName, attributes, true, null, null ) );
-        AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, authnContext.getApplicationName(), this, authnContext.getTarget(),
-                false );
+        AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, applicationName, this, authnContext.getTarget(), false );
 
         CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request, authnContext.getTrustedCertificates() );
 

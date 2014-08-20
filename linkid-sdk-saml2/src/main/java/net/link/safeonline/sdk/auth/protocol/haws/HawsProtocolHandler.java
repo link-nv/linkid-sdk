@@ -101,8 +101,7 @@ public class HawsProtocolHandler implements ProtocolHandler {
 
     @Nullable
     @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnResponse(final HttpServletRequest request,
-                                                                     final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
+    public AuthnProtocolResponseContext findAndValidateAuthnResponse(final HttpServletRequest request)
             throws ValidationFailedException {
 
         if (authnContext == null)
@@ -125,13 +124,12 @@ public class HawsProtocolHandler implements ProtocolHandler {
         }
 
         // validate SAML2 response
-        return Saml2ProtocolHandler.validateAuthnResponse( samlResponse, request, responseToContext, this.authnContext, this, null );
+        return Saml2ProtocolHandler.validateAuthnResponse( samlResponse, request, null );
     }
 
     @Nullable
     @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request,
-                                                                      final Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
+    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request)
             throws ValidationFailedException {
 
         logger.dbg( "HAWS implementation does not support detached authentication" );

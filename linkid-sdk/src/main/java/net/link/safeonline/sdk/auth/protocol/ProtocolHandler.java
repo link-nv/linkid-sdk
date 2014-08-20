@@ -46,24 +46,22 @@ public interface ProtocolHandler extends Serializable {
      * @param request HTTP Servlet Request
      *
      * @return Details about the authentication such as the authenticated user's application identifier or <code>null</code> if the handler
-     *         thinks the request has nothing to do with authentication.
+     * thinks the request has nothing to do with authentication.
      *
      * @throws ValidationFailedException Validation failed for the incoming authentication response.
      */
     @Nullable
-    AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request,
-                                                              Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
+    AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException;
 
     /**
      * Complete a detached (without request) authentication.
      *
      * @return Details about the authentication such as the authenticated user's application identifier or <code>null</code> if the handler
-     *         finds no detached authentication assertion in the request.
+     * finds no detached authentication assertion in the request.
      */
     @Nullable
-    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request,
-                                                                      Function<AuthnProtocolResponseContext, AuthenticationContext> responseToContext)
+    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request)
             throws ValidationFailedException;
 
     /**
@@ -88,7 +86,7 @@ public interface ProtocolHandler extends Serializable {
      * @param request HTTP Servlet Request
      *
      * @return Details about the logout such as whether it was successful or <code>null</code> if there is no logout response in the
-     *         request.
+     * request.
      *
      * @throws ValidationFailedException validation of the logout response failed.
      */
@@ -103,7 +101,7 @@ public interface ProtocolHandler extends Serializable {
      * @param requestToContext logout request context
      *
      * @return Details about the logout request such as the application identifier of the user that requested it or <code>null</code> if
-     *         there is no logout request in the request.
+     * there is no logout request in the request.
      *
      * @throws ValidationFailedException validation of the logout request failed
      */
@@ -123,7 +121,6 @@ public interface ProtocolHandler extends Serializable {
      *
      * @throws IOException The request could not be written to the response.
      */
-    LogoutProtocolResponseContext sendLogoutResponse(HttpServletResponse response, LogoutProtocolRequestContext logoutRequestContext,
-                                                     boolean partialLogout)
+    LogoutProtocolResponseContext sendLogoutResponse(HttpServletResponse response, LogoutProtocolRequestContext logoutRequestContext, boolean partialLogout)
             throws IOException;
 }
