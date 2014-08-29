@@ -43,6 +43,7 @@
                         <wsdlFile>ws-trust-1.3.wsdl</wsdlFile>
                         <wsdlFile>xkms.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-reporting.wsdl</wsdlFile>
                     </wsdlFiles>
                     <bindingFiles>
                         <bindingFile>jaxb-bindings.xml</bindingFile>

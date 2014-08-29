@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:ltqr" xmlns:tns="urn:net:lin-k:safe-online:ltqr"
-        elementFormDefault="qualified">
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -11,12 +11,14 @@
 		</documentation>
 	</annotation>
 
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
     <!-- =================== Push request ========================= -->
 
     <element name="PushRequest">
 		<complexType>
             <sequence>
-                <element name="paymentContext" type="tns:PaymentContext" minOccurs="0" maxOccurs="1">
+                <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>Optional payment context</documentation>
                     </annotation>
@@ -181,57 +183,6 @@
             </element>
         </sequence>
     </complexType>
-
-    <complexType name="PaymentContext">
-        <sequence>
-            <element name="amount" type="double" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>The amount to be payed ( in cents )</documentation>
-                </annotation>
-            </element>
-            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1">
-            </element>
-            <element name="description" type="string" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Optional payment description</documentation>
-                </annotation>
-            </element>
-            <element name="orderReference" type="string" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Optional order reference</documentation>
-                </annotation>
-            </element>
-            <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Optional payment profile</documentation>
-                </annotation>
-            </element>
-            <element name="validationTime" type="int" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Optional maximum time to wait for payment validation (expressed in seconds), if not specified defaults to 5s</documentation>
-                </annotation>
-            </element>
-            <element name="allowDeferredPay" type="boolean" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Whether or not deferred payments are allowed, if a user has no payment token attached to the linkID account.
-                        linkID can allow for the user to make a deferred payment which he can complete later on from his browser.</documentation>
-                </annotation>
-            </element>
-        </sequence>
-    </complexType>
-
-    <simpleType name="Currency">
-		<annotation>
-			<documentation>Currency</documentation>
-		</annotation>
-		<restriction base="string">
-			<enumeration value="EUR">
-				<annotation>
-					<documentation>euro</documentation>
-				</annotation>
-			</enumeration>
-		</restriction>
-	</simpleType>
 
     <simpleType name="ErrorCode">
 		<annotation>

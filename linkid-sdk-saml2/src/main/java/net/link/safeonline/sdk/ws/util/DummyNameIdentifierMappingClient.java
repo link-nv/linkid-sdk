@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.ws.util;
 
 import net.link.safeonline.sdk.api.exception.*;
-import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 
 
 /**

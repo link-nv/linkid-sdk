@@ -19,7 +19,7 @@ import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.TrustDomainType;
-import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
+import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.sts.SecurityTokenServiceFactory;
 import net.link.util.saml.SamlUtils;

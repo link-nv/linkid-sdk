@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:reporting" xmlns:tns="urn:net:lin-k:safe-online:reporting"
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-reporting
+			Revision history:
+			V1.0 (August, 2014):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <element name="PaymentReportRequest">
+		<complexType>
+            <sequence>
+                <element name="orderReferences" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="mandateReferences" type="string" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+            <attribute name="startDate" type="dateTime" use="optional" />
+            <attribute name="endDate" type="dateTime" use="optional" />
+		</complexType>
+	</element>
+
+    <element name="PaymentReportResponse">
+        <complexType>
+            <sequence>
+                <element name="transactions" type="com:PaymentTransaction" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ParkingReportRequest">
+		<complexType>
+            <sequence>
+                <element name="barCodes" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="parkings" type="string" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+            <attribute name="startDate" type="dateTime" use="optional" />
+            <attribute name="endDate" type="dateTime" use="optional" />
+		</complexType>
+	</element>
+
+    <element name="ParkingReportResponse">
+        <complexType>
+            <sequence>
+                <element name="sessions" type="com:ParkingSession" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+
+</schema>

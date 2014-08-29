@@ -1,11 +1,16 @@
 package test.unit.net.link.safeonline.sdk.ws;
 
+import java.util.Arrays;
 import java.util.List;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
-import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.reporting.ReportingServiceClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
+import net.link.safeonline.sdk.ws.reporting.ReportingServiceClientImpl;
+import net.link.util.logging.Logger;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
  * Time: 13:15
  */
 public class WSClientTest {
+
+    private static final Logger logger = Logger.get( WSClientTest.class );
 
     //    @Test
     public void testData()
@@ -47,19 +54,31 @@ public class WSClientTest {
         String userId = client.getUserId( "profile.email.address", "wim.vandenhaute@gmail.com" );
     }
 
+    //    @Test
+    public void testReporting()
+            throws Exception {
+
+        ReportingServiceClient client = new ReportingServiceClientImpl( "http://192.168.5.14:8080/linkid-ws-username", null, getUsernameTokenCallback() );
+
+        List<String> orderReferences = Arrays.asList( "842a53ebe15247c1992d73a8f6db4b66" );
+
+        List<PaymentTransactionDO> txns = client.getPaymentReport( null, null, orderReferences, null );
+        logger.inf( "# txns = %d", txns.size() );
+    }
+
     private WSSecurityUsernameTokenCallback getUsernameTokenCallback() {
 
         return new AbstractWSSecurityUsernameTokenCallback() {
             @Override
             public String getUsername() {
 
-                return "demo-test";
+                return "example-mobile";
             }
 
             @Override
             public String getPassword() {
 
-                return "08427E9F-6355-4DE4-B992-B1AB93CEE9D4";
+                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
             }
 
             @Override

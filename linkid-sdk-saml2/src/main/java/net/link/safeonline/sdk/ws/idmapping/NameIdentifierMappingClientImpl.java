@@ -18,7 +18,7 @@ import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.SamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.SamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingConstants;
-import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
 import net.link.util.InternalInconsistencyException;

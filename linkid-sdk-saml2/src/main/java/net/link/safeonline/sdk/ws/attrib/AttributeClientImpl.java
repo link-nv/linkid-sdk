@@ -19,7 +19,7 @@ import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.attribute.Compound;
 import net.link.safeonline.sdk.api.exception.*;
 import net.link.safeonline.sdk.api.ws.*;
-import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
+import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.attrib.SAMLAttributeServiceFactory;
 import net.link.util.ws.AbstractWSClient;

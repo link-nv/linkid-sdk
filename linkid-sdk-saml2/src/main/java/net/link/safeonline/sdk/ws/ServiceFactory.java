@@ -8,16 +8,16 @@
 package net.link.safeonline.sdk.ws;
 
 import java.security.cert.X509Certificate;
-import net.link.safeonline.sdk.api.ws.attrib.client.AttributeClient;
+import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
-import net.link.safeonline.sdk.api.ws.idmapping.client.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.mandate.MandateServiceClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
-import net.link.safeonline.sdk.api.ws.sts.client.SecurityTokenServiceClient;
-import net.link.safeonline.sdk.api.ws.xkms2.client.Xkms2Client;
+import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceClient;
+import net.link.safeonline.sdk.api.ws.xkms2.Xkms2Client;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.AuthnRequest;

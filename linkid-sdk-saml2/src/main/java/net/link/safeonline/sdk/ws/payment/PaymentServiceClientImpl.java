@@ -7,11 +7,12 @@
 
 package net.link.safeonline.sdk.ws.payment;
 
-import net.link.util.InternalInconsistencyException;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.payment.*;
+import net.lin_k.safe_online.payment.PaymentGetStatusRequest;
+import net.lin_k.safe_online.payment.PaymentServicePort;
+import net.lin_k.safe_online.payment.PaymentStatusResponse;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.payment.PaymentState;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
@@ -45,32 +46,10 @@ public class PaymentServiceClientImpl extends AbstractWSClient<PaymentServicePor
 
         try {
             PaymentStatusResponse statusResponse = getPort().getStatus( request );
-            return convert( statusResponse.getPaymentStatus() );
+            return SDKUtils.convert( statusResponse.getPaymentStatus() );
         }
         catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
-    }
-
-    private PaymentState convert(final PaymentStatusType paymentStatusType) {
-
-        if (null == paymentStatusType)
-            return PaymentState.STARTED;
-
-        switch (paymentStatusType) {
-
-            case STARTED:
-                return PaymentState.STARTED;
-            case AUTHORIZED:
-                return PaymentState.PAYED;
-            case FAILED:
-                return PaymentState.FAILED;
-            case REFUNDED:
-                return PaymentState.REFUNDED;
-            case REFUND_STARTED:
-                return PaymentState.REFUND_STARTED;
-        }
-
-        throw new InternalInconsistencyException( String.format( "Payment state type %s it not supported!", paymentStatusType ) );
     }
 }

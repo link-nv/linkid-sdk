@@ -10,11 +10,10 @@ package net.link.safeonline.sdk.ws.mandate;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.mandate.Currency;
+import net.lin_k.safe_online.common.PaymentContext;
 import net.lin_k.safe_online.mandate.MandatePaymentRequest;
 import net.lin_k.safe_online.mandate.MandatePaymentResponse;
 import net.lin_k.safe_online.mandate.MandateServicePort;
-import net.lin_k.safe_online.mandate.PaymentContext;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.api.ws.mandate.ErrorCode;
 import net.link.safeonline.sdk.api.ws.mandate.MandateServiceClient;
@@ -74,7 +73,7 @@ public class MandateServiceClientImpl extends AbstractWSClient<MandateServicePor
 
         PaymentContext paymentContext = new PaymentContext();
         paymentContext.setAmount( paymentContextDO.getAmount() );
-        paymentContext.setCurrency( convert( paymentContextDO.getCurrency() ) );
+        paymentContext.setCurrency( SDKUtils.convert( paymentContextDO.getCurrency() ) );
         paymentContext.setDescription( paymentContextDO.getDescription() );
         paymentContext.setOrderReference( paymentContextDO.getOrderReference() );
         paymentContext.setPaymentProfile( paymentContextDO.getPaymentProfile() );
@@ -104,17 +103,6 @@ public class MandateServiceClientImpl extends AbstractWSClient<MandateServicePor
     }
 
     // Helper methods
-
-    private Currency convert(final net.link.safeonline.sdk.api.payment.Currency currency) {
-
-        switch (currency) {
-
-            case EUR:
-                return Currency.EUR;
-        }
-
-        throw new InternalInconsistencyException( String.format( "Currency %s is not supported!", currency.name() ) );
-    }
 
     private ErrorCode convert(final net.lin_k.safe_online.mandate.ErrorCode errorCode) {
 

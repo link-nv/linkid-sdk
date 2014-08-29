@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.idmapping.client;
+package net.link.safeonline.sdk.api.ws.idmapping;
 
 import net.link.safeonline.sdk.api.exception.RequestDeniedException;
 import net.link.safeonline.sdk.api.exception.SubjectNotFoundException;

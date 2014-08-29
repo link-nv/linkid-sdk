@@ -8,18 +8,32 @@
 package net.link.safeonline.sdk.ws.ltqr;
 
 import com.google.common.collect.Lists;
-import net.link.util.InternalInconsistencyException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.ltqr.*;
+import net.lin_k.safe_online.common.PaymentContext;
+import net.lin_k.safe_online.ltqr.ClientSession;
+import net.lin_k.safe_online.ltqr.LTQRPaymentStatusType;
+import net.lin_k.safe_online.ltqr.LTQRServicePort;
+import net.lin_k.safe_online.ltqr.PullRequest;
+import net.lin_k.safe_online.ltqr.PullResponse;
+import net.lin_k.safe_online.ltqr.PushRequest;
+import net.lin_k.safe_online.ltqr.PushResponse;
+import net.lin_k.safe_online.ltqr.RemoveRequest;
+import net.lin_k.safe_online.ltqr.RemoveResponse;
 import net.link.safeonline.sdk.api.ltqr.ErrorCode;
-import net.link.safeonline.sdk.api.ltqr.*;
+import net.link.safeonline.sdk.api.ltqr.LTQRClientSession;
+import net.link.safeonline.sdk.api.ltqr.LTQRPaymentState;
+import net.link.safeonline.sdk.api.ltqr.LTQRSession;
+import net.link.safeonline.sdk.api.ltqr.PullException;
+import net.link.safeonline.sdk.api.ltqr.PushException;
+import net.link.safeonline.sdk.api.ltqr.RemoveException;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.ltqr.LTQRServiceFactory;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
@@ -79,7 +93,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
             PaymentContext paymentContext = new PaymentContext();
             paymentContext.setAmount( paymentContextDO.getAmount() );
-            paymentContext.setCurrency( convert( paymentContextDO.getCurrency() ) );
+            paymentContext.setCurrency( SDKUtils.convert( paymentContextDO.getCurrency() ) );
             paymentContext.setDescription( paymentContextDO.getDescription() );
             paymentContext.setOrderReference( paymentContextDO.getOrderReference() );
             paymentContext.setPaymentProfile( paymentContextDO.getPaymentProfile() );
@@ -220,16 +234,5 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
-    }
-
-    private Currency convert(final net.link.safeonline.sdk.api.payment.Currency currency) {
-
-        switch (currency) {
-
-            case EUR:
-                return Currency.EUR;
-        }
-
-        throw new InternalInconsistencyException( String.format( "Currency %s is not supported!", currency.name() ) );
     }
 }

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:common" xmlns:tns="urn:net:lin-k:safe-online:common"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-common
+			Revision history:
+			V1.0 (August, 2013):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+	<simpleType name="PaymentStatusType">
+		<annotation>
+			<documentation>Payment status</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="STARTED">
+				<annotation>
+					<documentation>Payment is being processed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="AUTHORIZED">
+				<annotation>
+					<documentation>Payment is authorized</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="FAILED">
+				<annotation>
+					<documentation>Payment has failed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="REFUNDED">
+				<annotation>
+					<documentation>Payment has been refunded</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="REFUND_STARTED">
+				<annotation>
+					<documentation>Payment refund operation has started</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="DEFERRED">
+				<annotation>
+					<documentation>Payment was deferred and not yet completed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="WAITING_FOR_UPDATE">
+				<annotation>
+					<documentation>linkID stopped waiting for status update, SP will be informed on payment status change</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="Currency">
+		<annotation>
+			<documentation>Currency</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="EUR">
+				<annotation>
+					<documentation>euro</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="PaymentContext">
+        <sequence>
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The amount to be payed ( in cents )</documentation>
+                </annotation>
+            </element>
+            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1">
+            </element>
+            <element name="description" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment description</documentation>
+                </annotation>
+            </element>
+            <element name="orderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional order reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment profile</documentation>
+                </annotation>
+            </element>
+            <element name="validationTime" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional maximum time to wait for payment validation (expressed in seconds), if not specified defaults to 5s</documentation>
+                </annotation>
+            </element>
+            <element name="allowDeferredPay" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Whether or not deferred payments are allowed, if a user has no payment token attached to the linkID account.
+                        linkID can allow for the user to make a deferred payment which he can complete later on from his browser.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentTransaction">
+        <sequence>
+            <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1" />
+            <element name="paymentMethod" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="description" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+            <element name="paid" type="boolean" minOccurs="1" maxOccurs="1" />
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="docdataReference" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="email" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="givenName" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="familyName" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="ParkingSession">
+        <sequence>
+            <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="barCode" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="parking" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="turnover" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="validated" type="boolean" minOccurs="1" maxOccurs="1" />
+            <element name="paymentOrderReference" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+</schema>

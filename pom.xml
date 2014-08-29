@@ -462,6 +462,7 @@
         <linkid.ws.mandate.path>mandate</linkid.ws.mandate.path>
         <linkid.ws.haws.path>haws</linkid.ws.haws.path>
         <linkid.ws.auth.path>auth</linkid.ws.auth.path>
+        <linkid.ws.reporting.path>reporting</linkid.ws.reporting.path>
 
         <!-- DEFAULT VERSIONS, SEE PLUGINS -->
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>

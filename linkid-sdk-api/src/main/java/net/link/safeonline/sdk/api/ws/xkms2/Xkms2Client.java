@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.xkms2.client;
+package net.link.safeonline.sdk.api.ws.xkms2;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;

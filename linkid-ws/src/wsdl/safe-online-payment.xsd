@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:payment" xmlns:tns="urn:net:lin-k:safe-online:payment"
-        elementFormDefault="qualified">
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -10,6 +10,8 @@
 			Initial Standard Schema.
 		</documentation>
 	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
 
     <element name="PaymentStatusRequest">
 		<complexType>
@@ -26,7 +28,7 @@
 	<element name="PaymentStatusResponse">
         <complexType>
             <sequence>
-                <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="tns:PaymentStatusType">
+                <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="com:PaymentStatusType">
                     <annotation>
                         <documentation>Payment status</documentation>
                     </annotation>
@@ -34,39 +36,5 @@
             </sequence>
         </complexType>
     </element>
-
-	<simpleType name="PaymentStatusType">
-		<annotation>
-			<documentation>Payment status</documentation>
-		</annotation>
-		<restriction base="string">
-			<enumeration value="STARTED">
-				<annotation>
-					<documentation>Payment is being processed</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="AUTHORIZED">
-				<annotation>
-					<documentation>Payment is authorized</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="FAILED">
-				<annotation>
-					<documentation>Payment has failed</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="REFUNDED">
-				<annotation>
-					<documentation>Payment has been refunded</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="REFUND_STARTED">
-				<annotation>
-					<documentation>Payment refund operation has started</documentation>
-				</annotation>
-			</enumeration>
-		</restriction>
-	</simpleType>
-
 
 </schema>

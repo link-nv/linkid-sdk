@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.sts.client;
+package net.link.safeonline.sdk.api.ws.sts;
 
 import net.link.safeonline.sdk.api.exception.ValidationFailedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;

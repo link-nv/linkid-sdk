@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.attrib.client;
+package net.link.safeonline.sdk.api.ws.attrib;
 
 import java.io.Serializable;
 import java.util.List;

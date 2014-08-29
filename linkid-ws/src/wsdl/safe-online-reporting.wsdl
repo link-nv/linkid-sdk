@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:safe-online:reporting"
+             xmlns:tns="urn:net:lin-k:safe-online:reporting" name="SafeOnlineReportingtWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:safe-online:reporting" schemaLocation="safe-online-reporting.xsd" />
+        </schema>
+    </types>
+
+    <!-- ====================== Requests ============================ -->
+
+    <message name="paymentReportRequest">
+		<part name="request" element="tns:PaymentReportRequest" />
+	</message>
+	<message name="parkingReportRequest">
+		<part name="request" element="tns:ParkingReportRequest" />
+	</message>
+
+    <!-- ====================== Responses =========================== -->
+
+    <message name="paymentReportResponse">
+		<part name="response" element="tns:PaymentReportResponse" />
+	</message>
+    <message name="parkingReportResponse">
+		<part name="response" element="tns:ParkingReportResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="ReportingServicePort">
+		<operation name="paymentReport">
+			<input message="tns:paymentReportRequest" />
+			<output message="tns:paymentReportResponse" />
+		</operation>
+		<operation name="parkingReport">
+			<input message="tns:parkingReportRequest" />
+			<output message="tns:parkingReportResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="ReportingServiceBinding" type="tns:ReportingServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="paymentReport">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:reporting:payment" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="parkingReport">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:reporting:parking" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="ReportingService">
+        <port name="ReportingServicePort" binding="tns:ReportingServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/reporting/" />
+        </port>
+    </service>
+</definitions>

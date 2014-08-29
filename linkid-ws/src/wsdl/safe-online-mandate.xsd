@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:mandate" xmlns:tns="urn:net:lin-k:safe-online:mandate"
-        elementFormDefault="qualified">
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -11,10 +11,12 @@
 		</documentation>
 	</annotation>
 
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
     <element name="MandatePaymentRequest">
 		<complexType>
             <sequence>
-                <element name="paymentContext" type="tns:PaymentContext" minOccurs="0" maxOccurs="1">
+                <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>Optional payment context</documentation>
                     </annotation>
@@ -70,46 +72,6 @@
 			<enumeration value="error.mandate.payment.failed">
 				<annotation>
 					<documentation>Something is wrong with the payment method for this mandate, payment failed.</documentation>
-				</annotation>
-			</enumeration>
-		</restriction>
-	</simpleType>
-
-
-    <complexType name="PaymentContext">
-        <sequence>
-            <element name="amount" type="double" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>The amount to be payed ( in cents )</documentation>
-                </annotation>
-            </element>
-            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1" />
-            <element name="description" type="string" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Optional payment description</documentation>
-                </annotation>
-            </element>
-            <element name="orderReference" type="string" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Optional order reference</documentation>
-                </annotation>
-            </element>
-            <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">
-                <annotation>
-                    <documentation>Optional payment profile</documentation>
-                </annotation>
-            </element>
-        </sequence>
-    </complexType>
-
-    <simpleType name="Currency">
-		<annotation>
-			<documentation>Currency</documentation>
-		</annotation>
-		<restriction base="string">
-			<enumeration value="EUR">
-				<annotation>
-					<documentation>euro</documentation>
 				</annotation>
 			</enumeration>
 		</restriction>
