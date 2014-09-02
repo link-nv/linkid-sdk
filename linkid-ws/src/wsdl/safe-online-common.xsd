@@ -127,6 +127,8 @@
         <sequence>
             <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
             <element name="barCode" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="ticketNumber" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="dtaKey" type="string" minOccurs="0" maxOccurs="1" />
             <element name="parking" type="string" minOccurs="1" maxOccurs="1" />
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
             <element name="turnover" type="double" minOccurs="1" maxOccurs="1" />

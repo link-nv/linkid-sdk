@@ -34,6 +34,7 @@ import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.jetbrains.annotations.Nullable;
 
 
+@SuppressWarnings("UnusedDeclaration")
 public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServicePort> implements ReportingServiceClient {
 
     /**
@@ -78,9 +79,8 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.reporting.path" ) ) );
     }
 
-    @Override
-    public List<PaymentTransactionDO> getPaymentReport(@Nullable final Date startDate, @Nullable final Date endDate,
-                                                       @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
+    private List<PaymentTransactionDO> getPaymentReport(@Nullable final Date startDate, @Nullable final Date endDate,
+                                                        @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
             throws WSClientTransportException {
 
         PaymentReportRequest request = new PaymentReportRequest();
@@ -116,9 +116,9 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
         }
     }
 
-    @Override
-    public List<ParkingSessionDO> getParkingReport(@Nullable final Date startDate, @Nullable final Date endDate, @Nullable final List<String> barCodes,
-                                                   @Nullable final List<String> parkings)
+    private List<ParkingSessionDO> getParkingReport(@Nullable final Date startDate, @Nullable final Date endDate, @Nullable final List<String> barCodes,
+                                                    @Nullable final List<String> ticketNumbers, @Nullable final List<String> dtaKeys,
+                                                    @Nullable final List<String> parkings)
             throws WSClientTransportException {
 
         ParkingReportRequest request = new ParkingReportRequest();
@@ -131,6 +131,12 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
         }
         if (null != barCodes) {
             request.getBarCodes().addAll( barCodes );
+        }
+        if (null != ticketNumbers) {
+            request.getTicketNumbers().addAll( ticketNumbers );
+        }
+        if (null != dtaKeys) {
+            request.getDtaKeys().addAll( dtaKeys );
         }
         if (null != parkings) {
             request.getParkings().addAll( parkings );
@@ -152,5 +158,61 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
         catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
         }
+    }
+
+    @Override
+    public List<PaymentTransactionDO> getPaymentReport(final Date startDate, @Nullable final Date endDate)
+            throws WSClientTransportException {
+
+        return getPaymentReport( startDate, endDate, null, null );
+    }
+
+    @Override
+    public List<PaymentTransactionDO> getPaymentReportForOrderReferences(final List<String> orderReferences)
+            throws WSClientTransportException {
+
+        return getPaymentReport( null, null, orderReferences, null );
+    }
+
+    @Override
+    public List<PaymentTransactionDO> getPaymentReportForMandates(final List<String> mandateReferences)
+            throws WSClientTransportException {
+
+        return getPaymentReport( null, null, null, mandateReferences );
+    }
+
+    @Override
+    public List<ParkingSessionDO> getParkingReport(final Date startDate, @Nullable final Date endDate)
+            throws WSClientTransportException {
+
+        return getParkingReport( startDate, endDate, null, null, null, null );
+    }
+
+    @Override
+    public List<ParkingSessionDO> getParkingReportForBarCodes(final List<String> barCodes)
+            throws WSClientTransportException {
+
+        return getParkingReport( null, null, barCodes, null, null, null );
+    }
+
+    @Override
+    public List<ParkingSessionDO> getParkingReportForTicketNumbers(final List<String> ticketNumbers)
+            throws WSClientTransportException {
+
+        return getParkingReport( null, null, null, ticketNumbers, null, null );
+    }
+
+    @Override
+    public List<ParkingSessionDO> getParkingReportForDTAKeys(final List<String> dtaKeys)
+            throws WSClientTransportException {
+
+        return getParkingReport( null, null, null, null, dtaKeys, null );
+    }
+
+    @Override
+    public List<ParkingSessionDO> getParkingReportForParkings(final List<String> parkings)
+            throws WSClientTransportException {
+
+        return getParkingReport( null, null, null, null, null, parkings );
     }
 }

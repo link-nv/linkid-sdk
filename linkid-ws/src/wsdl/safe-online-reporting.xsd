@@ -36,6 +36,8 @@
 		<complexType>
             <sequence>
                 <element name="barCodes" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="ticketNumbers" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="dtaKeys" type="string" minOccurs="0" maxOccurs="unbounded" />
                 <element name="parkings" type="string" minOccurs="0" maxOccurs="unbounded" />
             </sequence>
             <attribute name="startDate" type="dateTime" use="optional" />

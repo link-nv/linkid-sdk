@@ -62,7 +62,7 @@ public class WSClientTest {
 
         List<String> orderReferences = Arrays.asList( "842a53ebe15247c1992d73a8f6db4b66" );
 
-        List<PaymentTransactionDO> txns = client.getPaymentReport( null, null, orderReferences, null );
+        List<PaymentTransactionDO> txns = client.getPaymentReportForOrderReferences( orderReferences );
         logger.inf( "# txns = %d", txns.size() );
     }
 

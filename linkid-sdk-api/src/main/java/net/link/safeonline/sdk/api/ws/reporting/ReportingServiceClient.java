@@ -20,32 +20,88 @@ import org.jetbrains.annotations.Nullable;
  * <p/>
  * Via this interface, applications can fetch payment status reports.
  */
+@SuppressWarnings("UnusedDeclaration")
 public interface ReportingServiceClient {
 
     /**
-     * @param startDate         optional startDate
-     * @param endDate           optional endDate, not specified means till now
-     * @param orderReferences   optional order references
-     * @param mandateReferences optional mandate references
+     * @param startDate startDate
+     * @param endDate   optional endDate, not specified means till now
      *
      * @return The payment transactions matching your search. If none found an empty list is returned
      *
      * @throws WSClientTransportException could not contact the linkID web service
      */
-    List<PaymentTransactionDO> getPaymentReport(@Nullable Date startDate, @Nullable Date endDate, @Nullable List<String> orderReferences,
-                                                @Nullable List<String> mandateReferences)
+    List<PaymentTransactionDO> getPaymentReport(Date startDate, @Nullable Date endDate)
             throws WSClientTransportException;
 
     /**
-     * @param startDate optional startDate
+     * @param orderReferences order references
+     *
+     * @return The payment transactions matching your search. If none found an empty list is returned
+     *
+     * @throws WSClientTransportException could not contact the linkID web service
+     */
+    List<PaymentTransactionDO> getPaymentReportForOrderReferences(List<String> orderReferences)
+            throws WSClientTransportException;
+
+    /**
+     * @param mandateReferences mandate references
+     *
+     * @return The payment transactions matching your search. If none found an empty list is returned
+     *
+     * @throws WSClientTransportException could not contact the linkID web service
+     */
+    List<PaymentTransactionDO> getPaymentReportForMandates(List<String> mandateReferences)
+            throws WSClientTransportException;
+
+    /**
+     * @param startDate startDate
      * @param endDate   optional endDate, not specified means till now
-     * @param barCodes  optional bar codes
-     * @param parkings  optional parkings
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
      *
      * @throws WSClientTransportException could not contact the linkID web service
      */
-    List<ParkingSessionDO> getParkingReport(@Nullable Date startDate, @Nullable Date endDate, @Nullable List<String> barCodes, @Nullable List<String> parkings)
+    List<ParkingSessionDO> getParkingReport(Date startDate, @Nullable Date endDate)
+            throws WSClientTransportException;
+
+    /**
+     * @param barCodes bar codes
+     *
+     * @return The parking sessions matching your search. If none found an empty list is returned
+     *
+     * @throws WSClientTransportException could not contact the linkID web service
+     */
+    List<ParkingSessionDO> getParkingReportForBarCodes(List<String> barCodes)
+            throws WSClientTransportException;
+
+    /**
+     * @param ticketNumbers ticket numbers
+     *
+     * @return The parking sessions matching your search. If none found an empty list is returned
+     *
+     * @throws WSClientTransportException could not contact the linkID web service
+     */
+    List<ParkingSessionDO> getParkingReportForTicketNumbers(List<String> ticketNumbers)
+            throws WSClientTransportException;
+
+    /**
+     * @param dtaKeys dtaKeys
+     *
+     * @return The parking sessions matching your search. If none found an empty list is returned
+     *
+     * @throws WSClientTransportException could not contact the linkID web service
+     */
+    List<ParkingSessionDO> getParkingReportForDTAKeys(List<String> dtaKeys)
+            throws WSClientTransportException;
+
+    /**
+     * @param parkings parkings
+     *
+     * @return The parking sessions matching your search. If none found an empty list is returned
+     *
+     * @throws WSClientTransportException could not contact the linkID web service
+     */
+    List<ParkingSessionDO> getParkingReportForParkings(List<String> parkings)
             throws WSClientTransportException;
 }
