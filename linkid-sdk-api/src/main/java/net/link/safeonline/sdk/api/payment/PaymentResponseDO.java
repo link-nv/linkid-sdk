@@ -13,6 +13,7 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 
+@SuppressWarnings("UnusedDeclaration")
 public class PaymentResponseDO implements Serializable {
 
     public static final String ORDER_REF_KEY    = "PaymentResponse.txnId";
@@ -73,7 +74,7 @@ public class PaymentResponseDO implements Serializable {
 
         // check map valid
         if (!paymentResponseMap.containsKey( ORDER_REF_KEY ))
-            throw new RuntimeException( "Payment response's transaction ID field is not present!" );
+            throw new RuntimeException( "Payment response's order reference field is not present!" );
         if (!paymentResponseMap.containsKey( STATE_KEY ))
             throw new RuntimeException( "Payment response's state field is not present!" );
 
