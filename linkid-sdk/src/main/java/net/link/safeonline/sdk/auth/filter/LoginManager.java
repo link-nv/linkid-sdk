@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.auth.AuthnResponseDO;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
+import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.util.common.CertificateChain;
 
 
@@ -131,5 +133,14 @@ public abstract class LoginManager {
         httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, responseContext.getRequest().getProtocolHandler().getProtocol() );
         httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, null == responseContext.getRequest().getId() );
         httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, responseContext.getPaymentResponse() );
+    }
+
+    public static void set(final HttpSession httpSession, final AuthnResponseDO authnResponseDO) {
+
+        httpSession.setAttribute( USERID_SESSION_ATTRIBUTE, authnResponseDO.getUserId() );
+        httpSession.setAttribute( ATTRIBUTES_SESSION_ATTRIBUTE, authnResponseDO.getAttributes() );
+        httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, Protocol.WS );
+        httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, false );
+        httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, authnResponseDO.getPaymentResponse() );
     }
 }
