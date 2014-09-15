@@ -7,6 +7,9 @@
 
 package net.link.safeonline.sdk.configuration;
 
+import net.link.util.config.RootConfig;
+
+
 /**
  * <h2>{@link SDKConfig}<br>
  * <sub>[in short].</sub></h2>
@@ -17,7 +20,22 @@ package net.link.safeonline.sdk.configuration;
  *
  * @author lhunath
  */
-public interface SDKConfig extends SafeOnlineConfig {
+public interface SDKConfig extends RootConfig {
+
+    /**
+     * @return Web configuration.  Base URLs, paths, etc.
+     */
+    WebConfig web();
+
+    /**
+     * @return LinkID configuration.  Location of linkID services and linkID specific protocol settings.
+     */
+    LinkIDConfig linkID();
+
+    /**
+     * @return JAAS context configuration.  For applications that want to set a JAAS context based on linkID credentials.
+     */
+    JAASConfig jaas();
 
     /**
      * @return Protocol configuration.  SAML/OpenID/... parameters.

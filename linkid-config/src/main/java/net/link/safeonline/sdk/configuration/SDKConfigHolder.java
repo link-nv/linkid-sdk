@@ -26,7 +26,7 @@ public class SDKConfigHolder extends ConfigHolder {
 
     public SDKConfigHolder(SDKConfig customConfig) {
 
-        super( SDKConfig.class, new SafeOnlineDefaultConfigFactory(), customConfig );
+        super( SDKConfig.class, new SDKDefaultConfigFactory(), customConfig );
     }
 
     public static SDKConfig config() {

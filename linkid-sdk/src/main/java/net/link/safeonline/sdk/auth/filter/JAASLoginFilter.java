@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import net.link.util.logging.Logger;
 import java.io.IOException;

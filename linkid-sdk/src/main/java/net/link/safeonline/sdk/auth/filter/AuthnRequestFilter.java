@@ -7,15 +7,20 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
-import net.link.util.logging.Logger;
 import java.io.IOException;
 import java.util.Locale;
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.util.AuthenticationUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.configuration.SafeOnlineConfig;
+import net.link.safeonline.sdk.configuration.SDKConfig;
+import net.link.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -59,7 +64,7 @@ public class AuthnRequestFilter implements Filter {
     /**
      * Override this method if you want to provide a custom authentication context for initiating authentication requests.
      * <p/>
-     * The default implementation creates a context based on configuration defaults (see {@link SafeOnlineConfig}), which doesn't force
+     * The default implementation creates a context based on configuration defaults (see {@link SDKConfig}), which doesn't force
      * authentication and returns the user to the page where authentication was initiated after the process has completed.
      *
      * @param request The request that has caused the need for authentication.

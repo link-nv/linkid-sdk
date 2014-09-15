@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 import static net.link.util.util.ObjectUtils.*;
 
 import java.security.KeyPair;
@@ -123,7 +123,8 @@ public class LogoutContext extends LinkIDContext {
                          Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate, String sessionTrackingId, Locale language,
                          String target, @Nullable Protocol protocol) {
 
-        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language, target, protocol );
+        super( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language, target,
+                protocol );
     }
 
     @Override

@@ -56,7 +56,7 @@ public class TestConfigHolder extends ConfigHolder {
 
     public TestConfigHolder(final String appBase, @Nullable final AppConfig appConfig, final ServletContext servletContext) {
 
-        super( TestSDKConfig.class, new SafeOnlineDefaultConfigFactory() {
+        super( TestSDKConfig.class, new SDKDefaultConfigFactory() {
 
             @Override
             protected ServletContext getServletContext() {

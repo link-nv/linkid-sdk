@@ -7,17 +7,17 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.*;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.*;
 
 import net.link.util.common.URLUtils;
 
 
 /**
  * <h2>{@link ConfigUtils}<br>
- * <sub>Utility class for {@link SafeOnlineConfig}.</sub></h2>
+ * <sub>Utility class for {@link SDKConfigHolder}.</sub></h2>
  * <p/>
  * <p>
- * This utility class provides convenience methods that uses properties defined in {@link SafeOnlineConfig}.
+ * This utility class provides convenience methods that uses properties defined in {@link SDKConfigHolder}.
  * </p>
  * <p/>
  * <p>

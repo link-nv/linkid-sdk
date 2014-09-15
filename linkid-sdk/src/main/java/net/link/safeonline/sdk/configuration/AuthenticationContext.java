@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SafeOnlineConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
 
 import java.io.Serializable;
 import java.security.KeyPair;

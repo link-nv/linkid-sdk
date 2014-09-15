@@ -10,24 +10,25 @@ package net.link.safeonline.sdk.configuration;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import net.link.util.config.DefaultConfigFactory;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
- * <h2>{@link SafeOnlineDefaultConfigFactory}<br> <sub>[in short].</sub></h2>
+ * <h2>{@link SDKDefaultConfigFactory}<br> <sub>[in short].</sub></h2>
  * <p/>
  * <p> <i>09 14, 2010</i> </p>
  *
  * @author lhunath
  */
-public class SafeOnlineDefaultConfigFactory extends DefaultConfigFactory {
+public class SDKDefaultConfigFactory extends DefaultConfigFactory {
 
-    public SafeOnlineDefaultConfigFactory() {
+    public SDKDefaultConfigFactory() {
 
         super( "linkID" );
     }
 
     @Override
-    protected String generateValueExtension(final Method method) {
+    protected String generateValueExtension(@NotNull final Method method) {
 
         if ("appPath".equals( method.getName() ) && method.getDeclaringClass().equals( WebConfig.class ))
             if (getServletRequest() instanceof HttpServletRequest)
