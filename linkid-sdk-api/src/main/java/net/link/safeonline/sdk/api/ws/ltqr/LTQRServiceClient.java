@@ -39,6 +39,19 @@ public interface LTQRServiceClient {
             throws PushException;
 
     /**
+     * Change an existing long term QR code
+     *
+     * @param orderReference orderReference, mandatory
+     * @param paymentContext Optional payment context
+     * @param expiryDate     Optional expiry date of the long term session.
+     * @param expiryDuration Optional expiry duration of the long term session. Expressed in number of seconds starting from the creation.
+     *                       Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.
+     * @throws ChangeException
+     */
+    void change(String orderReference, @Nullable PaymentContextDO paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration)
+            throws ChangeException;
+
+    /**
      * Fetch a set of client sessions.
      *
      * @param orderReferences  Optional list of orderReferences to fetch. If none are specified, all LTQR sessions and client session are returned.

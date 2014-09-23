@@ -52,6 +52,45 @@
         </complexType>
     </element>
 
+    <!-- =================== Change request ======================= -->
+
+    <element name="ChangeRequest">
+        <complexType>
+            <sequence>
+                <element name="orderReference" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>OrderReference of the long term QR to change.</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment context</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="expiryDate" type="dateTime" use="optional">
+                <annotation>
+                    <documentation>Expiry date of the long term session.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="expiryDuration" type="long" use="optional">
+                <annotation>
+                    <documentation>Expiry duration of the long term session. Expressed in number of seconds starting from the creation.
+                        Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="ChangeResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ChangeSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ChangeError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
     <!-- =================== Pull request ========================= -->
 
     <element name="PullRequest">
@@ -133,6 +172,12 @@
         <attribute name="errorCode" type="tns:ErrorCode" use="required" />
     </complexType>
 
+    <complexType name="ChangeSuccess" />
+
+    <complexType name="ChangeError">
+        <attribute name="errorCode" type="tns:ChangeErrorCode" use="required" />
+    </complexType>
+
     <complexType name="PullSuccess">
         <sequence>
             <element name="sessions" type="tns:ClientSession" minOccurs="0" maxOccurs="unbounded">
@@ -192,6 +237,24 @@
 			<enumeration value="error.credentials.invalid">
 				<annotation>
 					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="ChangeErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.not.found">
+				<annotation>
+					<documentation>The LTQR was not found.</documentation>
 				</annotation>
 			</enumeration>
 		</restriction>

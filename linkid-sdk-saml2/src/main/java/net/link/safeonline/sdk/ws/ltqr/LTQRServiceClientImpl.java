@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.PaymentContext;
+import net.lin_k.safe_online.ltqr.ChangeRequest;
+import net.lin_k.safe_online.ltqr.ChangeResponse;
 import net.lin_k.safe_online.ltqr.ClientSession;
 import net.lin_k.safe_online.ltqr.LTQRPaymentStatusType;
 import net.lin_k.safe_online.ltqr.LTQRServicePort;
@@ -22,6 +24,8 @@ import net.lin_k.safe_online.ltqr.PushRequest;
 import net.lin_k.safe_online.ltqr.PushResponse;
 import net.lin_k.safe_online.ltqr.RemoveRequest;
 import net.lin_k.safe_online.ltqr.RemoveResponse;
+import net.link.safeonline.sdk.api.ltqr.ChangeErrorCode;
+import net.link.safeonline.sdk.api.ltqr.ChangeException;
 import net.link.safeonline.sdk.api.ltqr.ErrorCode;
 import net.link.safeonline.sdk.api.ltqr.LTQRClientSession;
 import net.link.safeonline.sdk.api.ltqr.LTQRPaymentState;
@@ -136,6 +140,49 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
+    public void change(final String orderReference, @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate,
+                       @Nullable final Long expiryDuration)
+            throws ChangeException {
+
+        ChangeRequest request = new ChangeRequest();
+
+        // payment context
+        if (null != paymentContextDO) {
+
+            PaymentContext paymentContext = new PaymentContext();
+            paymentContext.setAmount( paymentContextDO.getAmount() );
+            paymentContext.setCurrency( SDKUtils.convert( paymentContextDO.getCurrency() ) );
+            paymentContext.setDescription( paymentContextDO.getDescription() );
+            paymentContext.setOrderReference( paymentContextDO.getOrderReference() );
+            paymentContext.setPaymentProfile( paymentContextDO.getPaymentProfile() );
+            paymentContext.setValidationTime( paymentContextDO.getPaymentValidationTime() );
+            paymentContext.setAllowDeferredPay( paymentContextDO.isAllowDeferredPay() );
+
+            request.setPaymentContext( paymentContext );
+        }
+
+        // configuration
+        if (null != expiryDate) {
+            request.setExpiryDate( SDKUtils.convert( expiryDate ) );
+        }
+        if (null != expiryDuration) {
+            request.setExpiryDuration( expiryDuration );
+        }
+
+        // operate
+        ChangeResponse response = getPort().change( request );
+
+        // convert response
+        if (null != response.getError()) {
+            throw new ChangeException( convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null == response.getSuccess()) {
+            throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+        }
+    }
+
+    @Override
     public List<LTQRClientSession> pull(@Nullable final List<String> orderReferences, @Nullable final List<String> clientSessionIds)
             throws PullException {
 
@@ -231,6 +278,19 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
             case ERROR_CREDENTIALS_INVALID:
                 return ErrorCode.ERROR_CREDENTIALS_INVALID;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    private ChangeErrorCode convert(final net.lin_k.safe_online.ltqr.ChangeErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CREDENTIALS_INVALID:
+                return ChangeErrorCode.ERROR_CREDENTIALS_INVALID;
+            case ERROR_NOT_FOUND:
+                return ChangeErrorCode.ERROR_NOT_FOUND;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
