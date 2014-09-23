@@ -146,6 +146,8 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
         ChangeRequest request = new ChangeRequest();
 
+        request.setOrderReference( orderReference );
+
         // payment context
         if (null != paymentContextDO) {
 
