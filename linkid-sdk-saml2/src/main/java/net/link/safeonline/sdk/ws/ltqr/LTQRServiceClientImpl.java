@@ -133,20 +133,21 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
                 throw new InternalInconsistencyException( "Could not decode the QR image!" );
             }
 
-            return new LTQRSession( qrCodeImage, response.getSuccess().getQrContent(), response.getSuccess().getOrderReference() );
+            return new LTQRSession( qrCodeImage, response.getSuccess().getQrContent(), response.getSuccess().getLtqrReference(),
+                    response.getSuccess().getPaymentOrderReference() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override
-    public void change(final String orderReference, @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate,
+    public void change(final String ltqrReference, @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate,
                        @Nullable final Long expiryDuration)
             throws ChangeException {
 
         ChangeRequest request = new ChangeRequest();
 
-        request.setOrderReference( orderReference );
+        request.setLtqrReference( ltqrReference );
 
         // payment context
         if (null != paymentContextDO) {
@@ -185,13 +186,18 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public List<LTQRClientSession> pull(@Nullable final List<String> orderReferences, @Nullable final List<String> clientSessionIds)
+    public List<LTQRClientSession> pull(@Nullable final List<String> ltqrReferences, @Nullable final List<String> paymentOrderReferences,
+                                        @Nullable final List<String> clientSessionIds)
             throws PullException {
 
         PullRequest request = new PullRequest();
 
-        if (null != orderReferences && !orderReferences.isEmpty()) {
-            request.getOrderReferences().addAll( orderReferences );
+        if (null != ltqrReferences && !ltqrReferences.isEmpty()) {
+            request.getLtqrReferences().addAll( ltqrReferences );
+        }
+
+        if (null != paymentOrderReferences && !paymentOrderReferences.isEmpty()) {
+            request.getPaymentOrderReferences().addAll( paymentOrderReferences );
         }
 
         if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
@@ -212,8 +218,9 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
             for (ClientSession clientSession : response.getSuccess().getSessions()) {
 
-                clientSessions.add( new LTQRClientSession( clientSession.getOrderReference(), clientSession.getClientSessionId(), clientSession.getUserId(),
-                        clientSession.getCreated().toGregorianCalendar().getTime(), convert( clientSession.getPaymentStatus() ) ) );
+                clientSessions.add( new LTQRClientSession( clientSession.getLtqrReference(), clientSession.getClientSessionId(), clientSession.getUserId(),
+                        clientSession.getCreated().toGregorianCalendar().getTime(), convert( clientSession.getPaymentStatus() ),
+                        clientSession.getPaymentOrderReference() ) );
             }
 
             return clientSessions;
@@ -223,16 +230,21 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public void remove(@Nullable final List<String> orderReferences, @Nullable final List<String> clientSessionIds)
+    public void remove(@Nullable final List<String> ltqrReferences, @Nullable final List<String> paymentOrderReferences,
+                       @Nullable final List<String> clientSessionIds)
             throws RemoveException {
 
         RemoveRequest request = new RemoveRequest();
 
-        if (null == orderReferences || orderReferences.isEmpty()) {
-            throw new InternalInconsistencyException( "orderReferences list cannot be empty!" );
+        if (null == ltqrReferences || ltqrReferences.isEmpty()) {
+            throw new InternalInconsistencyException( "Removing LTQR session requires the LTQR references to be not empty" );
         }
 
-        request.getOrderReferences().addAll( orderReferences );
+        request.getLtqrReferences().addAll( ltqrReferences );
+
+        if (null != paymentOrderReferences && !paymentOrderReferences.isEmpty()) {
+            request.getPaymentOrderReferences().addAll( paymentOrderReferences );
+        }
 
         if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
             request.getClientSessionIds().addAll( clientSessionIds );

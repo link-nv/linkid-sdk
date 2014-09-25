@@ -41,37 +41,40 @@ public interface LTQRServiceClient {
     /**
      * Change an existing long term QR code
      *
-     * @param orderReference orderReference, mandatory
+     * @param ltqrReference  LTQR reference, mandatory
      * @param paymentContext Optional payment context
      * @param expiryDate     Optional expiry date of the long term session.
      * @param expiryDuration Optional expiry duration of the long term session. Expressed in number of seconds starting from the creation.
      *                       Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.
-     * @throws ChangeException
      */
-    void change(String orderReference, @Nullable PaymentContextDO paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration)
+    void change(String ltqrReference, @Nullable PaymentContextDO paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration)
             throws ChangeException;
 
     /**
      * Fetch a set of client sessions.
      *
-     * @param orderReferences  Optional list of orderReferences to fetch. If none are specified, all LTQR sessions and client session are returned.
-     * @param clientSessionIds optional list of client session IDs
+     * @param ltqrReferences         Optional list of LTQR References to fetch. If none are specified, all LTQR sessions and client session are returned.
+     * @param paymentOrderReferences Optional list of Payment order References to fetch. If none are specified, all are fetched for the LTQR References
+     *                               specified above.
+     * @param clientSessionIds       optional list of client session IDs
      *
      * @return list of client sessions
      *
      * @throws PullException failure
      */
-    List<LTQRClientSession> pull(@Nullable List<String> orderReferences, @Nullable List<String> clientSessionIds)
+    List<LTQRClientSession> pull(@Nullable List<String> ltqrReferences, @Nullable List<String> paymentOrderReferences, @Nullable List<String> clientSessionIds)
             throws PullException;
 
     /**
      * Remove a set of client sessions.
      *
-     * @param orderReferences  List of orderReferences to remove. If none are specified all related client sessions will be removed.
-     * @param clientSessionIds optional list of client session IDs to remove
+     * @param ltqrReferences         Optional list of LTQR References to remove. If none are specified, all LTQR sessions and client session are removed.
+     * @param paymentOrderReferences Optional list of Payment order References to remove. If none are specified, all are removed for the LTQR References
+     *                               specified above.
+     * @param clientSessionIds       optional list of client session IDs to remove
      *
      * @throws RemoveException failure
      */
-    void remove(@Nullable List<String> orderReferences, @Nullable List<String> clientSessionIds)
+    void remove(@Nullable List<String> ltqrReferences, @Nullable List<String> paymentOrderReferences, @Nullable List<String> clientSessionIds)
             throws RemoveException;
 }

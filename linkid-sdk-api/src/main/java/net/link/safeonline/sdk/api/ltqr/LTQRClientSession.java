@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.ltqr;
 
 import java.io.Serializable;
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -18,32 +19,36 @@ import java.util.Date;
  */
 public class LTQRClientSession implements Serializable {
 
-    private final String           orderReference;
-    private final String           clientSessionId;
-    private final String           userId;
-    private final Date             created;
+    private final String ltqrReference;
+    private final String clientSessionId;
+    private final String userId;
+    private final Date   created;
+
+    @Nullable
+    private final String           paymentOrderReference;
     private final LTQRPaymentState paymentState;
 
-    public LTQRClientSession(final String orderReference, final String clientSessionId, final String userId, final Date created,
-                             final LTQRPaymentState paymentState) {
+    public LTQRClientSession(final String ltqrReference, final String clientSessionId, final String userId, final Date created,
+                             final LTQRPaymentState paymentState, @Nullable final String paymentOrderReference) {
 
-        this.orderReference = orderReference;
+        this.ltqrReference = ltqrReference;
         this.clientSessionId = clientSessionId;
         this.userId = userId;
         this.created = created;
         this.paymentState = paymentState;
+        this.paymentOrderReference = paymentOrderReference;
     }
 
     @Override
     public String toString() {
 
-        return String.format( "SessionID: %s, ClientSessionID: %s, UserID: %s, Created: %s, PaymentState: %s", orderReference, clientSessionId, userId, created,
-                paymentState );
+        return String.format( "LTQR Ref: %s, ClientSessionID: %s, UserID: %s, Created: %s, PaymentState: %s, Payment order ref: %s", ltqrReference,
+                clientSessionId, userId, created, paymentState, paymentOrderReference );
     }
 
-    public String getOrderReference() {
+    public String getLtqrReference() {
 
-        return orderReference;
+        return ltqrReference;
     }
 
     public String getClientSessionId() {
@@ -64,5 +69,11 @@ public class LTQRClientSession implements Serializable {
     public LTQRPaymentState getPaymentState() {
 
         return paymentState;
+    }
+
+    @Nullable
+    public String getPaymentOrderReference() {
+
+        return paymentOrderReference;
     }
 }

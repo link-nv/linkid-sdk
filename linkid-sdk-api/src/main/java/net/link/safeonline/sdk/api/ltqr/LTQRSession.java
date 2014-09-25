@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.api.ltqr;
 
 import java.io.Serializable;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -19,13 +20,17 @@ public class LTQRSession implements Serializable {
 
     private final byte[] qrCodeImage;
     private final String qrCodeURL;
-    private final String orderReference;
+    private final String ltqrReference;
 
-    public LTQRSession(final byte[] qrCodeImage, final String qrCodeURL, final String orderReference) {
+    @Nullable
+    private final String paymentOrderReference;    // optional payment order reference, if applicable
+
+    public LTQRSession(final byte[] qrCodeImage, final String qrCodeURL, final String ltqrReference, @Nullable final String paymentOrderReference) {
 
         this.qrCodeImage = qrCodeImage;
         this.qrCodeURL = qrCodeURL;
-        this.orderReference = orderReference;
+        this.ltqrReference = ltqrReference;
+        this.paymentOrderReference = paymentOrderReference;
     }
 
     public byte[] getQrCodeImage() {
@@ -38,8 +43,14 @@ public class LTQRSession implements Serializable {
         return qrCodeURL;
     }
 
-    public String getOrderReference() {
+    public String getLtqrReference() {
 
-        return orderReference;
+        return ltqrReference;
+    }
+
+    @Nullable
+    public String getPaymentOrderReference() {
+
+        return paymentOrderReference;
     }
 }
