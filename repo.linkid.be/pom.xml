@@ -29,11 +29,11 @@
     <distributionManagement>
         <repository>
             <id>repo.linkid.be</id>
-            <url>scp://repo.linkid.be/home/maven/repository/releases</url>
+            <url>scpexe://repo.linkid.be/home/maven/repository/releases</url>
         </repository>
         <snapshotRepository>
             <id>repo.linkid.be</id>
-            <url>scp://repo.linkid.be/home/maven/repository/snapshots</url>
+            <url>scpexe://repo.linkid.be/home/maven/repository/snapshots</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
