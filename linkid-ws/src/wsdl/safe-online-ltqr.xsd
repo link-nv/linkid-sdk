@@ -18,6 +18,16 @@
     <element name="PushRequest">
 		<complexType>
             <sequence>
+                <element name="authenticationMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client authentication message, if a payment is involved this will be ignored</documentation>
+                    </annotation>
+                </element>
+                <element name="finishedMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client finished message.</documentation>
+                    </annotation>
+                </element>
                 <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>Optional payment context</documentation>
@@ -60,6 +70,16 @@
                 <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>LTQR Reference of the long term QR to change.</documentation>
+                    </annotation>
+                </element>
+                <element name="authenticationMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client authentication message, if a payment is involved this will be ignored</documentation>
+                    </annotation>
+                </element>
+                <element name="finishedMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client finished message.</documentation>
                     </annotation>
                 </element>
                 <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
@@ -189,7 +209,15 @@
         <attribute name="errorCode" type="tns:ErrorCode" use="required" />
     </complexType>
 
-    <complexType name="ChangeSuccess" />
+    <complexType name="ChangeSuccess">
+        <sequence>
+            <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment order reference</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
 
     <complexType name="ChangeError">
         <attribute name="errorCode" type="tns:ChangeErrorCode" use="required" />

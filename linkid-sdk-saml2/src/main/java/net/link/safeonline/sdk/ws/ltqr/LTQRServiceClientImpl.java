@@ -26,6 +26,7 @@ import net.lin_k.safe_online.ltqr.RemoveRequest;
 import net.lin_k.safe_online.ltqr.RemoveResponse;
 import net.link.safeonline.sdk.api.ltqr.ChangeErrorCode;
 import net.link.safeonline.sdk.api.ltqr.ChangeException;
+import net.link.safeonline.sdk.api.ltqr.ChangeResponseDO;
 import net.link.safeonline.sdk.api.ltqr.ErrorCode;
 import net.link.safeonline.sdk.api.ltqr.LTQRClientSession;
 import net.link.safeonline.sdk.api.ltqr.LTQRPaymentState;
@@ -86,11 +87,15 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public LTQRSession push(@Nullable final PaymentContextDO paymentContextDO, final boolean oneTimeUse, @Nullable final Date expiryDate,
-                            @Nullable final Long expiryDuration)
+    public LTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage, @Nullable final PaymentContextDO paymentContextDO,
+                            final boolean oneTimeUse, @Nullable final Date expiryDate, @Nullable final Long expiryDuration)
             throws PushException {
 
         PushRequest request = new PushRequest();
+
+        // custom msgs
+        request.setAuthenticationMessage( authenticationMessage );
+        request.setFinishedMessage( finishedMessage );
 
         // payment context
         if (null != paymentContextDO) {
@@ -141,13 +146,17 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     }
 
     @Override
-    public void change(final String ltqrReference, @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate,
-                       @Nullable final Long expiryDuration)
+    public ChangeResponseDO change(final String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
+                                   @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate, @Nullable final Long expiryDuration)
             throws ChangeException {
 
         ChangeRequest request = new ChangeRequest();
 
         request.setLtqrReference( ltqrReference );
+
+        // custom msgs
+        request.setAuthenticationMessage( authenticationMessage );
+        request.setFinishedMessage( finishedMessage );
 
         // payment context
         if (null != paymentContextDO) {
@@ -180,9 +189,11 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             throw new ChangeException( convert( response.getError().getErrorCode() ) );
         }
 
-        if (null == response.getSuccess()) {
-            throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+        if (null != response.getSuccess()) {
+            return new ChangeResponseDO( response.getSuccess().getPaymentOrderReference() );
         }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override
