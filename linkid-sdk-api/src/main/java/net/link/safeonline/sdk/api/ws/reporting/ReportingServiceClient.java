@@ -66,6 +66,18 @@ public interface ReportingServiceClient {
             throws WSClientTransportException;
 
     /**
+     * @param startDate startDate
+     * @param endDate   optional endDate, not specified means till now
+     * @param parkings  optional list of parkings
+     *
+     * @return The parking sessions matching your search. If none found an empty list is returned
+     *
+     * @throws WSClientTransportException could not contact the linkID web service
+     */
+    List<ParkingSessionDO> getParkingReport(Date startDate, @Nullable Date endDate, @Nullable List<String> parkings)
+            throws WSClientTransportException;
+
+    /**
      * @param barCodes bar codes
      *
      * @return The parking sessions matching your search. If none found an empty list is returned

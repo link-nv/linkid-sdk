@@ -189,6 +189,13 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
     }
 
     @Override
+    public List<ParkingSessionDO> getParkingReport(final Date startDate, @Nullable final Date endDate, @Nullable final List<String> parkings)
+            throws WSClientTransportException {
+
+        return getParkingReport( startDate, endDate, null, null, null, parkings );
+    }
+
+    @Override
     public List<ParkingSessionDO> getParkingReportForBarCodes(final List<String> barCodes)
             throws WSClientTransportException {
 
