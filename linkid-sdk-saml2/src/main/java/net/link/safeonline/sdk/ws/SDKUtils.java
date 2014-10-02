@@ -63,6 +63,9 @@ public abstract class SDKUtils {
 
     public static PaymentState convert(final PaymentStatusType paymentState) {
 
+        if (null == paymentState)
+            return null;
+
         switch (paymentState) {
 
             case STARTED:
