@@ -13,6 +13,9 @@ public enum PaymentAddBrowser {
 
     public static PaymentAddBrowser parse(final String valueString) {
 
+        if (null == valueString)
+            return PaymentAddBrowser.NOT_ALLOWED;
+
         for (PaymentAddBrowser value : PaymentAddBrowser.values()) {
 
             if (value.name().equals( valueString.toUpperCase() )) {

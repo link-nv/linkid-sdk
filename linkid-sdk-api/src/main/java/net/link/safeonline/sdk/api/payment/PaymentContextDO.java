@@ -23,6 +23,8 @@ public class PaymentContextDO implements Serializable {
     public static final String ORDER_REFERENCE_KEY     = "PaymentContext.orderReference";
     public static final String PROFILE_KEY             = "PaymentContext.profile";
     public static final String VALIDATION_TIME_KEY     = "PaymentContext.validationTime";
+    public static final String ADD_LINK_KEY            = "PaymentContext.addLinkKey";
+    public static final String RETURN_MENU_URL_KEY     = "PaymentContext.returnMenuURL";
     public static final String ADD_BROWSER_KEY         = "PaymentContext.addBrowser";
     public static final String DEFERRED_PAY_KEY        = "PaymentContext.deferredPay";
     public static final String MANDATE_KEY             = "PaymentContext.mandate";
@@ -175,13 +177,30 @@ public class PaymentContextDO implements Serializable {
         if (!paymentContextMap.containsKey( VALIDATION_TIME_KEY ))
             throw new InvalidPaymentContextException( "Payment context's validation time field is not present!" );
 
+        PaymentAddBrowser paymentAddBrowser = PaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) );
+
+        // backward support for old SDK
+        String addLinkString = paymentContextMap.get( ADD_LINK_KEY );
+        if (null != addLinkString) {
+            boolean addLink = Boolean.parseBoolean( addLinkString );
+            if (addLink) {
+                paymentAddBrowser = PaymentAddBrowser.POPUP;
+            }
+        }
+        String returnMenuString = paymentContextMap.get( RETURN_MENU_URL_KEY );
+        if (null != returnMenuString) {
+            boolean returnMenu = Boolean.parseBoolean( returnMenuString );
+            if (returnMenu) {
+                paymentAddBrowser = PaymentAddBrowser.POPUP;
+            }
+        }
+
         // convert
         PaymentContextDO paymentContextDO = new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ),
                 Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ), paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ),
-                paymentContextMap.get( PROFILE_KEY ), Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ),
-                PaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ),
-                Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ), paymentContextMap.get( MANDATE_DESCRIPTION_KEY ),
-                paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
+                paymentContextMap.get( PROFILE_KEY ), Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), paymentAddBrowser,
+                Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ),
+                paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
 
         paymentContextDO.setPaymentMenuResultSuccess( paymentContextMap.get( MENU_RESULT_SUCCESS_KEY ) );
         paymentContextDO.setPaymentMenuResultCanceled( paymentContextMap.get( MENU_RESULT_CANCELED_KEY ) );
