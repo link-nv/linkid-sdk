@@ -49,7 +49,7 @@ public class PaymentContextDO implements Serializable {
     // maximum time to wait for payment validation, if not specified defaults to 5s
     private final int paymentValidationTime;
 
-    // whether or not to allow to display the option in the client to add a payment method in the browser. Either via a popup or via a redirect made by the SP
+    // whether or not to allow to display the option in the client to add a payment method in the browser.
     // default is not allowed
     private final PaymentAddBrowser paymentAddBrowser;
 
@@ -179,19 +179,19 @@ public class PaymentContextDO implements Serializable {
 
         PaymentAddBrowser paymentAddBrowser = PaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) );
 
-        // backward support for old SDK
+        // TODO: backward support for old SDK, remove one day...
         String addLinkString = paymentContextMap.get( ADD_LINK_KEY );
         if (null != addLinkString) {
             boolean addLink = Boolean.parseBoolean( addLinkString );
             if (addLink) {
-                paymentAddBrowser = PaymentAddBrowser.POPUP;
+                paymentAddBrowser = PaymentAddBrowser.REDIRECT;
             }
         }
         String returnMenuString = paymentContextMap.get( RETURN_MENU_URL_KEY );
         if (null != returnMenuString) {
             boolean returnMenu = Boolean.parseBoolean( returnMenuString );
             if (returnMenu) {
-                paymentAddBrowser = PaymentAddBrowser.POPUP;
+                paymentAddBrowser = PaymentAddBrowser.REDIRECT;
             }
         }
 

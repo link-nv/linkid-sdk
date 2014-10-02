@@ -8,7 +8,6 @@ package net.link.safeonline.sdk.api.payment;
 public enum PaymentAddBrowser {
 
     NOT_ALLOWED,
-    POPUP,
     REDIRECT;
 
     public static PaymentAddBrowser parse(final String valueString) {
