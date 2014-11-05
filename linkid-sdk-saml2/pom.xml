@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.49</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID SDK for SAML2.0</name>
@@ -59,12 +59,12 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>2.49</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-ws</artifactId>
-            <version>2.49</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-container-test</artifactId>
-            <version>2.49</version>
+            <version>GIT-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
         <dependency>
