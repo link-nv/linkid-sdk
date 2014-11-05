@@ -7,24 +7,30 @@
 
 package test.unit.net.link.safeonline.sdk.auth.saml2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Maps;
-import net.link.util.logging.Logger;
-import net.link.util.InternalInconsistencyException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.*;
-import net.link.safeonline.sdk.api.payment.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import net.link.safeonline.sdk.api.payment.Currency;
+import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.SubjectAttributes;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.DomUtils;
+import net.link.util.logging.Logger;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.saml.SamlUtils;
 import net.link.util.test.pkix.PkiTestUtils;
@@ -224,6 +230,6 @@ public class AuthnRequestFactoryTest {
         assertNotNull( paymentContexts );
         assertEquals( 1, paymentContexts.size() );
         PaymentContext paymentContextMap = (PaymentContext) paymentContexts.get( 0 );
-        assertEquals( 7, paymentContextMap.getAttributes().size() );
+        assertEquals( 6, paymentContextMap.getAttributes().size() );
     }
 }
