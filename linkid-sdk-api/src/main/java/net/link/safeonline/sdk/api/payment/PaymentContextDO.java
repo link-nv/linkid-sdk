@@ -135,30 +135,43 @@ public class PaymentContextDO implements Serializable {
 
         map.put( AMOUNT_KEY, Double.toString( amount ) );
         map.put( CURRENCY_KEY, currency.name() );
-        if (null != description)
+        if (null != description) {
             map.put( DESCRIPTION_KEY, description );
-        if (null != orderReference)
+        }
+        if (null != orderReference) {
             map.put( ORDER_REFERENCE_KEY, orderReference );
-        if (null != paymentProfile)
+        }
+        if (null != paymentProfile) {
             map.put( PROFILE_KEY, paymentProfile );
+        }
         map.put( VALIDATION_TIME_KEY, Integer.toString( paymentValidationTime ) );
-        map.put( ADD_BROWSER_KEY, paymentAddBrowser.name() );
+        if (null == paymentAddBrowser) {
+            map.put( ADD_BROWSER_KEY, PaymentAddBrowser.NOT_ALLOWED.name() );
+        } else {
+            map.put( ADD_BROWSER_KEY, paymentAddBrowser.name() );
+        }
         map.put( DEFERRED_PAY_KEY, Boolean.toString( allowDeferredPay ) );
 
         map.put( MANDATE_KEY, Boolean.toString( mandate ) );
-        if (null != mandateDescription)
+        if (null != mandateDescription) {
             map.put( MANDATE_DESCRIPTION_KEY, mandateDescription );
-        if (null != mandateReference)
+        }
+        if (null != mandateReference) {
             map.put( MANDATE_REFERENCE_KEY, mandateReference );
+        }
 
-        if (null != paymentMenuResultSuccess)
+        if (null != paymentMenuResultSuccess) {
             map.put( MENU_RESULT_SUCCESS_KEY, paymentMenuResultSuccess );
-        if (null != paymentMenuResultCanceled)
+        }
+        if (null != paymentMenuResultCanceled) {
             map.put( MENU_RESULT_CANCELED_KEY, paymentMenuResultCanceled );
-        if (null != paymentMenuResultPending)
+        }
+        if (null != paymentMenuResultPending) {
             map.put( MENU_RESULT_PENDING_KEY, paymentMenuResultPending );
-        if (null != paymentMenuResultSuccess)
+        }
+        if (null != paymentMenuResultSuccess) {
             map.put( MENU_RESULT_ERROR_KEY, paymentMenuResultError );
+        }
 
         return map;
     }
@@ -168,14 +181,17 @@ public class PaymentContextDO implements Serializable {
             throws InvalidPaymentContextException {
 
         // check map valid
-        if (!paymentContextMap.containsKey( AMOUNT_KEY ))
+        if (!paymentContextMap.containsKey( AMOUNT_KEY )) {
             throw new InvalidPaymentContextException( "Payment context's amount field is not present!" );
+        }
 
-        if (!paymentContextMap.containsKey( CURRENCY_KEY ))
+        if (!paymentContextMap.containsKey( CURRENCY_KEY )) {
             throw new InvalidPaymentContextException( "Payment context's currency field is not present!" );
+        }
 
-        if (!paymentContextMap.containsKey( VALIDATION_TIME_KEY ))
+        if (!paymentContextMap.containsKey( VALIDATION_TIME_KEY )) {
             throw new InvalidPaymentContextException( "Payment context's validation time field is not present!" );
+        }
 
         PaymentAddBrowser paymentAddBrowser = PaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) );
 
