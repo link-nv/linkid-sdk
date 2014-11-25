@@ -38,16 +38,21 @@ public class Address implements Serializable {
 
     public static List<Address> getAddress(final List<AttributeSDK<Serializable>> addressAttributes) {
 
-        if (null == addressAttributes)
+        if (null == addressAttributes) {
             return new LinkedList<Address>();
+        }
 
         List<Address> addresses = new LinkedList<Address>();
         for (AttributeSDK<Serializable> addressAttribute : addressAttributes) {
 
             Compound addressCompound = (Compound) addressAttribute.getValue();
+
+            // optional bus
+            AttributeSDK<Serializable> busAttribute = addressCompound.findMember( ProfileConstants.ADDRESS_STREET_BUS );
+            String bus = null != busAttribute? (String) busAttribute.getValue(): null;
+
             Address address = new Address( (String) addressCompound.getMember( ProfileConstants.ADDRESS_STREET ).getValue(),
-                    (String) addressCompound.getMember( ProfileConstants.ADDRESS_STREET_NUMBER ).getValue(),
-                    (String) addressCompound.getMember( ProfileConstants.ADDRESS_STREET_BUS ).getValue(),
+                    (String) addressCompound.getMember( ProfileConstants.ADDRESS_STREET_NUMBER ).getValue(), bus,
                     (String) addressCompound.getMember( ProfileConstants.ADDRESS_POSTAL_CODE ).getValue(),
                     (String) addressCompound.getMember( ProfileConstants.ADDRESS_CITY ).getValue(),
                     Country.toCountryAlpha2( (String) addressCompound.getMember( ProfileConstants.ADDRESS_COUNTRY ).getValue() ) );
@@ -62,10 +67,11 @@ public class Address implements Serializable {
      */
     public String getAddress() {
 
-        if (null == streetBus)
+        if (null == streetBus) {
             return String.format( "%s, %s", street, streetNumber );
-        else
+        } else {
             return String.format( "%s, %s %s", street, streetNumber, streetBus );
+        }
     }
 
     // Accessors
