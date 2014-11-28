@@ -429,7 +429,6 @@
         <module>linkid-sdk</module>
         <module>linkid-sdk-saml2</module>
         <module>linkid-ws</module>
-        <module>linkid-wicket-sdk</module>
 
         <module>linkid-sdk-package-java</module>
 
@@ -497,9 +496,6 @@
         <!-- JAX-WS -->
         <jaxws-maven-plugin.version>2.2</jaxws-maven-plugin.version>
         <jaxws-rt.version>2.1.7</jaxws-rt.version>
-
-        <!-- WICKET -->
-        <wicket.version>1.4.18</wicket.version>
 
         <serializer.version>2.10.0</serializer.version>
 
@@ -595,11 +591,6 @@
             </dependency>
             <dependency>
                 <groupId>net.lin-k.util</groupId>
-                <artifactId>util-wicket</artifactId>
-                <version>${link-util.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.util</groupId>
                 <artifactId>util-ws</artifactId>
                 <version>${link-util.version}</version>
             </dependency>
@@ -617,12 +608,6 @@
                         <artifactId>bcprov-jdk15</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket</artifactId>
-                <version>${wicket.version}</version>
             </dependency>
 
             <!-- Bouncycastle -->
@@ -809,16 +794,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>jtidy</artifactId>
                 <version>${jtidy.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-extensions</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-ioc</artifactId>
-                <version>${wicket.version}</version>
             </dependency>
             <dependency>
                 <groupId>be.fedict.jtrust</groupId>
