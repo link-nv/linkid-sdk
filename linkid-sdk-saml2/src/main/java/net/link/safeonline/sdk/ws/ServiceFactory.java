@@ -35,25 +35,25 @@ import org.opensaml.saml2.core.Response;
  */
 public abstract class ServiceFactory {
 
-    protected abstract AttributeClient _getAttributeService(WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate);
+    protected abstract AttributeClient _getAttributeService(WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates);
 
-    protected abstract DataClient _getDataService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+    protected abstract DataClient _getDataService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
-    protected abstract NameIdentifierMappingClient _getIdMappingService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+    protected abstract NameIdentifierMappingClient _getIdMappingService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
-    protected abstract SecurityTokenServiceClient _getStsService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+    protected abstract SecurityTokenServiceClient _getStsService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
-    protected abstract PaymentServiceClient _getPaymentService(X509Certificate sslCertificate);
+    protected abstract PaymentServiceClient _getPaymentService(X509Certificate[] sslCertificates);
 
-    protected abstract Xkms2Client _getXkms2Client(X509Certificate sslCertificate);
+    protected abstract Xkms2Client _getXkms2Client(X509Certificate[] sslCertificates);
 
-    protected abstract LTQRServiceClient _getLtqrServiceClient(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+    protected abstract LTQRServiceClient _getLtqrServiceClient(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
-    protected abstract MandateServiceClient _getMandateService(WSSecurityConfiguration configuration, X509Certificate sslCertificate);
+    protected abstract MandateServiceClient _getMandateService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
     protected abstract HawsServiceClient<AuthnRequest, Response> _getHawsService(WSSecurityConfiguration configuration,
-                                                                                 @Nullable X509Certificate sslCertificate);
+                                                                                 @Nullable X509Certificate[] sslCertificates);
 
     protected abstract AuthServiceClient<AuthnRequest, Response> _getAuthService(WSSecurityConfiguration configuration,
-                                                                                 @Nullable X509Certificate sslCertificate);
+                                                                                 @Nullable X509Certificate[] sslCertificates);
 }

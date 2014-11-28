@@ -22,7 +22,7 @@ public interface LinkIDWSUsernameConfiguration {
     /**
      * @return If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    X509Certificate getSSLCertificate();
+    X509Certificate[] getSSLCertificates();
 
     /**
      * @return the base URL to linkID. ( e.g. https://demo.linkid.be )

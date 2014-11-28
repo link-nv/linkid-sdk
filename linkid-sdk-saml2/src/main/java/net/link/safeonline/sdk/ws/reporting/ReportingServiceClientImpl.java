@@ -40,13 +40,13 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security configuration
+     * @param location        the location (host:port) of the attribute web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security configuration
      */
-    public ReportingServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public ReportingServiceClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -54,13 +54,13 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the ltqr web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the ltqr web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public ReportingServiceClientImpl(final String location, final X509Certificate sslCertificate,
+    public ReportingServiceClientImpl(final String location, final X509Certificate[] sslCertificates,
                                       final WSSecurityUsernameTokenCallback usernameTokenCallback) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
     }
@@ -68,12 +68,12 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the reporting web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the reporting web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    private ReportingServiceClientImpl(String location, X509Certificate sslCertificate) {
+    private ReportingServiceClientImpl(String location, X509Certificate[] sslCertificates) {
 
-        super( ReportingServiceFactory.newInstance().getReportingServicePort(), sslCertificate );
+        super( ReportingServiceFactory.newInstance().getReportingServicePort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.reporting.path" ) ) );

@@ -17,8 +17,8 @@ import net.link.safeonline.sdk.api.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.SamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.SamlpTopLevelErrorCode;
-import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingConstants;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingConstants;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.idmapping.NameIdentifierMappingServiceFactory;
 import net.link.util.InternalInconsistencyException;
@@ -47,13 +47,13 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security configuration
+     * @param location        the location (host:port) of the attribute web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security configuration
      */
-    public NameIdentifierMappingClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public NameIdentifierMappingClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -61,20 +61,20 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the ltqr web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the ltqr web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public NameIdentifierMappingClientImpl(final String location, final X509Certificate sslCertificate,
+    public NameIdentifierMappingClientImpl(final String location, final X509Certificate[] sslCertificates,
                                            final WSSecurityUsernameTokenCallback usernameTokenCallback) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
     }
 
-    private NameIdentifierMappingClientImpl(final String location, final X509Certificate sslCertificate) {
+    private NameIdentifierMappingClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort(), sslCertificate );
+        super( NameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.idmapping.path" ) ) );
@@ -115,10 +115,12 @@ public class NameIdentifierMappingClientImpl extends AbstractWSClient<NameIdenti
             if (null != secondStatusCode) {
                 String secondErrorCode = secondStatusCode.getValue();
                 SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode( secondErrorCode );
-                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode)
+                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode) {
                     throw new SubjectNotFoundException();
-                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
+                }
+                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode) {
                     throw new RequestDeniedException();
+                }
                 throw new InternalInconsistencyException( String.format( "Error occurred on identifier mapping service: %s", secondErrorCode ) );
             }
         }

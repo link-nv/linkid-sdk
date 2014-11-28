@@ -7,28 +7,37 @@
 
 package net.link.safeonline.sdk.ws.sts;
 
-import net.link.util.logging.Logger;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.api.exception.ValidationFailedException;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
+import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.TrustDomainType;
-import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.sts.SecurityTokenServiceFactory;
+import net.link.util.logging.Logger;
 import net.link.util.saml.SamlUtils;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.jetbrains.annotations.Nullable;
-import org.oasis_open.docs.ws_sx.ws_trust._200512.*;
-import org.opensaml.saml2.core.*;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.ObjectFactory;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenResponseType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
+import org.opensaml.saml2.core.LogoutRequest;
+import org.opensaml.saml2.core.LogoutResponse;
+import org.opensaml.saml2.core.Response;
 import org.w3c.dom.Element;
 
 
@@ -45,13 +54,13 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the LinkID STS web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security Configuration
+     * @param location        the location (host:port) of the LinkID STS web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security Configuration
      */
-    public SecurityTokenServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public SecurityTokenServiceClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        super( SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort(), sslCertificate );
+        super( SecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.sts.path" ) ) );
@@ -77,8 +86,9 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
 
         request.getOtherAttributes().put( WebServiceConstants.SAML_QUERY_STRING_ATTRIBUTE, queryString );
         request.getOtherAttributes().put( WebServiceConstants.SAML_REQUEST_URL_ATTRIBUTE, requestUrl.toString() );
-        if (null != otherAttributes)
+        if (null != otherAttributes) {
             request.getOtherAttributes().putAll( otherAttributes );
+        }
 
         RequestSecurityTokenResponseType response;
         try {
@@ -90,18 +100,22 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
 
         StatusType status = null;
         List<Object> results = response.getAny();
-        for (Object result : results)
+        for (Object result : results) {
             if (result instanceof JAXBElement<?>) {
                 JAXBElement<?> resultElement = (JAXBElement<?>) result;
                 Object value = resultElement.getValue();
-                if (value instanceof StatusType)
+                if (value instanceof StatusType) {
                     status = (StatusType) value;
+                }
             }
-        if (null == status)
+        }
+        if (null == status) {
             throw new ValidationFailedException( "no Status found in response" );
+        }
         String statusCode = status.getCode();
-        if (SecurityTokenServiceConstants.STATUS_VALID.equals( statusCode ))
+        if (SecurityTokenServiceConstants.STATUS_VALID.equals( statusCode )) {
             return;
+        }
         String reason = status.getReason();
         logger.dbg( "reason: %s", reason );
         throw new ValidationFailedException( String.format( "token found to be invalid: %s", reason ) );

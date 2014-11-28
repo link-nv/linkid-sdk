@@ -58,63 +58,63 @@ public class DummyServiceFactory extends ServiceFactory {
     }
 
     @Override
-    protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return new DummyAttributeClient();
     }
 
     @Override
-    protected DataClient _getDataService(WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected DataClient _getDataService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override
-    protected NameIdentifierMappingClient _getIdMappingService(WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected NameIdentifierMappingClient _getIdMappingService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return new DummyNameIdentifierMappingClient();
     }
 
     @Override
-    protected SecurityTokenServiceClient _getStsService(WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected SecurityTokenServiceClient _getStsService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override
-    protected PaymentServiceClient _getPaymentService(final X509Certificate sslCertificate) {
+    protected PaymentServiceClient _getPaymentService(final X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override
-    protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
+    protected Xkms2Client _getXkms2Client(X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override
-    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
+    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, final X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override
-    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, final X509Certificate sslCertificate) {
+    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, final X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override
     protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration,
-                                                                        @Nullable final X509Certificate sslCertificate) {
+                                                                        @Nullable final X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     @Override
     protected AuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration,
-                                                                        @Nullable final X509Certificate sslCertificate) {
+                                                                        @Nullable final X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }

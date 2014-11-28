@@ -132,7 +132,7 @@ public abstract class AuthWSUtils {
     public static AuthServiceClient<AuthnRequest, Response> getAuthServiceClient(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration) {
 
         return new AuthServiceClientImpl( LinkIDServiceFactory.getWsUsernameBase( linkIDWSUsernameConfiguration.getLinkIDBase() ),
-                linkIDWSUsernameConfiguration.getSSLCertificate(), new AbstractWSSecurityUsernameTokenCallback() {
+                linkIDWSUsernameConfiguration.getSSLCertificates(), new AbstractWSSecurityUsernameTokenCallback() {
             @Override
             public String getUsername() {
 

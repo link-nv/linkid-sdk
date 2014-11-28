@@ -7,27 +7,47 @@
 
 package net.link.safeonline.sdk.ws.attrib;
 
-import net.link.util.logging.Logger;
-import net.link.util.InternalInconsistencyException;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.attribute.Compound;
-import net.link.safeonline.sdk.api.exception.*;
-import net.link.safeonline.sdk.api.ws.*;
+import net.link.safeonline.sdk.api.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.api.exception.AttributeUnavailableException;
+import net.link.safeonline.sdk.api.exception.RequestDeniedException;
+import net.link.safeonline.sdk.api.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.api.exception.WSClientTransportException;
+import net.link.safeonline.sdk.api.ws.SamlpSecondLevelErrorCode;
+import net.link.safeonline.sdk.api.ws.SamlpTopLevelErrorCode;
+import net.link.safeonline.sdk.api.ws.WebServiceConstants;
 import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.attrib.SAMLAttributeServiceFactory;
+import net.link.util.InternalInconsistencyException;
+import net.link.util.logging.Logger;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
-import oasis.names.tc.saml._2_0.assertion.*;
+import oasis.names.tc.saml._2_0.assertion.AssertionType;
+import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
+import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
-import oasis.names.tc.saml._2_0.protocol.*;
+import oasis.names.tc.saml._2_0.assertion.StatementAbstractType;
+import oasis.names.tc.saml._2_0.assertion.SubjectType;
+import oasis.names.tc.saml._2_0.protocol.AttributeQueryType;
+import oasis.names.tc.saml._2_0.protocol.ResponseType;
+import oasis.names.tc.saml._2_0.protocol.SAMLAttributePort;
+import oasis.names.tc.saml._2_0.protocol.StatusCodeType;
+import oasis.names.tc.saml._2_0.protocol.StatusType;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -43,16 +63,16 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security configuration
+     * @param location        the location (host:port) of the attribute web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security configuration
      */
-    public AttributeClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public AttributeClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        super( SAMLAttributeServiceFactory.newInstance().getSAMLAttributePort(), sslCertificate );
+        super( SAMLAttributeServiceFactory.newInstance().getSAMLAttributePort(), sslCertificates );
         getBindingProvider().getRequestContext()
-                .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                        String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.attribute.path" ) ) );
+                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                    String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.attribute.path" ) ) );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -79,20 +99,23 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
             StatusCodeType secondLevelStatusCode = statusCode.getStatusCode();
             if (null != secondLevelStatusCode) {
                 String secondLevelStatusCodeValue = secondLevelStatusCode.getValue();
-                SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode(
-                        secondLevelStatusCodeValue );
+                SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode( secondLevelStatusCodeValue );
 
-                if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode)
+                if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode) {
                     throw new AttributeNotFoundException();
+                }
 
-                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
+                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode) {
                     throw new RequestDeniedException();
+                }
 
-                if (SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == samlpSecondLevelErrorCode)
+                if (SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == samlpSecondLevelErrorCode) {
                     throw new AttributeUnavailableException();
+                }
 
-                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == samlpSecondLevelErrorCode)
+                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == samlpSecondLevelErrorCode) {
                     throw new SubjectNotFoundException();
+                }
 
                 logger.dbg( "second level status code: %s", secondLevelStatusCode.getValue() );
             }
@@ -133,8 +156,7 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
 
     @Override
     public void getAttributes(String userId, Map<String, List<AttributeSDK<Serializable>>> attributes)
-            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException,
-                   SubjectNotFoundException {
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException, SubjectNotFoundException {
 
         AttributeQueryType request = getAttributeQuery( userId, attributes );
         ResponseType response = getResponse( request );
@@ -145,13 +167,15 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
     private static void getAttributeValues(ResponseType response, Map<String, List<AttributeSDK<Serializable>>> attributeMap) {
 
         List<Serializable> assertions = response.getAssertionOrEncryptedAssertion();
-        if (assertions.isEmpty())
+        if (assertions.isEmpty()) {
             throw new InternalInconsistencyException( "No assertions in response" );
+        }
         AssertionType assertion = (AssertionType) assertions.get( 0 );
 
         List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-        if (statements.isEmpty())
+        if (statements.isEmpty()) {
             throw new InternalInconsistencyException( "No statements in response assertion" );
+        }
         AttributeStatementType attributeStatement = (AttributeStatementType) statements.get( 0 );
 
         for (Object attributeTypeObject : attributeStatement.getAttributeOrEncryptedAttribute()) {
@@ -174,8 +198,9 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
         AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );
 
         List<Object> attributeValues = attributeType.getAttributeValue();
-        if (attributeValues.isEmpty())
+        if (attributeValues.isEmpty()) {
             return attribute;
+        }
 
         if (attributeType.getAttributeValue().get( 0 ) instanceof AttributeType) {
 
@@ -207,8 +232,7 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
 
     @Override
     public Map<String, List<AttributeSDK<Serializable>>> getAttributes(String userId)
-            throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException,
-                   SubjectNotFoundException {
+            throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException, SubjectNotFoundException {
 
         Map<String, List<AttributeSDK<Serializable>>> attributes = new HashMap<String, List<AttributeSDK<Serializable>>>();
         AttributeQueryType request = getAttributeQuery( userId, attributes );
@@ -220,24 +244,25 @@ public class AttributeClientImpl extends AbstractWSClient<SAMLAttributePort> imp
 
     @Override
     public List<AttributeSDK<Serializable>> getAttributes(String userId, String attributeName)
-            throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException,
-                   SubjectNotFoundException {
+            throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException, SubjectNotFoundException {
 
         Map<String, List<AttributeSDK<Serializable>>> attributes = new HashMap<String, List<AttributeSDK<Serializable>>>();
         AttributeQueryType request = getAttributeQuery( userId, attributeName );
         ResponseType response = getResponse( request );
         validateStatus( response );
         getAttributeValues( response, attributes );
-        if (attributes.size() != 1)
+        if (attributes.size() != 1) {
             throw new InternalInconsistencyException( "Requested 1 specified attribute but received multiple ?!" );
+        }
         return attributes.get( attributeName );
     }
 
     @Nullable
     private static Serializable convertFromXmlDatatypeToClient(Object value) {
 
-        if (null == value)
+        if (null == value) {
             return null;
+        }
         Object result = value;
         if (value instanceof XMLGregorianCalendar) {
             XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;

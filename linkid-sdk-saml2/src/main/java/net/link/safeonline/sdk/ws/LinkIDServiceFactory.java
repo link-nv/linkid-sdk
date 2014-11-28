@@ -100,38 +100,38 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
     public static AttributeClient getAttributeService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                      final X509Certificate sslCertificate) {
+                                                      final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static AttributeClient getAttributeService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    public static AttributeClient getAttributeService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAttributeService( configuration, sslCertificate );
+        return getInstance()._getAttributeService( configuration, sslCertificates );
     }
 
     @Override
-    protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new AttributeClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new AttributeClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -147,38 +147,38 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID data web service.
      *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID data web service.
      */
     public static DataClient getDataService(@Nullable final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                            @Nullable final X509Certificate sslCertificate) {
+                                            @Nullable final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getDataService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getDataService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID data web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID data web service.
      */
-    public static DataClient getDataService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+    public static DataClient getDataService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
-        return getInstance()._getDataService( configuration, sslCertificate );
+        return getInstance()._getDataService( configuration, sslCertificates );
     }
 
     @Override
-    protected DataClient _getDataService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected DataClient _getDataService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new DataClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new DataClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -194,38 +194,38 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID ID mapping web service.
      *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
     public static NameIdentifierMappingClient getIdMappingService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                  final X509Certificate sslCertificate) {
+                                                                  final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getIdMappingService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getIdMappingService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID ID mapping web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NameIdentifierMappingClient getIdMappingService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+    public static NameIdentifierMappingClient getIdMappingService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
-        return getInstance()._getIdMappingService( configuration, sslCertificate );
+        return getInstance()._getIdMappingService( configuration, sslCertificates );
     }
 
     @Override
-    protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new NameIdentifierMappingClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new NameIdentifierMappingClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -241,38 +241,38 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID Security Token web service.
      *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
     public static SecurityTokenServiceClient getStsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                           final X509Certificate sslCertificate) {
+                                                           final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getStsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getStsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID Security Token web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static SecurityTokenServiceClient getStsService(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+    public static SecurityTokenServiceClient getStsService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
-        return getInstance()._getStsService( configuration, sslCertificate );
+        return getInstance()._getStsService( configuration, sslCertificates );
     }
 
     @Override
-    protected SecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected SecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new SecurityTokenServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new SecurityTokenServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -288,20 +288,20 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID payment web service.
      *
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID session tracking web service.
      */
-    public static PaymentServiceClient getPaymentService(@Nullable X509Certificate sslCertificate) {
+    public static PaymentServiceClient getPaymentService(@Nullable X509Certificate[] sslCertificates) {
 
-        return getInstance()._getPaymentService( sslCertificate );
+        return getInstance()._getPaymentService( sslCertificates );
     }
 
     @Override
-    protected PaymentServiceClient _getPaymentService(final X509Certificate sslCertificate) {
+    protected PaymentServiceClient _getPaymentService(final X509Certificate[] sslCertificates) {
 
-        return new PaymentServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ) );
+        return new PaymentServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ) );
     }
 
     /**
@@ -323,60 +323,60 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static Xkms2Client getXkms2Client(@NotNull final KeyProvider keyProvider) {
 
-        return getInstance()._getXkms2Client( keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ) );
+        return getInstance()._getXkms2Client( new X509Certificate[] { keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ) } );
     }
 
     /**
      * Retrieve a proxy to the linkID XKMS 2 web service.
      *
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID XKMS2 web service.
      */
-    public static Xkms2Client getXkms2Client(X509Certificate sslCertificate) {
+    public static Xkms2Client getXkms2Client(X509Certificate[] sslCertificates) {
 
-        return getInstance()._getXkms2Client( sslCertificate );
+        return getInstance()._getXkms2Client( sslCertificates );
     }
 
     @Override
-    protected Xkms2Client _getXkms2Client(X509Certificate sslCertificate) {
+    protected Xkms2Client _getXkms2Client(X509Certificate[] sslCertificates) {
 
-        return new Xkms2ClientImpl( getWsBase(), getSSLCertificate( sslCertificate ) );
+        return new Xkms2ClientImpl( getWsBase(), getSSLCertificates( sslCertificates ) );
     }
 
     /**
      * Retrieve a proxy to the linkID long term QR web service.
      *
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID long term QR web service.
      */
     public static LTQRServiceClient getLtqrServiceClient(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                         final X509Certificate sslCertificate) {
+                                                         final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getLtqrServiceClient( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getLtqrServiceClient( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID Security Token web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static LTQRServiceClient getLtqrServiceClient(final WSSecurityConfiguration configuration, @Nullable X509Certificate sslCertificate) {
+    public static LTQRServiceClient getLtqrServiceClient(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
-        return getInstance()._getLtqrServiceClient( configuration, sslCertificate );
+        return getInstance()._getLtqrServiceClient( configuration, sslCertificates );
     }
 
     @Override
-    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new LTQRServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new LTQRServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -386,7 +386,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static HawsServiceClient<AuthnRequest, Response> getHawsService(final String wsUsername, final String wsPassword) {
 
-        return new HawsServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ), new AbstractWSSecurityUsernameTokenCallback() {
+        return new HawsServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ), new AbstractWSSecurityUsernameTokenCallback() {
             @Override
             public String getUsername() {
 
@@ -433,38 +433,38 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
     public static HawsServiceClient<AuthnRequest, Response> getHawsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                           final X509Certificate sslCertificate) {
+                                                                           final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getHawsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getHawsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID attribute web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return getInstance()._getHawsService( configuration, sslCertificate );
+        return getInstance()._getHawsService( configuration, sslCertificates );
     }
 
     @Override
-    protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new HawsServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new HawsServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -474,7 +474,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static AuthServiceClient<AuthnRequest, Response> getAuthService(final String wsUsername, final String wsPassword) {
 
-        return new AuthServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ), new AbstractWSSecurityUsernameTokenCallback() {
+        return new AuthServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ), new AbstractWSSecurityUsernameTokenCallback() {
             @Override
             public String getUsername() {
 
@@ -521,47 +521,47 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID auth web service.
      *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID auth web service.
      */
     public static AuthServiceClient<AuthnRequest, Response> getAuthService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                           final X509Certificate sslCertificate) {
+                                                                           final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAuthService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getAuthService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID auth web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID auth web service.
      */
-    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAuthService( configuration, sslCertificate );
+        return getInstance()._getAuthService( configuration, sslCertificates );
     }
 
     @Override
-    protected AuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected AuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new AuthServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new AuthServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
-    private static X509Certificate getSSLCertificate(final X509Certificate sslCertificate) {
+    private static X509Certificate[] getSSLCertificates(final X509Certificate[] sslCertificates) {
 
-        return ifNotNullElseNullable( sslCertificate, new NSupplier<X509Certificate>() {
-            public X509Certificate get() {
+        return ifNotNullElseNullable( sslCertificates, new NSupplier<X509Certificate[]>() {
+            public X509Certificate[] get() {
 
                 try {
-                    return SDKConfigHolder.config().linkID().app().keyProvider().getTrustedCertificate( ConfigUtils.SSL_ALIAS );
+                    return new X509Certificate[] { SDKConfigHolder.config().linkID().app().keyProvider().getTrustedCertificate( ConfigUtils.SSL_ALIAS ) };
                 }
                 catch (Throwable t) {
                     // ignore
@@ -578,7 +578,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
      */
     public static MandateServiceClient getMandateService(final String wsUsername, final String wsPassword) {
 
-        return new MandateServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificate( null ),
+        return new MandateServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
                     @Override
                     public String getUsername() {
@@ -626,37 +626,37 @@ public class LinkIDServiceFactory extends ServiceFactory {
     /**
      * Retrieve a proxy to the linkID mandate web service.
      *
-     * @param trustedDN      The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider    The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                       validation.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID mandate web service.
      */
     public static MandateServiceClient getMandateService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                         final X509Certificate sslCertificate) {
+                                                         final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getMandateService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificate );
+        return getInstance()._getMandateService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
      * Retrieve a proxy to the linkID mandate web service.
      *
-     * @param configuration  Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificate The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                       certificate.
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
      *
      * @return proxy to the linkID mandate web service.
      */
-    public static MandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    public static MandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return getInstance()._getMandateService( configuration, sslCertificate );
+        return getInstance()._getMandateService( configuration, sslCertificates );
     }
 
     @Override
-    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate sslCertificate) {
+    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new MandateServiceClientImpl( getWsBase(), getSSLCertificate( sslCertificate ), configuration );
+        return new MandateServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 }

@@ -53,13 +53,13 @@ public class AuthServiceClientImpl extends AbstractWSClient<AuthServicePort> imp
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security configuration
+     * @param location        the location (host:port) of the attribute web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security configuration
      */
-    public AuthServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public AuthServiceClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -67,19 +67,19 @@ public class AuthServiceClientImpl extends AbstractWSClient<AuthServicePort> imp
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the ltqr web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the ltqr web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public AuthServiceClientImpl(final String location, final X509Certificate sslCertificate, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+    public AuthServiceClientImpl(final String location, final X509Certificate[] sslCertificates, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
     }
 
-    private AuthServiceClientImpl(final String location, final X509Certificate sslCertificate) {
+    private AuthServiceClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( AuthServiceFactory.newInstance().getAuthServicePort(), sslCertificate );
+        super( AuthServiceFactory.newInstance().getAuthServicePort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.auth.path" ) ) );

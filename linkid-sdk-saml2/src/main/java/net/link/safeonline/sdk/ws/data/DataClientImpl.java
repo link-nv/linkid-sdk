@@ -69,13 +69,13 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the attribute web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security configuration
+     * @param location        the location (host:port) of the attribute web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security configuration
      */
-    public DataClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public DataClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -83,19 +83,19 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the ltqr web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the ltqr web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public DataClientImpl(final String location, final X509Certificate sslCertificate, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+    public DataClientImpl(final String location, final X509Certificate[] sslCertificates, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
     }
 
-    private DataClientImpl(final String location, final X509Certificate sslCertificate) {
+    private DataClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ), sslCertificate );
+        super( DataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.data.path" ) ) );
@@ -267,8 +267,9 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
 
         AttributeType attributeType = new AttributeType();
         attributeType.setName( attribute.getName() );
-        if (null != attribute.getId())
+        if (null != attribute.getId()) {
             attributeType.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attribute.getId() );
+        }
 
         if (null != attribute.getValue()) {
             if (attribute.getValue() instanceof Compound) {
@@ -301,8 +302,9 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );
 
         List<Object> attributeValues = attributeType.getAttributeValue();
-        if (attributeValues.isEmpty())
+        if (attributeValues.isEmpty()) {
             return attribute;
+        }
 
         if (attributeValues.get( 0 ) instanceof AttributeType) {
 
@@ -335,8 +337,9 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
 
     private static Serializable convertFromXmlDatatypeToClient(Object value) {
 
-        if (null == value)
+        if (null == value) {
             return null;
+        }
         Object result = value;
         if (value instanceof XMLGregorianCalendar) {
             XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
@@ -418,8 +421,9 @@ public class DataClientImpl extends AbstractWSClient<DataServicePort> implements
         deleteItem.setObjectType( DataServiceConstants.ATTRIBUTE_OBJECT_TYPE );
         SelectType select = new SelectType();
         select.setValue( attribute.getName() );
-        if (null != attribute.getId())
+        if (null != attribute.getId()) {
             select.getOtherAttributes().put( WebServiceConstants.ATTRIBUTE_ID, attribute.getId() );
+        }
 
         deleteItem.setSelect( select );
         return deleteItem;

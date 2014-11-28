@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.ws.xkms2;
 
-import net.link.util.logging.Logger;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
@@ -18,11 +17,17 @@ import net.link.safeonline.sdk.api.ws.xkms2.Xkms2Client;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.xkms2.Xkms2ServiceFactory;
 import net.link.util.common.CertificateChain;
+import net.link.util.logging.Logger;
 import net.link.util.ws.AbstractWSClient;
 import org.jetbrains.annotations.Nullable;
 import org.w3._2000._09.xmldsig.KeyInfoType;
 import org.w3._2000._09.xmldsig.X509DataType;
-import org.w3._2002._03.xkms.*;
+import org.w3._2002._03.xkms.ObjectFactory;
+import org.w3._2002._03.xkms.QueryKeyBindingType;
+import org.w3._2002._03.xkms.UseKeyWithType;
+import org.w3._2002._03.xkms.ValidateRequestType;
+import org.w3._2002._03.xkms.ValidateResultType;
+import org.w3._2002._03.xkms.XKMSPortType;
 
 
 /**
@@ -37,24 +42,24 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the LinkID XKMS 2 web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the LinkID XKMS 2 web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public Xkms2ClientImpl(String location, X509Certificate sslCertificate) {
+    public Xkms2ClientImpl(String location, X509Certificate[] sslCertificates) {
 
-        this( location, SDKUtils.getSDKProperty( "linkid.ws.xkms2.path" ), sslCertificate );
+        this( location, SDKUtils.getSDKProperty( "linkid.ws.xkms2.path" ), sslCertificates );
     }
 
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the XKMS 2 web service.
-     * @param path           the path where the XKMS2 WS runs
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the XKMS 2 web service.
+     * @param path            the path where the XKMS2 WS runs
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public Xkms2ClientImpl(String location, String path, X509Certificate sslCertificate) {
+    public Xkms2ClientImpl(String location, String path, X509Certificate[] sslCertificates) {
 
-        super( Xkms2ServiceFactory.newInstance().getXKMSPort(), sslCertificate );
+        super( Xkms2ServiceFactory.newInstance().getXKMSPort(), sslCertificates );
         getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/%s", location, path ) );
     }
 
@@ -78,8 +83,7 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
         validate( null, null, certificateChain );
     }
 
-    public void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier,
-                         final CertificateChain certificateChain)
+    public void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier, final CertificateChain certificateChain)
             throws WSClientTransportException, ValidationFailedException, CertificateEncodingException {
 
         logger.dbg( "validate (useKeyWith: %s=%s)", useKeyWithApplication, useKeyWithIdentifier );
@@ -94,8 +98,7 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
         X509DataType x509Data = xmldsigObjectFactory.createX509DataType();
         for (X509Certificate certificate : certificateChain) {
             byte[] encodedCertificate = certificate.getEncoded();
-            x509Data.getX509IssuerSerialOrX509SKIOrX509SubjectName()
-                    .add( xmldsigObjectFactory.createX509DataTypeX509Certificate( encodedCertificate ) );
+            x509Data.getX509IssuerSerialOrX509SKIOrX509SubjectName().add( xmldsigObjectFactory.createX509DataTypeX509Certificate( encodedCertificate ) );
         }
         keyInfo.getContent().add( xmldsigObjectFactory.createX509Data( x509Data ) );
 
@@ -118,8 +121,7 @@ public class Xkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements X
 
         if (!result.getResultMajor().equals( ResultMajorCode.SUCCESS.getErrorCode() )) {
             throw new ValidationFailedException(
-                    String.format( "Certificate chain validation failed: ResultMajor=%s ResultMinor=%s", result.getResultMajor(),
-                            result.getResultMinor() ) );
+                    String.format( "Certificate chain validation failed: ResultMajor=%s ResultMinor=%s", result.getResultMajor(), result.getResultMinor() ) );
         }
     }
 }

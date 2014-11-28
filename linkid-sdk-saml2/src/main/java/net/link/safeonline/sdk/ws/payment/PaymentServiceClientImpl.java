@@ -26,12 +26,12 @@ public class PaymentServiceClientImpl extends AbstractWSClient<PaymentServicePor
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the payment web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the payment web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public PaymentServiceClientImpl(String location, X509Certificate sslCertificate) {
+    public PaymentServiceClientImpl(String location, X509Certificate[] sslCertificates) {
 
-        super( PaymentServiceFactory.newInstance().getPaymentServicePort(), sslCertificate );
+        super( PaymentServiceFactory.newInstance().getPaymentServicePort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.payment.path" ) ) );

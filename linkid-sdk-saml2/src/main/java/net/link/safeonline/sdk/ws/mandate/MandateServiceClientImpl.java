@@ -33,13 +33,13 @@ public class MandateServiceClientImpl extends AbstractWSClient<MandateServicePor
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the mandate web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security configuration
+     * @param location        the location (host:port) of the mandate web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security configuration
      */
-    public MandateServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public MandateServiceClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -47,19 +47,20 @@ public class MandateServiceClientImpl extends AbstractWSClient<MandateServicePor
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the mandate web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the mandate web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public MandateServiceClientImpl(final String location, final X509Certificate sslCertificate, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+    public MandateServiceClientImpl(final String location, final X509Certificate[] sslCertificates,
+                                    final WSSecurityUsernameTokenCallback usernameTokenCallback) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
     }
 
-    private MandateServiceClientImpl(final String location, final X509Certificate sslCertificate) {
+    private MandateServiceClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( MandateServiceFactory.newInstance().getMandateServicePort(), sslCertificate );
+        super( MandateServiceFactory.newInstance().getMandateServicePort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.mandate.path" ) ) );

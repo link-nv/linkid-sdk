@@ -54,13 +54,13 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the ltqr web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
-     * @param configuration  WS Security configuration
+     * @param location        the location (host:port) of the ltqr web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param configuration   WS Security configuration
      */
-    public LTQRServiceClientImpl(String location, X509Certificate sslCertificate, final WSSecurityConfiguration configuration) {
+    public LTQRServiceClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
@@ -68,19 +68,19 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     /**
      * Main constructor.
      *
-     * @param location       the location (host:port) of the ltqr web service.
-     * @param sslCertificate If not {@code null} will verify the server SSL {@link X509Certificate}.
+     * @param location        the location (host:port) of the ltqr web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
-    public LTQRServiceClientImpl(final String location, final X509Certificate sslCertificate, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+    public LTQRServiceClientImpl(final String location, final X509Certificate[] sslCertificates, final WSSecurityUsernameTokenCallback usernameTokenCallback) {
 
-        this( location, sslCertificate );
+        this( location, sslCertificates );
 
         WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
     }
 
-    private LTQRServiceClientImpl(final String location, final X509Certificate sslCertificate) {
+    private LTQRServiceClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( LTQRServiceFactory.newInstance().getLTQRServicePort(), sslCertificate );
+        super( LTQRServiceFactory.newInstance().getLTQRServicePort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.ltqr.path" ) ) );
@@ -281,8 +281,9 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
     private LTQRPaymentState convert(final LTQRPaymentStatusType wsPaymentStatusType) {
 
-        if (null == wsPaymentStatusType)
+        if (null == wsPaymentStatusType) {
             return null;
+        }
 
         switch (wsPaymentStatusType) {
 
