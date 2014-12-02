@@ -35,8 +35,6 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
-import org.opensaml.saml2.core.LogoutRequest;
-import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.Response;
 import org.w3c.dom.Element;
 
@@ -46,8 +44,7 @@ import org.w3c.dom.Element;
  *
  * @author fcorneli
  */
-public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTokenServicePort> implements
-        SecurityTokenServiceClient<Response, LogoutResponse, LogoutRequest> {
+public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTokenServicePort> implements SecurityTokenServiceClient<Response> {
 
     private static final Logger logger = Logger.get( SecurityTokenServiceClientImpl.class );
 
@@ -129,19 +126,5 @@ public class SecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTok
         otherAttributes.put( WebServiceConstants.SAML_AUDIENCE_ATTRIBUTE, requestIssuer );
 
         validate( SamlUtils.marshall( response ), TrustDomainType.LINK_ID, otherAttributes, requestQueryString, requestURL );
-    }
-
-    @Override
-    public void validateLogoutResponse(final LogoutResponse logoutResponse, final String requestQueryString, final StringBuffer requestURL)
-            throws WSClientTransportException, ValidationFailedException {
-
-        validate( SamlUtils.marshall( logoutResponse ), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
-    }
-
-    @Override
-    public void validateLogoutRequest(final LogoutRequest logoutRequest, final String requestQueryString, final StringBuffer requestURL)
-            throws WSClientTransportException, ValidationFailedException {
-
-        validate( SamlUtils.marshall( logoutRequest ), TrustDomainType.LINK_ID, null, requestQueryString, requestURL );
     }
 }
