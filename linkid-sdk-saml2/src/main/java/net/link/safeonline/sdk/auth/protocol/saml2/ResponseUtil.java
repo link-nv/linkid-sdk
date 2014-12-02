@@ -36,7 +36,6 @@ import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.StatusResponseType;
@@ -130,8 +129,9 @@ public abstract class ResponseUtil {
             throws ValidationFailedException {
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
         AuthnProtocolRequestContext authnRequest = (AuthnProtocolRequestContext) contexts.get( authnResponse.getInResponseTo() );
-        if (authnRequest == null || !authnResponse.getInResponseTo().equals( authnRequest.getId() ))
+        if (authnRequest == null || !authnResponse.getInResponseTo().equals( authnRequest.getId() )) {
             throw new ValidationFailedException( "Request's SAML response ID does not match that of any active requests." );
+        }
         logger.dbg( "response matches request: %s", authnRequest );
 
         // validate signature
@@ -248,27 +248,34 @@ public abstract class ResponseUtil {
 
         if (now.isBefore( notBefore )) {
             // time skew
-            if (now.plusMinutes( 5 ).isBefore( notBefore ) || now.minusMinutes( 5 ).isAfter( notOnOrAfter ))
+            if (now.plusMinutes( 5 ).isBefore( notBefore ) || now.minusMinutes( 5 ).isAfter( notOnOrAfter )) {
                 throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
-        } else if (now.isBefore( notBefore ) || now.isAfter( notOnOrAfter ))
+            }
+        } else if (now.isBefore( notBefore ) || now.isAfter( notOnOrAfter )) {
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : invalid SAML message timeframe" );
+        }
 
         Subject subject = assertion.getSubject();
-        if (null == subject)
+        if (null == subject) {
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing Assertion Subject" );
+        }
 
-        if (assertion.getAuthnStatements().isEmpty())
+        if (assertion.getAuthnStatements().isEmpty()) {
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnStatement" );
+        }
 
         AuthnStatement authnStatement = assertion.getAuthnStatements().get( 0 );
-        if (null == authnStatement.getAuthnContext())
+        if (null == authnStatement.getAuthnContext()) {
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnContext" );
+        }
 
-        if (null == authnStatement.getAuthnContext().getAuthnContextClassRef())
+        if (null == authnStatement.getAuthnContext().getAuthnContextClassRef()) {
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : missing AuthnContextClassRef" );
+        }
 
-        if (expectedAudience != null)
+        if (expectedAudience != null) {
             validateAudienceRestriction( conditions, expectedAudience );
+        }
     }
 
     /**
@@ -278,60 +285,21 @@ public abstract class ResponseUtil {
             throws ValidationFailedException {
 
         List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-        if (audienceRestrictions.isEmpty())
+        if (audienceRestrictions.isEmpty()) {
             throw new ValidationFailedException(
                     "SAML2 assertion validation audience=" + expectedAudience + " : no Audience Restrictions found in response assertion" );
+        }
 
         AudienceRestriction audienceRestriction = audienceRestrictions.get( 0 );
         List<Audience> audiences = audienceRestriction.getAudiences();
-        if (audiences.isEmpty())
+        if (audiences.isEmpty()) {
             throw new ValidationFailedException( "SAML2 assertion validation audience=" + expectedAudience + " : no Audiences found in AudienceRestriction" );
+        }
 
         Audience audience = audiences.get( 0 );
-        if (!expectedAudience.equals( audience.getAudienceURI() ))
+        if (!expectedAudience.equals( audience.getAudienceURI() )) {
             throw new ValidationFailedException(
                     "SAML2 assertion validation: audience name not correct, expected: " + expectedAudience + " was: " + audience.getAudienceURI() );
-    }
-
-    /**
-     * Returns the SAML v2.0 {@link LogoutResponse} embedded in the request. Throws a {@link ValidationFailedException} if not found, the
-     * signature isn't valid or of the wrong type.
-     *
-     * @param request  HTTP Servlet Request
-     * @param contexts map of {@link ProtocolContext}'s, one matching the original authentication request will be looked up
-     *
-     * @return The SAML2 response containing the {@link LogoutResponse} in the HTTP request and the optional certificate chain embedded in
-     * the signature of the signed response..<br> {@code null} if there is no SAML message in the HTTP request.
-     *
-     * @throws ValidationFailedException validation failed for some reason
-     */
-    @Nullable
-    public static Saml2ResponseContext findAndValidateLogoutResponse(HttpServletRequest request, Map<String, ProtocolContext> contexts,
-                                                                     Collection<X509Certificate> trustedCertificates)
-            throws ValidationFailedException {
-
-        LogoutResponse logoutResponse = findLogoutResponse( request );
-        if (logoutResponse == null)
-            return null;
-
-        // validate signature
-        CertificateChain certificateChain = Saml2Utils.validateSignature( logoutResponse.getSignature(), request, trustedCertificates );
-
-        // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
-        ProtocolContext logoutRequest = contexts.get( logoutResponse.getInResponseTo() );
-        if (logoutRequest == null || !logoutResponse.getInResponseTo().equals( logoutRequest.getId() ))
-            throw new RuntimeException( "Request's SAML response ID does not match that of any active requests." );
-
-        return new Saml2ResponseContext( logoutResponse, certificateChain );
-    }
-
-    /**
-     * @param request HTTP Servlet Request
-     *
-     * @return The {@link LogoutResponse} in the HTTP request.<br> {@code null} if there is no SAML message in the HTTP request.
-     */
-    public static LogoutResponse findLogoutResponse(HttpServletRequest request) {
-
-        return BindingUtil.findSAMLObject( request, LogoutResponse.class );
+        }
     }
 }

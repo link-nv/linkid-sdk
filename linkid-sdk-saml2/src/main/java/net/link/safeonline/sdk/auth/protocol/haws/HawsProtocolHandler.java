@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.auth.protocol.haws;
 
-import com.google.common.base.Function;
 import java.io.IOException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -18,15 +17,12 @@ import net.link.safeonline.sdk.api.haws.PushException;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
-import net.link.safeonline.sdk.auth.protocol.LogoutProtocolRequestContext;
-import net.link.safeonline.sdk.auth.protocol.LogoutProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.ProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.RequestConfig;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.Saml2ProtocolHandler;
 import net.link.safeonline.sdk.auth.util.DeviceContextUtils;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.configuration.LogoutContext;
 import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.InternalInconsistencyException;
@@ -105,8 +101,10 @@ public class HawsProtocolHandler implements ProtocolHandler {
             throws ValidationFailedException {
 
         if (authnContext == null)
-            // This protocol handler has not sent an authentication request.
+        // This protocol handler has not sent an authentication request.
+        {
             return null;
+        }
 
         // get session ID from request
         String sessionId = request.getParameter( RequestConstants.HAWS_SESSION_ID_PARAM );
@@ -134,38 +132,6 @@ public class HawsProtocolHandler implements ProtocolHandler {
 
         logger.dbg( "HAWS implementation does not support detached authentication" );
         return null;
-    }
-
-    @Override
-    public LogoutProtocolRequestContext sendLogoutRequest(final HttpServletResponse response, final String userId, final LogoutContext context)
-            throws IOException {
-
-        throw new UnsupportedOperationException( "HAWS implementation does not support single logout yet" );
-    }
-
-    @Nullable
-    @Override
-    public LogoutProtocolResponseContext findAndValidateLogoutResponse(final HttpServletRequest request)
-            throws ValidationFailedException {
-
-        throw new UnsupportedOperationException( "HAWS implementation does not support single logout yet" );
-    }
-
-    @Nullable
-    @Override
-    public LogoutProtocolRequestContext findAndValidateLogoutRequest(final HttpServletRequest request,
-                                                                     final Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
-            throws ValidationFailedException {
-
-        return null;
-    }
-
-    @Override
-    public LogoutProtocolResponseContext sendLogoutResponse(final HttpServletResponse response, final LogoutProtocolRequestContext logoutRequestContext,
-                                                            final boolean partialLogout)
-            throws IOException {
-
-        throw new UnsupportedOperationException( "HAWS implementation does not support single logout yet" );
     }
 
     // helper methods

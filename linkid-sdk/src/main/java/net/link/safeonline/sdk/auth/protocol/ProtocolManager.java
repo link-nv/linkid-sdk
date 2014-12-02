@@ -7,18 +7,16 @@
 
 package net.link.safeonline.sdk.auth.protocol;
 
-import com.google.common.base.Function;
-import javax.servlet.http.HttpSession;
-import net.link.util.logging.Logger;
-import net.link.util.InternalInconsistencyException;
 import java.io.IOException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.configuration.Protocol;
+import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.configuration.AuthenticationContext;
-import net.link.safeonline.sdk.configuration.LogoutContext;
+import net.link.safeonline.sdk.configuration.Protocol;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.exception.ValidationFailedException;
+import net.link.util.logging.Logger;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -70,15 +68,17 @@ public abstract class ProtocolManager {
                 ProtocolHandler protocolHandler = protocolRequestContext.getProtocolHandler();
 
                 AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnResponse( request );
-                if (authnResponse != null)
+                if (authnResponse != null) {
                     return authnResponse;
+                }
             }
         }
 
         logger.dbg( "No authn response found in request matching known Ids." );
         logger.dbg( "Known Contexts:" );
-        for (Map.Entry<String, ProtocolContext> protocolContextEntry : contexts.entrySet())
+        for (Map.Entry<String, ProtocolContext> protocolContextEntry : contexts.entrySet()) {
             logger.dbg( "%s: %s", protocolContextEntry.getKey(), protocolContextEntry.getValue() );
+        }
 
         return null;
     }
@@ -91,71 +91,13 @@ public abstract class ProtocolManager {
             ProtocolHandler protocolHandler = findProtocolHandler( protocol );
             if (null != protocolHandler) {
                 AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnAssertion( request );
-                if (authnResponse != null)
+                if (authnResponse != null) {
                     return authnResponse;
+                }
             }
         }
 
         logger.dbg( "No authn assertion found in request." );
-        return null;
-    }
-
-    /**
-     * Initiates a logout request.
-     *
-     * @param request  HTTP servlet request
-     * @param response HTTP servlet response
-     * @param userId   user ID to logout
-     * @param context  logout context
-     *
-     * @return logout protocol request context
-     *
-     * @throws IOException something went wrong sending the logout request
-     */
-    public static LogoutProtocolRequestContext initiateLogout(HttpServletRequest request, HttpServletResponse response, String userId, LogoutContext context)
-            throws IOException {
-
-        // Delegate the authentication initiation to the relevant protocol handler.
-        ProtocolHandler protocolHandler = getProtocolHandler( context.getProtocol() );
-        LogoutProtocolRequestContext logoutRequest = protocolHandler.sendLogoutRequest( response, userId, context );
-
-        ProtocolContext.addContext( request.getSession(), logoutRequest );
-        return logoutRequest;
-    }
-
-    @Nullable
-    public static LogoutProtocolRequestContext findAndValidateLogoutRequest(HttpServletRequest request,
-                                                                            Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
-            throws ValidationFailedException {
-
-        for (Protocol protocol : Protocol.values()) {
-            ProtocolHandler protocolHandler = findProtocolHandler( protocol );
-            if (null != protocolHandler) {
-                LogoutProtocolRequestContext logoutRequest = protocolHandler.findAndValidateLogoutRequest( request, requestToContext );
-                if (logoutRequest != null)
-                    return logoutRequest;
-            }
-        }
-
-        return null;
-    }
-
-    @Nullable
-    public static LogoutProtocolResponseContext findAndValidateLogoutResponse(HttpServletRequest request)
-            throws ValidationFailedException {
-
-        Map<String, ProtocolContext> contexts = ProtocolContext.getContexts( request.getSession() );
-        for (ProtocolContext protocolContext : contexts.values()) {
-            if (protocolContext instanceof LogoutProtocolRequestContext) {
-                LogoutProtocolRequestContext protocolRequestContext = (LogoutProtocolRequestContext) protocolContext;
-                ProtocolHandler protocolHandler = protocolRequestContext.getProtocolHandler();
-
-                LogoutProtocolResponseContext logoutResponse = protocolHandler.findAndValidateLogoutResponse( request );
-                if (logoutResponse != null)
-                    return logoutResponse;
-            }
-        }
-
         return null;
     }
 

@@ -7,12 +7,12 @@
 
 package net.link.safeonline.sdk.auth.protocol;
 
-import com.google.common.base.Function;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.configuration.*;
+import net.link.safeonline.sdk.configuration.AuthenticationContext;
+import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.util.exception.ValidationFailedException;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,64 +63,4 @@ public interface ProtocolHandler extends Serializable {
     @Nullable
     public AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request)
             throws ValidationFailedException;
-
-    /**
-     * Initiates the logout request towards the SafeOnline authentication web application.
-     * <p/>
-     * The landing code is at a URL specified by the linkID configuration for this application. (SSO Logout URL)
-     *
-     * @param response HTTP Servlet Response.
-     * @param userId   User ID of the subject to logout.
-     * @param context  Logout context
-     *
-     * @return logout protocol request context
-     *
-     * @throws IOException The request could not be written to the response.
-     */
-    LogoutProtocolRequestContext sendLogoutRequest(HttpServletResponse response, String userId, LogoutContext context)
-            throws IOException;
-
-    /**
-     * Finalize the logout process.
-     *
-     * @param request HTTP Servlet Request
-     *
-     * @return Details about the logout such as whether it was successful or <code>null</code> if there is no logout response in the
-     * request.
-     *
-     * @throws ValidationFailedException validation of the logout response failed.
-     */
-    @Nullable
-    LogoutProtocolResponseContext findAndValidateLogoutResponse(HttpServletRequest request)
-            throws ValidationFailedException;
-
-    /**
-     * Handle an incoming logout request, sent from the authentication webapp due to a logout request from another application.
-     *
-     * @param request          HTTP Servlet Request
-     * @param requestToContext logout request context
-     *
-     * @return Details about the logout request such as the application identifier of the user that requested it or <code>null</code> if
-     * there is no logout request in the request.
-     *
-     * @throws ValidationFailedException validation of the logout request failed
-     */
-    @Nullable
-    LogoutProtocolRequestContext findAndValidateLogoutRequest(HttpServletRequest request,
-                                                              Function<LogoutProtocolRequestContext, LogoutContext> requestToContext)
-            throws ValidationFailedException;
-
-    /**
-     * Sends back a logout response towards the SafeOnline authentication web application.
-     *
-     * @param response             HTTP Servlet Response
-     * @param logoutRequestContext Logout Request Context
-     * @param partialLogout        did logout succeed or not?
-     *
-     * @return logout response context
-     *
-     * @throws IOException The request could not be written to the response.
-     */
-    LogoutProtocolResponseContext sendLogoutResponse(HttpServletResponse response, LogoutProtocolRequestContext logoutRequestContext, boolean partialLogout)
-            throws IOException;
 }
