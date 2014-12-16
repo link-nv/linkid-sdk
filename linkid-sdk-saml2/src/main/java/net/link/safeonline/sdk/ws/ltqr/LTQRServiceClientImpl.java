@@ -193,8 +193,8 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
             Callback callback = new Callback();
             callback.setLocation( callbackDO.getLocation() );
-            callback.setAppSessionId( callback.getAppSessionId() );
-            callback.setInApp( callback.isInApp() );
+            callback.setAppSessionId( callbackDO.getAppSessionId() );
+            callback.setInApp( callbackDO.isInApp() );
             request.setCallback( callback );
         }
 
