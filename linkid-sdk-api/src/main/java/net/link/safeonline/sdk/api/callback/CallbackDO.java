@@ -20,7 +20,7 @@ public class CallbackDO implements Serializable {
 
     private final String  location;             // location the linkID client will load when finished
     private final String  appSessionId;         // optional sessionId a SP can provide to load in session state before linkID was started
-    private final boolean inApp;                // display the location inApp (webview) or via the client's browser
+    private final boolean inApp;                // display the location inApp (webView) or via the client's browser
 
     public CallbackDO(final String location, final String appSessionId, final boolean inApp) {
 

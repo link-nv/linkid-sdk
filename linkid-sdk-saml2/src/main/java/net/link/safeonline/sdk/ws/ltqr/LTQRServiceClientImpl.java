@@ -12,18 +12,20 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
 import javax.xml.ws.BindingProvider;
+import net.lin_k.safe_online.common.Callback;
 import net.lin_k.safe_online.common.PaymentContext;
-import net.lin_k.safe_online.ltqr.ChangeRequest;
-import net.lin_k.safe_online.ltqr.ChangeResponse;
-import net.lin_k.safe_online.ltqr.ClientSession;
-import net.lin_k.safe_online.ltqr.LTQRPaymentStatusType;
-import net.lin_k.safe_online.ltqr.LTQRServicePort;
-import net.lin_k.safe_online.ltqr.PullRequest;
-import net.lin_k.safe_online.ltqr.PullResponse;
-import net.lin_k.safe_online.ltqr.PushRequest;
-import net.lin_k.safe_online.ltqr.PushResponse;
-import net.lin_k.safe_online.ltqr.RemoveRequest;
-import net.lin_k.safe_online.ltqr.RemoveResponse;
+import net.lin_k.safe_online.ltqr._2.ChangeRequest;
+import net.lin_k.safe_online.ltqr._2.ChangeResponse;
+import net.lin_k.safe_online.ltqr._2.ClientSession;
+import net.lin_k.safe_online.ltqr._2.LTQRPaymentStatusType;
+import net.lin_k.safe_online.ltqr._2.LTQRServicePort;
+import net.lin_k.safe_online.ltqr._2.PullRequest;
+import net.lin_k.safe_online.ltqr._2.PullResponse;
+import net.lin_k.safe_online.ltqr._2.PushRequest;
+import net.lin_k.safe_online.ltqr._2.PushResponse;
+import net.lin_k.safe_online.ltqr._2.RemoveRequest;
+import net.lin_k.safe_online.ltqr._2.RemoveResponse;
+import net.link.safeonline.sdk.api.callback.CallbackDO;
 import net.link.safeonline.sdk.api.ltqr.ChangeErrorCode;
 import net.link.safeonline.sdk.api.ltqr.ChangeException;
 import net.link.safeonline.sdk.api.ltqr.ChangeResponseDO;
@@ -81,6 +83,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     private LTQRServiceClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
         super( LTQRServiceFactory.newInstance().getLTQRServicePort(), sslCertificates );
+
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.ltqr.path" ) ) );
@@ -88,7 +91,8 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
     @Override
     public LTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage, @Nullable final PaymentContextDO paymentContextDO,
-                            final boolean oneTimeUse, @Nullable final Date expiryDate, @Nullable final Long expiryDuration)
+                            final boolean oneTimeUse, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
+                            @Nullable final CallbackDO callbackDO)
             throws PushException {
 
         PushRequest request = new PushRequest();
@@ -110,6 +114,16 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             paymentContext.setAllowDeferredPay( paymentContextDO.isAllowDeferredPay() );
 
             request.setPaymentContext( paymentContext );
+        }
+
+        // callback
+        if (null != callbackDO) {
+
+            Callback callback = new Callback();
+            callback.setLocation( callbackDO.getLocation() );
+            callback.setAppSessionId( callbackDO.getAppSessionId() );
+            callback.setInApp( callbackDO.isInApp() );
+            request.setCallback( callback );
         }
 
         // configuration
@@ -147,7 +161,8 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
     @Override
     public ChangeResponseDO change(final String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
-                                   @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate, @Nullable final Long expiryDuration)
+                                   @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
+                                   @Nullable final CallbackDO callbackDO)
             throws ChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -171,6 +186,16 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             paymentContext.setAllowDeferredPay( paymentContextDO.isAllowDeferredPay() );
 
             request.setPaymentContext( paymentContext );
+        }
+
+        // callback
+        if (null != callbackDO) {
+
+            Callback callback = new Callback();
+            callback.setLocation( callbackDO.getLocation() );
+            callback.setAppSessionId( callback.getAppSessionId() );
+            callback.setInApp( callback.isInApp() );
+            request.setCallback( callback );
         }
 
         // configuration
@@ -298,7 +323,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         throw new InternalInconsistencyException( String.format( "Unexpected payment status type %s!", wsPaymentStatusType.name() ) );
     }
 
-    private ErrorCode convert(final net.lin_k.safe_online.ltqr.ErrorCode errorCode) {
+    private ErrorCode convert(final net.lin_k.safe_online.ltqr._2.ErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -309,7 +334,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private ChangeErrorCode convert(final net.lin_k.safe_online.ltqr.ChangeErrorCode errorCode) {
+    private ChangeErrorCode convert(final net.lin_k.safe_online.ltqr._2.ChangeErrorCode errorCode) {
 
         switch (errorCode) {
 
