@@ -101,7 +101,7 @@
 
     <element name="PollRequest">
         <annotation>
-            <documentation>Poll the linkID authentiation</documentation>
+            <documentation>Poll the linkID authentication</documentation>
         </annotation>
         <complexType>
             <sequence>

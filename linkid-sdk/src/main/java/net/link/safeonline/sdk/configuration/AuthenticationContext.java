@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import net.link.safeonline.sdk.api.callback.CallbackDO;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.util.config.KeyProvider;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +36,7 @@ public class AuthenticationContext extends LinkIDContext {
     private boolean                         forceAuthentication;
     private Map<String, List<Serializable>> subjectAttributes;
     private PaymentContextDO                paymentContext;
+    private CallbackDO                      callback;
 
     /**
      * @see #AuthenticationContext(String, KeyProvider, String)
@@ -189,6 +191,16 @@ public class AuthenticationContext extends LinkIDContext {
     public void setPaymentContext(final PaymentContextDO paymentContext) {
 
         this.paymentContext = paymentContext;
+    }
+
+    public CallbackDO getCallback() {
+
+        return callback;
+    }
+
+    public void setCallback(final CallbackDO callback) {
+
+        this.callback = callback;
     }
 
     @Override

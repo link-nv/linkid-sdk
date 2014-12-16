@@ -68,7 +68,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null, authnContext.getApplicationFriendlyName(),
                 requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), deviceContext,
-                authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
+                authnContext.getSubjectAttributes(), authnContext.getPaymentContext(), authnContext.getCallback() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {

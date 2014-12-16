@@ -12,7 +12,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
+import net.link.safeonline.sdk.api.callback.CallbackDO;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
+import net.link.safeonline.sdk.auth.protocol.saml2.callback.Callback;
+import net.link.safeonline.sdk.auth.protocol.saml2.callback.CallbackBuilder;
+import net.link.safeonline.sdk.auth.protocol.saml2.callback.CallbackMarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.callback.CallbackUnmarshaller;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextBuilder;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextMarshaller;
@@ -88,6 +93,7 @@ public class AuthnRequestFactory {
                     new PaymentContextUnmarshaller() );
             Configuration.registerObjectProvider( PaymentResponse.DEFAULT_ELEMENT_NAME, new PaymentResponseBuilder(), new PaymentResponseMarshaller(),
                     new PaymentResponseUnmarshaller() );
+            Configuration.registerObjectProvider( Callback.DEFAULT_ELEMENT_NAME, new CallbackBuilder(), new CallbackMarshaller(), new CallbackUnmarshaller() );
         }
         catch (ConfigurationException e) {
             throw new InternalInconsistencyException( "could not bootstrap the OpenSAML2 library", e );
@@ -113,13 +119,15 @@ public class AuthnRequestFactory {
      *                                    in case of missing attributes in the linkID authentication flow. The key's are the linkID
      *                                    attribute names.
      * @param paymentContext              optional payment context case the authentication serves as a payment request.
+     * @param callbackDO                  optional callback config for when the linkID auth/payment has finished
      *
      * @return unsigned SAML v2.0 AuthnRequest object
      */
     public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences, @Nullable String applicationFriendlyName,
                                                   String assertionConsumerServiceURL, @Nullable String destinationURL, boolean forceAuthentication,
                                                   @Nullable Map<String, String> deviceContextMap,
-                                                  @Nullable Map<String, List<Serializable>> subjectAttributesMap, @Nullable PaymentContextDO paymentContext) {
+                                                  @Nullable Map<String, List<Serializable>> subjectAttributesMap, @Nullable PaymentContextDO paymentContext,
+                                                  @Nullable CallbackDO callbackDO) {
 
         if (null == issuerName)
             throw new IllegalArgumentException( "application name should not be null" );
@@ -207,6 +215,18 @@ public class AuthnRequestFactory {
             request.getExtensions().getUnknownXMLObjects().add( toPaymentContext( paymentContext ) );
         }
 
+        // add callback
+        if (null != callbackDO) {
+
+            if (null == request.getExtensions()) {
+                QName extensionsQName = new QName( SAMLConstants.SAML20P_NS, Extensions.LOCAL_NAME, SAMLConstants.SAML20P_PREFIX );
+                Extensions extensions = SamlUtils.buildXMLObject( extensionsQName );
+                request.setExtensions( extensions );
+            }
+
+            request.getExtensions().getUnknownXMLObjects().add( toCallback( callbackDO ) );
+        }
+
         return request;
     }
 
@@ -285,5 +305,28 @@ public class AuthnRequestFactory {
         }
 
         return subjectAttributes;
+    }
+
+    /**
+     * Returns a SAML v2.0 {@link Callback} constructed from specified callback DO
+     *
+     * @param callbackDO the callback config
+     *
+     * @return Callback SAML v2.0 object.
+     */
+    private static Callback toCallback(final CallbackDO callbackDO) {
+
+        Callback callback = SamlUtils.buildXMLObject( Callback.DEFAULT_ELEMENT_NAME );
+
+        for (Map.Entry<String, String> entry : callbackDO.toMap().entrySet()) {
+            Attribute attribute = SamlUtils.buildXMLObject( Attribute.DEFAULT_ELEMENT_NAME );
+            attribute.setName( entry.getKey() );
+            if (entry.getValue() != null) {
+                attribute.getAttributeValues().add( Saml2Utils.toAttributeValue( entry.getValue() ) );
+            }
+            callback.getAttributes().add( attribute );
+        }
+
+        return callback;
     }
 }

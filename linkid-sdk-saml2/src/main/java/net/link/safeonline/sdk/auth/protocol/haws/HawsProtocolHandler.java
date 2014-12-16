@@ -65,7 +65,7 @@ public class HawsProtocolHandler implements ProtocolHandler {
         // create SAML2 request
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null, authnContext.getApplicationFriendlyName(),
                 requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), deviceContext,
-                authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
+                authnContext.getSubjectAttributes(), authnContext.getPaymentContext(), authnContext.getCallback() );
 
         HawsServiceClient<AuthnRequest, Response> wsClient = getWsClient( authnContext );
 

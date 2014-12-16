@@ -20,10 +20,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.link.safeonline.sdk.api.callback.CallbackDO;
 import net.link.safeonline.sdk.api.payment.Currency;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
+import net.link.safeonline.sdk.auth.protocol.saml2.callback.Callback;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.SubjectAttributes;
@@ -67,7 +69,7 @@ public class AuthnRequestFactoryTest {
         // Test
         long begin = System.currentTimeMillis();
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL, false,
-                null, null, null );
+                null, null, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
 
         logger.dbg( DomUtils.domToString( SamlUtils.marshall( samlAuthnRequest ) ) );
@@ -126,7 +128,7 @@ public class AuthnRequestFactoryTest {
         // Test
         long begin = System.currentTimeMillis();
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL, false,
-                null, null, null );
+                null, null, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, certificateChain ) );
         long end = System.currentTimeMillis();
 
@@ -151,7 +153,7 @@ public class AuthnRequestFactoryTest {
     }
 
     @Test
-    public void createAuthnRequestWithDeviceContextAndSubjectAttributesAndPaymentContext()
+    public void createAuthnRequestWithDeviceContextAndSubjectAttributesAndPaymentContextAndCallback()
             throws Exception {
 
         // Setup Data
@@ -179,10 +181,13 @@ public class AuthnRequestFactoryTest {
         // Setup Payment context
         PaymentContextDO paymentContext = new PaymentContextDO( 50, Currency.EUR );
 
+        // Setup callback
+        CallbackDO callback = new CallbackDO( "http://service.linkid.be", UUID.randomUUID().toString(), true );
+
         // Test
         long begin = System.currentTimeMillis();
         AuthnRequest samlAuthnRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL, false,
-                deviceContextMap, subjectAttributesMap, paymentContext );
+                deviceContextMap, subjectAttributesMap, paymentContext, callback );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
         long end = System.currentTimeMillis();
 
@@ -231,5 +236,12 @@ public class AuthnRequestFactoryTest {
         assertEquals( 1, paymentContexts.size() );
         PaymentContext paymentContextMap = (PaymentContext) paymentContexts.get( 0 );
         assertEquals( 6, paymentContextMap.getAttributes().size() );
+
+        // validate callback map
+        List<XMLObject> callbacks = resultAuthnRequest.getExtensions().getUnknownXMLObjects( Callback.DEFAULT_ELEMENT_NAME );
+        assertNotNull( callbacks );
+        assertEquals( 1, callbacks.size() );
+        Callback callbackMap = (Callback) callbacks.get( 0 );
+        assertEquals( 3, callbackMap.getAttributes().size() );
     }
 }
