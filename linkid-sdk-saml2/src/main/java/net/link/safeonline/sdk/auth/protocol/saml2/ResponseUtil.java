@@ -199,7 +199,7 @@ public abstract class ResponseUtil {
      *
      * @throws ValidationFailedException validation failed for some reason
      */
-    public static void validateResponse(Response response, String audience)
+    public static void validateResponse(Response response, @Nullable String audience)
             throws ValidationFailedException {
 
         DateTime now = new DateTime();
@@ -235,7 +235,7 @@ public abstract class ResponseUtil {
      *
      * @throws ValidationFailedException One of the validation checks failed.
      */
-    public static void validateAssertion(Assertion assertion, DateTime now, String expectedAudience)
+    public static void validateAssertion(Assertion assertion, DateTime now, @Nullable String expectedAudience)
             throws ValidationFailedException {
 
         Conditions conditions = assertion.getConditions();

@@ -106,7 +106,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
     }
 
     public static AuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse, final HttpServletRequest request,
-                                                                     final CertificateChain certificateChain) {
+                                                                     final CertificateChain certificateChain)
+            throws ValidationFailedException {
 
         String userId = null, applicationName = null;
         Map<String, List<AttributeSDK<Serializable>>> attributes = Maps.newHashMap();
@@ -119,12 +120,37 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         logger.dbg( "userId: %s", userId );
 
         boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
+
         AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
+
+        ResponseUtil.validateResponse( samlResponse, authnRequest.getIssuer() );
 
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, attributes, success, certificateChain,
                 LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
     }
 
+    public static AuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse)
+            throws ValidationFailedException {
+
+        String userId = null, applicationName = null;
+        Map<String, List<AttributeSDK<Serializable>>> attributes = Maps.newHashMap();
+        if (!samlResponse.getAssertions().isEmpty()) {
+            Assertion assertion = samlResponse.getAssertions().get( 0 );
+            userId = assertion.getSubject().getNameID().getValue();
+            attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
+            applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
+        }
+        logger.dbg( "userId: %s", userId );
+        boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
+
+        ResponseUtil.validateResponse( samlResponse, null );
+
+        return new AuthnProtocolResponseContext( null, samlResponse.getID(), userId, applicationName, attributes, success, null,
+                LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
+    }
+
+    // TODO: get rid of me...
+    @Deprecated
     @Override
     public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request)
             throws ValidationFailedException {
