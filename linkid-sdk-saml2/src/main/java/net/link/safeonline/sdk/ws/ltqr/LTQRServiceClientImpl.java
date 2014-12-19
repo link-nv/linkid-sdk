@@ -28,7 +28,6 @@ import net.lin_k.safe_online.ltqr._2.RemoveResponse;
 import net.link.safeonline.sdk.api.callback.CallbackDO;
 import net.link.safeonline.sdk.api.ltqr.ChangeErrorCode;
 import net.link.safeonline.sdk.api.ltqr.ChangeException;
-import net.link.safeonline.sdk.api.ltqr.ChangeResponseDO;
 import net.link.safeonline.sdk.api.ltqr.ErrorCode;
 import net.link.safeonline.sdk.api.ltqr.LTQRClientSession;
 import net.link.safeonline.sdk.api.ltqr.LTQRPaymentState;
@@ -143,26 +142,17 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
         if (null != response.getSuccess()) {
 
-            // convert base64 encoded QR image
-            byte[] qrCodeImage;
-            try {
-                qrCodeImage = Base64.decode( response.getSuccess().getEncodedQR() );
-            }
-            catch (Base64DecodingException e) {
-                throw new InternalInconsistencyException( "Could not decode the QR image!" );
-            }
-
-            return new LTQRSession( qrCodeImage, response.getSuccess().getQrContent(), response.getSuccess().getLtqrReference(),
-                    response.getSuccess().getPaymentOrderReference() );
+            return new LTQRSession( decodeQR( response.getSuccess().getEncodedQR() ), response.getSuccess().getQrContent(),
+                    response.getSuccess().getLtqrReference(), response.getSuccess().getPaymentOrderReference() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override
-    public ChangeResponseDO change(final String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
-                                   @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
-                                   @Nullable final CallbackDO callbackDO)
+    public LTQRSession change(final String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
+                              @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
+                              @Nullable final CallbackDO callbackDO)
             throws ChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -215,7 +205,8 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         }
 
         if (null != response.getSuccess()) {
-            return new ChangeResponseDO( response.getSuccess().getPaymentOrderReference() );
+            return new LTQRSession( decodeQR( response.getSuccess().getEncodedQR() ), response.getSuccess().getQrContent(),
+                    response.getSuccess().getLtqrReference(), response.getSuccess().getPaymentOrderReference() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
@@ -254,9 +245,10 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
 
             for (ClientSession clientSession : response.getSuccess().getSessions()) {
 
-                clientSessions.add( new LTQRClientSession( clientSession.getLtqrReference(), clientSession.getClientSessionId(), clientSession.getUserId(),
-                        clientSession.getCreated().toGregorianCalendar().getTime(), convert( clientSession.getPaymentStatus() ),
-                        clientSession.getPaymentOrderReference() ) );
+                clientSessions.add(
+                        new LTQRClientSession( decodeQR( clientSession.getEncodedQR() ), clientSession.getQrContent(), clientSession.getLtqrReference(),
+                                clientSession.getClientSessionId(), clientSession.getUserId(), clientSession.getCreated().toGregorianCalendar().getTime(),
+                                convert( clientSession.getPaymentStatus() ), clientSession.getPaymentOrderReference() ) );
             }
 
             return clientSessions;
@@ -345,5 +337,18 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    private byte[] decodeQR(final String encodedQR) {
+
+        // convert base64 encoded QR image
+        byte[] qrCodeImage;
+        try {
+            qrCodeImage = Base64.decode( encodedQR );
+        }
+        catch (Base64DecodingException e) {
+            throw new InternalInconsistencyException( "Could not decode the QR image!" );
+        }
+        return qrCodeImage;
     }
 }

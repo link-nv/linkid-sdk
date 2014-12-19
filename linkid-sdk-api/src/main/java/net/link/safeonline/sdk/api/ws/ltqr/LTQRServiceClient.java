@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import net.link.safeonline.sdk.api.callback.CallbackDO;
 import net.link.safeonline.sdk.api.ltqr.ChangeException;
-import net.link.safeonline.sdk.api.ltqr.ChangeResponseDO;
 import net.link.safeonline.sdk.api.ltqr.LTQRClientSession;
 import net.link.safeonline.sdk.api.ltqr.LTQRSession;
 import net.link.safeonline.sdk.api.ltqr.PullException;
@@ -60,9 +59,11 @@ public interface LTQRServiceClient {
      * @param expiryDuration        Optional expiry duration of the long term session. Expressed in number of seconds starting from the creation.
      *                              Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.
      * @param callback              Optional callback config
+     *
+     * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
-    ChangeResponseDO change(String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
-                            @Nullable PaymentContextDO paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable CallbackDO callback)
+    LTQRSession change(String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
+                       @Nullable PaymentContextDO paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable CallbackDO callback)
             throws ChangeException;
 
     /**

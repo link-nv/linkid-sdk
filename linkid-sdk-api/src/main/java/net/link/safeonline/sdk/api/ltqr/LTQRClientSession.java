@@ -17,8 +17,11 @@ import org.jetbrains.annotations.Nullable;
  * Date: 17/01/14
  * Time: 11:14
  */
+@SuppressWarnings("UnusedDeclaration")
 public class LTQRClientSession implements Serializable {
 
+    private final byte[] qrCodeImage;
+    private final String qrCodeURL;
     private final String ltqrReference;
     private final String clientSessionId;
     private final String userId;
@@ -28,9 +31,11 @@ public class LTQRClientSession implements Serializable {
     private final String           paymentOrderReference;
     private final LTQRPaymentState paymentState;
 
-    public LTQRClientSession(final String ltqrReference, final String clientSessionId, final String userId, final Date created,
-                             final LTQRPaymentState paymentState, @Nullable final String paymentOrderReference) {
+    public LTQRClientSession(final byte[] qrCodeImage, final String qrCodeURL, final String ltqrReference, final String clientSessionId, final String userId,
+                             final Date created, final LTQRPaymentState paymentState, @Nullable final String paymentOrderReference) {
 
+        this.qrCodeImage = qrCodeImage;
+        this.qrCodeURL = qrCodeURL;
         this.ltqrReference = ltqrReference;
         this.clientSessionId = clientSessionId;
         this.userId = userId;
@@ -42,8 +47,18 @@ public class LTQRClientSession implements Serializable {
     @Override
     public String toString() {
 
-        return String.format( "LTQR Ref: %s, ClientSessionID: %s, UserID: %s, Created: %s, PaymentState: %s, Payment order ref: %s", ltqrReference,
-                clientSessionId, userId, created, paymentState, paymentOrderReference );
+        return String.format( "QR code: %s, LTQR Ref: %s, ClientSessionID: %s, UserID: %s, Created: %s, PaymentState: %s, Payment order ref: %s", qrCodeURL,
+                ltqrReference, clientSessionId, userId, created, paymentState, paymentOrderReference );
+    }
+
+    public byte[] getQrCodeImage() {
+
+        return qrCodeImage;
+    }
+
+    public String getQrCodeURL() {
+
+        return qrCodeURL;
     }
 
     public String getLtqrReference() {

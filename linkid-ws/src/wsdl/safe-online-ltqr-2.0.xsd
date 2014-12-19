@@ -221,6 +221,21 @@
 
     <complexType name="ChangeSuccess">
         <sequence>
+            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Content of the QR code</documentation>
+                </annotation>
+            </element>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
             <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional payment order reference</documentation>
@@ -256,6 +271,16 @@
 
     <complexType name="ClientSession">
         <sequence>
+            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Content of the QR code</documentation>
+                </annotation>
+            </element>
             <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The LTQR reference</documentation>
