@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.auth.protocol.saml2;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.CertificateEncodingException;
@@ -24,11 +23,9 @@ import net.link.safeonline.sdk.auth.protocol.ProtocolContext;
 import net.link.safeonline.sdk.configuration.SAMLBinding;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.common.CertificateChain;
-import net.link.util.common.DomUtils;
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.logging.Logger;
 import net.link.util.saml.Saml2Utils;
-import org.bouncycastle.util.encoders.Base64;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.Assertion;
@@ -40,10 +37,6 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.StatusResponseType;
 import org.opensaml.saml2.core.Subject;
-import org.opensaml.xml.parse.BasicParserPool;
-import org.opensaml.xml.parse.ParserPool;
-import org.opensaml.xml.parse.XMLParserException;
-import org.w3c.dom.Element;
 
 
 /**
@@ -54,11 +47,6 @@ import org.w3c.dom.Element;
 public abstract class ResponseUtil {
 
     private static final Logger logger = Logger.get( ResponseUtil.class );
-    private static final ParserPool parserPool;
-
-    static {
-        parserPool = new BasicParserPool();
-    }
 
     /**
      * Sends out a SAML response message to the specified consumer URL.
@@ -157,28 +145,6 @@ public abstract class ResponseUtil {
         validateResponse( authnResponse, authnRequest.getIssuer() );
 
         return new Saml2ResponseContext( authnResponse, certificateChain );
-    }
-
-    @Nullable
-    public static Assertion findAuthnAssertion(HttpServletRequest request)
-            throws ValidationFailedException {
-
-        String b64Assertion = request.getParameter( "SAMLAssertion" );
-        if (b64Assertion == null || b64Assertion.isEmpty()) {
-            logger.dbg( "No Authn Assertion in request." );
-            return null;
-        }
-
-        byte[] assertionBytes = Base64.decode( b64Assertion );
-        try {
-            Element assertionElement = parserPool.parse( new ByteArrayInputStream( assertionBytes ) ).getDocumentElement();
-            logger.dbg( "Found assertion:\n%s", DomUtils.domToString( assertionElement ) );
-
-            return (Assertion) LinkIDSaml2Utils.unmarshall( assertionElement );
-        }
-        catch (XMLParserException e) {
-            throw new RuntimeException( e );
-        }
     }
 
     /**

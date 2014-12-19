@@ -125,15 +125,6 @@ public class HawsProtocolHandler implements ProtocolHandler {
         return Saml2ProtocolHandler.validateAuthnResponse( samlResponse, request, null );
     }
 
-    @Nullable
-    @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request)
-            throws ValidationFailedException {
-
-        logger.dbg( "HAWS implementation does not support detached authentication" );
-        return null;
-    }
-
     // helper methods
 
     private HawsServiceClient<AuthnRequest, Response> getWsClient(final AuthenticationContext authnContext) {

@@ -53,14 +53,4 @@ public interface ProtocolHandler extends Serializable {
     @Nullable
     AuthnProtocolResponseContext findAndValidateAuthnResponse(HttpServletRequest request)
             throws ValidationFailedException;
-
-    /**
-     * Complete a detached (without request) authentication.
-     *
-     * @return Details about the authentication such as the authenticated user's application identifier or <code>null</code> if the handler
-     * finds no detached authentication assertion in the request.
-     */
-    @Nullable
-    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request)
-            throws ValidationFailedException;
 }
