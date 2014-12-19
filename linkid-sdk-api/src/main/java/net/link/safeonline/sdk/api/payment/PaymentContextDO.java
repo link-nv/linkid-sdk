@@ -218,10 +218,15 @@ public class PaymentContextDO implements Serializable {
             }
         }
 
+        Double amount = Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) );
+        if (amount <= 0) {
+            throw new InvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
+        }
+
         // convert
-        PaymentContextDO paymentContextDO = new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ),
-                Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ), paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ),
-                paymentContextMap.get( PROFILE_KEY ), Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), paymentAddBrowser,
+        PaymentContextDO paymentContextDO = new PaymentContextDO( amount, Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
+                paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ), paymentContextMap.get( PROFILE_KEY ),
+                Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), paymentAddBrowser,
                 Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ),
                 paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
 

@@ -54,7 +54,7 @@ public class CallbackDO implements Serializable {
         // check map valid
         String location = callbackMap.get( KEY_LOCATION );
         if (null == location) {
-            throw new InvalidCallbackException( "Callback's location field is not present" );
+            throw new InvalidCallbackException( "If you provide a callback, the location MUST be not null" );
         }
 
         // parse the reset
