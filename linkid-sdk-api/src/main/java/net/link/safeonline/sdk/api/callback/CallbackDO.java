@@ -24,6 +24,10 @@ public class CallbackDO implements Serializable {
 
     public CallbackDO(final String location, final String appSessionId, final boolean inApp) {
 
+        if (null == location) {
+            throw new InvalidCallbackException( "If you provide a callback, the location MUST be not null" );
+        }
+
         this.location = location;
         this.appSessionId = appSessionId;
         this.inApp = inApp;
@@ -45,8 +49,7 @@ public class CallbackDO implements Serializable {
     }
 
     @Nullable
-    public static CallbackDO fromMap(final Map<String, String> callbackMap)
-            throws InvalidCallbackException {
+    public static CallbackDO fromMap(final Map<String, String> callbackMap) {
 
         // check map valid
         String location = callbackMap.get( KEY_LOCATION );

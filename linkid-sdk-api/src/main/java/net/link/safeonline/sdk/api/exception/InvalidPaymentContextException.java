@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.api.exception;
 
-public class InvalidPaymentContextException extends Exception {
+public class InvalidPaymentContextException extends RuntimeException {
 
     public InvalidPaymentContextException(final String message) {
 

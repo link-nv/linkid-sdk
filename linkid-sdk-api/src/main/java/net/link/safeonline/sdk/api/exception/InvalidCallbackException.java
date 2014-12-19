@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.api.exception;
 
-public class InvalidCallbackException extends Exception {
+public class InvalidCallbackException extends RuntimeException {
 
     public InvalidCallbackException(final String message) {
 
