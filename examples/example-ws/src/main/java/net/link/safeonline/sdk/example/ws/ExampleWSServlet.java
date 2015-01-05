@@ -43,7 +43,7 @@ public class ExampleWSServlet extends HttpServlet {
         AuthnSession authnSession = (AuthnSession) request.getSession().getAttribute( RESPONSE_SESSION_PARAM );
         if (null == authnSession) {
             try {
-                authnSession = AuthWSUtils.startAuthentication( config().linkID().app().name(), null, null, null, null,
+                authnSession = AuthWSUtils.startAuthentication( config().linkID().app().name(), null, null, null, null, null,
                         Collections.singletonList( "linkid_basic" ), Locale.ENGLISH, null, false );
 
                 // push on session

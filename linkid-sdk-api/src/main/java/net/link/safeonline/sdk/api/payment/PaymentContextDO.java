@@ -77,7 +77,12 @@ public class PaymentContextDO implements Serializable {
     public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
                             @Nullable final String paymentProfile, final int paymentValidationTime, final PaymentAddBrowser paymentAddBrowser,
                             final boolean allowDeferredPay, final boolean mandate, @Nullable final String mandateDescription,
-                            @Nullable final String mandateReference) {
+                            @Nullable final String mandateReference)
+            throws InvalidPaymentContextException {
+
+        if (amount <= 0) {
+            throw new InvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
+        }
 
         this.amount = amount;
         this.currency = currency;
@@ -101,7 +106,8 @@ public class PaymentContextDO implements Serializable {
      */
     public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
                             @Nullable final String paymentProfile, final int paymentValidationTime, final PaymentAddBrowser paymentAddBrowser,
-                            final boolean allowDeferredPay) {
+                            final boolean allowDeferredPay)
+            throws InvalidPaymentContextException {
 
         this( amount, currency, description, orderReference, paymentProfile, paymentValidationTime, paymentAddBrowser, allowDeferredPay, false, null, null );
     }
@@ -113,7 +119,8 @@ public class PaymentContextDO implements Serializable {
      * @param paymentProfile optional payment profile
      */
     public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
-                            @Nullable final String paymentProfile) {
+                            @Nullable final String paymentProfile)
+            throws InvalidPaymentContextException {
 
         this( amount, currency, description, orderReference, paymentProfile, 5, PaymentAddBrowser.NOT_ALLOWED, false );
     }
@@ -122,7 +129,8 @@ public class PaymentContextDO implements Serializable {
      * @param amount   amount in cents
      * @param currency currency
      */
-    public PaymentContextDO(final double amount, final Currency currency) {
+    public PaymentContextDO(final double amount, final Currency currency)
+            throws InvalidPaymentContextException {
 
         this( amount, currency, null, null, null, 5, PaymentAddBrowser.NOT_ALLOWED, false );
     }
@@ -177,8 +185,7 @@ public class PaymentContextDO implements Serializable {
     }
 
     @Nullable
-    public static PaymentContextDO fromMap(final Map<String, String> paymentContextMap)
-            throws InvalidPaymentContextException {
+    public static PaymentContextDO fromMap(final Map<String, String> paymentContextMap) {
 
         // check map valid
         if (!paymentContextMap.containsKey( AMOUNT_KEY )) {
@@ -211,10 +218,15 @@ public class PaymentContextDO implements Serializable {
             }
         }
 
+        Double amount = Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) );
+        if (amount <= 0) {
+            throw new InvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
+        }
+
         // convert
-        PaymentContextDO paymentContextDO = new PaymentContextDO( Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) ),
-                Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ), paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ),
-                paymentContextMap.get( PROFILE_KEY ), Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), paymentAddBrowser,
+        PaymentContextDO paymentContextDO = new PaymentContextDO( amount, Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
+                paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ), paymentContextMap.get( PROFILE_KEY ),
+                Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), paymentAddBrowser,
                 Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ),
                 paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
 

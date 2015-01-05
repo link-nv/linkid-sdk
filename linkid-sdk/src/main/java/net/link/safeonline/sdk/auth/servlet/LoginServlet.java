@@ -69,8 +69,6 @@ public class LoginServlet extends AbstractConfidentialLinkIDInjectionServlet {
 
         try {
             AuthnProtocolResponseContext authnResponse = ProtocolManager.findAndValidateAuthnResponse( request );
-            if (null == authnResponse)
-                authnResponse = ProtocolManager.findAndValidateAuthnAssertion( request );
             if (null == authnResponse) {
                 // if we don't have a response, check if perhaps the session has expired
                 if (request.getSession( false ) == null || request.getSession().isNew()) {

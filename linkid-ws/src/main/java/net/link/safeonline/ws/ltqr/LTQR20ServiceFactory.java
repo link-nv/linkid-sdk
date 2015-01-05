@@ -12,9 +12,9 @@ import javax.xml.namespace.QName;
 import net.lin_k.safe_online.ltqr._2.LTQRService;
 
 
-public class LTQRServiceFactory {
+public class LTQR20ServiceFactory {
 
-    private LTQRServiceFactory() {
+    private LTQR20ServiceFactory() {
 
         // empty
     }

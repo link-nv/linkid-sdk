@@ -28,7 +28,6 @@ import net.link.safeonline.sdk.configuration.Protocol;
 import net.link.util.common.CertificateChain;
 import net.link.util.exception.ValidationFailedException;
 import net.link.util.logging.Logger;
-import net.link.util.saml.Saml2Utils;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -68,7 +67,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null, authnContext.getApplicationFriendlyName(),
                 requestConfig.getLandingURL(), requestConfig.getAuthnService(), authnContext.isForceAuthentication(), deviceContext,
-                authnContext.getSubjectAttributes(), authnContext.getPaymentContext() );
+                authnContext.getSubjectAttributes(), authnContext.getPaymentContext(), authnContext.getCallback() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {
@@ -106,7 +105,8 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
     }
 
     public static AuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse, final HttpServletRequest request,
-                                                                     final CertificateChain certificateChain) {
+                                                                     final CertificateChain certificateChain)
+            throws ValidationFailedException {
 
         String userId = null, applicationName = null;
         Map<String, List<AttributeSDK<Serializable>>> attributes = Maps.newHashMap();
@@ -119,32 +119,33 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         logger.dbg( "userId: %s", userId );
 
         boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
+
         AuthnProtocolRequestContext authnRequest = ProtocolContext.findContext( request.getSession(), samlResponse.getInResponseTo() );
+
+        ResponseUtil.validateResponse( samlResponse, authnRequest.getIssuer() );
 
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, attributes, success, certificateChain,
                 LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
     }
 
-    @Override
-    public AuthnProtocolResponseContext findAndValidateAuthnAssertion(final HttpServletRequest request)
+    public static AuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse)
             throws ValidationFailedException {
 
-        Assertion assertion = ResponseUtil.findAuthnAssertion( request );
-        if (null == assertion)
-        // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
-        {
-            return null;
+        String userId = null, applicationName = null;
+        Map<String, List<AttributeSDK<Serializable>>> attributes = Maps.newHashMap();
+        if (!samlResponse.getAssertions().isEmpty()) {
+            Assertion assertion = samlResponse.getAssertions().get( 0 );
+            userId = assertion.getSubject().getNameID().getValue();
+            attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
+            applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
         }
+        logger.dbg( "userId: %s", userId );
+        boolean success = samlResponse.getStatus().getStatusCode().getValue().equals( StatusCode.SUCCESS_URI );
 
-        Map<String, List<AttributeSDK<Serializable>>> attributes = LinkIDSaml2Utils.getAttributeValues( assertion );
-        String userId = assertion.getSubject().getNameID().getValue();
-        String applicationName = LinkIDSaml2Utils.findApplicationName( assertion );
+        ResponseUtil.validateResponse( samlResponse, null );
 
-        AuthnProtocolRequestContext authnRequest = new AuthnProtocolRequestContext( null, applicationName, this, authnContext.getTarget(), false );
-
-        CertificateChain certificateChain = Saml2Utils.validateSignature( assertion.getSignature(), request, authnContext.getTrustedCertificates() );
-
-        return new AuthnProtocolResponseContext( authnRequest, null, userId, applicationName, attributes, true, certificateChain, null );
+        return new AuthnProtocolResponseContext( null, samlResponse.getID(), userId, applicationName, attributes, success, null,
+                LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
     }
 
     @Override

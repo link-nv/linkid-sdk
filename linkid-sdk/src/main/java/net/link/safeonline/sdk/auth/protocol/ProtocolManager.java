@@ -83,24 +83,6 @@ public abstract class ProtocolManager {
         return null;
     }
 
-    @Nullable
-    public static AuthnProtocolResponseContext findAndValidateAuthnAssertion(HttpServletRequest request)
-            throws ValidationFailedException {
-
-        for (Protocol protocol : Protocol.values()) {
-            ProtocolHandler protocolHandler = findProtocolHandler( protocol );
-            if (null != protocolHandler) {
-                AuthnProtocolResponseContext authnResponse = protocolHandler.findAndValidateAuthnAssertion( request );
-                if (authnResponse != null) {
-                    return authnResponse;
-                }
-            }
-        }
-
-        logger.dbg( "No authn assertion found in request." );
-        return null;
-    }
-
     private static ProtocolHandler getProtocolHandler(final Protocol protocol) {
 
         Object protocolHandlerObject = protocol.newHandler();
@@ -108,13 +90,6 @@ public abstract class ProtocolManager {
             throw new InternalInconsistencyException(
                     String.format( "Protocol handler not found for protocol %s (class=%s)", protocol.name(), protocol.getProtocolHandlerClass() ) );
         }
-        return (ProtocolHandler) protocolHandlerObject;
-    }
-
-    @Nullable
-    private static ProtocolHandler findProtocolHandler(final Protocol protocol) {
-
-        Object protocolHandlerObject = protocol.newHandler();
         return (ProtocolHandler) protocolHandlerObject;
     }
 }

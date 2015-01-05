@@ -37,6 +37,7 @@
                         <wsdlFile>liberty-idwsf-dst-ref-v2.1-link.wsdl</wsdlFile>
                         <wsdlFile>safe-online-payment.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-ltqr-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-mandate.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws.wsdl</wsdlFile>
                         <wsdlFile>safe-online-idmapping.wsdl</wsdlFile>

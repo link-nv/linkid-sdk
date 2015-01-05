@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:ltqr:2.0" xmlns:tns="urn:net:lin-k:safe-online:ltqr:2.0"
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-ltqr
+			Revision history:
+			V2.0 (December, 2014):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <!-- =================== Push request ========================= -->
+
+    <element name="PushRequest">
+		<complexType>
+            <sequence>
+                <element name="authenticationMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client authentication message, if a payment is involved this will be ignored</documentation>
+                    </annotation>
+                </element>
+                <element name="finishedMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client finished message.</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment context</documentation>
+                    </annotation>
+                </element>
+                <element name="callback" type="com:Callback" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional callback</documentation>
+                    </annotation>
+                </element>
+                <element name="identityProfiles" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional identity profiles</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="oneTimeUse" type="boolean" use="required">
+                <annotation>
+                    <documentation>Long term QR session can only be used once</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="expiryDate" type="dateTime" use="optional">
+                <annotation>
+                    <documentation>Expiry date of the long term session.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="expiryDuration" type="long" use="optional">
+                <annotation>
+                    <documentation>Expiry duration of the long term session. Expressed in number of seconds starting from the creation.
+                        Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
+                </annotation>
+            </attribute>
+		</complexType>
+	</element>
+
+    <element name="PushResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PushSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PushError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- =================== Change request ======================= -->
+
+    <element name="ChangeRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>LTQR Reference of the long term QR to change.</documentation>
+                    </annotation>
+                </element>
+                <element name="authenticationMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client authentication message, if a payment is involved this will be ignored</documentation>
+                    </annotation>
+                </element>
+                <element name="finishedMessage" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional client finished message.</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment context</documentation>
+                    </annotation>
+                </element>
+                <element name="callback" type="com:Callback" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional callback</documentation>
+                    </annotation>
+                </element>
+                <element name="identityProfiles" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional identity profiles</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="expiryDate" type="dateTime" use="optional">
+                <annotation>
+                    <documentation>Expiry date of the long term session.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="expiryDuration" type="long" use="optional">
+                <annotation>
+                    <documentation>Expiry duration of the long term session. Expressed in number of seconds starting from the creation.
+                        Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="ChangeResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ChangeSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ChangeError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- =================== Pull request ========================= -->
+
+    <element name="PullRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>List of LTQR References to fetch. If none are specified, all LTQR sessions and client session are returned.</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentOrderReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of Payment order References to fetch. If none are specified, all are fetched for the LTQR References specified above.</documentation>
+                    </annotation>
+                </element>
+                <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are fetched for the LTQR References specified above</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="PullResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PullSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PullError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- =================== Remove request ========================= -->
+
+    <element name="RemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReferences" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>List of orderReferences to remove.</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentOrderReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of Payment order References to remove. If none are specified, all are removed for the LTQR References specified above.</documentation>
+                    </annotation>
+                </element>
+                <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are removed for the LTQR References specified above</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+        <element name="RemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:RemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:RemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PushSuccess">
+        <sequence>
+            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Content of the QR code</documentation>
+                </annotation>
+            </element>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference of this long term QR
+                        This LTQR reference will be used in the notifications to the Service Provider.</documentation>
+                </annotation>
+            </element>
+            <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment order reference for this LTQR. If no payment is attached to this LTQR this will be empty.
+                        If there is, this will equal the orderReference you specified in the PaymentContext or will be a UUID generated by linkID.
+                        This payment order reference will be used in the notifications to the Service Provider if applicable.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PushError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="ChangeSuccess">
+        <sequence>
+            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Content of the QR code</documentation>
+                </annotation>
+            </element>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment order reference</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ChangeError">
+        <attribute name="errorCode" type="tns:ChangeErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="PullSuccess">
+        <sequence>
+            <element name="sessions" type="tns:ClientSession" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The client sessions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PullError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="RemoveSuccess" />
+
+    <complexType name="RemoveError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+
+    <complexType name="ClientSession">
+        <sequence>
+            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Content of the QR code</documentation>
+                </annotation>
+            </element>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment order reference</documentation>
+                </annotation>
+            </element>
+            <element name="clientSessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR client session ID</documentation>
+                </annotation>
+            </element>
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The userId</documentation>
+                </annotation>
+            </element>
+            <element name="created" type="dateTime" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Client session creation date</documentation>
+                </annotation>
+            </element>
+            <element name="paymentStatus" minOccurs="0" maxOccurs="1" type="tns:LTQRPaymentStatusType">
+                <annotation>
+                    <documentation>Payment status (optional)</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <simpleType name="ErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="ChangeErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.not.found">
+				<annotation>
+					<documentation>The LTQR was not found.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="LTQRPaymentStatusType">
+		<annotation>
+			<documentation>Long term QR Payment status</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="STARTED">
+				<annotation>
+					<documentation>Payment is being processed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="AUTHORIZED">
+				<annotation>
+					<documentation>Payment is authorized</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="FAILED">
+				<annotation>
+					<documentation>Payment has failed</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

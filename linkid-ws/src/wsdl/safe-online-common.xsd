@@ -138,4 +138,24 @@
         </sequence>
     </complexType>
 
+    <complexType name="Callback">
+        <sequence>
+            <element name="location" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>location the linkID client will load when finished</documentation>
+                </annotation>
+            </element>
+            <element name="appSessionId" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional sessionId a SP can provide to load in session state before linkID was started</documentation>
+                </annotation>
+            </element>
+            <element name="inApp" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>display the location inApp (webView) or via the client's browser</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
 </schema>
