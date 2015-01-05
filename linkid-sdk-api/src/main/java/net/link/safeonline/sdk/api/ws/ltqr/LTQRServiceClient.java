@@ -38,6 +38,7 @@ public interface LTQRServiceClient {
      * @param expiryDuration        Optional expiry duration of the long term session. Expressed in number of seconds starting from the creation.
      *                              Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.
      * @param callback              Optional callback config
+     * @param identityProfiles      Optional identity profiles
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      * session ID will be used in the notifications to the Service Provider.
@@ -45,7 +46,7 @@ public interface LTQRServiceClient {
      * @throws PushException failure
      */
     LTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage, @Nullable PaymentContextDO paymentContext, boolean oneTimeUse,
-                     @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable CallbackDO callback)
+                     @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable CallbackDO callback, @Nullable List<String> identityProfiles)
             throws PushException;
 
     /**
@@ -59,11 +60,13 @@ public interface LTQRServiceClient {
      * @param expiryDuration        Optional expiry duration of the long term session. Expressed in number of seconds starting from the creation.
      *                              Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.
      * @param callback              Optional callback config
+     * @param identityProfiles      Optional identity profiles
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
     LTQRSession change(String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
-                       @Nullable PaymentContextDO paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable CallbackDO callback)
+                       @Nullable PaymentContextDO paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable CallbackDO callback,
+                       @Nullable List<String> identityProfiles)
             throws ChangeException;
 
     /**

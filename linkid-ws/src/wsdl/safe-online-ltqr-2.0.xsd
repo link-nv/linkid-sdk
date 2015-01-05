@@ -38,6 +38,11 @@
                         <documentation>Optional callback</documentation>
                     </annotation>
                 </element>
+                <element name="identityProfiles" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional identity profiles</documentation>
+                    </annotation>
+                </element>
             </sequence>
             <attribute name="oneTimeUse" type="boolean" use="required">
                 <annotation>
@@ -95,6 +100,11 @@
                 <element name="callback" type="com:Callback" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>Optional callback</documentation>
+                    </annotation>
+                </element>
+                <element name="identityProfiles" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional identity profiles</documentation>
                     </annotation>
                 </element>
             </sequence>

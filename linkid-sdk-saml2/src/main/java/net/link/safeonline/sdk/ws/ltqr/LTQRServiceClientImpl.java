@@ -91,7 +91,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     @Override
     public LTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage, @Nullable final PaymentContextDO paymentContextDO,
                             final boolean oneTimeUse, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
-                            @Nullable final CallbackDO callbackDO)
+                            @Nullable final CallbackDO callbackDO, @Nullable final List<String> identityProfiles)
             throws PushException {
 
         PushRequest request = new PushRequest();
@@ -125,6 +125,14 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             request.setCallback( callback );
         }
 
+        // identity profiles
+        if (null != identityProfiles && !identityProfiles.isEmpty()) {
+
+            for (String identityProfile : identityProfiles) {
+                request.getIdentityProfiles().add( identityProfile );
+            }
+        }
+
         // configuration
         request.setOneTimeUse( oneTimeUse );
         if (null != expiryDate) {
@@ -152,7 +160,7 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
     @Override
     public LTQRSession change(final String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
                               @Nullable final PaymentContextDO paymentContextDO, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
-                              @Nullable final CallbackDO callbackDO)
+                              @Nullable final CallbackDO callbackDO, @Nullable final List<String> identityProfiles)
             throws ChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -186,6 +194,14 @@ public class LTQRServiceClientImpl extends AbstractWSClient<LTQRServicePort> imp
             callback.setAppSessionId( callbackDO.getAppSessionId() );
             callback.setInApp( callbackDO.isInApp() );
             request.setCallback( callback );
+        }
+
+        // identity profiles
+        if (null != identityProfiles && !identityProfiles.isEmpty()) {
+
+            for (String identityProfile : identityProfiles) {
+                request.getIdentityProfiles().add( identityProfile );
+            }
         }
 
         // configuration
