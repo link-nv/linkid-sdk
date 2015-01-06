@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:capture" xmlns:tns="urn:net:lin-k:safe-online:capture"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-capture
+			Revision history:
+			V1.0 (January, 2015):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <element name="CaptureRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="CaptureResponse">
+        <complexType>
+            <sequence>
+                <element name="error" type="tns:CaptureError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="CaptureError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.capture.unknown">
+				<annotation>
+					<documentation>No payment transaction found with that orderReference</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.capture.token.not.found">
+				<annotation>
+					<documentation>Could not capture this payment because the payment token has been removed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.capture.failed">
+				<annotation>
+					<documentation>Could not capture this payment for an unexpected reason</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+</schema>

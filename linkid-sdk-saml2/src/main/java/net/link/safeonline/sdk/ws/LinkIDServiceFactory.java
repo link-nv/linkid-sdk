@@ -14,6 +14,7 @@ import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
+import net.link.safeonline.sdk.api.ws.capture.CaptureServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
@@ -26,6 +27,7 @@ import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.SDKConfigHolder;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.auth.AuthServiceClientImpl;
+import net.link.safeonline.sdk.ws.capture.CaptureServiceClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.haws.HawsServiceClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
@@ -620,6 +622,95 @@ public class LinkIDServiceFactory extends ServiceFactory {
         } else {
 
             return getInstance()._getMandateService( new SDKWSSecurityConfiguration(), null );
+        }
+    }
+
+    /**
+     * Retrieve a proxy to the linkID capture web service.
+     *
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
+     *
+     * @return proxy to the linkID capture web service.
+     */
+    public static CaptureServiceClient getCaptureService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                         final X509Certificate[] sslCertificates) {
+
+        return getInstance()._getCaptureService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID capture web service.
+     *
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
+     *
+     * @return proxy to the linkID capture web service.
+     */
+    public static CaptureServiceClient getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+
+        return getInstance()._getCaptureService( configuration, sslCertificates );
+    }
+
+    @Override
+    protected CaptureServiceClient _getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+
+        return new CaptureServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID capture web service, using the WS-Security Username token profile
+     *
+     * @return proxy to the linkID capture web service.
+     */
+    public static CaptureServiceClient getCaptureService(final String wsUsername, final String wsPassword) {
+
+        return new CaptureServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+                new AbstractWSSecurityUsernameTokenCallback() {
+                    @Override
+                    public String getUsername() {
+
+                        return wsUsername;
+                    }
+
+                    @Override
+                    public String getPassword() {
+
+                        return wsPassword;
+                    }
+
+                    @Nullable
+                    @Override
+                    public String handle(final String username) {
+
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isInboundHeaderOptional() {
+
+                        return true;
+                    }
+                } );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID capture web service.
+     *
+     * @return proxy to the linkID capture web service.
+     */
+    public static CaptureServiceClient getCaptureService() {
+
+        if (null != SDKConfigHolder.config().linkID().app().username()) {
+
+            return getCaptureService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+        } else {
+
+            return getInstance()._getCaptureService( new SDKWSSecurityConfiguration(), null );
         }
     }
 

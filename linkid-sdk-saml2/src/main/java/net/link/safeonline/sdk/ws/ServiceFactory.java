@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.ws;
 import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
+import net.link.safeonline.sdk.api.ws.capture.CaptureServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
@@ -56,4 +57,6 @@ public abstract class ServiceFactory {
 
     protected abstract AuthServiceClient<AuthnRequest, Response> _getAuthService(WSSecurityConfiguration configuration,
                                                                                  @Nullable X509Certificate[] sslCertificates);
+
+    protected abstract CaptureServiceClient _getCaptureService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 }

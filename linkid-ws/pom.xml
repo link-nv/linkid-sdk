@@ -45,6 +45,7 @@
                         <wsdlFile>xkms.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth.wsdl</wsdlFile>
                         <wsdlFile>safe-online-reporting.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-capture.wsdl</wsdlFile>
                     </wsdlFiles>
                     <bindingFiles>
                         <bindingFile>jaxb-bindings.xml</bindingFile>

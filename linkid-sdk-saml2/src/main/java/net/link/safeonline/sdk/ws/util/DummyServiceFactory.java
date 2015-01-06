@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
+import net.link.safeonline.sdk.api.ws.capture.CaptureServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
@@ -115,6 +116,12 @@ public class DummyServiceFactory extends ServiceFactory {
     @Override
     protected AuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration,
                                                                         @Nullable final X509Certificate[] sslCertificates) {
+
+        throw new UnsupportedOperationException( "Not yet implemented" );
+    }
+
+    @Override
+    protected CaptureServiceClient _getCaptureService(final WSSecurityConfiguration configuration, final X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }
