@@ -18,7 +18,8 @@ public class PaymentTransactionDO implements Serializable {
     private final String       paymentMethod;
     private final String       description;
     private final PaymentState paymentState;
-    private final boolean      paid;
+    private final boolean      authorized;
+    private final boolean      captured;
     private final String       orderReference;
     private final String       docdataReference;
     private final String       userId;
@@ -27,8 +28,8 @@ public class PaymentTransactionDO implements Serializable {
     private final String       familyName;
 
     public PaymentTransactionDO(final Date date, final double amount, final Currency currency, final String paymentMethod, final String description,
-                                final PaymentState paymentState, final boolean paid, final String orderReference, final String docdataReference,
-                                final String userId, final String email, final String givenName, final String familyName) {
+                                final PaymentState paymentState, final boolean authorized, final boolean captured, final String orderReference,
+                                final String docdataReference, final String userId, final String email, final String givenName, final String familyName) {
 
         this.date = date;
         this.amount = amount;
@@ -36,7 +37,8 @@ public class PaymentTransactionDO implements Serializable {
         this.paymentMethod = paymentMethod;
         this.description = description;
         this.paymentState = paymentState;
-        this.paid = paid;
+        this.authorized = authorized;
+        this.captured = captured;
         this.orderReference = orderReference;
         this.docdataReference = docdataReference;
         this.userId = userId;
@@ -77,9 +79,14 @@ public class PaymentTransactionDO implements Serializable {
         return paymentState;
     }
 
-    public boolean isPaid() {
+    public boolean isAuthorized() {
 
-        return paid;
+        return authorized;
+    }
+
+    public boolean isCaptured() {
+
+        return captured;
     }
 
     public String getOrderReference() {

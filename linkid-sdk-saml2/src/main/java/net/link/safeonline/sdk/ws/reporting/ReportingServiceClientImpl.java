@@ -105,9 +105,9 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
             for (PaymentTransaction paymentTransaction : response.getTransactions()) {
                 transactions.add( new PaymentTransactionDO( paymentTransaction.getDate().toGregorianCalendar().getTime(), paymentTransaction.getAmount(),
                         SDKUtils.convert( paymentTransaction.getCurrency() ), paymentTransaction.getPaymentMethod(), paymentTransaction.getDescription(),
-                        SDKUtils.convert( paymentTransaction.getPaymentState() ), paymentTransaction.isPaid(), paymentTransaction.getOrderReference(),
-                        paymentTransaction.getDocdataReference(), paymentTransaction.getUserId(), paymentTransaction.getEmail(),
-                        paymentTransaction.getGivenName(), paymentTransaction.getFamilyName() ) );
+                        SDKUtils.convert( paymentTransaction.getPaymentState() ), paymentTransaction.isAuthorized(), paymentTransaction.isCaptured(),
+                        paymentTransaction.getOrderReference(), paymentTransaction.getDocdataReference(), paymentTransaction.getUserId(),
+                        paymentTransaction.getEmail(), paymentTransaction.getGivenName(), paymentTransaction.getFamilyName() ) );
             }
             return transactions;
         }

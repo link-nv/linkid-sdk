@@ -113,7 +113,8 @@
             <element name="paymentMethod" type="string" minOccurs="1" maxOccurs="1" />
             <element name="description" type="string" minOccurs="1" maxOccurs="1" />
             <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
-            <element name="paid" type="boolean" minOccurs="1" maxOccurs="1" />
+            <element name="authorized" type="boolean" minOccurs="1" maxOccurs="1" />
+            <element name="captured" type="boolean" minOccurs="1" maxOccurs="1" />
             <element name="orderReference" type="string" minOccurs="1" maxOccurs="1" />
             <element name="docdataReference" type="string" minOccurs="1" maxOccurs="1" />
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
