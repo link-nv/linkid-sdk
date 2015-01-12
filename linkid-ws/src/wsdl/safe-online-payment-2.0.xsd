@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:payment:2.0" xmlns:com="urn:net:lin-k:safe-online:common"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-payment
+			Revision history:
+			V2.0 (January, 2015):
+			Authorized vs capture details
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <element name="PaymentStatusRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="PaymentStatusResponse">
+        <complexType>
+            <sequence>
+                <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="com:PaymentStatusType">
+                    <annotation>
+                        <documentation>Payment status</documentation>
+                    </annotation>
+                </element>
+                <element name="captured" minOccurs="1" maxOccurs="1" type="boolean">
+                    <annotation>
+                        <documentation>Payment captured? Only makes sense for payments with Docdata merchant with automatic capture disabled</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+</schema>

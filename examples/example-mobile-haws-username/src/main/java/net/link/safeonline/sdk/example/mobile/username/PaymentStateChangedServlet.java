@@ -7,15 +7,17 @@
 
 package net.link.safeonline.sdk.example.mobile.username;
 
-import net.link.util.logging.Logger;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.payment.PaymentConstants;
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.PaymentStatusDO;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
+import net.link.util.logging.Logger;
 
 
 public class PaymentStateChangedServlet extends HttpServlet {
@@ -38,7 +40,7 @@ public class PaymentStateChangedServlet extends HttpServlet {
 
         // fetch the status report using the linkID payment web service
         PaymentServiceClient paymentServiceClient = LinkIDServiceFactory.getPaymentService();
-        PaymentState paymentState;
+        PaymentStatusDO paymentState;
         try {
             paymentState = paymentServiceClient.getStatus( orderReference );
         }

@@ -10,11 +10,11 @@ package net.link.safeonline.sdk.ws.payment;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.payment.PaymentGetStatusRequest;
-import net.lin_k.safe_online.payment.PaymentServicePort;
-import net.lin_k.safe_online.payment.PaymentStatusResponse;
+import net.lin_k.safe_online.payment._2.PaymentServicePort;
+import net.lin_k.safe_online.payment._2.PaymentStatusRequest;
+import net.lin_k.safe_online.payment._2.PaymentStatusResponse;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.PaymentStatusDO;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.payment.PaymentServiceFactory;
@@ -38,15 +38,15 @@ public class PaymentServiceClientImpl extends AbstractWSClient<PaymentServicePor
     }
 
     @Override
-    public PaymentState getStatus(final String orderReference)
+    public PaymentStatusDO getStatus(final String orderReference)
             throws WSClientTransportException {
 
-        PaymentGetStatusRequest request = new PaymentGetStatusRequest();
+        PaymentStatusRequest request = new PaymentStatusRequest();
         request.setOrderReference( orderReference );
 
         try {
-            PaymentStatusResponse statusResponse = getPort().getStatus( request );
-            return SDKUtils.convert( statusResponse.getPaymentStatus() );
+            PaymentStatusResponse statusResponse = getPort().status( request );
+            return new PaymentStatusDO( SDKUtils.convert( statusResponse.getPaymentStatus() ), statusResponse.isCaptured() );
         }
         catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );

@@ -456,7 +456,7 @@
         <linkid.ws.idmapping.path>idmapping</linkid.ws.idmapping.path>
         <linkid.ws.sts.path>sts</linkid.ws.sts.path>
         <linkid.ws.xkms2.path>xkms2</linkid.ws.xkms2.path>
-        <linkid.ws.payment.path>payment</linkid.ws.payment.path>
+        <linkid.ws.payment.path>payment20</linkid.ws.payment.path>
         <linkid.ws.ltqr.path>ltqr20</linkid.ws.ltqr.path>
         <linkid.ws.mandate.path>mandate</linkid.ws.mandate.path>
         <linkid.ws.haws.path>haws</linkid.ws.haws.path>
