@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client.sdk</groupId>
         <artifactId>examples</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>2.55</version>
     </parent>
 
     <name>linkID SDK Mobile X509 Example</name>
@@ -13,7 +13,7 @@
 
     <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
     <artifactId>example-mobile-haws-x509</artifactId>
-    <version>GIT-SNAPSHOT</version>
+    <version>2.55</version>
     <packaging>war</packaging>
 
     <build>
@@ -63,12 +63,12 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>2.55</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-saml2</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>2.55</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
