@@ -61,7 +61,7 @@ public class CallbackDO implements Serializable {
         String appSessionId = callbackMap.get( KEY_APP_SESSION_ID );
         boolean inApp = false;
         if (null != callbackMap.get( KEY_IN_APP )) {
-            inApp = Boolean.parseBoolean( KEY_IN_APP );
+            inApp = Boolean.parseBoolean( callbackMap.get( KEY_IN_APP ) );
         }
 
         return new CallbackDO( location, appSessionId, inApp );
