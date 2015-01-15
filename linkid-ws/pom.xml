@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.55-p1</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID Web Service Definitions</name>
@@ -77,7 +77,7 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-container-test</artifactId>
-            <version>2.55-p1</version>
+            <version>GIT-SNAPSHOT</version>
             <type>pom</type>
         </dependency>
 
