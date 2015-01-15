@@ -27,5 +27,7 @@ public class ExampleMobileLoginServlet extends InitiateLoginServlet {
 
         authenticationContext.setIdentityProfiles( Collections.singletonList( "linkid_payment" ) );
         authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
+
+        //        authenticationContext.setCallback( new CallbackDO( "https://yourdomain.be/callback", null, true ) );
     }
 }
