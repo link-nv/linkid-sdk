@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.attribute.Compound;
+import net.link.safeonline.sdk.api.externalcode.ExternalCodeResponseDO;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.api.ws.WebServiceConstants;
+import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.ExternalCodeResponse;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponse;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.saml.Saml2Utils;
@@ -155,5 +157,37 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
             }
         }
         return PaymentResponseDO.fromMap( paymentResponseMap );
+    }
+
+    @Nullable
+    public static ExternalCodeResponseDO findExternalCodeResponse(final Response samlResponse) {
+
+        if (null == samlResponse.getExtensions())
+            return null;
+
+        if (null == samlResponse.getExtensions().getUnknownXMLObjects( ExternalCodeResponse.DEFAULT_ELEMENT_NAME ))
+            return null;
+
+        List<XMLObject> externalCodeResponses = samlResponse.getExtensions().getUnknownXMLObjects( ExternalCodeResponse.DEFAULT_ELEMENT_NAME );
+        if (externalCodeResponses.size() > 1) {
+            logger.err( "Only 1 ExternalCodeResponse in the Response extensions element is supported" );
+            throw new InternalInconsistencyException(
+                    "Failed to parse SAML2 response: Only 1 ExternalCodeResponse in the Response extensions element is supported", null );
+        }
+
+        if (externalCodeResponses.isEmpty()) {
+            return null;
+        }
+
+        ExternalCodeResponse externalCodeResponse = (ExternalCodeResponse) externalCodeResponses.get( 0 );
+        Map<String, String> externalCodeResponseMap = Maps.newHashMap();
+        for (Attribute attribute : externalCodeResponse.getAttributes()) {
+            String name = attribute.getName();
+            List<XMLObject> attributeValues = attribute.getAttributeValues();
+            if (!attributeValues.isEmpty()) {
+                externalCodeResponseMap.put( name, ConversionUtils.toString( SamlUtils.toJavaObject( attributeValues.get( 0 ) ) ) );
+            }
+        }
+        return ExternalCodeResponseDO.fromMap( externalCodeResponseMap );
     }
 }

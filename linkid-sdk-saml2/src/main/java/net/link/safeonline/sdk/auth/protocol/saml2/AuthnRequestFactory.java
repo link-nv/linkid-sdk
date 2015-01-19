@@ -22,6 +22,10 @@ import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextBuilder;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextMarshaller;
 import net.link.safeonline.sdk.auth.protocol.saml2.devicecontext.DeviceContextUnmarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.ExternalCodeResponse;
+import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.ExternalCodeResponseBuilder;
+import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.ExternalCodeResponseMarshaller;
+import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.ExternalCodeResponseUnmarshaller;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContext;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContextBuilder;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentcontext.PaymentContextMarshaller;
@@ -94,6 +98,8 @@ public class AuthnRequestFactory {
             Configuration.registerObjectProvider( PaymentResponse.DEFAULT_ELEMENT_NAME, new PaymentResponseBuilder(), new PaymentResponseMarshaller(),
                     new PaymentResponseUnmarshaller() );
             Configuration.registerObjectProvider( Callback.DEFAULT_ELEMENT_NAME, new CallbackBuilder(), new CallbackMarshaller(), new CallbackUnmarshaller() );
+            Configuration.registerObjectProvider( ExternalCodeResponse.DEFAULT_ELEMENT_NAME, new ExternalCodeResponseBuilder(),
+                    new ExternalCodeResponseMarshaller(), new ExternalCodeResponseUnmarshaller() );
         }
         catch (ConfigurationException e) {
             throw new InternalInconsistencyException( "could not bootstrap the OpenSAML2 library", e );

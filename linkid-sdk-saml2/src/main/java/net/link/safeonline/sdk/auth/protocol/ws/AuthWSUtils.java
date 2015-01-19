@@ -9,6 +9,7 @@ import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.auth.AuthnResponseDO;
 import net.link.safeonline.sdk.api.auth.device.DeviceContextConstants;
 import net.link.safeonline.sdk.api.callback.CallbackDO;
+import net.link.safeonline.sdk.api.externalcode.ExternalCodeResponseDO;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
@@ -182,7 +183,8 @@ public abstract class AuthWSUtils {
         }
 
         PaymentResponseDO paymentResponse = LinkIDSaml2Utils.findPaymentResponse( response );
+        ExternalCodeResponseDO externalCodeResponse = LinkIDSaml2Utils.findExternalCodeResponse( response );
 
-        return new AuthnResponseDO( userId, attributes, paymentResponse );
+        return new AuthnResponseDO( userId, attributes, paymentResponse, externalCodeResponse );
     }
 }

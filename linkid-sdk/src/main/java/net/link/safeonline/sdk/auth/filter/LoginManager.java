@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.auth.AuthnResponseDO;
+import net.link.safeonline.sdk.api.externalcode.ExternalCodeResponseDO;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.safeonline.sdk.auth.protocol.AuthnProtocolResponseContext;
 import net.link.safeonline.sdk.configuration.Protocol;
@@ -29,13 +30,14 @@ import net.link.util.common.CertificateChain;
  */
 public abstract class LoginManager {
 
-    public static final String USERID_SESSION_ATTRIBUTE              = LoginManager.class.getName() + ".userId";
-    public static final String ATTRIBUTES_SESSION_ATTRIBUTE          = LoginManager.class.getName() + ".attributes";
-    public static final String CERTIFICATE_CHAIN_SESSION_ATTRIBUTE   = LoginManager.class.getName() + ".certificateChain";
-    public static final String PROTOCOL_SESSION_ATTRIBUTE            = LoginManager.class.getName() + ".protocol";
+    public static final String USERID_SESSION_ATTRIBUTE                 = LoginManager.class.getName() + ".userId";
+    public static final String ATTRIBUTES_SESSION_ATTRIBUTE             = LoginManager.class.getName() + ".attributes";
+    public static final String CERTIFICATE_CHAIN_SESSION_ATTRIBUTE      = LoginManager.class.getName() + ".certificateChain";
+    public static final String PROTOCOL_SESSION_ATTRIBUTE               = LoginManager.class.getName() + ".protocol";
     // e.g. SAML2 assertion sent directly to SP after authentication done from a client app
-    public static final String PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE = LoginManager.class.getName() + ".protocolNoRequest";
-    public static final String PAYMENT_RESPONSE_SESSION_ATTRIBUTE    = LoginManager.class.getName() + ".paymentResponse";
+    public static final String PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE    = LoginManager.class.getName() + ".protocolNoRequest";
+    public static final String PAYMENT_RESPONSE_SESSION_ATTRIBUTE       = LoginManager.class.getName() + ".paymentResponse";
+    public static final String EXTERNAL_CODE_RESPONSE_SESSION_ATTRIBUTE = LoginManager.class.getName() + ".externalCodeResponse";
 
     /**
      * Checks whether the user is logged in via the SafeOnline authentication web application or not.
@@ -100,6 +102,14 @@ public abstract class LoginManager {
     }
 
     /**
+     * Gives back the optional external code response.
+     */
+    public static ExternalCodeResponseDO findExternalCodeResponse(final HttpSession httpSession) {
+
+        return (ExternalCodeResponseDO) httpSession.getAttribute( EXTERNAL_CODE_RESPONSE_SESSION_ATTRIBUTE );
+    }
+
+    /**
      * Cleanup linkId session attributes.
      *
      * @param httpSession The session from which the credentials will be removed.
@@ -133,6 +143,7 @@ public abstract class LoginManager {
         httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, responseContext.getRequest().getProtocolHandler().getProtocol() );
         httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, null == responseContext.getRequest().getId() );
         httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, responseContext.getPaymentResponse() );
+        httpSession.setAttribute( EXTERNAL_CODE_RESPONSE_SESSION_ATTRIBUTE, responseContext.getExternalCodeResponse() );
     }
 
     public static void set(final HttpSession httpSession, final AuthnResponseDO authnResponseDO) {
@@ -142,5 +153,6 @@ public abstract class LoginManager {
         httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, Protocol.WS );
         httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, false );
         httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, authnResponseDO.getPaymentResponse() );
+        httpSession.setAttribute( EXTERNAL_CODE_RESPONSE_SESSION_ATTRIBUTE, authnResponseDO.getExternalCodeResponse() );
     }
 }

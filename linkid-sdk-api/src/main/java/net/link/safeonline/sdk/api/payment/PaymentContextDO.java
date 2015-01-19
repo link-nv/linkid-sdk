@@ -80,10 +80,6 @@ public class PaymentContextDO implements Serializable {
                             @Nullable final String mandateReference)
             throws InvalidPaymentContextException {
 
-        if (amount <= 0) {
-            throw new InvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
-        }
-
         this.amount = amount;
         this.currency = currency;
         this.description = description;

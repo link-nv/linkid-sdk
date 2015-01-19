@@ -9,8 +9,11 @@ package net.link.safeonline.sdk.auth.protocol;
 
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.externalcode.ExternalCodeResponseDO;
 import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
 import net.link.util.common.CertificateChain;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +34,7 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
     private final String                                        userId;
     private final boolean                                       success;
     private final PaymentResponseDO                             paymentResponse;
+    private final ExternalCodeResponseDO                        externalCodeResponse;
 
     /**
      * @param request          Authentication request this response is a response to.
@@ -44,7 +48,7 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
      */
     public AuthnProtocolResponseContext(AuthnProtocolRequestContext request, String id, String userId, String applicationName,
                                         Map<String, List<AttributeSDK<Serializable>>> attributes, boolean success, CertificateChain certificateChain,
-                                        final PaymentResponseDO paymentResponse) {
+                                        final @Nullable PaymentResponseDO paymentResponse, final @Nullable ExternalCodeResponseDO externalCodeResponse) {
 
         super( request, id, certificateChain );
         this.userId = userId;
@@ -52,6 +56,7 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
         this.attributes = Collections.unmodifiableMap( attributes );
         this.success = success;
         this.paymentResponse = paymentResponse;
+        this.externalCodeResponse = externalCodeResponse;
     }
 
     @Override
@@ -99,5 +104,14 @@ public class AuthnProtocolResponseContext extends ProtocolResponseContext {
     public PaymentResponseDO getPaymentResponse() {
 
         return paymentResponse;
+    }
+
+    /**
+     * @return optional external code response ( LTQR, ... )
+     */
+    @Nullable
+    public ExternalCodeResponseDO getExternalCodeResponse() {
+
+        return externalCodeResponse;
     }
 }

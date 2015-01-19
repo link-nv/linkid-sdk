@@ -111,7 +111,7 @@ public class AuthnResponseFilterTest {
         // Setup Mocks
         String userId = UUID.randomUUID().toString();
         AuthnProtocolResponseContext authnResponse = new AuthnProtocolResponseContext( authnRequest, UUID.randomUUID().toString(), userId, null,
-                new HashMap<String, List<AttributeSDK<Serializable>>>(), true, null, null );
+                new HashMap<String, List<AttributeSDK<Serializable>>>(), true, null, null, null );
         expect( mockProtocolHandler.findAndValidateAuthnResponse( (HttpServletRequest) anyObject() ) ).andReturn( authnResponse );
         expect( mockProtocolHandler.getProtocol() ).andReturn( Protocol.SAML2 );
         replay( mockProtocolHandler );

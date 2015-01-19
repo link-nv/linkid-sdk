@@ -125,7 +125,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         ResponseUtil.validateResponse( samlResponse, authnRequest.getIssuer() );
 
         return new AuthnProtocolResponseContext( authnRequest, samlResponse.getID(), userId, applicationName, attributes, success, certificateChain,
-                LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
+                LinkIDSaml2Utils.findPaymentResponse( samlResponse ), LinkIDSaml2Utils.findExternalCodeResponse( samlResponse ) );
     }
 
     public static AuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse)
@@ -145,7 +145,7 @@ public class Saml2ProtocolHandler implements ProtocolHandler {
         ResponseUtil.validateResponse( samlResponse, null );
 
         return new AuthnProtocolResponseContext( null, samlResponse.getID(), userId, applicationName, attributes, success, null,
-                LinkIDSaml2Utils.findPaymentResponse( samlResponse ) );
+                LinkIDSaml2Utils.findPaymentResponse( samlResponse ), LinkIDSaml2Utils.findExternalCodeResponse( samlResponse ) );
     }
 
     @Override
