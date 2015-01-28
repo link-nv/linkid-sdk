@@ -20,8 +20,8 @@ public interface WalletServiceClient {
     /**
      * Enroll users for a wallet
      *
-     * @throws EnrollException something went wrong, check the error code in the exception
+     * @throws WalletEnrollException something went wrong, check the error code in the exception
      */
     void enroll(List<String> userIds, String walletId)
-            throws EnrollException;
+            throws WalletEnrollException;
 }

@@ -1,5 +1,7 @@
 package test.unit.net.link.safeonline.sdk.ws;
 
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.List;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
@@ -7,6 +9,7 @@ import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.reporting.ReportingServiceClient;
+import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
@@ -88,20 +91,23 @@ public class WSClientTest {
         logger.inf( "# txns = %d", txns.size() );
     }
 
-    @Test
+    //    @Test
     public void testWalletEnrollment()
             throws Exception {
 
         // setup
         WalletServiceClient client = new WalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        List<String> userIds = Arrays.asList( "", "" );
-        String walletId = "foo";
+        List<String> userIds = Arrays.asList( "9e4d2818-d9d4-454c-9b1d-1f067a1f7469" );
+        String walletId = "60d3113d-7229-4387-a271-792d905ca4ed";
 
         // operate
-        client.enroll( userIds, walletId );
-
-        // verify
-
+        try {
+            client.enroll( userIds, walletId );
+        }
+        catch (WalletEnrollException e) {
+            logger.err( "Enroll error: %s", e.getErrorCode() );
+            fail();
+        }
     }
 
     // Auth

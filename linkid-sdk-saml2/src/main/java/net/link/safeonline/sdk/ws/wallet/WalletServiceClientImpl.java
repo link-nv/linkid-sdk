@@ -13,7 +13,7 @@ import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.wallet.WalletEnrollRequest;
 import net.lin_k.safe_online.wallet.WalletEnrollResponse;
 import net.lin_k.safe_online.wallet.WalletServicePort;
-import net.link.safeonline.sdk.api.ws.wallet.EnrollException;
+import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
@@ -66,7 +66,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
 
     @Override
     public void enroll(final List<String> userIds, final String walletId)
-            throws EnrollException {
+            throws WalletEnrollException {
 
         //request
         WalletEnrollRequest request = new WalletEnrollRequest();
@@ -80,7 +80,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
         // response
         if (null != response.getError()) {
 
-            throw new EnrollException( convert( response.getError().getErrorCode() ), response.getError().getUnknownUsers() );
+            throw new WalletEnrollException( convert( response.getError().getErrorCode() ), response.getError().getUnknownUsers() );
         }
 
         if (null != response.getSuccess()) {

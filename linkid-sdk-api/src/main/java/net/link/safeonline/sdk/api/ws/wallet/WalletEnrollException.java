@@ -10,12 +10,12 @@ package net.link.safeonline.sdk.api.ws.wallet;
 import java.util.List;
 
 
-public class EnrollException extends Exception {
+public class WalletEnrollException extends Exception {
 
     private final WalletEnrollErrorCode errorCode;
     private final List<String>          unknownUsers;
 
-    public EnrollException(final WalletEnrollErrorCode errorCode, final List<String> unknownUsers) {
+    public WalletEnrollException(final WalletEnrollErrorCode errorCode, final List<String> unknownUsers) {
 
         this.errorCode = errorCode;
         this.unknownUsers = unknownUsers;
