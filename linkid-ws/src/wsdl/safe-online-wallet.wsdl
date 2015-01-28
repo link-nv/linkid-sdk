@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:safe-online:wallet"
+             xmlns:tns="urn:net:lin-k:safe-online:wallet" name="SafeOnlineWalletWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:safe-online:wallet" schemaLocation="safe-online-wallet.xsd" />
+        </schema>
+    </types>
+
+    <!-- =================== Status request ========================= -->
+
+    <message name="enrollRequest">
+		<part name="request" element="tns:WalletEnrollRequest" />
+	</message>
+	<message name="enrollResponse">
+		<part name="response" element="tns:WalletEnrollResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="WalletServicePort">
+		<operation name="enroll">
+			<input message="tns:enrollRequest" />
+			<output message="tns:enrollResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="WalletServiceBinding" type="tns:WalletServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="enroll">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:wallet:enroll" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="WalletService">
+        <port name="WalletServicePort" binding="tns:WalletServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/wallet/" />
+        </port>
+    </service>
+</definitions>

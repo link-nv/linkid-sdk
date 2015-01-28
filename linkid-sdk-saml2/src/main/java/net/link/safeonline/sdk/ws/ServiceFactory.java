@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.mandate.MandateServiceClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceClient;
+import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.Xkms2Client;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.Nullable;
@@ -59,4 +60,6 @@ public abstract class ServiceFactory {
                                                                                  @Nullable X509Certificate[] sslCertificates);
 
     protected abstract CaptureServiceClient _getCaptureService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
+
+    protected abstract WalletServiceClient _getWalletService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 }

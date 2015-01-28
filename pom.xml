@@ -463,6 +463,7 @@
         <linkid.ws.auth.path>auth</linkid.ws.auth.path>
         <linkid.ws.reporting.path>reporting</linkid.ws.reporting.path>
         <linkid.ws.capture.path>capture</linkid.ws.capture.path>
+        <linkid.ws.wallet.path>wallet</linkid.ws.wallet.path>
 
         <!-- DEFAULT VERSIONS, SEE PLUGINS -->
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>

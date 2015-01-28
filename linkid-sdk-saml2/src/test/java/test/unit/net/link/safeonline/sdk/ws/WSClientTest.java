@@ -7,13 +7,18 @@ import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.reporting.ReportingServiceClient;
+import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.reporting.ReportingServiceClientImpl;
+import net.link.safeonline.sdk.ws.wallet.WalletServiceClientImpl;
+import net.link.util.common.ApplicationMode;
 import net.link.util.logging.Logger;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import org.jetbrains.annotations.Nullable;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -25,13 +30,31 @@ public class WSClientTest {
 
     private static final Logger logger = Logger.get( WSClientTest.class );
 
+    private String wsLocation;
+
+    @Before
+    public void setUp()
+            throws Exception {
+
+        // DEBUG so ssl validation is skipped for local self signed ssl cert, obv do not do this in production, nor even against demo.linkid.be for that matter.
+        System.setProperty( ApplicationMode.PROPERTY, ApplicationMode.DEBUG.name() );
+        this.wsLocation = "https://192.168.5.14:8443/linkid-ws-username";
+        //        this.wsLocation = "https://demo.linkid.be/linkid-ws-username";
+    }
+
+    @Test
+    public void testDummy() {
+
+    }
+
     //    @Test
+    @SuppressWarnings("unchecked")
     public void testData()
             throws Exception {
 
         String userId = "2b35dbab-2ba2-403b-8c36-a8399c3af3d5";
 
-        DataClient client = new DataClientImpl( "http://192.168.5.14:8080/linkid-ws-username", null, getUsernameTokenCallback() );
+        DataClient client = new DataClientImpl( wsLocation, null, getUsernameTokenCallback() );
         List attributes = client.getAttributes( userId, "profile.givenName" );
 
         // set
@@ -49,8 +72,7 @@ public class WSClientTest {
     public void testIdMapping()
             throws Exception {
 
-        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl( "http://192.168.5.14:8080/linkid-ws-username", null,
-                getUsernameTokenCallback() );
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = client.getUserId( "profile.email.address", "wim.vandenhaute@gmail.com" );
     }
 
@@ -58,13 +80,31 @@ public class WSClientTest {
     public void testReporting()
             throws Exception {
 
-        ReportingServiceClient client = new ReportingServiceClientImpl( "http://192.168.5.14:8080/linkid-ws-username", null, getUsernameTokenCallback() );
+        ReportingServiceClient client = new ReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         List<String> orderReferences = Arrays.asList( "842a53ebe15247c1992d73a8f6db4b66" );
 
         List<PaymentTransactionDO> txns = client.getPaymentReportForOrderReferences( orderReferences );
         logger.inf( "# txns = %d", txns.size() );
     }
+
+    @Test
+    public void testWalletEnrollment()
+            throws Exception {
+
+        // setup
+        WalletServiceClient client = new WalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        List<String> userIds = Arrays.asList( "", "" );
+        String walletId = "foo";
+
+        // operate
+        client.enroll( userIds, walletId );
+
+        // verify
+
+    }
+
+    // Auth
 
     private WSSecurityUsernameTokenCallback getUsernameTokenCallback() {
 

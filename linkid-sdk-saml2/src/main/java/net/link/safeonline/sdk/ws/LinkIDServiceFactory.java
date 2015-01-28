@@ -22,6 +22,7 @@ import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.mandate.MandateServiceClient;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceClient;
+import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.Xkms2Client;
 import net.link.safeonline.sdk.configuration.ConfigUtils;
 import net.link.safeonline.sdk.configuration.SDKConfigHolder;
@@ -35,6 +36,7 @@ import net.link.safeonline.sdk.ws.ltqr.LTQRServiceClientImpl;
 import net.link.safeonline.sdk.ws.mandate.MandateServiceClientImpl;
 import net.link.safeonline.sdk.ws.payment.PaymentServiceClientImpl;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
+import net.link.safeonline.sdk.ws.wallet.WalletServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
 import net.link.util.config.KeyProvider;
 import net.link.util.util.NSupplier;
@@ -626,6 +628,43 @@ public class LinkIDServiceFactory extends ServiceFactory {
     }
 
     /**
+     * Retrieve a proxy to the linkID mandate web service.
+     *
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
+     *
+     * @return proxy to the linkID mandate web service.
+     */
+    public static MandateServiceClient getMandateService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                         final X509Certificate[] sslCertificates) {
+
+        return getInstance()._getMandateService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID mandate web service.
+     *
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
+     *
+     * @return proxy to the linkID mandate web service.
+     */
+    public static MandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+
+        return getInstance()._getMandateService( configuration, sslCertificates );
+    }
+
+    @Override
+    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+
+        return new MandateServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+    }
+
+    /**
      * Retrieve a proxy to the linkID capture web service.
      *
      * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
@@ -715,7 +754,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
     }
 
     /**
-     * Retrieve a proxy to the linkID mandate web service.
+     * Retrieve a proxy to the linkID wallet web service.
      *
      * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
      * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
@@ -723,31 +762,83 @@ public class LinkIDServiceFactory extends ServiceFactory {
      * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
      *                        certificate.
      *
-     * @return proxy to the linkID mandate web service.
+     * @return proxy to the linkID wallet web service.
      */
-    public static MandateServiceClient getMandateService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                         final X509Certificate[] sslCertificates) {
+    public static WalletServiceClient getWalletService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                       final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getMandateService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getWalletService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
-     * Retrieve a proxy to the linkID mandate web service.
+     * Retrieve a proxy to the linkID wallet web service.
      *
      * @param configuration   Configuration of the WS-Security layer that secures the transport.
      * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
      *                        certificate.
      *
-     * @return proxy to the linkID mandate web service.
+     * @return proxy to the linkID wallet web service.
      */
-    public static MandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static WalletServiceClient getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return getInstance()._getMandateService( configuration, sslCertificates );
+        return getInstance()._getWalletService( configuration, sslCertificates );
     }
 
     @Override
-    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected WalletServiceClient _getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new MandateServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new WalletServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID wallet web service, using the WS-Security Username token profile
+     *
+     * @return proxy to the linkID wallet web service.
+     */
+    public static WalletServiceClient getWalletService(final String wsUsername, final String wsPassword) {
+
+        return new WalletServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+                new AbstractWSSecurityUsernameTokenCallback() {
+                    @Override
+                    public String getUsername() {
+
+                        return wsUsername;
+                    }
+
+                    @Override
+                    public String getPassword() {
+
+                        return wsPassword;
+                    }
+
+                    @Nullable
+                    @Override
+                    public String handle(final String username) {
+
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isInboundHeaderOptional() {
+
+                        return true;
+                    }
+                } );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID wallet web service.
+     *
+     * @return proxy to the linkID wallet web service.
+     */
+    public static WalletServiceClient getWalletService() {
+
+        if (null != SDKConfigHolder.config().linkID().app().username()) {
+
+            return getWalletService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+        } else {
+
+            return getInstance()._getWalletService( new SDKWSSecurityConfiguration(), null );
+        }
     }
 }
