@@ -12,9 +12,6 @@ package net.link.safeonline.sdk.api.auth.device;
  */
 public interface DeviceContextConstants {
 
-    @Deprecated
-    String CONTEXT_TITLE = "linkID.contextTitle";
-
     String AUTHENTICATION_MESSAGE = "linkID.authenticationMessage";
     String FINISHED_MESSAGE       = "linkID.finishedMessage";
 

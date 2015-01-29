@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.auth.AuthnResponseDO;
-import net.link.safeonline.sdk.api.auth.device.DeviceContextConstants;
 import net.link.safeonline.sdk.api.callback.CallbackDO;
 import net.link.safeonline.sdk.api.externalcode.ExternalCodeResponseDO;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
@@ -38,16 +37,16 @@ import org.opensaml.saml2.core.Response;
 public abstract class AuthWSUtils {
 
     public static AuthnSession startAuthentication(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration,
-                                                   @Nullable final String oldAuthenticationContext, @Nullable final String authenticationMessage,
-                                                   @Nullable final String finishedMessage, @Nullable final Map<String, List<Serializable>> attributeSuggestions,
+                                                   @Nullable final String authenticationMessage, @Nullable final String finishedMessage,
+                                                   @Nullable final Map<String, List<Serializable>> attributeSuggestions,
                                                    @Nullable final PaymentContextDO paymentContext, @Nullable final CallbackDO callbackDO,
                                                    @Nullable final List<String> identityProfiles, final Locale locale, final String userAgent,
                                                    boolean forceRegistration)
             throws AuthnException {
 
         return startAuthentication( getAuthServiceClient( linkIDWSUsernameConfiguration ), linkIDWSUsernameConfiguration.getApplicationName(),
-                oldAuthenticationContext, authenticationMessage, finishedMessage, attributeSuggestions, paymentContext, callbackDO, identityProfiles, locale,
-                userAgent, forceRegistration );
+                authenticationMessage, finishedMessage, attributeSuggestions, paymentContext, callbackDO, identityProfiles, locale, userAgent,
+                forceRegistration );
     }
 
     /**
@@ -74,11 +73,11 @@ public abstract class AuthWSUtils {
                                                    boolean forceRegistration)
             throws AuthnException {
 
-        return startAuthentication( applicationName, null, authenticationMessage, finishedMessage, attributeSuggestions, paymentContext, callbackDO,
-                identityProfiles, locale, userAgent, forceRegistration );
+        return startAuthentication( LinkIDServiceFactory.getAuthService(), applicationName, authenticationMessage, finishedMessage, attributeSuggestions,
+                paymentContext, callbackDO, identityProfiles, locale, userAgent, forceRegistration );
     }
 
-    public static AuthnSession startAuthentication(final String applicationName, @Nullable final String oldAuthenticationContext,
+    public static AuthnSession startAuthentication(AuthServiceClient<AuthnRequest, Response> authServiceClient, final String applicationName,
                                                    @Nullable final String authenticationMessage, @Nullable final String finishedMessage,
                                                    @Nullable final Map<String, List<Serializable>> attributeSuggestions,
                                                    @Nullable final PaymentContextDO paymentContext, @Nullable final CallbackDO callbackDO,
@@ -86,22 +85,7 @@ public abstract class AuthWSUtils {
                                                    boolean forceRegistration)
             throws AuthnException {
 
-        return startAuthentication( LinkIDServiceFactory.getAuthService(), applicationName, oldAuthenticationContext, authenticationMessage, finishedMessage,
-                attributeSuggestions, paymentContext, callbackDO, identityProfiles, locale, userAgent, forceRegistration );
-    }
-
-    public static AuthnSession startAuthentication(AuthServiceClient<AuthnRequest, Response> authServiceClient, final String applicationName,
-                                                   @Nullable final String oldAuthenticationContext, @Nullable final String authenticationMessage,
-                                                   @Nullable final String finishedMessage, @Nullable final Map<String, List<Serializable>> attributeSuggestions,
-                                                   @Nullable final PaymentContextDO paymentContext, @Nullable final CallbackDO callbackDO,
-                                                   @Nullable final List<String> identityProfiles, final Locale locale, final String userAgent,
-                                                   boolean forceRegistration)
-            throws AuthnException {
-
         Map<String, String> deviceContextMap = DeviceContextUtils.generate( authenticationMessage, finishedMessage, identityProfiles );
-        if (null != oldAuthenticationContext) {
-            deviceContextMap.put( DeviceContextConstants.CONTEXT_TITLE, oldAuthenticationContext );
-        }
 
         AuthnRequest samlRequest = AuthnRequestFactory.createAuthnRequest( applicationName, null, null, "http://foo.bar", null, false, deviceContextMap,
                 attributeSuggestions, paymentContext, callbackDO );
