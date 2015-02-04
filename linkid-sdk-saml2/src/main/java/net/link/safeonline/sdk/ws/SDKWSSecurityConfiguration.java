@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws;
 
-import static net.link.util.util.ObjectUtils.*;
+import static net.link.util.util.ObjectUtils.ifNotNullElse;
 
 import be.fedict.trust.TrustValidator;
 import be.fedict.trust.linker.TrustLinkerResultException;
@@ -57,8 +57,11 @@ public class SDKWSSecurityConfiguration extends AbstractWSSecurityConfiguration 
     public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
 
         // Manually check whether the end certificate has the correct DN.
-        if (!ObjectUtils.isEqual( aCertificateChain.getIdentityCertificate().getSubjectX500Principal(), getTrustedDN() ))
+        if (!ObjectUtils.isEqual( aCertificateChain.getIdentityCertificate().getSubjectX500Principal(), getTrustedDN() )) {
+            logger.err( "End certificate's DN does not match the one specified in the configuration: \"%s\" - \"%s\"",
+                    aCertificateChain.getIdentityCertificate().getSubjectX500Principal(), getTrustedDN() );
             return false;
+        }
 
         MemoryCertificateRepository certificateRepository = new MemoryCertificateRepository();
         Collection<X509Certificate> trustedCertificates = getKeyProvider().getTrustedCertificates();
