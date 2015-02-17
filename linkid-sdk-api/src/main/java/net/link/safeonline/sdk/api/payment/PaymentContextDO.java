@@ -17,56 +17,63 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class PaymentContextDO implements Serializable {
 
-    public static final String AMOUNT_KEY              = "PaymentContext.amount";
-    public static final String CURRENCY_KEY            = "PaymentContext.currency";
-    public static final String DESCRIPTION_KEY         = "PaymentContext.description";
-    public static final String ORDER_REFERENCE_KEY     = "PaymentContext.orderReference";
-    public static final String PROFILE_KEY             = "PaymentContext.profile";
-    public static final String VALIDATION_TIME_KEY     = "PaymentContext.validationTime";
-    public static final String ADD_LINK_KEY            = "PaymentContext.addLinkKey";
-    public static final String RETURN_MENU_URL_KEY     = "PaymentContext.returnMenuURL";
-    public static final String ADD_BROWSER_KEY         = "PaymentContext.addBrowser";
-    public static final String DEFERRED_PAY_KEY        = "PaymentContext.deferredPay";
-    public static final String MANDATE_KEY             = "PaymentContext.mandate";
-    public static final String MANDATE_DESCRIPTION_KEY = "PaymentContext.mandateDescription";
-    public static final String MANDATE_REFERENCE_KEY   = "PaymentContext.mandateReference";
-
+    public static final String AMOUNT_KEY               = "PaymentContext.amount";
+    public static final String CURRENCY_KEY             = "PaymentContext.currency";
+    public static final String DESCRIPTION_KEY          = "PaymentContext.description";
+    public static final String ORDER_REFERENCE_KEY      = "PaymentContext.orderReference";
+    public static final String PROFILE_KEY              = "PaymentContext.profile";
+    public static final String VALIDATION_TIME_KEY      = "PaymentContext.validationTime";
+    public static final String ADD_LINK_KEY             = "PaymentContext.addLinkKey";
+    public static final String RETURN_MENU_URL_KEY      = "PaymentContext.returnMenuURL";
+    public static final String ADD_BROWSER_KEY          = "PaymentContext.addBrowser";
+    public static final String DEFERRED_PAY_KEY         = "PaymentContext.deferredPay";
+    public static final String MANDATE_KEY              = "PaymentContext.mandate";
+    public static final String MANDATE_DESCRIPTION_KEY  = "PaymentContext.mandateDescription";
+    public static final String MANDATE_REFERENCE_KEY    = "PaymentContext.mandateReference";
+    //
     public static final String MENU_RESULT_SUCCESS_KEY  = "PaymentContext.menuResultSuccess";
     public static final String MENU_RESULT_CANCELED_KEY = "PaymentContext.menuResultCanceled";
     public static final String MENU_RESULT_PENDING_KEY  = "PaymentContext.menuResultPending";
     public static final String MENU_RESULT_ERROR_KEY    = "PaymentContext.menuResultError";
+    //
+    public static final String ALLOW_PARTIAL_KEY        = "PaymentContext.allowPartial";
+    public static final String ONLY_WALLETS_KEY         = "PaymentContext.onlyWallets";
 
-    private final double   amount;
-    private final Currency currency;
-    private final String   description;
-
+    private final double            amount;
+    private final Currency          currency;
+    private final String            description;
+    //
     // optional order reference, if not specified linkID will generate one in UUID format
-    private final String orderReference;
-
+    private final String            orderReference;
+    //
     // optional payment profile
-    private final String paymentProfile;
-
+    private final String            paymentProfile;
+    //
     // maximum time to wait for payment validation, if not specified defaults to 5s
-    private final int paymentValidationTime;
-
+    private final int               paymentValidationTime;
+    //
     // whether or not to allow to display the option in the client to add a payment method in the browser.
     // default is not allowed
     private final PaymentAddBrowser paymentAddBrowser;
-
+    //
     // whether or not deferred payments are allowed. An e-mail will be sent to the user to complete the payment at a later time.
     // default is not allowed
-    private final boolean allowDeferredPay;
-
+    private final boolean           allowDeferredPay;
+    //
     // mandates
-    private final boolean mandate;      // payment context for a mandate?
-    private final String  mandateDescription;
-    private final String  mandateReference;
-
+    private final boolean           mandate;      // payment context for a mandate?
+    private final String            mandateDescription;
+    private final String            mandateReference;
+    //
     // optional payment menu return URLs (docdata payment menu)
-    private String paymentMenuResultSuccess;
-    private String paymentMenuResultCanceled;
-    private String paymentMenuResultPending;
-    private String paymentMenuResultError;
+    private       String            paymentMenuResultSuccess;
+    private       String            paymentMenuResultCanceled;
+    private       String            paymentMenuResultPending;
+    private       String            paymentMenuResultError;
+    //
+    // wallet related flags
+    private       boolean           allowPartial;       // allow partial payments via wallets, this flag does make sense if you allow normal payment methods
+    private       boolean           onlyWallets;        // allow only wallets for this payment
 
     /**
      * @param amount         amount in cents
@@ -177,6 +184,9 @@ public class PaymentContextDO implements Serializable {
             map.put( MENU_RESULT_ERROR_KEY, paymentMenuResultError );
         }
 
+        map.put( ALLOW_PARTIAL_KEY, Boolean.toString( allowPartial ) );
+        map.put( ONLY_WALLETS_KEY, Boolean.toString( onlyWallets ) );
+
         return map;
     }
 
@@ -231,17 +241,45 @@ public class PaymentContextDO implements Serializable {
         paymentContextDO.setPaymentMenuResultPending( paymentContextMap.get( MENU_RESULT_PENDING_KEY ) );
         paymentContextDO.setPaymentMenuResultError( paymentContextMap.get( MENU_RESULT_ERROR_KEY ) );
 
+        boolean allowPartial = false;
+        String allowPartialString = paymentContextMap.get( ALLOW_PARTIAL_KEY );
+        if (null != allowPartialString) {
+            allowPartial = Boolean.parseBoolean( allowPartialString );
+        }
+        paymentContextDO.setAllowPartial( allowPartial );
+
+        boolean onlyWallets = false;
+        String onlyWalletsString = paymentContextMap.get( ONLY_WALLETS_KEY );
+        if (null != onlyWalletsString) {
+            onlyWallets = Boolean.parseBoolean( onlyWalletsString );
+        }
+        paymentContextDO.setOnlyWallets( onlyWallets );
+
         return paymentContextDO;
     }
 
     @Override
     public String toString() {
 
-        return String.format( "Amount: %f, Currency: %s, Description: \"%s\", OrderReference: \"%s\", Profile: \"%s\", validationTime: %d, "
-                              + "paymentAddBrowser: %s, allowDeferredPay: %s, mandate: %s, mandateDescription: %s, mandateReference: %s "
-                              + "menuResultSuccess: %s, menuResultCanceled: %s, menuResultPending: %s, menuResultError: %s", amount, currency, description,
-                orderReference, paymentProfile, paymentValidationTime, paymentAddBrowser, allowDeferredPay, mandate, mandateDescription, mandateReference,
-                paymentMenuResultSuccess, paymentMenuResultCanceled, paymentMenuResultPending, paymentMenuResultError );
+        return "PaymentContextDO{" +
+               "amount=" + amount +
+               ", currency=" + currency +
+               ", description='" + description + '\'' +
+               ", orderReference='" + orderReference + '\'' +
+               ", paymentProfile='" + paymentProfile + '\'' +
+               ", paymentValidationTime=" + paymentValidationTime +
+               ", paymentAddBrowser=" + paymentAddBrowser +
+               ", allowDeferredPay=" + allowDeferredPay +
+               ", mandate=" + mandate +
+               ", mandateDescription='" + mandateDescription + '\'' +
+               ", mandateReference='" + mandateReference + '\'' +
+               ", paymentMenuResultSuccess='" + paymentMenuResultSuccess + '\'' +
+               ", paymentMenuResultCanceled='" + paymentMenuResultCanceled + '\'' +
+               ", paymentMenuResultPending='" + paymentMenuResultPending + '\'' +
+               ", paymentMenuResultError='" + paymentMenuResultError + '\'' +
+               ", allowPartial=" + allowPartial +
+               ", onlyWallets=" + onlyWallets +
+               '}';
     }
 
     // Accessors
@@ -339,5 +377,25 @@ public class PaymentContextDO implements Serializable {
     public void setPaymentMenuResultError(final String paymentMenuResultError) {
 
         this.paymentMenuResultError = paymentMenuResultError;
+    }
+
+    public boolean isAllowPartial() {
+
+        return allowPartial;
+    }
+
+    public void setAllowPartial(final boolean allowPartial) {
+
+        this.allowPartial = allowPartial;
+    }
+
+    public boolean isOnlyWallets() {
+
+        return onlyWallets;
+    }
+
+    public void setOnlyWallets(final boolean onlyWallets) {
+
+        this.onlyWallets = onlyWallets;
     }
 }

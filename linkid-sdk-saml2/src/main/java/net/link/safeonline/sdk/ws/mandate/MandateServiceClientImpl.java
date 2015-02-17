@@ -78,6 +78,8 @@ public class MandateServiceClientImpl extends AbstractWSClient<MandateServicePor
         paymentContext.setDescription( paymentContextDO.getDescription() );
         paymentContext.setOrderReference( paymentContextDO.getOrderReference() );
         paymentContext.setPaymentProfile( paymentContextDO.getPaymentProfile() );
+        paymentContext.setAllowPartial( paymentContextDO.isAllowPartial() );
+        paymentContext.setOnlyWallets( paymentContextDO.isOnlyWallets() );
         request.setPaymentContext( paymentContext );
 
         request.setMandateReference( mandateReference );

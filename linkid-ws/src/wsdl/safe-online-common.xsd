@@ -102,6 +102,16 @@
                         linkID can allow for the user to make a deferred payment which he can complete later on from his browser.</documentation>
                 </annotation>
             </element>
+            <element name="allowPartial" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>allow partial payments via wallets, this flag does make sense if you allow normal payment methods</documentation>
+                </annotation>
+            </element>
+            <element name="onlyWallets" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>allow only wallets for this payment</documentation>
+                </annotation>
+            </element>
         </sequence>
     </complexType>
 
