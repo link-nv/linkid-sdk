@@ -7,16 +7,16 @@
 
 package net.link.safeonline.sdk.api.ws.wallet;
 
-public class WalletEnrollException extends Exception {
+public class WalletAddCreditException extends Exception {
 
-    private final WalletEnrollErrorCode errorCode;
+    private final WalletAddCreditErrorCode errorCode;
 
-    public WalletEnrollException(final WalletEnrollErrorCode errorCode) {
+    public WalletAddCreditException(final WalletAddCreditErrorCode errorCode) {
 
         this.errorCode = errorCode;
     }
 
-    public WalletEnrollErrorCode getErrorCode() {
+    public WalletAddCreditErrorCode getErrorCode() {
 
         return errorCode;
     }

@@ -6,7 +6,7 @@
 		<documentation>
 			Document identifier: safe-online-wallet
 			Revision history:
-			V1.0 (January, 2015):
+			V1.0 (February, 2015):
             Initial version
 		</documentation>
 	</annotation>
@@ -47,16 +47,21 @@
     </element>
 
 	<complexType name="WalletEnrollSuccess">
-	</complexType>
-
-	<complexType name="WalletEnrollError">
 		<sequence>
 			<element name="unknownUsers" type="string" minOccurs="0" maxOccurs="unbounded">
 				<annotation>
 					<documentation>The list of unknown users that did not get enrolled</documentation>
 				</annotation>
 			</element>
+			<element name="alreadyEnrolledUsers" type="string" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>The list of users that were already enrolled</documentation>
+				</annotation>
+			</element>
 		</sequence>
+	</complexType>
+
+	<complexType name="WalletEnrollError">
 		<attribute name="errorCode" type="tns:WalletEnrollErrorCode" use="required" />
 	</complexType>
 
@@ -65,11 +70,6 @@
 			<documentation>Wallet Enroll Error codes</documentation>
 		</annotation>
 		<restriction base="string">
-			<enumeration value="error.unknown.user">
-				<annotation>
-					<documentation>No such linkID user</documentation>
-				</annotation>
-			</enumeration>
 			<enumeration value="error.unknown.wallet">
 				<annotation>
 					<documentation>No such linkID wallet</documentation>
@@ -83,5 +83,74 @@
 		</restriction>
 	</simpleType>
 
+    <element name="WalletAddCreditRequest">
+		<complexType>
+            <sequence>
+                <element name="userIds" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="amount" type="double" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>The amount to be added to the wallet ( in cents )</documentation>
+                    </annotation>
+                </element>
+                <element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletAddCreditResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletAddCreditSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletAddCreditError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletAddCreditSuccess">
+		<sequence>
+			<element name="unknownUsers" type="string" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>The list of unknown users that did not get credit added</documentation>
+				</annotation>
+			</element>
+			<element name="notEnrolledUsers" type="string" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>The list of users that were not enrolled</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="WalletAddCreditError">
+		<attribute name="errorCode" type="tns:WalletAddCreditErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletAddCreditErrorCode">
+		<annotation>
+			<documentation>Wallet AddCredit Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
 
 </schema>

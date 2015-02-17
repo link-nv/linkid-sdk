@@ -7,13 +7,22 @@
         </schema>
     </types>
 
-    <!-- =================== Status request ========================= -->
+    <!-- =================== Enroll request ========================= -->
 
     <message name="enrollRequest">
 		<part name="request" element="tns:WalletEnrollRequest" />
 	</message>
 	<message name="enrollResponse">
 		<part name="response" element="tns:WalletEnrollResponse" />
+	</message>
+
+    <!-- =================== AddCredit request ======================= -->
+
+    <message name="addCreditRequest">
+		<part name="request" element="tns:WalletAddCreditRequest" />
+	</message>
+	<message name="addCreditResponse">
+		<part name="response" element="tns:WalletAddCreditResponse" />
 	</message>
 
     <!-- =========================== Ports ========================== -->
@@ -23,6 +32,10 @@
 			<input message="tns:enrollRequest" />
 			<output message="tns:enrollResponse" />
 		</operation>
+		<operation name="addCredit">
+			<input message="tns:addCreditRequest" />
+			<output message="tns:addCreditResponse" />
+		</operation>
     </portType>
 
     <!-- ========================= Bindings ======================== -->
@@ -31,6 +44,15 @@
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="enroll">
             <soap:operation soapAction="urn:net:lin-k:safe-online:wallet:enroll" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="addCredit">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:wallet:addCredit" />
             <input>
                 <soap:body use="literal" />
             </input>

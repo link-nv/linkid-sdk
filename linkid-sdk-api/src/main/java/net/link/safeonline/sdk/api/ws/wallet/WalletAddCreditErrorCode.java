@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.api.ws.wallet;
 
-public enum WalletEnrollErrorCode {
+public enum WalletAddCreditErrorCode {
 
     ERROR_UNKNOWN_WALLET,
     ERROR_UNEXPECTED

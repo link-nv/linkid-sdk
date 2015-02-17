@@ -23,6 +23,14 @@ public interface WalletServiceClient {
      *
      * @throws WalletEnrollException something went wrong, check the error code in the exception
      */
-    void enroll(List<String> userIds, String walletId, double amount, Currency currency)
+    WalletEnrollResult enroll(List<String> userIds, String walletId, double amount, Currency currency)
             throws WalletEnrollException;
+
+    /**
+     * Add credit to users for a wallet
+     *
+     * @throws WalletAddCreditException something went wrong, check the error code in the exception
+     */
+    WalletAddCreditResult addCredit(List<String> userIds, String walletId, double amount, Currency currency)
+            throws WalletAddCreditException;
 }

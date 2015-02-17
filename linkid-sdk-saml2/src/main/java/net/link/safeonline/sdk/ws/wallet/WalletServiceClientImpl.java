@@ -10,12 +10,18 @@ package net.link.safeonline.sdk.ws.wallet;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import javax.xml.ws.BindingProvider;
+import net.lin_k.safe_online.wallet.WalletAddCreditRequest;
+import net.lin_k.safe_online.wallet.WalletAddCreditResponse;
 import net.lin_k.safe_online.wallet.WalletEnrollRequest;
 import net.lin_k.safe_online.wallet.WalletEnrollResponse;
 import net.lin_k.safe_online.wallet.WalletServicePort;
 import net.link.safeonline.sdk.api.payment.Currency;
+import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditErrorCode;
+import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditException;
+import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditResult;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
+import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollResult;
 import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.wallet.WalletServiceFactory;
@@ -66,7 +72,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
     }
 
     @Override
-    public void enroll(final List<String> userIds, final String walletId, final double amount, final Currency currency)
+    public WalletEnrollResult enroll(final List<String> userIds, final String walletId, final double amount, final Currency currency)
             throws WalletEnrollException {
 
         //request
@@ -84,12 +90,42 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
         // response
         if (null != response.getError()) {
 
-            throw new WalletEnrollException( convert( response.getError().getErrorCode() ), response.getError().getUnknownUsers() );
+            throw new WalletEnrollException( convert( response.getError().getErrorCode() ) );
         }
 
         if (null != response.getSuccess()) {
 
-            return;
+            return new WalletEnrollResult( response.getSuccess().getUnknownUsers(), response.getSuccess().getAlreadyEnrolledUsers() );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public WalletAddCreditResult addCredit(final List<String> userIds, final String walletId, final double amount, final Currency currency)
+            throws WalletAddCreditException {
+
+        //request
+        WalletAddCreditRequest request = new WalletAddCreditRequest();
+
+        // inout
+        request.getUserIds().addAll( userIds );
+        request.setWalletId( walletId );
+        request.setAmount( amount );
+        request.setCurrency( SDKUtils.convert( currency ) );
+
+        // operate
+        WalletAddCreditResponse response = getPort().addCredit( request );
+
+        // response
+        if (null != response.getError()) {
+
+            throw new WalletAddCreditException( convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            return new WalletAddCreditResult( response.getSuccess().getUnknownUsers(), response.getSuccess().getNotEnrolledUsers() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
@@ -101,12 +137,23 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
 
         switch (errorCode) {
 
-            case ERROR_UNKNOWN_USER:
-                return WalletEnrollErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNKNOWN_WALLET:
                 return WalletEnrollErrorCode.ERROR_UNKNOWN_WALLET;
             case ERROR_UNEXPECTED:
                 return WalletEnrollErrorCode.ERROR_UNEXPECTED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    private WalletAddCreditErrorCode convert(final net.lin_k.safe_online.wallet.WalletAddCreditErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_WALLET:
+                return WalletAddCreditErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_UNEXPECTED:
+                return WalletAddCreditErrorCode.ERROR_UNEXPECTED;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

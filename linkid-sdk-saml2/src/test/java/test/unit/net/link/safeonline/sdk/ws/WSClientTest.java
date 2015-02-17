@@ -10,7 +10,10 @@ import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.reporting.ReportingServiceClient;
+import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditException;
+import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditResult;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
+import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollResult;
 import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
@@ -103,10 +106,33 @@ public class WSClientTest {
 
         // operate
         try {
-            client.enroll( userIds, walletId, 5, Currency.EUR );
+            WalletEnrollResult result = client.enroll( userIds, walletId, 5, Currency.EUR );
+            logger.dbg( "# not known: %d", result.getUnknownUsers().size() );
+            logger.dbg( "# already enrolled: %d", result.getAlreadyEnrolledUsers().size() );
         }
         catch (WalletEnrollException e) {
             logger.err( "Enroll error: %s", e.getErrorCode() );
+            fail();
+        }
+    }
+
+    @Test
+    public void testWalletAddCredit()
+            throws Exception {
+
+        // setup
+        WalletServiceClient client = new WalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        List<String> userIds = Arrays.asList( "9e4d2818-d9d4-454c-9b1d-1f067a1f7469" );
+        String walletId = "60d3113d-7229-4387-a271-792d905ca4ed";
+
+        // operate
+        try {
+            WalletAddCreditResult result = client.addCredit( userIds, walletId, 5, Currency.EUR );
+            logger.dbg( "# not known: %d", result.getUnknownUsers().size() );
+            logger.dbg( "# not enrolled: %d", result.getNotEnrolledUsers().size() );
+        }
+        catch (WalletAddCreditException e) {
+            logger.err( "Add credit error: %s", e.getErrorCode() );
             fail();
         }
     }
