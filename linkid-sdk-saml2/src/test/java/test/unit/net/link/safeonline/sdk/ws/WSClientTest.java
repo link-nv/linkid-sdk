@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
+import net.link.safeonline.sdk.api.payment.Currency;
 import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
@@ -102,7 +103,7 @@ public class WSClientTest {
 
         // operate
         try {
-            client.enroll( userIds, walletId );
+            client.enroll( userIds, walletId, 5, Currency.EUR );
         }
         catch (WalletEnrollException e) {
             logger.err( "Enroll error: %s", e.getErrorCode() );

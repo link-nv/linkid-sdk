@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:wallet" xmlns:tns="urn:net:lin-k:safe-online:wallet"
-        elementFormDefault="qualified">
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -25,6 +25,13 @@
                     <annotation>
                         <documentation>The linkID wallet ID</documentation>
                     </annotation>
+                </element>
+                <element name="amount" type="double" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>The amount to be added to the wallet ( in cents )</documentation>
+                    </annotation>
+                </element>
+                <element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
                 </element>
             </sequence>
 		</complexType>

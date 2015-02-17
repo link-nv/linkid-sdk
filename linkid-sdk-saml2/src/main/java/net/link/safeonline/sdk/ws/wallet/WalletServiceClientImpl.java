@@ -13,8 +13,9 @@ import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.wallet.WalletEnrollRequest;
 import net.lin_k.safe_online.wallet.WalletEnrollResponse;
 import net.lin_k.safe_online.wallet.WalletServicePort;
-import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
+import net.link.safeonline.sdk.api.payment.Currency;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollErrorCode;
+import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.wallet.WalletServiceFactory;
@@ -65,14 +66,17 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
     }
 
     @Override
-    public void enroll(final List<String> userIds, final String walletId)
+    public void enroll(final List<String> userIds, final String walletId, final double amount, final Currency currency)
             throws WalletEnrollException {
 
         //request
         WalletEnrollRequest request = new WalletEnrollRequest();
 
+        // inout
         request.getUserIds().addAll( userIds );
         request.setWalletId( walletId );
+        request.setAmount( amount );
+        request.setCurrency( SDKUtils.convert( currency ) );
 
         // operate
         WalletEnrollResponse response = getPort().enroll( request );
