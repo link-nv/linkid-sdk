@@ -12,6 +12,8 @@ import java.util.List;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.wallet.WalletAddCreditRequest;
 import net.lin_k.safe_online.wallet.WalletAddCreditResponse;
+import net.lin_k.safe_online.wallet.WalletCommitRequest;
+import net.lin_k.safe_online.wallet.WalletCommitResponse;
 import net.lin_k.safe_online.wallet.WalletEnrollRequest;
 import net.lin_k.safe_online.wallet.WalletEnrollResponse;
 import net.lin_k.safe_online.wallet.WalletServicePort;
@@ -19,6 +21,8 @@ import net.link.safeonline.sdk.api.payment.Currency;
 import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditResult;
+import net.link.safeonline.sdk.api.ws.wallet.WalletCommitErrorCode;
+import net.link.safeonline.sdk.api.ws.wallet.WalletCommitException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollResult;
@@ -78,7 +82,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
         //request
         WalletEnrollRequest request = new WalletEnrollRequest();
 
-        // inout
+        // input
         request.getUserIds().addAll( userIds );
         request.setWalletId( walletId );
         request.setAmount( amount );
@@ -108,7 +112,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
         //request
         WalletAddCreditRequest request = new WalletAddCreditRequest();
 
-        // inout
+        // input
         request.getUserIds().addAll( userIds );
         request.setWalletId( walletId );
         request.setAmount( amount );
@@ -126,6 +130,34 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
         if (null != response.getSuccess()) {
 
             return new WalletAddCreditResult( response.getSuccess().getUnknownUsers(), response.getSuccess().getNotEnrolledUsers() );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void commit(final String userId, final String walletId, final String walletTransactionId)
+            throws WalletCommitException {
+
+        // request
+        WalletCommitRequest request = new WalletCommitRequest();
+
+        // input
+        request.setUserId( userId );
+        request.setWalletId( walletId );
+        request.setWalletTransactionId( walletTransactionId );
+
+        // operate
+        WalletCommitResponse response = getPort().commit( request );
+
+        // response
+        if (null != response.getError()) {
+            throw new WalletCommitException( convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            // all good <o/
+            return;
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
@@ -154,6 +186,23 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
                 return WalletAddCreditErrorCode.ERROR_UNKNOWN_WALLET;
             case ERROR_UNEXPECTED:
                 return WalletAddCreditErrorCode.ERROR_UNEXPECTED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    private WalletCommitErrorCode convert(final net.lin_k.safe_online.wallet.WalletCommitErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_USER:
+                return WalletCommitErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_UNKNOWN_WALLET:
+                return WalletCommitErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_UNKNOWN_WALLET_TRANSACTION:
+                return WalletCommitErrorCode.ERROR_UNKNOWN_WALLET_TRANSACTION;
+            case ERROR_UNEXPECTED:
+                return WalletCommitErrorCode.ERROR_UNEXPECTED;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

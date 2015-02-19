@@ -88,7 +88,7 @@
             <sequence>
                 <element name="userIds" type="string" minOccurs="1" maxOccurs="unbounded">
                     <annotation>
-                        <documentation>The linkID userId</documentation>
+                        <documentation>The linkID userIds</documentation>
                     </annotation>
                 </element>
                 <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
@@ -143,6 +143,72 @@
 			<enumeration value="error.unknown.wallet">
 				<annotation>
 					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <element name="WalletCommitRequest">
+        <complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="walletTransactionId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet transaction ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="WalletCommitResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletCommitSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletCommitError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="WalletCommitSuccess">
+    </complexType>
+
+    <complexType name="WalletCommitError">
+		<attribute name="errorCode" type="tns:WalletCommitErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="WalletCommitErrorCode">
+		<annotation>
+			<documentation>Wallet Commit Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.transaction">
+				<annotation>
+					<documentation>No such linkID wallet transaction</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.unexpected">

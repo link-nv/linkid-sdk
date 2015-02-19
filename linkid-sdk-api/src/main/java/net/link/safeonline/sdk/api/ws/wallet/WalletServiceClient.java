@@ -33,4 +33,13 @@ public interface WalletServiceClient {
      */
     WalletAddCreditResult addCredit(List<String> userIds, String walletId, double amount, Currency currency)
             throws WalletAddCreditException;
+
+    /**
+     * Commit a wallet transaction. The amount payed by the specified wallet transaction ID will be free'd.
+     * If not committed, linkID will after a period of time release it.
+     *
+     * @throws WalletCommitException something went wrong, check the error code in the exception
+     */
+    void commit(String userId, String walletId, String walletTransactionId)
+            throws WalletCommitException;
 }
