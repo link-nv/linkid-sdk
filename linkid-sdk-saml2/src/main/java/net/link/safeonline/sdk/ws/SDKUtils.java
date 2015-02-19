@@ -52,6 +52,9 @@ public abstract class SDKUtils {
 
     public static net.link.safeonline.sdk.api.payment.Currency convert(final Currency currency) {
 
+        if (null == currency)
+            return null;
+
         switch (currency) {
 
             case EUR:
@@ -62,6 +65,9 @@ public abstract class SDKUtils {
     }
 
     public static Currency convert(final net.link.safeonline.sdk.api.payment.Currency currency) {
+
+        if (null == currency)
+            return null;
 
         switch (currency) {
 
