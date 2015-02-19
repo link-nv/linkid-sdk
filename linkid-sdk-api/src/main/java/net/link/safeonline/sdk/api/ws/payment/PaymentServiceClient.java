@@ -8,7 +8,6 @@
 package net.link.safeonline.sdk.api.ws.payment;
 
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
-import net.link.safeonline.sdk.api.payment.PaymentStatusDO;
 
 
 /**

@@ -45,7 +45,7 @@ public abstract class ServiceFactory {
 
     protected abstract SecurityTokenServiceClient _getStsService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
-    protected abstract PaymentServiceClient _getPaymentService(X509Certificate[] sslCertificates);
+    protected abstract PaymentServiceClient _getPaymentService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
     protected abstract Xkms2Client _getXkms2Client(X509Certificate[] sslCertificates);
 

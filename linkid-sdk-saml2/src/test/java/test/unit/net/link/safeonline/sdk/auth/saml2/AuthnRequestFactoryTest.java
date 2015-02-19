@@ -235,7 +235,7 @@ public class AuthnRequestFactoryTest {
         assertNotNull( paymentContexts );
         assertEquals( 1, paymentContexts.size() );
         PaymentContext paymentContextMap = (PaymentContext) paymentContexts.get( 0 );
-        assertEquals( 6, paymentContextMap.getAttributes().size() );
+        assertEquals( 8, paymentContextMap.getAttributes().size() );
 
         // validate callback map
         List<XMLObject> callbacks = resultAuthnRequest.getExtensions().getUnknownXMLObjects( Callback.DEFAULT_ELEMENT_NAME );

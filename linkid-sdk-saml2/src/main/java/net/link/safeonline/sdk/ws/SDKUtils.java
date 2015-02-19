@@ -29,6 +29,9 @@ public abstract class SDKUtils {
 
     public static XMLGregorianCalendar convert(final Date date) {
 
+        if (null == date)
+            return null;
+
         GregorianCalendar c = new GregorianCalendar();
         c.setTime( date );
         try {
@@ -37,6 +40,14 @@ public abstract class SDKUtils {
         catch (DatatypeConfigurationException e) {
             throw new InternalInconsistencyException( e );
         }
+    }
+
+    public static Date convert(final XMLGregorianCalendar calender) {
+
+        if (null == calender)
+            return null;
+
+        return calender.toGregorianCalendar().getTime();
     }
 
     public static net.link.safeonline.sdk.api.payment.Currency convert(final Currency currency) {

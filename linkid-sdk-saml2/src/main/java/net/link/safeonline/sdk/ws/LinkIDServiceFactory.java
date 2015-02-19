@@ -280,35 +280,6 @@ public class LinkIDServiceFactory extends ServiceFactory {
     }
 
     /**
-     * Retrieve a proxy to the linkID session tracking web service.
-     *
-     * @return proxy to the linkID session tracking web service.
-     */
-    public static PaymentServiceClient getPaymentService() {
-
-        return getPaymentService( null );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID payment web service.
-     *
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID session tracking web service.
-     */
-    public static PaymentServiceClient getPaymentService(@Nullable X509Certificate[] sslCertificates) {
-
-        return getInstance()._getPaymentService( sslCertificates );
-    }
-
-    @Override
-    protected PaymentServiceClient _getPaymentService(final X509Certificate[] sslCertificates) {
-
-        return new PaymentServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ) );
-    }
-
-    /**
      * Retrieve a proxy to the linkID XKMS2 web service.
      *
      * @return proxy to the linkID XKMS2 web service.
@@ -839,6 +810,95 @@ public class LinkIDServiceFactory extends ServiceFactory {
         } else {
 
             return getInstance()._getWalletService( new SDKWSSecurityConfiguration(), null );
+        }
+    }
+
+    /**
+     * Retrieve a proxy to the linkID payment web service.
+     *
+     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
+     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
+     *                        validation.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
+     *
+     * @return proxy to the linkID payment web service.
+     */
+    public static PaymentServiceClient getPaymentService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                         final X509Certificate[] sslCertificates) {
+
+        return getInstance()._getPaymentService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID payment web service.
+     *
+     * @param configuration   Configuration of the WS-Security layer that secures the transport.
+     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
+     *                        certificate.
+     *
+     * @return proxy to the linkID payment web service.
+     */
+    public static PaymentServiceClient getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+
+        return getInstance()._getPaymentService( configuration, sslCertificates );
+    }
+
+    @Override
+    protected PaymentServiceClient _getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+
+        return new PaymentServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID payment web service, using the WS-Security Username token profile
+     *
+     * @return proxy to the linkID payment web service.
+     */
+    public static PaymentServiceClient getPaymentService(final String wsUsername, final String wsPassword) {
+
+        return new PaymentServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+                new AbstractWSSecurityUsernameTokenCallback() {
+                    @Override
+                    public String getUsername() {
+
+                        return wsUsername;
+                    }
+
+                    @Override
+                    public String getPassword() {
+
+                        return wsPassword;
+                    }
+
+                    @Nullable
+                    @Override
+                    public String handle(final String username) {
+
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isInboundHeaderOptional() {
+
+                        return true;
+                    }
+                } );
+    }
+
+    /**
+     * Retrieve a proxy to the linkID payment web service.
+     *
+     * @return proxy to the linkID payment web service.
+     */
+    public static PaymentServiceClient getPaymentService() {
+
+        if (null != SDKConfigHolder.config().linkID().app().username()) {
+
+            return getPaymentService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+        } else {
+
+            return getInstance()._getPaymentService( new SDKWSSecurityConfiguration(), null );
         }
     }
 }

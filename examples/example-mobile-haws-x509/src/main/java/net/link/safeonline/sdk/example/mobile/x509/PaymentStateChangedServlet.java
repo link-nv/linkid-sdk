@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.payment.PaymentConstants;
-import net.link.safeonline.sdk.api.payment.PaymentStatusDO;
+import net.link.safeonline.sdk.api.ws.payment.PaymentStatusDO;
 import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.logging.Logger;

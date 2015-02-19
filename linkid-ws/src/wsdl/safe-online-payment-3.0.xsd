@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:payment:3.0" xmlns:tns="urn:net:lin-k:safe-online:payment:3.0"
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-payment
+			Revision history:
+			V3.0 (February, 2015):
+			Authorized vs capture details
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <element name="PaymentStatusRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="PaymentStatusResponse">
+        <complexType>
+            <sequence>
+                <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="com:PaymentStatusType">
+                    <annotation>
+                        <documentation>Order payment status</documentation>
+                    </annotation>
+                </element>
+                <element name="captured" minOccurs="1" maxOccurs="1" type="boolean">
+                    <annotation>
+                        <documentation>Order captured? Only makes sense for orders with Docdata transactions for a merchant with automatic capture disabled</documentation>
+                    </annotation>
+                </element>
+                <element name="amountPayed" minOccurs="1" maxOccurs="1" type="double">
+                    <annotation>
+                        <documentation>How much of the order was payed (in cents)? This only makes sense if partial payments were allowed for this order</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentDetails" minOccurs="1" maxOccurs="1" type="tns:PaymentDetails">
+                    <annotation>
+                        <documentation>Order payment details</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentDetails">
+        <sequence>
+            <element name="paymentTransactions" minOccurs="0" maxOccurs="unbounded" type="tns:PaymentTransaction">
+                <annotation>
+                    <documentation>Regular payment transactions, VISA, MASTERCARD, SEPA, ...</documentation>
+                </annotation>
+            </element>
+            <element name="walletTransactions" minOccurs="0" maxOccurs="unbounded" type="tns:WalletTransaction">
+                <annotation>
+                    <documentation>Wallet payment transactions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentTransaction">
+        <sequence>
+            <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="com:PaymentStatusType">
+                <annotation>
+                    <documentation>Transaction payment status</documentation>
+                </annotation>
+            </element>
+            <element name="creationDate" minOccurs="1" maxOccurs="1" type="dateTime">
+                <annotation>
+                    <documentation>Transaction creation data</documentation>
+                </annotation>
+            </element>
+            <element name="authorizationDate" minOccurs="0" maxOccurs="1" type="dateTime">
+                <annotation>
+                    <documentation>Transaction authorization date. null if not yet authorized</documentation>
+                </annotation>
+            </element>
+            <element name="captureDate" minOccurs="0" maxOccurs="1" type="dateTime">
+                <annotation>
+                    <documentation>Transaction capture date. null if not yet authorized. Only makes sense for payments with manual capture. Automatic capturing => authorized==captured</documentation>
+                </annotation>
+            </element>
+            <element name="docdataReference" minOccurs="0" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>Optional docdata reference.</documentation>
+                </annotation>
+            </element>
+            <element name="amount" minOccurs="1" maxOccurs="1" type="double">
+                <annotation>
+                    <documentation>Transaction amount (in cents)</documentation>
+                </annotation>
+            </element>
+            <element name="currency" minOccurs="1" maxOccurs="1" type="com:Currency">
+                <annotation>
+                    <documentation>Transaction currency</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletTransaction">
+        <sequence>
+            <element name="walletId" minOccurs="1" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>Wallet ID, a UUID</documentation>
+                </annotation>
+            </element>
+            <element name="creationDate" minOccurs="1" maxOccurs="1" type="dateTime">
+                <annotation>
+                    <documentation>Transaction creation data</documentation>
+                </annotation>
+            </element>
+            <element name="transactionId" minOccurs="1" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>Transaction ID, a UUID</documentation>
+                </annotation>
+            </element>
+            <element name="amount" minOccurs="1" maxOccurs="1" type="double">
+                <annotation>
+                    <documentation>Transaction amount (in cents)</documentation>
+                </annotation>
+            </element>
+            <element name="currency" minOccurs="1" maxOccurs="1" type="com:Currency">
+                <annotation>
+                    <documentation>Transaction currency</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+</schema>

@@ -9,7 +9,7 @@ package net.link.safeonline.ws.payment;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.payment._2.PaymentService;
+import net.lin_k.safe_online.payment._3.PaymentService;
 
 
 public class PaymentServiceFactory {
@@ -22,10 +22,10 @@ public class PaymentServiceFactory {
     public static PaymentService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-payment-2.0.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-payment-3.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Payment WSDL not found" );
 
-        return new PaymentService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:payment:2.0", "PaymentService" ) );
+        return new PaymentService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:payment:3.0", "PaymentService" ) );
     }
 }

@@ -116,7 +116,7 @@ public class WSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testWalletAddCredit()
             throws Exception {
 
