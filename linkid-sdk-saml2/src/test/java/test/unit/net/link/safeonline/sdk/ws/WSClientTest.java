@@ -11,9 +11,9 @@ import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.reporting.ReportingServiceClient;
 import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditException;
-import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditResult;
 import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
-import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollResult;
+import net.link.safeonline.sdk.api.ws.wallet.WalletRemoveCreditException;
+import net.link.safeonline.sdk.api.ws.wallet.WalletRemoveException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
@@ -101,14 +101,13 @@ public class WSClientTest {
 
         // setup
         WalletServiceClient client = new WalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        List<String> userIds = Arrays.asList( "9e4d2818-d9d4-454c-9b1d-1f067a1f7469" );
-        String walletId = "60d3113d-7229-4387-a271-792d905ca4ed";
+        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String walletOrganizationId = "60d3113d-7229-4387-a271-792d905ca4ed";
 
         // operate
         try {
-            WalletEnrollResult result = client.enroll( userIds, walletId, 5, Currency.EUR );
-            logger.dbg( "# not known: %d", result.getUnknownUsers().size() );
-            logger.dbg( "# already enrolled: %d", result.getAlreadyEnrolledUsers().size() );
+            String walletId = client.enroll( userId, walletOrganizationId, 500, Currency.EUR );
+            logger.inf( "Enrolled wallet: %s", walletId );
         }
         catch (WalletEnrollException e) {
             logger.err( "Enroll error: %s", e.getErrorCode() );
@@ -122,17 +121,53 @@ public class WSClientTest {
 
         // setup
         WalletServiceClient client = new WalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        List<String> userIds = Arrays.asList( "9e4d2818-d9d4-454c-9b1d-1f067a1f7469" );
-        String walletId = "60d3113d-7229-4387-a271-792d905ca4ed";
+        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String walletId = "8fb05095-6210-40a1-87e6-08f3b1f3a982";
 
         // operate
         try {
-            WalletAddCreditResult result = client.addCredit( userIds, walletId, 5, Currency.EUR );
-            logger.dbg( "# not known: %d", result.getUnknownUsers().size() );
-            logger.dbg( "# not enrolled: %d", result.getNotEnrolledUsers().size() );
+            client.addCredit( userId, walletId, 100, Currency.EUR );
         }
         catch (WalletAddCreditException e) {
             logger.err( "Add credit error: %s", e.getErrorCode() );
+            fail();
+        }
+    }
+
+    //    @Test
+    public void testWalletRemoveCredit()
+            throws Exception {
+
+        // setup
+        WalletServiceClient client = new WalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String walletId = "8fb05095-6210-40a1-87e6-08f3b1f3a982";
+
+        // operate
+        try {
+            client.removeCredit( userId, walletId, 100, Currency.EUR );
+        }
+        catch (WalletRemoveCreditException e) {
+            logger.err( "Remove credit error: %s", e.getErrorCode() );
+            fail();
+        }
+    }
+
+    //    @Test
+    public void testWalletRemove()
+            throws Exception {
+
+        // setup
+        WalletServiceClient client = new WalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String walletId = "8fb05095-6210-40a1-87e6-08f3b1f3a982";
+
+        // operate
+        try {
+            client.remove( userId, walletId );
+        }
+        catch (WalletRemoveException e) {
+            logger.err( "Remove error: %s", e.getErrorCode() );
             fail();
         }
     }

@@ -7,10 +7,9 @@
 
 package net.link.safeonline.sdk.api.ws.wallet;
 
-public enum WalletEnrollErrorCode {
+public enum WalletRemoveCreditErrorCode {
 
     ERROR_UNKNOWN_WALLET,
     ERROR_UNKNOWN_USER,
-    ERROR_USER_ALREADY_ENROLLED,
     ERROR_UNEXPECTED
 }

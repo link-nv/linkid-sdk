@@ -13,17 +13,21 @@
 
     <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
 
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Enroll                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
     <element name="WalletEnrollRequest">
 		<complexType>
             <sequence>
-                <element name="userIds" type="string" minOccurs="1" maxOccurs="unbounded">
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>The linkID userId</documentation>
                     </annotation>
                 </element>
-                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
                     <annotation>
-                        <documentation>The linkID wallet ID</documentation>
+                        <documentation>The linkID wallet organization ID</documentation>
                     </annotation>
                 </element>
                 <element name="amount" type="double" minOccurs="0" maxOccurs="1">
@@ -47,18 +51,13 @@
     </element>
 
 	<complexType name="WalletEnrollSuccess">
-		<sequence>
-			<element name="unknownUsers" type="string" minOccurs="0" maxOccurs="unbounded">
-				<annotation>
-					<documentation>The list of unknown users that did not get enrolled</documentation>
-				</annotation>
-			</element>
-			<element name="alreadyEnrolledUsers" type="string" minOccurs="0" maxOccurs="unbounded">
-				<annotation>
-					<documentation>The list of users that were already enrolled</documentation>
-				</annotation>
-			</element>
-		</sequence>
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+            </element>
+        </sequence>
 	</complexType>
 
 	<complexType name="WalletEnrollError">
@@ -75,6 +74,16 @@
 					<documentation>No such linkID wallet</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.user.already.enrolled">
+				<annotation>
+					<documentation>User was already enrolled</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened</documentation>
@@ -83,12 +92,16 @@
 		</restriction>
 	</simpleType>
 
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                            Wallet Add Credit                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
     <element name="WalletAddCreditRequest">
 		<complexType>
             <sequence>
-                <element name="userIds" type="string" minOccurs="1" maxOccurs="unbounded">
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
                     <annotation>
-                        <documentation>The linkID userIds</documentation>
+                        <documentation>The linkID userId</documentation>
                     </annotation>
                 </element>
                 <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
@@ -117,18 +130,6 @@
     </element>
 
 	<complexType name="WalletAddCreditSuccess">
-		<sequence>
-			<element name="unknownUsers" type="string" minOccurs="0" maxOccurs="unbounded">
-				<annotation>
-					<documentation>The list of unknown users that did not get credit added</documentation>
-				</annotation>
-			</element>
-			<element name="notEnrolledUsers" type="string" minOccurs="0" maxOccurs="unbounded">
-				<annotation>
-					<documentation>The list of users that were not enrolled</documentation>
-				</annotation>
-			</element>
-		</sequence>
 	</complexType>
 
 	<complexType name="WalletAddCreditError">
@@ -145,6 +146,11 @@
 					<documentation>No such linkID wallet</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened</documentation>
@@ -152,6 +158,137 @@
 			</enumeration>
 		</restriction>
 	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                            Wallet Remove Credit                                              -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletRemoveCreditRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="amount" type="double" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>The amount to be removed to the wallet ( in cents ), if -1 or amount > wallet's credit the wallet's credit will be 0</documentation>
+                    </annotation>
+                </element>
+                <element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletRemoveCreditResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletRemoveCreditSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletRemoveCreditError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletRemoveCreditSuccess">
+	</complexType>
+
+	<complexType name="WalletRemoveCreditError">
+		<attribute name="errorCode" type="tns:WalletRemoveCreditErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletRemoveCreditErrorCode">
+		<annotation>
+			<documentation>Wallet removeCredit Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Remove                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletRemoveRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletRemoveSuccess">
+	</complexType>
+
+	<complexType name="WalletRemoveError">
+		<attribute name="errorCode" type="tns:WalletRemoveErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletRemoveErrorCode">
+		<annotation>
+			<documentation>Wallet remove Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Commit                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
 
     <element name="WalletCommitRequest">
         <complexType>

@@ -10,5 +10,6 @@ package net.link.safeonline.sdk.api.ws.wallet;
 public enum WalletAddCreditErrorCode {
 
     ERROR_UNKNOWN_WALLET,
+    ERROR_UNKNOWN_USER,
     ERROR_UNEXPECTED
 }
