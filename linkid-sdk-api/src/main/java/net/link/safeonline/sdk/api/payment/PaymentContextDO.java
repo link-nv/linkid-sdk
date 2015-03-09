@@ -54,11 +54,11 @@ public class PaymentContextDO implements Serializable {
     //
     // whether or not to allow to display the option in the client to add a payment method in the browser.
     // default is not allowed
-    private final PaymentAddBrowser paymentAddBrowser;
+    private       PaymentAddBrowser paymentAddBrowser;
     //
     // whether or not deferred payments are allowed. An e-mail will be sent to the user to complete the payment at a later time.
     // default is not allowed
-    private final boolean           allowDeferredPay;
+    private       boolean           allowDeferredPay;
     //
     // mandates
     private final boolean           mandate;      // payment context for a mandate?
@@ -397,5 +397,15 @@ public class PaymentContextDO implements Serializable {
     public void setOnlyWallets(final boolean onlyWallets) {
 
         this.onlyWallets = onlyWallets;
+    }
+
+    public void setPaymentAddBrowser(final PaymentAddBrowser paymentAddBrowser) {
+
+        this.paymentAddBrowser = paymentAddBrowser;
+    }
+
+    public void setAllowDeferredPay(final boolean allowDeferredPay) {
+
+        this.allowDeferredPay = allowDeferredPay;
     }
 }
