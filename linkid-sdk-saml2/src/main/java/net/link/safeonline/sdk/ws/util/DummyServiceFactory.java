@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
 import net.link.safeonline.sdk.api.ws.capture.CaptureServiceClient;
+import net.link.safeonline.sdk.api.ws.configuration.ConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
@@ -129,6 +130,12 @@ public class DummyServiceFactory extends ServiceFactory {
 
     @Override
     protected WalletServiceClient _getWalletService(final WSSecurityConfiguration configuration, final X509Certificate[] sslCertificates) {
+
+        throw new UnsupportedOperationException( "Not yet implemented" );
+    }
+
+    @Override
+    protected ConfigurationServiceClient _getConfigurationService(final WSSecurityConfiguration configuration, final X509Certificate[] sslCertificates) {
 
         throw new UnsupportedOperationException( "Not yet implemented" );
     }

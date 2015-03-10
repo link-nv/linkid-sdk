@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             targetNamespace="urn:net:lin-k:safe-online:configuration" xmlns:tns="urn:net:lin-k:safe-online:configuration"
+             name="SafeOnlineConfigurationWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:safe-online:configuration" schemaLocation="safe-online-configuration.xsd" />
+        </schema>
+    </types>
+
+    <!-- =================== Themes request ======================= -->
+
+    <message name="themesRequest">
+		<part name="request" element="tns:ThemesRequest" />
+	</message>
+	<message name="themesResponse">
+		<part name="response" element="tns:ThemesResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="ConfigurationServicePort">
+		<operation name="themes">
+			<input message="tns:themesRequest" />
+			<output message="tns:themesResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="ConfigurationServiceBinding" type="tns:ConfigurationServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="themes">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:configuration:themes" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="ConfigurationService">
+        <port name="ConfigurationServicePort" binding="tns:ConfigurationServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/configuration/" />
+        </port>
+    </service>
+</definitions>

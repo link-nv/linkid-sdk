@@ -1,5 +1,6 @@
 package test.unit.net.link.safeonline.sdk.ws;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -7,6 +8,10 @@ import java.util.List;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
 import net.link.safeonline.sdk.api.payment.Currency;
 import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
+import net.link.safeonline.sdk.api.ws.configuration.ConfigurationServiceClient;
+import net.link.safeonline.sdk.api.ws.configuration.ThemeDO;
+import net.link.safeonline.sdk.api.ws.configuration.ThemesDO;
+import net.link.safeonline.sdk.api.ws.configuration.ThemesException;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.reporting.ReportingServiceClient;
@@ -15,6 +20,7 @@ import net.link.safeonline.sdk.api.ws.wallet.WalletEnrollException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletRemoveException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
+import net.link.safeonline.sdk.ws.configuration.ConfigurationServiceClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.reporting.ReportingServiceClientImpl;
@@ -168,6 +174,29 @@ public class WSClientTest {
         }
         catch (WalletRemoveException e) {
             logger.err( "Remove error: %s", e.getErrorCode() );
+            fail();
+        }
+    }
+
+    @Test
+    public void testThemes()
+            throws Exception {
+
+        // setup
+        ConfigurationServiceClient client = new ConfigurationServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        String applicationName = "test-shop";
+
+        // operate
+        try {
+            ThemesDO themesDO = client.getThemes( applicationName );
+            assertNotNull( themesDO );
+            assertNotNull( themesDO.findDefaultTheme() );
+            for (ThemeDO themeDO : themesDO.getThemes()) {
+                logger.dbg( "Theme: %s", themeDO );
+            }
+        }
+        catch (ThemesException e) {
+            logger.err( "Themes error: %s", e.getErrorCode() );
             fail();
         }
     }

@@ -49,6 +49,7 @@
                         <wsdlFile>safe-online-reporting.wsdl</wsdlFile>
                         <wsdlFile>safe-online-capture.wsdl</wsdlFile>
                         <wsdlFile>safe-online-wallet.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-configuration.wsdl</wsdlFile>
                     </wsdlFiles>
                     <bindingFiles>
                         <bindingFile>jaxb-bindings.xml</bindingFile>

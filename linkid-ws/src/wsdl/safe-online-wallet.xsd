@@ -53,9 +53,9 @@
 	<complexType name="WalletEnrollSuccess">
         <sequence>
             <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
-                    <annotation>
-                        <documentation>The linkID wallet ID</documentation>
-                    </annotation>
+                <annotation>
+                    <documentation>The linkID wallet ID</documentation>
+                </annotation>
             </element>
         </sequence>
 	</complexType>
