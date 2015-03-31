@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static net.link.safeonline.sdk.configuration.SDKConfigHolder.config;
+import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config;
 import static net.link.util.util.ObjectUtils.ifNotNullElse;
 import static net.link.util.util.ObjectUtils.ifNotNullElseNullable;
 
@@ -45,7 +45,7 @@ public abstract class LinkIDContext implements Serializable {
     private Locale                      language;
     private String                      target;
     //
-    private Protocol                    protocol;
+    private LinkIDProtocol              protocol;
     private SAMLContext                 saml;
     //
     private String                      authenticationMessage;
@@ -62,10 +62,10 @@ public abstract class LinkIDContext implements Serializable {
 
     /**
      * @param applicationName The name of the application that the user is being authenticated for. May be {@code null}, in which case
-     *                        {@link AppLinkIDConfig#name()} will be used.
+     *                        {@link LinkIDAppConfig#name()} will be used.
      * @param keyProvider     The provider that will provide the necessary keys and certificates to authenticate and sign the application's
      *                        requests and responses or verify the linkID server's communications.  May be {@code null}, in which case
-     *                        {@link AppLinkIDConfig#keyProvider()} will be used.
+     *                        {@link LinkIDAppConfig#keyProvider()} will be used.
      * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
      *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
@@ -80,12 +80,12 @@ public abstract class LinkIDContext implements Serializable {
 
     /**
      * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
-     *                                which case {@link AppLinkIDConfig#name()} will be used.
+     *                                which case {@link LinkIDAppConfig#name()} will be used.
      * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param keyProvider             The provider that will provide the necessary keys and certificates to authenticate and sign the
      *                                application's requests and responses or verify the linkID server's communications.  May be
-     *                                {@code null}, in which case {@link AppLinkIDConfig#keyProvider()} will be used.
+     *                                {@code null}, in which case {@link LinkIDAppConfig#keyProvider()} will be used.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
      * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
      *                                location the user will be sent to after the authentication response has been handled (or with the
@@ -113,12 +113,12 @@ public abstract class LinkIDContext implements Serializable {
         this( applicationName, applicationFriendlyName, //
                 keyProvider.getIdentityKeyPair(), keyProvider.getIdentityCertificate(),  //
                 keyProvider.getTrustedCertificates(), //
-                keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ), language, target, null );
+                keyProvider.getTrustedCertificate( LinkIDConfigUtils.SSL_ALIAS ), language, target, null );
     }
 
     /**
      * @param applicationName         The name of the application that the user is being authenticated for. May be {@code null}, in
-     *                                which case {@link AppLinkIDConfig#name()} will be used.
+     *                                which case {@link LinkIDAppConfig#name()} will be used.
      * @param applicationFriendlyName A user-friendly name of the application.  May be {@code null}, in which case the user-friendly
      *                                name configured at the linkID server will be used.
      * @param applicationKeyPair      The application's key pair that will be used to sign the authentication request.
@@ -136,11 +136,11 @@ public abstract class LinkIDContext implements Serializable {
      *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
-     *                                {@code null}, in which case {@link ProtocolConfig#defaultProtocol()} will be used.
+     *                                {@code null}, in which case {@link LinkIDProtocolConfig#defaultProtocol()} will be used.
      */
     protected LinkIDContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair, X509Certificate applicationCertificate,
                             Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate, Locale language, String target,
-                            Protocol protocol) {
+                            LinkIDProtocol protocol) {
 
         saml = new SAMLContext();
 
@@ -189,7 +189,7 @@ public abstract class LinkIDContext implements Serializable {
         return target;
     }
 
-    public Protocol getProtocol() {
+    public LinkIDProtocol getProtocol() {
 
         return protocol;
     }
@@ -264,7 +264,7 @@ public abstract class LinkIDContext implements Serializable {
         this.target = target;
     }
 
-    public void setProtocol(final Protocol protocol) {
+    public void setProtocol(final LinkIDProtocol protocol) {
 
         this.protocol = protocol;
     }
@@ -310,8 +310,8 @@ public abstract class LinkIDContext implements Serializable {
 
     public static class SAMLContext implements Serializable {
 
-        private final SAMLBinding binding;
-        private final String      relayState;
+        private final LinkIDSAMLBinding binding;
+        private final String            relayState;
 
         public SAMLContext() {
 
@@ -320,19 +320,19 @@ public abstract class LinkIDContext implements Serializable {
 
         /**
          * @param binding    The SAML binding that should be used to establish SAML communication.  May be {@code null}, in which case
-         *                   the value of {@link SAMLProtocolConfig#binding()} will be used.
+         *                   the value of {@link LinkIDSAMLProtocolConfig#binding()} will be used.
          * @param relayState The Relay State that is sent along with SAML communications. May be {@code null}, in which case the value
-         *                   of {@link SAMLProtocolConfig#relayState()} will be used.
+         *                   of {@link LinkIDSAMLProtocolConfig#relayState()} will be used.
          * @param breakFrame break frame, used for having the linkID authentication process in an iframe. At the end of the process, the
          *                   SAML2 browser POST will make it break out of the iframe.
          */
-        public SAMLContext(@Nullable SAMLBinding binding, @Nullable String relayState, @Nullable Boolean breakFrame) {
+        public SAMLContext(@Nullable LinkIDSAMLBinding binding, @Nullable String relayState, @Nullable Boolean breakFrame) {
 
             this.binding = ifNotNullElse( binding, config().proto().saml().binding() );
             this.relayState = ifNotNullElseNullable( relayState, config().proto().saml().relayState() );
         }
 
-        public SAMLBinding getBinding() {
+        public LinkIDSAMLBinding getBinding() {
 
             return binding;
         }

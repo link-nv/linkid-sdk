@@ -68,32 +68,8 @@
             <element name="email" type="string" minOccurs="1" maxOccurs="1" />
             <element name="givenName" type="string" minOccurs="1" maxOccurs="1" />
             <element name="familyName" type="string" minOccurs="1" maxOccurs="1" />
-            <element name="transactions" type="tns:PaymentTransaction" minOccurs="0" maxOccurs="unbounded" />
-            <element name="walletTransactions" type="tns:WalletTransaction" minOccurs="0" maxOccurs="unbounded" />
-        </sequence>
-    </complexType>
-
-    <complexType name="PaymentTransaction">
-        <sequence>
-            <element name="paymentMethodType" type="com:PaymentMethodType" minOccurs="1" maxOccurs="1" />
-            <element name="paymentMethod" type="string" minOccurs="1" maxOccurs="1" />
-            <element name="paymentState" type="com:PaymentStatusType" minOccurs="1" maxOccurs="1" />
-            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
-            <element name="authorizationDate" type="dateTime" minOccurs="0" maxOccurs="1" />
-            <element name="capturedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
-            <element name="docdataReference" type="string" minOccurs="0" maxOccurs="1" />
-            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
-            <element name="currency" type="com:Currency" minOccurs="1" maxOccurs="1" />
-        </sequence>
-    </complexType>
-
-    <complexType name="WalletTransaction">
-        <sequence>
-            <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
-            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
-            <element name="transactionId" type="string" minOccurs="1" maxOccurs="1" />
-            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
-            <element name="currency" type="com:Currency" minOccurs="1" maxOccurs="1" />
+            <element name="transactions" type="com:PaymentTransactionV20" minOccurs="0" maxOccurs="unbounded" />
+            <element name="walletTransactions" type="com:WalletTransactionV20" minOccurs="0" maxOccurs="unbounded" />
         </sequence>
     </complexType>
 

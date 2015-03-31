@@ -25,7 +25,7 @@ public interface LinkIDConfig {
     /**
      * @return Application linkID identity configuration.  Identity, keys, etc.
      */
-    AppLinkIDConfig app();
+    LinkIDAppConfig app();
 
     /**
      * Specifies the language that the linkID service should localize its interaction with the user in.

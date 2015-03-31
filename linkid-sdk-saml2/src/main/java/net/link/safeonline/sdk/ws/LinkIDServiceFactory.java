@@ -12,34 +12,34 @@ import static net.link.util.util.ObjectUtils.ifNotNullElseNullable;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.api.LinkIDConstants;
-import net.link.safeonline.sdk.api.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
-import net.link.safeonline.sdk.api.ws.capture.CaptureServiceClient;
-import net.link.safeonline.sdk.api.ws.configuration.ConfigurationServiceClient;
-import net.link.safeonline.sdk.api.ws.data.client.DataClient;
-import net.link.safeonline.sdk.api.ws.haws.HawsServiceClient;
-import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
-import net.link.safeonline.sdk.api.ws.ltqr.LTQRServiceClient;
-import net.link.safeonline.sdk.api.ws.mandate.MandateServiceClient;
-import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
-import net.link.safeonline.sdk.api.ws.sts.SecurityTokenServiceClient;
-import net.link.safeonline.sdk.api.ws.wallet.WalletServiceClient;
-import net.link.safeonline.sdk.api.ws.xkms2.Xkms2Client;
-import net.link.safeonline.sdk.configuration.ConfigUtils;
-import net.link.safeonline.sdk.configuration.SDKConfigHolder;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
-import net.link.safeonline.sdk.ws.auth.AuthServiceClientImpl;
-import net.link.safeonline.sdk.ws.capture.CaptureServiceClientImpl;
-import net.link.safeonline.sdk.ws.configuration.ConfigurationServiceClientImpl;
-import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.haws.HawsServiceClientImpl;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
-import net.link.safeonline.sdk.ws.ltqr.LTQRServiceClientImpl;
-import net.link.safeonline.sdk.ws.mandate.MandateServiceClientImpl;
-import net.link.safeonline.sdk.ws.payment.PaymentServiceClientImpl;
-import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
-import net.link.safeonline.sdk.ws.wallet.WalletServiceClientImpl;
-import net.link.safeonline.sdk.ws.xkms2.Xkms2ClientImpl;
+import net.link.safeonline.sdk.api.ws.attrib.LinkIDAttributeClient;
+import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
+import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureServiceClient;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
+import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
+import net.link.safeonline.sdk.api.ws.haws.LinkIDHawsServiceClient;
+import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
+import net.link.safeonline.sdk.api.ws.mandate.LinkIDMandateServiceClient;
+import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentServiceClient;
+import net.link.safeonline.sdk.api.ws.sts.LinkIDSecurityTokenServiceClient;
+import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletServiceClient;
+import net.link.safeonline.sdk.api.ws.xkms2.LinkIDXkms2Client;
+import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
+import net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder;
+import net.link.safeonline.sdk.ws.attrib.LinkIDAttributeClientImpl;
+import net.link.safeonline.sdk.ws.auth.LinkIDAuthServiceClientImpl;
+import net.link.safeonline.sdk.ws.capture.LinkIDCaptureServiceClientImpl;
+import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClientImpl;
+import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
+import net.link.safeonline.sdk.ws.haws.LinkIDHawsServiceClientImpl;
+import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
+import net.link.safeonline.sdk.ws.ltqr.LinkIDLTQRServiceClientImpl;
+import net.link.safeonline.sdk.ws.mandate.LinkIDMandateServiceClientImpl;
+import net.link.safeonline.sdk.ws.payment.LinkIDPaymentServiceClientImpl;
+import net.link.safeonline.sdk.ws.sts.LinkIDSecurityTokenServiceClientImpl;
+import net.link.safeonline.sdk.ws.wallet.LinkIDWalletServiceClientImpl;
+import net.link.safeonline.sdk.ws.xkms2.LinkIDXkms2ClientImpl;
 import net.link.util.config.KeyProvider;
 import net.link.util.util.NSupplier;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
@@ -60,27 +60,27 @@ import org.opensaml.saml2.core.Response;
  * @author lhunath
  */
 @SuppressWarnings("UnusedDeclaration")
-public class LinkIDServiceFactory extends ServiceFactory {
+public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
 
-    private static ServiceFactory instance = new LinkIDServiceFactory();
+    private static LinkIDAbstractServiceFactory instance = new LinkIDServiceFactory();
 
     protected LinkIDServiceFactory() {
 
     }
 
-    private static ServiceFactory getInstance() {
+    private static LinkIDAbstractServiceFactory getInstance() {
 
         return instance;
     }
 
     private static String getWsBase() {
 
-        return String.format( "%s/%s", SDKConfigHolder.config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_WS_BASE );
+        return String.format( "%s/%s", LinkIDSDKConfigHolder.config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_WS_BASE );
     }
 
     private static String getWsUsernameBase() {
 
-        return String.format( "%s/%s", SDKConfigHolder.config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_WS_USERNAME_BASE );
+        return String.format( "%s/%s", LinkIDSDKConfigHolder.config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_WS_USERNAME_BASE );
     }
 
     public static String getWsBase(final String linkIDBase) {
@@ -98,9 +98,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static AttributeClient getAttributeService() {
+    public static LinkIDAttributeClient getAttributeService() {
 
-        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration(), null );
+        return getInstance()._getAttributeService( new LinkIDSDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -114,10 +114,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static AttributeClient getAttributeService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                      final X509Certificate[] sslCertificates) {
+    public static LinkIDAttributeClient getAttributeService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                            final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAttributeService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getAttributeService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -129,15 +129,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static AttributeClient getAttributeService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDAttributeClient getAttributeService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getAttributeService( configuration, sslCertificates );
     }
 
     @Override
-    protected AttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDAttributeClient _getAttributeService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new AttributeClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDAttributeClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -145,9 +145,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static DataClient getDataService() {
+    public static LinkIDDataClient getDataService() {
 
-        return getDataService( new SDKWSSecurityConfiguration(), null );
+        return getDataService( new LinkIDSDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -161,10 +161,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID data web service.
      */
-    public static DataClient getDataService(@Nullable final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDDataClient getDataService(@Nullable final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                             @Nullable final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getDataService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getDataService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -176,15 +176,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID data web service.
      */
-    public static DataClient getDataService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
+    public static LinkIDDataClient getDataService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
         return getInstance()._getDataService( configuration, sslCertificates );
     }
 
     @Override
-    protected DataClient _getDataService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDDataClient _getDataService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new DataClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDDataClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -192,9 +192,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NameIdentifierMappingClient getIdMappingService() {
+    public static LinkIDNameIdentifierMappingClient getIdMappingService() {
 
-        return getIdMappingService( new SDKWSSecurityConfiguration(), null );
+        return getIdMappingService( new LinkIDSDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -208,10 +208,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NameIdentifierMappingClient getIdMappingService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDNameIdentifierMappingClient getIdMappingService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                                   final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getIdMappingService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getIdMappingService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -223,15 +223,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static NameIdentifierMappingClient getIdMappingService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
+    public static LinkIDNameIdentifierMappingClient getIdMappingService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
         return getInstance()._getIdMappingService( configuration, sslCertificates );
     }
 
     @Override
-    protected NameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDNameIdentifierMappingClient _getIdMappingService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new NameIdentifierMappingClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDNameIdentifierMappingClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -239,9 +239,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static SecurityTokenServiceClient getStsService() {
+    public static LinkIDSecurityTokenServiceClient getStsService() {
 
-        return getStsService( new SDKWSSecurityConfiguration(), null );
+        return getStsService( new LinkIDSDKWSSecurityConfiguration(), null );
     }
 
     /**
@@ -255,10 +255,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static SecurityTokenServiceClient getStsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDSecurityTokenServiceClient getStsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                            final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getStsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getStsService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -270,15 +270,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static SecurityTokenServiceClient getStsService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
+    public static LinkIDSecurityTokenServiceClient getStsService(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
         return getInstance()._getStsService( configuration, sslCertificates );
     }
 
     @Override
-    protected SecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDSecurityTokenServiceClient _getStsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new SecurityTokenServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDSecurityTokenServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -286,9 +286,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID XKMS2 web service.
      */
-    public static Xkms2Client getXkms2Client() {
+    public static LinkIDXkms2Client getXkms2Client() {
 
-        return getXkms2Client( SDKConfigHolder.config().linkID().app().keyProvider() );
+        return getXkms2Client( LinkIDSDKConfigHolder.config().linkID().app().keyProvider() );
     }
 
     /**
@@ -298,9 +298,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID XKMS2 web service.
      */
-    public static Xkms2Client getXkms2Client(@NotNull final KeyProvider keyProvider) {
+    public static LinkIDXkms2Client getXkms2Client(@NotNull final KeyProvider keyProvider) {
 
-        return getInstance()._getXkms2Client( new X509Certificate[] { keyProvider.getTrustedCertificate( ConfigUtils.SSL_ALIAS ) } );
+        return getInstance()._getXkms2Client( new X509Certificate[] { keyProvider.getTrustedCertificate( LinkIDConfigUtils.SSL_ALIAS ) } );
     }
 
     /**
@@ -311,15 +311,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID XKMS2 web service.
      */
-    public static Xkms2Client getXkms2Client(X509Certificate[] sslCertificates) {
+    public static LinkIDXkms2Client getXkms2Client(X509Certificate[] sslCertificates) {
 
         return getInstance()._getXkms2Client( sslCertificates );
     }
 
     @Override
-    protected Xkms2Client _getXkms2Client(X509Certificate[] sslCertificates) {
+    protected LinkIDXkms2Client _getXkms2Client(X509Certificate[] sslCertificates) {
 
-        return new Xkms2ClientImpl( getWsBase(), getSSLCertificates( sslCertificates ) );
+        return new LinkIDXkms2ClientImpl( getWsBase(), getSSLCertificates( sslCertificates ) );
     }
 
     /**
@@ -330,10 +330,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID long term QR web service.
      */
-    public static LTQRServiceClient getLtqrServiceClient(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDLTQRServiceClient getLtqrServiceClient(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                          final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getLtqrServiceClient( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getLtqrServiceClient( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -345,15 +345,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static LTQRServiceClient getLtqrServiceClient(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
+    public static LinkIDLTQRServiceClient getLtqrServiceClient(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
 
         return getInstance()._getLtqrServiceClient( configuration, sslCertificates );
     }
 
     @Override
-    protected LTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDLTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new LTQRServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDLTQRServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -361,9 +361,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID haws web service.
      */
-    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final String wsUsername, final String wsPassword) {
+    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService(final String wsUsername, final String wsPassword) {
 
-        return new HawsServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ), new AbstractWSSecurityUsernameTokenCallback() {
+        return new LinkIDHawsServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ), new AbstractWSSecurityUsernameTokenCallback() {
             @Override
             public String getUsername() {
 
@@ -396,14 +396,14 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID haws web service.
      */
-    public static HawsServiceClient<AuthnRequest, Response> getHawsService() {
+    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService() {
 
-        if (null != SDKConfigHolder.config().linkID().app().username()) {
+        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getHawsService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+            return getHawsService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getHawsService( new SDKWSSecurityConfiguration(), null );
+            return getInstance()._getHawsService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 
@@ -418,10 +418,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                                            final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getHawsService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getHawsService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -433,15 +433,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID attribute web service.
      */
-    public static HawsServiceClient<AuthnRequest, Response> getHawsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getHawsService( configuration, sslCertificates );
     }
 
     @Override
-    protected HawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDHawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new HawsServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDHawsServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -449,9 +449,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final String wsUsername, final String wsPassword) {
+    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService(final String wsUsername, final String wsPassword) {
 
-        return new AuthServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ), new AbstractWSSecurityUsernameTokenCallback() {
+        return new LinkIDAuthServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ), new AbstractWSSecurityUsernameTokenCallback() {
             @Override
             public String getUsername() {
 
@@ -484,14 +484,14 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static AuthServiceClient<AuthnRequest, Response> getAuthService() {
+    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService() {
 
-        if (null != SDKConfigHolder.config().linkID().app().username()) {
+        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getAuthService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+            return getAuthService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getAuthService( new SDKWSSecurityConfiguration(), null );
+            return getInstance()._getAuthService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 
@@ -506,10 +506,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                                            final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAuthService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getAuthService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -521,15 +521,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static AuthServiceClient<AuthnRequest, Response> getAuthService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getAuthService( configuration, sslCertificates );
     }
 
     @Override
-    protected AuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDAuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new AuthServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDAuthServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     private static X509Certificate[] getSSLCertificates(final X509Certificate[] sslCertificates) {
@@ -538,7 +538,7 @@ public class LinkIDServiceFactory extends ServiceFactory {
             public X509Certificate[] get() {
 
                 try {
-                    return new X509Certificate[] { SDKConfigHolder.config().linkID().app().keyProvider().getTrustedCertificate( ConfigUtils.SSL_ALIAS ) };
+                    return new X509Certificate[] { LinkIDSDKConfigHolder.config().linkID().app().keyProvider().getTrustedCertificate( LinkIDConfigUtils.SSL_ALIAS ) };
                 }
                 catch (Throwable t) {
                     // ignore
@@ -553,9 +553,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID mandate web service.
      */
-    public static MandateServiceClient getMandateService(final String wsUsername, final String wsPassword) {
+    public static LinkIDMandateServiceClient getMandateService(final String wsUsername, final String wsPassword) {
 
-        return new MandateServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+        return new LinkIDMandateServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
                     @Override
                     public String getUsername() {
@@ -589,14 +589,14 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID mandate web service.
      */
-    public static MandateServiceClient getMandateService() {
+    public static LinkIDMandateServiceClient getMandateService() {
 
-        if (null != SDKConfigHolder.config().linkID().app().username()) {
+        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getMandateService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+            return getMandateService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getMandateService( new SDKWSSecurityConfiguration(), null );
+            return getInstance()._getMandateService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 
@@ -611,10 +611,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID mandate web service.
      */
-    public static MandateServiceClient getMandateService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDMandateServiceClient getMandateService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                          final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getMandateService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getMandateService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -626,15 +626,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID mandate web service.
      */
-    public static MandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDMandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getMandateService( configuration, sslCertificates );
     }
 
     @Override
-    protected MandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDMandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new MandateServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDMandateServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -648,10 +648,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID capture web service.
      */
-    public static CaptureServiceClient getCaptureService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDCaptureServiceClient getCaptureService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                          final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getCaptureService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getCaptureService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -663,15 +663,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID capture web service.
      */
-    public static CaptureServiceClient getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDCaptureServiceClient getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getCaptureService( configuration, sslCertificates );
     }
 
     @Override
-    protected CaptureServiceClient _getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDCaptureServiceClient _getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new CaptureServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDCaptureServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -679,9 +679,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID capture web service.
      */
-    public static CaptureServiceClient getCaptureService(final String wsUsername, final String wsPassword) {
+    public static LinkIDCaptureServiceClient getCaptureService(final String wsUsername, final String wsPassword) {
 
-        return new CaptureServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+        return new LinkIDCaptureServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
                     @Override
                     public String getUsername() {
@@ -715,14 +715,14 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID capture web service.
      */
-    public static CaptureServiceClient getCaptureService() {
+    public static LinkIDCaptureServiceClient getCaptureService() {
 
-        if (null != SDKConfigHolder.config().linkID().app().username()) {
+        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getCaptureService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+            return getCaptureService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getCaptureService( new SDKWSSecurityConfiguration(), null );
+            return getInstance()._getCaptureService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 
@@ -737,10 +737,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID wallet web service.
      */
-    public static WalletServiceClient getWalletService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDWalletServiceClient getWalletService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                        final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getWalletService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getWalletService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -752,15 +752,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID wallet web service.
      */
-    public static WalletServiceClient getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDWalletServiceClient getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getWalletService( configuration, sslCertificates );
     }
 
     @Override
-    protected WalletServiceClient _getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDWalletServiceClient _getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new WalletServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDWalletServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -768,9 +768,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID wallet web service.
      */
-    public static WalletServiceClient getWalletService(final String wsUsername, final String wsPassword) {
+    public static LinkIDWalletServiceClient getWalletService(final String wsUsername, final String wsPassword) {
 
-        return new WalletServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+        return new LinkIDWalletServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
                     @Override
                     public String getUsername() {
@@ -804,14 +804,14 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID wallet web service.
      */
-    public static WalletServiceClient getWalletService() {
+    public static LinkIDWalletServiceClient getWalletService() {
 
-        if (null != SDKConfigHolder.config().linkID().app().username()) {
+        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getWalletService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+            return getWalletService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getWalletService( new SDKWSSecurityConfiguration(), null );
+            return getInstance()._getWalletService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 
@@ -826,10 +826,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID payment web service.
      */
-    public static PaymentServiceClient getPaymentService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDPaymentServiceClient getPaymentService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                          final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getPaymentService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getPaymentService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -841,15 +841,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID payment web service.
      */
-    public static PaymentServiceClient getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDPaymentServiceClient getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getPaymentService( configuration, sslCertificates );
     }
 
     @Override
-    protected PaymentServiceClient _getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDPaymentServiceClient _getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new PaymentServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDPaymentServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -857,9 +857,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID payment web service.
      */
-    public static PaymentServiceClient getPaymentService(final String wsUsername, final String wsPassword) {
+    public static LinkIDPaymentServiceClient getPaymentService(final String wsUsername, final String wsPassword) {
 
-        return new PaymentServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+        return new LinkIDPaymentServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
                     @Override
                     public String getUsername() {
@@ -893,14 +893,14 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID payment web service.
      */
-    public static PaymentServiceClient getPaymentService() {
+    public static LinkIDPaymentServiceClient getPaymentService() {
 
-        if (null != SDKConfigHolder.config().linkID().app().username()) {
+        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getPaymentService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+            return getPaymentService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getPaymentService( new SDKWSSecurityConfiguration(), null );
+            return getInstance()._getPaymentService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 
@@ -915,10 +915,10 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID configuration web service.
      */
-    public static ConfigurationServiceClient getConfigurationService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+    public static LinkIDConfigurationServiceClient getConfigurationService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
                                                                      final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getConfigurationService( new SDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getConfigurationService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -930,15 +930,15 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID configuration web service.
      */
-    public static ConfigurationServiceClient getConfigurationService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDConfigurationServiceClient getConfigurationService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getConfigurationService( configuration, sslCertificates );
     }
 
     @Override
-    protected ConfigurationServiceClient _getConfigurationService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDConfigurationServiceClient _getConfigurationService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new ConfigurationServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDConfigurationServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     /**
@@ -946,9 +946,9 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID configuration web service.
      */
-    public static ConfigurationServiceClient getConfigurationService(final String wsUsername, final String wsPassword) {
+    public static LinkIDConfigurationServiceClient getConfigurationService(final String wsUsername, final String wsPassword) {
 
-        return new ConfigurationServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+        return new LinkIDConfigurationServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
                     @Override
                     public String getUsername() {
@@ -982,14 +982,14 @@ public class LinkIDServiceFactory extends ServiceFactory {
      *
      * @return proxy to the linkID configuration web service.
      */
-    public static ConfigurationServiceClient getConfigurationService() {
+    public static LinkIDConfigurationServiceClient getConfigurationService() {
 
-        if (null != SDKConfigHolder.config().linkID().app().username()) {
+        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getConfigurationService( SDKConfigHolder.config().linkID().app().username(), SDKConfigHolder.config().linkID().app().password() );
+            return getConfigurationService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getConfigurationService( new SDKWSSecurityConfiguration(), null );
+            return getInstance()._getConfigurationService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 }

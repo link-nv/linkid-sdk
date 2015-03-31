@@ -13,13 +13,11 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import net.link.safeonline.sdk.api.attribute.AttributeSDK;
-import net.link.safeonline.sdk.api.attribute.Compound;
-import net.link.safeonline.sdk.api.externalcode.ExternalCodeResponseDO;
-import net.link.safeonline.sdk.api.payment.PaymentResponseDO;
-import net.link.safeonline.sdk.api.ws.WebServiceConstants;
-import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.ExternalCodeResponse;
-import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.PaymentResponse;
+import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
+import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
+import net.link.safeonline.sdk.api.ws.LinkIDWebServiceConstants;
+import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.LinkIDExternalCodeResponse;
+import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.LinkIDPaymentResponse;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.saml.SamlUtils;
@@ -52,15 +50,15 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
         X xmlObject = Saml2Utils.unmarshall( xmlElement );
         NamespaceManager xmlObjectNSM = new NamespaceManager( xmlObject );
-        xmlObjectNSM.registerNamespace( new Namespace( WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, WebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
+        xmlObjectNSM.registerNamespace( new Namespace( LinkIDWebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, LinkIDWebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
 
         return xmlObject;
     }
 
     @SuppressWarnings("unchecked")
-    public static Map<String, List<AttributeSDK<Serializable>>> getAttributeValues(Assertion assertion) {
+    public static Map<String, List<LinkIDAttribute<Serializable>>> getAttributeValues(Assertion assertion) {
 
-        Map<String, List<AttributeSDK<Serializable>>> attributeMap = Maps.newHashMap();
+        Map<String, List<LinkIDAttribute<Serializable>>> attributeMap = Maps.newHashMap();
         List<AttributeStatement> attrStatements = assertion.getAttributeStatements();
         if (attrStatements == null || attrStatements.isEmpty())
             return ImmutableMap.of();
@@ -69,23 +67,23 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
         for (Attribute attribute : attributeStatement.getAttributes()) {
 
-            AttributeSDK<Serializable> attributeSDK = getAttributeSDK( attribute );
+            LinkIDAttribute<Serializable> linkIDAttribute = getAttributeSDK( attribute );
 
-            List<AttributeSDK<Serializable>> attributes = attributeMap.get( attributeSDK.getName() );
+            List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( linkIDAttribute.getName() );
             if (null == attributes) {
-                attributes = new LinkedList<AttributeSDK<Serializable>>();
+                attributes = new LinkedList<LinkIDAttribute<Serializable>>();
             }
-            attributes.add( attributeSDK );
-            attributeMap.put( attributeSDK.getName(), attributes );
+            attributes.add( linkIDAttribute );
+            attributeMap.put( linkIDAttribute.getName(), attributes );
         }
 
         return attributeMap;
     }
 
-    private static AttributeSDK<Serializable> getAttributeSDK(Attribute attributeType) {
+    private static LinkIDAttribute<Serializable> getAttributeSDK(Attribute attributeType) {
 
-        String attributeId = attributeType.getUnknownAttributes().get( WebServiceConstants.ATTRIBUTE_ID );
-        AttributeSDK<Serializable> attribute = new AttributeSDK<Serializable>( attributeId, attributeType.getName(), null );
+        String attributeId = attributeType.getUnknownAttributes().get( LinkIDWebServiceConstants.ATTRIBUTE_ID );
+        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<Serializable>( attributeId, attributeType.getName(), null );
 
         List<XMLObject> attributeValues = attributeType.getAttributeValues();
         if (attributeValues.isEmpty())
@@ -95,17 +93,17 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         if (null != xmlValue.getOrderedChildren() && !xmlValue.getOrderedChildren().isEmpty()) {
 
             // compound
-            List<AttributeSDK<?>> compoundMembers = new LinkedList<AttributeSDK<?>>();
+            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<LinkIDAttribute<?>>();
             for (XMLObject memberAttributeObject : attributeValues.get( 0 ).getOrderedChildren()) {
 
                 Attribute memberAttribute = (Attribute) memberAttributeObject;
-                AttributeSDK<Serializable> member = new AttributeSDK<Serializable>( attributeId, memberAttribute.getName(), null );
+                LinkIDAttribute<Serializable> member = new LinkIDAttribute<Serializable>( attributeId, memberAttribute.getName(), null );
                 if (!memberAttribute.getAttributeValues().isEmpty()) {
                     member.setValue( toJavaObject( memberAttribute.getAttributeValues().get( 0 ) ) );
                 }
                 compoundMembers.add( member );
             }
-            attribute.setValue( new Compound( compoundMembers ) );
+            attribute.setValue( new LinkIDCompound( compoundMembers ) );
         } else {
             // single/multi valued
             attribute.setValue( toJavaObject( xmlValue ) );
@@ -128,15 +126,15 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
     }
 
     @Nullable
-    public static PaymentResponseDO findPaymentResponse(final Response samlResponse) {
+    public static net.link.safeonline.sdk.api.payment.LinkIDPaymentResponse findPaymentResponse(final Response samlResponse) {
 
         if (null == samlResponse.getExtensions())
             return null;
 
-        if (null == samlResponse.getExtensions().getUnknownXMLObjects( PaymentResponse.DEFAULT_ELEMENT_NAME ))
+        if (null == samlResponse.getExtensions().getUnknownXMLObjects( LinkIDPaymentResponse.DEFAULT_ELEMENT_NAME ))
             return null;
 
-        List<XMLObject> paymentResponses = samlResponse.getExtensions().getUnknownXMLObjects( PaymentResponse.DEFAULT_ELEMENT_NAME );
+        List<XMLObject> paymentResponses = samlResponse.getExtensions().getUnknownXMLObjects( LinkIDPaymentResponse.DEFAULT_ELEMENT_NAME );
         if (paymentResponses.size() > 1) {
             logger.err( "Only 1 PaymentResponse in the Response extensions element is supported" );
             throw new InternalInconsistencyException( "Failed to parse SAML2 response: Only 1 PaymentResponse in the Response extensions element is supported",
@@ -147,7 +145,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
             return null;
         }
 
-        PaymentResponse paymentResponse = (PaymentResponse) paymentResponses.get( 0 );
+        LinkIDPaymentResponse paymentResponse = (LinkIDPaymentResponse) paymentResponses.get( 0 );
         Map<String, String> paymentResponseMap = Maps.newHashMap();
         for (Attribute attribute : paymentResponse.getAttributes()) {
             String name = attribute.getName();
@@ -156,19 +154,19 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
                 paymentResponseMap.put( name, ConversionUtils.toString( SamlUtils.toJavaObject( attributeValues.get( 0 ) ) ) );
             }
         }
-        return PaymentResponseDO.fromMap( paymentResponseMap );
+        return net.link.safeonline.sdk.api.payment.LinkIDPaymentResponse.fromMap( paymentResponseMap );
     }
 
     @Nullable
-    public static ExternalCodeResponseDO findExternalCodeResponse(final Response samlResponse) {
+    public static net.link.safeonline.sdk.api.externalcode.LinkIDExternalCodeResponse findExternalCodeResponse(final Response samlResponse) {
 
         if (null == samlResponse.getExtensions())
             return null;
 
-        if (null == samlResponse.getExtensions().getUnknownXMLObjects( ExternalCodeResponse.DEFAULT_ELEMENT_NAME ))
+        if (null == samlResponse.getExtensions().getUnknownXMLObjects( LinkIDExternalCodeResponse.DEFAULT_ELEMENT_NAME ))
             return null;
 
-        List<XMLObject> externalCodeResponses = samlResponse.getExtensions().getUnknownXMLObjects( ExternalCodeResponse.DEFAULT_ELEMENT_NAME );
+        List<XMLObject> externalCodeResponses = samlResponse.getExtensions().getUnknownXMLObjects( LinkIDExternalCodeResponse.DEFAULT_ELEMENT_NAME );
         if (externalCodeResponses.size() > 1) {
             logger.err( "Only 1 ExternalCodeResponse in the Response extensions element is supported" );
             throw new InternalInconsistencyException(
@@ -179,15 +177,15 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
             return null;
         }
 
-        ExternalCodeResponse externalCodeResponse = (ExternalCodeResponse) externalCodeResponses.get( 0 );
+        LinkIDExternalCodeResponse linkIDExternalCodeResponse = (LinkIDExternalCodeResponse) externalCodeResponses.get( 0 );
         Map<String, String> externalCodeResponseMap = Maps.newHashMap();
-        for (Attribute attribute : externalCodeResponse.getAttributes()) {
+        for (Attribute attribute : linkIDExternalCodeResponse.getAttributes()) {
             String name = attribute.getName();
             List<XMLObject> attributeValues = attribute.getAttributeValues();
             if (!attributeValues.isEmpty()) {
                 externalCodeResponseMap.put( name, ConversionUtils.toString( SamlUtils.toJavaObject( attributeValues.get( 0 ) ) ) );
             }
         }
-        return ExternalCodeResponseDO.fromMap( externalCodeResponseMap );
+        return net.link.safeonline.sdk.api.externalcode.LinkIDExternalCodeResponse.fromMap( externalCodeResponseMap );
     }
 }

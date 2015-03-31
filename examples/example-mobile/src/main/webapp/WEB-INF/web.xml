@@ -28,7 +28,7 @@
     </servlet>
     <servlet>
         <servlet-name>AuthLoginServlet</servlet-name>
-        <servlet-class>net.link.safeonline.sdk.auth.servlet.LoginServlet</servlet-class>
+        <servlet-class>net.link.safeonline.sdk.auth.servlet.LinkIDLoginServlet</servlet-class>
         <init-param>
             <param-name>ErrorPage</param-name>
             <param-value>error</param-value>
@@ -59,7 +59,7 @@
 
     <filter>
         <filter-name>ConfigFilter</filter-name>
-        <filter-class>net.link.safeonline.sdk.configuration.SDKConfigFilter</filter-class>
+        <filter-class>net.link.safeonline.sdk.configuration.LinkIDSDKConfigFilter</filter-class>
     </filter>
 
     <filter-mapping>

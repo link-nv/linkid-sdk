@@ -48,54 +48,14 @@
 
     <complexType name="PaymentDetails">
         <sequence>
-            <element name="paymentTransactions" minOccurs="0" maxOccurs="unbounded" type="tns:PaymentTransaction">
+            <element name="paymentTransactions" minOccurs="0" maxOccurs="unbounded" type="com:PaymentTransactionV20">
                 <annotation>
                     <documentation>Regular payment transactions, VISA, MASTERCARD, SEPA, ...</documentation>
                 </annotation>
             </element>
-            <element name="walletTransactions" minOccurs="0" maxOccurs="unbounded" type="tns:WalletTransaction">
+            <element name="walletTransactions" minOccurs="0" maxOccurs="unbounded" type="com:WalletTransactionV20">
                 <annotation>
                     <documentation>Wallet payment transactions</documentation>
-                </annotation>
-            </element>
-        </sequence>
-    </complexType>
-
-    <complexType name="PaymentTransaction">
-        <sequence>
-            <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="com:PaymentStatusType">
-                <annotation>
-                    <documentation>Transaction payment status</documentation>
-                </annotation>
-            </element>
-            <element name="creationDate" minOccurs="1" maxOccurs="1" type="dateTime">
-                <annotation>
-                    <documentation>Transaction creation data</documentation>
-                </annotation>
-            </element>
-            <element name="authorizationDate" minOccurs="0" maxOccurs="1" type="dateTime">
-                <annotation>
-                    <documentation>Transaction authorization date. null if not yet authorized</documentation>
-                </annotation>
-            </element>
-            <element name="captureDate" minOccurs="0" maxOccurs="1" type="dateTime">
-                <annotation>
-                    <documentation>Transaction capture date. null if not yet authorized. Only makes sense for payments with manual capture. Automatic capturing => authorized==captured</documentation>
-                </annotation>
-            </element>
-            <element name="docdataReference" minOccurs="0" maxOccurs="1" type="string">
-                <annotation>
-                    <documentation>Optional docdata reference.</documentation>
-                </annotation>
-            </element>
-            <element name="amount" minOccurs="1" maxOccurs="1" type="double">
-                <annotation>
-                    <documentation>Transaction amount (in cents)</documentation>
-                </annotation>
-            </element>
-            <element name="currency" minOccurs="1" maxOccurs="1" type="com:Currency">
-                <annotation>
-                    <documentation>Transaction currency</documentation>
                 </annotation>
             </element>
         </sequence>

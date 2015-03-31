@@ -11,20 +11,20 @@ import java.io.Serializable;
 @SuppressWarnings("unused")
 public class LinkIDTheme implements Serializable {
 
-    private final String            name;
-    private final boolean           defaultTheme;
+    private final String                name;
+    private final boolean               defaultTheme;
     //
-    private final LocalizedImagesDO logo;
-    private final LocalizedImagesDO authLogo;
-    private final LocalizedImagesDO background;
-    private final LocalizedImagesDO tabletBackground;
-    private final LocalizedImagesDO alternativeBackground;
+    private final LinkIDLocalizedImages logo;
+    private final LinkIDLocalizedImages authLogo;
+    private final LinkIDLocalizedImages background;
+    private final LinkIDLocalizedImages tabletBackground;
+    private final LinkIDLocalizedImages alternativeBackground;
     //
-    private final String            backgroundColor;
-    private final String            textColor;
+    private final String                backgroundColor;
+    private final String                textColor;
 
-    public LinkIDTheme(final String name, final boolean defaultTheme, final LocalizedImagesDO logo, final LocalizedImagesDO authLogo,
-                       final LocalizedImagesDO background, final LocalizedImagesDO tabletBackground, final LocalizedImagesDO alternativeBackground,
+    public LinkIDTheme(final String name, final boolean defaultTheme, final LinkIDLocalizedImages logo, final LinkIDLocalizedImages authLogo,
+                       final LinkIDLocalizedImages background, final LinkIDLocalizedImages tabletBackground, final LinkIDLocalizedImages alternativeBackground,
                        final String backgroundColor, final String textColor) {
 
         this.name = name;
@@ -68,27 +68,27 @@ public class LinkIDTheme implements Serializable {
         return defaultTheme;
     }
 
-    public LocalizedImagesDO getLogo() {
+    public LinkIDLocalizedImages getLogo() {
 
         return logo;
     }
 
-    public LocalizedImagesDO getAuthLogo() {
+    public LinkIDLocalizedImages getAuthLogo() {
 
         return authLogo;
     }
 
-    public LocalizedImagesDO getBackground() {
+    public LinkIDLocalizedImages getBackground() {
 
         return background;
     }
 
-    public LocalizedImagesDO getTabletBackground() {
+    public LinkIDLocalizedImages getTabletBackground() {
 
         return tabletBackground;
     }
 
-    public LocalizedImagesDO getAlternativeBackground() {
+    public LinkIDLocalizedImages getAlternativeBackground() {
 
         return alternativeBackground;
     }

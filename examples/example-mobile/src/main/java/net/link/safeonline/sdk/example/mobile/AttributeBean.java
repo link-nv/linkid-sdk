@@ -9,7 +9,7 @@ package net.link.safeonline.sdk.example.mobile;
 
 import java.util.Map;
 import javax.servlet.http.HttpSession;
-import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.auth.filter.LinkIDLoginManager;
 
 
 @SuppressWarnings("UnusedDeclaration")
@@ -33,11 +33,11 @@ public class AttributeBean {
 
     public Map getAttributes() {
 
-        return LoginManager.findAttributes( session );
+        return LinkIDLoginManager.findAttributes( session );
     }
 
     public String getUserId() {
 
-        return LoginManager.findUserId( session );
+        return LinkIDLoginManager.findUserId( session );
     }
 }

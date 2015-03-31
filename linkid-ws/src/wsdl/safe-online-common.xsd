@@ -128,6 +128,8 @@
         </sequence>
     </complexType>
 
+    <!-- V1 payment transactions -->
+
     <complexType name="PaymentTransaction">
         <sequence>
             <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
@@ -159,6 +161,30 @@
             <element name="validated" type="boolean" minOccurs="1" maxOccurs="1" />
             <element name="paymentOrderReference" type="string" minOccurs="1" maxOccurs="1" />
             <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentTransactionV20">
+        <sequence>
+            <element name="paymentMethodType" type="tns:PaymentMethodType" minOccurs="1" maxOccurs="1" />
+            <element name="paymentMethod" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="authorizationDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="capturedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="docdataReference" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletTransactionV20">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="transactionId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1" />
         </sequence>
     </complexType>
 

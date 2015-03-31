@@ -39,7 +39,7 @@
 
     <filter>
         <filter-name>ConfigFilter</filter-name>
-        <filter-class>net.link.safeonline.sdk.configuration.SDKConfigFilter</filter-class>
+        <filter-class>net.link.safeonline.sdk.configuration.LinkIDSDKConfigFilter</filter-class>
     </filter>
 
     <filter-mapping>

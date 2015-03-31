@@ -12,10 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.exception.WSClientTransportException;
-import net.link.safeonline.sdk.api.payment.PaymentConstants;
-import net.link.safeonline.sdk.api.ws.payment.PaymentStatusDO;
-import net.link.safeonline.sdk.api.ws.payment.PaymentServiceClient;
+import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentConstants;
+import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentStatus;
+import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.logging.Logger;
 
@@ -28,7 +28,7 @@ public class PaymentStateChangedServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String orderReference = request.getParameter( PaymentConstants.PAYMENT_CHANGED_ORDER_REF_PARAM );
+        String orderReference = request.getParameter( LinkIDPaymentConstants.PAYMENT_CHANGED_ORDER_REF_PARAM );
         if (null == orderReference) {
             logger.inf( "Payment status update but no order reference..." );
             return;
@@ -39,12 +39,12 @@ public class PaymentStateChangedServlet extends HttpServlet {
         // lookup the transaction
 
         // fetch the status report using the linkID payment web service
-        PaymentServiceClient paymentServiceClient = LinkIDServiceFactory.getPaymentService();
-        PaymentStatusDO paymentState;
+        LinkIDPaymentServiceClient linkIDPaymentServiceClient = LinkIDServiceFactory.getPaymentService();
+        LinkIDPaymentStatus paymentState;
         try {
-            paymentState = paymentServiceClient.getStatus( orderReference );
+            paymentState = linkIDPaymentServiceClient.getStatus( orderReference );
         }
-        catch (WSClientTransportException e) {
+        catch (LinkIDWSClientTransportException e) {
             logger.err( e, "Failed to get payment state..." );
             return;
         }

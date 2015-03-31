@@ -44,7 +44,7 @@ public class LinkIDHttpServletResponseAdapter extends HttpServletResponseAdapter
 
         // append linkID's request params
         if (null != language)
-            location = URLUtils.addParameter( location, RequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
+            location = URLUtils.addParameter( location, LinkIDRequestConstants.LANGUAGE_REQUEST_PARAM, language.getLanguage() );
 
         logger.dbg( "location=%s", location );
 
