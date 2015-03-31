@@ -12,17 +12,22 @@ import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.common.ParkingSession;
-import net.lin_k.safe_online.common.PaymentTransaction;
-import net.lin_k.safe_online.reporting.ParkingReportRequest;
-import net.lin_k.safe_online.reporting.ParkingReportResponse;
-import net.lin_k.safe_online.reporting.PaymentReportRequest;
-import net.lin_k.safe_online.reporting.PaymentReportResponse;
-import net.lin_k.safe_online.reporting.ReportingServicePort;
+import net.lin_k.safe_online.reporting._2.ParkingReportRequest;
+import net.lin_k.safe_online.reporting._2.ParkingReportResponse;
+import net.lin_k.safe_online.reporting._2.ParkingSession;
+import net.lin_k.safe_online.reporting._2.PaymentOrder;
+import net.lin_k.safe_online.reporting._2.PaymentReportRequest;
+import net.lin_k.safe_online.reporting._2.PaymentReportResponse;
+import net.lin_k.safe_online.reporting._2.PaymentTransaction;
+import net.lin_k.safe_online.reporting._2.ReportingServicePort;
+import net.lin_k.safe_online.reporting._2.WalletTransaction;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.parking.ParkingSessionDO;
-import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
+import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 import net.link.safeonline.sdk.api.ws.reporting.ReportingServiceClient;
 import net.link.safeonline.sdk.ws.SDKUtils;
 import net.link.safeonline.ws.reporting.ReportingServiceFactory;
@@ -79,8 +84,8 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
                                     String.format( "%s/%s", location, SDKUtils.getSDKProperty( "linkid.ws.reporting.path" ) ) );
     }
 
-    private List<PaymentTransactionDO> getPaymentReport(@Nullable final Date startDate, @Nullable final Date endDate,
-                                                        @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
+    private List<LinkIDPaymentOrder> getPaymentReport(@Nullable final Date startDate, @Nullable final Date endDate,
+                                                      @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
             throws WSClientTransportException {
 
         PaymentReportRequest request = new PaymentReportRequest();
@@ -101,15 +106,35 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
         try {
             PaymentReportResponse response = getPort().paymentReport( request );
 
-            List<PaymentTransactionDO> transactions = Lists.newLinkedList();
-            for (PaymentTransaction paymentTransaction : response.getTransactions()) {
-                transactions.add( new PaymentTransactionDO( paymentTransaction.getDate().toGregorianCalendar().getTime(), paymentTransaction.getAmount(),
-                        SDKUtils.convert( paymentTransaction.getCurrency() ), paymentTransaction.getPaymentMethod(), paymentTransaction.getDescription(),
-                        SDKUtils.convert( paymentTransaction.getPaymentState() ), paymentTransaction.isAuthorized(), paymentTransaction.isCaptured(),
-                        paymentTransaction.getOrderReference(), paymentTransaction.getDocdataReference(), paymentTransaction.getUserId(),
-                        paymentTransaction.getEmail(), paymentTransaction.getGivenName(), paymentTransaction.getFamilyName() ) );
+            List<LinkIDPaymentOrder> orders = Lists.newLinkedList();
+            for (PaymentOrder paymentOrder : response.getOrders()) {
+
+                // payment transactions
+                List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
+                for (PaymentTransaction paymentTransaction : paymentOrder.getTransactions()) {
+                    transactions.add(
+                            new LinkIDPaymentTransaction( SDKUtils.convert( paymentTransaction.getPaymentMethodType() ), paymentTransaction.getPaymentMethod(),
+                                    SDKUtils.convert( paymentTransaction.getPaymentState() ), convert( paymentTransaction.getCreationDate() ),
+                                    convert( paymentTransaction.getAuthorizationDate() ), convert( paymentTransaction.getCapturedDate() ),
+                                    paymentTransaction.getDocdataReference(), paymentTransaction.getAmount(),
+                                    SDKUtils.convert( paymentTransaction.getCurrency() ) ) );
+                }
+
+                // wallet transactions
+                List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
+                for (WalletTransaction walletTransaction : paymentOrder.getWalletTransactions()) {
+                    walletTransactions.add( new LinkIDWalletTransaction( walletTransaction.getWalletId(), convert( walletTransaction.getCreationDate() ),
+                            walletTransaction.getTransactionId(), walletTransaction.getAmount(), SDKUtils.convert( walletTransaction.getCurrency() ) ) );
+                }
+
+                // order
+                orders.add( new LinkIDPaymentOrder( convert( paymentOrder.getDate() ), paymentOrder.getAmount(), SDKUtils.convert( paymentOrder.getCurrency() ),
+                        paymentOrder.getDescription(), SDKUtils.convert( paymentOrder.getPaymentState() ), paymentOrder.getAmountPayed(),
+                        paymentOrder.isAuthorized(), paymentOrder.isCaptured(), paymentOrder.getOrderReference(), paymentOrder.getUserId(),
+                        paymentOrder.getEmail(), paymentOrder.getGivenName(), paymentOrder.getFamilyName(), transactions, walletTransactions ) );
             }
-            return transactions;
+
+            return orders;
         }
         catch (ClientTransportException e) {
             throw new WSClientTransportException( getBindingProvider(), e );
@@ -160,22 +185,27 @@ public class ReportingServiceClientImpl extends AbstractWSClient<ReportingServic
         }
     }
 
+    private Date convert(XMLGregorianCalendar xmlDate) {
+
+        return null != xmlDate? xmlDate.toGregorianCalendar().getTime(): null;
+    }
+
     @Override
-    public List<PaymentTransactionDO> getPaymentReport(final Date startDate, @Nullable final Date endDate)
+    public List<LinkIDPaymentOrder> getPaymentReport(final Date startDate, @Nullable final Date endDate)
             throws WSClientTransportException {
 
         return getPaymentReport( startDate, endDate, null, null );
     }
 
     @Override
-    public List<PaymentTransactionDO> getPaymentReportForOrderReferences(final List<String> orderReferences)
+    public List<LinkIDPaymentOrder> getPaymentReportForOrderReferences(final List<String> orderReferences)
             throws WSClientTransportException {
 
         return getPaymentReport( null, null, orderReferences, null );
     }
 
     @Override
-    public List<PaymentTransactionDO> getPaymentReportForMandates(final List<String> mandateReferences)
+    public List<LinkIDPaymentOrder> getPaymentReportForMandates(final List<String> mandateReferences)
             throws WSClientTransportException {
 
         return getPaymentReport( null, null, null, mandateReferences );

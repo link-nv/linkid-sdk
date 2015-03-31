@@ -20,7 +20,7 @@ import net.lin_k.safe_online.wallet.WalletRemoveCreditResponse;
 import net.lin_k.safe_online.wallet.WalletRemoveRequest;
 import net.lin_k.safe_online.wallet.WalletRemoveResponse;
 import net.lin_k.safe_online.wallet.WalletServicePort;
-import net.link.safeonline.sdk.api.payment.Currency;
+import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.WalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.WalletCommitErrorCode;
@@ -81,7 +81,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
     }
 
     @Override
-    public String enroll(final String userId, final String walletOrganizationId, final double amount, final Currency currency)
+    public String enroll(final String userId, final String walletOrganizationId, final double amount, final LinkIDCurrency currency)
             throws WalletEnrollException {
 
         //request
@@ -111,7 +111,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
     }
 
     @Override
-    public void addCredit(final String userId, final String walletId, final double amount, final Currency currency)
+    public void addCredit(final String userId, final String walletId, final double amount, final LinkIDCurrency currency)
             throws WalletAddCreditException {
 
         //request
@@ -141,7 +141,7 @@ public class WalletServiceClientImpl extends AbstractWSClient<WalletServicePort>
     }
 
     @Override
-    public void removeCredit(final String userId, final String walletId, final double amount, final Currency currency)
+    public void removeCredit(final String userId, final String walletId, final double amount, final LinkIDCurrency currency)
             throws WalletRemoveCreditException {
 
         //request

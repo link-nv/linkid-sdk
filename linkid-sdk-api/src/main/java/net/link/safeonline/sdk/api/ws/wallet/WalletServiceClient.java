@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.api.ws.wallet;
 
-import net.link.safeonline.sdk.api.payment.Currency;
+import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 
 
 /**
@@ -24,7 +24,7 @@ public interface WalletServiceClient {
      *
      * @throws WalletEnrollException something went wrong, check the error code in the exception
      */
-    String enroll(String userIds, String walletOrganizationId, double amount, Currency currency)
+    String enroll(String userIds, String walletOrganizationId, double amount, LinkIDCurrency currency)
             throws WalletEnrollException;
 
     /**
@@ -32,7 +32,7 @@ public interface WalletServiceClient {
      *
      * @throws WalletAddCreditException something went wrong, check the error code in the exception
      */
-    void addCredit(String userId, String walletId, double amount, Currency currency)
+    void addCredit(String userId, String walletId, double amount, LinkIDCurrency currency)
             throws WalletAddCreditException;
 
     /**
@@ -41,7 +41,7 @@ public interface WalletServiceClient {
      *
      * @throws WalletRemoveCreditException something went wrong, check the error code in the exception
      */
-    void removeCredit(String userId, String walletId, double amount, Currency currency)
+    void removeCredit(String userId, String walletId, double amount, LinkIDCurrency currency)
             throws WalletRemoveCreditException;
 
     /**

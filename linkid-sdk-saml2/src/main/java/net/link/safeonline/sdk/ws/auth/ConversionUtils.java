@@ -1,6 +1,6 @@
 package net.link.safeonline.sdk.ws.auth;
 
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.ws.auth.AuthenticationState;
 import net.link.util.InternalInconsistencyException;
 
@@ -54,7 +54,7 @@ public abstract class ConversionUtils {
         throw new InternalInconsistencyException( String.format( "Invalid authentication state %s!", authenticationState ) );
     }
 
-    public static net.lin_k.safe_online.auth.PaymentState convert(final PaymentState paymentState) {
+    public static net.lin_k.safe_online.auth.PaymentState convert(final LinkIDPaymentState paymentState) {
 
         switch (paymentState) {
 
@@ -77,24 +77,24 @@ public abstract class ConversionUtils {
         throw new InternalInconsistencyException( String.format( "Invalid payment state: %s", paymentState ) );
     }
 
-    public static PaymentState convert(final net.lin_k.safe_online.auth.PaymentState paymentState) {
+    public static LinkIDPaymentState convert(final net.lin_k.safe_online.auth.PaymentState paymentState) {
 
         switch (paymentState) {
 
             case LINKID_PAYMENT_STATE_STARTED:
-                return PaymentState.STARTED;
+                return LinkIDPaymentState.STARTED;
             case LINKID_PAYMENT_STATE_DEFERRED:
-                return PaymentState.DEFERRED;
+                return LinkIDPaymentState.DEFERRED;
             case LINKID_PAYMENT_STATE_WAITING:
-                return PaymentState.WAITING_FOR_UPDATE;
+                return LinkIDPaymentState.WAITING_FOR_UPDATE;
             case LINKID_PAYMENT_STATE_FAILED:
-                return PaymentState.FAILED;
+                return LinkIDPaymentState.FAILED;
             case LINKID_PAYMENT_STATE_REFUNDED:
-                return PaymentState.REFUNDED;
+                return LinkIDPaymentState.REFUNDED;
             case LINKID_PAYMENT_STATE_REFUND_STARTED:
-                return PaymentState.REFUND_STARTED;
+                return LinkIDPaymentState.REFUND_STARTED;
             case LINKID_PAYMENT_STATE_PAYED:
-                return PaymentState.PAYED;
+                return LinkIDPaymentState.PAYED;
         }
 
         throw new InternalInconsistencyException( String.format( "Invalid payment state: %s", paymentState ) );

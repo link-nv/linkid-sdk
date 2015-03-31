@@ -461,7 +461,7 @@
         <linkid.ws.mandate.path>mandate</linkid.ws.mandate.path>
         <linkid.ws.haws.path>haws</linkid.ws.haws.path>
         <linkid.ws.auth.path>auth</linkid.ws.auth.path>
-        <linkid.ws.reporting.path>reporting</linkid.ws.reporting.path>
+        <linkid.ws.reporting.path>reporting20</linkid.ws.reporting.path>
         <linkid.ws.capture.path>capture</linkid.ws.capture.path>
         <linkid.ws.wallet.path>wallet</linkid.ws.wallet.path>
         <linkid.ws.configuration.path>configuration</linkid.ws.configuration.path>

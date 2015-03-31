@@ -11,14 +11,14 @@ import java.util.Date;
 import java.util.List;
 import net.link.safeonline.sdk.api.exception.WSClientTransportException;
 import net.link.safeonline.sdk.api.parking.ParkingSessionDO;
-import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import org.jetbrains.annotations.Nullable;
 
 
 /**
  * linkID Payment WS Client.
  * <p/>
- * Via this interface, applications can fetch payment status reports.
+ * Via this interface, applications can fetch payment status reports and parking session reports.
  */
 @SuppressWarnings("UnusedDeclaration")
 public interface ReportingServiceClient {
@@ -27,31 +27,31 @@ public interface ReportingServiceClient {
      * @param startDate startDate
      * @param endDate   optional endDate, not specified means till now
      *
-     * @return The payment transactions matching your search. If none found an empty list is returned
+     * @return The payment orders matching your search. If none found an empty list is returned
      *
      * @throws WSClientTransportException could not contact the linkID web service
      */
-    List<PaymentTransactionDO> getPaymentReport(Date startDate, @Nullable Date endDate)
+    List<LinkIDPaymentOrder> getPaymentReport(Date startDate, @Nullable Date endDate)
             throws WSClientTransportException;
 
     /**
      * @param orderReferences order references
      *
-     * @return The payment transactions matching your search. If none found an empty list is returned
+     * @return The payment orders matching your search. If none found an empty list is returned
      *
      * @throws WSClientTransportException could not contact the linkID web service
      */
-    List<PaymentTransactionDO> getPaymentReportForOrderReferences(List<String> orderReferences)
+    List<LinkIDPaymentOrder> getPaymentReportForOrderReferences(List<String> orderReferences)
             throws WSClientTransportException;
 
     /**
      * @param mandateReferences mandate references
      *
-     * @return The payment transactions matching your search. If none found an empty list is returned
+     * @return The payment orders matching your search. If none found an empty list is returned
      *
      * @throws WSClientTransportException could not contact the linkID web service
      */
-    List<PaymentTransactionDO> getPaymentReportForMandates(List<String> mandateReferences)
+    List<LinkIDPaymentOrder> getPaymentReportForMandates(List<String> mandateReferences)
             throws WSClientTransportException;
 
     /**

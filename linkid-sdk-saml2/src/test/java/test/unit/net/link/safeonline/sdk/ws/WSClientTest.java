@@ -6,11 +6,11 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 import net.link.safeonline.sdk.api.attribute.AttributeSDK;
-import net.link.safeonline.sdk.api.payment.Currency;
-import net.link.safeonline.sdk.api.payment.PaymentTransactionDO;
+import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.ws.configuration.ConfigurationServiceClient;
-import net.link.safeonline.sdk.api.ws.configuration.ThemeDO;
-import net.link.safeonline.sdk.api.ws.configuration.ThemesDO;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.configuration.ThemesException;
 import net.link.safeonline.sdk.api.ws.data.client.DataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.NameIdentifierMappingClient;
@@ -95,10 +95,14 @@ public class WSClientTest {
 
         ReportingServiceClient client = new ReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        List<String> orderReferences = Arrays.asList( "842a53ebe15247c1992d73a8f6db4b66" );
+        List<String> orderReferences = Arrays.asList( "QR-SHOP-3cba7b84-7fb3-4468-8fa1-d886afaa70f0" );
 
-        List<PaymentTransactionDO> txns = client.getPaymentReportForOrderReferences( orderReferences );
-        logger.inf( "# txns = %d", txns.size() );
+        List<LinkIDPaymentOrder> linkIDPaymentOrders = client.getPaymentReportForOrderReferences( orderReferences );
+        logger.inf( "# orders = %d", linkIDPaymentOrders.size() );
+
+        for (LinkIDPaymentOrder linkIDPaymentOrder : linkIDPaymentOrders) {
+            logger.inf( "Order: %s", linkIDPaymentOrder );
+        }
     }
 
     //    @Test
@@ -112,7 +116,7 @@ public class WSClientTest {
 
         // operate
         try {
-            String walletId = client.enroll( userId, walletOrganizationId, 500, Currency.EUR );
+            String walletId = client.enroll( userId, walletOrganizationId, 500, LinkIDCurrency.EUR );
             logger.inf( "Enrolled wallet: %s", walletId );
         }
         catch (WalletEnrollException e) {
@@ -132,7 +136,7 @@ public class WSClientTest {
 
         // operate
         try {
-            client.addCredit( userId, walletId, 100, Currency.EUR );
+            client.addCredit( userId, walletId, 100, LinkIDCurrency.EUR );
         }
         catch (WalletAddCreditException e) {
             logger.err( "Add credit error: %s", e.getErrorCode() );
@@ -151,7 +155,7 @@ public class WSClientTest {
 
         // operate
         try {
-            client.removeCredit( userId, walletId, 100, Currency.EUR );
+            client.removeCredit( userId, walletId, 100, LinkIDCurrency.EUR );
         }
         catch (WalletRemoveCreditException e) {
             logger.err( "Remove credit error: %s", e.getErrorCode() );
@@ -178,7 +182,7 @@ public class WSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testThemes()
             throws Exception {
 
@@ -188,11 +192,11 @@ public class WSClientTest {
 
         // operate
         try {
-            ThemesDO themesDO = client.getThemes( applicationName );
-            assertNotNull( themesDO );
-            assertNotNull( themesDO.findDefaultTheme() );
-            for (ThemeDO themeDO : themesDO.getThemes()) {
-                logger.dbg( "Theme: %s", themeDO );
+            LinkIDThemes linkIDThemes = client.getThemes( applicationName );
+            assertNotNull( linkIDThemes );
+            assertNotNull( linkIDThemes.findDefaultTheme() );
+            for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
+                logger.dbg( "Theme: %s", linkIDTheme );
             }
         }
         catch (ThemesException e) {
@@ -209,13 +213,13 @@ public class WSClientTest {
             @Override
             public String getUsername() {
 
-                return "example-mobile";
+                return "test-shop";
             }
 
             @Override
             public String getPassword() {
 
-                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
             }
 
             @Override

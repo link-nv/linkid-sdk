@@ -1,7 +1,7 @@
 package net.link.safeonline.sdk.api.ws.auth;
 
 import java.io.Serializable;
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 
 
 /**
@@ -12,10 +12,10 @@ import net.link.safeonline.sdk.api.payment.PaymentState;
 public class AuthnSessionState implements Serializable {
 
     private final AuthenticationState authenticationState;
-    private final PaymentState        paymentState;
+    private final LinkIDPaymentState  paymentState;
     private final String              paymentMenuURL;
 
-    public AuthnSessionState(final AuthenticationState authenticationState, final PaymentState paymentState, final String paymentMenuURL) {
+    public AuthnSessionState(final AuthenticationState authenticationState, final LinkIDPaymentState paymentState, final String paymentMenuURL) {
 
         this.authenticationState = authenticationState;
         this.paymentState = paymentState;
@@ -29,7 +29,7 @@ public class AuthnSessionState implements Serializable {
         return authenticationState;
     }
 
-    public PaymentState getPaymentState() {
+    public LinkIDPaymentState getPaymentState() {
 
         return paymentState;
     }

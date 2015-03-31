@@ -40,7 +40,7 @@ public class PaymentContextDO implements Serializable {
     public static final String ONLY_WALLETS_KEY         = "PaymentContext.onlyWallets";
 
     private final double            amount;
-    private final Currency          currency;
+    private final LinkIDCurrency    currency;
     private final String            description;
     //
     // optional order reference, if not specified linkID will generate one in UUID format
@@ -81,7 +81,7 @@ public class PaymentContextDO implements Serializable {
      * @param description    optional description
      * @param paymentProfile optional payment profile
      */
-    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
+    public PaymentContextDO(final double amount, final LinkIDCurrency currency, @Nullable final String description, @Nullable final String orderReference,
                             @Nullable final String paymentProfile, final int paymentValidationTime, final PaymentAddBrowser paymentAddBrowser,
                             final boolean allowDeferredPay, final boolean mandate, @Nullable final String mandateDescription,
                             @Nullable final String mandateReference)
@@ -107,7 +107,7 @@ public class PaymentContextDO implements Serializable {
      * @param description    optional description
      * @param paymentProfile optional payment profile
      */
-    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
+    public PaymentContextDO(final double amount, final LinkIDCurrency currency, @Nullable final String description, @Nullable final String orderReference,
                             @Nullable final String paymentProfile, final int paymentValidationTime, final PaymentAddBrowser paymentAddBrowser,
                             final boolean allowDeferredPay)
             throws InvalidPaymentContextException {
@@ -121,7 +121,7 @@ public class PaymentContextDO implements Serializable {
      * @param description    optional description
      * @param paymentProfile optional payment profile
      */
-    public PaymentContextDO(final double amount, final Currency currency, @Nullable final String description, @Nullable final String orderReference,
+    public PaymentContextDO(final double amount, final LinkIDCurrency currency, @Nullable final String description, @Nullable final String orderReference,
                             @Nullable final String paymentProfile)
             throws InvalidPaymentContextException {
 
@@ -132,7 +132,7 @@ public class PaymentContextDO implements Serializable {
      * @param amount   amount in cents
      * @param currency currency
      */
-    public PaymentContextDO(final double amount, final Currency currency)
+    public PaymentContextDO(final double amount, final LinkIDCurrency currency)
             throws InvalidPaymentContextException {
 
         this( amount, currency, null, null, null, 5, PaymentAddBrowser.NOT_ALLOWED, false );
@@ -230,7 +230,7 @@ public class PaymentContextDO implements Serializable {
         }
 
         // convert
-        PaymentContextDO paymentContextDO = new PaymentContextDO( amount, Currency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
+        PaymentContextDO paymentContextDO = new PaymentContextDO( amount, LinkIDCurrency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
                 paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ), paymentContextMap.get( PROFILE_KEY ),
                 Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), paymentAddBrowser,
                 Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ),
@@ -289,7 +289,7 @@ public class PaymentContextDO implements Serializable {
         return amount;
     }
 
-    public Currency getCurrency() {
+    public LinkIDCurrency getCurrency() {
 
         return currency;
     }

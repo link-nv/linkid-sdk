@@ -14,8 +14,11 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.safe_online.common.Currency;
+import net.lin_k.safe_online.common.PaymentMethodType;
 import net.lin_k.safe_online.common.PaymentStatusType;
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.util.InternalInconsistencyException;
 
 
@@ -50,7 +53,7 @@ public abstract class SDKUtils {
         return calender.toGregorianCalendar().getTime();
     }
 
-    public static net.link.safeonline.sdk.api.payment.Currency convert(final Currency currency) {
+    public static LinkIDCurrency convert(final Currency currency) {
 
         if (null == currency)
             return null;
@@ -58,13 +61,13 @@ public abstract class SDKUtils {
         switch (currency) {
 
             case EUR:
-                return net.link.safeonline.sdk.api.payment.Currency.EUR;
+                return LinkIDCurrency.EUR;
         }
 
         throw new InternalInconsistencyException( String.format( "Unsupported currency: \"%s\"", currency.name() ) );
     }
 
-    public static Currency convert(final net.link.safeonline.sdk.api.payment.Currency currency) {
+    public static Currency convert(final LinkIDCurrency currency) {
 
         if (null == currency)
             return null;
@@ -78,7 +81,7 @@ public abstract class SDKUtils {
         throw new InternalInconsistencyException( String.format( "Unsupported currency: \"%s\"", currency.name() ) );
     }
 
-    public static PaymentState convert(final PaymentStatusType paymentState) {
+    public static LinkIDPaymentState convert(final PaymentStatusType paymentState) {
 
         if (null == paymentState)
             return null;
@@ -86,21 +89,65 @@ public abstract class SDKUtils {
         switch (paymentState) {
 
             case STARTED:
-                return PaymentState.STARTED;
+                return LinkIDPaymentState.STARTED;
             case AUTHORIZED:
-                return PaymentState.PAYED;
+                return LinkIDPaymentState.PAYED;
             case FAILED:
-                return PaymentState.FAILED;
+                return LinkIDPaymentState.FAILED;
             case REFUNDED:
-                return PaymentState.REFUNDED;
+                return LinkIDPaymentState.REFUNDED;
             case REFUND_STARTED:
-                return PaymentState.REFUND_STARTED;
+                return LinkIDPaymentState.REFUND_STARTED;
             case DEFERRED:
-                return PaymentState.DEFERRED;
+                return LinkIDPaymentState.DEFERRED;
             case WAITING_FOR_UPDATE:
-                return PaymentState.WAITING_FOR_UPDATE;
+                return LinkIDPaymentState.WAITING_FOR_UPDATE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unsupported payment state: \"%s\"", paymentState.name() ) );
+    }
+
+    public static PaymentMethodType convert(final LinkIDPaymentMethodType linkIDPaymentMethodType) {
+
+        if (null == linkIDPaymentMethodType)
+            return null;
+
+        switch (linkIDPaymentMethodType) {
+
+            case UNKNOWN:
+                return PaymentMethodType.UNKNOWN;
+            case VISA:
+                return PaymentMethodType.VISA;
+            case MASTERCARD:
+                return PaymentMethodType.MASTERCARD;
+            case SEPA:
+                return PaymentMethodType.SEPA;
+            case KLARNA:
+                return PaymentMethodType.KLARNA;
+        }
+
+        return PaymentMethodType.UNKNOWN;
+    }
+
+    public static LinkIDPaymentMethodType convert(final PaymentMethodType paymentMethodType) {
+
+        if (null == paymentMethodType)
+            return null;
+
+        switch (paymentMethodType) {
+
+            case UNKNOWN:
+                return LinkIDPaymentMethodType.UNKNOWN;
+            case VISA:
+                return LinkIDPaymentMethodType.VISA;
+            case MASTERCARD:
+                return LinkIDPaymentMethodType.MASTERCARD;
+            case SEPA:
+                return LinkIDPaymentMethodType.SEPA;
+            case KLARNA:
+                return LinkIDPaymentMethodType.KLARNA;
+        }
+
+        return LinkIDPaymentMethodType.UNKNOWN;
     }
 }

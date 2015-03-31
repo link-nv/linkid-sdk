@@ -19,6 +19,6 @@ public interface ConfigurationServiceClient {
      *
      * @throws ThemesException something went wrong, check the error code in the exception
      */
-    ThemesDO getThemes(String applicationName)
+    LinkIDThemes getThemes(String applicationName)
             throws ThemesException;
 }

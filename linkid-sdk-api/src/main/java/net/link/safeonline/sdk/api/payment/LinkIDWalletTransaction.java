@@ -1,17 +1,16 @@
-package net.link.safeonline.sdk.api.ws.payment;
+package net.link.safeonline.sdk.api.payment;
 
 import java.io.Serializable;
 import java.util.Date;
-import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 
 
 /**
  * Created by wvdhaute
- * Date: 18/02/15
- * Time: 16:27
+ * Date: 30/03/15
+ * Time: 16:44
  */
 @SuppressWarnings("UnusedDeclaration")
-public class WalletTransactionDO implements Serializable {
+public class LinkIDWalletTransaction implements Serializable {
 
     private final String         walletId;
     private final Date           creationDate;
@@ -19,7 +18,8 @@ public class WalletTransactionDO implements Serializable {
     private final double         amount;
     private final LinkIDCurrency currency;
 
-    public WalletTransactionDO(final String walletId, final Date creationDate, final String transactionId, final double amount, final LinkIDCurrency currency) {
+    public LinkIDWalletTransaction(final String walletId, final Date creationDate, final String transactionId, final double amount,
+                                   final LinkIDCurrency currency) {
 
         this.walletId = walletId;
         this.creationDate = creationDate;
@@ -28,10 +28,12 @@ public class WalletTransactionDO implements Serializable {
         this.currency = currency;
     }
 
+    // Helper methods
+
     @Override
     public String toString() {
 
-        return "WalletTransactionDO{" +
+        return "LinkIDWalletTransaction{" +
                "walletId='" + walletId + '\'' +
                ", creationDate=" + creationDate +
                ", transactionId='" + transactionId + '\'' +

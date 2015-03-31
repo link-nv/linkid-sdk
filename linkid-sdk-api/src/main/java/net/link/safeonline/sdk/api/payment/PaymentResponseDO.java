@@ -24,19 +24,19 @@ public class PaymentResponseDO implements Serializable {
     //
     public static final String DOCDATA__REF_KEY = "PaymentResponse.docdataRef";
 
-    private final String       orderReference;
-    private final PaymentState paymentState;
-    private final String       mandateReference;
+    private final String             orderReference;
+    private final LinkIDPaymentState paymentState;
+    private final String             mandateReference;
     //
-    private final String       paymentMenuURL;
+    private final String             paymentMenuURL;
     //
-    private final String       docdataReference;
+    private final String             docdataReference;
 
     /**
      * @param orderReference the payment order reference
      * @param paymentState   the payment order state
      */
-    public PaymentResponseDO(final String orderReference, final PaymentState paymentState, @Nullable final String mandateReference,
+    public PaymentResponseDO(final String orderReference, final LinkIDPaymentState paymentState, @Nullable final String mandateReference,
                              @Nullable final String docdataReference, @Nullable final String paymentMenuURL) {
 
         this.orderReference = orderReference;
@@ -58,7 +58,7 @@ public class PaymentResponseDO implements Serializable {
         if (null != paymentState) {
             map.put( STATE_KEY, paymentState.name() );
         } else {
-            map.put( STATE_KEY, PaymentState.STARTED.name() );
+            map.put( STATE_KEY, LinkIDPaymentState.STARTED.name() );
         }
         map.put( MANDATE_REF_KEY, mandateReference );
 
@@ -79,7 +79,7 @@ public class PaymentResponseDO implements Serializable {
             throw new RuntimeException( "Payment response's state field is not present!" );
 
         // convert
-        return new PaymentResponseDO( paymentResponseMap.get( ORDER_REF_KEY ), PaymentState.parse( paymentResponseMap.get( STATE_KEY ) ),
+        return new PaymentResponseDO( paymentResponseMap.get( ORDER_REF_KEY ), LinkIDPaymentState.parse( paymentResponseMap.get( STATE_KEY ) ),
                 paymentResponseMap.get( MANDATE_REF_KEY ), paymentResponseMap.get( DOCDATA__REF_KEY ), paymentResponseMap.get( MENU_URL_KEY ) );
     }
 
@@ -90,7 +90,7 @@ public class PaymentResponseDO implements Serializable {
         return orderReference;
     }
 
-    public PaymentState getPaymentState() {
+    public LinkIDPaymentState getPaymentState() {
 
         return paymentState;
     }

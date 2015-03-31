@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:reporting:2.0" xmlns:tns="urn:net:lin-k:safe-online:reporting:2.0"
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-reporting
+			Revision history:
+			V2.0 (August, 2014):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <element name="PaymentReportRequest">
+		<complexType>
+            <sequence>
+                <element name="orderReferences" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="mandateReferences" type="string" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+            <attribute name="startDate" type="dateTime" use="optional" />
+            <attribute name="endDate" type="dateTime" use="optional" />
+		</complexType>
+	</element>
+
+    <element name="PaymentReportResponse">
+        <complexType>
+            <sequence>
+                <element name="orders" type="tns:PaymentOrder" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ParkingReportRequest">
+		<complexType>
+            <sequence>
+                <element name="barCodes" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="ticketNumbers" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="dtaKeys" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="parkings" type="string" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+            <attribute name="startDate" type="dateTime" use="optional" />
+            <attribute name="endDate" type="dateTime" use="optional" />
+		</complexType>
+	</element>
+
+    <element name="ParkingReportResponse">
+        <complexType>
+            <sequence>
+                <element name="sessions" type="tns:ParkingSession" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentOrder">
+        <sequence>
+            <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="com:Currency" minOccurs="1" maxOccurs="1" />
+            <element name="description" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="com:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+            <element name="amountPayed" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="authorized" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="captured" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="email" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="givenName" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="familyName" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="transactions" type="tns:PaymentTransaction" minOccurs="0" maxOccurs="unbounded" />
+            <element name="walletTransactions" type="tns:WalletTransaction" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentTransaction">
+        <sequence>
+            <element name="paymentMethodType" type="com:PaymentMethodType" minOccurs="1" maxOccurs="1" />
+            <element name="paymentMethod" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="com:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="authorizationDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="capturedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="docdataReference" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="com:Currency" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletTransaction">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="transactionId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="com:Currency" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="ParkingSession">
+        <sequence>
+            <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="barCode" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="ticketNumber" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="dtaKey" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="parking" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="turnover" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="validated" type="boolean" minOccurs="1" maxOccurs="1" />
+            <element name="paymentOrderReference" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="com:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+
+</schema>

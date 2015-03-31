@@ -7,13 +7,13 @@
 
 package net.link.safeonline.sdk.api.payment;
 
-public enum Currency {
+public enum LinkIDCurrency {
 
     EUR;
 
-    public static Currency parse(final String currencyString) {
+    public static LinkIDCurrency parse(final String currencyString) {
 
-        for (Currency currency : Currency.values()) {
+        for (LinkIDCurrency currency : LinkIDCurrency.values()) {
 
             if (currency.name().equals( currencyString.toUpperCase() )) {
                 return currency;

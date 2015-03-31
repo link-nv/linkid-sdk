@@ -2,8 +2,8 @@ package net.link.safeonline.sdk.api.ws.payment;
 
 import java.io.Serializable;
 import java.util.Date;
-import net.link.safeonline.sdk.api.payment.Currency;
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 
 
 /**
@@ -14,16 +14,16 @@ import net.link.safeonline.sdk.api.payment.PaymentState;
 @SuppressWarnings("UnusedDeclaration")
 public class PaymentTransactionDO implements Serializable {
 
-    private final PaymentState paymentState;
-    private final Date         creationDate;
-    private final Date         authorizationDate;
-    private final Date         capturedDate;
-    private final String       docdataReference;
-    private final double       amount;
-    private final Currency     currency;
+    private final LinkIDPaymentState paymentState;
+    private final Date               creationDate;
+    private final Date               authorizationDate;
+    private final Date               capturedDate;
+    private final String             docdataReference;
+    private final double             amount;
+    private final LinkIDCurrency     currency;
 
-    public PaymentTransactionDO(final PaymentState paymentState, final Date creationDate, final Date authorizationDate, final Date capturedDate,
-                                final String docdataReference, final double amount, final Currency currency) {
+    public PaymentTransactionDO(final LinkIDPaymentState paymentState, final Date creationDate, final Date authorizationDate, final Date capturedDate,
+                                final String docdataReference, final double amount, final LinkIDCurrency currency) {
 
         this.paymentState = paymentState;
         this.creationDate = creationDate;
@@ -50,7 +50,7 @@ public class PaymentTransactionDO implements Serializable {
 
     // Accessors
 
-    public PaymentState getPaymentState() {
+    public LinkIDPaymentState getPaymentState() {
 
         return paymentState;
     }
@@ -80,7 +80,7 @@ public class PaymentTransactionDO implements Serializable {
         return amount;
     }
 
-    public Currency getCurrency() {
+    public LinkIDCurrency getCurrency() {
 
         return currency;
     }

@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.api.payment;
 
-public enum PaymentState {
+public enum LinkIDPaymentState {
 
     STARTED,                // payment is being processed
     DEFERRED,               // deferred payment
@@ -17,9 +17,9 @@ public enum PaymentState {
     REFUND_STARTED,         // payment refund has started
     PAYED;                  // completed
 
-    public static PaymentState parse(final String stateString) {
+    public static LinkIDPaymentState parse(final String stateString) {
 
-        for (PaymentState paymentState : PaymentState.values()) {
+        for (LinkIDPaymentState paymentState : LinkIDPaymentState.values()) {
 
             if (paymentState.name().equals( stateString.toUpperCase() )) {
                 return paymentState;

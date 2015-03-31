@@ -1,7 +1,7 @@
 package net.link.safeonline.sdk.api.ws.payment;
 
 import java.io.Serializable;
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 
 
 /**
@@ -11,12 +11,12 @@ import net.link.safeonline.sdk.api.payment.PaymentState;
  */
 public class PaymentStatusDO implements Serializable {
 
-    private final PaymentState   paymentState;
-    private final boolean        captured;
-    private final double         amountPayed;
-    private final PaymentDetails paymentDetails;
+    private final LinkIDPaymentState paymentState;
+    private final boolean            captured;
+    private final double             amountPayed;
+    private final PaymentDetails     paymentDetails;
 
-    public PaymentStatusDO(final PaymentState paymentState, final boolean captured, final double amountPayed, final PaymentDetails paymentDetails) {
+    public PaymentStatusDO(final LinkIDPaymentState paymentState, final boolean captured, final double amountPayed, final PaymentDetails paymentDetails) {
 
         this.paymentState = paymentState;
         this.captured = captured;
@@ -35,7 +35,7 @@ public class PaymentStatusDO implements Serializable {
                '}';
     }
 
-    public PaymentState getPaymentState() {
+    public LinkIDPaymentState getPaymentState() {
 
         return paymentState;
     }

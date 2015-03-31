@@ -14,7 +14,7 @@ import net.lin_k.safe_online.auth.PollRequest;
 import net.lin_k.safe_online.auth.StartErrorCode;
 import net.lin_k.safe_online.auth.StartRequest;
 import net.lin_k.safe_online.auth.StartResponse;
-import net.link.safeonline.sdk.api.payment.PaymentState;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.ws.auth.AuthServiceClient;
 import net.link.safeonline.sdk.api.ws.auth.AuthenticationState;
 import net.link.safeonline.sdk.api.ws.auth.AuthnErrorCode;
@@ -145,7 +145,7 @@ public class AuthServiceClientImpl extends AbstractWSClient<AuthServicePort> imp
             // authenticate state
             AuthenticationState authenticationState = ConversionUtils.convert( response.getSuccess().getAuthenticationState() );
 
-            PaymentState paymentState = null;
+            LinkIDPaymentState paymentState = null;
             if (null != response.getSuccess().getPaymentState()) {
                 paymentState = ConversionUtils.convert( response.getSuccess().getPaymentState() );
             }

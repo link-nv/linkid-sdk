@@ -67,6 +67,19 @@
 		</restriction>
 	</simpleType>
 
+    <simpleType name="PaymentMethodType">
+		<annotation>
+			<documentation>Payment method types ( not wallets )</documentation>
+		</annotation>
+        <restriction base="string">
+            <enumeration value="UNKNOWN" />
+            <enumeration value="VISA" />
+            <enumeration value="MASTERCARD" />
+            <enumeration value="SEPA" />
+            <enumeration value="KLARNA" />
+        </restriction>
+    </simpleType>
+
     <complexType name="PaymentContext">
         <sequence>
             <element name="amount" type="double" minOccurs="1" maxOccurs="1">

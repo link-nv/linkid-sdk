@@ -22,8 +22,8 @@ import net.lin_k.safe_online.configuration.ThemesResponse;
 import net.link.safeonline.sdk.api.ws.configuration.ConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LocalizedImageDO;
 import net.link.safeonline.sdk.api.ws.configuration.LocalizedImagesDO;
-import net.link.safeonline.sdk.api.ws.configuration.ThemeDO;
-import net.link.safeonline.sdk.api.ws.configuration.ThemesDO;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.configuration.ThemesErrorCode;
 import net.link.safeonline.sdk.api.ws.configuration.ThemesException;
 import net.link.safeonline.sdk.ws.SDKUtils;
@@ -75,7 +75,7 @@ public class ConfigurationServiceClientImpl extends AbstractWSClient<Configurati
     }
 
     @Override
-    public ThemesDO getThemes(final String applicationName)
+    public LinkIDThemes getThemes(final String applicationName)
             throws ThemesException {
 
         ThemesRequest request = new ThemesRequest();
@@ -89,15 +89,15 @@ public class ConfigurationServiceClientImpl extends AbstractWSClient<Configurati
         }
 
         // all good...
-        List<ThemeDO> themeDOs = Lists.newLinkedList();
+        List<LinkIDTheme> linkIDThemes = Lists.newLinkedList();
         for (Themes themes : response.getSuccess().getThemes()) {
 
-            themeDOs.add( new ThemeDO( themes.getName(), themes.isDefaultTheme(), convert( themes.getLogo() ), convert( themes.getAuthLogo() ),
+            linkIDThemes.add( new LinkIDTheme( themes.getName(), themes.isDefaultTheme(), convert( themes.getLogo() ), convert( themes.getAuthLogo() ),
                     convert( themes.getBackground() ), convert( themes.getTabletBackground() ), convert( themes.getAlternativeBackground() ),
                     themes.getBackgroundColor(), themes.getTextColor() ) );
         }
 
-        return new ThemesDO( themeDOs );
+        return new LinkIDThemes( linkIDThemes );
     }
 
     // Helper methods

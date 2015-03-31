@@ -44,7 +44,7 @@
 
     <service name="PaymentService">
         <port name="PaymentServicePort" binding="tns:PaymentServiceBinding">
-            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/payment3/" />
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/payment30/" />
         </port>
     </service>
 </definitions>

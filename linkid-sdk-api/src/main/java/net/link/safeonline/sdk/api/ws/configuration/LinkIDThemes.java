@@ -10,11 +10,11 @@ import org.jetbrains.annotations.Nullable;
  * Date: 10/03/15
  * Time: 14:19
  */
-public class ThemesDO implements Serializable {
+public class LinkIDThemes implements Serializable {
 
-    private final List<ThemeDO> themes;
+    private final List<LinkIDTheme> themes;
 
-    public ThemesDO(final List<ThemeDO> themes) {
+    public LinkIDThemes(final List<LinkIDTheme> themes) {
 
         this.themes = themes;
     }
@@ -22,9 +22,9 @@ public class ThemesDO implements Serializable {
     // Helper methods
 
     @Nullable
-    public ThemeDO findDefaultTheme() {
+    public LinkIDTheme findDefaultTheme() {
 
-        for (ThemeDO theme : themes) {
+        for (LinkIDTheme theme : themes) {
             if (theme.isDefaultTheme())
                 return theme;
         }
@@ -34,14 +34,14 @@ public class ThemesDO implements Serializable {
     @Override
     public String toString() {
 
-        return "ThemesDO{" +
+        return "LinkIDThemes{" +
                "themes=" + themes +
                '}';
     }
 
     // Accessors
 
-    public List<ThemeDO> getThemes() {
+    public List<LinkIDTheme> getThemes() {
 
         return themes;
     }

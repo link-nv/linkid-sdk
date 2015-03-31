@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.link.safeonline.sdk.api.callback.CallbackDO;
-import net.link.safeonline.sdk.api.payment.Currency;
+import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.PaymentContextDO;
 import net.link.safeonline.sdk.auth.protocol.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
@@ -179,7 +179,7 @@ public class AuthnRequestFactoryTest {
         subjectAttributesMap.put( testAttributeDate, Arrays.<Serializable>asList( new Date(), new Date() ) );
 
         // Setup Payment context
-        PaymentContextDO paymentContext = new PaymentContextDO( 50, Currency.EUR );
+        PaymentContextDO paymentContext = new PaymentContextDO( 50, LinkIDCurrency.EUR );
 
         // Setup callback
         CallbackDO callback = new CallbackDO( "http://service.linkid.be", UUID.randomUUID().toString(), true );

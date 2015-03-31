@@ -8,7 +8,8 @@ import java.io.Serializable;
  * Date: 10/03/15
  * Time: 14:19
  */
-public class ThemeDO implements Serializable {
+@SuppressWarnings("unused")
+public class LinkIDTheme implements Serializable {
 
     private final String            name;
     private final boolean           defaultTheme;
@@ -22,9 +23,9 @@ public class ThemeDO implements Serializable {
     private final String            backgroundColor;
     private final String            textColor;
 
-    public ThemeDO(final String name, final boolean defaultTheme, final LocalizedImagesDO logo, final LocalizedImagesDO authLogo,
-                   final LocalizedImagesDO background, final LocalizedImagesDO tabletBackground, final LocalizedImagesDO alternativeBackground,
-                   final String backgroundColor, final String textColor) {
+    public LinkIDTheme(final String name, final boolean defaultTheme, final LocalizedImagesDO logo, final LocalizedImagesDO authLogo,
+                       final LocalizedImagesDO background, final LocalizedImagesDO tabletBackground, final LocalizedImagesDO alternativeBackground,
+                       final String backgroundColor, final String textColor) {
 
         this.name = name;
         this.defaultTheme = defaultTheme;
@@ -42,7 +43,7 @@ public class ThemeDO implements Serializable {
     @Override
     public String toString() {
 
-        return "ThemeDO{" +
+        return "LinkIDTheme{" +
                "name='" + name + '\'' +
                ", defaultTheme=" + defaultTheme +
                ", logo=" + logo +
