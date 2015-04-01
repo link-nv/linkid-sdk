@@ -13,7 +13,9 @@ public enum LinkIDNotificationTopic {
     UNSUBSCRIBE_USER( "urn:net:lin-k:linkid:topic:user:unsubscribe" ),
     ATTRIBUTE_UPDATE( "urn:net:lin-k:linkid:topic:user:attribute:update" ),
     ATTRIBUTE_REMOVAL( "urn:net:lin-k:linkid:topic:user:attribute:remove" ),
-    IDENTITY_UPDATE( "urn:net:lin-k:linkid:topic:user:identity:update" );
+    IDENTITY_UPDATE( "urn:net:lin-k:linkid:topic:user:identity:update" ),
+    EXPIRED_AUTHENTICATION( "urn:net:lin-k:linkid:topic:expired:authentication" ),
+    EXPIRED_PAYMENT( "urn:net:lin-k:linkid:topic:expired:payment" );
 
     private final String topicUri;
 
