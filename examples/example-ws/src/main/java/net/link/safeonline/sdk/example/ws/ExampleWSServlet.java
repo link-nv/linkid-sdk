@@ -23,6 +23,8 @@ import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnSession;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDPollException;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDPollResponse;
 import net.link.safeonline.sdk.auth.protocol.ws.LinkIDAuthWSUtils;
+import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.logging.Logger;
 import org.opensaml.saml2.core.Response;
@@ -43,8 +45,12 @@ public class ExampleWSServlet extends HttpServlet {
         LinkIDAuthnSession linkIDAuthnSession = (LinkIDAuthnSession) request.getSession().getAttribute( RESPONSE_SESSION_PARAM );
         if (null == linkIDAuthnSession) {
             try {
-                linkIDAuthnSession = LinkIDAuthWSUtils.startAuthentication( config().linkID().app().name(), null, null, null, null, null,
-                        Collections.singletonList( "linkid_basic" ), Locale.ENGLISH, null, false );
+                LinkIDAuthenticationContext authenticationContext = new LinkIDAuthenticationContext();
+                authenticationContext.setApplicationName( config().linkID().app().name() );
+                authenticationContext.setIdentityProfiles( Collections.singletonList( "linkid_basic" ) );
+                authenticationContext.setLanguage( Locale.ENGLISH );
+
+                linkIDAuthnSession = LinkIDAuthWSUtils.startAuthentication( LinkIDServiceFactory.getAuthService(), authenticationContext, null );
 
                 // push on session
                 request.getSession().setAttribute( RESPONSE_SESSION_PARAM, linkIDAuthnSession );

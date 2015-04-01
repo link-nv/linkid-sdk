@@ -51,6 +51,7 @@ public abstract class LinkIDContext implements Serializable {
     private String                      authenticationMessage;
     private String                      finishedMessage;
     private List<String>                identityProfiles;
+    private Long                        sessionExpiryOverride;
 
     /**
      * @see #LinkIDContext(String, KeyProvider, String)
@@ -299,6 +300,16 @@ public abstract class LinkIDContext implements Serializable {
     public void setWsPassword(final String wsPassword) {
 
         this.wsPassword = wsPassword;
+    }
+
+    public Long getSessionExpiryOverride() {
+
+        return sessionExpiryOverride;
+    }
+
+    public void setSessionExpiryOverride(final Long sessionExpiryOverride) {
+
+        this.sessionExpiryOverride = sessionExpiryOverride;
     }
 
     @Override

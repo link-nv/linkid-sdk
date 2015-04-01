@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class LinkIDDeviceContextUtils {
 
     public static Map<String, String> generate(@Nullable final String authenticationMessage, @Nullable final String finishedMessage,
-                                               @Nullable final List<String> identityProfiles) {
+                                               @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride) {
 
         Map<String, String> deviceContextMap = Maps.newHashMap();
 
@@ -33,6 +33,10 @@ public abstract class LinkIDDeviceContextUtils {
 
                 deviceContextMap.put( String.format( "%s.%d", LinkIDDeviceContextConstants.IDENTITY_PROFILE_PREFIX, i ), identityProfile );
             }
+        }
+
+        if (null != sessionExpiryOverride) {
+            deviceContextMap.put( LinkIDDeviceContextConstants.SESSION_EXPIRY_OVERRIDE, Long.toString( sessionExpiryOverride ) );
         }
 
         return deviceContextMap;

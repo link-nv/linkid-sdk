@@ -63,19 +63,21 @@ public class LinkIDSaml2ProtocolHandler implements LinkIDProtocolHandler {
         String templateResourceName = config().proto().saml().postBindingTemplate();
 
         Map<String, String> deviceContext = LinkIDDeviceContextUtils.generate( authnContext.getAuthenticationMessage(), authnContext.getFinishedMessage(),
-                authnContext.getIdentityProfiles() );
+                authnContext.getIdentityProfiles(), authnContext.getSessionExpiryOverride() );
 
         AuthnRequest samlRequest = LinkIDAuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null,
-                authnContext.getApplicationFriendlyName(), linkIDRequestConfig.getLandingURL(), linkIDRequestConfig.getAuthnService(), authnContext.isForceAuthentication(),
-                deviceContext, authnContext.getSubjectAttributes(), authnContext.getPaymentContext(), authnContext.getCallback() );
+                authnContext.getApplicationFriendlyName(), linkIDRequestConfig.getLandingURL(), linkIDRequestConfig.getAuthnService(),
+                authnContext.isForceAuthentication(), deviceContext, authnContext.getSubjectAttributes(), authnContext.getPaymentContext(),
+                authnContext.getCallback() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {
             certificateChain = new CertificateChain( authnContext.getApplicationCertificate() );
         }
 
-        LinkIDRequestUtil.sendRequest( linkIDRequestConfig.getAuthnService(), authnContext.getSAML().getBinding(), samlRequest, authnContext.getApplicationKeyPair(),
-                certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName, authnContext.getLanguage() );
+        LinkIDRequestUtil.sendRequest( linkIDRequestConfig.getAuthnService(), authnContext.getSAML().getBinding(), samlRequest,
+                authnContext.getApplicationKeyPair(), certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName,
+                authnContext.getLanguage() );
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
         return new LinkIDAuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, linkIDRequestConfig.getTargetURL(),
@@ -94,7 +96,8 @@ public class LinkIDSaml2ProtocolHandler implements LinkIDProtocolHandler {
         }
 
         Map<String, LinkIDProtocolContext> contexts = LinkIDProtocolContext.getContexts( request.getSession() );
-        LinkIDSaml2ResponseContext saml2ResponseContext = LinkIDResponseUtil.findAndValidateAuthnResponse( request, contexts, authnContext.getTrustedCertificates() );
+        LinkIDSaml2ResponseContext saml2ResponseContext = LinkIDResponseUtil.findAndValidateAuthnResponse( request, contexts,
+                authnContext.getTrustedCertificates() );
         if (null == saml2ResponseContext)
         // The request does not contain an authentication response or it didn't match the request sent by this protocol handler.
         {
@@ -105,7 +108,7 @@ public class LinkIDSaml2ProtocolHandler implements LinkIDProtocolHandler {
     }
 
     public static LinkIDAuthnProtocolResponseContext validateAuthnResponse(final Response samlResponse, final HttpServletRequest request,
-                                                                     final CertificateChain certificateChain)
+                                                                           final CertificateChain certificateChain)
             throws ValidationFailedException {
 
         String userId = null, applicationName = null;

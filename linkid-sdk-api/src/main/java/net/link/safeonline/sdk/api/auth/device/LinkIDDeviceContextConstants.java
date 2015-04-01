@@ -17,4 +17,7 @@ public interface LinkIDDeviceContextConstants {
 
     // optional identity profile(s)
     String IDENTITY_PROFILE_PREFIX = "linkID.identityProfile";
+
+    // optional session expiry (seconds)
+    String SESSION_EXPIRY_OVERRIDE = "linkID.sessionExpiryOverride";
 }
