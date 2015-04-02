@@ -209,7 +209,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testCancelAuthentication()
             throws Exception {
 

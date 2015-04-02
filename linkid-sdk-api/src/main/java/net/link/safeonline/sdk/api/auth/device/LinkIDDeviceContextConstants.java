@@ -20,4 +20,7 @@ public interface LinkIDDeviceContextConstants {
 
     // optional session expiry (seconds)
     String SESSION_EXPIRY_OVERRIDE = "linkID.sessionExpiryOverride";
+
+    // optional theme, if not specified default application theme will be chosen
+    String THEME = "linkID.theme";
 }

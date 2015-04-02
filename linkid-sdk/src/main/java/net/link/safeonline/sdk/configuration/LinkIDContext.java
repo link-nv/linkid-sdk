@@ -52,6 +52,7 @@ public abstract class LinkIDContext implements Serializable {
     private String                      finishedMessage;
     private List<String>                identityProfiles;
     private Long                        sessionExpiryOverride;
+    private String                      theme;
 
     /**
      * @see #LinkIDContext(String, KeyProvider, String)
@@ -310,6 +311,16 @@ public abstract class LinkIDContext implements Serializable {
     public void setSessionExpiryOverride(final Long sessionExpiryOverride) {
 
         this.sessionExpiryOverride = sessionExpiryOverride;
+    }
+
+    public String getTheme() {
+
+        return theme;
+    }
+
+    public void setTheme(final String theme) {
+
+        this.theme = theme;
     }
 
     @Override
