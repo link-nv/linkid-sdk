@@ -43,6 +43,16 @@
                         <documentation>Optional identity profiles</documentation>
                     </annotation>
                 </element>
+                <element name="sessionExpiryOverride" type="long" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional session expiry (seconds)</documentation>
+                    </annotation>
+                </element>
+                <element name="theme" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional theme, if not specified default application theme will be chosen</documentation>
+                    </annotation>
+                </element>
             </sequence>
             <attribute name="oneTimeUse" type="boolean" use="required">
                 <annotation>
@@ -105,6 +115,16 @@
                 <element name="identityProfiles" type="string" minOccurs="0" maxOccurs="unbounded">
                     <annotation>
                         <documentation>Optional identity profiles</documentation>
+                    </annotation>
+                </element>
+                <element name="sessionExpiryOverride" type="long" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional session expiry (seconds)</documentation>
+                    </annotation>
+                </element>
+                <element name="theme" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional theme, if not specified default application theme will be chosen</documentation>
                     </annotation>
                 </element>
             </sequence>

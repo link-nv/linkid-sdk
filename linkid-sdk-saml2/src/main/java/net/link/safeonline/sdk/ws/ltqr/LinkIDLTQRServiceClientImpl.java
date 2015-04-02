@@ -90,9 +90,10 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
     }
 
     @Override
-    public LinkIDLTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage, @Nullable final LinkIDPaymentContext linkIDPaymentContext,
-                            final boolean oneTimeUse, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
-                            @Nullable final LinkIDCallback linkIDCallback, @Nullable final List<String> identityProfiles)
+    public LinkIDLTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage,
+                                  @Nullable final LinkIDPaymentContext linkIDPaymentContext, final boolean oneTimeUse, @Nullable final Date expiryDate,
+                                  @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
+                                  @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme)
             throws LinkIDPushException {
 
         PushRequest request = new PushRequest();
@@ -136,6 +137,13 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             }
         }
 
+        if (null != sessionExpiryOverride) {
+            request.setSessionExpiryOverride( sessionExpiryOverride );
+        }
+        if (null != theme) {
+            request.setTheme( theme );
+        }
+
         // configuration
         request.setOneTimeUse( oneTimeUse );
         if (null != expiryDate) {
@@ -162,8 +170,9 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
 
     @Override
     public LinkIDLTQRSession change(final String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
-                              @Nullable final LinkIDPaymentContext linkIDPaymentContext, @Nullable final Date expiryDate, @Nullable final Long expiryDuration,
-                              @Nullable final LinkIDCallback linkIDCallback, @Nullable final List<String> identityProfiles)
+                                    @Nullable final LinkIDPaymentContext linkIDPaymentContext, @Nullable final Date expiryDate,
+                                    @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
+                                    @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme)
             throws LinkIDChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -209,6 +218,13 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             }
         }
 
+        if (null != sessionExpiryOverride) {
+            request.setSessionExpiryOverride( sessionExpiryOverride );
+        }
+        if (null != theme) {
+            request.setTheme( theme );
+        }
+
         // configuration
         if (null != expiryDate) {
             request.setExpiryDate( LinkIDSDKUtils.convert( expiryDate ) );
@@ -235,7 +251,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
 
     @Override
     public List<LinkIDLTQRClientSession> pull(@Nullable final List<String> ltqrReferences, @Nullable final List<String> paymentOrderReferences,
-                                        @Nullable final List<String> clientSessionIds)
+                                              @Nullable final List<String> clientSessionIds)
             throws LinkIDPullException {
 
         PullRequest request = new PullRequest();
