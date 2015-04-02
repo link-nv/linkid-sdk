@@ -8,6 +8,7 @@ import java.util.List;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
+import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemes;
@@ -20,6 +21,7 @@ import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletServiceClient;
+import net.link.safeonline.sdk.ws.auth.LinkIDAuthServiceClientImpl;
 import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClientImpl;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
@@ -32,6 +34,8 @@ import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Response;
 
 
 /**
@@ -205,6 +209,18 @@ public class LinkIDWSClientTest {
         }
     }
 
+    @Test
+    public void testCancelAuthentication()
+            throws Exception {
+
+        // setup
+        LinkIDAuthServiceClient<AuthnRequest, Response> client = new LinkIDAuthServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        String sessionId = "WpowEE";
+
+        // operate
+        client.cancel( sessionId );
+    }
+
     // Auth
 
     private WSSecurityUsernameTokenCallback getUsernameTokenCallback() {
@@ -213,13 +229,15 @@ public class LinkIDWSClientTest {
             @Override
             public String getUsername() {
 
-                return "test-shop";
+                return "example-mobile";
+                //                return "test-shop";
             }
 
             @Override
             public String getPassword() {
 
-                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
+                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+                //                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
             }
 
             @Override

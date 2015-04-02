@@ -10,7 +10,12 @@ package net.link.safeonline.sdk.ws.auth;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.auth.AuthServicePort;
+import net.lin_k.safe_online.auth.CancelErrorCode;
+import net.lin_k.safe_online.auth.CancelRequest;
+import net.lin_k.safe_online.auth.CancelResponse;
+import net.lin_k.safe_online.auth.PollErrorCode;
 import net.lin_k.safe_online.auth.PollRequest;
+import net.lin_k.safe_online.auth.PollResponse;
 import net.lin_k.safe_online.auth.StartErrorCode;
 import net.lin_k.safe_online.auth.StartRequest;
 import net.lin_k.safe_online.auth.StartResponse;
@@ -20,6 +25,8 @@ import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthenticationState;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnErrorCode;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnException;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnSession;
+import net.link.safeonline.sdk.api.ws.auth.LinkIDCancelErrorCode;
+import net.link.safeonline.sdk.api.ws.auth.LinkIDCancelException;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDPollErrorCode;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDPollException;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDPollResponse;
@@ -134,7 +141,7 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
         request.setLanguage( language );
 
         // operate
-        net.lin_k.safe_online.auth.PollResponse response = getPort().poll( request );
+        PollResponse response = getPort().poll( request );
 
         // convert response
         if (null != response.getError()) {
@@ -174,6 +181,21 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );
     }
 
+    @Override
+    public void cancel(final String sessionId)
+            throws LinkIDCancelException {
+
+        CancelRequest request = new CancelRequest();
+        request.setSessionId( sessionId );
+
+        // operate
+        CancelResponse response = getPort().cancel( request );
+
+        if (null != response.getError()) {
+            throw new LinkIDCancelException( convert( response.getError().getError() ), response.getError().getInfo() );
+        }
+    }
+
     private LinkIDAuthnErrorCode convert(final StartErrorCode errorCode) {
 
         switch (errorCode) {
@@ -185,12 +207,27 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDPollErrorCode convert(final net.lin_k.safe_online.auth.PollErrorCode errorCode) {
+    private LinkIDPollErrorCode convert(final PollErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_RESPONSE_INVALID_SESSION_ID:
                 return LinkIDPollErrorCode.ERROR_RESPONSE_INVALID_SESSION_ID;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    private LinkIDCancelErrorCode convert(final CancelErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_INVALID_SESSION_ID:
+                return LinkIDCancelErrorCode.ERROR_INVALID_SESSION_ID;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDCancelErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDCancelErrorCode.ERROR_UNEXPECTED;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
