@@ -14,15 +14,15 @@ public class LinkIDPaymentStatus implements Serializable {
     private final LinkIDPaymentState   paymentState;
     private final boolean              captured;
     private final double               amountPayed;
-    private final LinkIDPaymentDetails linkIDPaymentDetails;
+    private final LinkIDPaymentDetails paymentDetails;
 
     public LinkIDPaymentStatus(final LinkIDPaymentState paymentState, final boolean captured, final double amountPayed,
-                               final LinkIDPaymentDetails linkIDPaymentDetails) {
+                               final LinkIDPaymentDetails paymentDetails) {
 
         this.paymentState = paymentState;
         this.captured = captured;
         this.amountPayed = amountPayed;
-        this.linkIDPaymentDetails = linkIDPaymentDetails;
+        this.paymentDetails = paymentDetails;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class LinkIDPaymentStatus implements Serializable {
                "paymentState=" + paymentState +
                ", captured=" + captured +
                ", amountPayed=" + amountPayed +
-               ", paymentDetails=" + linkIDPaymentDetails +
+               ", paymentDetails=" + paymentDetails +
                '}';
     }
 
@@ -51,8 +51,8 @@ public class LinkIDPaymentStatus implements Serializable {
         return amountPayed;
     }
 
-    public LinkIDPaymentDetails getLinkIDPaymentDetails() {
+    public LinkIDPaymentDetails getPaymentDetails() {
 
-        return linkIDPaymentDetails;
+        return paymentDetails;
     }
 }
