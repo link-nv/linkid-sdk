@@ -54,6 +54,22 @@ public abstract class LinkIDAuthWSUtils {
     }
 
     /**
+     * Start a linkID authentication/payment session using the WS binding.
+     *
+     * @param authenticationContext authentication context
+     * @param userAgent             optional user agent which will be used for constructing the QR code URL
+     *
+     * @return the {@link LinkIDAuthnSession} object
+     *
+     * @throws LinkIDAuthnException something went wrong, check the error code what
+     */
+    public static LinkIDAuthnSession startAuthentication(final LinkIDAuthenticationContext authenticationContext, final String userAgent)
+            throws LinkIDAuthnException {
+
+        return startAuthentication( LinkIDServiceFactory.getAuthService(), authenticationContext, userAgent );
+    }
+
+    /**
      * Start a linkID authentication/payment session using the WS binding
      *
      * @param linkIDAuthServiceClient the linkID authentication web service client
