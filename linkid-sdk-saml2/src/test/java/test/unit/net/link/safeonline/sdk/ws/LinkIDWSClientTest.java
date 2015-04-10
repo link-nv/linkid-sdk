@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
@@ -15,6 +16,7 @@ import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemesException;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
+import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
 import net.link.safeonline.sdk.api.ws.reporting.LinkIDReportingServiceClient;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletEnrollException;
@@ -25,6 +27,7 @@ import net.link.safeonline.sdk.ws.auth.LinkIDAuthServiceClientImpl;
 import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClientImpl;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
+import net.link.safeonline.sdk.ws.ltqr.LinkIDLTQRServiceClientImpl;
 import net.link.safeonline.sdk.ws.reporting.LinkIDReportingServiceClientImpl;
 import net.link.safeonline.sdk.ws.wallet.LinkIDWalletServiceClientImpl;
 import net.link.util.common.ApplicationMode;
@@ -219,6 +222,18 @@ public class LinkIDWSClientTest {
 
         // operate
         client.cancel( sessionId );
+    }
+
+    //    @Test
+    public void testPushLTQR()
+            throws Exception {
+
+        // setup
+        LinkIDLTQRServiceClient client = new LinkIDLTQRServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext( 5, LinkIDCurrency.EUR );
+
+        // operate
+        client.push( null, null, paymentContext, false, null, null, null, null, null, null );
     }
 
     // Auth
