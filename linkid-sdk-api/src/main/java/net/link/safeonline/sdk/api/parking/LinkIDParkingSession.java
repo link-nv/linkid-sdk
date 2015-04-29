@@ -35,6 +35,23 @@ public class LinkIDParkingSession implements Serializable {
         this.paymentState = paymentState;
     }
 
+    // Helper methods
+
+    @Override
+    public String toString() {
+
+        return "LinkIDParkingSession{" +
+               "date=" + date +
+               ", barCode='" + barCode + '\'' +
+               ", parking='" + parking + '\'' +
+               ", userId='" + userId + '\'' +
+               ", turnover=" + turnover +
+               ", validated=" + validated +
+               ", paymentOrderReference='" + paymentOrderReference + '\'' +
+               ", paymentState=" + paymentState +
+               '}';
+    }
+
     // Accessors
 
     public Date getDate() {

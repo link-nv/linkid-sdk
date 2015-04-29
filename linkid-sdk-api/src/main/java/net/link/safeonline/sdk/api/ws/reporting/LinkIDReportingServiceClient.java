@@ -65,7 +65,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDParkingSession> getParkingReport(Date startDate, @Nullable Date endDate)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param startDate startDate
@@ -77,7 +77,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDParkingSession> getParkingReport(Date startDate, @Nullable Date endDate, @Nullable List<String> parkings)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param barCodes bar codes
@@ -87,7 +87,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDParkingSession> getParkingReportForBarCodes(List<String> barCodes)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param ticketNumbers ticket numbers
@@ -97,7 +97,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDParkingSession> getParkingReportForTicketNumbers(List<String> ticketNumbers)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param dtaKeys dtaKeys
@@ -107,7 +107,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDParkingSession> getParkingReportForDTAKeys(List<String> dtaKeys)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param parkings parkings
@@ -117,7 +117,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDParkingSession> getParkingReportForParkings(List<String> parkings)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param startDate startDate

@@ -5,8 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
+import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
@@ -39,6 +41,7 @@ import net.link.util.logging.Logger;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -101,7 +104,7 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testReporting()
+    public void testReportingPayment()
             throws Exception {
 
         LinkIDReportingServiceClient client = new LinkIDReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
@@ -114,6 +117,22 @@ public class LinkIDWSClientTest {
 
         for (LinkIDPaymentOrder linkIDPaymentOrder : linkIDPaymentOrders) {
             logger.inf( "Order: %s", linkIDPaymentOrder );
+        }
+    }
+
+    @Test
+    public void testReportingParking()
+            throws Exception {
+
+        LinkIDReportingServiceClient client = new LinkIDReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        Date startDate = DateTime.now().minusYears( 1 ).toDate();
+
+        List<LinkIDParkingSession> linkIDParkingSessions = client.getParkingReport( startDate, null );
+        logger.inf( "# orders = %d", linkIDParkingSessions.size() );
+
+        for (LinkIDParkingSession linkIDParkingSession : linkIDParkingSessions) {
+            logger.inf( "Session: %s", linkIDParkingSession );
         }
     }
 
@@ -265,14 +284,16 @@ public class LinkIDWSClientTest {
             @Override
             public String getUsername() {
 
-                return "example-mobile";
+                return "parko-ltqr";
+                //                return "example-mobile";
                 //                return "test-shop";
             }
 
             @Override
             public String getPassword() {
 
-                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+                return "DD0AD9A6-ABBB-4CD1-B15A-7066B9E00263";
+                //                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
                 //                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
             }
 

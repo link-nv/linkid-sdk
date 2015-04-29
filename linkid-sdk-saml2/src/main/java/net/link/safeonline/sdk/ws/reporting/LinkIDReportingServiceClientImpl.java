@@ -111,42 +111,42 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
 
     @Override
     public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         return getParkingReport( startDate, endDate, null, null, null, null );
     }
 
     @Override
     public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate, @Nullable final List<String> parkings)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         return getParkingReport( startDate, endDate, null, null, null, parkings );
     }
 
     @Override
     public List<LinkIDParkingSession> getParkingReportForBarCodes(final List<String> barCodes)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         return getParkingReport( null, null, barCodes, null, null, null );
     }
 
     @Override
     public List<LinkIDParkingSession> getParkingReportForTicketNumbers(final List<String> ticketNumbers)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         return getParkingReport( null, null, null, ticketNumbers, null, null );
     }
 
     @Override
     public List<LinkIDParkingSession> getParkingReportForDTAKeys(final List<String> dtaKeys)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         return getParkingReport( null, null, null, null, dtaKeys, null );
     }
 
     @Override
     public List<LinkIDParkingSession> getParkingReportForParkings(final List<String> parkings)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         return getParkingReport( null, null, null, null, null, parkings );
     }
@@ -231,7 +231,7 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
     private List<LinkIDParkingSession> getParkingReport(@Nullable final Date startDate, @Nullable final Date endDate, @Nullable final List<String> barCodes,
                                                         @Nullable final List<String> ticketNumbers, @Nullable final List<String> dtaKeys,
                                                         @Nullable final List<String> parkings)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         ParkingReportRequest request = new ParkingReportRequest();
 
@@ -256,6 +256,10 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
 
         try {
             ParkingReportResponse response = getPort().parkingReport( request );
+
+            if (null != response.getError()) {
+                throw new LinkIDReportException( convert( response.getError().getErrorCode() ) );
+            }
 
             List<LinkIDParkingSession> sessions = Lists.newLinkedList();
 
