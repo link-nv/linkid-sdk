@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
+import net.link.safeonline.sdk.api.payment.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 import net.link.safeonline.sdk.api.ws.reporting.LinkIDReportingServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
@@ -251,5 +252,19 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
             throws LinkIDWSClientTransportException {
 
         return getParkingReport( null, null, null, null, null, parkings );
+    }
+
+    @Override
+    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final Date startDate, @Nullable final Date endDate)
+            throws LinkIDWSClientTransportException {
+
+        return null;
+    }
+
+    @Override
+    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final String applicationName)
+            throws LinkIDWSClientTransportException {
+
+        return null;
     }
 }

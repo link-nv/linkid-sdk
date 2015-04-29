@@ -22,9 +22,24 @@
 	<element name="PaymentStatusResponse">
         <complexType>
             <sequence>
+                <element name="orderReference" minOccurs="1" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>The payment order reference</documentation>
+                    </annotation>
+                </element>
+                <element name="userId" minOccurs="1" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>The linkID user's ID that made this order</documentation>
+                    </annotation>
+                </element>
                 <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="com:PaymentStatusType">
                     <annotation>
                         <documentation>Order payment status</documentation>
+                    </annotation>
+                </element>
+                <element name="authorized" minOccurs="1" maxOccurs="1" type="boolean">
+                    <annotation>
+                        <documentation>Order authorized?</documentation>
                     </annotation>
                 </element>
                 <element name="captured" minOccurs="1" maxOccurs="1" type="boolean">
@@ -35,6 +50,36 @@
                 <element name="amountPayed" minOccurs="1" maxOccurs="1" type="double">
                     <annotation>
                         <documentation>How much of the order was payed (in cents)? This only makes sense if partial payments were allowed for this order</documentation>
+                    </annotation>
+                </element>
+                <element name="amount" minOccurs="1" maxOccurs="1" type="double">
+                    <annotation>
+                        <documentation>Amount that was intended to be payed, i.e. what was specified in the linkID payment context</documentation>
+                    </annotation>
+                </element>
+                <element name="currency" minOccurs="1" maxOccurs="1" type="com:Currency">
+                    <annotation>
+                        <documentation>Currency of the amount that was intended to be payed</documentation>
+                    </annotation>
+                </element>
+                <element name="description" minOccurs="0" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>Optional payment description as is passed on in the linkID payment context</documentation>
+                    </annotation>
+                </element>
+                <element name="profile" minOccurs="0" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>Optional linkID payment profile used</documentation>
+                    </annotation>
+                </element>
+                <element name="created" minOccurs="1" maxOccurs="1" type="dateTime">
+                    <annotation>
+                        <documentation>When was the order created</documentation>
+                    </annotation>
+                </element>
+                <element name="mandateReference" minOccurs="0" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>Optional mandate reference</documentation>
                     </annotation>
                 </element>
                 <element name="paymentDetails" minOccurs="1" maxOccurs="1" type="tns:PaymentDetails">

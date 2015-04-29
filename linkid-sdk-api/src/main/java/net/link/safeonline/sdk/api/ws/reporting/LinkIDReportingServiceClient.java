@@ -12,6 +12,7 @@ import java.util.List;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
+import net.link.safeonline.sdk.api.payment.LinkIDWalletReportTransaction;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -115,5 +116,27 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDParkingSession> getParkingReportForParkings(List<String> parkings)
+            throws LinkIDWSClientTransportException;
+
+    /**
+     * @param startDate startDate
+     * @param endDate   optional endDate, not specified means till now
+     *
+     * @return the wallet transactions matching your search. If none found and empty list is returned
+     *
+     * @throws LinkIDWSClientTransportException could not contact the linkID web service
+     */
+    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, Date startDate, @Nullable Date endDate)
+            throws LinkIDWSClientTransportException;
+
+    /**
+     * @param startDate startDate
+     * @param endDate   optional endDate, not specified means till now
+     *
+     * @return the wallet transactions matching your search. If none found and empty list is returned
+     *
+     * @throws LinkIDWSClientTransportException could not contact the linkID web service
+     */
+    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, String applicationName)
             throws LinkIDWSClientTransportException;
 }

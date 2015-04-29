@@ -1,5 +1,6 @@
 package test.unit.net.link.safeonline.sdk.ws;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -17,6 +18,8 @@ import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemesException;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
+import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentServiceClient;
+import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.reporting.LinkIDReportingServiceClient;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletEnrollException;
@@ -28,6 +31,7 @@ import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClient
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.ltqr.LinkIDLTQRServiceClientImpl;
+import net.link.safeonline.sdk.ws.payment.LinkIDPaymentServiceClientImpl;
 import net.link.safeonline.sdk.ws.reporting.LinkIDReportingServiceClientImpl;
 import net.link.safeonline.sdk.ws.wallet.LinkIDWalletServiceClientImpl;
 import net.link.util.common.ApplicationMode;
@@ -139,7 +143,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
-        String walletId = "8fb05095-6210-40a1-87e6-08f3b1f3a982";
+        String walletId = "588ccf3c-04d8-4837-9285-9077b026699f";
 
         // operate
         try {
@@ -158,7 +162,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
-        String walletId = "8fb05095-6210-40a1-87e6-08f3b1f3a982";
+        String walletId = "588ccf3c-04d8-4837-9285-9077b026699f";
 
         // operate
         try {
@@ -234,6 +238,22 @@ public class LinkIDWSClientTest {
 
         // operate
         client.push( null, null, paymentContext, false, null, null, null, null, null, null );
+    }
+
+    //    @Test
+    public void testGetPaymentStatus()
+            throws Exception {
+        // setup
+        String orderReference = "7d545bcb56f84fc8945f0cd537ca6694";
+        LinkIDPaymentServiceClient client = new LinkIDPaymentServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        // operate
+        LinkIDPaymentStatus linkIDPaymentStatus = client.getStatus( orderReference );
+
+        // verify
+        assertNotNull( linkIDPaymentStatus );
+        assertEquals( linkIDPaymentStatus.getOrderReference(), orderReference );
+        assertNotNull( linkIDPaymentStatus.getUserId() );
     }
 
     // Auth

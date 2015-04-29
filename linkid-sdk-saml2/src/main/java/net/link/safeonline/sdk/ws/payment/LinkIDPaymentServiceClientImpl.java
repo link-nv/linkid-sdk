@@ -84,24 +84,26 @@ public class LinkIDPaymentServiceClientImpl extends AbstractWSClient<PaymentServ
             // parse
             List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
             for (PaymentTransactionV20 paymentTransaction : statusResponse.getPaymentDetails().getPaymentTransactions()) {
-                transactions.add(
-                        new LinkIDPaymentTransaction( LinkIDSDKUtils.convert( paymentTransaction.getPaymentMethodType() ), paymentTransaction.getPaymentMethod(),
-                                LinkIDSDKUtils.convert( paymentTransaction.getPaymentState() ), LinkIDSDKUtils.convert( paymentTransaction.getCreationDate() ),
-                                LinkIDSDKUtils.convert( paymentTransaction.getAuthorizationDate() ), LinkIDSDKUtils.convert(
-                                paymentTransaction.getCapturedDate() ),
-                                paymentTransaction.getDocdataReference(), paymentTransaction.getAmount(),
-                                LinkIDSDKUtils.convert( paymentTransaction.getCurrency() ) ) );
+                transactions.add( new LinkIDPaymentTransaction( LinkIDSDKUtils.convert( paymentTransaction.getPaymentMethodType() ),
+                        paymentTransaction.getPaymentMethod(), LinkIDSDKUtils.convert( paymentTransaction.getPaymentState() ),
+                        LinkIDSDKUtils.convert( paymentTransaction.getCreationDate() ), LinkIDSDKUtils.convert( paymentTransaction.getAuthorizationDate() ),
+                        LinkIDSDKUtils.convert( paymentTransaction.getCapturedDate() ), paymentTransaction.getDocdataReference(),
+                        paymentTransaction.getAmount(), LinkIDSDKUtils.convert( paymentTransaction.getCurrency() ) ) );
             }
 
             List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
             for (WalletTransactionV20 walletTransaction : statusResponse.getPaymentDetails().getWalletTransactions()) {
-                walletTransactions.add( new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert(
-                        walletTransaction.getCreationDate() ),
-                        walletTransaction.getTransactionId(), walletTransaction.getAmount(), LinkIDSDKUtils.convert( walletTransaction.getCurrency() ) ) );
+                walletTransactions.add(
+                        new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert( walletTransaction.getCreationDate() ),
+                                walletTransaction.getTransactionId(), walletTransaction.getAmount(),
+                                LinkIDSDKUtils.convert( walletTransaction.getCurrency() ) ) );
             }
 
-            return new LinkIDPaymentStatus( LinkIDSDKUtils.convert( statusResponse.getPaymentStatus() ), statusResponse.isCaptured(), statusResponse.getAmountPayed(),
-                    new LinkIDPaymentDetails( transactions, walletTransactions ) );
+            return new LinkIDPaymentStatus( statusResponse.getOrderReference(), statusResponse.getUserId(),
+                    LinkIDSDKUtils.convert( statusResponse.getPaymentStatus() ), statusResponse.isAuthorized(), statusResponse.isCaptured(),
+                    statusResponse.getAmountPayed(), statusResponse.getAmount(), LinkIDSDKUtils.convert( statusResponse.getCurrency() ),
+                    statusResponse.getDescription(), statusResponse.getProfile(), LinkIDSDKUtils.convert( statusResponse.getCreated() ),
+                    statusResponse.getMandateReference(), new LinkIDPaymentDetails( transactions, walletTransactions ) );
         }
         catch (ClientTransportException e) {
             throw new LinkIDWSClientTransportException( getBindingProvider(), e );

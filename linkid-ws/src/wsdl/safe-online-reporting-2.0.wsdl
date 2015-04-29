@@ -16,6 +16,9 @@
 	<message name="parkingReportRequest">
 		<part name="request" element="tns:ParkingReportRequest" />
 	</message>
+	<message name="walletReportRequest">
+		<part name="request" element="tns:WalletReportRequest" />
+	</message>
 
     <!-- ====================== Responses =========================== -->
 
@@ -24,6 +27,9 @@
 	</message>
     <message name="parkingReportResponse">
 		<part name="response" element="tns:ParkingReportResponse" />
+	</message>
+    <message name="walletReportResponse">
+		<part name="response" element="tns:WalletReportResponse" />
 	</message>
 
     <!-- =========================== Ports ========================== -->
@@ -36,6 +42,10 @@
 		<operation name="parkingReport">
 			<input message="tns:parkingReportRequest" />
 			<output message="tns:parkingReportResponse" />
+		</operation>
+		<operation name="walletReport">
+			<input message="tns:walletReportRequest" />
+			<output message="tns:walletReportResponse" />
 		</operation>
     </portType>
 
@@ -54,6 +64,15 @@
         </operation>
         <operation name="parkingReport">
             <soap:operation soapAction="urn:net:lin-k:safe-online:reporting:2.0:parking" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletReport">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:reporting:2.0:wallet" />
             <input>
                 <soap:body use="literal" />
             </input>

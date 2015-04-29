@@ -45,6 +45,25 @@
 		</complexType>
 	</element>
 
+    <element name="WalletReportRequest">
+        <complexType>
+            <sequence>
+                <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1" />
+                <element name="dateFilter" type="tns:DateFilter" minOccurs="0" maxOccurs="1" />
+                <element name="applicationFilter" type="tns:ApplicationFilter" minOccurs="0" maxOccurs="1" />
+                <element name="walletFilter" type="tns:WalletFilter" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="WalletReportResponse">
+        <complexType>
+            <sequence>
+                <element name="transactions" type="tns:WalletReportTransaction" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+
     <element name="ParkingReportResponse">
         <complexType>
             <sequence>
@@ -88,5 +107,29 @@
         </sequence>
     </complexType>
 
+    <complexType name="DateFilter">
+        <attribute name="startDate" type="dateTime" use="required" />
+        <attribute name="endDate" type="dateTime" use="optional" />
+    </complexType>
+
+    <complexType name="ApplicationFilter">
+        <attribute name="applicationName" type="string" use="required" />
+    </complexType>
+
+    <complexType name="WalletFilter">
+        <attribute name="walletId" type="string" use="required" />
+        <attribute name="userId" type="string" use="required" />
+    </complexType>
+
+    <complexType name="WalletReportTransaction">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="transactionId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="com:Currency" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
 
 </schema>
