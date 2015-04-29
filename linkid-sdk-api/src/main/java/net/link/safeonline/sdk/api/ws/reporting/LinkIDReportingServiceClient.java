@@ -13,6 +13,7 @@ import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -33,7 +34,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDPaymentOrder> getPaymentReport(Date startDate, @Nullable Date endDate)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param orderReferences order references
@@ -43,7 +44,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDPaymentOrder> getPaymentReportForOrderReferences(List<String> orderReferences)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param mandateReferences mandate references
@@ -53,7 +54,7 @@ public interface LinkIDReportingServiceClient {
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     List<LinkIDPaymentOrder> getPaymentReportForMandates(List<String> mandateReferences)
-            throws LinkIDWSClientTransportException;
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param startDate startDate

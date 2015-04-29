@@ -29,9 +29,12 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import net.link.safeonline.sdk.api.ws.reporting.LinkIDReportingServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.safeonline.ws.reporting.LinkIDReportingServiceFactory;
+import net.link.util.InternalInconsistencyException;
 import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
@@ -85,9 +88,88 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
                                     String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.reporting.path" ) ) );
     }
 
+    @Override
+    public List<LinkIDPaymentOrder> getPaymentReport(final Date startDate, @Nullable final Date endDate)
+            throws LinkIDWSClientTransportException, LinkIDReportException {
+
+        return getPaymentReport( startDate, endDate, null, null );
+    }
+
+    @Override
+    public List<LinkIDPaymentOrder> getPaymentReportForOrderReferences(final List<String> orderReferences)
+            throws LinkIDWSClientTransportException, LinkIDReportException {
+
+        return getPaymentReport( null, null, orderReferences, null );
+    }
+
+    @Override
+    public List<LinkIDPaymentOrder> getPaymentReportForMandates(final List<String> mandateReferences)
+            throws LinkIDWSClientTransportException, LinkIDReportException {
+
+        return getPaymentReport( null, null, null, mandateReferences );
+    }
+
+    @Override
+    public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate)
+            throws LinkIDWSClientTransportException {
+
+        return getParkingReport( startDate, endDate, null, null, null, null );
+    }
+
+    @Override
+    public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate, @Nullable final List<String> parkings)
+            throws LinkIDWSClientTransportException {
+
+        return getParkingReport( startDate, endDate, null, null, null, parkings );
+    }
+
+    @Override
+    public List<LinkIDParkingSession> getParkingReportForBarCodes(final List<String> barCodes)
+            throws LinkIDWSClientTransportException {
+
+        return getParkingReport( null, null, barCodes, null, null, null );
+    }
+
+    @Override
+    public List<LinkIDParkingSession> getParkingReportForTicketNumbers(final List<String> ticketNumbers)
+            throws LinkIDWSClientTransportException {
+
+        return getParkingReport( null, null, null, ticketNumbers, null, null );
+    }
+
+    @Override
+    public List<LinkIDParkingSession> getParkingReportForDTAKeys(final List<String> dtaKeys)
+            throws LinkIDWSClientTransportException {
+
+        return getParkingReport( null, null, null, null, dtaKeys, null );
+    }
+
+    @Override
+    public List<LinkIDParkingSession> getParkingReportForParkings(final List<String> parkings)
+            throws LinkIDWSClientTransportException {
+
+        return getParkingReport( null, null, null, null, null, parkings );
+    }
+
+    @Override
+    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final Date startDate, @Nullable final Date endDate)
+            throws LinkIDWSClientTransportException {
+
+        return null;
+    }
+
+    @Override
+    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final String applicationName)
+            throws LinkIDWSClientTransportException {
+
+        return null;
+    }
+
+    // Helper methods
+
     private List<LinkIDPaymentOrder> getPaymentReport(@Nullable final Date startDate, @Nullable final Date endDate,
                                                       @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
-            throws LinkIDWSClientTransportException {
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
         PaymentReportRequest request = new PaymentReportRequest();
 
@@ -106,6 +188,10 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
 
         try {
             PaymentReportResponse response = getPort().paymentReport( request );
+
+            if (null != response.getError()) {
+                throw new LinkIDReportException( convert( response.getError().getErrorCode() ) );
+            }
 
             List<LinkIDPaymentOrder> orders = Lists.newLinkedList();
             for (PaymentOrder paymentOrder : response.getOrders()) {
@@ -191,80 +277,16 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
         return null != xmlDate? xmlDate.toGregorianCalendar().getTime(): null;
     }
 
-    @Override
-    public List<LinkIDPaymentOrder> getPaymentReport(final Date startDate, @Nullable final Date endDate)
-            throws LinkIDWSClientTransportException {
+    private LinkIDReportErrorCode convert(final net.lin_k.safe_online.reporting._2.ErrorCode errorCode) {
 
-        return getPaymentReport( startDate, endDate, null, null );
-    }
+        switch (errorCode) {
 
-    @Override
-    public List<LinkIDPaymentOrder> getPaymentReportForOrderReferences(final List<String> orderReferences)
-            throws LinkIDWSClientTransportException {
+            case ERROR_TOO_MANY_RESULTS:
+                return LinkIDReportErrorCode.ERROR_TOO_MANY_RESULTS;
+            case ERROR_UNEXPECTED:
+                return LinkIDReportErrorCode.ERROR_UNEXPECTED;
+        }
 
-        return getPaymentReport( null, null, orderReferences, null );
-    }
-
-    @Override
-    public List<LinkIDPaymentOrder> getPaymentReportForMandates(final List<String> mandateReferences)
-            throws LinkIDWSClientTransportException {
-
-        return getPaymentReport( null, null, null, mandateReferences );
-    }
-
-    @Override
-    public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate)
-            throws LinkIDWSClientTransportException {
-
-        return getParkingReport( startDate, endDate, null, null, null, null );
-    }
-
-    @Override
-    public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate, @Nullable final List<String> parkings)
-            throws LinkIDWSClientTransportException {
-
-        return getParkingReport( startDate, endDate, null, null, null, parkings );
-    }
-
-    @Override
-    public List<LinkIDParkingSession> getParkingReportForBarCodes(final List<String> barCodes)
-            throws LinkIDWSClientTransportException {
-
-        return getParkingReport( null, null, barCodes, null, null, null );
-    }
-
-    @Override
-    public List<LinkIDParkingSession> getParkingReportForTicketNumbers(final List<String> ticketNumbers)
-            throws LinkIDWSClientTransportException {
-
-        return getParkingReport( null, null, null, ticketNumbers, null, null );
-    }
-
-    @Override
-    public List<LinkIDParkingSession> getParkingReportForDTAKeys(final List<String> dtaKeys)
-            throws LinkIDWSClientTransportException {
-
-        return getParkingReport( null, null, null, null, dtaKeys, null );
-    }
-
-    @Override
-    public List<LinkIDParkingSession> getParkingReportForParkings(final List<String> parkings)
-            throws LinkIDWSClientTransportException {
-
-        return getParkingReport( null, null, null, null, null, parkings );
-    }
-
-    @Override
-    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final Date startDate, @Nullable final Date endDate)
-            throws LinkIDWSClientTransportException {
-
-        return null;
-    }
-
-    @Override
-    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final String applicationName)
-            throws LinkIDWSClientTransportException {
-
-        return null;
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 }

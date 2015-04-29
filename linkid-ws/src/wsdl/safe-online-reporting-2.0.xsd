@@ -28,6 +28,7 @@
         <complexType>
             <sequence>
                 <element name="orders" type="tns:PaymentOrder" minOccurs="0" maxOccurs="unbounded" />
+                <element name="error" type="tns:ReportError" minOccurs="0" maxOccurs="1" />
             </sequence>
         </complexType>
     </element>
@@ -129,7 +130,30 @@
             <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
             <element name="currency" type="com:Currency" minOccurs="1" maxOccurs="1" />
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="applicationName" type="string" minOccurs="1" maxOccurs="1" />
         </sequence>
     </complexType>
+
+	<complexType name="ReportError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.too.many.results">
+				<annotation>
+					<documentation>There are too many results to return, please narrow down your search</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened, consult a linkID dev for more information</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
 
 </schema>

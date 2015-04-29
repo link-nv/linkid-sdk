@@ -106,7 +106,8 @@ public class LinkIDWSClientTest {
 
         LinkIDReportingServiceClient client = new LinkIDReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        List<String> orderReferences = Arrays.asList( "QR-SHOP-3cba7b84-7fb3-4468-8fa1-d886afaa70f0" );
+        List<String> orderReferences = Arrays.asList( "ac321fe96156489299b77a007f41509b", "9fdc23058f0449479d091072759d4646",
+                "6dba05fe1ff04e96b92995a661ba77d0" );
 
         List<LinkIDPaymentOrder> linkIDPaymentOrders = client.getPaymentReportForOrderReferences( orderReferences );
         logger.inf( "# orders = %d", linkIDPaymentOrders.size() );
