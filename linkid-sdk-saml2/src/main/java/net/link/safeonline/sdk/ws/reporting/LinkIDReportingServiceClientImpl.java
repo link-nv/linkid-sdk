@@ -16,6 +16,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.PaymentTransactionV20;
 import net.lin_k.safe_online.common.WalletTransactionV20;
+import net.lin_k.safe_online.reporting._2.ApplicationFilter;
+import net.lin_k.safe_online.reporting._2.DateFilter;
 import net.lin_k.safe_online.reporting._2.ParkingReportRequest;
 import net.lin_k.safe_online.reporting._2.ParkingReportResponse;
 import net.lin_k.safe_online.reporting._2.ParkingSession;
@@ -23,14 +25,21 @@ import net.lin_k.safe_online.reporting._2.PaymentOrder;
 import net.lin_k.safe_online.reporting._2.PaymentReportRequest;
 import net.lin_k.safe_online.reporting._2.PaymentReportResponse;
 import net.lin_k.safe_online.reporting._2.ReportingServicePort;
+import net.lin_k.safe_online.reporting._2.WalletFilter;
+import net.lin_k.safe_online.reporting._2.WalletReportRequest;
+import net.lin_k.safe_online.reporting._2.WalletReportResponse;
+import net.lin_k.safe_online.reporting._2.WalletReportTransaction;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
-import net.link.safeonline.sdk.api.payment.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.ws.reporting.LinkIDReportingServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.safeonline.ws.reporting.LinkIDReportingServiceFactory;
@@ -152,20 +161,80 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
     }
 
     @Override
-    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final Date startDate, @Nullable final Date endDate)
-            throws LinkIDWSClientTransportException {
+    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final LinkIDReportDateFilter dateFilter)
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return null;
+        return getWalletReport( walletOrganizationId, dateFilter, null, null );
     }
 
     @Override
-    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final String applicationName)
-            throws LinkIDWSClientTransportException {
+    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final LinkIDReportApplicationFilter applicationFilter)
+            throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return null;
+        return getWalletReport( walletOrganizationId, null, applicationFilter, null );
+    }
+
+    @Override
+    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final LinkIDReportWalletFilter walletFilter)
+            throws LinkIDWSClientTransportException, LinkIDReportException {
+
+        return getWalletReport( walletOrganizationId, null, null, walletFilter );
     }
 
     // Helper methods
+
+    private List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, @Nullable final LinkIDReportDateFilter dateFilter,
+                                                                @Nullable final LinkIDReportApplicationFilter applicationFilter,
+                                                                @Nullable final LinkIDReportWalletFilter walletFilter)
+            throws LinkIDWSClientTransportException, LinkIDReportException {
+
+        WalletReportRequest request = new WalletReportRequest();
+
+        request.setWalletOrganizationId( walletOrganizationId );
+
+        if (null != dateFilter) {
+            DateFilter wsDateFilter = new DateFilter();
+            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
+            if (null != dateFilter.getEndDate()) {
+                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
+            }
+            request.setDateFilter( wsDateFilter );
+        }
+        if (null != applicationFilter) {
+            ApplicationFilter wsApplicationFilter = new ApplicationFilter();
+            wsApplicationFilter.setApplicationName( applicationFilter.getApplicationName() );
+            request.setApplicationFilter( wsApplicationFilter );
+        }
+        if (null != walletFilter) {
+            WalletFilter wsWalletFilter = new WalletFilter();
+            wsWalletFilter.setWalletId( walletFilter.getWalletId() );
+            wsWalletFilter.setUserId( walletFilter.getUserId() );
+            request.setWalletFilter( wsWalletFilter );
+        }
+
+        try {
+            WalletReportResponse response = getPort().walletReport( request );
+
+            if (null != response.getError()) {
+                throw new LinkIDReportException( convert( response.getError().getErrorCode() ) );
+            }
+
+            List<LinkIDWalletReportTransaction> transactions = Lists.newLinkedList();
+
+            for (WalletReportTransaction walletReportTransaction : response.getTransactions()) {
+
+                transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getWalletId(),
+                        LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ), walletReportTransaction.getTransactionId(),
+                        walletReportTransaction.getAmount(), LinkIDSDKUtils.convert( walletReportTransaction.getCurrency() ),
+                        walletReportTransaction.getUserId(), walletReportTransaction.getApplicationName() ) );
+            }
+
+            return transactions;
+        }
+        catch (ClientTransportException e) {
+            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
+        }
+    }
 
     private List<LinkIDPaymentOrder> getPaymentReport(@Nullable final Date startDate, @Nullable final Date endDate,
                                                       @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)

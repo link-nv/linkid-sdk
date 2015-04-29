@@ -12,6 +12,8 @@ import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
@@ -120,7 +122,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testReportingParking()
             throws Exception {
 
@@ -133,6 +135,28 @@ public class LinkIDWSClientTest {
 
         for (LinkIDParkingSession linkIDParkingSession : linkIDParkingSessions) {
             logger.inf( "Session: %s", linkIDParkingSession );
+        }
+    }
+
+    //    @Test
+    public void testReportingWallet()
+            throws Exception {
+
+        LinkIDReportingServiceClient client = new LinkIDReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        String walletOrganizationId = "f508212c-9189-4402-ab76-6e26110697b4";
+        Date startDate = DateTime.now().minusYears( 1 ).toDate();
+        String applicationName = "test-shop";
+        String walletId = "ff52177f-8f80-4640-9e86-558f6b1b24c3";
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+
+        //        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportDateFilter( startDate, null ) );
+        //        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportApplicationFilter( applicationName ) );
+        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportWalletFilter( walletId, userId ) );
+        logger.inf( "# txns = %d", transactions.size() );
+
+        for (LinkIDWalletReportTransaction transaction : transactions) {
+            logger.inf( "transaction: %s (wallet: %s)", transaction, transaction.getWalletId() );
         }
     }
 
@@ -284,16 +308,14 @@ public class LinkIDWSClientTest {
             @Override
             public String getUsername() {
 
-                return "parko-ltqr";
-                //                return "example-mobile";
+                return "example-mobile";
                 //                return "test-shop";
             }
 
             @Override
             public String getPassword() {
 
-                return "DD0AD9A6-ABBB-4CD1-B15A-7066B9E00263";
-                //                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
                 //                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
             }
 

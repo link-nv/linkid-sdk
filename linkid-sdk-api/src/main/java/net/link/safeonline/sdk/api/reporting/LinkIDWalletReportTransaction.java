@@ -1,6 +1,8 @@
-package net.link.safeonline.sdk.api.payment;
+package net.link.safeonline.sdk.api.reporting;
 
 import java.util.Date;
+import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 
 
 /**

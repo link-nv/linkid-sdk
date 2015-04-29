@@ -12,8 +12,11 @@ import java.util.List;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
-import net.link.safeonline.sdk.api.payment.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -120,24 +123,32 @@ public interface LinkIDReportingServiceClient {
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param startDate startDate
-     * @param endDate   optional endDate, not specified means till now
+     * @param dateFilter date filter
      *
      * @return the wallet transactions matching your search. If none found and empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, Date startDate, @Nullable Date endDate)
-            throws LinkIDWSClientTransportException;
+    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, LinkIDReportDateFilter dateFilter)
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param startDate startDate
-     * @param endDate   optional endDate, not specified means till now
+     * @param applicationFilter application filter
      *
      * @return the wallet transactions matching your search. If none found and empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, String applicationName)
-            throws LinkIDWSClientTransportException;
+    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, LinkIDReportApplicationFilter applicationFilter)
+            throws LinkIDWSClientTransportException, LinkIDReportException;
+
+    /**
+     * @param walletFilter wallet filter
+     *
+     * @return the wallet transactions matching your search. If none found and empty list is returned
+     *
+     * @throws LinkIDWSClientTransportException could not contact the linkID web service
+     */
+    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, LinkIDReportWalletFilter walletFilter)
+            throws LinkIDWSClientTransportException, LinkIDReportException;
 }

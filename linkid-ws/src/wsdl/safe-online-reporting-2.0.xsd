@@ -46,6 +46,16 @@
 		</complexType>
 	</element>
 
+    <element name="ParkingReportResponse">
+        <complexType>
+            <sequence>
+                <element name="sessions" type="tns:ParkingSession" minOccurs="0" maxOccurs="unbounded" />
+                <element name="error" type="tns:ReportError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+
     <element name="WalletReportRequest">
         <complexType>
             <sequence>
@@ -61,15 +71,6 @@
         <complexType>
             <sequence>
                 <element name="transactions" type="tns:WalletReportTransaction" minOccurs="0" maxOccurs="unbounded" />
-                <element name="error" type="tns:ReportError" minOccurs="0" maxOccurs="1" />
-            </sequence>
-        </complexType>
-    </element>
-
-    <element name="ParkingReportResponse">
-        <complexType>
-            <sequence>
-                <element name="sessions" type="tns:ParkingSession" minOccurs="0" maxOccurs="unbounded" />
                 <element name="error" type="tns:ReportError" minOccurs="0" maxOccurs="1" />
             </sequence>
         </complexType>
