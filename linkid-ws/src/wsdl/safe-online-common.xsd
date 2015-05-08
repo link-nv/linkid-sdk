@@ -125,6 +125,21 @@
                     <documentation>allow only wallets for this payment</documentation>
                 </annotation>
             </element>
+            <element name="mandate" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate or not</documentation>
+                </annotation>
+            </element>
+            <element name="mandateDescription" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate description</documentation>
+                </annotation>
+            </element>
+            <element name="mandateReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate reference</documentation>
+                </annotation>
+            </element>
         </sequence>
     </complexType>
 

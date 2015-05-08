@@ -115,6 +115,9 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
             paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
             paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
+            paymentContext.setMandate( linkIDPaymentContext.isMandate() );
+            paymentContext.setMandateDescription( linkIDPaymentContext.getMandateDescription() );
+            paymentContext.setMandateReference( linkIDPaymentContext.getMandateReference() );
 
             request.setPaymentContext( paymentContext );
         }
@@ -196,6 +199,9 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
             paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
             paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
+            paymentContext.setMandate( linkIDPaymentContext.isMandate() );
+            paymentContext.setMandateDescription( linkIDPaymentContext.getMandateDescription() );
+            paymentContext.setMandateReference( linkIDPaymentContext.getMandateReference() );
 
             request.setPaymentContext( paymentContext );
         }

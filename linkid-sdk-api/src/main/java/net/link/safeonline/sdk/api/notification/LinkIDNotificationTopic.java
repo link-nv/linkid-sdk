@@ -19,7 +19,7 @@ public enum LinkIDNotificationTopic {
 
     private final String topicUri;
 
-    private LinkIDNotificationTopic(final String topicUri) {
+    LinkIDNotificationTopic(final String topicUri) {
 
         this.topicUri = topicUri;
     }
