@@ -4,12 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+import javax.imageio.ImageIO;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
@@ -22,6 +30,7 @@ import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemesException;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
+import net.link.safeonline.sdk.api.ws.mandate.LinkIDMandateServiceClient;
 import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentServiceClient;
 import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.reporting.LinkIDReportingServiceClient;
@@ -35,6 +44,7 @@ import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClient
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.ltqr.LinkIDLTQRServiceClientImpl;
+import net.link.safeonline.sdk.ws.mandate.LinkIDMandateServiceClientImpl;
 import net.link.safeonline.sdk.ws.payment.LinkIDPaymentServiceClientImpl;
 import net.link.safeonline.sdk.ws.reporting.LinkIDReportingServiceClientImpl;
 import net.link.safeonline.sdk.ws.wallet.LinkIDWalletServiceClientImpl;
@@ -287,6 +297,7 @@ public class LinkIDWSClientTest {
     //    @Test
     public void testGetPaymentStatus()
             throws Exception {
+
         // setup
         String orderReference = "7d545bcb56f84fc8945f0cd537ca6694";
         LinkIDPaymentServiceClient client = new LinkIDPaymentServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
@@ -300,6 +311,56 @@ public class LinkIDWSClientTest {
         assertNotNull( linkIDPaymentStatus.getUserId() );
     }
 
+    //    @Test
+    public void testLTQRPush()
+            throws Exception {
+
+        // setup
+        String mandateDescription = null;
+        String mandateReference = null;
+        //        String mandateDescription = "LTQR mandate description";
+        //        String mandateReference = UUID.randomUUID().toString();
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext( 10, LinkIDCurrency.EUR, "LTQR Test", UUID.randomUUID().toString(), null, 5,
+                LinkIDPaymentAddBrowser.NOT_ALLOWED, false, true, mandateDescription, mandateReference );
+        DateTime expiryDateTime = new DateTime();
+        expiryDateTime = expiryDateTime.plusMonths( 2 );
+        LinkIDLTQRServiceClient client = new LinkIDLTQRServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        // operate
+        LinkIDLTQRSession linkIDLTQRSession = client.push( "LTQR Test", "LTQR Test finished", linkIDPaymentContext, false, expiryDateTime.toDate(), null, null,
+                null, null, null );
+
+        // verify
+        assertNotNull( linkIDLTQRSession );
+        assertNotNull( linkIDLTQRSession.getLtqrReference() );
+
+        logger.dbg( "Mandate reference: %s", mandateReference );
+        logger.dbg( "QR code URL: %s", linkIDLTQRSession.getQrCodeURL() );
+        logger.dbg( "LTQR ref: %s", linkIDLTQRSession.getLtqrReference() );
+        logger.dbg( "Payment order ref: %s", linkIDLTQRSession.getPaymentOrderReference() );
+
+        // write out QR image
+        ByteArrayInputStream bais = new ByteArrayInputStream( linkIDLTQRSession.getQrCodeImage() );
+        BufferedImage qrImage = ImageIO.read( bais );
+        ImageIO.write( qrImage, "png", new File( "qr.png" ) );
+    }
+
+    //    @Test
+    public void testMandatePayment()
+            throws Exception {
+
+        // setup
+        String mandateReference = "9d8c9f97-730d-4b6e-85e5-f5cbd88a427e";
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext( 10000, LinkIDCurrency.EUR, "Test description", null, null );
+        LinkIDMandateServiceClient client = new LinkIDMandateServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        // operate
+        String orderReference = client.pay( mandateReference, linkIDPaymentContext, Locale.ENGLISH );
+
+        // verify
+        assertNotNull( orderReference );
+    }
+
     // Auth
 
     private WSSecurityUsernameTokenCallback getUsernameTokenCallback() {
@@ -308,15 +369,15 @@ public class LinkIDWSClientTest {
             @Override
             public String getUsername() {
 
-                return "example-mobile";
-                //                return "test-shop";
+                //                return "example-mobile";
+                return "test-shop";
             }
 
             @Override
             public String getPassword() {
 
-                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
-                //                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
+                //                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
             }
 
             @Override
