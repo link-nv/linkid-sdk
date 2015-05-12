@@ -15,5 +15,6 @@ package net.link.safeonline.sdk.api.ltqr;
 public enum LinkIDChangeErrorCode {
 
     ERROR_CREDENTIALS_INVALID,
-    ERROR_NOT_FOUND
+    ERROR_NOT_FOUND,
+    ERROR_MULTI_USE_PAYMENT_ORDER_REFERENCE_NOT_ALLOWED
 }

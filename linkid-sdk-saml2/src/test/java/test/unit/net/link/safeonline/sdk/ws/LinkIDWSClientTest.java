@@ -22,6 +22,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
@@ -36,6 +37,7 @@ import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.reporting.LinkIDReportingServiceClient;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletEnrollException;
+import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletGetInfoException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletServiceClient;
@@ -186,6 +188,26 @@ public class LinkIDWSClientTest {
         }
         catch (LinkIDWalletEnrollException e) {
             logger.err( "Enroll error: %s", e.getErrorCode() );
+            fail();
+        }
+    }
+
+    //    @Test
+    public void testWalletGetInfo()
+            throws Exception {
+
+        // setup
+        LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String walletOrganizationId = "60d3113d-7229-4387-a271-792d905ca4ed";
+
+        // operate
+        try {
+            LinkIDWalletInfo walletInfo = client.getInfo( userId, walletOrganizationId );
+            logger.inf( "Wallet info: %s", walletInfo );
+        }
+        catch (LinkIDWalletGetInfoException e) {
+            logger.err( "GetInfo error: %s", e.getErrorCode() );
             fail();
         }
     }

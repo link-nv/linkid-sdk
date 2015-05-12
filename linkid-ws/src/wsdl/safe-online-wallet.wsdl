@@ -16,6 +16,15 @@
 		<part name="response" element="tns:WalletEnrollResponse" />
 	</message>
 
+    <!-- =================== GetInfo operation ========================= -->
+
+    <message name="getInfoRequest">
+		<part name="request" element="tns:WalletGetInfoRequest" />
+	</message>
+	<message name="getInfoResponse">
+		<part name="response" element="tns:WalletGetInfoResponse" />
+	</message>
+
     <!-- =================== AddCredit operation ======================= -->
 
     <message name="addCreditRequest">
@@ -59,6 +68,10 @@
 			<input message="tns:enrollRequest" />
 			<output message="tns:enrollResponse" />
 		</operation>
+		<operation name="getInfo">
+			<input message="tns:getInfoRequest" />
+			<output message="tns:getInfoResponse" />
+		</operation>
 		<operation name="addCredit">
 			<input message="tns:addCreditRequest" />
 			<output message="tns:addCreditResponse" />
@@ -83,6 +96,15 @@
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="enroll">
             <soap:operation soapAction="urn:net:lin-k:safe-online:wallet:enroll" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="getInfo">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:wallet:getInfo" />
             <input>
                 <soap:body use="literal" />
             </input>

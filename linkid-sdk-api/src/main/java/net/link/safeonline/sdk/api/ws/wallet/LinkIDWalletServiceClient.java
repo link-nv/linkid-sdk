@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.api.ws.wallet;
 
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 
 
 /**
@@ -26,6 +27,19 @@ public interface LinkIDWalletServiceClient {
      */
     String enroll(String userId, String walletOrganizationId, double amount, LinkIDCurrency currency)
             throws LinkIDWalletEnrollException;
+
+    /**
+     * Get info about a wallet for specified user and wallet organization
+     *
+     * @param userId               the userId
+     * @param walletOrganizationId the wallet organization ID
+     *
+     * @return wallet info
+     *
+     * @throws LinkIDWalletGetInfoException the wallet does not exist, user does not exist, ... check the error code
+     */
+    LinkIDWalletInfo getInfo(String userId, String walletOrganizationId)
+            throws LinkIDWalletGetInfoException;
 
     /**
      * Add credit for a user for a wallet

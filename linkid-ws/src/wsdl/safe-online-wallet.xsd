@@ -93,6 +93,80 @@
 	</simpleType>
 
     <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Get Info                                               -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletGetInfoRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet organization ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletGetInfoResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletGetInfoSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletGetInfoError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletGetInfoSuccess">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The linkID wallet ID</documentation>
+                </annotation>
+            </element>
+			<element name="amount" type="double" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>The amount in the wallet ( in cents ). If applicable, else just 0</documentation>
+				</annotation>
+			</element>
+			<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+			</element>
+        </sequence>
+	</complexType>
+
+	<complexType name="WalletGetInfoError">
+		<attribute name="errorCode" type="tns:WalletGetInfoErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletGetInfoErrorCode">
+		<annotation>
+			<documentation>Wallet Enroll Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
     <!--                                            Wallet Add Credit                                                 -->
     <!-- ********************  ********************  ********************  ********************  ******************** -->
 
