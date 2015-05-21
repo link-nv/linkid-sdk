@@ -86,7 +86,8 @@ public abstract class LinkIDAuthWSUtils {
 
         Map<String, String> deviceContextMap = LinkIDDeviceContextUtils.generate( authenticationContext.getAuthenticationMessage(),
                 authenticationContext.getFinishedMessage(), authenticationContext.getIdentityProfiles(), authenticationContext.getSessionExpiryOverride(),
-                authenticationContext.getTheme() );
+                authenticationContext.getTheme(), authenticationContext.getMobileLandingSuccess(), authenticationContext.getMobileLandingError(),
+                authenticationContext.getMobileLandingCancel() );
 
         AuthnRequest samlRequest = LinkIDAuthnRequestFactory.createAuthnRequest( authenticationContext.getApplicationName(), null,
                 authenticationContext.getApplicationFriendlyName(), "http://foo.bar", null, authenticationContext.isForceAuthentication(), deviceContextMap,

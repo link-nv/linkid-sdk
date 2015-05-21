@@ -60,7 +60,8 @@ public class LinkIDHawsProtocolHandler implements LinkIDProtocolHandler {
         LinkIDRequestConfig linkIDRequestConfig = LinkIDRequestConfig.get( authnContext );
 
         Map<String, String> deviceContext = LinkIDDeviceContextUtils.generate( authnContext.getAuthenticationMessage(), authnContext.getFinishedMessage(),
-                authnContext.getIdentityProfiles(), authnContext.getSessionExpiryOverride(), authnContext.getTheme() );
+                authnContext.getIdentityProfiles(), authnContext.getSessionExpiryOverride(), authnContext.getTheme(), authnContext.getMobileLandingSuccess(),
+                authnContext.getMobileLandingError(), authnContext.getMobileLandingCancel() );
 
         // create SAML2 request
         AuthnRequest samlRequest = LinkIDAuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null,

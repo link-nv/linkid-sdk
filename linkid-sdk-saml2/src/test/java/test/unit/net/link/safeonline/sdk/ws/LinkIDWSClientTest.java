@@ -313,7 +313,7 @@ public class LinkIDWSClientTest {
         LinkIDPaymentContext paymentContext = new LinkIDPaymentContext( 5, LinkIDCurrency.EUR );
 
         // operate
-        client.push( null, null, paymentContext, false, null, null, null, null, null, null );
+        client.push( null, null, paymentContext, false, null, null, null, null, null, null, null, null, null );
     }
 
     //    @Test
@@ -350,7 +350,7 @@ public class LinkIDWSClientTest {
 
         // operate
         LinkIDLTQRSession linkIDLTQRSession = client.push( "LTQR Test", "LTQR Test finished", linkIDPaymentContext, false, expiryDateTime.toDate(), null, null,
-                null, null, null );
+                null, null, null, null, null, null );
 
         // verify
         assertNotNull( linkIDLTQRSession );

@@ -93,7 +93,9 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
     public LinkIDLTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage,
                                   @Nullable final LinkIDPaymentContext linkIDPaymentContext, final boolean oneTimeUse, @Nullable final Date expiryDate,
                                   @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
-                                  @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme)
+                                  @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
+                                  @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
+                                  @Nullable final String mobileLandingCancel)
             throws LinkIDPushException {
 
         PushRequest request = new PushRequest();
@@ -147,6 +149,16 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             request.setTheme( theme );
         }
 
+        if (null != mobileLandingSuccess) {
+            request.setMobileLandingSuccess( mobileLandingSuccess );
+        }
+        if (null != mobileLandingError) {
+            request.setMobileLandingError( mobileLandingError );
+        }
+        if (null != mobileLandingCancel) {
+            request.setMobileLandingCancel( mobileLandingCancel );
+        }
+
         // configuration
         request.setOneTimeUse( oneTimeUse );
         if (null != expiryDate) {
@@ -175,7 +187,9 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
     public LinkIDLTQRSession change(final String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
                                     @Nullable final LinkIDPaymentContext linkIDPaymentContext, @Nullable final Date expiryDate,
                                     @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
-                                    @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme)
+                                    @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
+                                    @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
+                                    @Nullable final String mobileLandingCancel)
             throws LinkIDChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -229,6 +243,16 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         }
         if (null != theme) {
             request.setTheme( theme );
+        }
+
+        if (null != mobileLandingSuccess) {
+            request.setMobileLandingSuccess( mobileLandingSuccess );
+        }
+        if (null != mobileLandingError) {
+            request.setMobileLandingError( mobileLandingError );
+        }
+        if (null != mobileLandingCancel) {
+            request.setMobileLandingCancel( mobileLandingCancel );
         }
 
         // configuration

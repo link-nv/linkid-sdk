@@ -53,6 +53,21 @@
                         <documentation>optional theme, if not specified default application theme will be chosen</documentation>
                     </annotation>
                 </element>
+                <element name="mobileLandingSuccess" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                    </annotation>
+                </element>
+                <element name="mobileLandingError" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                    </annotation>
+                </element>
+                <element name="mobileLandingCancel" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                    </annotation>
+                </element>
             </sequence>
             <attribute name="oneTimeUse" type="boolean" use="required">
                 <annotation>
@@ -125,6 +140,21 @@
                 <element name="theme" type="string" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>optional theme, if not specified default application theme will be chosen</documentation>
+                    </annotation>
+                </element>
+                <element name="mobileLandingSuccess" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                    </annotation>
+                </element>
+                <element name="mobileLandingError" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                    </annotation>
+                </element>
+                <element name="mobileLandingCancel" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
                     </annotation>
                 </element>
             </sequence>

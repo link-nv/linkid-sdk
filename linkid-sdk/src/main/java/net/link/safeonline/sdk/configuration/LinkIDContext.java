@@ -53,6 +53,10 @@ public abstract class LinkIDContext implements Serializable {
     private List<String>                identityProfiles;
     private Long                        sessionExpiryOverride;
     private String                      theme;
+    //
+    private String                      mobileLandingSuccess;       // landing page for an authn/payment started on iOS browser
+    private String                      mobileLandingError;         // landing page for an authn/payment started on iOS browser
+    private String                      mobileLandingCancel;        // landing page for an authn/payment started on iOS browser
 
     /**
      * @see #LinkIDContext(String, KeyProvider, String)
@@ -321,6 +325,36 @@ public abstract class LinkIDContext implements Serializable {
     public void setTheme(final String theme) {
 
         this.theme = theme;
+    }
+
+    public String getMobileLandingSuccess() {
+
+        return mobileLandingSuccess;
+    }
+
+    public void setMobileLandingSuccess(final String mobileLandingSuccess) {
+
+        this.mobileLandingSuccess = mobileLandingSuccess;
+    }
+
+    public String getMobileLandingError() {
+
+        return mobileLandingError;
+    }
+
+    public void setMobileLandingError(final String mobileLandingError) {
+
+        this.mobileLandingError = mobileLandingError;
+    }
+
+    public String getMobileLandingCancel() {
+
+        return mobileLandingCancel;
+    }
+
+    public void setMobileLandingCancel(final String mobileLandingCancel) {
+
+        this.mobileLandingCancel = mobileLandingCancel;
     }
 
     @Override

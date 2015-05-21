@@ -41,6 +41,9 @@ public interface LinkIDLTQRServiceClient {
      * @param identityProfiles      Optional identity profiles
      * @param sessionExpiryOverride optional session expiry (seconds)
      * @param theme                 optional theme, if not specified default application theme will be chosen
+     * @param mobileLandingSuccess  optional landing page for an authn/payment started on iOS browser
+     * @param mobileLandingError    optional landing page for an authn/payment started on iOS browser
+     * @param mobileLandingCancel   optional landing page for an authn/payment started on iOS browser
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      * session ID will be used in the notifications to the Service Provider.
@@ -49,7 +52,8 @@ public interface LinkIDLTQRServiceClient {
      */
     LinkIDLTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage, @Nullable LinkIDPaymentContext paymentContext,
                            boolean oneTimeUse, @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable LinkIDCallback callback,
-                           @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride, @Nullable String theme)
+                           @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride, @Nullable String theme,
+                           @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError, @Nullable String mobileLandingCancel)
             throws LinkIDPushException;
 
     /**
@@ -66,13 +70,17 @@ public interface LinkIDLTQRServiceClient {
      * @param identityProfiles      Optional identity profiles
      * @param sessionExpiryOverride optional session expiry (seconds)
      * @param theme                 optional theme, if not specified default application theme will be chosen
+     * @param mobileLandingSuccess  optional landing page for an authn/payment started on iOS browser
+     * @param mobileLandingError    optional landing page for an authn/payment started on iOS browser
+     * @param mobileLandingCancel   optional landing page for an authn/payment started on iOS browser
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
     LinkIDLTQRSession change(String ltqrReference, @Nullable String authenticationMessage, @Nullable String finishedMessage,
                              @Nullable LinkIDPaymentContext paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration,
                              @Nullable LinkIDCallback callback, @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride,
-                             @Nullable String theme)
+                             @Nullable String theme, @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError,
+                             @Nullable String mobileLandingCancel)
             throws LinkIDChangeException;
 
     /**
