@@ -24,6 +24,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
+import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemes;
@@ -42,6 +43,7 @@ import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletServiceClient;
 import net.link.safeonline.sdk.ws.auth.LinkIDAuthServiceClientImpl;
+import net.link.safeonline.sdk.ws.capture.LinkIDCaptureServiceClientImpl;
 import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClientImpl;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
@@ -79,7 +81,7 @@ public class LinkIDWSClientTest {
 
         // DEBUG so ssl validation is skipped for local self signed ssl cert, obv do not do this in production, nor even against demo.linkid.be for that matter.
         System.setProperty( ApplicationMode.PROPERTY, ApplicationMode.DEBUG.name() );
-        this.wsLocation = "https://192.168.5.14:8443/linkid-ws-username";
+        this.wsLocation = "https://192.168.0.198:8443/linkid-ws-username";
         //        this.wsLocation = "https://demo.linkid.be/linkid-ws-username";
     }
 
@@ -381,6 +383,18 @@ public class LinkIDWSClientTest {
 
         // verify
         assertNotNull( orderReference );
+    }
+
+    //    @Test
+    public void testCapture()
+            throws Exception {
+
+        // Setup
+        String orderReference = "foo";
+        LinkIDCaptureServiceClient client = new LinkIDCaptureServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        // operate
+        client.capture( orderReference );
     }
 
     // Auth
