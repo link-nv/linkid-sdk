@@ -17,7 +17,6 @@ public class LinkIDAttributeType implements Serializable {
 
     private String         name;
     private LinkIDDataType type;
-    private String         providerJndi;
     private boolean        userVisible;
     private boolean        userEditable;
     private boolean        userRemovable;
@@ -36,31 +35,20 @@ public class LinkIDAttributeType implements Serializable {
 
     public LinkIDAttributeType(final String name) {
 
-        this( name, null, null, false, false, false, false, false, false, false );
+        this( name, null, false, false, false, false, false, false, false );
     }
 
-    public LinkIDAttributeType(final String name, final LinkIDDataType linkIDDataType) {
+    public LinkIDAttributeType(String name, LinkIDDataType type, boolean userVisible, boolean userEditable, boolean multivalued, boolean mappable,
+                               boolean required) {
 
-        this( name, linkIDDataType, null, false, false, false, false, false, false, false );
+        this( name, type, userVisible, userEditable, false, multivalued, mappable, false, required );
     }
 
-    public LinkIDAttributeType(final String name, final LinkIDDataType linkIDDataType, boolean multivalued) {
-
-        this( name, linkIDDataType, null, false, false, false, multivalued, false, false, false );
-    }
-
-    public LinkIDAttributeType(String name, LinkIDDataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean multivalued,
-                               boolean mappable, boolean required) {
-
-        this( name, type, providerJndi, userVisible, userEditable, false, multivalued, mappable, false, required );
-    }
-
-    public LinkIDAttributeType(String name, LinkIDDataType type, String providerJndi, boolean userVisible, boolean userEditable, boolean userRemovable,
-                               boolean multivalued, boolean mappable, boolean compoundMember, boolean required) {
+    public LinkIDAttributeType(String name, LinkIDDataType type, boolean userVisible, boolean userEditable, boolean userRemovable, boolean multivalued,
+                               boolean mappable, boolean compoundMember, boolean required) {
 
         this.name = name;
         this.type = type;
-        this.providerJndi = providerJndi;
         this.userVisible = userVisible;
         this.userEditable = userEditable;
         this.userRemovable = userRemovable;
@@ -79,11 +67,6 @@ public class LinkIDAttributeType implements Serializable {
     public LinkIDDataType getType() {
 
         return type;
-    }
-
-    public String getProviderJndi() {
-
-        return providerJndi;
     }
 
     public boolean isUserVisible() {
@@ -139,11 +122,6 @@ public class LinkIDAttributeType implements Serializable {
     public void setType(final LinkIDDataType type) {
 
         this.type = type;
-    }
-
-    public void setProviderJndi(final String providerJndi) {
-
-        this.providerJndi = providerJndi;
     }
 
     public void setUserVisible(final boolean userVisible) {

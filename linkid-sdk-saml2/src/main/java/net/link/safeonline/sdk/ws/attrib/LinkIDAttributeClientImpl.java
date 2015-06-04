@@ -34,6 +34,8 @@ import net.link.safeonline.ws.attrib.LinkIDSAMLAttributeServiceFactory;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.logging.Logger;
 import net.link.util.ws.AbstractWSClient;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
+import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
@@ -69,12 +71,31 @@ public class LinkIDAttributeClientImpl extends AbstractWSClient<SAMLAttributePor
      */
     public LinkIDAttributeClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
+        this( location, sslCertificates );
+
+        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
+    }
+
+    /**
+     * Main constructor.
+     *
+     * @param location        the location (host:port) of the attribute web service.
+     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
+     */
+    public LinkIDAttributeClientImpl(final String location, final X509Certificate[] sslCertificates,
+                                     final WSSecurityUsernameTokenCallback usernameTokenCallback) {
+
+        this( location, sslCertificates );
+
+        WSSecurityUsernameTokenHandler.install( getBindingProvider(), usernameTokenCallback );
+    }
+
+    private LinkIDAttributeClientImpl(final String location, final X509Certificate[] sslCertificates) {
+
         super( LinkIDSAMLAttributeServiceFactory.newInstance().getSAMLAttributePort(), sslCertificates );
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.attribute.path" ) ) );
-
-        WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
     private ResponseType getResponse(AttributeQueryType request)

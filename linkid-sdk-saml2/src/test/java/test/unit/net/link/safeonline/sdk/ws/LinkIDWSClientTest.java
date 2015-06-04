@@ -81,7 +81,7 @@ public class LinkIDWSClientTest {
 
         // DEBUG so ssl validation is skipped for local self signed ssl cert, obv do not do this in production, nor even against demo.linkid.be for that matter.
         System.setProperty( ApplicationMode.PROPERTY, ApplicationMode.DEBUG.name() );
-        this.wsLocation = "https://192.168.0.198:8443/linkid-ws-username";
+        this.wsLocation = "https://192.168.5.14:8443/linkid-ws-username";
         //        this.wsLocation = "https://demo.linkid.be/linkid-ws-username";
     }
 
@@ -335,7 +335,7 @@ public class LinkIDWSClientTest {
         assertNotNull( linkIDPaymentStatus.getUserId() );
     }
 
-    //    @Test
+        @Test
     public void testLTQRPush()
             throws Exception {
 
