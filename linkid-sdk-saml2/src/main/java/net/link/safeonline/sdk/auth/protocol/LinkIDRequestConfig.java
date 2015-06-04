@@ -9,11 +9,11 @@ package net.link.safeonline.sdk.auth.protocol;
 
 import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config;
 
-import net.link.safeonline.sdk.api.LinkIDConstants;
-import net.link.util.logging.Logger;
 import java.net.URI;
+import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
+import net.link.util.logging.Logger;
 
 
 /**
@@ -37,11 +37,14 @@ public class LinkIDRequestConfig {
         logger.dbg( "target url: %s", targetURL );
 
         String landingURL = null;
-        if (config().web().landingPath() != null)
+        if (null != authnContext.getLandingUrl()) {
+            landingURL = LinkIDConfigUtils.getApplicationConfidentialURLFromPath( authnContext.getLandingUrl() );
+        } else if (null != config().web().landingPath()) {
             landingURL = LinkIDConfigUtils.getApplicationConfidentialURLFromPath( config().web().landingPath() );
+        }
         logger.dbg( "landing url: %s", landingURL );
 
-        if (landingURL == null) {
+        if (null == landingURL) {
             // If no landing URL is configured, land on target.
             landingURL = targetURL;
             targetURL = null;

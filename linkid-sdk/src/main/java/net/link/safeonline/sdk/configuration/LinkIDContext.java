@@ -44,6 +44,7 @@ public abstract class LinkIDContext implements Serializable {
     private Collection<X509Certificate> trustedCertificates;
     private Locale                      language;
     private String                      target;
+    private String                      landingUrl;                 // optional landing url, if not specified is constructed in {@LinkIDRequestConfig}
     //
     private LinkIDProtocol              protocol;
     private SAMLContext                 saml;
@@ -150,7 +151,7 @@ public abstract class LinkIDContext implements Serializable {
 
         saml = new SAMLContext();
 
-        this.applicationName = ifNotNullElse( applicationName, config().linkID().app().name() );
+        this.applicationName = null != applicationName? applicationName: config().linkID().app().name();
         this.applicationFriendlyName = applicationFriendlyName;
         this.applicationKeyPair = applicationKeyPair;
         this.applicationCertificate = applicationCertificate;
@@ -355,6 +356,16 @@ public abstract class LinkIDContext implements Serializable {
     public void setMobileLandingCancel(final String mobileLandingCancel) {
 
         this.mobileLandingCancel = mobileLandingCancel;
+    }
+
+    public String getLandingUrl() {
+
+        return landingUrl;
+    }
+
+    public void setLandingUrl(final String landingUrl) {
+
+        this.landingUrl = landingUrl;
     }
 
     @Override
