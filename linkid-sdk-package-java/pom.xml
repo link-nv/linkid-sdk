@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client</groupId>
         <artifactId>sdk</artifactId>
-        <version>2.68</version>
+        <version>GIT-SNAPSHOT</version>
     </parent>
 
     <name>linkID Java SDK Package</name>
@@ -78,54 +78,54 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>javadoc</classifier>
         </dependency>
 
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-api</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-api</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-api</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>javadoc</classifier>
         </dependency>
 
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-saml2</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-saml2</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk-saml2</artifactId>
-            <version>2.68</version>
+            <version>GIT-SNAPSHOT</version>
             <classifier>javadoc</classifier>
         </dependency>
 
