@@ -17,6 +17,7 @@ public class LinkIDAttributeType implements Serializable {
 
     private String         name;
     private LinkIDDataType type;
+    private String         providerJndi;            // backwards compatibility, ios clients crashes on it...
     private boolean        userVisible;
     private boolean        userEditable;
     private boolean        userRemovable;
@@ -49,6 +50,7 @@ public class LinkIDAttributeType implements Serializable {
 
         this.name = name;
         this.type = type;
+        this.providerJndi = "";
         this.userVisible = userVisible;
         this.userEditable = userEditable;
         this.userRemovable = userRemovable;
@@ -56,7 +58,7 @@ public class LinkIDAttributeType implements Serializable {
         this.mappable = mappable;
         this.compoundMember = compoundMember;
         this.required = required;
-        members = new LinkedList<LinkIDAttributeType>();
+        this.members = new LinkedList<LinkIDAttributeType>();
     }
 
     public String getName() {
@@ -162,6 +164,16 @@ public class LinkIDAttributeType implements Serializable {
     public void setMembers(final List<LinkIDAttributeType> members) {
 
         this.members = members;
+    }
+
+    public String getProviderJndi() {
+
+        return providerJndi;
+    }
+
+    public void setProviderJndi(final String providerJndi) {
+
+        this.providerJndi = providerJndi;
     }
 
     @Override

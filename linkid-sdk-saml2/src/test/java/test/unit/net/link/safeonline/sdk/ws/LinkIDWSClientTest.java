@@ -20,7 +20,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
-import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
@@ -164,9 +164,9 @@ public class LinkIDWSClientTest {
         String walletId = "ff52177f-8f80-4640-9e86-558f6b1b24c3";
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
 
-        //        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportDateFilter( startDate, null ) );
+        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportDateFilter( startDate, null ) );
         //        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportApplicationFilter( applicationName ) );
-        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportWalletFilter( walletId, userId ) );
+        //        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportWalletFilter( walletId, userId ) );
         logger.inf( "# txns = %d", transactions.size() );
 
         for (LinkIDWalletReportTransaction transaction : transactions) {
@@ -335,7 +335,7 @@ public class LinkIDWSClientTest {
         assertNotNull( linkIDPaymentStatus.getUserId() );
     }
 
-        @Test
+    //    @Test
     public void testLTQRPush()
             throws Exception {
 
