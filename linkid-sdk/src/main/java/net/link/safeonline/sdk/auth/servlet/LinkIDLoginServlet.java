@@ -73,13 +73,13 @@ public class LinkIDLoginServlet extends LinkIDAbstractConfidentialInjectionServl
                 // if we don't have a response, check if perhaps the session has expired
                 if (request.getSession( false ) == null || request.getSession().isNew()) {
                     logger.wrn( "Session timeout, authentication took too long." );
-                    ServletUtils.redirectToErrorPage( request, response, timeoutPage, null,
+                    ServletUtils.redirectToErrorPage( request, response, getTimeoutPage(), null,
                             new ErrorMessage( "Session timeout, authentication took too long." ) );
                     return;
                 }
                 //nope, it's something else
                 logger.err( "No expected or detached authentication responses found in request." );
-                ServletUtils.redirectToErrorPage( request, response, errorPage, null,
+                ServletUtils.redirectToErrorPage( request, response, getErrorPage(), null,
                         new ErrorMessage( "No expected or detached authentication responses found in request." ) );
                 return;
             }
@@ -104,7 +104,7 @@ public class LinkIDLoginServlet extends LinkIDAbstractConfidentialInjectionServl
 
             logger.err( e, "Validation failed: %s", e.getMessage() );
 
-            ServletUtils.redirectToErrorPage( request, response, errorPage, null,
+            ServletUtils.redirectToErrorPage( request, response, getErrorPage(), null,
                     new ErrorMessage( String.format( "Validation of authentication response failed: %s", e.getMessage() ) ) );
         }
     }
