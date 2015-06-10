@@ -190,7 +190,6 @@
                                         <exclude>commons-logging:commons-logging</exclude>
                                         <exclude>commons-logging:commons-logging-api</exclude>
                                         <exclude>log4j:log4j</exclude>
-                                        <exclude>net.lin-k.util:util-j2ee-jboss4</exclude>
                                         <exclude>javax.ejb:ejb-api</exclude>
                                         <!-- Excluded to prevent its inclusion in deploy jars, as this breaks Jboss 6 postconstruct. See http://community.jboss.org/thread/150609  -->
                                         <exclude>javax.annotation:jsr250-api</exclude>
