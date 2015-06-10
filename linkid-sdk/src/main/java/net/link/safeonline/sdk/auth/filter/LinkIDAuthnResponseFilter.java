@@ -19,10 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.protocol.LinkIDAuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolManager;
-import net.link.util.exception.ValidationFailedException;
 import net.link.util.logging.Logger;
-import net.link.util.servlet.ErrorMessage;
-import net.link.util.servlet.ServletUtils;
+import net.link.util.saml.ValidationFailedException;
+import net.link.util.common.ErrorMessage;
+import net.link.util.ServletUtils;
 
 
 /**

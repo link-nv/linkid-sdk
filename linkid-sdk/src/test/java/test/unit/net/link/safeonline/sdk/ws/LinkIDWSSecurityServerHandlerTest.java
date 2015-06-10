@@ -77,7 +77,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -127,7 +127,7 @@ public class LinkIDWSSecurityServerHandlerTest {
                 PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -175,7 +175,7 @@ public class LinkIDWSSecurityServerHandlerTest {
                 PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -203,7 +203,8 @@ public class LinkIDWSSecurityServerHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-ws-security-invalid-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
+                "/src/test/resources/test-ws-security-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -238,7 +239,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" ) );
+        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" ) );
 
         // use WSSecurityClientHandler to sign message
         WSSecSignature wsSecSignature = new WSSecSignature();
@@ -316,7 +317,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" ) );
+        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" ) );
 
         // use WSSecurityClientHandler to sign message
         WSSecSignature wsSecSignature = new WSSecSignature();

@@ -427,7 +427,6 @@
         <module>linkid-config</module>
         <module>linkid-sdk-api</module>
         <module>linkid-sdk</module>
-        <module>linkid-sdk-saml2</module>
         <module>linkid-ws</module>
 
         <module>linkid-sdk-package-java</module>
@@ -484,7 +483,7 @@
 
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
         <release.version>1.18</release.version>
-        <link-util.version>1.62</link-util.version>
+        <link-util.version>GIT-SNAPSHOT</link-util.version>
         <jtrust.version>2.0.1</jtrust.version>
         <bouncycastle.version>1.49</bouncycastle.version>
 
@@ -545,40 +544,12 @@
             <!-- lin.k util -->
             <dependency>
                 <groupId>net.lin-k.util</groupId>
-                <artifactId>util-j2ee</artifactId>
-                <version>${link-util.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.util</groupId>
                 <artifactId>util-common</artifactId>
                 <version>${link-util.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.util</groupId>
-                <artifactId>util-j2ee-jboss6</artifactId>
-                <version>${link-util.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>jboss.jbossws</groupId>
-                        <artifactId>jboss-jaxws</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>sun-jaxb</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>apache-xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>apache-xerces</groupId>
-                        <artifactId>xml-apis</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

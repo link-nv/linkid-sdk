@@ -71,7 +71,7 @@ public class LinkIDWSSecurityClientHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
@@ -110,7 +110,8 @@ public class LinkIDWSSecurityClientHandlerTest {
 
         // Setup data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-ws-security-invalid-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
+                "/src/test/resources/test-ws-security-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -133,7 +134,7 @@ public class LinkIDWSSecurityClientHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );

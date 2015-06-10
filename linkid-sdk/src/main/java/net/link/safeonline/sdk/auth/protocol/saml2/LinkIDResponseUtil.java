@@ -24,9 +24,9 @@ import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolContext;
 import net.link.safeonline.sdk.configuration.LinkIDSAMLBinding;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.common.CertificateChain;
-import net.link.util.exception.ValidationFailedException;
 import net.link.util.logging.Logger;
 import net.link.util.saml.Saml2Utils;
+import net.link.util.saml.ValidationFailedException;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.Assertion;
@@ -101,7 +101,7 @@ public abstract class LinkIDResponseUtil {
      */
     @Nullable
     public static LinkIDSaml2ResponseContext findAndValidateAuthnResponse(HttpServletRequest request, Map<String, LinkIDProtocolContext> contexts,
-                                                                    Collection<X509Certificate> trustedCertificates)
+                                                                          Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
 
         Response authnResponse = findAuthnResponse( request );
@@ -113,8 +113,8 @@ public abstract class LinkIDResponseUtil {
         return validateAuthnResponse( authnResponse, request, contexts, trustedCertificates );
     }
 
-    public static LinkIDSaml2ResponseContext validateAuthnResponse(final Response authnResponse, HttpServletRequest request, Map<String, LinkIDProtocolContext> contexts,
-                                                             Collection<X509Certificate> trustedCertificates)
+    public static LinkIDSaml2ResponseContext validateAuthnResponse(final Response authnResponse, HttpServletRequest request,
+                                                                   Map<String, LinkIDProtocolContext> contexts, Collection<X509Certificate> trustedCertificates)
             throws ValidationFailedException {
         // Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
         LinkIDAuthnProtocolRequestContext authnRequest = (LinkIDAuthnProtocolRequestContext) contexts.get( authnResponse.getInResponseTo() );

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.logging.ws;
+package net.link.safeonline.sdk.ws.logging;
 
 import net.link.util.logging.Logger;
 import java.util.Set;

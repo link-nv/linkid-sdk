@@ -7,6 +7,8 @@
 
 package net.link.safeonline.sdk.servlet;
 
+import net.link.util.HttpServletRequestEndpointWrapper;
+import net.link.util.HttpServletResponseEndpointWrapper;
 import net.link.util.logging.Logger;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.http.*;
 import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
-import net.link.util.servlet.*;
 
 
 /**

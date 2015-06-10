@@ -15,8 +15,8 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.util.InternalInconsistencyException;
-import net.link.util.exception.ValidationFailedException;
 import net.link.util.logging.Logger;
+import net.link.util.saml.ValidationFailedException;
 import org.jetbrains.annotations.Nullable;
 
 

@@ -89,7 +89,7 @@ public class LinkIDAuthnRequestFilterTest {
                 new ServletSetup( TestServlet.class ), new FilterSetup( LinkIDAuthnRequestFilter.class ) ) );
 
         new LinkIDTestConfigHolder( servletTestManager.createSocketConnector(), servletTestManager.getServletContext() ).install();
-        testConfig().proto().saml().postBindingTemplate = "test-saml2-post-binding.vm";
+        testConfig().proto().saml().postBindingTemplate = "src/test/resources/test-saml2-post-binding.vm";
         testConfig().linkID().app().keyProvider = new KeyProviderImpl( PkiTestUtils.generateKeyEntry( "CN=TestApplication" ),
                 ImmutableMap.<String, X509Certificate>of() );
 

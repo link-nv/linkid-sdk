@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
-import net.link.util.exception.ValidationFailedException;
+import net.link.util.saml.ValidationFailedException;
 import org.jetbrains.annotations.Nullable;
 
 
