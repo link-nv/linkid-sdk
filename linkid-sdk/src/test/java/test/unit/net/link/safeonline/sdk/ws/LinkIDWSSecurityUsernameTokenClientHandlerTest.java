@@ -14,7 +14,10 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.InputStream;
-import javax.xml.soap.*;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.util.test.web.DomTestUtils;
@@ -23,6 +26,7 @@ import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallbac
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -69,8 +73,8 @@ public class LinkIDWSSecurityUsernameTokenClientHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityUsernameTokenClientHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityUsernameTokenClientHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
+        Assert.assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
@@ -121,7 +125,7 @@ public class LinkIDWSSecurityUsernameTokenClientHandlerTest {
         // Setup data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-ws-security-username-token-invalid-message.xml" );
+                "/test-ws-security-username-token-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -145,7 +149,7 @@ public class LinkIDWSSecurityUsernameTokenClientHandlerTest {
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-ws-security-username-token-valid-message.xml" );
+                "/test-ws-security-username-token-valid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -192,7 +196,7 @@ public class LinkIDWSSecurityUsernameTokenClientHandlerTest {
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-ws-security-username-token-valid-message.xml" );
+                "/test-ws-security-username-token-valid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -248,8 +252,8 @@ public class LinkIDWSSecurityUsernameTokenClientHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityUsernameTokenClientHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityUsernameTokenClientHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
+        Assert.assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
@@ -328,7 +332,7 @@ public class LinkIDWSSecurityUsernameTokenClientHandlerTest {
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
         InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-ws-security-username-token-valid-message-plaintext.xml" );
+                "/test-ws-security-username-token-valid-message-plaintext.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );

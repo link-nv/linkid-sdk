@@ -482,7 +482,7 @@
 
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
         <release.version>1.18</release.version>
-        <link-util.version>GIT-SNAPSHOT</link-util.version>
+        <link-util.version>1.64</link-util.version>
         <jtrust.version>2.0.1</jtrust.version>
         <bouncycastle.version>1.49</bouncycastle.version>
 
@@ -500,8 +500,8 @@
 
         <serializer.version>2.10.0</serializer.version>
 
-        <guava.version>r05</guava.version>
-        <gson.version>2.2.2</gson.version>
+        <guava.version>18.0</guava.version>
+        <gson.version>2.3.1</gson.version>
         <jetbrains-annotations.version>7.0.2</jetbrains-annotations.version>
 
         <!-- DEFAULT VERSIONS for Test Dependencies -->

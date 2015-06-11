@@ -7,23 +7,31 @@
 
 package test.unit.net.link.safeonline.sdk.auth.saml2;
 
-import static net.link.safeonline.sdk.configuration.LinkIDTestConfigHolder.*;
-import static org.junit.Assert.*;
+import static net.link.safeonline.sdk.configuration.LinkIDTestConfigHolder.testConfig;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
 import java.security.cert.X509Certificate;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.filter.LinkIDAuthnRequestFilter;
 import net.link.safeonline.sdk.configuration.LinkIDTestConfigHolder;
 import net.link.util.config.KeyProviderImpl;
 import net.link.util.test.j2ee.TestClassLoader;
 import net.link.util.test.pkix.PkiTestUtils;
-import net.link.util.test.web.*;
+import net.link.util.test.web.ContainerSetup;
+import net.link.util.test.web.FilterSetup;
+import net.link.util.test.web.ServletSetup;
+import net.link.util.test.web.ServletTestManager;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class LinkIDAuthnRequestFilterTest {
@@ -89,7 +97,7 @@ public class LinkIDAuthnRequestFilterTest {
                 new ServletSetup( TestServlet.class ), new FilterSetup( LinkIDAuthnRequestFilter.class ) ) );
 
         new LinkIDTestConfigHolder( servletTestManager.createSocketConnector(), servletTestManager.getServletContext() ).install();
-        testConfig().proto().saml().postBindingTemplate = "src/test/resources/test-saml2-post-binding.vm";
+        testConfig().proto().saml().postBindingTemplate = "/test-saml2-post-binding.vm";
         testConfig().linkID().app().keyProvider = new KeyProviderImpl( PkiTestUtils.generateKeyEntry( "CN=TestApplication" ),
                 ImmutableMap.<String, X509Certificate>of() );
 

@@ -16,7 +16,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.PrivateKey;
-import javax.xml.soap.*;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.util.common.CertificateChain;
@@ -71,7 +74,7 @@ public class LinkIDWSSecurityClientHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
 
@@ -110,8 +113,7 @@ public class LinkIDWSSecurityClientHandlerTest {
 
         // Setup data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-ws-security-invalid-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-ws-security-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -134,7 +136,7 @@ public class LinkIDWSSecurityClientHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityClientHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );

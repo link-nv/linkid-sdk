@@ -9,10 +9,7 @@
     </parent>
 
     <name>linkID SDK</name>
-    <description>
-        This SDK eases the communication with the linkID Web
-        Services.
-    </description>
+    <description>This SDK eases the communication with the linkID Web Services.</description>
 
     <groupId>net.lin-k.linkid.client.sdk</groupId>
     <artifactId>linkid-sdk</artifactId>

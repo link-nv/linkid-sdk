@@ -7,24 +7,32 @@
 
 package test.unit.net.link.safeonline.sdk.ws;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.google.common.collect.Lists;
-import net.link.util.logging.Logger;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.util.List;
 import javax.xml.crypto.dsig.Reference;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.soap.*;
+import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPPart;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.MessageContext.Scope;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.util.common.CertificateChain;
+import net.link.util.logging.Logger;
 import net.link.util.pkix.ClientCrypto;
 import net.link.util.pkix.ServerCrypto;
 import net.link.util.test.pkix.PkiTestUtils;
@@ -32,9 +40,15 @@ import net.link.util.test.web.DomTestUtils;
 import net.link.util.test.web.ws.TestSOAPMessageContext;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
-import org.apache.ws.security.*;
+import org.apache.ws.security.WSConstants;
+import org.apache.ws.security.WSDataRef;
+import org.apache.ws.security.WSEncryptionPart;
+import org.apache.ws.security.WSSecurityEngine;
+import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.message.*;
+import org.apache.ws.security.message.WSSecHeader;
+import org.apache.ws.security.message.WSSecSignature;
+import org.apache.ws.security.message.WSSecTimestamp;
 import org.apache.ws.security.util.WSSecurityUtil;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.utils.Constants;
@@ -77,7 +91,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -109,8 +123,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         nsElement.setAttributeNS( Constants.NamespaceSpecNS, "xmlns:wsu",
                 "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" );
         assertNotNull( "missing WS-Security timestamp",
-                XPathAPI.selectSingleNode( resultSoapPart, "/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp/wsu:Created",
-                        nsElement ) );
+                XPathAPI.selectSingleNode( resultSoapPart, "/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp/wsu:Created", nsElement ) );
     }
 
     @SuppressWarnings("unchecked")
@@ -123,11 +136,10 @@ public class LinkIDWSSecurityServerHandlerTest {
         CertificateChain certificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( keyPair, "CN=Test" ) );
 
         KeyPair linkidKeyPair = PkiTestUtils.generateKeyPair();
-        CertificateChain linkidCertificateChain = new CertificateChain(
-                PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
+        CertificateChain linkidCertificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -171,11 +183,10 @@ public class LinkIDWSSecurityServerHandlerTest {
 
         // Setup Data
         KeyPair linkidKeyPair = PkiTestUtils.generateKeyPair();
-        CertificateChain linkidCertificateChain = new CertificateChain(
-                PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
+        CertificateChain linkidCertificateChain = new CertificateChain( PkiTestUtils.generateSelfSignedCertificate( linkidKeyPair, "CN=linkID" ) );
 
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -203,8 +214,7 @@ public class LinkIDWSSecurityServerHandlerTest {
 
         // Setup Data
         MessageFactory messageFactory = MessageFactory.newInstance( SOAPConstants.SOAP_1_1_PROTOCOL );
-        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream(
-                "/src/test/resources/test-ws-security-invalid-message.xml" );
+        InputStream testSoapMessageInputStream = LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-ws-security-invalid-message.xml" );
         assertNotNull( testSoapMessageInputStream );
 
         SOAPMessage message = messageFactory.createMessage( null, testSoapMessageInputStream );
@@ -239,7 +249,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" ) );
+        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" ) );
 
         // use WSSecurityClientHandler to sign message
         WSSecSignature wsSecSignature = new WSSecSignature();
@@ -252,8 +262,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         org.apache.ws.security.SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants( document.getDocumentElement() );
 
         List<WSEncryptionPart> wsEncryptionParts = Lists.newLinkedList();
-        WSEncryptionPart wsEncryptionPart = new WSEncryptionPart( soapConstants.getBodyQName().getLocalPart(),
-                soapConstants.getEnvelopeURI(), "Content" );
+        WSEncryptionPart wsEncryptionPart = new WSEncryptionPart( soapConstants.getBodyQName().getLocalPart(), soapConstants.getEnvelopeURI(), "Content" );
         wsEncryptionParts.add( wsEncryptionPart );
 
         WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
@@ -317,7 +326,7 @@ public class LinkIDWSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware( true );
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/src/test/resources/test-soap-message.xml" ) );
+        Document document = documentBuilder.parse( LinkIDWSSecurityServerHandlerTest.class.getResourceAsStream( "/test-soap-message.xml" ) );
 
         // use WSSecurityClientHandler to sign message
         WSSecSignature wsSecSignature = new WSSecSignature();
