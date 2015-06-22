@@ -371,7 +371,7 @@ public class LinkIDWSClientTest {
         ImageIO.write( qrImage, "png", new File( "qr.png" ) );
     }
 
-    @Test
+    //    @Test
     public void testLTQRInfo()
             throws Exception {
 
