@@ -12,6 +12,8 @@ import java.util.List;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.ltqr.LinkIDChangeException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRClientSession;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfo;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfoException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPullException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPushException;
@@ -111,4 +113,16 @@ public interface LinkIDLTQRServiceClient {
      */
     void remove(@Nullable List<String> ltqrReferences, @Nullable List<String> paymentOrderReferences, @Nullable List<String> clientSessionIds)
             throws LinkIDRemoveException;
+
+    /**
+     * Fetch info for the specified LTQR references
+     *
+     * @param ltqrReferences the list of LTQR references to fetch info for
+     *
+     * @return the LTQR info objects
+     *
+     * @throws LinkIDLTQRInfoException failure
+     */
+    List<LinkIDLTQRInfo> info(List<String> ltqrReferences)
+            throws LinkIDLTQRInfoException;
 }

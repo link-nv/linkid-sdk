@@ -8,15 +8,20 @@
 package net.link.safeonline.sdk.ws.ltqr;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.Callback;
 import net.lin_k.safe_online.common.PaymentContext;
 import net.lin_k.safe_online.ltqr._2.ChangeRequest;
 import net.lin_k.safe_online.ltqr._2.ChangeResponse;
 import net.lin_k.safe_online.ltqr._2.ClientSession;
+import net.lin_k.safe_online.ltqr._2.InfoRequest;
+import net.lin_k.safe_online.ltqr._2.InfoResponse;
+import net.lin_k.safe_online.ltqr._2.LTQRInfo;
 import net.lin_k.safe_online.ltqr._2.LTQRPaymentStatusType;
 import net.lin_k.safe_online.ltqr._2.LTQRServicePort;
 import net.lin_k.safe_online.ltqr._2.PullRequest;
@@ -30,11 +35,14 @@ import net.link.safeonline.sdk.api.ltqr.LinkIDChangeErrorCode;
 import net.link.safeonline.sdk.api.ltqr.LinkIDChangeException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDErrorCode;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRClientSession;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfo;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfoException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRPaymentState;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPullException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPushException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDRemoveException;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
@@ -361,7 +369,70 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
+    @Override
+    public List<LinkIDLTQRInfo> info(final List<String> ltqrReferences)
+            throws LinkIDLTQRInfoException {
+
+        InfoRequest request = new InfoRequest();
+
+        if (null == ltqrReferences || ltqrReferences.isEmpty()) {
+            throw new InternalInconsistencyException( "No LTQR references to fetch information for!" );
+        }
+
+        request.getLtqrReferences().addAll( ltqrReferences );
+
+        // operate
+        InfoResponse response = getPort().info( request );
+
+        // convert response
+        if (null != response.getError()) {
+            throw new LinkIDLTQRInfoException( convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDLTQRInfo> infos = Lists.newLinkedList();
+            for (LTQRInfo ltqrInfo : response.getSuccess().getResults()) {
+                infos.add( new LinkIDLTQRInfo( ltqrInfo.getLtqrReference(), ltqrInfo.getSessionId(), ltqrInfo.getCreated().toGregorianCalendar().getTime(),
+                        decodeQR( ltqrInfo.getEncodedQR() ), ltqrInfo.getQrContent(), ltqrInfo.getAuthenticationMessage(), ltqrInfo.getFinishedMessage(),
+                        ltqrInfo.isOneTimeUse(), null != ltqrInfo.getExpiryDate()? ltqrInfo.getExpiryDate().toGregorianCalendar().getTime(): null,
+                        ltqrInfo.getExpiryDuration(), getPaymentContext( ltqrInfo.getPaymentContext() ), getCallback( ltqrInfo.getCallback() ),
+                        getIdentityProfiles( ltqrInfo.getIdentityProfiles() ), ltqrInfo.getSessionExpiryOverride(), ltqrInfo.getTheme(),
+                        ltqrInfo.getMobileLandingSuccess(), ltqrInfo.getMobileLandingError(), ltqrInfo.getMobileLandingCancel() ) );
+            }
+            return infos;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
     // Helper methods
+
+    private Set<String> getIdentityProfiles(@Nullable final List<String> identityProfiles) {
+
+        if (null == identityProfiles)
+            return null;
+
+        return Sets.newHashSet( identityProfiles );
+    }
+
+    private LinkIDCallback getCallback(@Nullable final Callback callback) {
+
+        if (null == callback)
+            return null;
+
+        return new LinkIDCallback( callback.getLocation(), callback.getAppSessionId(), callback.isInApp() );
+    }
+
+    private LinkIDPaymentContext getPaymentContext(@Nullable final PaymentContext paymentContext) {
+
+        if (null == paymentContext)
+            return null;
+
+        return new LinkIDPaymentContext( paymentContext.getAmount(), LinkIDSDKUtils.convert( paymentContext.getCurrency() ), paymentContext.getDescription(),
+                paymentContext.getOrderReference(), paymentContext.getPaymentProfile(), paymentContext.getValidationTime(), LinkIDPaymentAddBrowser.NOT_ALLOWED,
+                paymentContext.isAllowDeferredPay(), paymentContext.isMandate(), paymentContext.getMandateDescription(), paymentContext.getMandateReference() );
+    }
 
     private LinkIDLTQRPaymentState convert(final LTQRPaymentStatusType wsPaymentStatusType) {
 

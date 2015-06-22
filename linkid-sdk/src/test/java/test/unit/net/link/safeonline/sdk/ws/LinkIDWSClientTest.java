@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import com.google.common.collect.Lists;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.util.Locale;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -367,6 +369,29 @@ public class LinkIDWSClientTest {
         ByteArrayInputStream bais = new ByteArrayInputStream( linkIDLTQRSession.getQrCodeImage() );
         BufferedImage qrImage = ImageIO.read( bais );
         ImageIO.write( qrImage, "png", new File( "qr.png" ) );
+    }
+
+    @Test
+    public void testLTQRInfo()
+            throws Exception {
+
+        // setup
+        List<String> ltqrReferences = Lists.newLinkedList();
+        ltqrReferences.add( "fb3d7a95-64c8-47d3-8b6c-9d35ffe31da7" );
+        ltqrReferences.add( "7c228af7-a02f-4a78-a70a-1a332848c0c9" );
+        LinkIDLTQRServiceClient client = new LinkIDLTQRServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        // operate
+        List<LinkIDLTQRInfo> linkIDLTQRInfos = client.info( ltqrReferences );
+
+        // verify
+        assertNotNull( linkIDLTQRInfos );
+        assertEquals( ltqrReferences.size(), linkIDLTQRInfos.size() );
+
+        for (LinkIDLTQRInfo linkIDLTQRInfo : linkIDLTQRInfos) {
+            logger.dbg( "LTQRInfo: %s", linkIDLTQRInfo );
+        }
+
     }
 
     //    @Test

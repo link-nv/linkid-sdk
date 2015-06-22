@@ -221,7 +221,7 @@
             <sequence>
                 <element name="ltqrReferences" type="string" minOccurs="1" maxOccurs="unbounded">
                     <annotation>
-                        <documentation>List of orderReferences to remove.</documentation>
+                        <documentation>List of LTQR References to remove.</documentation>
                     </annotation>
                 </element>
                 <element name="paymentOrderReferences" type="string" minOccurs="0" maxOccurs="unbounded">
@@ -246,6 +246,32 @@
             </sequence>
         </complexType>
     </element>
+
+    <!-- =================== Info request ========================= -->
+
+    <element name="InfoRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReferences" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>List of LTQR References to fetch info for.</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="InfoResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:InfoSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:InfoError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- ==================================================================== -->
+
 
     <complexType name="PushSuccess">
         <sequence>
@@ -328,6 +354,114 @@
         <attribute name="errorCode" type="tns:ErrorCode" use="required" />
     </complexType>
 
+    <complexType name="InfoSuccess">
+        <sequence>
+            <element name="results" type="tns:LTQRInfo" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The client sessions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="InfoError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="LTQRInfo">
+        <sequence>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
+            <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The sessionID, this is the number that is in the LTQR url</documentation>
+                </annotation>
+            </element>
+            <element name="created" type="dateTime" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Creation date</documentation>
+                </annotation>
+            </element>
+            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Content of the QR code</documentation>
+                </annotation>
+            </element>
+            <element name="authenticationMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional custom authentication message</documentation>
+                </annotation>
+            </element>
+            <element name="finishedMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional custom finished message</documentation>
+                </annotation>
+            </element>
+            <element name="oneTimeUse" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>One time use or not?</documentation>
+                </annotation>
+            </element>
+            <element name="expiryDate" type="dateTime" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Expiry date</documentation>
+                </annotation>
+            </element>
+            <element name="expiryDuration" type="long" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Expiry duration (seconds)</documentation>
+                </annotation>
+            </element>
+            <element name="paymentContext" type="com:PaymentContext" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment context</documentation>
+                </annotation>
+            </element>
+            <element name="callback" type="com:Callback" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional callback</documentation>
+                </annotation>
+            </element>
+            <element name="identityProfiles" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Optional identity profiles</documentation>
+                </annotation>
+            </element>
+            <element name="sessionExpiryOverride" type="long" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional session expiry (seconds)</documentation>
+                </annotation>
+            </element>
+            <element name="theme" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional session expiry (seconds)</documentation>
+                </annotation>
+            </element>
+            <element name="mobileLandingSuccess" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                </annotation>
+            </element>
+            <element name="mobileLandingError" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                </annotation>
+            </element>
+            <element name="mobileLandingCancel" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
 
     <complexType name="ClientSession">
         <sequence>
