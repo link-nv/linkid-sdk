@@ -75,6 +75,7 @@ public interface LinkIDLTQRServiceClient {
      * @param mobileLandingSuccess  optional landing page for an authn/payment started on iOS browser
      * @param mobileLandingError    optional landing page for an authn/payment started on iOS browser
      * @param mobileLandingCancel   optional landing page for an authn/payment started on iOS browser
+     * @param resetUsed             Optional flag for single use LTQR codes to let them be used again one time. If multi use this flag does nothing.
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
@@ -82,7 +83,7 @@ public interface LinkIDLTQRServiceClient {
                              @Nullable LinkIDPaymentContext paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration,
                              @Nullable LinkIDCallback callback, @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride,
                              @Nullable String theme, @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError,
-                             @Nullable String mobileLandingCancel)
+                             @Nullable String mobileLandingCancel, boolean resetUsed)
             throws LinkIDChangeException;
 
     /**

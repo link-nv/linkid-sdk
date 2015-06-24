@@ -158,6 +158,11 @@
                     </annotation>
                 </element>
             </sequence>
+            <attribute name="resetUsed" type="boolean" use="optional">
+                <annotation>
+                    <documentation>Optional flag for single use LTQR codes to let them be used again one time. If multi use this flag does nothing.</documentation>
+                </annotation>
+            </attribute>
             <attribute name="expiryDate" type="dateTime" use="optional">
                 <annotation>
                     <documentation>Expiry date of the long term session.</documentation>

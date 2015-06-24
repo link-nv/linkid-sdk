@@ -197,7 +197,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                                     @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
                                     @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
                                     @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
-                                    @Nullable final String mobileLandingCancel)
+                                    @Nullable final String mobileLandingCancel, final boolean resetUsed)
             throws LinkIDChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -270,6 +270,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         if (null != expiryDuration) {
             request.setExpiryDuration( expiryDuration );
         }
+        request.setResetUsed( resetUsed );
 
         // operate
         ChangeResponse response = getPort().change( request );
