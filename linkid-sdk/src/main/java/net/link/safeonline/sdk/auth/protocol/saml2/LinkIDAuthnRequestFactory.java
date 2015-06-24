@@ -37,6 +37,7 @@ import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.LinkIDSubje
 import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.LinkIDSubjectAttributesMarshaller;
 import net.link.safeonline.sdk.auth.protocol.saml2.subjectattributes.LinkIDSubjectAttributesUnmarshaller;
 import net.link.util.InternalInconsistencyException;
+import net.link.util.logging.Logger;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.saml.SamlUtils;
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +69,8 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class LinkIDAuthnRequestFactory {
 
+    private static final Logger logger = Logger.get( LinkIDAuthnRequestFactory.class );
+
     private LinkIDAuthnRequestFactory() {
 
         // empty
@@ -80,24 +83,31 @@ public class LinkIDAuthnRequestFactory {
 
     public static void bootstrapSaml2() {
 
+
         /*
         * Next is because Sun loves to endorse crippled versions of Xerces.
         */
         //noinspection HardcodedFileSeparator
         System.setProperty( "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema", "org.apache.xerces.jaxp.validation.XMLSchemaFactory" );
         try {
-            DefaultBootstrap.bootstrap();
-            Configuration.registerObjectProvider( LinkIDDeviceContext.DEFAULT_ELEMENT_NAME, new LinkIDDeviceContextBuilder(), new LinkIDDeviceContextMarshaller(),
-                    new LinkIDDeviceContextUnmarshaller() );
-            Configuration.registerObjectProvider( LinkIDSubjectAttributes.DEFAULT_ELEMENT_NAME, new LinkIDSubjectAttributesBuilder(), new LinkIDSubjectAttributesMarshaller(),
-                    new LinkIDSubjectAttributesUnmarshaller() );
-            Configuration.registerObjectProvider( LinkIDPaymentContext.DEFAULT_ELEMENT_NAME, new LinkIDPaymentContextBuilder(), new LinkIDPaymentContextMarshaller(),
-                    new LinkIDPaymentContextUnmarshaller() );
-            Configuration.registerObjectProvider( LinkIDPaymentResponse.DEFAULT_ELEMENT_NAME, new LinkIDPaymentResponseBuilder(), new LinkIDPaymentResponseMarshaller(),
-                    new LinkIDPaymentResponseUnmarshaller() );
-            Configuration.registerObjectProvider( LinkIDCallback.DEFAULT_ELEMENT_NAME, new LinkIDCallbackBuilder(), new LinkIDCallbackMarshaller(), new LinkIDCallbackUnmarshaller() );
-            Configuration.registerObjectProvider( LinkIDExternalCodeResponse.DEFAULT_ELEMENT_NAME, new LinkIDExternalCodeResponseBuilder(),
-                    new LinkIDExternalCodeResponseMarshaller(), new LinkIDExternalCodeResponseUnmarshaller() );
+            if (Configuration.getParserPool() == null) {
+
+                logger.inf( "Bootstrap SAML2" );
+
+                DefaultBootstrap.bootstrap();
+                Configuration.registerObjectProvider( LinkIDDeviceContext.DEFAULT_ELEMENT_NAME, new LinkIDDeviceContextBuilder(),
+                        new LinkIDDeviceContextMarshaller(), new LinkIDDeviceContextUnmarshaller() );
+                Configuration.registerObjectProvider( LinkIDSubjectAttributes.DEFAULT_ELEMENT_NAME, new LinkIDSubjectAttributesBuilder(),
+                        new LinkIDSubjectAttributesMarshaller(), new LinkIDSubjectAttributesUnmarshaller() );
+                Configuration.registerObjectProvider( LinkIDPaymentContext.DEFAULT_ELEMENT_NAME, new LinkIDPaymentContextBuilder(),
+                        new LinkIDPaymentContextMarshaller(), new LinkIDPaymentContextUnmarshaller() );
+                Configuration.registerObjectProvider( LinkIDPaymentResponse.DEFAULT_ELEMENT_NAME, new LinkIDPaymentResponseBuilder(),
+                        new LinkIDPaymentResponseMarshaller(), new LinkIDPaymentResponseUnmarshaller() );
+                Configuration.registerObjectProvider( LinkIDCallback.DEFAULT_ELEMENT_NAME, new LinkIDCallbackBuilder(), new LinkIDCallbackMarshaller(),
+                        new LinkIDCallbackUnmarshaller() );
+                Configuration.registerObjectProvider( LinkIDExternalCodeResponse.DEFAULT_ELEMENT_NAME, new LinkIDExternalCodeResponseBuilder(),
+                        new LinkIDExternalCodeResponseMarshaller(), new LinkIDExternalCodeResponseUnmarshaller() );
+            }
         }
         catch (ConfigurationException e) {
             throw new InternalInconsistencyException( "could not bootstrap the OpenSAML2 library", e );
@@ -123,15 +133,15 @@ public class LinkIDAuthnRequestFactory {
      *                                    in case of missing attributes in the linkID authentication flow. The key's are the linkID
      *                                    attribute names.
      * @param paymentContext              optional payment context case the authentication serves as a payment request.
-     * @param linkIDCallback                  optional callback config for when the linkID auth/payment has finished
+     * @param linkIDCallback              optional callback config for when the linkID auth/payment has finished
      *
      * @return unsigned SAML v2.0 AuthnRequest object
      */
     public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences, @Nullable String applicationFriendlyName,
                                                   String assertionConsumerServiceURL, @Nullable String destinationURL, boolean forceAuthentication,
                                                   @Nullable Map<String, String> deviceContextMap,
-                                                  @Nullable Map<String, List<Serializable>> subjectAttributesMap, @Nullable
-                                                  net.link.safeonline.sdk.api.payment.LinkIDPaymentContext paymentContext,
+                                                  @Nullable Map<String, List<Serializable>> subjectAttributesMap,
+                                                  @Nullable net.link.safeonline.sdk.api.payment.LinkIDPaymentContext paymentContext,
                                                   @Nullable net.link.safeonline.sdk.api.callback.LinkIDCallback linkIDCallback) {
 
         if (null == issuerName)

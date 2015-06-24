@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.api.haws.LinkIDPullException;
 import net.link.safeonline.sdk.api.haws.LinkIDPushErrorCode;
 import net.link.safeonline.sdk.api.haws.LinkIDPushException;
 import net.link.safeonline.sdk.api.ws.haws.LinkIDHawsServiceClient;
+import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.safeonline.ws.haws.LinkIDHawsServiceFactory;
 import net.link.util.InternalInconsistencyException;
@@ -78,6 +79,11 @@ public class LinkIDHawsServiceClientImpl extends AbstractWSClient<HawsServicePor
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.haws.path" ) ) );
+
+        // bootstrap opensaml2 if needed
+        if (Configuration.getParserPool() == null) {
+            LinkIDAuthnRequestFactory.bootstrapSaml2();
+        }
     }
 
     @Override
