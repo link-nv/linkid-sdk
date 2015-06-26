@@ -45,6 +45,7 @@ import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
+import org.jetbrains.annotations.Nullable;
 
 
 public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServicePort> implements LinkIDWalletServiceClient {
@@ -86,7 +87,8 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
     }
 
     @Override
-    public String enroll(final String userId, final String walletOrganizationId, final double amount, final LinkIDCurrency currency)
+    public String enroll(final String userId, final String walletOrganizationId, final double amount, @Nullable final LinkIDCurrency currency,
+                         @Nullable final String walletCoin)
             throws LinkIDWalletEnrollException {
 
         //request
@@ -97,6 +99,7 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
         request.setWalletOrganizationId( walletOrganizationId );
         request.setAmount( amount );
         request.setCurrency( LinkIDSDKUtils.convert( currency ) );
+        request.setWalletCoin( walletCoin );
 
         // operate
         WalletEnrollResponse response = getPort().enroll( request );
@@ -142,14 +145,15 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
             }
 
             return new LinkIDWalletInfo( response.getSuccess().getWalletId(), response.getSuccess().getAmount(),
-                    LinkIDSDKUtils.convert( response.getSuccess().getCurrency() ) );
+                    LinkIDSDKUtils.convert( response.getSuccess().getCurrency() ), response.getSuccess().getWalletCoin() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override
-    public void addCredit(final String userId, final String walletId, final double amount, final LinkIDCurrency currency)
+    public void addCredit(final String userId, final String walletId, final double amount, @Nullable final LinkIDCurrency currency,
+                          @Nullable final String walletCoin)
             throws LinkIDWalletAddCreditException {
 
         //request
@@ -160,6 +164,7 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
         request.setWalletId( walletId );
         request.setAmount( amount );
         request.setCurrency( LinkIDSDKUtils.convert( currency ) );
+        request.setWalletCoin( walletCoin );
 
         // operate
         WalletAddCreditResponse response = getPort().addCredit( request );
@@ -179,7 +184,8 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
     }
 
     @Override
-    public void removeCredit(final String userId, final String walletId, final double amount, final LinkIDCurrency currency)
+    public void removeCredit(final String userId, final String walletId, final double amount, @Nullable final LinkIDCurrency currency,
+                             @Nullable final String walletCoin)
             throws LinkIDWalletRemoveCreditException {
 
         //request
@@ -190,6 +196,7 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
         request.setWalletId( walletId );
         request.setAmount( amount );
         request.setCurrency( LinkIDSDKUtils.convert( currency ) );
+        request.setWalletCoin( walletCoin );
 
         // operate
         WalletRemoveCreditResponse response = getPort().removeCredit( request );

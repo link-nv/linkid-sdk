@@ -14,12 +14,14 @@ public class LinkIDWalletInfo implements Serializable {
     private final String         walletId;
     private final double         amount;            // The amount in the wallet ( in cents ). If applicable, else just 0
     private final LinkIDCurrency currency;
+    private final String         walletCoin;
 
-    public LinkIDWalletInfo(final String walletId, final double amount, final LinkIDCurrency currency) {
+    public LinkIDWalletInfo(final String walletId, final double amount, final LinkIDCurrency currency, final String walletCoin) {
 
         this.walletId = walletId;
         this.amount = amount;
         this.currency = currency;
+        this.walletCoin = walletCoin;
     }
 
     // Helper methods
@@ -31,6 +33,7 @@ public class LinkIDWalletInfo implements Serializable {
                "walletId='" + walletId + '\'' +
                ", amount=" + amount +
                ", currency=" + currency +
+               ", walletCoin=" + walletCoin +
                '}';
     }
 
@@ -49,5 +52,10 @@ public class LinkIDWalletInfo implements Serializable {
     public LinkIDCurrency getCurrency() {
 
         return currency;
+    }
+
+    public String getWalletCoin() {
+
+        return walletCoin;
     }
 }

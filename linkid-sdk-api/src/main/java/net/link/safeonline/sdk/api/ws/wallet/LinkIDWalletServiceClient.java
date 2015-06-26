@@ -26,7 +26,7 @@ public interface LinkIDWalletServiceClient {
      *
      * @throws LinkIDWalletEnrollException something went wrong, check the error code in the exception
      */
-    String enroll(String userId, String walletOrganizationId, double amount, LinkIDCurrency currency)
+    String enroll(String userId, String walletOrganizationId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoin)
             throws LinkIDWalletEnrollException;
 
     /**
@@ -48,7 +48,7 @@ public interface LinkIDWalletServiceClient {
      *
      * @throws LinkIDWalletAddCreditException something went wrong, check the error code in the exception
      */
-    void addCredit(String userId, String walletId, double amount, LinkIDCurrency currency)
+    void addCredit(String userId, String walletId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoi)
             throws LinkIDWalletAddCreditException;
 
     /**
@@ -57,7 +57,7 @@ public interface LinkIDWalletServiceClient {
      *
      * @throws LinkIDWalletRemoveCreditException something went wrong, check the error code in the exception
      */
-    void removeCredit(String userId, String walletId, double amount, LinkIDCurrency currency)
+    void removeCredit(String userId, String walletId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoi)
             throws LinkIDWalletRemoveCreditException;
 
     /**

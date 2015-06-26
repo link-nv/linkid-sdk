@@ -35,8 +35,16 @@
                         <documentation>The amount to be added to the wallet ( in cents )</documentation>
                     </annotation>
                 </element>
-                <element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
-                </element>
+				<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+					</annotation>
+				</element>
+				<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+					</annotation>
+				</element>
             </sequence>
 		</complexType>
 	</element>
@@ -72,6 +80,11 @@
 			<enumeration value="error.unknown.wallet">
 				<annotation>
 					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.coin">
+				<annotation>
+					<documentation>No such linkID wallet coin</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.unknown.user">
@@ -135,6 +148,14 @@
 				</annotation>
 			</element>
 			<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+				</annotation>
+			</element>
+			<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+				</annotation>
 			</element>
         </sequence>
 	</complexType>
@@ -188,8 +209,16 @@
                         <documentation>The amount to be added to the wallet ( in cents )</documentation>
                     </annotation>
                 </element>
-                <element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
-                </element>
+				<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+					</annotation>
+				</element>
+				<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+					</annotation>
+				</element>
             </sequence>
 		</complexType>
 	</element>
@@ -218,6 +247,11 @@
 			<enumeration value="error.unknown.wallet">
 				<annotation>
 					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.coin">
+				<annotation>
+					<documentation>No such linkID wallet coin</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.unknown.user">
@@ -255,8 +289,16 @@
                         <documentation>The amount to be removed to the wallet ( in cents ), if -1 or amount > wallet's credit the wallet's credit will be 0</documentation>
                     </annotation>
                 </element>
-                <element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
-                </element>
+				<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+					</annotation>
+				</element>
+				<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+					</annotation>
+				</element>
             </sequence>
 		</complexType>
 	</element>
@@ -285,6 +327,11 @@
 			<enumeration value="error.unknown.wallet">
 				<annotation>
 					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.coin">
+				<annotation>
+					<documentation>No such linkID wallet coin</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.unknown.user">
