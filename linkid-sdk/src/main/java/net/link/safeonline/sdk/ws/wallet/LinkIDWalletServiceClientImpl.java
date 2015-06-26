@@ -137,6 +137,10 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
 
         if (null != response.getSuccess()) {
 
+            if (null == response.getSuccess().getWalletId()) {
+                return null;
+            }
+
             return new LinkIDWalletInfo( response.getSuccess().getWalletId(), response.getSuccess().getAmount(),
                     LinkIDSDKUtils.convert( response.getSuccess().getCurrency() ) );
         }

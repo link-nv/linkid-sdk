@@ -19,6 +19,7 @@ public class LinkIDPaymentContext implements Serializable {
 
     public static final String AMOUNT_KEY               = "PaymentContext.amount";
     public static final String CURRENCY_KEY             = "PaymentContext.currency";
+    public static final String WALLET_COIN_KEY          = "PaymentContext.walletCoin";
     public static final String DESCRIPTION_KEY          = "PaymentContext.description";
     public static final String ORDER_REFERENCE_KEY      = "PaymentContext.orderReference";
     public static final String PROFILE_KEY              = "PaymentContext.profile";
@@ -39,8 +40,7 @@ public class LinkIDPaymentContext implements Serializable {
     public static final String ALLOW_PARTIAL_KEY        = "PaymentContext.allowPartial";
     public static final String ONLY_WALLETS_KEY         = "PaymentContext.onlyWallets";
 
-    private final double                  amount;
-    private final LinkIDCurrency          currency;
+    private final LinkIDPaymentAmount     amount;
     private final String                  description;
     //
     // optional order reference, if not specified linkID will generate one in UUID format
@@ -54,88 +54,49 @@ public class LinkIDPaymentContext implements Serializable {
     //
     // whether or not to allow to display the option in the client to add a payment method in the browser.
     // default is not allowed
-    private       LinkIDPaymentAddBrowser paymentAddBrowser;
+    private final LinkIDPaymentAddBrowser paymentAddBrowser;
     //
     // whether or not deferred payments are allowed. An e-mail will be sent to the user to complete the payment at a later time.
     // default is not allowed
-    private       boolean                 allowDeferredPay;
+    private final boolean                 allowDeferredPay;
     //
     // mandates
-    private final boolean                 mandate;      // payment context for a mandate?
-    private final String                  mandateDescription;
-    private final String                  mandateReference;
+    @Nullable
+    private final LinkIDPaymentMandate    mandate;      // payment context for a mandate?
     //
     // optional payment menu return URLs (docdata payment menu)
-    private       String                  paymentMenuResultSuccess;
-    private       String                  paymentMenuResultCanceled;
-    private       String                  paymentMenuResultPending;
-    private       String                  paymentMenuResultError;
+    @Nullable
+    private final LinkIDPaymentMenu       paymentMenu;
     //
     // wallet related flags
-    private       boolean                 allowPartial;       // allow partial payments via wallets, this flag does make sense if you allow normal payment methods
-    private       boolean                 onlyWallets;        // allow only wallets for this payment
+    private final boolean                 allowPartial;       // allow partial payments via wallets, this flag does make sense if you allow normal payment methods
+    private final boolean                 onlyWallets;        // allow only wallets for this payment
 
-    /**
-     * @param amount         amount in cents
-     * @param currency       currency
-     * @param description    optional description
-     * @param paymentProfile optional payment profile
-     */
-    public LinkIDPaymentContext(final double amount, final LinkIDCurrency currency, @Nullable final String description, @Nullable final String orderReference,
-                                @Nullable final String paymentProfile, final int paymentValidationTime, final LinkIDPaymentAddBrowser paymentAddBrowser,
-                                final boolean allowDeferredPay, final boolean mandate, @Nullable final String mandateDescription,
-                                @Nullable final String mandateReference)
-            throws LinkIDInvalidPaymentContextException {
+    private LinkIDPaymentContext(final Builder builder) {
 
-        this.amount = amount;
-        this.currency = currency;
-        this.description = description;
-        this.orderReference = orderReference;
-        this.paymentProfile = paymentProfile;
-        this.paymentValidationTime = paymentValidationTime;
-        this.paymentAddBrowser = paymentAddBrowser;
-        this.allowDeferredPay = allowDeferredPay;
+        // validate payment context
+        if (null == builder.amount.getCurrency() && null == builder.amount.getWalletCoin()) {
+            throw new RuntimeException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are null" );
+        }
+        if (null != builder.amount.getCurrency() && null != builder.amount.getWalletCoin()) {
+            throw new RuntimeException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are specified" );
+        }
+        if (builder.amount.getAmount() <= 0) {
+            throw new RuntimeException( "LinkIDPaymentContext.amount is <= 0, this is not allowed" );
+        }
 
-        this.mandate = mandate;
-        this.mandateDescription = mandateDescription;
-        this.mandateReference = mandateReference;
-    }
-
-    /**
-     * @param amount         amount in cents
-     * @param currency       currency
-     * @param description    optional description
-     * @param paymentProfile optional payment profile
-     */
-    public LinkIDPaymentContext(final double amount, final LinkIDCurrency currency, @Nullable final String description, @Nullable final String orderReference,
-                                @Nullable final String paymentProfile, final int paymentValidationTime, final LinkIDPaymentAddBrowser paymentAddBrowser,
-                                final boolean allowDeferredPay)
-            throws LinkIDInvalidPaymentContextException {
-
-        this( amount, currency, description, orderReference, paymentProfile, paymentValidationTime, paymentAddBrowser, allowDeferredPay, false, null, null );
-    }
-
-    /**
-     * @param amount         amount in cents
-     * @param currency       currency
-     * @param description    optional description
-     * @param paymentProfile optional payment profile
-     */
-    public LinkIDPaymentContext(final double amount, final LinkIDCurrency currency, @Nullable final String description, @Nullable final String orderReference,
-                                @Nullable final String paymentProfile)
-            throws LinkIDInvalidPaymentContextException {
-
-        this( amount, currency, description, orderReference, paymentProfile, 5, LinkIDPaymentAddBrowser.NOT_ALLOWED, false );
-    }
-
-    /**
-     * @param amount   amount in cents
-     * @param currency currency
-     */
-    public LinkIDPaymentContext(final double amount, final LinkIDCurrency currency)
-            throws LinkIDInvalidPaymentContextException {
-
-        this( amount, currency, null, null, null, 5, LinkIDPaymentAddBrowser.NOT_ALLOWED, false );
+        // initialize
+        this.amount = builder.amount;
+        this.description = builder.description;
+        this.orderReference = builder.orderReference;
+        this.paymentProfile = builder.paymentProfile;
+        this.paymentValidationTime = builder.paymentValidationTime;
+        this.paymentAddBrowser = builder.paymentAddBrowser;
+        this.allowDeferredPay = builder.allowDeferredPay;
+        this.mandate = builder.mandate;
+        this.paymentMenu = builder.paymentMenu;
+        this.allowPartial = builder.allowPartial;
+        this.onlyWallets = builder.onlyWallets;
     }
 
     // Helper methods
@@ -144,8 +105,14 @@ public class LinkIDPaymentContext implements Serializable {
 
         Map<String, String> map = new HashMap<String, String>();
 
-        map.put( AMOUNT_KEY, Double.toString( amount ) );
-        map.put( CURRENCY_KEY, currency.name() );
+        map.put( AMOUNT_KEY, Double.toString( amount.getAmount() ) );
+        if (null != amount.getCurrency()) {
+            map.put( CURRENCY_KEY, amount.getCurrency().name() );
+        }
+        if (null != amount.getWalletCoin()) {
+            map.put( WALLET_COIN_KEY, amount.getWalletCoin() );
+        }
+
         if (null != description) {
             map.put( DESCRIPTION_KEY, description );
         }
@@ -156,32 +123,24 @@ public class LinkIDPaymentContext implements Serializable {
             map.put( PROFILE_KEY, paymentProfile );
         }
         map.put( VALIDATION_TIME_KEY, Integer.toString( paymentValidationTime ) );
-        if (null == paymentAddBrowser) {
-            map.put( ADD_BROWSER_KEY, LinkIDPaymentAddBrowser.NOT_ALLOWED.name() );
-        } else {
-            map.put( ADD_BROWSER_KEY, paymentAddBrowser.name() );
-        }
+        map.put( ADD_BROWSER_KEY, paymentAddBrowser.name() );
         map.put( DEFERRED_PAY_KEY, Boolean.toString( allowDeferredPay ) );
 
-        map.put( MANDATE_KEY, Boolean.toString( mandate ) );
-        if (null != mandateDescription) {
-            map.put( MANDATE_DESCRIPTION_KEY, mandateDescription );
-        }
-        if (null != mandateReference) {
-            map.put( MANDATE_REFERENCE_KEY, mandateReference );
+        if (null != mandate) {
+            map.put( MANDATE_KEY, Boolean.toString( true ) );
+            map.put( MANDATE_DESCRIPTION_KEY, mandate.getDescription() );
+            if (null != mandate.getReference()) {
+                map.put( MANDATE_REFERENCE_KEY, mandate.getReference() );
+            }
+        } else {
+            map.put( MANDATE_KEY, Boolean.toString( false ) );
         }
 
-        if (null != paymentMenuResultSuccess) {
-            map.put( MENU_RESULT_SUCCESS_KEY, paymentMenuResultSuccess );
-        }
-        if (null != paymentMenuResultCanceled) {
-            map.put( MENU_RESULT_CANCELED_KEY, paymentMenuResultCanceled );
-        }
-        if (null != paymentMenuResultPending) {
-            map.put( MENU_RESULT_PENDING_KEY, paymentMenuResultPending );
-        }
-        if (null != paymentMenuResultSuccess) {
-            map.put( MENU_RESULT_ERROR_KEY, paymentMenuResultError );
+        if (null != paymentMenu) {
+            map.put( MENU_RESULT_SUCCESS_KEY, paymentMenu.getMenuResultSuccess() );
+            map.put( MENU_RESULT_CANCELED_KEY, paymentMenu.getMenuResultCanceled() );
+            map.put( MENU_RESULT_PENDING_KEY, paymentMenu.getMenuResultPending() );
+            map.put( MENU_RESULT_ERROR_KEY, paymentMenu.getMenuResultError() );
         }
 
         map.put( ALLOW_PARTIAL_KEY, Boolean.toString( allowPartial ) );
@@ -198,8 +157,13 @@ public class LinkIDPaymentContext implements Serializable {
             throw new LinkIDInvalidPaymentContextException( "Payment context's amount field is not present!" );
         }
 
-        if (!paymentContextMap.containsKey( CURRENCY_KEY )) {
-            throw new LinkIDInvalidPaymentContextException( "Payment context's currency field is not present!" );
+        if (!paymentContextMap.containsKey( CURRENCY_KEY ) && !paymentContextMap.containsKey( WALLET_COIN_KEY )) {
+            throw new LinkIDInvalidPaymentContextException( "Payment context's currency not walletCoin field is not present!" );
+        }
+
+        double amount = Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) );
+        if (amount <= 0) {
+            throw new LinkIDInvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
         }
 
         if (!paymentContextMap.containsKey( VALIDATION_TIME_KEY )) {
@@ -224,46 +188,45 @@ public class LinkIDPaymentContext implements Serializable {
             }
         }
 
-        Double amount = Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) );
-        if (amount <= 0) {
-            throw new LinkIDInvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
+        // intialize
+        Builder builder = new Builder(
+                new LinkIDPaymentAmount( amount, LinkIDCurrency.parse( paymentContextMap.get( CURRENCY_KEY ) ), paymentContextMap.get( WALLET_COIN_KEY ) ) );
+        builder.description( paymentContextMap.get( DESCRIPTION_KEY ) );
+        builder.orderReference( paymentContextMap.get( ORDER_REFERENCE_KEY ) );
+        builder.paymentProfile( paymentContextMap.get( PROFILE_KEY ) );
+        builder.paymentValidationTime( Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ) );
+        builder.paymentAddBrowser( paymentAddBrowser );
+        builder.allowDeferredPay( getBoolean( paymentContextMap, DEFERRED_PAY_KEY ) );
+        builder.allowPartial( getBoolean( paymentContextMap, ALLOW_PARTIAL_KEY ) );
+        builder.onlyWallets( getBoolean( paymentContextMap, ONLY_WALLETS_KEY ) );
+
+        // payment menu
+        if (Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) )) {
+            builder.mandate( new LinkIDPaymentMandate( paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) ) );
         }
 
-        // convert
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext( amount, LinkIDCurrency.parse( paymentContextMap.get( CURRENCY_KEY ) ),
-                paymentContextMap.get( DESCRIPTION_KEY ), paymentContextMap.get( ORDER_REFERENCE_KEY ), paymentContextMap.get( PROFILE_KEY ),
-                Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ), paymentAddBrowser,
-                Boolean.parseBoolean( paymentContextMap.get( DEFERRED_PAY_KEY ) ), Boolean.parseBoolean( paymentContextMap.get( MANDATE_KEY ) ),
-                paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) );
-
-        linkIDPaymentContext.setPaymentMenuResultSuccess( paymentContextMap.get( MENU_RESULT_SUCCESS_KEY ) );
-        linkIDPaymentContext.setPaymentMenuResultCanceled( paymentContextMap.get( MENU_RESULT_CANCELED_KEY ) );
-        linkIDPaymentContext.setPaymentMenuResultPending( paymentContextMap.get( MENU_RESULT_PENDING_KEY ) );
-        linkIDPaymentContext.setPaymentMenuResultError( paymentContextMap.get( MENU_RESULT_ERROR_KEY ) );
-
-        boolean allowPartial = false;
-        String allowPartialString = paymentContextMap.get( ALLOW_PARTIAL_KEY );
-        if (null != allowPartialString) {
-            allowPartial = Boolean.parseBoolean( allowPartialString );
+        // payment menu
+        if (paymentContextMap.containsKey( MENU_RESULT_SUCCESS_KEY )) {
+            builder.paymentMenu( new LinkIDPaymentMenu( paymentContextMap.get( MENU_RESULT_SUCCESS_KEY ), paymentContextMap.get( MENU_RESULT_CANCELED_KEY ),
+                    paymentContextMap.get( MENU_RESULT_PENDING_KEY ), paymentContextMap.get( MENU_RESULT_ERROR_KEY ) ) );
         }
-        linkIDPaymentContext.setAllowPartial( allowPartial );
 
-        boolean onlyWallets = false;
-        String onlyWalletsString = paymentContextMap.get( ONLY_WALLETS_KEY );
-        if (null != onlyWalletsString) {
-            onlyWallets = Boolean.parseBoolean( onlyWalletsString );
-        }
-        linkIDPaymentContext.setOnlyWallets( onlyWallets );
+        return builder.build();
+    }
 
-        return linkIDPaymentContext;
+    private static boolean getBoolean(final Map<String, String> map, final String key) {
+
+        if (!map.containsKey( key ))
+            return false;
+
+        return Boolean.parseBoolean( map.get( key ) );
     }
 
     @Override
     public String toString() {
 
-        return "PaymentContextDO{" +
+        return "LinkIDPaymentContext{" +
                "amount=" + amount +
-               ", currency=" + currency +
                ", description='" + description + '\'' +
                ", orderReference='" + orderReference + '\'' +
                ", paymentProfile='" + paymentProfile + '\'' +
@@ -271,27 +234,113 @@ public class LinkIDPaymentContext implements Serializable {
                ", paymentAddBrowser=" + paymentAddBrowser +
                ", allowDeferredPay=" + allowDeferredPay +
                ", mandate=" + mandate +
-               ", mandateDescription='" + mandateDescription + '\'' +
-               ", mandateReference='" + mandateReference + '\'' +
-               ", paymentMenuResultSuccess='" + paymentMenuResultSuccess + '\'' +
-               ", paymentMenuResultCanceled='" + paymentMenuResultCanceled + '\'' +
-               ", paymentMenuResultPending='" + paymentMenuResultPending + '\'' +
-               ", paymentMenuResultError='" + paymentMenuResultError + '\'' +
+               ", paymentMenu=" + paymentMenu +
                ", allowPartial=" + allowPartial +
                ", onlyWallets=" + onlyWallets +
                '}';
     }
 
+    // Builder
+
+
+    public static class Builder {
+
+        // Required parameters
+        private final LinkIDPaymentAmount amount;
+
+        // Optional parameters - initialized to default values
+        private String                  description           = null;
+        private String                  orderReference        = null;
+        private String                  paymentProfile        = null;
+        private int                     paymentValidationTime = 5;
+        private LinkIDPaymentAddBrowser paymentAddBrowser     = LinkIDPaymentAddBrowser.NOT_ALLOWED;
+        private boolean                 allowDeferredPay      = false;
+        private LinkIDPaymentMandate    mandate               = null;
+        private LinkIDPaymentMenu       paymentMenu           = null;
+        private boolean                 allowPartial          = false;
+        private boolean                 onlyWallets           = false;
+
+        public LinkIDPaymentContext build() {
+
+            return new LinkIDPaymentContext( this );
+        }
+
+        public Builder(final LinkIDPaymentAmount amount) {
+
+            this.amount = amount;
+        }
+
+        public Builder description(final String description) {
+
+            this.description = description;
+            return this;
+        }
+
+        public Builder orderReference(final String orderReference) {
+
+            this.orderReference = orderReference;
+            return this;
+        }
+
+        public Builder paymentProfile(final String paymentProfile) {
+
+            this.paymentProfile = paymentProfile;
+            return this;
+        }
+
+        public Builder paymentValidationTime(final int paymentValidationTime) {
+
+            this.paymentValidationTime = paymentValidationTime;
+            return this;
+        }
+
+        public Builder paymentAddBrowser(final LinkIDPaymentAddBrowser paymentAddBrowser) {
+
+            this.paymentAddBrowser = paymentAddBrowser;
+            return this;
+        }
+
+        public Builder allowDeferredPay(final boolean allowDeferredPay) {
+
+            this.allowDeferredPay = allowDeferredPay;
+            return this;
+        }
+
+        public Builder mandate(final LinkIDPaymentMandate mandate) {
+
+            this.mandate = mandate;
+            return this;
+        }
+
+        public Builder paymentMenu(final LinkIDPaymentMenu paymentMenu) {
+
+            this.paymentMenu = paymentMenu;
+            return this;
+        }
+
+        public Builder allowPartial(final boolean allowPartial) {
+
+            this.allowPartial = allowPartial;
+            return this;
+        }
+
+        public Builder onlyWallets(final boolean onlyWallets) {
+
+            this.onlyWallets = onlyWallets;
+            return this;
+        }
+    }
+
     // Accessors
 
-    public double getAmount() {
+    public LinkIDPaymentAmount getAmount() {
 
         return amount;
     }
 
-    public LinkIDCurrency getCurrency() {
+    public String getDescription() {
 
-        return currency;
+        return description;
     }
 
     public String getOrderReference() {
@@ -302,11 +351,6 @@ public class LinkIDPaymentContext implements Serializable {
     public String getPaymentProfile() {
 
         return paymentProfile;
-    }
-
-    public String getDescription() {
-
-        return description;
     }
 
     public int getPaymentValidationTime() {
@@ -324,59 +368,16 @@ public class LinkIDPaymentContext implements Serializable {
         return allowDeferredPay;
     }
 
-    public boolean isMandate() {
+    @Nullable
+    public LinkIDPaymentMandate getMandate() {
 
         return mandate;
     }
 
-    public String getMandateDescription() {
+    @Nullable
+    public LinkIDPaymentMenu getPaymentMenu() {
 
-        return mandateDescription;
-    }
-
-    public String getMandateReference() {
-
-        return mandateReference;
-    }
-
-    public String getPaymentMenuResultSuccess() {
-
-        return paymentMenuResultSuccess;
-    }
-
-    public void setPaymentMenuResultSuccess(final String paymentMenuResultSuccess) {
-
-        this.paymentMenuResultSuccess = paymentMenuResultSuccess;
-    }
-
-    public String getPaymentMenuResultCanceled() {
-
-        return paymentMenuResultCanceled;
-    }
-
-    public void setPaymentMenuResultCanceled(final String paymentMenuResultCanceled) {
-
-        this.paymentMenuResultCanceled = paymentMenuResultCanceled;
-    }
-
-    public String getPaymentMenuResultPending() {
-
-        return paymentMenuResultPending;
-    }
-
-    public void setPaymentMenuResultPending(final String paymentMenuResultPending) {
-
-        this.paymentMenuResultPending = paymentMenuResultPending;
-    }
-
-    public String getPaymentMenuResultError() {
-
-        return paymentMenuResultError;
-    }
-
-    public void setPaymentMenuResultError(final String paymentMenuResultError) {
-
-        this.paymentMenuResultError = paymentMenuResultError;
+        return paymentMenu;
     }
 
     public boolean isAllowPartial() {
@@ -384,28 +385,8 @@ public class LinkIDPaymentContext implements Serializable {
         return allowPartial;
     }
 
-    public void setAllowPartial(final boolean allowPartial) {
-
-        this.allowPartial = allowPartial;
-    }
-
     public boolean isOnlyWallets() {
 
         return onlyWallets;
-    }
-
-    public void setOnlyWallets(final boolean onlyWallets) {
-
-        this.onlyWallets = onlyWallets;
-    }
-
-    public void setPaymentAddBrowser(final LinkIDPaymentAddBrowser paymentAddBrowser) {
-
-        this.paymentAddBrowser = paymentAddBrowser;
-    }
-
-    public void setAllowDeferredPay(final boolean allowDeferredPay) {
-
-        this.allowDeferredPay = allowDeferredPay;
     }
 }

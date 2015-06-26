@@ -87,7 +87,15 @@
                     <documentation>The amount to be payed ( in cents )</documentation>
                 </annotation>
             </element>
-            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1">
+            <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+                </annotation>
+            </element>
+            <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+                </annotation>
             </element>
             <element name="description" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>

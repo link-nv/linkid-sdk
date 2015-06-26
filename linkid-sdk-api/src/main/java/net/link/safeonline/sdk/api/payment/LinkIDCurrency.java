@@ -13,6 +13,9 @@ public enum LinkIDCurrency {
 
     public static LinkIDCurrency parse(final String currencyString) {
 
+        if (null == currencyString)
+            return null;
+
         for (LinkIDCurrency currency : LinkIDCurrency.values()) {
 
             if (currency.name().equals( currencyString.toUpperCase() )) {

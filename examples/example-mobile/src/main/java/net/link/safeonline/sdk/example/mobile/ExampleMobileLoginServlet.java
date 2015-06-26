@@ -25,6 +25,7 @@ public class ExampleMobileLoginServlet extends LinkIDInitiateLoginServlet {
 
         linkIDAuthenticationContext.setIdentityProfiles( Collections.singletonList( "linkid_basic" ) );
 
-        //        authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
+        //        linkIDAuthenticationContext.setPaymentContext( new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 200, LinkIDCurrency.EUR ) ).build() );
+
     }
 }

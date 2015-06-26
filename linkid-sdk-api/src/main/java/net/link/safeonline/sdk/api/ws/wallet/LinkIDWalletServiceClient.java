@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.ws.wallet;
 
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -34,10 +35,11 @@ public interface LinkIDWalletServiceClient {
      * @param userId               the userId
      * @param walletOrganizationId the wallet organization ID
      *
-     * @return wallet info
+     * @return wallet info or null if no such wallet for that user
      *
      * @throws LinkIDWalletGetInfoException the wallet does not exist, user does not exist, ... check the error code
      */
+    @Nullable
     LinkIDWalletInfo getInfo(String userId, String walletOrganizationId)
             throws LinkIDWalletGetInfoException;
 

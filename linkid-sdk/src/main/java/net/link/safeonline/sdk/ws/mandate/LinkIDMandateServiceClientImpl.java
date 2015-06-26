@@ -26,6 +26,7 @@ import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
+import org.jetbrains.annotations.Nullable;
 
 
 public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServicePort> implements LinkIDMandateServiceClient {
@@ -72,15 +73,7 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
 
         MandatePaymentRequest request = new MandatePaymentRequest();
 
-        PaymentContext paymentContext = new PaymentContext();
-        paymentContext.setAmount( linkIDPaymentContext.getAmount() );
-        paymentContext.setCurrency( LinkIDSDKUtils.convert( linkIDPaymentContext.getCurrency() ) );
-        paymentContext.setDescription( linkIDPaymentContext.getDescription() );
-        paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
-        paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
-        paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
-        paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
-        request.setPaymentContext( paymentContext );
+        request.setPaymentContext( convert( linkIDPaymentContext ) );
 
         request.setMandateReference( mandateReference );
 
@@ -106,6 +99,35 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
     }
 
     // Helper methods
+
+    private PaymentContext convert(@Nullable final LinkIDPaymentContext linkIDPaymentContext) {
+
+        if (null == linkIDPaymentContext)
+            return null;
+
+        PaymentContext paymentContext = new PaymentContext();
+        paymentContext.setAmount( linkIDPaymentContext.getAmount().getAmount() );
+        if (null != linkIDPaymentContext.getAmount().getCurrency()) {
+            paymentContext.setCurrency( LinkIDSDKUtils.convert( linkIDPaymentContext.getAmount().getCurrency() ) );
+        }
+        if (null != linkIDPaymentContext.getAmount().getWalletCoin()) {
+            paymentContext.setWalletCoin( linkIDPaymentContext.getAmount().getWalletCoin() );
+        }
+        paymentContext.setDescription( linkIDPaymentContext.getDescription() );
+        paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
+        paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
+        paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
+        paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
+        paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
+        paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
+        paymentContext.setMandate( null != linkIDPaymentContext.getMandate() );
+        if (null != linkIDPaymentContext.getMandate()) {
+            paymentContext.setMandateDescription( linkIDPaymentContext.getMandate().getDescription() );
+            paymentContext.setMandateReference( linkIDPaymentContext.getMandate().getReference() );
+        }
+
+        return paymentContext;
+    }
 
     private LinkIDErrorCode convert(final net.lin_k.safe_online.mandate.ErrorCode errorCode) {
 

@@ -22,6 +22,6 @@ public class ExampleMobileLoginServlet extends LinkIDInitiateLoginServlet {
         linkIDAuthenticationContext.setAuthenticationMessage( "Custom authentication message" );
         linkIDAuthenticationContext.setFinishedMessage( "Custom finished message" );
 
-        //        authenticationContext.setPaymentContext( new PaymentContextDO( 200, Currency.EUR ) );
+        //        linkIDAuthenticationContext.setPaymentContext( new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 200, LinkIDCurrency.EUR ) ).build() );
     }
 }

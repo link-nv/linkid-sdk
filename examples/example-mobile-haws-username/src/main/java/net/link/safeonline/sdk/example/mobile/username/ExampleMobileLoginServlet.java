@@ -11,6 +11,7 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.auth.servlet.LinkIDInitiateLoginServlet;
 import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
@@ -26,7 +27,7 @@ public class ExampleMobileLoginServlet extends LinkIDInitiateLoginServlet {
         linkIDAuthenticationContext.setFinishedMessage( "Custom finished message" );
 
         linkIDAuthenticationContext.setIdentityProfiles( Collections.singletonList( "linkid_payment" ) );
-        linkIDAuthenticationContext.setPaymentContext( new LinkIDPaymentContext( 200, LinkIDCurrency.EUR ) );
+        linkIDAuthenticationContext.setPaymentContext( new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 200, LinkIDCurrency.EUR ) ).build() );
 
         //        authenticationContext.setCallback( new CallbackDO( "https://yourdomain.be/callback", null, true ) );
     }

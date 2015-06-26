@@ -42,8 +42,9 @@ import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPullException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPushException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDRemoveException;
-import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.safeonline.ws.ltqr.LinkIDLTQRServiceFactory;
@@ -113,24 +114,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         request.setFinishedMessage( finishedMessage );
 
         // payment context
-        if (null != linkIDPaymentContext) {
-
-            PaymentContext paymentContext = new PaymentContext();
-            paymentContext.setAmount( linkIDPaymentContext.getAmount() );
-            paymentContext.setCurrency( LinkIDSDKUtils.convert( linkIDPaymentContext.getCurrency() ) );
-            paymentContext.setDescription( linkIDPaymentContext.getDescription() );
-            paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
-            paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
-            paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
-            paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
-            paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
-            paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
-            paymentContext.setMandate( linkIDPaymentContext.isMandate() );
-            paymentContext.setMandateDescription( linkIDPaymentContext.getMandateDescription() );
-            paymentContext.setMandateReference( linkIDPaymentContext.getMandateReference() );
-
-            request.setPaymentContext( paymentContext );
-        }
+        request.setPaymentContext( convert( linkIDPaymentContext ) );
 
         // callback
         if (null != linkIDCallback) {
@@ -209,24 +193,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         request.setFinishedMessage( finishedMessage );
 
         // payment context
-        if (null != linkIDPaymentContext) {
-
-            PaymentContext paymentContext = new PaymentContext();
-            paymentContext.setAmount( linkIDPaymentContext.getAmount() );
-            paymentContext.setCurrency( LinkIDSDKUtils.convert( linkIDPaymentContext.getCurrency() ) );
-            paymentContext.setDescription( linkIDPaymentContext.getDescription() );
-            paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
-            paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
-            paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
-            paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
-            paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
-            paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
-            paymentContext.setMandate( linkIDPaymentContext.isMandate() );
-            paymentContext.setMandateDescription( linkIDPaymentContext.getMandateDescription() );
-            paymentContext.setMandateReference( linkIDPaymentContext.getMandateReference() );
-
-            request.setPaymentContext( paymentContext );
-        }
+        request.setPaymentContext( convert( linkIDPaymentContext ) );
 
         // callback
         if (null != linkIDCallback) {
@@ -430,9 +397,48 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         if (null == paymentContext)
             return null;
 
-        return new LinkIDPaymentContext( paymentContext.getAmount(), LinkIDSDKUtils.convert( paymentContext.getCurrency() ), paymentContext.getDescription(),
-                paymentContext.getOrderReference(), paymentContext.getPaymentProfile(), paymentContext.getValidationTime(), LinkIDPaymentAddBrowser.NOT_ALLOWED,
-                paymentContext.isAllowDeferredPay(), paymentContext.isMandate(), paymentContext.getMandateDescription(), paymentContext.getMandateReference() );
+        LinkIDPaymentContext.Builder builder = new LinkIDPaymentContext.Builder(
+                new LinkIDPaymentAmount( paymentContext.getAmount(), LinkIDSDKUtils.convert( paymentContext.getCurrency() ),
+                        paymentContext.getWalletCoin() ) ).description( paymentContext.getDescription() )
+                                                          .orderReference( paymentContext.getOrderReference() )
+                                                          .paymentProfile( paymentContext.getPaymentProfile() )
+                                                          .paymentValidationTime( paymentContext.getValidationTime() )
+                                                          .allowDeferredPay( paymentContext.isAllowDeferredPay() );
+
+        if (paymentContext.isMandate()) {
+            builder = builder.mandate( new LinkIDPaymentMandate( paymentContext.getMandateDescription(), paymentContext.getMandateReference() ) );
+        }
+
+        return builder.build();
+    }
+
+    private PaymentContext convert(@Nullable final LinkIDPaymentContext linkIDPaymentContext) {
+
+        if (null == linkIDPaymentContext)
+            return null;
+
+        PaymentContext paymentContext = new PaymentContext();
+        paymentContext.setAmount( linkIDPaymentContext.getAmount().getAmount() );
+        if (null != linkIDPaymentContext.getAmount().getCurrency()) {
+            paymentContext.setCurrency( LinkIDSDKUtils.convert( linkIDPaymentContext.getAmount().getCurrency() ) );
+        }
+        if (null != linkIDPaymentContext.getAmount().getWalletCoin()) {
+            paymentContext.setWalletCoin( linkIDPaymentContext.getAmount().getWalletCoin() );
+        }
+        paymentContext.setDescription( linkIDPaymentContext.getDescription() );
+        paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
+        paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
+        paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
+        paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
+        paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
+        paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
+        paymentContext.setMandate( null != linkIDPaymentContext.getMandate() );
+        if (null != linkIDPaymentContext.getMandate()) {
+            paymentContext.setMandateDescription( linkIDPaymentContext.getMandate().getDescription() );
+            paymentContext.setMandateReference( linkIDPaymentContext.getMandate().getReference() );
+        }
+
+        return paymentContext;
     }
 
     private LinkIDLTQRPaymentState convert(final LTQRPaymentStatusType wsPaymentStatusType) {
