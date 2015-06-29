@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:payment:4.0" xmlns:tns="urn:net:lin-k:safe-online:payment:4.0"
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-payment
+			Revision history:
+			V4.0 (June, 2015):
+			Authorized vs capture details
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <element name="PaymentStatusRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="PaymentStatusResponse">
+        <complexType>
+            <sequence>
+                <element name="orderReference" minOccurs="1" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>The payment order reference</documentation>
+                    </annotation>
+                </element>
+                <element name="userId" minOccurs="1" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>The linkID user's ID that made this order</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="com:PaymentStatusType">
+                    <annotation>
+                        <documentation>Order payment status</documentation>
+                    </annotation>
+                </element>
+                <element name="authorized" minOccurs="1" maxOccurs="1" type="boolean">
+                    <annotation>
+                        <documentation>Order authorized?</documentation>
+                    </annotation>
+                </element>
+                <element name="captured" minOccurs="1" maxOccurs="1" type="boolean">
+                    <annotation>
+                        <documentation>Order captured? Only makes sense for orders with Docdata transactions for a merchant with automatic capture disabled</documentation>
+                    </annotation>
+                </element>
+                <element name="amountPayed" minOccurs="1" maxOccurs="1" type="double">
+                    <annotation>
+                        <documentation>How much of the order was payed (in cents)? This only makes sense if partial payments were allowed for this order</documentation>
+                    </annotation>
+                </element>
+                <element name="amount" minOccurs="1" maxOccurs="1" type="double">
+                    <annotation>
+                        <documentation>Amount that was intended to be payed, i.e. what was specified in the linkID payment context</documentation>
+                    </annotation>
+                </element>
+                <element name="currency" minOccurs="0" maxOccurs="1" type="com:Currency">
+                    <annotation>
+                        <documentation>Optional payment amount currency</documentation>
+                    </annotation>
+                </element>
+                <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment amount wallet coin</documentation>
+                    </annotation>
+                </element>
+                <element name="description" minOccurs="0" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>Optional payment description as is passed on in the linkID payment context</documentation>
+                    </annotation>
+                </element>
+                <element name="profile" minOccurs="0" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>Optional linkID payment profile used</documentation>
+                    </annotation>
+                </element>
+                <element name="created" minOccurs="1" maxOccurs="1" type="dateTime">
+                    <annotation>
+                        <documentation>When was the order created</documentation>
+                    </annotation>
+                </element>
+                <element name="mandateReference" minOccurs="0" maxOccurs="1" type="string">
+                    <annotation>
+                        <documentation>Optional mandate reference</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentDetails" minOccurs="1" maxOccurs="1" type="tns:PaymentDetails">
+                    <annotation>
+                        <documentation>Order payment details</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentDetails">
+        <sequence>
+            <element name="paymentTransactions" minOccurs="0" maxOccurs="unbounded" type="com:PaymentTransactionV20">
+                <annotation>
+                    <documentation>Regular payment transactions, VISA, MASTERCARD, SEPA, ...</documentation>
+                </annotation>
+            </element>
+            <element name="walletTransactions" minOccurs="0" maxOccurs="unbounded" type="com:WalletTransactionV40">
+                <annotation>
+                    <documentation>Wallet payment transactions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+</schema>

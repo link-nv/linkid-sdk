@@ -21,6 +21,7 @@ public class LinkIDPaymentStatus implements Serializable {
     private final double               amountPayed;
     private final double               amount;
     private final LinkIDCurrency       currency;
+    private final String               walletCoin;
     private final String               description;
     private final String               profile;
     private final Date                 created;
@@ -28,8 +29,9 @@ public class LinkIDPaymentStatus implements Serializable {
     private final LinkIDPaymentDetails paymentDetails;
 
     public LinkIDPaymentStatus(final String orderReference, final String userId, final LinkIDPaymentState paymentState, final boolean authorized,
-                               final boolean captured, final double amountPayed, final double amount, final LinkIDCurrency currency, final String description,
-                               final String profile, final Date created, final String mandateReference, final LinkIDPaymentDetails paymentDetails) {
+                               final boolean captured, final double amountPayed, final double amount, final LinkIDCurrency currency, final String walletCoin,
+                               final String description, final String profile, final Date created, final String mandateReference,
+                               final LinkIDPaymentDetails paymentDetails) {
 
         this.orderReference = orderReference;
         this.userId = userId;
@@ -39,6 +41,7 @@ public class LinkIDPaymentStatus implements Serializable {
         this.amountPayed = amountPayed;
         this.amount = amount;
         this.currency = currency;
+        this.walletCoin = walletCoin;
         this.description = description;
         this.profile = profile;
         this.created = created;
@@ -58,6 +61,7 @@ public class LinkIDPaymentStatus implements Serializable {
                ", amountPayed=" + amountPayed +
                ", amount=" + amount +
                ", currency=" + currency +
+               ", walletCoin=" + walletCoin +
                ", description='" + description + '\'' +
                ", profile='" + profile + '\'' +
                ", created=" + created +
@@ -104,6 +108,11 @@ public class LinkIDPaymentStatus implements Serializable {
     public LinkIDCurrency getCurrency() {
 
         return currency;
+    }
+
+    public String getWalletCoin() {
+
+        return walletCoin;
     }
 
     public String getDescription() {

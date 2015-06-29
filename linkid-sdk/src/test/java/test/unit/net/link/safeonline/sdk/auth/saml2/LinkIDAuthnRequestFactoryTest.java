@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.safeonline.sdk.auth.protocol.saml2.callback.LinkIDCallback;
@@ -177,10 +178,12 @@ public class LinkIDAuthnRequestFactoryTest {
         subjectAttributesMap.put( testAttributeDate, Arrays.<Serializable>asList( new Date(), new Date() ) );
 
         // Setup Payment context
-        net.link.safeonline.sdk.api.payment.LinkIDPaymentContext paymentContext = new net.link.safeonline.sdk.api.payment.LinkIDPaymentContext( 50, LinkIDCurrency.EUR );
+        net.link.safeonline.sdk.api.payment.LinkIDPaymentContext paymentContext = new net.link.safeonline.sdk.api.payment.LinkIDPaymentContext.Builder(
+                new LinkIDPaymentAmount( 50, LinkIDCurrency.EUR ) ).build();
 
         // Setup callback
-        net.link.safeonline.sdk.api.callback.LinkIDCallback linkIDCallback = new net.link.safeonline.sdk.api.callback.LinkIDCallback( "http://service.linkid.be", UUID.randomUUID().toString(), true );
+        net.link.safeonline.sdk.api.callback.LinkIDCallback linkIDCallback = new net.link.safeonline.sdk.api.callback.LinkIDCallback(
+                "http://service.linkid.be", UUID.randomUUID().toString(), true );
 
         // Test
         long begin = System.currentTimeMillis();

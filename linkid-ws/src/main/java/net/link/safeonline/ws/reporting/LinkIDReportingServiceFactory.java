@@ -9,7 +9,7 @@ package net.link.safeonline.ws.reporting;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.reporting._2.ReportingService;
+import net.lin_k.safe_online.reporting._3.ReportingService;
 
 
 public class LinkIDReportingServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDReportingServiceFactory {
     public static ReportingService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-reporting-2.0.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-reporting-3.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Reporting WSDL not found" );
 
-        return new ReportingService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:reporting:2.0", "ReportingService" ) );
+        return new ReportingService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:reporting:3.0", "ReportingService" ) );
     }
 }

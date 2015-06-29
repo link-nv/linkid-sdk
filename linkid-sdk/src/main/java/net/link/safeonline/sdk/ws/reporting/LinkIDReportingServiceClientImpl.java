@@ -15,20 +15,20 @@ import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.PaymentTransactionV20;
-import net.lin_k.safe_online.common.WalletTransactionV20;
-import net.lin_k.safe_online.reporting._2.ApplicationFilter;
-import net.lin_k.safe_online.reporting._2.DateFilter;
-import net.lin_k.safe_online.reporting._2.ParkingReportRequest;
-import net.lin_k.safe_online.reporting._2.ParkingReportResponse;
-import net.lin_k.safe_online.reporting._2.ParkingSession;
-import net.lin_k.safe_online.reporting._2.PaymentOrder;
-import net.lin_k.safe_online.reporting._2.PaymentReportRequest;
-import net.lin_k.safe_online.reporting._2.PaymentReportResponse;
-import net.lin_k.safe_online.reporting._2.ReportingServicePort;
-import net.lin_k.safe_online.reporting._2.WalletFilter;
-import net.lin_k.safe_online.reporting._2.WalletReportRequest;
-import net.lin_k.safe_online.reporting._2.WalletReportResponse;
-import net.lin_k.safe_online.reporting._2.WalletReportTransaction;
+import net.lin_k.safe_online.common.WalletTransactionV40;
+import net.lin_k.safe_online.reporting._3.ApplicationFilter;
+import net.lin_k.safe_online.reporting._3.DateFilter;
+import net.lin_k.safe_online.reporting._3.ParkingReportRequest;
+import net.lin_k.safe_online.reporting._3.ParkingReportResponse;
+import net.lin_k.safe_online.reporting._3.ParkingSession;
+import net.lin_k.safe_online.reporting._3.PaymentOrder;
+import net.lin_k.safe_online.reporting._3.PaymentReportRequest;
+import net.lin_k.safe_online.reporting._3.PaymentReportResponse;
+import net.lin_k.safe_online.reporting._3.ReportingServicePort;
+import net.lin_k.safe_online.reporting._3.WalletFilter;
+import net.lin_k.safe_online.reporting._3.WalletReportRequest;
+import net.lin_k.safe_online.reporting._3.WalletReportResponse;
+import net.lin_k.safe_online.reporting._3.WalletReportTransaction;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
@@ -226,7 +226,7 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
                 transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getWalletId(),
                         LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ), walletReportTransaction.getTransactionId(),
                         walletReportTransaction.getAmount(), LinkIDSDKUtils.convert( walletReportTransaction.getCurrency() ),
-                        walletReportTransaction.getUserId(), walletReportTransaction.getApplicationName() ) );
+                        walletReportTransaction.getWalletCoin(), walletReportTransaction.getUserId(), walletReportTransaction.getApplicationName() ) );
             }
 
             return transactions;
@@ -277,14 +277,15 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
 
                 // wallet transactions
                 List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
-                for (WalletTransactionV20 walletTransaction : paymentOrder.getWalletTransactions()) {
+                for (WalletTransactionV40 walletTransaction : paymentOrder.getWalletTransactions()) {
                     walletTransactions.add( new LinkIDWalletTransaction( walletTransaction.getWalletId(), convert( walletTransaction.getCreationDate() ),
-                            walletTransaction.getTransactionId(), walletTransaction.getAmount(), LinkIDSDKUtils.convert( walletTransaction.getCurrency() ) ) );
+                            walletTransaction.getTransactionId(), walletTransaction.getAmount(), LinkIDSDKUtils.convert( walletTransaction.getCurrency() ),
+                            walletTransaction.getWalletCoin() ) );
                 }
 
                 // order
                 orders.add( new LinkIDPaymentOrder( convert( paymentOrder.getDate() ), paymentOrder.getAmount(),
-                        LinkIDSDKUtils.convert( paymentOrder.getCurrency() ), paymentOrder.getDescription(),
+                        LinkIDSDKUtils.convert( paymentOrder.getCurrency() ), paymentOrder.getWalletCoin(), paymentOrder.getDescription(),
                         LinkIDSDKUtils.convert( paymentOrder.getPaymentState() ), paymentOrder.getAmountPayed(), paymentOrder.isAuthorized(),
                         paymentOrder.isCaptured(), paymentOrder.getOrderReference(), paymentOrder.getUserId(), paymentOrder.getEmail(),
                         paymentOrder.getGivenName(), paymentOrder.getFamilyName(), transactions, walletTransactions ) );
@@ -350,7 +351,7 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
         return null != xmlDate? xmlDate.toGregorianCalendar().getTime(): null;
     }
 
-    private LinkIDReportErrorCode convert(final net.lin_k.safe_online.reporting._2.ErrorCode errorCode) {
+    private LinkIDReportErrorCode convert(final net.lin_k.safe_online.reporting._3.ErrorCode errorCode) {
 
         switch (errorCode) {
 

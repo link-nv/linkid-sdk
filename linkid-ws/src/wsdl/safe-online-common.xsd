@@ -211,6 +211,17 @@
         </sequence>
     </complexType>
 
+    <complexType name="WalletTransactionV40">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="transactionId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1" />
+            <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
     <complexType name="Callback">
         <sequence>
             <element name="location" type="string" minOccurs="1" maxOccurs="1">

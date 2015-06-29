@@ -16,6 +16,7 @@ public class LinkIDPaymentOrder implements Serializable {
     private final Date                           date;
     private final double                         amount;
     private final LinkIDCurrency                 currency;
+    private final String                         walletCoin;
     private final String                         description;
     private final LinkIDPaymentState             paymentState;
     private final double                         amountPayed;
@@ -29,7 +30,7 @@ public class LinkIDPaymentOrder implements Serializable {
     private final List<LinkIDPaymentTransaction> transactions;
     private final List<LinkIDWalletTransaction>  walletTransactions;
 
-    public LinkIDPaymentOrder(final Date date, final double amount, final LinkIDCurrency currency, final String description,
+    public LinkIDPaymentOrder(final Date date, final double amount, final LinkIDCurrency currency, final String walletCoin, final String description,
                               final LinkIDPaymentState paymentState, final double amountPayed, final boolean authorized, final boolean captured,
                               final String orderReference, final String userId, final String email, final String givenName, final String familyName,
                               final List<LinkIDPaymentTransaction> transactions, final List<LinkIDWalletTransaction> walletTransactions) {
@@ -37,6 +38,7 @@ public class LinkIDPaymentOrder implements Serializable {
         this.date = date;
         this.amount = amount;
         this.currency = currency;
+        this.walletCoin = walletCoin;
         this.description = description;
         this.paymentState = paymentState;
         this.amountPayed = amountPayed;
@@ -60,6 +62,7 @@ public class LinkIDPaymentOrder implements Serializable {
                "date=" + date +
                ", amount=" + amount +
                ", currency=" + currency +
+               ", walletCoin=" + walletCoin +
                ", description='" + description + '\'' +
                ", paymentState=" + paymentState +
                ", amountPayed=" + amountPayed +
@@ -90,6 +93,11 @@ public class LinkIDPaymentOrder implements Serializable {
     public LinkIDCurrency getCurrency() {
 
         return currency;
+    }
+
+    public String getWalletCoin() {
+
+        return walletCoin;
     }
 
     public String getDescription() {

@@ -20,7 +20,9 @@ import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
@@ -127,8 +129,7 @@ public class LinkIDWSClientTest {
 
         LinkIDReportingServiceClient client = new LinkIDReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        List<String> orderReferences = Arrays.asList( "ac321fe96156489299b77a007f41509b", "9fdc23058f0449479d091072759d4646",
-                "6dba05fe1ff04e96b92995a661ba77d0" );
+        List<String> orderReferences = Arrays.asList( "QR-SHOP-ad4babdd-31e2-42e2-af54-a0648a9027be" );
 
         List<LinkIDPaymentOrder> linkIDPaymentOrders = client.getPaymentReportForOrderReferences( orderReferences );
         logger.inf( "# orders = %d", linkIDPaymentOrders.size() );
@@ -160,7 +161,7 @@ public class LinkIDWSClientTest {
 
         LinkIDReportingServiceClient client = new LinkIDReportingServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        String walletOrganizationId = "f508212c-9189-4402-ab76-6e26110697b4";
+        String walletOrganizationId = "urn:linkid:wallet:leaseplan";
         Date startDate = DateTime.now().minusYears( 1 ).toDate();
         String applicationName = "test-shop";
         String walletId = "ff52177f-8f80-4640-9e86-558f6b1b24c3";
@@ -187,7 +188,7 @@ public class LinkIDWSClientTest {
 
         // operate
         try {
-            String walletId = client.enroll( userId, walletOrganizationId, 500, LinkIDCurrency.EUR );
+            String walletId = client.enroll( userId, walletOrganizationId, 500, LinkIDCurrency.EUR, null );
             logger.inf( "Enrolled wallet: %s", walletId );
         }
         catch (LinkIDWalletEnrollException e) {
@@ -227,7 +228,7 @@ public class LinkIDWSClientTest {
 
         // operate
         try {
-            client.addCredit( userId, walletId, 100, LinkIDCurrency.EUR );
+            client.addCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
         }
         catch (LinkIDWalletAddCreditException e) {
             logger.err( "Add credit error: %s", e.getErrorCode() );
@@ -246,7 +247,7 @@ public class LinkIDWSClientTest {
 
         // operate
         try {
-            client.removeCredit( userId, walletId, 100, LinkIDCurrency.EUR );
+            client.removeCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
         }
         catch (LinkIDWalletRemoveCreditException e) {
             logger.err( "Remove credit error: %s", e.getErrorCode() );
@@ -314,7 +315,7 @@ public class LinkIDWSClientTest {
 
         // setup
         LinkIDLTQRServiceClient client = new LinkIDLTQRServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext( 5, LinkIDCurrency.EUR );
+        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 5, LinkIDCurrency.EUR ) ).build();
 
         // operate
         client.push( null, null, paymentContext, false, null, null, null, null, null, null, null, null, null );
@@ -325,7 +326,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String orderReference = "7d545bcb56f84fc8945f0cd537ca6694";
+        String orderReference = "QR-SHOP-ad4babdd-31e2-42e2-af54-a0648a9027be";
         LinkIDPaymentServiceClient client = new LinkIDPaymentServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         // operate
@@ -346,8 +347,11 @@ public class LinkIDWSClientTest {
         String mandateReference = null;
         //        String mandateDescription = "LTQR mandate description";
         //        String mandateReference = UUID.randomUUID().toString();
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext( 10, LinkIDCurrency.EUR, "LTQR Test", UUID.randomUUID().toString(), null, 5,
-                LinkIDPaymentAddBrowser.NOT_ALLOWED, false, true, mandateDescription, mandateReference );
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) )   //
+                .orderReference( UUID.randomUUID().toString() )
+                .paymentAddBrowser( LinkIDPaymentAddBrowser.NOT_ALLOWED )
+                .mandate( new LinkIDPaymentMandate( mandateDescription, mandateReference ) )
+                .build();
         DateTime expiryDateTime = new DateTime();
         expiryDateTime = expiryDateTime.plusMonths( 2 );
         LinkIDLTQRServiceClient client = new LinkIDLTQRServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
@@ -400,7 +404,8 @@ public class LinkIDWSClientTest {
 
         // setup
         String mandateReference = "9d8c9f97-730d-4b6e-85e5-f5cbd88a427e";
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext( 10000, LinkIDCurrency.EUR, "Test description", null, null );
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10000, LinkIDCurrency.EUR ) ).description(
+                "Test description" ).build();
         LinkIDMandateServiceClient client = new LinkIDMandateServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         // operate
