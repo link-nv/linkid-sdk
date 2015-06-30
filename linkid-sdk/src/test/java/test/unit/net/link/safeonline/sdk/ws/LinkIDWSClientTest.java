@@ -428,7 +428,7 @@ public class LinkIDWSClientTest {
         client.capture( orderReference );
     }
 
-    @Test
+    //    @Test
     public void testGetLocalization()
             throws Exception {
 
