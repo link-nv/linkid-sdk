@@ -76,13 +76,16 @@ public class LinkIDPaymentContext implements Serializable {
 
         // validate payment context
         if (null == builder.amount.getCurrency() && null == builder.amount.getWalletCoin()) {
-            throw new RuntimeException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are null" );
+            throw new IllegalStateException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are null" );
         }
         if (null != builder.amount.getCurrency() && null != builder.amount.getWalletCoin()) {
-            throw new RuntimeException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are specified" );
+            throw new IllegalStateException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are specified" );
         }
         if (builder.amount.getAmount() <= 0) {
-            throw new RuntimeException( "LinkIDPaymentContext.amount is <= 0, this is not allowed" );
+            throw new IllegalStateException( "LinkIDPaymentContext.amount is <= 0, this is not allowed" );
+        }
+        if (builder.onlyWallets && builder.paymentAddBrowser == LinkIDPaymentAddBrowser.REDIRECT) {
+            throw new IllegalStateException( "LinkIDPaymentContext: setting onlyWallets and allowing continue in browser makes no sense, aborting..." );
         }
 
         // initialize
@@ -156,18 +159,20 @@ public class LinkIDPaymentContext implements Serializable {
         if (!paymentContextMap.containsKey( AMOUNT_KEY )) {
             throw new LinkIDInvalidPaymentContextException( "Payment context's amount field is not present!" );
         }
-
         if (!paymentContextMap.containsKey( CURRENCY_KEY ) && !paymentContextMap.containsKey( WALLET_COIN_KEY )) {
-            throw new LinkIDInvalidPaymentContextException( "Payment context's currency not walletCoin field is not present!" );
+            throw new LinkIDInvalidPaymentContextException( "Payment context's currency nor walletCoin field is present!" );
         }
-
         double amount = Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) );
         if (amount <= 0) {
             throw new LinkIDInvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
         }
-
         if (!paymentContextMap.containsKey( VALIDATION_TIME_KEY )) {
             throw new LinkIDInvalidPaymentContextException( "Payment context's validation time field is not present!" );
+        }
+        if (getBoolean( paymentContextMap, ONLY_WALLETS_KEY )
+            && LinkIDPaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) ) == LinkIDPaymentAddBrowser.REDIRECT) {
+            throw new LinkIDInvalidPaymentContextException(
+                    "LinkIDPaymentContext: setting onlyWallets and allowing continue in browser makes no sense, aborting..." );
         }
 
         LinkIDPaymentAddBrowser paymentAddBrowser = LinkIDPaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) );
