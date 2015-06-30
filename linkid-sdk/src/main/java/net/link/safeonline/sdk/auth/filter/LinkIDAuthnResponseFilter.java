@@ -19,10 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.protocol.LinkIDAuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolManager;
+import net.link.util.ServletUtils;
+import net.link.util.common.ErrorMessage;
 import net.link.util.logging.Logger;
 import net.link.util.saml.ValidationFailedException;
-import net.link.util.common.ErrorMessage;
-import net.link.util.ServletUtils;
 
 
 /**
@@ -85,8 +85,6 @@ public class LinkIDAuthnResponseFilter implements Filter {
     protected void onLogin(HttpSession session, LinkIDAuthnProtocolResponseContext authnResponse) {
 
         if (authnResponse.isSuccess()) {
-            logger.dbg( "userId: %s", authnResponse.getUserId() );
-
             LinkIDLoginManager.set( session, authnResponse );
         }
     }

@@ -28,7 +28,11 @@ import net.link.util.common.CertificateChain;
  *
  * @author fcorneli
  */
-public abstract class LinkIDLoginManager {
+public class LinkIDLoginManager {
+
+    private LinkIDLoginManager() {
+
+    }
 
     public static final String USERID_SESSION_ATTRIBUTE                 = LinkIDLoginManager.class.getName() + ".userId";
     public static final String ATTRIBUTES_SESSION_ATTRIBUTE             = LinkIDLoginManager.class.getName() + ".attributes";

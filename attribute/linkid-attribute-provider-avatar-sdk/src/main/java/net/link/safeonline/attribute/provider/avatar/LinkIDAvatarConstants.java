@@ -14,9 +14,13 @@ package net.link.safeonline.attribute.provider.avatar;
  *
  * @author sgdesmet
  */
-public interface LinkIDAvatarConstants {
+public class LinkIDAvatarConstants {
 
-    String PROFILE_PICTURE_ATTRIBUTE = "avatar.picture";
+    private LinkIDAvatarConstants() {
 
-    int PICTURE_SIZE = 128;
+    }
+
+    public static final String PROFILE_PICTURE_ATTRIBUTE = "avatar.picture";
+
+    public static final int PICTURE_SIZE = 128;
 }

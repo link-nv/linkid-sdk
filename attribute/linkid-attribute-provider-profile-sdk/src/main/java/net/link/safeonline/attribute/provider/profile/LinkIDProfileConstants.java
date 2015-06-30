@@ -7,31 +7,35 @@
 
 package net.link.safeonline.attribute.provider.profile;
 
-public interface LinkIDProfileConstants {
+public class LinkIDProfileConstants {
+
+    private LinkIDProfileConstants() {
+
+    }
 
     // attribute names
-    String GIVEN_NAME    = "profile.givenName";
-    String FAMILY_NAME   = "profile.familyName";
-    String DATE_OF_BIRTH = "profile.dob";
-    String GENDER        = "profile.gender";
-    String LANGUAGE      = "profile.language";
-    String MOBILE        = "profile.mobile";
-    String PHONE         = "profile.phone";
+    public static final String GIVEN_NAME    = "profile.givenName";
+    public static final String FAMILY_NAME   = "profile.familyName";
+    public static final String DATE_OF_BIRTH = "profile.dob";
+    public static final String GENDER        = "profile.gender";
+    public static final String LANGUAGE      = "profile.language";
+    public static final String MOBILE        = "profile.mobile";
+    public static final String PHONE         = "profile.phone";
 
     // attribute group
-    String GROUP = "profile";
+    public static final String GROUP = "profile";
 
     // address
-    String ADDRESS               = "profile.address";
-    String ADDRESS_STREET        = "profile.address.street";
-    String ADDRESS_STREET_NUMBER = "profile.address.streetNumber";
-    String ADDRESS_STREET_BUS    = "profile.address.streetBus";
-    String ADDRESS_POSTAL_CODE   = "profile.address.postalCode";
-    String ADDRESS_CITY          = "profile.address.city";
-    String ADDRESS_COUNTRY       = "profile.address.country";
+    public static final String ADDRESS               = "profile.address";
+    public static final String ADDRESS_STREET        = "profile.address.street";
+    public static final String ADDRESS_STREET_NUMBER = "profile.address.streetNumber";
+    public static final String ADDRESS_STREET_BUS    = "profile.address.streetBus";
+    public static final String ADDRESS_POSTAL_CODE   = "profile.address.postalCode";
+    public static final String ADDRESS_CITY          = "profile.address.city";
+    public static final String ADDRESS_COUNTRY       = "profile.address.country";
 
     // email
-    String EMAIL           = "profile.email";
-    String EMAIL_ADDRESS   = "profile.email.address";
-    String EMAIL_CONFIRMED = "profile.email.confirmed";
+    public static final String EMAIL           = "profile.email";
+    public static final String EMAIL_ADDRESS   = "profile.email.address";
+    public static final String EMAIL_CONFIRMED = "profile.email.confirmed";
 }
