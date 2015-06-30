@@ -30,6 +30,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
 import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDThemesException;
@@ -425,6 +426,25 @@ public class LinkIDWSClientTest {
 
         // operate
         client.capture( orderReference );
+    }
+
+    @Test
+    public void testGetLocalization()
+            throws Exception {
+
+        // Setup
+        List<String> keys = Lists.newLinkedList();
+        keys.add( "urn:linkid:wallet:coin:coffee" );
+        keys.add( "urn:linkid:wallet:leaseplan" );
+
+        LinkIDConfigurationServiceClient client = new LinkIDConfigurationServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        // operate
+        List<LinkIDLocalization> localizations = client.getLocalization( keys );
+
+        // verify
+        assertEquals( 2, localizations.size() );
+        assertEquals( 4, localizations.get( 0 ).getValues().size() );
     }
 
     // Auth

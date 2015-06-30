@@ -14,12 +14,19 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.configuration.ConfigurationServicePort;
+import net.lin_k.safe_online.configuration.Localization;
+import net.lin_k.safe_online.configuration.LocalizationRequest;
+import net.lin_k.safe_online.configuration.LocalizationResponse;
+import net.lin_k.safe_online.configuration.LocalizationValue;
 import net.lin_k.safe_online.configuration.LocalizedImage;
 import net.lin_k.safe_online.configuration.LocalizedImages;
 import net.lin_k.safe_online.configuration.Themes;
 import net.lin_k.safe_online.configuration.ThemesRequest;
 import net.lin_k.safe_online.configuration.ThemesResponse;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalization;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizationErrorCode;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizedImages;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
@@ -100,6 +107,32 @@ public class LinkIDConfigurationServiceClientImpl extends AbstractWSClient<Confi
         return new LinkIDThemes( linkIDThemes );
     }
 
+    @Override
+    public List<LinkIDLocalization> getLocalization(final List<String> keys)
+            throws LinkIDLocalizationException {
+
+        LocalizationRequest request = new LocalizationRequest();
+        request.getKey().addAll( keys );
+
+        // operate
+        LocalizationResponse response = getPort().localization( request );
+
+        if (null != response.getError()) {
+            throw new LinkIDLocalizationException( convert( response.getError().getErrorCode() ) );
+        }
+
+        // all good
+        List<LinkIDLocalization> localizations = Lists.newLinkedList();
+        for (Localization localization : response.getSuccess().getLocalization()) {
+            Map<String, String> values = Maps.newHashMap();
+            for (LocalizationValue localizationValue : localization.getValues()) {
+                values.put( localizationValue.getLanguageCode(), localizationValue.getLocalized() );
+            }
+            localizations.add( new LinkIDLocalization( localization.getKey(), values ) );
+        }
+        return localizations;
+    }
+
     // Helper methods
 
     private LinkIDLocalizedImages convert(final LocalizedImages localizedImages) {
@@ -120,6 +153,17 @@ public class LinkIDConfigurationServiceClientImpl extends AbstractWSClient<Confi
 
             case ERROR_UNKNOWN_APPLICATION:
                 return LinkIDThemesErrorCode.ERROR_UNKNOWN_APPLICATION;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    private LinkIDLocalizationErrorCode convert(final net.lin_k.safe_online.configuration.LocalizationErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNEXPECTED:
+                return LinkIDLocalizationErrorCode.ERROR_UNEXPECTED;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

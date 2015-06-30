@@ -11,6 +11,10 @@
 		</documentation>
 	</annotation>
 
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                               Themes request                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
     <element name="ThemesRequest">
 		<complexType>
             <attribute name="applicationName" type="string" use="required" />
@@ -127,4 +131,87 @@
 			</enumeration>
 		</restriction>
 	</simpleType>
+
+    <!-- ******************** ********************   ********************  ********************  ********************  -->
+    <!--                                             Localization request                                              -->
+    <!-- ********************  ********************  ********************  ********************  ********************  -->
+
+    <element name="LocalizationRequest">
+		<complexType>
+            <sequence>
+                <element name="key" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>linkID key to get localization for, e.g. a wallet organization ID, wallet coin ID,...</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="LocalizationResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LocalizationSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LocalizationError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="LocalizationSuccess">
+        <sequence>
+            <element name="localization" type="tns:Localization" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The localization key(s)</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Localization">
+        <sequence>
+            <element name="key" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The key</documentation>
+                </annotation>
+            </element>
+            <element name="values" type="tns:LocalizationValue" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Localization values</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LocalizationValue">
+        <sequence>
+            <element name="languageCode" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>ISO 639‑1 code of the language</documentation>
+                </annotation>
+            </element>
+            <element name="localized" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>localized value</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+	<complexType name="LocalizationError">
+        <attribute name="errorCode" type="tns:LocalizationErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="LocalizationErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected occurred</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
 </schema>
