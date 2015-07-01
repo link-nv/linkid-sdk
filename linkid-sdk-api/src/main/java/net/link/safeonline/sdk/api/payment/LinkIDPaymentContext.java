@@ -81,9 +81,10 @@ public class LinkIDPaymentContext implements Serializable {
         if (null != builder.amount.getCurrency() && null != builder.amount.getWalletCoin()) {
             throw new IllegalStateException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are specified" );
         }
-        if (builder.amount.getAmount() <= 0) {
-            throw new IllegalStateException( "LinkIDPaymentContext.amount is <= 0, this is not allowed" );
-        }
+        // TODO: disabled as some customers seem to not know that LTQR codes can also be created without a payment context
+        //        if (builder.amount.getAmount() <= 0) {
+        //            throw new IllegalStateException( "LinkIDPaymentContext.amount is <= 0, this is not allowed" );
+        //        }
         if (builder.onlyWallets && builder.paymentAddBrowser == LinkIDPaymentAddBrowser.REDIRECT) {
             throw new IllegalStateException( "LinkIDPaymentContext: setting onlyWallets and allowing continue in browser makes no sense, aborting..." );
         }
