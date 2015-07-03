@@ -184,12 +184,13 @@ public class LinkIDWSClientTest {
 
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
-        String walletOrganizationId = "60d3113d-7229-4387-a271-792d905ca4ed";
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String walletOrganizationId = "urn:linkid:wallet:leaseplan";
 
         // operate
         try {
-            String walletId = client.enroll( userId, walletOrganizationId, 500, LinkIDCurrency.EUR, null );
+            //            String walletId = client.enroll( userId, walletOrganizationId, 500, LinkIDCurrency.EUR, null );
+            String walletId = client.enroll( userId, walletOrganizationId, 500, null, "urn:linkid:wallet:coin:coffee" );
             logger.inf( "Enrolled wallet: %s", walletId );
         }
         catch (LinkIDWalletEnrollException e) {
@@ -224,12 +225,13 @@ public class LinkIDWSClientTest {
 
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
-        String walletId = "588ccf3c-04d8-4837-9285-9077b026699f";
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String walletId = "cc436d59-1370-44ab-9b99-211d2670003b";
 
         // operate
         try {
-            client.addCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
+            //            client.addCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
+            client.addCredit( userId, walletId, 100, null, "urn:linkid:wallet:coin:coffee" );
         }
         catch (LinkIDWalletAddCreditException e) {
             logger.err( "Add credit error: %s", e.getErrorCode() );
@@ -243,12 +245,13 @@ public class LinkIDWSClientTest {
 
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
-        String walletId = "588ccf3c-04d8-4837-9285-9077b026699f";
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String walletId = "cc436d59-1370-44ab-9b99-211d2670003b";
 
         // operate
         try {
-            client.removeCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
+            //            client.removeCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
+            client.removeCredit( userId, walletId, 100, null, "urn:linkid:wallet:coin:coffee" );
         }
         catch (LinkIDWalletRemoveCreditException e) {
             logger.err( "Remove credit error: %s", e.getErrorCode() );

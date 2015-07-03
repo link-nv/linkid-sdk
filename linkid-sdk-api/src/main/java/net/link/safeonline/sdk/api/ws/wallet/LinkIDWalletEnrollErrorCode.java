@@ -10,6 +10,8 @@ package net.link.safeonline.sdk.api.ws.wallet;
 public enum LinkIDWalletEnrollErrorCode {
 
     ERROR_UNKNOWN_WALLET,
+    ERROR_WALLET_INVALID_CURRENCY,
+    ERROR_UNKNOWN_WALLET_COIN,
     ERROR_UNKNOWN_USER,
     ERROR_USER_ALREADY_ENROLLED,
     ERROR_UNEXPECTED

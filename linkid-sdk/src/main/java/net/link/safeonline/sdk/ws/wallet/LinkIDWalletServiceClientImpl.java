@@ -277,6 +277,10 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
 
             case ERROR_UNKNOWN_WALLET:
                 return LinkIDWalletEnrollErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_WALLET_INVALID_CURRENCY:
+                return LinkIDWalletEnrollErrorCode.ERROR_WALLET_INVALID_CURRENCY;
+            case ERROR_UNKNOWN_WALLET_COIN:
+                return LinkIDWalletEnrollErrorCode.ERROR_UNKNOWN_WALLET_COIN;
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletEnrollErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_USER_ALREADY_ENROLLED:
@@ -309,6 +313,10 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
 
             case ERROR_UNKNOWN_WALLET:
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_WALLET_INVALID_CURRENCY:
+                return LinkIDWalletAddCreditErrorCode.ERROR_WALLET_INVALID_CURRENCY;
+            case ERROR_UNKNOWN_WALLET_COIN:
+                return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_WALLET_COIN;
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNEXPECTED:
@@ -324,6 +332,10 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
 
             case ERROR_UNKNOWN_WALLET:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_WALLET_INVALID_CURRENCY:
+                return LinkIDWalletRemoveCreditErrorCode.ERROR_WALLET_INVALID_CURRENCY;
+            case ERROR_UNKNOWN_WALLET_COIN:
+                return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_WALLET_COIN;
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNEXPECTED:
