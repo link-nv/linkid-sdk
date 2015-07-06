@@ -147,21 +147,6 @@
                     <documentation>The linkID wallet ID</documentation>
                 </annotation>
             </element>
-			<element name="amount" type="double" minOccurs="0" maxOccurs="1">
-				<annotation>
-					<documentation>The amount in the wallet ( in cents ). If applicable, else just 0</documentation>
-				</annotation>
-			</element>
-			<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
-				<annotation>
-					<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
-				</annotation>
-			</element>
-			<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
-				<annotation>
-					<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
-				</annotation>
-			</element>
         </sequence>
 	</complexType>
 

@@ -144,8 +144,7 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return null;
             }
 
-            return new LinkIDWalletInfo( response.getSuccess().getWalletId(), response.getSuccess().getAmount(),
-                    LinkIDSDKUtils.convert( response.getSuccess().getCurrency() ), response.getSuccess().getWalletCoin() );
+            return new LinkIDWalletInfo( response.getSuccess().getWalletId() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

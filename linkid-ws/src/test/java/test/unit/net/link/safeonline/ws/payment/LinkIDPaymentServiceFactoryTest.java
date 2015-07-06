@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.payment;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.payment._3.PaymentService;
+import net.lin_k.safe_online.payment._4.PaymentService;
 import net.link.safeonline.ws.payment.LinkIDPaymentServiceFactory;
 
 
