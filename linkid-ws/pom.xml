@@ -41,7 +41,9 @@
                         <wsdlFile>safe-online-payment-4.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr-2.0.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-ltqr-3.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-mandate.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-mandate-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws.wsdl</wsdlFile>
                         <wsdlFile>safe-online-idmapping.wsdl</wsdlFile>
                         <wsdlFile>ws-trust-1.3.wsdl</wsdlFile>

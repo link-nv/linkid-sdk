@@ -27,7 +27,6 @@ public class LinkIDPaymentContext implements Serializable {
     public static final String ADD_LINK_KEY             = "PaymentContext.addLinkKey";
     public static final String RETURN_MENU_URL_KEY      = "PaymentContext.returnMenuURL";
     public static final String ADD_BROWSER_KEY          = "PaymentContext.addBrowser";
-    public static final String DEFERRED_PAY_KEY         = "PaymentContext.deferredPay";
     public static final String MANDATE_KEY              = "PaymentContext.mandate";
     public static final String MANDATE_DESCRIPTION_KEY  = "PaymentContext.mandateDescription";
     public static final String MANDATE_REFERENCE_KEY    = "PaymentContext.mandateReference";
@@ -55,10 +54,6 @@ public class LinkIDPaymentContext implements Serializable {
     // whether or not to allow to display the option in the client to add a payment method in the browser.
     // default is not allowed
     private final LinkIDPaymentAddBrowser paymentAddBrowser;
-    //
-    // whether or not deferred payments are allowed. An e-mail will be sent to the user to complete the payment at a later time.
-    // default is not allowed
-    private final boolean                 allowDeferredPay;
     //
     // mandates
     @Nullable
@@ -96,7 +91,6 @@ public class LinkIDPaymentContext implements Serializable {
         this.paymentProfile = builder.paymentProfile;
         this.paymentValidationTime = builder.paymentValidationTime;
         this.paymentAddBrowser = builder.paymentAddBrowser;
-        this.allowDeferredPay = builder.allowDeferredPay;
         this.mandate = builder.mandate;
         this.paymentMenu = builder.paymentMenu;
         this.allowPartial = builder.allowPartial;
@@ -128,7 +122,6 @@ public class LinkIDPaymentContext implements Serializable {
         }
         map.put( VALIDATION_TIME_KEY, Integer.toString( paymentValidationTime ) );
         map.put( ADD_BROWSER_KEY, paymentAddBrowser.name() );
-        map.put( DEFERRED_PAY_KEY, Boolean.toString( allowDeferredPay ) );
 
         if (null != mandate) {
             map.put( MANDATE_KEY, Boolean.toString( true ) );
@@ -202,7 +195,6 @@ public class LinkIDPaymentContext implements Serializable {
         builder.paymentProfile( paymentContextMap.get( PROFILE_KEY ) );
         builder.paymentValidationTime( Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ) );
         builder.paymentAddBrowser( paymentAddBrowser );
-        builder.allowDeferredPay( getBoolean( paymentContextMap, DEFERRED_PAY_KEY ) );
         builder.allowPartial( getBoolean( paymentContextMap, ALLOW_PARTIAL_KEY ) );
         builder.onlyWallets( getBoolean( paymentContextMap, ONLY_WALLETS_KEY ) );
 
@@ -220,6 +212,7 @@ public class LinkIDPaymentContext implements Serializable {
         return builder.build();
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     private static boolean getBoolean(final Map<String, String> map, final String key) {
 
         if (!map.containsKey( key ))
@@ -238,7 +231,6 @@ public class LinkIDPaymentContext implements Serializable {
                ", paymentProfile='" + paymentProfile + '\'' +
                ", paymentValidationTime=" + paymentValidationTime +
                ", paymentAddBrowser=" + paymentAddBrowser +
-               ", allowDeferredPay=" + allowDeferredPay +
                ", mandate=" + mandate +
                ", paymentMenu=" + paymentMenu +
                ", allowPartial=" + allowPartial +
@@ -367,11 +359,6 @@ public class LinkIDPaymentContext implements Serializable {
     public LinkIDPaymentAddBrowser getPaymentAddBrowser() {
 
         return paymentAddBrowser;
-    }
-
-    public boolean isAllowDeferredPay() {
-
-        return allowDeferredPay;
     }
 
     @Nullable

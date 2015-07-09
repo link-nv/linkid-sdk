@@ -9,7 +9,7 @@ package net.link.safeonline.ws.ltqr;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.ltqr._2.LTQRService;
+import net.lin_k.safe_online.ltqr._3.LTQRService;
 
 
 public class LinkIDLTQRServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDLTQRServiceFactory {
     public static LTQRService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-ltqr-2.0.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-ltqr-3.0.wsdl" );
         if (null == wsdlUrl)
-            throw new RuntimeException( "SafeOnline LTQR 2.0 WSDL not found" );
+            throw new RuntimeException( "SafeOnline LTQR 3.0 WSDL not found" );
 
-        return new LTQRService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:ltqr:2.0", "LTQRService" ) );
+        return new LTQRService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:ltqr:3.0", "LTQRService" ) );
     }
 }

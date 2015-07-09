@@ -10,10 +10,10 @@ package net.link.safeonline.sdk.ws.mandate;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.common.PaymentContext;
-import net.lin_k.safe_online.mandate.MandatePaymentRequest;
-import net.lin_k.safe_online.mandate.MandatePaymentResponse;
-import net.lin_k.safe_online.mandate.MandateServicePort;
+import net.lin_k.safe_online.common.PaymentContextV20;
+import net.lin_k.safe_online.mandate._2.MandatePaymentRequest;
+import net.lin_k.safe_online.mandate._2.MandatePaymentResponse;
+import net.lin_k.safe_online.mandate._2.MandateServicePort;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.ws.mandate.LinkIDErrorCode;
 import net.link.safeonline.sdk.api.ws.mandate.LinkIDMandateServiceClient;
@@ -100,12 +100,12 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
 
     // Helper methods
 
-    private PaymentContext convert(@Nullable final LinkIDPaymentContext linkIDPaymentContext) {
+    private PaymentContextV20 convert(@Nullable final LinkIDPaymentContext linkIDPaymentContext) {
 
         if (null == linkIDPaymentContext)
             return null;
 
-        PaymentContext paymentContext = new PaymentContext();
+        PaymentContextV20 paymentContext = new PaymentContextV20();
         paymentContext.setAmount( linkIDPaymentContext.getAmount().getAmount() );
         if (null != linkIDPaymentContext.getAmount().getCurrency()) {
             paymentContext.setCurrency( LinkIDSDKUtils.convert( linkIDPaymentContext.getAmount().getCurrency() ) );
@@ -117,7 +117,6 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
         paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
         paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
         paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
-        paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
         paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
         paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
         paymentContext.setMandate( null != linkIDPaymentContext.getMandate() );
@@ -129,7 +128,7 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
         return paymentContext;
     }
 
-    private LinkIDErrorCode convert(final net.lin_k.safe_online.mandate.ErrorCode errorCode) {
+    private LinkIDErrorCode convert(final net.lin_k.safe_online.mandate._2.ErrorCode errorCode) {
 
         switch (errorCode) {
 

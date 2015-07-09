@@ -16,20 +16,21 @@ import java.util.Set;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.Callback;
 import net.lin_k.safe_online.common.PaymentContext;
-import net.lin_k.safe_online.ltqr._2.ChangeRequest;
-import net.lin_k.safe_online.ltqr._2.ChangeResponse;
-import net.lin_k.safe_online.ltqr._2.ClientSession;
-import net.lin_k.safe_online.ltqr._2.InfoRequest;
-import net.lin_k.safe_online.ltqr._2.InfoResponse;
-import net.lin_k.safe_online.ltqr._2.LTQRInfo;
-import net.lin_k.safe_online.ltqr._2.LTQRPaymentStatusType;
-import net.lin_k.safe_online.ltqr._2.LTQRServicePort;
-import net.lin_k.safe_online.ltqr._2.PullRequest;
-import net.lin_k.safe_online.ltqr._2.PullResponse;
-import net.lin_k.safe_online.ltqr._2.PushRequest;
-import net.lin_k.safe_online.ltqr._2.PushResponse;
-import net.lin_k.safe_online.ltqr._2.RemoveRequest;
-import net.lin_k.safe_online.ltqr._2.RemoveResponse;
+import net.lin_k.safe_online.common.PaymentContextV20;
+import net.lin_k.safe_online.ltqr._3.ChangeRequest;
+import net.lin_k.safe_online.ltqr._3.ChangeResponse;
+import net.lin_k.safe_online.ltqr._3.ClientSession;
+import net.lin_k.safe_online.ltqr._3.InfoRequest;
+import net.lin_k.safe_online.ltqr._3.InfoResponse;
+import net.lin_k.safe_online.ltqr._3.LTQRInfo;
+import net.lin_k.safe_online.ltqr._3.LTQRPaymentStatusType;
+import net.lin_k.safe_online.ltqr._3.LTQRServicePort;
+import net.lin_k.safe_online.ltqr._3.PullRequest;
+import net.lin_k.safe_online.ltqr._3.PullResponse;
+import net.lin_k.safe_online.ltqr._3.PushRequest;
+import net.lin_k.safe_online.ltqr._3.PushResponse;
+import net.lin_k.safe_online.ltqr._3.RemoveRequest;
+import net.lin_k.safe_online.ltqr._3.RemoveResponse;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.ltqr.LinkIDChangeErrorCode;
 import net.link.safeonline.sdk.api.ltqr.LinkIDChangeException;
@@ -412,12 +413,12 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         return builder.build();
     }
 
-    private PaymentContext convert(@Nullable final LinkIDPaymentContext linkIDPaymentContext) {
+    private PaymentContextV20 convert(@Nullable final LinkIDPaymentContext linkIDPaymentContext) {
 
         if (null == linkIDPaymentContext)
             return null;
 
-        PaymentContext paymentContext = new PaymentContext();
+        PaymentContextV20 paymentContext = new PaymentContextV20();
         paymentContext.setAmount( linkIDPaymentContext.getAmount().getAmount() );
         if (null != linkIDPaymentContext.getAmount().getCurrency()) {
             paymentContext.setCurrency( LinkIDSDKUtils.convert( linkIDPaymentContext.getAmount().getCurrency() ) );
@@ -429,7 +430,6 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
         paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
         paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
-        paymentContext.setAllowDeferredPay( linkIDPaymentContext.isAllowDeferredPay() );
         paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
         paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
         paymentContext.setMandate( null != linkIDPaymentContext.getMandate() );
@@ -460,7 +460,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         throw new InternalInconsistencyException( String.format( "Unexpected payment status type %s!", wsPaymentStatusType.name() ) );
     }
 
-    private LinkIDErrorCode convert(final net.lin_k.safe_online.ltqr._2.ErrorCode errorCode) {
+    private LinkIDErrorCode convert(final net.lin_k.safe_online.ltqr._3.ErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -471,7 +471,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDChangeErrorCode convert(final net.lin_k.safe_online.ltqr._2.ChangeErrorCode errorCode) {
+    private LinkIDChangeErrorCode convert(final net.lin_k.safe_online.ltqr._3.ChangeErrorCode errorCode) {
 
         switch (errorCode) {
 

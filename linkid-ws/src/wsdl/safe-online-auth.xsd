@@ -203,7 +203,6 @@
 		</annotation>
 		<restriction base="string">
 			<enumeration value="linkid.payment.state.started" />
-			<enumeration value="linkid.payment.state.deferred" />
 			<enumeration value="linkid.payment.state.waiting" />
             <enumeration value="linkid.payment.state.failed" />
 			<enumeration value="linkid.payment.state.refunded" />

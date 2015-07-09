@@ -41,11 +41,6 @@
 					<documentation>Payment refund operation has started</documentation>
 				</annotation>
 			</enumeration>
-			<enumeration value="DEFERRED">
-				<annotation>
-					<documentation>Payment was deferred and not yet completed</documentation>
-				</annotation>
-			</enumeration>
 			<enumeration value="WAITING_FOR_UPDATE">
 				<annotation>
 					<documentation>linkID stopped waiting for status update, SP will be informed on payment status change</documentation>
@@ -119,8 +114,74 @@
             </element>
             <element name="allowDeferredPay" type="boolean" minOccurs="0" maxOccurs="1">
                 <annotation>
-                    <documentation>Whether or not deferred payments are allowed, if a user has no payment token attached to the linkID account.
-                        linkID can allow for the user to make a deferred payment which he can complete later on from his browser.</documentation>
+                    <documentation>Deprecated, no longer supported</documentation>
+                </annotation>
+            </element>
+            <element name="allowPartial" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>allow partial payments via wallets, this flag does make sense if you allow normal payment methods</documentation>
+                </annotation>
+            </element>
+            <element name="onlyWallets" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>allow only wallets for this payment</documentation>
+                </annotation>
+            </element>
+            <element name="mandate" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate or not</documentation>
+                </annotation>
+            </element>
+            <element name="mandateDescription" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate description</documentation>
+                </annotation>
+            </element>
+            <element name="mandateReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate reference</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <!-- V2 payment context -->
+
+    <complexType name="PaymentContextV20">
+        <sequence>
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The amount to be payed ( in cents )</documentation>
+                </annotation>
+            </element>
+            <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+                </annotation>
+            </element>
+            <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+                </annotation>
+            </element>
+            <element name="description" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment description</documentation>
+                </annotation>
+            </element>
+            <element name="orderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional order reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment profile</documentation>
+                </annotation>
+            </element>
+            <element name="validationTime" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional maximum time to wait for payment validation (expressed in seconds), if not specified defaults to 5s</documentation>
                 </annotation>
             </element>
             <element name="allowPartial" type="boolean" minOccurs="0" maxOccurs="1">

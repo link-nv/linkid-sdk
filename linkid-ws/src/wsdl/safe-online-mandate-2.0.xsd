@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:mandate:2.0" xmlns:tns="urn:net:lin-k:safe-online:mandate:2.0"
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-mandate
+			Revision history:
+			V1.0 (June, 2014):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <element name="MandatePaymentRequest">
+		<complexType>
+            <sequence>
+                <element name="paymentContext" type="com:PaymentContextV20" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment context</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="mandateReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="MandatePaymentResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:MandatePaymentSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:MandatePaymentError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="MandatePaymentSuccess">
+        <sequence>
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The order reference of this mandate payment</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="MandatePaymentError">
+        <attribute name="errorCode" type="tns:ErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.mandate.archived">
+				<annotation>
+					<documentation>The mandate has been archived and is no longer usable.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.mandate.unknown">
+				<annotation>
+					<documentation>Mo mandate has been found with this reference.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.mandate.payment.failed">
+				<annotation>
+					<documentation>Something is wrong with the payment method for this mandate, payment failed.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

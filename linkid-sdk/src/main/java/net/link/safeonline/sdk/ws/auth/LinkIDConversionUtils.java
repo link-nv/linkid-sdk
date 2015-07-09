@@ -60,8 +60,6 @@ public abstract class LinkIDConversionUtils {
 
             case STARTED:
                 return net.lin_k.safe_online.auth.PaymentState.LINKID_PAYMENT_STATE_STARTED;
-            case DEFERRED:
-                return net.lin_k.safe_online.auth.PaymentState.LINKID_PAYMENT_STATE_DEFERRED;
             case WAITING_FOR_UPDATE:
                 return net.lin_k.safe_online.auth.PaymentState.LINKID_PAYMENT_STATE_WAITING;
             case FAILED:
@@ -83,8 +81,6 @@ public abstract class LinkIDConversionUtils {
 
             case LINKID_PAYMENT_STATE_STARTED:
                 return LinkIDPaymentState.STARTED;
-            case LINKID_PAYMENT_STATE_DEFERRED:
-                return LinkIDPaymentState.DEFERRED;
             case LINKID_PAYMENT_STATE_WAITING:
                 return LinkIDPaymentState.WAITING_FOR_UPDATE;
             case LINKID_PAYMENT_STATE_FAILED:

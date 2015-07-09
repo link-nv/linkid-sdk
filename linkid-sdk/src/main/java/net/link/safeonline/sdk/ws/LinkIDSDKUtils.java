@@ -98,8 +98,6 @@ public abstract class LinkIDSDKUtils {
                 return LinkIDPaymentState.REFUNDED;
             case REFUND_STARTED:
                 return LinkIDPaymentState.REFUND_STARTED;
-            case DEFERRED:
-                return LinkIDPaymentState.DEFERRED;
             case WAITING_FOR_UPDATE:
                 return LinkIDPaymentState.WAITING_FOR_UPDATE;
         }
