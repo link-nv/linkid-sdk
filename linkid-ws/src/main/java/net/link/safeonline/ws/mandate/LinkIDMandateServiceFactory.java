@@ -26,6 +26,6 @@ public class LinkIDMandateServiceFactory {
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Mandate WSDL not found" );
 
-        return new MandateService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:2.0:mandate", "MandateService" ) );
+        return new MandateService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:mandate:2.0", "MandateService" ) );
     }
 }

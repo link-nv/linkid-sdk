@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.mandate;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.mandate.MandateService;
+import net.lin_k.safe_online.mandate._2.MandateService;
 import net.link.safeonline.ws.mandate.LinkIDMandateServiceFactory;
 
 

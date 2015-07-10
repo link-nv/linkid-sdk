@@ -236,7 +236,7 @@ public class LinkIDAuthnRequestFactoryTest {
         assertNotNull( paymentContexts );
         assertEquals( 1, paymentContexts.size() );
         LinkIDPaymentContext paymentContextMap = (LinkIDPaymentContext) paymentContexts.get( 0 );
-        assertEquals( 8, paymentContextMap.getAttributes().size() );
+        assertEquals( 7, paymentContextMap.getAttributes().size() );
 
         // validate callback map
         List<XMLObject> callbacks = resultAuthnRequest.getExtensions().getUnknownXMLObjects( LinkIDCallback.DEFAULT_ELEMENT_NAME );
