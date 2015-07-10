@@ -252,7 +252,6 @@ public class LinkIDPaymentContext implements Serializable {
         private String                  paymentProfile        = null;
         private int                     paymentValidationTime = 5;
         private LinkIDPaymentAddBrowser paymentAddBrowser     = LinkIDPaymentAddBrowser.NOT_ALLOWED;
-        private boolean                 allowDeferredPay      = false;
         private LinkIDPaymentMandate    mandate               = null;
         private LinkIDPaymentMenu       paymentMenu           = null;
         private boolean                 allowPartial          = false;
@@ -295,12 +294,6 @@ public class LinkIDPaymentContext implements Serializable {
         public Builder paymentAddBrowser(final LinkIDPaymentAddBrowser paymentAddBrowser) {
 
             this.paymentAddBrowser = paymentAddBrowser;
-            return this;
-        }
-
-        public Builder allowDeferredPay(final boolean allowDeferredPay) {
-
-            this.allowDeferredPay = allowDeferredPay;
             return this;
         }
 
