@@ -76,4 +76,12 @@ public interface LinkIDWalletServiceClient {
      */
     void commit(String userId, String walletId, String walletTransactionId)
             throws LinkIDWalletCommitException;
+
+    /**
+     * Release a wallet transaction immediately instead of waiting for the wallet's expiration.
+     *
+     * @throws LinkIDWalletReleaseException something went wrong, check the error code in the exception
+     */
+    void release(String userId, String walletId, String walletTransactionId)
+            throws LinkIDWalletReleaseException;
 }

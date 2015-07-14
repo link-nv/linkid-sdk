@@ -403,8 +403,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                         paymentContext.getWalletCoin() ) ).description( paymentContext.getDescription() )
                                                           .orderReference( paymentContext.getOrderReference() )
                                                           .paymentProfile( paymentContext.getPaymentProfile() )
-                                                          .paymentValidationTime( paymentContext.getValidationTime() )
-                                                          .allowDeferredPay( paymentContext.isAllowDeferredPay() );
+                                                          .paymentValidationTime( paymentContext.getValidationTime() );
 
         if (paymentContext.isMandate()) {
             builder = builder.mandate( new LinkIDPaymentMandate( paymentContext.getMandateDescription(), paymentContext.getMandateReference() ) );

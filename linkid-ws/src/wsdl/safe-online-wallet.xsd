@@ -477,4 +477,74 @@
 		</restriction>
 	</simpleType>
 
+	<!-- ******************** ********************  ********************  ********************  ********************  -->
+	<!--                                                Wallet Release                                                -->
+	<!-- ********************  ********************  ********************  ********************  ******************** -->
+
+	<element name="WalletReleaseRequest">
+        <complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="walletTransactionId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet transaction ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="WalletReleaseResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletReleaseSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletReleaseError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="WalletReleaseSuccess">
+    </complexType>
+
+    <complexType name="WalletReleaseError">
+		<attribute name="errorCode" type="tns:WalletReleaseErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="WalletReleaseErrorCode">
+		<annotation>
+			<documentation>Wallet Release Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.transaction">
+				<annotation>
+					<documentation>No such linkID wallet transaction</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
 </schema>

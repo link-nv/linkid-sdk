@@ -17,6 +17,8 @@ import net.lin_k.safe_online.wallet.WalletEnrollRequest;
 import net.lin_k.safe_online.wallet.WalletEnrollResponse;
 import net.lin_k.safe_online.wallet.WalletGetInfoRequest;
 import net.lin_k.safe_online.wallet.WalletGetInfoResponse;
+import net.lin_k.safe_online.wallet.WalletReleaseRequest;
+import net.lin_k.safe_online.wallet.WalletReleaseResponse;
 import net.lin_k.safe_online.wallet.WalletRemoveCreditRequest;
 import net.lin_k.safe_online.wallet.WalletRemoveCreditResponse;
 import net.lin_k.safe_online.wallet.WalletRemoveRequest;
@@ -32,6 +34,8 @@ import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletEnrollErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletGetInfoErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletReleaseErrorCode;
+import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveErrorCode;
@@ -268,6 +272,34 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
+    @Override
+    public void release(final String userId, final String walletId, final String walletTransactionId)
+            throws LinkIDWalletReleaseException {
+
+        // request
+        WalletReleaseRequest request = new WalletReleaseRequest();
+
+        // input
+        request.setUserId( userId );
+        request.setWalletId( walletId );
+        request.setWalletTransactionId( walletTransactionId );
+
+        // operate
+        WalletReleaseResponse response = getPort().release( request );
+
+        // response
+        if (null != response.getError()) {
+            throw new LinkIDWalletReleaseException( convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            // all good <o/
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
     // Helper methods
 
     private LinkIDWalletEnrollErrorCode convert(final net.lin_k.safe_online.wallet.WalletEnrollErrorCode errorCode) {
@@ -371,6 +403,23 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletCommitErrorCode.ERROR_UNKNOWN_WALLET_TRANSACTION;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletCommitErrorCode.ERROR_UNEXPECTED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    private LinkIDWalletReleaseErrorCode convert(final net.lin_k.safe_online.wallet.WalletReleaseErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_USER:
+                return LinkIDWalletReleaseErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_UNKNOWN_WALLET:
+                return LinkIDWalletReleaseErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_UNKNOWN_WALLET_TRANSACTION:
+                return LinkIDWalletReleaseErrorCode.ERROR_UNKNOWN_WALLET_TRANSACTION;
+            case ERROR_UNEXPECTED:
+                return LinkIDWalletReleaseErrorCode.ERROR_UNEXPECTED;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
