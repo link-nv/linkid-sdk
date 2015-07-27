@@ -446,7 +446,7 @@ public class LinkIDWSClientTest {
         List<LinkIDLocalization> localizations = client.getLocalization( keys );
 
         // verify
-        assertEquals( 2, localizations.size() );
+        assertEquals( 4, localizations.size() );
         assertEquals( 4, localizations.get( 0 ).getValues().size() );
     }
 

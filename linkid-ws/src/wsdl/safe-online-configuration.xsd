@@ -180,7 +180,19 @@
                 </annotation>
             </element>
         </sequence>
+        <attribute name="type" type="tns:LocalizationKeyType" use="required" />
     </complexType>
+
+    <simpleType name="LocalizationKeyType">
+		<annotation>
+			<documentation>Localization key type</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="localization.key.friendly" />
+            <enumeration value="localization.key.friendly.multiple" />
+            <enumeration value="localization.key.description" />
+		</restriction>
+	</simpleType>
 
     <complexType name="LocalizationValue">
         <sequence>

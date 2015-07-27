@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.configuration.ConfigurationServicePort;
 import net.lin_k.safe_online.configuration.Localization;
+import net.lin_k.safe_online.configuration.LocalizationKeyType;
 import net.lin_k.safe_online.configuration.LocalizationRequest;
 import net.lin_k.safe_online.configuration.LocalizationResponse;
 import net.lin_k.safe_online.configuration.LocalizationValue;
@@ -27,6 +28,7 @@ import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceCl
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizationErrorCode;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizationException;
+import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizationKeyType;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizedImages;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDTheme;
@@ -128,9 +130,24 @@ public class LinkIDConfigurationServiceClientImpl extends AbstractWSClient<Confi
             for (LocalizationValue localizationValue : localization.getValues()) {
                 values.put( localizationValue.getLanguageCode(), localizationValue.getLocalized() );
             }
-            localizations.add( new LinkIDLocalization( localization.getKey(), values ) );
+            localizations.add( new LinkIDLocalization( localization.getKey(), convert( localization.getType() ), values ) );
         }
         return localizations;
+    }
+
+    private LinkIDLocalizationKeyType convert(final LocalizationKeyType type) {
+
+        switch (type) {
+
+            case LOCALIZATION_KEY_FRIENDLY:
+                return LinkIDLocalizationKeyType.FRIENDLY;
+            case LOCALIZATION_KEY_FRIENDLY_MULTIPLE:
+                return LinkIDLocalizationKeyType.FRIENDLY_MULTIPLE;
+            case LOCALIZATION_KEY_DESCRIPTION:
+                return LinkIDLocalizationKeyType.DESCRIPTION;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected key type %s!", type.name() ) );
     }
 
     // Helper methods

@@ -10,12 +10,14 @@ import java.util.Map;
  */
 public class LinkIDLocalization {
 
-    private final String              key;
-    private final Map<String, String> values;
+    private final String                    key;
+    private final LinkIDLocalizationKeyType keyType;
+    private final Map<String, String>       values;
 
-    public LinkIDLocalization(final String key, final Map<String, String> values) {
+    public LinkIDLocalization(final String key, final LinkIDLocalizationKeyType keyType, final Map<String, String> values) {
 
         this.key = key;
+        this.keyType = keyType;
         this.values = values;
     }
 
@@ -26,6 +28,7 @@ public class LinkIDLocalization {
 
         return "LinkIDLocalization{" +
                "key='" + key + '\'' +
+               "keyType='" + keyType + '\'' +
                ", values=" + values +
                '}';
     }
@@ -35,6 +38,11 @@ public class LinkIDLocalization {
     public String getKey() {
 
         return key;
+    }
+
+    public LinkIDLocalizationKeyType getKeyType() {
+
+        return keyType;
     }
 
     public Map<String, String> getValues() {
