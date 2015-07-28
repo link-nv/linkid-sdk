@@ -16,10 +16,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.safe_online.common.Currency;
 import net.lin_k.safe_online.common.PaymentMethodType;
 import net.lin_k.safe_online.common.PaymentStatusType;
+import net.lin_k.safe_online.ltqr._4.PollingConfiguration;
+import net.link.safeonline.sdk.api.LinkIDConstants;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRPollingConfiguration;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.util.InternalInconsistencyException;
+import org.jetbrains.annotations.Nullable;
 
 
 public abstract class LinkIDSDKUtils {
@@ -148,4 +152,25 @@ public abstract class LinkIDSDKUtils {
 
         return LinkIDPaymentMethodType.UNKNOWN;
     }
+
+    public static LinkIDLTQRPollingConfiguration getPollingConfiguration(@Nullable final PollingConfiguration pollingConfiguration) {
+
+        if (null == pollingConfiguration) {
+            return null;
+        }
+
+        return new LinkIDLTQRPollingConfiguration(
+                null != pollingConfiguration.getPollAttempts() && pollingConfiguration.getPollAttempts() > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM
+                        ? pollingConfiguration.getPollAttempts(): -1,
+                null != pollingConfiguration.getPollInterval() && pollingConfiguration.getPollInterval() > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM
+                        ? pollingConfiguration.getPollInterval(): -1, null != pollingConfiguration.getPaymentPollAttempts()
+                                                                      && pollingConfiguration.getPaymentPollAttempts()
+                                                                         > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM
+                ? pollingConfiguration.getPaymentPollAttempts(): -1, null != pollingConfiguration.getPaymentPollInterval()
+                                                                     && pollingConfiguration.getPaymentPollInterval()
+                                                                        > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM
+                ? pollingConfiguration.getPaymentPollInterval(): -1 );
+
+    }
+
 }

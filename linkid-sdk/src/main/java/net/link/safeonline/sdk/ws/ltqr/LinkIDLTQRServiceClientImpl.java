@@ -379,7 +379,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                         ltqrInfo.getExpiryDuration(), getPaymentContext( ltqrInfo.getPaymentContext() ), getCallback( ltqrInfo.getCallback() ),
                         getIdentityProfiles( ltqrInfo.getIdentityProfiles() ), ltqrInfo.getSessionExpiryOverride(), ltqrInfo.getTheme(),
                         ltqrInfo.getMobileLandingSuccess(), ltqrInfo.getMobileLandingError(), ltqrInfo.getMobileLandingCancel(),
-                        getPollingConfiguration( ltqrInfo.getPollingConfiguration() ) ) );
+                        LinkIDSDKUtils.getPollingConfiguration( ltqrInfo.getPollingConfiguration() ) ) );
             }
             return infos;
         }
@@ -422,19 +422,6 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         }
 
         return builder.build();
-    }
-
-    private LinkIDLTQRPollingConfiguration getPollingConfiguration(@Nullable final PollingConfiguration wsPollingConfiguration) {
-
-        if (null == wsPollingConfiguration) {
-            return null;
-        }
-
-        return new LinkIDLTQRPollingConfiguration( null != wsPollingConfiguration.getPollAttempts()? wsPollingConfiguration.getPollAttempts(): -1,
-                null != wsPollingConfiguration.getPollInterval()? wsPollingConfiguration.getPollInterval(): -1,
-                null != wsPollingConfiguration.getPaymentPollAttempts()? wsPollingConfiguration.getPaymentPollAttempts(): -1,
-                null != wsPollingConfiguration.getPaymentPollInterval()? wsPollingConfiguration.getPaymentPollInterval(): -1 );
-
     }
 
     private PaymentContextV20 convert(@Nullable final LinkIDPaymentContext linkIDPaymentContext) {
