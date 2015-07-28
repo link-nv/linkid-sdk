@@ -16,50 +16,53 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("unused")
 public class LinkIDLTQRInfo implements Serializable {
 
-    private final String               ltqrReference;
-    private final String               sessionId;
-    private final Date                 created;
+    private final String                         ltqrReference;
+    private final String                         sessionId;
+    private final Date                           created;
     //
-    private final byte[]               qrCodeImage;
-    private final String               qrCodeURL;
-    //
-    @Nullable
-    private final String               authenticationMessage;
-    @Nullable
-    private final String               finishedMessage;
-    //
-    private final boolean              oneTimeUse;
+    private final byte[]                         qrCodeImage;
+    private final String                         qrCodeURL;
     //
     @Nullable
-    private final Date                 expiryDate;
+    private final String                         authenticationMessage;
     @Nullable
-    private final Long                 expiryDuration;
+    private final String                         finishedMessage;
+    //
+    private final boolean                        oneTimeUse;
     //
     @Nullable
-    private final LinkIDPaymentContext paymentContext;
+    private final Date                           expiryDate;
     @Nullable
-    private final LinkIDCallback       callback;
-    //
-    private final Set<String>          identityProfiles;
+    private final Long                           expiryDuration;
     //
     @Nullable
-    private final Long                 sessionExpiryOverride;
+    private final LinkIDPaymentContext           paymentContext;
     @Nullable
-    private final String               theme;
+    private final LinkIDCallback                 callback;
+    //
+    private final Set<String>                    identityProfiles;
     //
     @Nullable
-    private final String               mobileLandingSuccess;
+    private final Long                           sessionExpiryOverride;
     @Nullable
-    private final String               mobileLandingError;
+    private final String                         theme;
+    //
     @Nullable
-    private final String               mobileLandingCancel;
+    private final String                         mobileLandingSuccess;
+    @Nullable
+    private final String                         mobileLandingError;
+    @Nullable
+    private final String                         mobileLandingCancel;
+    //
+    @Nullable
+    private final LinkIDLTQRPollingConfiguration pollingConfiguration;
 
     public LinkIDLTQRInfo(final String ltqrReference, final String sessionId, final Date created, final byte[] qrCodeImage, final String qrCodeURL,
                           @Nullable final String authenticationMessage, @Nullable final String finishedMessage, final boolean oneTimeUse,
                           @Nullable final Date expiryDate, @Nullable final Long expiryDuration, @Nullable final LinkIDPaymentContext paymentContext,
                           @Nullable final LinkIDCallback callback, final Set<String> identityProfiles, @Nullable final Long sessionExpiryOverride,
                           @Nullable final String theme, @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
-                          @Nullable final String mobileLandingCancel) {
+                          @Nullable final String mobileLandingCancel, @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration) {
 
         this.ltqrReference = ltqrReference;
         this.sessionId = sessionId;
@@ -79,6 +82,7 @@ public class LinkIDLTQRInfo implements Serializable {
         this.mobileLandingSuccess = mobileLandingSuccess;
         this.mobileLandingError = mobileLandingError;
         this.mobileLandingCancel = mobileLandingCancel;
+        this.pollingConfiguration = pollingConfiguration;
     }
 
     @Override
@@ -102,6 +106,7 @@ public class LinkIDLTQRInfo implements Serializable {
                ", mobileLandingSuccess='" + mobileLandingSuccess + '\'' +
                ", mobileLandingError='" + mobileLandingError + '\'' +
                ", mobileLandingCancel='" + mobileLandingCancel + '\'' +
+               ", pollingConfiguration='" + pollingConfiguration + '\'' +
                '}';
     }
 
@@ -206,5 +211,11 @@ public class LinkIDLTQRInfo implements Serializable {
     public String getMobileLandingCancel() {
 
         return mobileLandingCancel;
+    }
+
+    @Nullable
+    public LinkIDLTQRPollingConfiguration getPollingConfiguration() {
+
+        return pollingConfiguration;
     }
 }

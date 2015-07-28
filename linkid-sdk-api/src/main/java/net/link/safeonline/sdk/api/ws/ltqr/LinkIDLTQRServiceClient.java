@@ -14,6 +14,7 @@ import net.link.safeonline.sdk.api.ltqr.LinkIDChangeException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRClientSession;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfoException;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRPollingConfiguration;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPullException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPushException;
@@ -46,6 +47,7 @@ public interface LinkIDLTQRServiceClient {
      * @param mobileLandingSuccess  optional landing page for an authn/payment started on iOS browser
      * @param mobileLandingError    optional landing page for an authn/payment started on iOS browser
      * @param mobileLandingCancel   optional landing page for an authn/payment started on iOS browser
+     * @param pollingConfiguration  Optional polling configuration
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      * session ID will be used in the notifications to the Service Provider.
@@ -55,7 +57,8 @@ public interface LinkIDLTQRServiceClient {
     LinkIDLTQRSession push(@Nullable String authenticationMessage, @Nullable String finishedMessage, @Nullable LinkIDPaymentContext paymentContext,
                            boolean oneTimeUse, @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable LinkIDCallback callback,
                            @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride, @Nullable String theme,
-                           @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError, @Nullable String mobileLandingCancel)
+                           @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError, @Nullable String mobileLandingCancel,
+                           @Nullable LinkIDLTQRPollingConfiguration pollingConfiguration)
             throws LinkIDPushException;
 
     /**
@@ -76,6 +79,7 @@ public interface LinkIDLTQRServiceClient {
      * @param mobileLandingError    optional landing page for an authn/payment started on iOS browser
      * @param mobileLandingCancel   optional landing page for an authn/payment started on iOS browser
      * @param resetUsed             Optional flag for single use LTQR codes to let them be used again one time. If multi use this flag does nothing.
+     * @param pollingConfiguration  Optional polling configuration
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
@@ -83,7 +87,7 @@ public interface LinkIDLTQRServiceClient {
                              @Nullable LinkIDPaymentContext paymentContext, @Nullable Date expiryDate, @Nullable Long expiryDuration,
                              @Nullable LinkIDCallback callback, @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride,
                              @Nullable String theme, @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError,
-                             @Nullable String mobileLandingCancel, boolean resetUsed)
+                             @Nullable String mobileLandingCancel, boolean resetUsed, @Nullable LinkIDLTQRPollingConfiguration pollingConfiguration)
             throws LinkIDChangeException;
 
     /**
