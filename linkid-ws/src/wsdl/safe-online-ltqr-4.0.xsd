@@ -81,6 +81,11 @@
                         Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
                 </annotation>
             </attribute>
+            <attribute name="waitForUnlock" type="boolean" use="required">
+                <annotation>
+                    <documentation>Marks the LTQR to wait for an explicit unlock call. This only makes sense for single-use LTQR codes. Unlock the LTQR with the change operation with unlock=true</documentation>
+                </annotation>
+            </attribute>
 		</complexType>
 	</element>
 
@@ -173,6 +178,16 @@
                 <annotation>
                     <documentation>Expiry duration of the long term session. Expressed in number of seconds starting from the creation.
                         Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="waitForUnlock" type="boolean" use="required">
+                <annotation>
+                    <documentation>Marks the LTQR to wait for an explicit unlock call. This only makes sense for single-use LTQR codes. Unlock the LTQR with the change operation with unlock=true</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="unlock" type="boolean" use="required">
+                <annotation>
+                    <documentation>Unlocks the LTQR. When the first linkID user has finished for this LTQR, it will go back to locked if waitForUnlock=true.</documentation>
                 </annotation>
             </attribute>
         </complexType>
@@ -469,6 +484,16 @@
             <element name="pollingConfiguration" type="tns:PollingConfiguration" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional polling configuration, if not specified linkID defaults</documentation>
+                </annotation>
+            </element>
+            <element name="waitForUnlock" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>LTQR that is configured to wait for unlock</documentation>
+                </annotation>
+            </element>
+            <element name="locked" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the LTQR currently locked?</documentation>
                 </annotation>
             </element>
         </sequence>

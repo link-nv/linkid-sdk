@@ -56,13 +56,17 @@ public class LinkIDLTQRInfo implements Serializable {
     //
     @Nullable
     private final LinkIDLTQRPollingConfiguration pollingConfiguration;
+    //
+    private final boolean                        waitForUnlock;
+    private final boolean                        locked;
 
     public LinkIDLTQRInfo(final String ltqrReference, final String sessionId, final Date created, final byte[] qrCodeImage, final String qrCodeURL,
                           @Nullable final String authenticationMessage, @Nullable final String finishedMessage, final boolean oneTimeUse,
                           @Nullable final Date expiryDate, @Nullable final Long expiryDuration, @Nullable final LinkIDPaymentContext paymentContext,
                           @Nullable final LinkIDCallback callback, final Set<String> identityProfiles, @Nullable final Long sessionExpiryOverride,
                           @Nullable final String theme, @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
-                          @Nullable final String mobileLandingCancel, @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration) {
+                          @Nullable final String mobileLandingCancel, @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration,
+                          boolean waitForUnlock, boolean locked) {
 
         this.ltqrReference = ltqrReference;
         this.sessionId = sessionId;
@@ -83,6 +87,8 @@ public class LinkIDLTQRInfo implements Serializable {
         this.mobileLandingError = mobileLandingError;
         this.mobileLandingCancel = mobileLandingCancel;
         this.pollingConfiguration = pollingConfiguration;
+        this.waitForUnlock = waitForUnlock;
+        this.locked = locked;
     }
 
     @Override
@@ -107,6 +113,8 @@ public class LinkIDLTQRInfo implements Serializable {
                ", mobileLandingError='" + mobileLandingError + '\'' +
                ", mobileLandingCancel='" + mobileLandingCancel + '\'' +
                ", pollingConfiguration='" + pollingConfiguration + '\'' +
+               ", waitForUnlock='" + waitForUnlock + '\'' +
+               ", locked='" + locked + '\'' +
                '}';
     }
 
@@ -217,5 +225,15 @@ public class LinkIDLTQRInfo implements Serializable {
     public LinkIDLTQRPollingConfiguration getPollingConfiguration() {
 
         return pollingConfiguration;
+    }
+
+    public boolean isWaitForUnlock() {
+
+        return waitForUnlock;
+    }
+
+    public boolean isLocked() {
+
+        return locked;
     }
 }

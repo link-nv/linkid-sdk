@@ -108,7 +108,8 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                                   @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
                                   @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
                                   @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
-                                  @Nullable final String mobileLandingCancel, @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration)
+                                  @Nullable final String mobileLandingCancel, @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration,
+                                  boolean waitForUnlock)
             throws LinkIDPushException {
 
         PushRequest request = new PushRequest();
@@ -164,6 +165,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             request.setExpiryDate( LinkIDSDKUtils.convert( expiryDate ) );
         }
         request.setExpiryDuration( expiryDuration );
+        request.setWaitForUnlock( waitForUnlock );
 
         // operate
         PushResponse response = getPort().push( request );
@@ -189,7 +191,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                                     @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
                                     @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
                                     @Nullable final String mobileLandingCancel, final boolean resetUsed,
-                                    @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration)
+                                    @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration, boolean waitForUnlock, boolean unlock)
             throws LinkIDChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -249,6 +251,8 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             request.setExpiryDuration( expiryDuration );
         }
         request.setResetUsed( resetUsed );
+        request.setWaitForUnlock( waitForUnlock );
+        request.setUnlock( unlock );
 
         // operate
         ChangeResponse response = getPort().change( request );
@@ -379,7 +383,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                         ltqrInfo.getExpiryDuration(), getPaymentContext( ltqrInfo.getPaymentContext() ), getCallback( ltqrInfo.getCallback() ),
                         getIdentityProfiles( ltqrInfo.getIdentityProfiles() ), ltqrInfo.getSessionExpiryOverride(), ltqrInfo.getTheme(),
                         ltqrInfo.getMobileLandingSuccess(), ltqrInfo.getMobileLandingError(), ltqrInfo.getMobileLandingCancel(),
-                        LinkIDSDKUtils.getPollingConfiguration( ltqrInfo.getPollingConfiguration() ) ) );
+                        LinkIDSDKUtils.getPollingConfiguration( ltqrInfo.getPollingConfiguration() ), ltqrInfo.isWaitForUnlock(), ltqrInfo.isLocked() ) );
             }
             return infos;
         }
