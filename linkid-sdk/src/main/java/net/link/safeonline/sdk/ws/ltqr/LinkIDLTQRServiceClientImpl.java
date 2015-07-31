@@ -17,20 +17,22 @@ import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.Callback;
 import net.lin_k.safe_online.common.PaymentContext;
 import net.lin_k.safe_online.common.PaymentContextV20;
-import net.lin_k.safe_online.ltqr._3.ChangeRequest;
-import net.lin_k.safe_online.ltqr._3.ChangeResponse;
-import net.lin_k.safe_online.ltqr._3.ClientSession;
-import net.lin_k.safe_online.ltqr._3.InfoRequest;
-import net.lin_k.safe_online.ltqr._3.InfoResponse;
-import net.lin_k.safe_online.ltqr._3.LTQRInfo;
-import net.lin_k.safe_online.ltqr._3.LTQRPaymentStatusType;
-import net.lin_k.safe_online.ltqr._3.LTQRServicePort;
-import net.lin_k.safe_online.ltqr._3.PullRequest;
-import net.lin_k.safe_online.ltqr._3.PullResponse;
-import net.lin_k.safe_online.ltqr._3.PushRequest;
-import net.lin_k.safe_online.ltqr._3.PushResponse;
-import net.lin_k.safe_online.ltqr._3.RemoveRequest;
-import net.lin_k.safe_online.ltqr._3.RemoveResponse;
+import net.lin_k.safe_online.ltqr._4.ChangeRequest;
+import net.lin_k.safe_online.ltqr._4.ChangeResponse;
+import net.lin_k.safe_online.ltqr._4.ClientSession;
+import net.lin_k.safe_online.ltqr._4.InfoRequest;
+import net.lin_k.safe_online.ltqr._4.InfoResponse;
+import net.lin_k.safe_online.ltqr._4.LTQRInfo;
+import net.lin_k.safe_online.ltqr._4.LTQRPaymentStatusType;
+import net.lin_k.safe_online.ltqr._4.LTQRServicePort;
+import net.lin_k.safe_online.ltqr._4.PollingConfiguration;
+import net.lin_k.safe_online.ltqr._4.PullRequest;
+import net.lin_k.safe_online.ltqr._4.PullResponse;
+import net.lin_k.safe_online.ltqr._4.PushRequest;
+import net.lin_k.safe_online.ltqr._4.PushResponse;
+import net.lin_k.safe_online.ltqr._4.RemoveRequest;
+import net.lin_k.safe_online.ltqr._4.RemoveResponse;
+import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.ltqr.LinkIDChangeErrorCode;
 import net.link.safeonline.sdk.api.ltqr.LinkIDChangeException;
@@ -39,6 +41,7 @@ import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRClientSession;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRInfoException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRPaymentState;
+import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRPollingConfiguration;
 import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPullException;
 import net.link.safeonline.sdk.api.ltqr.LinkIDPushException;
@@ -105,7 +108,8 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                                   @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
                                   @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
                                   @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
-                                  @Nullable final String mobileLandingCancel)
+                                  @Nullable final String mobileLandingCancel, @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration,
+                                  boolean waitForUnlock)
             throws LinkIDPushException {
 
         PushRequest request = new PushRequest();
@@ -152,12 +156,16 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             request.setMobileLandingCancel( mobileLandingCancel );
         }
 
+        // polling configuration
+        request.setPollingConfiguration( convert( pollingConfiguration ) );
+
         // configuration
         request.setOneTimeUse( oneTimeUse );
         if (null != expiryDate) {
             request.setExpiryDate( LinkIDSDKUtils.convert( expiryDate ) );
         }
         request.setExpiryDuration( expiryDuration );
+        request.setWaitForUnlock( waitForUnlock );
 
         // operate
         PushResponse response = getPort().push( request );
@@ -182,7 +190,8 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                                     @Nullable final Long expiryDuration, @Nullable final LinkIDCallback linkIDCallback,
                                     @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
                                     @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
-                                    @Nullable final String mobileLandingCancel, final boolean resetUsed)
+                                    @Nullable final String mobileLandingCancel, final boolean resetUsed,
+                                    @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration, boolean waitForUnlock, boolean unlock)
             throws LinkIDChangeException {
 
         ChangeRequest request = new ChangeRequest();
@@ -231,6 +240,9 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             request.setMobileLandingCancel( mobileLandingCancel );
         }
 
+        // polling configuration
+        request.setPollingConfiguration( convert( pollingConfiguration ) );
+
         // configuration
         if (null != expiryDate) {
             request.setExpiryDate( LinkIDSDKUtils.convert( expiryDate ) );
@@ -239,6 +251,8 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             request.setExpiryDuration( expiryDuration );
         }
         request.setResetUsed( resetUsed );
+        request.setWaitForUnlock( waitForUnlock );
+        request.setUnlock( unlock );
 
         // operate
         ChangeResponse response = getPort().change( request );
@@ -362,12 +376,14 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
 
             List<LinkIDLTQRInfo> infos = Lists.newLinkedList();
             for (LTQRInfo ltqrInfo : response.getSuccess().getResults()) {
+
                 infos.add( new LinkIDLTQRInfo( ltqrInfo.getLtqrReference(), ltqrInfo.getSessionId(), ltqrInfo.getCreated().toGregorianCalendar().getTime(),
                         decodeQR( ltqrInfo.getEncodedQR() ), ltqrInfo.getQrContent(), ltqrInfo.getAuthenticationMessage(), ltqrInfo.getFinishedMessage(),
                         ltqrInfo.isOneTimeUse(), null != ltqrInfo.getExpiryDate()? ltqrInfo.getExpiryDate().toGregorianCalendar().getTime(): null,
                         ltqrInfo.getExpiryDuration(), getPaymentContext( ltqrInfo.getPaymentContext() ), getCallback( ltqrInfo.getCallback() ),
                         getIdentityProfiles( ltqrInfo.getIdentityProfiles() ), ltqrInfo.getSessionExpiryOverride(), ltqrInfo.getTheme(),
-                        ltqrInfo.getMobileLandingSuccess(), ltqrInfo.getMobileLandingError(), ltqrInfo.getMobileLandingCancel() ) );
+                        ltqrInfo.getMobileLandingSuccess(), ltqrInfo.getMobileLandingError(), ltqrInfo.getMobileLandingCancel(),
+                        LinkIDSDKUtils.getPollingConfiguration( ltqrInfo.getPollingConfiguration() ), ltqrInfo.isWaitForUnlock(), ltqrInfo.isLocked() ) );
             }
             return infos;
         }
@@ -459,7 +475,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         throw new InternalInconsistencyException( String.format( "Unexpected payment status type %s!", wsPaymentStatusType.name() ) );
     }
 
-    private LinkIDErrorCode convert(final net.lin_k.safe_online.ltqr._3.ErrorCode errorCode) {
+    private LinkIDErrorCode convert(final net.lin_k.safe_online.ltqr._4.ErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -470,7 +486,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDChangeErrorCode convert(final net.lin_k.safe_online.ltqr._3.ChangeErrorCode errorCode) {
+    private LinkIDChangeErrorCode convert(final net.lin_k.safe_online.ltqr._4.ChangeErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -494,5 +510,31 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             throw new InternalInconsistencyException( "Could not decode the QR image!" );
         }
         return qrCodeImage;
+    }
+
+    @Nullable
+    private PollingConfiguration convert(@Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration) {
+
+        if (null != pollingConfiguration) {
+            PollingConfiguration wsPollingConfiguration = new PollingConfiguration();
+
+            if (pollingConfiguration.getPollAttempts() > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM) {
+                wsPollingConfiguration.setPollAttempts( pollingConfiguration.getPollAttempts() );
+            }
+            if (pollingConfiguration.getPollInterval() > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM) {
+                wsPollingConfiguration.setPollInterval( pollingConfiguration.getPollInterval() );
+            }
+            if (pollingConfiguration.getPaymentPollAttempts() > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM) {
+                wsPollingConfiguration.setPaymentPollAttempts( pollingConfiguration.getPaymentPollAttempts() );
+            }
+            if (pollingConfiguration.getPaymentPollInterval() > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM) {
+                wsPollingConfiguration.setPaymentPollInterval( pollingConfiguration.getPaymentPollInterval() );
+            }
+
+            return wsPollingConfiguration;
+        }
+
+        return null;
+
     }
 }

@@ -42,6 +42,7 @@
                         <wsdlFile>safe-online-ltqr.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr-3.0.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-ltqr-4.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-mandate.wsdl</wsdlFile>
                         <wsdlFile>safe-online-mandate-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws.wsdl</wsdlFile>
