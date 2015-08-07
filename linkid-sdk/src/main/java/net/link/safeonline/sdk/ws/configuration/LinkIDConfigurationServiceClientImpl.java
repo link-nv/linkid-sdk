@@ -171,7 +171,7 @@ public class LinkIDConfigurationServiceClientImpl extends AbstractWSClient<Confi
             case ERROR_UNKNOWN_APPLICATION:
                 return LinkIDThemesErrorCode.ERROR_UNKNOWN_APPLICATION;
             case ERROR_MAINTENANCE:
-                return LinkIDThemesErrorCode.ERROR_UNKNOWN_APPLICATION;
+                return LinkIDThemesErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
