@@ -9,16 +9,16 @@ package net.link.safeonline.sdk.ws.auth;
 
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.auth.AuthServicePort;
-import net.lin_k.safe_online.auth.CancelErrorCode;
-import net.lin_k.safe_online.auth.CancelRequest;
-import net.lin_k.safe_online.auth.CancelResponse;
-import net.lin_k.safe_online.auth.PollErrorCode;
-import net.lin_k.safe_online.auth.PollRequest;
-import net.lin_k.safe_online.auth.PollResponse;
-import net.lin_k.safe_online.auth.StartErrorCode;
-import net.lin_k.safe_online.auth.StartRequest;
-import net.lin_k.safe_online.auth.StartResponse;
+import net.lin_k.safe_online.auth._2.AuthServicePort;
+import net.lin_k.safe_online.auth._2.CancelErrorCode;
+import net.lin_k.safe_online.auth._2.CancelRequest;
+import net.lin_k.safe_online.auth._2.CancelResponse;
+import net.lin_k.safe_online.auth._2.PollErrorCode;
+import net.lin_k.safe_online.auth._2.PollRequest;
+import net.lin_k.safe_online.auth._2.PollResponse;
+import net.lin_k.safe_online.auth._2.StartErrorCode;
+import net.lin_k.safe_online.auth._2.StartRequest;
+import net.lin_k.safe_online.auth._2.StartResponse;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthenticationState;
@@ -202,6 +202,8 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
 
             case ERROR_REQUEST_INVALID:
                 return LinkIDAuthnErrorCode.ERROR_REQUEST_INVALID;
+            case ERROR_MAINTENANCE:
+                return LinkIDAuthnErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -213,6 +215,8 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
 
             case ERROR_RESPONSE_INVALID_SESSION_ID:
                 return LinkIDPollErrorCode.ERROR_RESPONSE_INVALID_SESSION_ID;
+            case ERROR_MAINTENANCE:
+                return LinkIDPollErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -228,6 +232,8 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
                 return LinkIDCancelErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDCancelErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDCancelErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

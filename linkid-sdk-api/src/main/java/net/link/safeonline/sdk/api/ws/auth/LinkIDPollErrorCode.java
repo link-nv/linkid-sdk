@@ -14,5 +14,6 @@ package net.link.safeonline.sdk.api.ws.auth;
  */
 public enum LinkIDPollErrorCode {
 
-    ERROR_RESPONSE_INVALID_SESSION_ID;
+    ERROR_RESPONSE_INVALID_SESSION_ID,
+    ERROR_MAINTENANCE
 }

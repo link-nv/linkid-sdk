@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:safe-online:capture:2.0"
+             xmlns:tns="urn:net:lin-k:safe-online:capture:2.0" name="SafeOnlineCaptureWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:safe-online:capture:2.0" schemaLocation="safe-online-capture-2.0.xsd" />
+        </schema>
+    </types>
+
+    <!-- =================== Capture Payment request ======================= -->
+
+    <message name="captureRequest">
+		<part name="request" element="tns:CaptureRequest" />
+	</message>
+	<message name="captureResponse">
+		<part name="response" element="tns:CaptureResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="CaptureServicePort">
+		<operation name="capture">
+			<input message="tns:captureRequest" />
+			<output message="tns:captureResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="CaptureServiceBinding" type="tns:CaptureServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="capture">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:capture:2.0:capture" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="CaptureService">
+        <port name="CaptureServicePort" binding="tns:CaptureServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/capture20/" />
+        </port>
+    </service>
+</definitions>

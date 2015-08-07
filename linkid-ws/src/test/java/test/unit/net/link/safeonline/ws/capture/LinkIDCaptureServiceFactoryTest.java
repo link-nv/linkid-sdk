@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.capture;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.capture.CaptureService;
+import net.lin_k.safe_online.capture._2.CaptureService;
 import net.link.safeonline.ws.capture.LinkIDCaptureServiceFactory;
 
 

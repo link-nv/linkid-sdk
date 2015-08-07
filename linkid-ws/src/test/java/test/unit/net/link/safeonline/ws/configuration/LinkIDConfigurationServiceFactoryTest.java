@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.configuration;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.configuration.ConfigurationService;
+import net.lin_k.safe_online.configuration._2.ConfigurationService;
 import net.link.safeonline.ws.configuration.LinkIDConfigurationServiceFactory;
 
 

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:haws:2.0" xmlns:tns="urn:net:lin-k:safe-online:haws:2.0"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-haws
+			Revision history:
+			V2.0 (August, 2015):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <!-- =================== Push request ========================= -->
+
+    <element name="PushRequest">
+        <annotation>
+            <documentation>Submit an authentication request</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <any namespace='##any' processContents='lax' minOccurs='1' maxOccurs='1'>
+                    <annotation>
+                        <documentation>The authentication request, e.g. a SAML2 request</documentation>
+                    </annotation>
+                </any>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="PushResponse">
+        <complexType>
+            <sequence>
+                <element name="sessionId" type="string" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PushError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PushError">
+        <sequence>
+            <element name="error" type="tns:PushErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="info" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PushErrorCode">
+		<annotation>
+			<documentation>Error codes for a Push request</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.request.invalid">
+				<annotation>
+					<documentation>The authentication request was invalid</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- =================== Pull request ========================= -->
+
+    <element name="PullRequest">
+        <annotation>
+            <documentation>Fetch an authentication response</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The session ID for the authentication response, returned in the redirect</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="PullResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PullSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PullError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PullSuccess">
+        <sequence>
+            <any namespace='##any' processContents='lax' minOccurs='1' maxOccurs='1'>
+                <annotation>
+                    <documentation>The authentication response, e.g. a SAML2 response</documentation>
+                </annotation>
+            </any>
+        </sequence>
+    </complexType>
+
+    <complexType name="PullError">
+        <sequence>
+            <element name="error" type="tns:PullErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="info" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PullErrorCode">
+		<annotation>
+			<documentation>Error codes for a Pull request</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.response.invalid.sessionId">
+				<annotation>
+					<documentation>No authentication response found with this sessionId</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

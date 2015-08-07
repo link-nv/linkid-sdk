@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.ws.configuration;
 
 public enum LinkIDLocalizationErrorCode {
 
-    ERROR_UNEXPECTED;
+    ERROR_UNEXPECTED,
+    ERROR_MAINTENANCE
 
 }

@@ -9,7 +9,7 @@ package net.link.safeonline.ws.wallet;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.wallet.WalletService;
+import net.lin_k.safe_online.wallet._2.WalletService;
 
 
 public class LinkIDWalletServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDWalletServiceFactory {
     public static WalletService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-wallet.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-wallet-2.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Wallet WSDL not found" );
 
-        return new WalletService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:wallet", "WalletService" ) );
+        return new WalletService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:wallet:2.0", "WalletService" ) );
     }
 }

@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.wallet;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.wallet.WalletService;
+import net.lin_k.safe_online.wallet._2.WalletService;
 import net.link.safeonline.ws.wallet.LinkIDWalletServiceFactory;
 
 

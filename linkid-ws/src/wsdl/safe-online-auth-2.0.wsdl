@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:safe-online:auth:2.0"
+             xmlns:tns="urn:net:lin-k:safe-online:auth:2.0" name="SafeOnlineAuthWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:safe-online:auth:2.0" schemaLocation="safe-online-auth-2.0.xsd" />
+        </schema>
+    </types>
+
+    <!-- =================== Start request ========================= -->
+
+    <message name="startRequest">
+		<part name="request" element="tns:StartRequest" />
+	</message>
+	<message name="startResponse">
+		<part name="response" element="tns:StartResponse" />
+	</message>
+
+    <!-- =================== Poll request ========================= -->
+
+    <message name="pollRequest">
+		<part name="request" element="tns:PollRequest" />
+	</message>
+	<message name="pollResponse">
+		<part name="response" element="tns:PollResponse" />
+	</message>
+
+    <!-- =================== Cancel request ========================= -->
+
+    <message name="cancelRequest">
+		<part name="request" element="tns:CancelRequest" />
+	</message>
+	<message name="cancelResponse">
+		<part name="response" element="tns:CancelResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="AuthServicePort">
+		<operation name="start">
+			<input message="tns:startRequest" />
+			<output message="tns:startResponse" />
+		</operation>
+		<operation name="poll">
+			<input message="tns:pollRequest" />
+			<output message="tns:pollResponse" />
+		</operation>
+		<operation name="cancel">
+			<input message="tns:cancelRequest" />
+			<output message="tns:cancelResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="AuthServiceBinding" type="tns:AuthServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="start">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:auth:2.0:start" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="poll">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:auth:2.0:poll" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="cancel">
+            <soap:operation soapAction="urn:net:lin-k:safe-online:auth:2.0:cancel" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="AuthService">
+        <port name="AuthServicePort" binding="tns:AuthServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/auth20/" />
+        </port>
+    </service>
+</definitions>

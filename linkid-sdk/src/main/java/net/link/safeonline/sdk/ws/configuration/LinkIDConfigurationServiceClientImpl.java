@@ -13,17 +13,17 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.configuration.ConfigurationServicePort;
-import net.lin_k.safe_online.configuration.Localization;
-import net.lin_k.safe_online.configuration.LocalizationKeyType;
-import net.lin_k.safe_online.configuration.LocalizationRequest;
-import net.lin_k.safe_online.configuration.LocalizationResponse;
-import net.lin_k.safe_online.configuration.LocalizationValue;
-import net.lin_k.safe_online.configuration.LocalizedImage;
-import net.lin_k.safe_online.configuration.LocalizedImages;
-import net.lin_k.safe_online.configuration.Themes;
-import net.lin_k.safe_online.configuration.ThemesRequest;
-import net.lin_k.safe_online.configuration.ThemesResponse;
+import net.lin_k.safe_online.configuration._2.ConfigurationServicePort;
+import net.lin_k.safe_online.configuration._2.Localization;
+import net.lin_k.safe_online.configuration._2.LocalizationKeyType;
+import net.lin_k.safe_online.configuration._2.LocalizationRequest;
+import net.lin_k.safe_online.configuration._2.LocalizationResponse;
+import net.lin_k.safe_online.configuration._2.LocalizationValue;
+import net.lin_k.safe_online.configuration._2.LocalizedImage;
+import net.lin_k.safe_online.configuration._2.LocalizedImages;
+import net.lin_k.safe_online.configuration._2.Themes;
+import net.lin_k.safe_online.configuration._2.ThemesRequest;
+import net.lin_k.safe_online.configuration._2.ThemesResponse;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalizationErrorCode;
@@ -164,23 +164,27 @@ public class LinkIDConfigurationServiceClientImpl extends AbstractWSClient<Confi
         return new LinkIDLocalizedImages( imageMap );
     }
 
-    private LinkIDThemesErrorCode convert(final net.lin_k.safe_online.configuration.ThemesErrorCode errorCode) {
+    private LinkIDThemesErrorCode convert(final net.lin_k.safe_online.configuration._2.ThemesErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_UNKNOWN_APPLICATION:
+                return LinkIDThemesErrorCode.ERROR_UNKNOWN_APPLICATION;
+            case ERROR_MAINTENANCE:
                 return LinkIDThemesErrorCode.ERROR_UNKNOWN_APPLICATION;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDLocalizationErrorCode convert(final net.lin_k.safe_online.configuration.LocalizationErrorCode errorCode) {
+    private LinkIDLocalizationErrorCode convert(final net.lin_k.safe_online.configuration._2.LocalizationErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_UNEXPECTED:
                 return LinkIDLocalizationErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDLocalizationErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

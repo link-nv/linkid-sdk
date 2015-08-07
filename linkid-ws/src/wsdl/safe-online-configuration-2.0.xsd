@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:configuration:2.0" xmlns:tns="urn:net:lin-k:safe-online:configuration:2.0"
+        elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-configuration
+			Revision history:
+			V2.0 (August, 2015):
+			Initial Standard Schema.
+		</documentation>
+	</annotation>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                               Themes request                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="ThemesRequest">
+		<complexType>
+            <attribute name="applicationName" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="ThemesResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ThemesSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ThemesError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ThemesSuccess">
+        <sequence>
+            <element name="themes" type="tns:Themes" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The theme(s)</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Themes">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The theme name</documentation>
+                </annotation>
+            </element>
+            <element name="defaultTheme" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Default theme?</documentation>
+                </annotation>
+            </element>
+            <element name="logo" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application logo, shown in the manage linkID section</documentation>
+                </annotation>
+            </element>
+            <element name="authLogo" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application logo, shown during an authentication/payment</documentation>
+                </annotation>
+            </element>
+            <element name="background" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in phone size devices</documentation>
+                </annotation>
+            </element>
+            <element name="tabletBackground" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in tablet size devices</documentation>
+                </annotation>
+            </element>
+            <element name="alternativeBackground" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in alternative size devices</documentation>
+                </annotation>
+            </element>
+            <element name="backgroundColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background color (#xxxxxx), shown if no background images are defined, or they are being loaded</documentation>
+                </annotation>
+            </element>
+            <element name="textColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application text color (#xxxxxx), e.g. for the pinpad, ...</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LocalizedImages">
+        <sequence>
+            <element name="images" type="tns:LocalizedImage" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The localized images</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LocalizedImage">
+        <sequence>
+            <element name="url" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The image url</documentation>
+                </annotation>
+            </element>
+            <element name="language" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Locale of the image</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+	<complexType name="ThemesError">
+        <attribute name="errorCode" type="tns:ThemesErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ThemesErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.application">
+				<annotation>
+					<documentation>No application with that name is connected to linkID</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************   ********************  ********************  ********************  -->
+    <!--                                             Localization request                                              -->
+    <!-- ********************  ********************  ********************  ********************  ********************  -->
+
+    <element name="LocalizationRequest">
+		<complexType>
+            <sequence>
+                <element name="key" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>linkID key to get localization for, e.g. a wallet organization ID, wallet coin ID,...</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="LocalizationResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LocalizationSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LocalizationError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="LocalizationSuccess">
+        <sequence>
+            <element name="localization" type="tns:Localization" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The localization key(s)</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Localization">
+        <sequence>
+            <element name="key" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The key</documentation>
+                </annotation>
+            </element>
+            <element name="values" type="tns:LocalizationValue" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Localization values</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="type" type="tns:LocalizationKeyType" use="required" />
+    </complexType>
+
+    <simpleType name="LocalizationKeyType">
+		<annotation>
+			<documentation>Localization key type</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="localization.key.friendly" />
+            <enumeration value="localization.key.friendly.multiple" />
+            <enumeration value="localization.key.description" />
+		</restriction>
+	</simpleType>
+
+    <complexType name="LocalizationValue">
+        <sequence>
+            <element name="languageCode" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>ISO 639‑1 code of the language</documentation>
+                </annotation>
+            </element>
+            <element name="localized" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>localized value</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+	<complexType name="LocalizationError">
+        <attribute name="errorCode" type="tns:LocalizationErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="LocalizationErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected occurred</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

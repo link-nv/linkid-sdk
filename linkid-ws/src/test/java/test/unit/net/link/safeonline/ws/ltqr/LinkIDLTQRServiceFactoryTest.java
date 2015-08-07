@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.ltqr;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.ltqr._4.LTQRService;
+import net.lin_k.safe_online.ltqr._5.LTQRService;
 import net.link.safeonline.ws.ltqr.LinkIDLTQRServiceFactory;
 
 

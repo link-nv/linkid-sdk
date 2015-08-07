@@ -9,7 +9,7 @@ package net.link.safeonline.ws.configuration;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.configuration.ConfigurationService;
+import net.lin_k.safe_online.configuration._2.ConfigurationService;
 
 
 public class LinkIDConfigurationServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDConfigurationServiceFactory {
     public static ConfigurationService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-configuration.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-configuration-2.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Configuration WSDL not found" );
 
-        return new ConfigurationService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:configuration", "ConfigurationService" ) );
+        return new ConfigurationService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:configuration:2.0", "ConfigurationService" ) );
     }
 }

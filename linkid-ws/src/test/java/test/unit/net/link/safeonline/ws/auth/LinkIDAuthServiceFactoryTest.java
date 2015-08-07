@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.auth;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.auth.AuthService;
+import net.lin_k.safe_online.auth._2.AuthService;
 import net.link.safeonline.ws.auth.LinkIDAuthServiceFactory;
 
 

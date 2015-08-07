@@ -11,9 +11,9 @@ import java.security.cert.X509Certificate;
 import java.util.Locale;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.PaymentContextV20;
-import net.lin_k.safe_online.mandate._2.MandatePaymentRequest;
-import net.lin_k.safe_online.mandate._2.MandatePaymentResponse;
-import net.lin_k.safe_online.mandate._2.MandateServicePort;
+import net.lin_k.safe_online.mandate._3.MandatePaymentRequest;
+import net.lin_k.safe_online.mandate._3.MandatePaymentResponse;
+import net.lin_k.safe_online.mandate._3.MandateServicePort;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.ws.mandate.LinkIDErrorCode;
 import net.link.safeonline.sdk.api.ws.mandate.LinkIDMandateServiceClient;
@@ -128,7 +128,7 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
         return paymentContext;
     }
 
-    private LinkIDErrorCode convert(final net.lin_k.safe_online.mandate._2.ErrorCode errorCode) {
+    private LinkIDErrorCode convert(final net.lin_k.safe_online.mandate._3.ErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -138,6 +138,10 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
                 return LinkIDErrorCode.ERROR_MANDATE_UNKNOWN;
             case ERROR_MANDATE_PAYMENT_FAILED:
                 return LinkIDErrorCode.ERROR_MANDATE_PAYMENT_FAILED;
+            case ERROR_UNEXPECTED:
+                return LinkIDErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

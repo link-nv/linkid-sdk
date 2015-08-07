@@ -9,7 +9,7 @@ package net.link.safeonline.ws.capture;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.capture.CaptureService;
+import net.lin_k.safe_online.capture._2.CaptureService;
 
 
 public class LinkIDCaptureServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDCaptureServiceFactory {
     public static CaptureService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-capture.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-capture-2.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Capture WSDL not found" );
 
-        return new CaptureService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:capture", "CaptureService" ) );
+        return new CaptureService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:capture:2.0", "CaptureService" ) );
     }
 }

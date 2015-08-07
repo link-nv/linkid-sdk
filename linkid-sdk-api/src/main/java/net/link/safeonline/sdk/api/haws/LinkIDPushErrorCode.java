@@ -14,5 +14,7 @@ package net.link.safeonline.sdk.api.haws;
  */
 public enum LinkIDPushErrorCode {
 
-    ERROR_REQUEST_INVALID;
+    ERROR_REQUEST_INVALID,
+    ERROR_MAINTENANCE,
+    ERROR_UNEXPECTED
 }

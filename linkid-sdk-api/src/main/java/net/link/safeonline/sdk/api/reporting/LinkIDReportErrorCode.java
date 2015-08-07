@@ -8,6 +8,7 @@ package net.link.safeonline.sdk.api.reporting;
 public enum LinkIDReportErrorCode {
 
     ERROR_TOO_MANY_RESULTS,
-    ERROR_UNEXPECTED
+    ERROR_UNEXPECTED,
+    ERROR_MAINTENANCE
 
 }

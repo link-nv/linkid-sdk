@@ -9,9 +9,9 @@ package net.link.safeonline.sdk.ws.capture;
 
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.capture.CaptureRequest;
-import net.lin_k.safe_online.capture.CaptureResponse;
-import net.lin_k.safe_online.capture.CaptureServicePort;
+import net.lin_k.safe_online.capture._2.CaptureRequest;
+import net.lin_k.safe_online.capture._2.CaptureResponse;
+import net.lin_k.safe_online.capture._2.CaptureServicePort;
 import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureException;
 import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureServiceClient;
 import net.link.safeonline.sdk.api.ws.capture.LinkIDErrorCode;
@@ -83,7 +83,7 @@ public class LinkIDCaptureServiceClientImpl extends AbstractWSClient<CaptureServ
 
     // Helper methods
 
-    private LinkIDErrorCode convert(final net.lin_k.safe_online.capture.ErrorCode errorCode) {
+    private LinkIDErrorCode convert(final net.lin_k.safe_online.capture._2.ErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -93,6 +93,8 @@ public class LinkIDCaptureServiceClientImpl extends AbstractWSClient<CaptureServ
                 return LinkIDErrorCode.ERROR_CAPTURE_FAILED;
             case ERROR_CAPTURE_TOKEN_NOT_FOUND:
                 return LinkIDErrorCode.ERROR_CAPTURE_TOKEN_NOT_FOUND;
+            case ERROR_MAINTENANCE:
+                return LinkIDErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

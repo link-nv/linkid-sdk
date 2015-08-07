@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:safe-online:wallet:2.0" xmlns:tns="urn:net:lin-k:safe-online:wallet:2.0"
+        xmlns:com="urn:net:lin-k:safe-online:common" elementFormDefault="qualified">
+
+	<annotation>
+		<documentation>
+			Document identifier: safe-online-wallet
+			Revision history:
+			V2.0 (August, 2015):
+            Initial version
+		</documentation>
+	</annotation>
+
+    <import schemaLocation="safe-online-common.xsd" namespace="urn:net:lin-k:safe-online:common" />
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Enroll                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletEnrollRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet organization ID</documentation>
+                    </annotation>
+                </element>
+                <element name="amount" type="double" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>The amount to be added to the wallet ( in cents )</documentation>
+                    </annotation>
+                </element>
+				<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+					</annotation>
+				</element>
+				<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+					</annotation>
+				</element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletEnrollResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletEnrollSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletEnrollError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletEnrollSuccess">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The linkID wallet ID</documentation>
+                </annotation>
+            </element>
+        </sequence>
+	</complexType>
+
+	<complexType name="WalletEnrollError">
+		<attribute name="errorCode" type="tns:WalletEnrollErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletEnrollErrorCode">
+		<annotation>
+			<documentation>Wallet Enroll Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.wallet.invalid.currency">
+				<annotation>
+					<documentation>Invalid currency</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.coin">
+				<annotation>
+					<documentation>No such linkID wallet coin</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.user.already.enrolled">
+				<annotation>
+					<documentation>User was already enrolled</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Get Info                                               -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletGetInfoRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet organization ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletGetInfoResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletGetInfoSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletGetInfoError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletGetInfoSuccess">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The linkID wallet ID</documentation>
+                </annotation>
+            </element>
+        </sequence>
+	</complexType>
+
+	<complexType name="WalletGetInfoError">
+		<attribute name="errorCode" type="tns:WalletGetInfoErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletGetInfoErrorCode">
+		<annotation>
+			<documentation>Wallet Enroll Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                            Wallet Add Credit                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletAddCreditRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="amount" type="double" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>The amount to be added to the wallet ( in cents )</documentation>
+                    </annotation>
+                </element>
+				<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+					</annotation>
+				</element>
+				<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+					</annotation>
+				</element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletAddCreditResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletAddCreditSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletAddCreditError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletAddCreditSuccess">
+	</complexType>
+
+	<complexType name="WalletAddCreditError">
+		<attribute name="errorCode" type="tns:WalletAddCreditErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletAddCreditErrorCode">
+		<annotation>
+			<documentation>Wallet AddCredit Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.wallet.invalid.currency">
+				<annotation>
+					<documentation>Invalid currency</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.coin">
+				<annotation>
+					<documentation>No such linkID wallet coin</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                            Wallet Remove Credit                                              -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletRemoveCreditRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="amount" type="double" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>The amount to be removed to the wallet ( in cents ), if -1 or amount > wallet's credit the wallet's credit will be 0</documentation>
+                    </annotation>
+                </element>
+				<element name="currency" type="com:Currency" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+					</annotation>
+				</element>
+				<element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+					<annotation>
+						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+					</annotation>
+				</element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletRemoveCreditResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletRemoveCreditSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletRemoveCreditError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletRemoveCreditSuccess">
+	</complexType>
+
+	<complexType name="WalletRemoveCreditError">
+		<attribute name="errorCode" type="tns:WalletRemoveCreditErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletRemoveCreditErrorCode">
+		<annotation>
+			<documentation>Wallet removeCredit Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.wallet.invalid.currency">
+				<annotation>
+					<documentation>Invalid currency</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.coin">
+				<annotation>
+					<documentation>No such linkID wallet coin</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Remove                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletRemoveRequest">
+		<complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="WalletRemoveSuccess">
+	</complexType>
+
+	<complexType name="WalletRemoveError">
+		<attribute name="errorCode" type="tns:WalletRemoveErrorCode" use="required" />
+	</complexType>
+
+    <simpleType name="WalletRemoveErrorCode">
+		<annotation>
+			<documentation>Wallet remove Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- ******************** ********************  ********************  ********************  ********************  -->
+    <!--                                                Wallet Commit                                                 -->
+    <!-- ********************  ********************  ********************  ********************  ******************** -->
+
+    <element name="WalletCommitRequest">
+        <complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="walletTransactionId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet transaction ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="WalletCommitResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletCommitSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletCommitError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="WalletCommitSuccess">
+    </complexType>
+
+    <complexType name="WalletCommitError">
+		<attribute name="errorCode" type="tns:WalletCommitErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="WalletCommitErrorCode">
+		<annotation>
+			<documentation>Wallet Commit Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.transaction">
+				<annotation>
+					<documentation>No such linkID wallet transaction</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<!-- ******************** ********************  ********************  ********************  ********************  -->
+	<!--                                                Wallet Release                                                -->
+	<!-- ********************  ********************  ********************  ********************  ******************** -->
+
+	<element name="WalletReleaseRequest">
+        <complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID userId</documentation>
+                    </annotation>
+                </element>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet ID</documentation>
+                    </annotation>
+                </element>
+                <element name="walletTransactionId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The linkID wallet transaction ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="WalletReleaseResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletReleaseSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletReleaseError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="WalletReleaseSuccess">
+    </complexType>
+
+    <complexType name="WalletReleaseError">
+		<attribute name="errorCode" type="tns:WalletReleaseErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="WalletReleaseErrorCode">
+		<annotation>
+			<documentation>Wallet Release Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet">
+				<annotation>
+					<documentation>No such linkID wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.transaction">
+				<annotation>
+					<documentation>No such linkID wallet transaction</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

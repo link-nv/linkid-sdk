@@ -14,5 +14,7 @@ package net.link.safeonline.sdk.api.haws;
  */
 public enum LinkIDPullErrorCode {
 
-    ERROR_RESPONSE_INVALID_SESSION_ID;
+    ERROR_RESPONSE_INVALID_SESSION_ID,
+    ERROR_MAINTENANCE,
+    ERROR_UNEXPECTED
 }

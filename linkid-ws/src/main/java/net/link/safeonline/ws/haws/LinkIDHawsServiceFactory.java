@@ -9,7 +9,7 @@ package net.link.safeonline.ws.haws;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.haws.HawsService;
+import net.lin_k.safe_online.haws._2.HawsService;
 
 
 public class LinkIDHawsServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDHawsServiceFactory {
     public static HawsService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-haws.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-haws-2.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Haws WSDL not found" );
 
-        return new HawsService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:haws", "HawsService" ) );
+        return new HawsService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:haws:2.0", "HawsService" ) );
     }
 }

@@ -16,19 +16,19 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.PaymentTransactionV20;
 import net.lin_k.safe_online.common.WalletTransactionV40;
-import net.lin_k.safe_online.reporting._3.ApplicationFilter;
-import net.lin_k.safe_online.reporting._3.DateFilter;
-import net.lin_k.safe_online.reporting._3.ParkingReportRequest;
-import net.lin_k.safe_online.reporting._3.ParkingReportResponse;
-import net.lin_k.safe_online.reporting._3.ParkingSession;
-import net.lin_k.safe_online.reporting._3.PaymentOrder;
-import net.lin_k.safe_online.reporting._3.PaymentReportRequest;
-import net.lin_k.safe_online.reporting._3.PaymentReportResponse;
-import net.lin_k.safe_online.reporting._3.ReportingServicePort;
-import net.lin_k.safe_online.reporting._3.WalletFilter;
-import net.lin_k.safe_online.reporting._3.WalletReportRequest;
-import net.lin_k.safe_online.reporting._3.WalletReportResponse;
-import net.lin_k.safe_online.reporting._3.WalletReportTransaction;
+import net.lin_k.safe_online.reporting._4.ApplicationFilter;
+import net.lin_k.safe_online.reporting._4.DateFilter;
+import net.lin_k.safe_online.reporting._4.ParkingReportRequest;
+import net.lin_k.safe_online.reporting._4.ParkingReportResponse;
+import net.lin_k.safe_online.reporting._4.ParkingSession;
+import net.lin_k.safe_online.reporting._4.PaymentOrder;
+import net.lin_k.safe_online.reporting._4.PaymentReportRequest;
+import net.lin_k.safe_online.reporting._4.PaymentReportResponse;
+import net.lin_k.safe_online.reporting._4.ReportingServicePort;
+import net.lin_k.safe_online.reporting._4.WalletFilter;
+import net.lin_k.safe_online.reporting._4.WalletReportRequest;
+import net.lin_k.safe_online.reporting._4.WalletReportResponse;
+import net.lin_k.safe_online.reporting._4.WalletReportTransaction;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
@@ -351,7 +351,7 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
         return null != xmlDate? xmlDate.toGregorianCalendar().getTime(): null;
     }
 
-    private LinkIDReportErrorCode convert(final net.lin_k.safe_online.reporting._3.ErrorCode errorCode) {
+    private LinkIDReportErrorCode convert(final net.lin_k.safe_online.reporting._4.ErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -359,6 +359,8 @@ public class LinkIDReportingServiceClientImpl extends AbstractWSClient<Reporting
                 return LinkIDReportErrorCode.ERROR_TOO_MANY_RESULTS;
             case ERROR_UNEXPECTED:
                 return LinkIDReportErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDReportErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

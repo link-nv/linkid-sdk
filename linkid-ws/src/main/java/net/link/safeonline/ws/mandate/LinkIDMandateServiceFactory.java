@@ -9,7 +9,7 @@ package net.link.safeonline.ws.mandate;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.mandate._2.MandateService;
+import net.lin_k.safe_online.mandate._3.MandateService;
 
 
 public class LinkIDMandateServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDMandateServiceFactory {
     public static MandateService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-mandate-2.0.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-mandate-3.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Mandate WSDL not found" );
 
-        return new MandateService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:mandate:2.0", "MandateService" ) );
+        return new MandateService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:mandate:3.0", "MandateService" ) );
     }
 }

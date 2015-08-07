@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.ws.configuration;
 
 public enum LinkIDThemesErrorCode {
 
-    ERROR_UNKNOWN_APPLICATION;
+    ERROR_UNKNOWN_APPLICATION,
+    ERROR_MAINTENANCE
 
 }

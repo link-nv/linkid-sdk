@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.haws;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.haws.HawsService;
+import net.lin_k.safe_online.haws._2.HawsService;
 import net.link.safeonline.ws.haws.LinkIDHawsServiceFactory;
 
 

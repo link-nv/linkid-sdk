@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.reporting;
 
 import junit.framework.TestCase;
-import net.lin_k.safe_online.reporting._3.ReportingService;
+import net.lin_k.safe_online.reporting._4.ReportingService;
 import net.link.safeonline.ws.reporting.LinkIDReportingServiceFactory;
 
 

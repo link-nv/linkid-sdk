@@ -9,21 +9,21 @@ package net.link.safeonline.sdk.ws.wallet;
 
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.wallet.WalletAddCreditRequest;
-import net.lin_k.safe_online.wallet.WalletAddCreditResponse;
-import net.lin_k.safe_online.wallet.WalletCommitRequest;
-import net.lin_k.safe_online.wallet.WalletCommitResponse;
-import net.lin_k.safe_online.wallet.WalletEnrollRequest;
-import net.lin_k.safe_online.wallet.WalletEnrollResponse;
-import net.lin_k.safe_online.wallet.WalletGetInfoRequest;
-import net.lin_k.safe_online.wallet.WalletGetInfoResponse;
-import net.lin_k.safe_online.wallet.WalletReleaseRequest;
-import net.lin_k.safe_online.wallet.WalletReleaseResponse;
-import net.lin_k.safe_online.wallet.WalletRemoveCreditRequest;
-import net.lin_k.safe_online.wallet.WalletRemoveCreditResponse;
-import net.lin_k.safe_online.wallet.WalletRemoveRequest;
-import net.lin_k.safe_online.wallet.WalletRemoveResponse;
-import net.lin_k.safe_online.wallet.WalletServicePort;
+import net.lin_k.safe_online.wallet._2.WalletAddCreditRequest;
+import net.lin_k.safe_online.wallet._2.WalletAddCreditResponse;
+import net.lin_k.safe_online.wallet._2.WalletCommitRequest;
+import net.lin_k.safe_online.wallet._2.WalletCommitResponse;
+import net.lin_k.safe_online.wallet._2.WalletEnrollRequest;
+import net.lin_k.safe_online.wallet._2.WalletEnrollResponse;
+import net.lin_k.safe_online.wallet._2.WalletGetInfoRequest;
+import net.lin_k.safe_online.wallet._2.WalletGetInfoResponse;
+import net.lin_k.safe_online.wallet._2.WalletReleaseRequest;
+import net.lin_k.safe_online.wallet._2.WalletReleaseResponse;
+import net.lin_k.safe_online.wallet._2.WalletRemoveCreditRequest;
+import net.lin_k.safe_online.wallet._2.WalletRemoveCreditResponse;
+import net.lin_k.safe_online.wallet._2.WalletRemoveRequest;
+import net.lin_k.safe_online.wallet._2.WalletRemoveResponse;
+import net.lin_k.safe_online.wallet._2.WalletServicePort;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletAddCreditErrorCode;
@@ -302,7 +302,7 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
 
     // Helper methods
 
-    private LinkIDWalletEnrollErrorCode convert(final net.lin_k.safe_online.wallet.WalletEnrollErrorCode errorCode) {
+    private LinkIDWalletEnrollErrorCode convert(final net.lin_k.safe_online.wallet._2.WalletEnrollErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -318,12 +318,14 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletEnrollErrorCode.ERROR_USER_ALREADY_ENROLLED;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletEnrollErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletEnrollErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDWalletGetInfoErrorCode convert(final net.lin_k.safe_online.wallet.WalletGetInfoErrorCode errorCode) {
+    private LinkIDWalletGetInfoErrorCode convert(final net.lin_k.safe_online.wallet._2.WalletGetInfoErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -333,12 +335,14 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletGetInfoErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletGetInfoErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletGetInfoErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDWalletAddCreditErrorCode convert(final net.lin_k.safe_online.wallet.WalletAddCreditErrorCode errorCode) {
+    private LinkIDWalletAddCreditErrorCode convert(final net.lin_k.safe_online.wallet._2.WalletAddCreditErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -352,12 +356,14 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletAddCreditErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDWalletRemoveCreditErrorCode convert(final net.lin_k.safe_online.wallet.WalletRemoveCreditErrorCode errorCode) {
+    private LinkIDWalletRemoveCreditErrorCode convert(final net.lin_k.safe_online.wallet._2.WalletRemoveCreditErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -371,12 +377,14 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletRemoveCreditErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDWalletRemoveErrorCode convert(final net.lin_k.safe_online.wallet.WalletRemoveErrorCode errorCode) {
+    private LinkIDWalletRemoveErrorCode convert(final net.lin_k.safe_online.wallet._2.WalletRemoveErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -386,12 +394,14 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletRemoveErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletRemoveErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletRemoveErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDWalletCommitErrorCode convert(final net.lin_k.safe_online.wallet.WalletCommitErrorCode errorCode) {
+    private LinkIDWalletCommitErrorCode convert(final net.lin_k.safe_online.wallet._2.WalletCommitErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -403,12 +413,14 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletCommitErrorCode.ERROR_UNKNOWN_WALLET_TRANSACTION;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletCommitErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletCommitErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDWalletReleaseErrorCode convert(final net.lin_k.safe_online.wallet.WalletReleaseErrorCode errorCode) {
+    private LinkIDWalletReleaseErrorCode convert(final net.lin_k.safe_online.wallet._2.WalletReleaseErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -420,6 +432,8 @@ public class LinkIDWalletServiceClientImpl extends AbstractWSClient<WalletServic
                 return LinkIDWalletReleaseErrorCode.ERROR_UNKNOWN_WALLET_TRANSACTION;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletReleaseErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletReleaseErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

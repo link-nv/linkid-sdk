@@ -17,21 +17,21 @@ import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.common.Callback;
 import net.lin_k.safe_online.common.PaymentContext;
 import net.lin_k.safe_online.common.PaymentContextV20;
-import net.lin_k.safe_online.ltqr._4.ChangeRequest;
-import net.lin_k.safe_online.ltqr._4.ChangeResponse;
-import net.lin_k.safe_online.ltqr._4.ClientSession;
-import net.lin_k.safe_online.ltqr._4.InfoRequest;
-import net.lin_k.safe_online.ltqr._4.InfoResponse;
-import net.lin_k.safe_online.ltqr._4.LTQRInfo;
-import net.lin_k.safe_online.ltqr._4.LTQRPaymentStatusType;
-import net.lin_k.safe_online.ltqr._4.LTQRServicePort;
-import net.lin_k.safe_online.ltqr._4.PollingConfiguration;
-import net.lin_k.safe_online.ltqr._4.PullRequest;
-import net.lin_k.safe_online.ltqr._4.PullResponse;
-import net.lin_k.safe_online.ltqr._4.PushRequest;
-import net.lin_k.safe_online.ltqr._4.PushResponse;
-import net.lin_k.safe_online.ltqr._4.RemoveRequest;
-import net.lin_k.safe_online.ltqr._4.RemoveResponse;
+import net.lin_k.safe_online.ltqr._5.ChangeRequest;
+import net.lin_k.safe_online.ltqr._5.ChangeResponse;
+import net.lin_k.safe_online.ltqr._5.ClientSession;
+import net.lin_k.safe_online.ltqr._5.InfoRequest;
+import net.lin_k.safe_online.ltqr._5.InfoResponse;
+import net.lin_k.safe_online.ltqr._5.LTQRInfo;
+import net.lin_k.safe_online.ltqr._5.LTQRPaymentStatusType;
+import net.lin_k.safe_online.ltqr._5.LTQRServicePort;
+import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
+import net.lin_k.safe_online.ltqr._5.PullRequest;
+import net.lin_k.safe_online.ltqr._5.PullResponse;
+import net.lin_k.safe_online.ltqr._5.PushRequest;
+import net.lin_k.safe_online.ltqr._5.PushResponse;
+import net.lin_k.safe_online.ltqr._5.RemoveRequest;
+import net.lin_k.safe_online.ltqr._5.RemoveResponse;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.ltqr.LinkIDChangeErrorCode;
@@ -475,18 +475,22 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
         throw new InternalInconsistencyException( String.format( "Unexpected payment status type %s!", wsPaymentStatusType.name() ) );
     }
 
-    private LinkIDErrorCode convert(final net.lin_k.safe_online.ltqr._4.ErrorCode errorCode) {
+    private LinkIDErrorCode convert(final net.lin_k.safe_online.ltqr._5.ErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_CREDENTIALS_INVALID:
                 return LinkIDErrorCode.ERROR_CREDENTIALS_INVALID;
+            case ERROR_UNEXPECTED:
+                return LinkIDErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    private LinkIDChangeErrorCode convert(final net.lin_k.safe_online.ltqr._4.ChangeErrorCode errorCode) {
+    private LinkIDChangeErrorCode convert(final net.lin_k.safe_online.ltqr._5.ChangeErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -494,6 +498,10 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
                 return LinkIDChangeErrorCode.ERROR_CREDENTIALS_INVALID;
             case ERROR_NOT_FOUND:
                 return LinkIDChangeErrorCode.ERROR_NOT_FOUND;
+            case ERROR_UNEXPECTED:
+                return LinkIDChangeErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDChangeErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

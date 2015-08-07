@@ -43,19 +43,27 @@
                         <wsdlFile>safe-online-ltqr-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr-3.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-ltqr-4.0.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-ltqr-5.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-mandate.wsdl</wsdlFile>
                         <wsdlFile>safe-online-mandate-2.0.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-mandate-3.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-haws-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-idmapping.wsdl</wsdlFile>
                         <wsdlFile>ws-trust-1.3.wsdl</wsdlFile>
                         <wsdlFile>xkms.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-auth-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-reporting.wsdl</wsdlFile>
                         <wsdlFile>safe-online-reporting-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-reporting-3.0.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-reporting-4.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-capture.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-capture-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-wallet.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-wallet-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-configuration.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-configuration-2.0.wsdl</wsdlFile>
                     </wsdlFiles>
                     <bindingFiles>
                         <bindingFile>jaxb-bindings.xml</bindingFile>

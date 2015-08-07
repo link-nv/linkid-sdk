@@ -9,11 +9,11 @@ package net.link.safeonline.sdk.ws.haws;
 
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.haws.HawsServicePort;
-import net.lin_k.safe_online.haws.PullRequest;
-import net.lin_k.safe_online.haws.PullResponse;
-import net.lin_k.safe_online.haws.PushRequestV2;
-import net.lin_k.safe_online.haws.PushResponse;
+import net.lin_k.safe_online.haws._2.HawsServicePort;
+import net.lin_k.safe_online.haws._2.PullRequest;
+import net.lin_k.safe_online.haws._2.PullResponse;
+import net.lin_k.safe_online.haws._2.PushRequest;
+import net.lin_k.safe_online.haws._2.PushResponse;
 import net.link.safeonline.sdk.api.haws.LinkIDPullErrorCode;
 import net.link.safeonline.sdk.api.haws.LinkIDPullException;
 import net.link.safeonline.sdk.api.haws.LinkIDPushErrorCode;
@@ -90,14 +90,14 @@ public class LinkIDHawsServiceClientImpl extends AbstractWSClient<HawsServicePor
     public String push(final AuthnRequest authnRequest, final String language)
             throws LinkIDPushException {
 
-        PushRequestV2 request = new PushRequestV2();
+        PushRequest request = new PushRequest();
 
         request.setAny( SamlUtils.marshall( authnRequest ) );
 
         request.setLanguage( language );
 
         // operate
-        PushResponse response = getPort().pushV2( request );
+        PushResponse response = getPort().push( request );
 
         // convert response
         if (null != response.getError()) {
@@ -150,23 +150,31 @@ public class LinkIDHawsServiceClientImpl extends AbstractWSClient<HawsServicePor
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );
     }
 
-    private LinkIDPushErrorCode convert(final net.lin_k.safe_online.haws.PushErrorCode pushErrorCode) {
+    private LinkIDPushErrorCode convert(final net.lin_k.safe_online.haws._2.PushErrorCode pushErrorCode) {
 
         switch (pushErrorCode) {
 
             case ERROR_REQUEST_INVALID:
                 return LinkIDPushErrorCode.ERROR_REQUEST_INVALID;
+            case ERROR_UNEXPECTED:
+                return LinkIDPushErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDPushErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", pushErrorCode.name() ) );
     }
 
-    private LinkIDPullErrorCode convert(final net.lin_k.safe_online.haws.PullErrorCode errorCode) {
+    private LinkIDPullErrorCode convert(final net.lin_k.safe_online.haws._2.PullErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_RESPONSE_INVALID_SESSION_ID:
                 return LinkIDPullErrorCode.ERROR_RESPONSE_INVALID_SESSION_ID;
+            case ERROR_UNEXPECTED:
+                return LinkIDPullErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDPullErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

@@ -9,7 +9,7 @@ package net.link.safeonline.ws.auth;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.safe_online.auth.AuthService;
+import net.lin_k.safe_online.auth._2.AuthService;
 
 
 public class LinkIDAuthServiceFactory {
@@ -22,10 +22,10 @@ public class LinkIDAuthServiceFactory {
     public static AuthService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "safe-online-auth.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "safe-online-auth-2.0.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "SafeOnline Auth WSDL not found" );
 
-        return new AuthService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:auth", "AuthService" ) );
+        return new AuthService( wsdlUrl, new QName( "urn:net:lin-k:safe-online:auth:2.0", "AuthService" ) );
     }
 }
