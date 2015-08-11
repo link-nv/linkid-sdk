@@ -8,6 +8,8 @@
 package net.link.safeonline.sdk.api.attribute;
 
 import java.io.Serializable;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
 /**
@@ -87,13 +89,13 @@ public class LinkIDAttribute<T extends Serializable> implements Serializable {
             return false;
         LinkIDAttribute rhs = (LinkIDAttribute) obj;
 
-        return id.equals( rhs.getId() );
+        return new EqualsBuilder().append( id, rhs.getId() ).append( name, rhs.getName() ).append( value, rhs.getValue() ).build();
     }
 
     @Override
     public int hashCode() {
 
-        return id.hashCode();
+        return new HashCodeBuilder().append( id ).append( name ).append( value ).build();
     }
 }
 
