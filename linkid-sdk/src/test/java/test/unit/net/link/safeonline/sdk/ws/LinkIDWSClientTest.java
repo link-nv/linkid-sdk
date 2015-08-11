@@ -226,7 +226,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-        String walletId = "cc436d59-1370-44ab-9b99-211d2670003b";
+        String walletId = "123b1c22-e6c5-4ebc-9255-e59b72db5abf";
 
         // operate
         try {
@@ -246,7 +246,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-        String walletId = "cc436d59-1370-44ab-9b99-211d2670003b";
+        String walletId = "123b1c22-e6c5-4ebc-9255-e59b72db5abf";
 
         // operate
         try {
@@ -266,7 +266,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDWalletServiceClient client = new LinkIDWalletServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
-        String walletId = "8fb05095-6210-40a1-87e6-08f3b1f3a982";
+        String walletId = "123b1c22-e6c5-4ebc-9255-e59b72db5abf";
 
         // operate
         try {
