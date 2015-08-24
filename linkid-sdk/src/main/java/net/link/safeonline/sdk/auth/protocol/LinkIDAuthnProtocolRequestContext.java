@@ -19,18 +19,9 @@ package net.link.safeonline.sdk.auth.protocol;
  */
 public class LinkIDAuthnProtocolRequestContext extends LinkIDProtocolRequestContext {
 
-    private final boolean mobileForceRegistration;
-
-    public LinkIDAuthnProtocolRequestContext(final String id, final String issuer, final LinkIDProtocolHandler linkIDProtocolHandler, final String target,
-                                             final boolean mobileForceRegistration) {
+    public LinkIDAuthnProtocolRequestContext(final String id, final String issuer, final LinkIDProtocolHandler linkIDProtocolHandler, final String target) {
 
         super( id, issuer, linkIDProtocolHandler, target );
-
-        this.mobileForceRegistration = mobileForceRegistration;
     }
 
-    public boolean isMobileForceRegistration() {
-
-        return mobileForceRegistration;
-    }
 }

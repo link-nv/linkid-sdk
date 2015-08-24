@@ -458,7 +458,7 @@
         <linkid.ws.ltqr.path>ltqr50</linkid.ws.ltqr.path>
         <linkid.ws.mandate.path>mandate30</linkid.ws.mandate.path>
         <linkid.ws.haws.path>haws20</linkid.ws.haws.path>
-        <linkid.ws.auth.path>auth20</linkid.ws.auth.path>
+        <linkid.ws.auth.path>auth30</linkid.ws.auth.path>
         <linkid.ws.reporting.path>reporting40</linkid.ws.reporting.path>
         <linkid.ws.capture.path>capture20</linkid.ws.capture.path>
         <linkid.ws.wallet.path>wallet20</linkid.ws.wallet.path>

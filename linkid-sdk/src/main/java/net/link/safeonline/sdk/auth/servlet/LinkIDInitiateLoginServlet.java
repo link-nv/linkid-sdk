@@ -51,8 +51,6 @@ public class LinkIDInitiateLoginServlet extends LinkIDAbstractInjectionServlet {
      */
     public void delegate(final HttpServletRequest request, final HttpServletResponse response) {
 
-        boolean mobileForceRegistration = null != request.getParameter( LinkIDRequestConstants.MOBILE_FORCE_REG_REQUEST_PARAM );
-
         //optional protocol: not specified => SAML2
         LinkIDProtocol protocol = LinkIDProtocol.fromString( request.getParameter( LinkIDRequestConstants.PROTOCOL_PARAM ), LinkIDProtocol.SAML2 );
 
@@ -62,12 +60,11 @@ public class LinkIDInitiateLoginServlet extends LinkIDAbstractInjectionServlet {
         // optional language
         String language = request.getParameter( LinkIDRequestConstants.LANGUAGE_REQUEST_PARAM );
 
-        LinkIDAuthenticationContext linkIDAuthenticationContext = initAuthenticationContext( request, response, mobileForceRegistration, targetURI );
+        LinkIDAuthenticationContext linkIDAuthenticationContext = initAuthenticationContext( request, response, targetURI );
 
         if (null == linkIDAuthenticationContext) {
 
             linkIDAuthenticationContext = new LinkIDAuthenticationContext( null, null, targetURI );
-            linkIDAuthenticationContext.setMobileForceRegistration( mobileForceRegistration );
         }
 
         if (null != language) {
@@ -87,7 +84,7 @@ public class LinkIDInitiateLoginServlet extends LinkIDAbstractInjectionServlet {
      */
     @Nullable
     protected LinkIDAuthenticationContext initAuthenticationContext(final HttpServletRequest request, final HttpServletResponse response,
-                                                              final boolean mobileForceRegistration, final String targetURI) {
+                                                                    final String targetURI) {
 
         return null;
     }

@@ -26,12 +26,7 @@ import java.util.Locale;
 public interface LinkIDRequestConstants {
 
     /**
-     * Trigger the QR Mobile force registration flow
-     */
-    String MOBILE_FORCE_REG_REQUEST_PARAM = "mobileForceReg";
-
-    /**
-     * Which protocol to use, SAML2, HAWS, OPENID, OAUTH
+     * Which protocol to use, SAML2, HAWS
      */
     String PROTOCOL_PARAM = "protocol";
 

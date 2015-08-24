@@ -25,7 +25,7 @@ public interface LinkIDAuthServiceClient<Request, Response> {
      *
      * @throws LinkIDAuthnException something went wrong, check the error code and info message
      */
-    LinkIDAuthnSession start(Request request, String language, String userAgent, boolean forceRegistration)
+    LinkIDAuthnSession start(Request request, String language, String userAgent)
             throws LinkIDAuthnException;
 
     /**

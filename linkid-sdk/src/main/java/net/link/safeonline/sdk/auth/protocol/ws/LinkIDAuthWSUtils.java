@@ -94,7 +94,7 @@ public abstract class LinkIDAuthWSUtils {
                 authenticationContext.getSubjectAttributes(), authenticationContext.getPaymentContext(), authenticationContext.getCallback() );
 
         return linkIDAuthServiceClient.start( samlRequest, null != authenticationContext.getLanguage()? authenticationContext.getLanguage().getLanguage(): null,
-                userAgent, authenticationContext.isMobileForceRegistration() );
+                userAgent );
     }
 
     /**

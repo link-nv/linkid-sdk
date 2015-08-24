@@ -54,6 +54,7 @@
                         <wsdlFile>xkms.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth-2.0.wsdl</wsdlFile>
+                        <wsdlFile>safe-online-auth-3.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-reporting.wsdl</wsdlFile>
                         <wsdlFile>safe-online-reporting-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-reporting-3.0.wsdl</wsdlFile>

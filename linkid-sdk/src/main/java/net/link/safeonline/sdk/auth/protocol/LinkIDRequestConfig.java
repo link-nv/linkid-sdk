@@ -50,12 +50,7 @@ public class LinkIDRequestConfig {
             targetURL = null;
         }
 
-        String authnService;
-        if (authnContext.isMobileForceRegistration()) {
-            authnService = String.format( "%s/%s", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_REG_MIN );
-        } else {
-            authnService = String.format( "%s/%s", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_AUTH_MIN );
-        }
+        String authnService = String.format( "%s/%s", config().web().linkIDBase(), LinkIDConstants.LINKID_PATH_AUTH_MIN );
 
         return new LinkIDRequestConfig( targetURL, landingURL, authnService );
     }

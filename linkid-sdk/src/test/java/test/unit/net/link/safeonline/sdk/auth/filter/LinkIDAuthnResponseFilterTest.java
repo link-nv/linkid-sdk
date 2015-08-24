@@ -55,7 +55,7 @@ public class LinkIDAuthnResponseFilterTest {
         HashMap<String, LinkIDProtocolContext> contexts = new HashMap<String, LinkIDProtocolContext>();
 
         mockLinkIDProtocolHandler = createMock( LinkIDProtocolHandler.class );
-        authnRequest = new LinkIDAuthnProtocolRequestContext( UUID.randomUUID().toString(), "test-application", mockLinkIDProtocolHandler, null, false );
+        authnRequest = new LinkIDAuthnProtocolRequestContext( UUID.randomUUID().toString(), "test-application", mockLinkIDProtocolHandler, null );
         contexts.put( authnRequest.getId(), authnRequest );
         servletTestManager.setUp( new ContainerSetup( //
                 new ServletSetup( LoginTestServlet.class ), //

@@ -9,16 +9,16 @@ package net.link.safeonline.sdk.ws.auth;
 
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.safe_online.auth._2.AuthServicePort;
-import net.lin_k.safe_online.auth._2.CancelErrorCode;
-import net.lin_k.safe_online.auth._2.CancelRequest;
-import net.lin_k.safe_online.auth._2.CancelResponse;
-import net.lin_k.safe_online.auth._2.PollErrorCode;
-import net.lin_k.safe_online.auth._2.PollRequest;
-import net.lin_k.safe_online.auth._2.PollResponse;
-import net.lin_k.safe_online.auth._2.StartErrorCode;
-import net.lin_k.safe_online.auth._2.StartRequest;
-import net.lin_k.safe_online.auth._2.StartResponse;
+import net.lin_k.safe_online.auth._3.AuthServicePort;
+import net.lin_k.safe_online.auth._3.CancelErrorCode;
+import net.lin_k.safe_online.auth._3.CancelRequest;
+import net.lin_k.safe_online.auth._3.CancelResponse;
+import net.lin_k.safe_online.auth._3.PollErrorCode;
+import net.lin_k.safe_online.auth._3.PollRequest;
+import net.lin_k.safe_online.auth._3.PollResponse;
+import net.lin_k.safe_online.auth._3.StartErrorCode;
+import net.lin_k.safe_online.auth._3.StartRequest;
+import net.lin_k.safe_online.auth._3.StartResponse;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthenticationState;
@@ -94,7 +94,7 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
     }
 
     @Override
-    public LinkIDAuthnSession start(final AuthnRequest authnRequest, final String language, final String userAgent, final boolean forceRegistration)
+    public LinkIDAuthnSession start(final AuthnRequest authnRequest, final String language, final String userAgent)
             throws LinkIDAuthnException {
 
         StartRequest request = new StartRequest();
@@ -103,7 +103,6 @@ public class LinkIDAuthServiceClientImpl extends AbstractWSClient<AuthServicePor
 
         request.setLanguage( language );
         request.setUserAgent( userAgent );
-        request.setForceRegistration( forceRegistration );
 
         // operate
         StartResponse response = getPort().start( request );

@@ -32,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDAuthenticationContext extends LinkIDContext {
 
-    private boolean                         mobileForceRegistration;
     private boolean                         forceAuthentication;
     private Map<String, List<Serializable>> subjectAttributes;
     private LinkIDPaymentContext            paymentContext;
@@ -148,19 +147,6 @@ public class LinkIDAuthenticationContext extends LinkIDContext {
                 protocol );
 
         this.forceAuthentication = forceAuthentication;
-    }
-
-    public boolean isMobileForceRegistration() {
-
-        return mobileForceRegistration;
-    }
-
-    /**
-     * Setting this true will force the linkID client to create a new linkID account
-     */
-    public void setMobileForceRegistration(final boolean mobileForceRegistration) {
-
-        this.mobileForceRegistration = mobileForceRegistration;
     }
 
     public boolean isForceAuthentication() {

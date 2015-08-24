@@ -81,8 +81,7 @@ public class LinkIDSaml2ProtocolHandler implements LinkIDProtocolHandler {
                 authnContext.getLanguage() );
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
-        return new LinkIDAuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, linkIDRequestConfig.getTargetURL(),
-                authnContext.isMobileForceRegistration() );
+        return new LinkIDAuthnProtocolRequestContext( samlRequest.getID(), samlRequest.getIssuer().getValue(), this, linkIDRequestConfig.getTargetURL() );
     }
 
     @Nullable
