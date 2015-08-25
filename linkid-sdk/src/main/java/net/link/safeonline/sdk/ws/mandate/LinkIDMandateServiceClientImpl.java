@@ -124,6 +124,7 @@ public class LinkIDMandateServiceClientImpl extends AbstractWSClient<MandateServ
             paymentContext.setMandateDescription( linkIDPaymentContext.getMandate().getDescription() );
             paymentContext.setMandateReference( linkIDPaymentContext.getMandate().getReference() );
         }
+        paymentContext.setPaymentStatusLocation( linkIDPaymentContext.getPaymentStatusLocation() );
 
         return paymentContext;
     }

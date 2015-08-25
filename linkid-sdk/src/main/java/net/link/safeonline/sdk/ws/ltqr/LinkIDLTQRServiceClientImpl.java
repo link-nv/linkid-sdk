@@ -452,6 +452,7 @@ public class LinkIDLTQRServiceClientImpl extends AbstractWSClient<LTQRServicePor
             paymentContext.setMandateDescription( linkIDPaymentContext.getMandate().getDescription() );
             paymentContext.setMandateReference( linkIDPaymentContext.getMandate().getReference() );
         }
+        paymentContext.setPaymentStatusLocation( linkIDPaymentContext.getPaymentStatusLocation() );
 
         return paymentContext;
     }

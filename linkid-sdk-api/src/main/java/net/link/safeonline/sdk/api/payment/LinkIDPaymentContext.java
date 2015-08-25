@@ -36,6 +36,8 @@ public class LinkIDPaymentContext implements Serializable {
     public static final String MENU_RESULT_PENDING_KEY  = "PaymentContext.menuResultPending";
     public static final String MENU_RESULT_ERROR_KEY    = "PaymentContext.menuResultError";
     //
+    public static final String STATUS_LOCATION_KEY      = "PaymentContext.statusLocation";
+    //
     public static final String ALLOW_PARTIAL_KEY        = "PaymentContext.allowPartial";
     public static final String ONLY_WALLETS_KEY         = "PaymentContext.onlyWallets";
 
@@ -62,6 +64,10 @@ public class LinkIDPaymentContext implements Serializable {
     // optional payment menu return URLs (docdata payment menu)
     @Nullable
     private final LinkIDPaymentMenu       paymentMenu;
+    //
+    // optional payment status location, if not specified the default location(s) in the linkID application configuration will be used
+    @Nullable
+    private final String                  paymentStatusLocation;
     //
     // wallet related flags
     private final boolean                 allowPartial;       // allow partial payments via wallets, this flag does make sense if you allow normal payment methods
@@ -93,6 +99,7 @@ public class LinkIDPaymentContext implements Serializable {
         this.paymentAddBrowser = builder.paymentAddBrowser;
         this.mandate = builder.mandate;
         this.paymentMenu = builder.paymentMenu;
+        this.paymentStatusLocation = builder.paymentStatusLocation;
         this.allowPartial = builder.allowPartial;
         this.onlyWallets = builder.onlyWallets;
     }
@@ -138,6 +145,10 @@ public class LinkIDPaymentContext implements Serializable {
             map.put( MENU_RESULT_CANCELED_KEY, paymentMenu.getMenuResultCanceled() );
             map.put( MENU_RESULT_PENDING_KEY, paymentMenu.getMenuResultPending() );
             map.put( MENU_RESULT_ERROR_KEY, paymentMenu.getMenuResultError() );
+        }
+
+        if (null != paymentStatusLocation) {
+            map.put( STATUS_LOCATION_KEY, paymentStatusLocation );
         }
 
         map.put( ALLOW_PARTIAL_KEY, Boolean.toString( allowPartial ) );
@@ -203,6 +214,9 @@ public class LinkIDPaymentContext implements Serializable {
             builder.mandate( new LinkIDPaymentMandate( paymentContextMap.get( MANDATE_DESCRIPTION_KEY ), paymentContextMap.get( MANDATE_REFERENCE_KEY ) ) );
         }
 
+        // payment status location
+        builder.paymentStatusLocation( paymentContextMap.get( STATUS_LOCATION_KEY ) );
+
         // payment menu
         if (paymentContextMap.containsKey( MENU_RESULT_SUCCESS_KEY )) {
             builder.paymentMenu( new LinkIDPaymentMenu( paymentContextMap.get( MENU_RESULT_SUCCESS_KEY ), paymentContextMap.get( MENU_RESULT_CANCELED_KEY ),
@@ -233,6 +247,7 @@ public class LinkIDPaymentContext implements Serializable {
                ", paymentAddBrowser=" + paymentAddBrowser +
                ", mandate=" + mandate +
                ", paymentMenu=" + paymentMenu +
+               ", paymentStatusLocation=" + paymentStatusLocation +
                ", allowPartial=" + allowPartial +
                ", onlyWallets=" + onlyWallets +
                '}';
@@ -254,6 +269,7 @@ public class LinkIDPaymentContext implements Serializable {
         private LinkIDPaymentAddBrowser paymentAddBrowser     = LinkIDPaymentAddBrowser.NOT_ALLOWED;
         private LinkIDPaymentMandate    mandate               = null;
         private LinkIDPaymentMenu       paymentMenu           = null;
+        private String                  paymentStatusLocation = null;
         private boolean                 allowPartial          = false;
         private boolean                 onlyWallets           = false;
 
@@ -306,6 +322,12 @@ public class LinkIDPaymentContext implements Serializable {
         public Builder paymentMenu(final LinkIDPaymentMenu paymentMenu) {
 
             this.paymentMenu = paymentMenu;
+            return this;
+        }
+
+        public Builder paymentStatusLocation(final String paymentStatusLocation) {
+
+            this.paymentStatusLocation = paymentStatusLocation;
             return this;
         }
 
@@ -364,6 +386,12 @@ public class LinkIDPaymentContext implements Serializable {
     public LinkIDPaymentMenu getPaymentMenu() {
 
         return paymentMenu;
+    }
+
+    @Nullable
+    public String getPaymentStatusLocation() {
+
+        return paymentStatusLocation;
     }
 
     public boolean isAllowPartial() {
