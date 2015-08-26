@@ -50,6 +50,7 @@ public interface LinkIDLTQRServiceClient {
      * @param pollingConfiguration  Optional polling configuration
      * @param waitForUnlock         Marks the LTQR to wait for an explicit unlock call. This only makes sense for single-use LTQR codes. Unlock the LTQR with
      *                              the change operation with unlock=true
+     * @param ltqrStatusLocation    Optional LTQR status location
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      * session ID will be used in the notifications to the Service Provider.
@@ -60,7 +61,7 @@ public interface LinkIDLTQRServiceClient {
                            boolean oneTimeUse, @Nullable Date expiryDate, @Nullable Long expiryDuration, @Nullable LinkIDCallback callback,
                            @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride, @Nullable String theme,
                            @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError, @Nullable String mobileLandingCancel,
-                           @Nullable LinkIDLTQRPollingConfiguration pollingConfiguration, boolean waitForUnlock)
+                           @Nullable LinkIDLTQRPollingConfiguration pollingConfiguration, boolean waitForUnlock, @Nullable String ltqrStatusLocation)
             throws LinkIDPushException;
 
     /**
@@ -85,6 +86,7 @@ public interface LinkIDLTQRServiceClient {
      * @param waitForUnlock         Marks the LTQR to wait for an explicit unlock call. This only makes sense for single-use LTQR codes. Unlock the LTQR with
      *                              the change operation with unlock=true
      * @param unlock                Unlocks the LTQR. When the first linkID user has finished for this LTQR, it will go back to locked if waitForUnlock=true.
+     * @param ltqrStatusLocation    Optional LTQR status location
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
@@ -93,7 +95,7 @@ public interface LinkIDLTQRServiceClient {
                              @Nullable LinkIDCallback callback, @Nullable List<String> identityProfiles, @Nullable Long sessionExpiryOverride,
                              @Nullable String theme, @Nullable String mobileLandingSuccess, @Nullable String mobileLandingError,
                              @Nullable String mobileLandingCancel, boolean resetUsed, @Nullable LinkIDLTQRPollingConfiguration pollingConfiguration,
-                             boolean waitForUnlock, boolean unlock)
+                             boolean waitForUnlock, boolean unlock, @Nullable String ltqrStatusLocation)
             throws LinkIDChangeException;
 
     /**

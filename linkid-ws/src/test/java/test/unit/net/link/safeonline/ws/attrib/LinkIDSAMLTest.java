@@ -7,27 +7,44 @@
 
 package test.unit.net.link.safeonline.ws.attrib;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import javax.xml.XMLConstants;
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import oasis.names.tc.saml._2_0.assertion.*;
+import net.link.util.logging.Logger;
+import oasis.names.tc.saml._2_0.assertion.AssertionType;
+import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
+import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
+import oasis.names.tc.saml._2_0.assertion.StatementAbstractType;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 
 public class LinkIDSAMLTest {
+
+    private static final Logger logger = Logger.get( LinkIDSAMLTest.class );
 
     @SuppressWarnings("unchecked")
     @Test
@@ -70,6 +87,7 @@ public class LinkIDSAMLTest {
         marshaller.marshal( objectFactory.createAssertion( assertion ), document );
 
         // Verify
+        logger.dbg( "Doc: %s", domToString( document ) );
         Element nsElement = document.createElement( "nsElement" );
         nsElement.setAttributeNS( XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion" );
         nsElement.setAttributeNS( XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );

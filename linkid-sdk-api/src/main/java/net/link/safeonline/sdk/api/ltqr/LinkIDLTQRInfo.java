@@ -59,6 +59,9 @@ public class LinkIDLTQRInfo implements Serializable {
     //
     private final boolean                        waitForUnlock;
     private final boolean                        locked;
+    //
+    @Nullable
+    private final String                         ltqrStatusLocation;
 
     public LinkIDLTQRInfo(final String ltqrReference, final String sessionId, final Date created, final byte[] qrCodeImage, final String qrCodeURL,
                           @Nullable final String authenticationMessage, @Nullable final String finishedMessage, final boolean oneTimeUse,
@@ -66,7 +69,7 @@ public class LinkIDLTQRInfo implements Serializable {
                           @Nullable final LinkIDCallback callback, final Set<String> identityProfiles, @Nullable final Long sessionExpiryOverride,
                           @Nullable final String theme, @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
                           @Nullable final String mobileLandingCancel, @Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration,
-                          boolean waitForUnlock, boolean locked) {
+                          boolean waitForUnlock, boolean locked, @Nullable final String ltqrStatusLocation) {
 
         this.ltqrReference = ltqrReference;
         this.sessionId = sessionId;
@@ -89,6 +92,7 @@ public class LinkIDLTQRInfo implements Serializable {
         this.pollingConfiguration = pollingConfiguration;
         this.waitForUnlock = waitForUnlock;
         this.locked = locked;
+        this.ltqrStatusLocation = ltqrStatusLocation;
     }
 
     @Override
@@ -115,6 +119,7 @@ public class LinkIDLTQRInfo implements Serializable {
                ", pollingConfiguration='" + pollingConfiguration + '\'' +
                ", waitForUnlock='" + waitForUnlock + '\'' +
                ", locked='" + locked + '\'' +
+               ", ltqrStatusLocation='" + ltqrStatusLocation + '\'' +
                '}';
     }
 
@@ -235,5 +240,11 @@ public class LinkIDLTQRInfo implements Serializable {
     public boolean isLocked() {
 
         return locked;
+    }
+
+    @Nullable
+    public String getLtqrStatusLocation() {
+
+        return ltqrStatusLocation;
     }
 }

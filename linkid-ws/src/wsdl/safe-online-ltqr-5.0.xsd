@@ -64,6 +64,11 @@
                         <documentation>Optional polling configuration, if not specified linkID defaults</documentation>
                     </annotation>
                 </element>
+                <element name="ltqrStatusLocation" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional LTQR status location override</documentation>
+                    </annotation>
+                </element>
             </sequence>
             <attribute name="oneTimeUse" type="boolean" use="required">
                 <annotation>
@@ -161,6 +166,11 @@
                 <element name="pollingConfiguration" type="tns:PollingConfiguration" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>Optional polling configuration, if not specified linkID defaults</documentation>
+                    </annotation>
+                </element>
+                <element name="ltqrStatusLocation" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional LTQR status location override</documentation>
                     </annotation>
                 </element>
             </sequence>
@@ -494,6 +504,11 @@
             <element name="locked" type="boolean" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>Is the LTQR currently locked?</documentation>
+                </annotation>
+            </element>
+            <element name="ltqrStatusLocation" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional LTQR status location override</documentation>
                 </annotation>
             </element>
         </sequence>
