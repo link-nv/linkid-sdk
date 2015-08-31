@@ -322,7 +322,7 @@ public class LinkIDWSClientTest {
         LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 5, LinkIDCurrency.EUR ) ).build();
 
         // operate
-        client.push( null, null, paymentContext, false, null, null, null, null, null, null, null, null, null, null, false );
+        client.push( null, null, paymentContext, false, null, null, null, null, null, null, null, null, null, null, false, null );
     }
 
     //    @Test
@@ -362,7 +362,7 @@ public class LinkIDWSClientTest {
 
         // operate
         LinkIDLTQRSession linkIDLTQRSession = client.push( "LTQR Test", "LTQR Test finished", linkIDPaymentContext, false, expiryDateTime.toDate(), null, null,
-                null, null, null, null, null, null, null, false );
+                null, null, null, null, null, null, null, false, null );
 
         // verify
         assertNotNull( linkIDLTQRSession );
@@ -407,9 +407,9 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String mandateReference = "9d8c9f97-730d-4b6e-85e5-f5cbd88a427e";
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10000, LinkIDCurrency.EUR ) ).description(
-                "Test description" ).build();
+        String mandateReference = "dfc816ae-b2b6-4af6-9260-72c94b9a684d";
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder(
+                new LinkIDPaymentAmount( 1, "urn:linkid:wallet:coin:coffee" ) ).description( "Test description" ).build();
         LinkIDMandateServiceClient client = new LinkIDMandateServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         // operate
