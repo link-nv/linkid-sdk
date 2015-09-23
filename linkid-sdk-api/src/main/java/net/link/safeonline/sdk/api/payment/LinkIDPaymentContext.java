@@ -198,9 +198,15 @@ public class LinkIDPaymentContext implements Serializable {
             }
         }
 
-        // intialize
-        Builder builder = new Builder(
-                new LinkIDPaymentAmount( amount, LinkIDCurrency.parse( paymentContextMap.get( CURRENCY_KEY ) ), paymentContextMap.get( WALLET_COIN_KEY ) ) );
+        String walletCoin = paymentContextMap.get( WALLET_COIN_KEY );
+
+        // if payment context only allows wallet coins, override the paymentAddBrowser flag
+        if (null != walletCoin) {
+            paymentAddBrowser = LinkIDPaymentAddBrowser.NOT_ALLOWED;
+        }
+
+        // initialize
+        Builder builder = new Builder( new LinkIDPaymentAmount( amount, LinkIDCurrency.parse( paymentContextMap.get( CURRENCY_KEY ) ), walletCoin ) );
         builder.description( paymentContextMap.get( DESCRIPTION_KEY ) );
         builder.orderReference( paymentContextMap.get( ORDER_REFERENCE_KEY ) );
         builder.paymentProfile( paymentContextMap.get( PROFILE_KEY ) );
