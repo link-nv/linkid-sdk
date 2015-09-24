@@ -28,6 +28,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
+import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnSession;
 import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.configuration.LinkIDLocalization;
@@ -47,6 +48,7 @@ import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletGetInfoException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletServiceClient;
+import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
 import net.link.safeonline.sdk.ws.auth.LinkIDAuthServiceClientImpl;
 import net.link.safeonline.sdk.ws.capture.LinkIDCaptureServiceClientImpl;
 import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClientImpl;
@@ -78,6 +80,16 @@ public class LinkIDWSClientTest {
 
     private static final Logger logger = Logger.get( LinkIDWSClientTest.class );
 
+    //private static final String WS_LOCATION = "https://demo.linkid.be/linkid-ws-username";
+    private static final String WS_LOCATION = "https://192.168.5.14:8443/linkid-ws-username";
+
+    //private static final String APP_NAME = "example-mobile";
+    //private static final String APP_USERNAME = "example-mobile";
+    //private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+    private static final String APP_NAME     = "test-shop";
+    private static final String APP_USERNAME = "test-shop";
+    private static final String APP_PASSWORD = "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
+
     private String wsLocation;
 
     @Before
@@ -86,8 +98,7 @@ public class LinkIDWSClientTest {
 
         // DEBUG so ssl validation is skipped for local self signed ssl cert, obv do not do this in production, nor even against demo.linkid.be for that matter.
         System.setProperty( ApplicationMode.PROPERTY, ApplicationMode.DEBUG.name() );
-        this.wsLocation = "https://192.168.5.14:8443/linkid-ws-username";
-        //        this.wsLocation = "https://demo.linkid.be/linkid-ws-username";
+        this.wsLocation = WS_LOCATION;
     }
 
     @Test
@@ -302,6 +313,23 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
+    public void testStartAuthentication()
+            throws Exception {
+
+        // setup
+        LinkIDAuthServiceClient<AuthnRequest, Response> client = new LinkIDAuthServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        String language = "be";
+        String userAgent = "unit-test";
+        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 1, LinkIDCurrency.EUR ) ).build();
+        AuthnRequest authnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( APP_NAME, null, null, "http://foo.com", null, false, null, null,
+                paymentContext, null );
+
+        // operate: start
+        LinkIDAuthnSession session = client.start( authnRequest, language, userAgent );
+
+    }
+
+    //    @Test
     public void testCancelAuthentication()
             throws Exception {
 
@@ -458,15 +486,13 @@ public class LinkIDWSClientTest {
             @Override
             public String getUsername() {
 
-                //                return "example-mobile";
-                return "test-shop";
+                return APP_USERNAME;
             }
 
             @Override
             public String getPassword() {
 
-                //                return "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
-                return "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
+                return APP_PASSWORD;
             }
 
             @Override
