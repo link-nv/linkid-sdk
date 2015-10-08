@@ -17,12 +17,13 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Enumeration of all supported authentication protocols.
  *
- * @author fcorneli
+ * @author wvdhaute
  */
 public enum LinkIDProtocol {
 
     SAML2( "net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2ProtocolHandler" ),
 
+    // for backwards compatibility, no longer supported by the latest versions of the SDKs
     HAWS( "net.link.safeonline.sdk.auth.protocol.haws.LinkIDHawsProtocolHandler" ),
 
     // does not have a protocol handler, has to be used directly using the WS client

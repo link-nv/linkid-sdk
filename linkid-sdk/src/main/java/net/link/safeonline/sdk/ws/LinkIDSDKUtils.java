@@ -18,7 +18,7 @@ import net.lin_k.safe_online.common.PaymentMethodType;
 import net.lin_k.safe_online.common.PaymentStatusType;
 import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
 import net.link.safeonline.sdk.api.LinkIDConstants;
-import net.link.safeonline.sdk.api.ltqr.LinkIDLTQRPollingConfiguration;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPollingConfiguration;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;

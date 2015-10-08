@@ -21,10 +21,11 @@ public class LinkIDPaymentTransaction implements Serializable {
     private final String                  docdataReference;
     private final double                  amount;
     private final LinkIDCurrency          currency;
+    private final double                  refundAmount;
 
     public LinkIDPaymentTransaction(final LinkIDPaymentMethodType paymentMethodType, final String paymentMethod, final LinkIDPaymentState paymentState,
                                     final Date creationDate, final Date authorizationDate, final Date capturedDate, final String docdataReference,
-                                    final double amount, final LinkIDCurrency currency) {
+                                    final double amount, final LinkIDCurrency currency, final double refundAmount) {
 
         this.paymentMethodType = paymentMethodType;
         this.paymentMethod = paymentMethod;
@@ -35,6 +36,7 @@ public class LinkIDPaymentTransaction implements Serializable {
         this.docdataReference = docdataReference;
         this.amount = amount;
         this.currency = currency;
+        this.refundAmount = refundAmount;
     }
 
     // Helper methods
@@ -52,6 +54,7 @@ public class LinkIDPaymentTransaction implements Serializable {
                ", docdataReference='" + docdataReference + '\'' +
                ", amount=" + amount +
                ", currency=" + currency +
+               ", refundAmount=" + refundAmount +
                '}';
     }
 
@@ -100,5 +103,10 @@ public class LinkIDPaymentTransaction implements Serializable {
     public LinkIDCurrency getCurrency() {
 
         return currency;
+    }
+
+    public double getRefundAmount() {
+
+        return refundAmount;
     }
 }

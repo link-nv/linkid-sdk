@@ -35,7 +35,4 @@ public interface LinkIDRequestConstants {
      */
     String LANGUAGE_REQUEST_PARAM  = "Language";
     String TARGETURI_REQUEST_PARAM = "return_uri";
-    String TIMEOUT_REQUEST_PARAM   = "timeout";
-
-    String HAWS_SESSION_ID_PARAM = "hawsId";
 }

@@ -9,17 +9,10 @@ package net.link.safeonline.sdk.ws;
 
 import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.ws.attrib.LinkIDAttributeClient;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
-import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureServiceClient;
-import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
-import net.link.safeonline.sdk.api.ws.haws.LinkIDHawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
-import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
-import net.link.safeonline.sdk.api.ws.mandate.LinkIDMandateServiceClient;
-import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentServiceClient;
+import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.LinkIDSecurityTokenServiceClient;
-import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.LinkIDXkms2Client;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.Nullable;
@@ -46,23 +39,8 @@ public abstract class LinkIDAbstractServiceFactory {
 
     protected abstract LinkIDSecurityTokenServiceClient _getStsService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
 
-    protected abstract LinkIDPaymentServiceClient _getPaymentService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
-
     protected abstract LinkIDXkms2Client _getXkms2Client(X509Certificate[] sslCertificates);
 
-    protected abstract LinkIDLTQRServiceClient _getLtqrServiceClient(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
-
-    protected abstract LinkIDMandateServiceClient _getMandateService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
-
-    protected abstract LinkIDHawsServiceClient<AuthnRequest, Response> _getHawsService(WSSecurityConfiguration configuration,
-                                                                                 @Nullable X509Certificate[] sslCertificates);
-
-    protected abstract LinkIDAuthServiceClient<AuthnRequest, Response> _getAuthService(WSSecurityConfiguration configuration,
-                                                                                 @Nullable X509Certificate[] sslCertificates);
-
-    protected abstract LinkIDCaptureServiceClient _getCaptureService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
-
-    protected abstract LinkIDWalletServiceClient _getWalletService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
-
-    protected abstract LinkIDConfigurationServiceClient _getConfigurationService(WSSecurityConfiguration configuration, X509Certificate[] sslCertificates);
+    protected abstract LinkIDServiceClient<AuthnRequest, Response> _getLinkIDService(WSSecurityConfiguration configuration,
+                                                                                     @Nullable X509Certificate[] sslCertificates);
 }

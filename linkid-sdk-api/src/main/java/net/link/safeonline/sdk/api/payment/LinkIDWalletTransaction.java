@@ -18,9 +18,10 @@ public class LinkIDWalletTransaction implements Serializable {
     private final double         amount;
     private final LinkIDCurrency currency;
     private final String         walletCoin;
+    private final double         refundAmount;
 
     public LinkIDWalletTransaction(final String walletId, final Date creationDate, final String transactionId, final double amount,
-                                   final LinkIDCurrency currency, final String walletCoin) {
+                                   final LinkIDCurrency currency, final String walletCoin, final double refundAmount) {
 
         this.walletId = walletId;
         this.creationDate = creationDate;
@@ -28,6 +29,7 @@ public class LinkIDWalletTransaction implements Serializable {
         this.amount = amount;
         this.currency = currency;
         this.walletCoin = walletCoin;
+        this.refundAmount = refundAmount;
     }
 
     // Helper methods
@@ -42,6 +44,7 @@ public class LinkIDWalletTransaction implements Serializable {
                ", amount=" + amount +
                ", currency=" + currency +
                ", walletCoin=" + walletCoin +
+               ", refundAmount=" + refundAmount +
                '}';
     }
 
@@ -75,5 +78,10 @@ public class LinkIDWalletTransaction implements Serializable {
     public String getWalletCoin() {
 
         return walletCoin;
+    }
+
+    public double getRefundAmount() {
+
+        return refundAmount;
     }
 }

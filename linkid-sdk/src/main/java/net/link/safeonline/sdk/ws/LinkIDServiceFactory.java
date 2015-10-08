@@ -13,32 +13,18 @@ import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.ws.attrib.LinkIDAttributeClient;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
-import net.link.safeonline.sdk.api.ws.capture.LinkIDCaptureServiceClient;
-import net.link.safeonline.sdk.api.ws.configuration.LinkIDConfigurationServiceClient;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
-import net.link.safeonline.sdk.api.ws.haws.LinkIDHawsServiceClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
-import net.link.safeonline.sdk.api.ws.ltqr.LinkIDLTQRServiceClient;
-import net.link.safeonline.sdk.api.ws.mandate.LinkIDMandateServiceClient;
-import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentServiceClient;
+import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.LinkIDSecurityTokenServiceClient;
-import net.link.safeonline.sdk.api.ws.wallet.LinkIDWalletServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.LinkIDXkms2Client;
 import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
 import net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder;
 import net.link.safeonline.sdk.ws.attrib.LinkIDAttributeClientImpl;
-import net.link.safeonline.sdk.ws.auth.LinkIDAuthServiceClientImpl;
-import net.link.safeonline.sdk.ws.capture.LinkIDCaptureServiceClientImpl;
-import net.link.safeonline.sdk.ws.configuration.LinkIDConfigurationServiceClientImpl;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
-import net.link.safeonline.sdk.ws.haws.LinkIDHawsServiceClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
-import net.link.safeonline.sdk.ws.ltqr.LinkIDLTQRServiceClientImpl;
-import net.link.safeonline.sdk.ws.mandate.LinkIDMandateServiceClientImpl;
-import net.link.safeonline.sdk.ws.payment.LinkIDPaymentServiceClientImpl;
+import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
 import net.link.safeonline.sdk.ws.sts.LinkIDSecurityTokenServiceClientImpl;
-import net.link.safeonline.sdk.ws.wallet.LinkIDWalletServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.LinkIDXkms2ClientImpl;
 import net.link.util.config.KeyProvider;
 import net.link.util.util.NSupplier;
@@ -449,189 +435,13 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
     }
 
     /**
-     * Retrieve a proxy to the linkID LTQR web service.
+     * Retrieve a proxy to the linkID web service, using the WS-Security Username token profile
      *
-     * @return proxy to the linkID LTQR web service.
+     * @return proxy to the linkID web service.
      */
-    public static LinkIDLTQRServiceClient getLtqrService() {
+    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService(final String wsUsername, final String wsPassword) {
 
-        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
-
-            return getLtqrService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
-        } else {
-
-            return getInstance()._getLtqrServiceClient( new LinkIDSDKWSSecurityConfiguration(), null );
-        }
-    }
-
-    /**
-     * Retrieve a proxy to the linkID LTQR web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID LTQR web service.
-     */
-    public static LinkIDLTQRServiceClient getLtqrService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDLTQRServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
-
-                        return wsUsername;
-                    }
-
-                    @Override
-                    public String getPassword() {
-
-                        return wsPassword;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
-
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isInboundHeaderOptional() {
-
-                        return true;
-                    }
-                } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID long term QR web service.
-     *
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID long term QR web service.
-     */
-    public static LinkIDLTQRServiceClient getLtqrServiceClient(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                               final X509Certificate[] sslCertificates) {
-
-        return getInstance()._getLtqrServiceClient( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID Security Token web service.
-     *
-     * @param configuration   Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID attribute web service.
-     */
-    public static LinkIDLTQRServiceClient getLtqrServiceClient(final WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates) {
-
-        return getInstance()._getLtqrServiceClient( configuration, sslCertificates );
-    }
-
-    @Override
-    protected LinkIDLTQRServiceClient _getLtqrServiceClient(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return new LinkIDLTQRServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID haws web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID haws web service.
-     */
-    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDHawsServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
-
-                        return wsUsername;
-                    }
-
-                    @Override
-                    public String getPassword() {
-
-                        return wsPassword;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
-
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isInboundHeaderOptional() {
-
-                        return true;
-                    }
-                } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID haws web service.
-     *
-     * @return proxy to the linkID haws web service.
-     */
-    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService() {
-
-        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
-
-            return getHawsService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
-        } else {
-
-            return getInstance()._getHawsService( new LinkIDSDKWSSecurityConfiguration(), null );
-        }
-    }
-
-    /**
-     * Retrieve a proxy to the linkID attribute web service.
-     *
-     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                        validation.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID attribute web service.
-     */
-    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                                 final X509Certificate[] sslCertificates) {
-
-        return getInstance()._getHawsService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID attribute web service.
-     *
-     * @param configuration   Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID attribute web service.
-     */
-    public static LinkIDHawsServiceClient<AuthnRequest, Response> getHawsService(final WSSecurityConfiguration configuration,
-                                                                                 X509Certificate[] sslCertificates) {
-
-        return getInstance()._getHawsService( configuration, sslCertificates );
-    }
-
-    @Override
-    protected LinkIDHawsServiceClient<AuthnRequest, Response> _getHawsService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return new LinkIDHawsServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID auth web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID auth web service.
-     */
-    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDAuthServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
+        return new LinkIDServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
                     @Override
                     public String getUsername() {
@@ -665,14 +475,14 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService() {
+    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService() {
 
         if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
-            return getAuthService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
+            return getLinkIDService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
         } else {
 
-            return getInstance()._getAuthService( new LinkIDSDKWSSecurityConfiguration(), null );
+            return getInstance()._getLinkIDService( new LinkIDSDKWSSecurityConfiguration(), null );
         }
     }
 
@@ -687,10 +497,10 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                                 final X509Certificate[] sslCertificates) {
+    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                                               final X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAuthService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
+        return getInstance()._getLinkIDService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
 
     /**
@@ -702,16 +512,15 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthService(final WSSecurityConfiguration configuration,
-                                                                                 X509Certificate[] sslCertificates) {
+    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return getInstance()._getAuthService( configuration, sslCertificates );
+        return getInstance()._getLinkIDService( configuration, sslCertificates );
     }
 
     @Override
-    protected LinkIDAuthServiceClient<AuthnRequest, Response> _getAuthService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDServiceClient<AuthnRequest, Response> _getLinkIDService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
-        return new LinkIDAuthServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
+        return new LinkIDServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }
 
     private static X509Certificate[] getSSLCertificates(final X509Certificate[] sslCertificates) {
@@ -730,451 +539,5 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
                 }
             }
         } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID mandate web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID mandate web service.
-     */
-    public static LinkIDMandateServiceClient getMandateService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDMandateServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
-
-                        return wsUsername;
-                    }
-
-                    @Override
-                    public String getPassword() {
-
-                        return wsPassword;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
-
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isInboundHeaderOptional() {
-
-                        return true;
-                    }
-                } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID mandate web service.
-     *
-     * @return proxy to the linkID mandate web service.
-     */
-    public static LinkIDMandateServiceClient getMandateService() {
-
-        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
-
-            return getMandateService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
-        } else {
-
-            return getInstance()._getMandateService( new LinkIDSDKWSSecurityConfiguration(), null );
-        }
-    }
-
-    /**
-     * Retrieve a proxy to the linkID mandate web service.
-     *
-     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                        validation.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID mandate web service.
-     */
-    public static LinkIDMandateServiceClient getMandateService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                               final X509Certificate[] sslCertificates) {
-
-        return getInstance()._getMandateService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID mandate web service.
-     *
-     * @param configuration   Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID mandate web service.
-     */
-    public static LinkIDMandateServiceClient getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return getInstance()._getMandateService( configuration, sslCertificates );
-    }
-
-    @Override
-    protected LinkIDMandateServiceClient _getMandateService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return new LinkIDMandateServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID capture web service.
-     *
-     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                        validation.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID capture web service.
-     */
-    public static LinkIDCaptureServiceClient getCaptureService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                               final X509Certificate[] sslCertificates) {
-
-        return getInstance()._getCaptureService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID capture web service.
-     *
-     * @param configuration   Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID capture web service.
-     */
-    public static LinkIDCaptureServiceClient getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return getInstance()._getCaptureService( configuration, sslCertificates );
-    }
-
-    @Override
-    protected LinkIDCaptureServiceClient _getCaptureService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return new LinkIDCaptureServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID capture web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID capture web service.
-     */
-    public static LinkIDCaptureServiceClient getCaptureService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDCaptureServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
-
-                        return wsUsername;
-                    }
-
-                    @Override
-                    public String getPassword() {
-
-                        return wsPassword;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
-
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isInboundHeaderOptional() {
-
-                        return true;
-                    }
-                } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID capture web service.
-     *
-     * @return proxy to the linkID capture web service.
-     */
-    public static LinkIDCaptureServiceClient getCaptureService() {
-
-        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
-
-            return getCaptureService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
-        } else {
-
-            return getInstance()._getCaptureService( new LinkIDSDKWSSecurityConfiguration(), null );
-        }
-    }
-
-    /**
-     * Retrieve a proxy to the linkID wallet web service.
-     *
-     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                        validation.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID wallet web service.
-     */
-    public static LinkIDWalletServiceClient getWalletService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                             final X509Certificate[] sslCertificates) {
-
-        return getInstance()._getWalletService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID wallet web service.
-     *
-     * @param configuration   Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID wallet web service.
-     */
-    public static LinkIDWalletServiceClient getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return getInstance()._getWalletService( configuration, sslCertificates );
-    }
-
-    @Override
-    protected LinkIDWalletServiceClient _getWalletService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return new LinkIDWalletServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID wallet web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID wallet web service.
-     */
-    public static LinkIDWalletServiceClient getWalletService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDWalletServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
-
-                        return wsUsername;
-                    }
-
-                    @Override
-                    public String getPassword() {
-
-                        return wsPassword;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
-
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isInboundHeaderOptional() {
-
-                        return true;
-                    }
-                } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID wallet web service.
-     *
-     * @return proxy to the linkID wallet web service.
-     */
-    public static LinkIDWalletServiceClient getWalletService() {
-
-        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
-
-            return getWalletService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
-        } else {
-
-            return getInstance()._getWalletService( new LinkIDSDKWSSecurityConfiguration(), null );
-        }
-    }
-
-    /**
-     * Retrieve a proxy to the linkID payment web service.
-     *
-     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                        validation.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID payment web service.
-     */
-    public static LinkIDPaymentServiceClient getPaymentService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                               final X509Certificate[] sslCertificates) {
-
-        return getInstance()._getPaymentService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID payment web service.
-     *
-     * @param configuration   Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID payment web service.
-     */
-    public static LinkIDPaymentServiceClient getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return getInstance()._getPaymentService( configuration, sslCertificates );
-    }
-
-    @Override
-    protected LinkIDPaymentServiceClient _getPaymentService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return new LinkIDPaymentServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID payment web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID payment web service.
-     */
-    public static LinkIDPaymentServiceClient getPaymentService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDPaymentServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
-
-                        return wsUsername;
-                    }
-
-                    @Override
-                    public String getPassword() {
-
-                        return wsPassword;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
-
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isInboundHeaderOptional() {
-
-                        return true;
-                    }
-                } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID payment web service.
-     *
-     * @return proxy to the linkID payment web service.
-     */
-    public static LinkIDPaymentServiceClient getPaymentService() {
-
-        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
-
-            return getPaymentService( LinkIDSDKConfigHolder.config().linkID().app().username(), LinkIDSDKConfigHolder.config().linkID().app().password() );
-        } else {
-
-            return getInstance()._getPaymentService( new LinkIDSDKWSSecurityConfiguration(), null );
-        }
-    }
-
-    /**
-     * Retrieve a proxy to the linkID configuration web service.
-     *
-     * @param trustedDN       The DN of the certificate that incoming WS-Security messages are signed with.
-     * @param keyProvider     The key provider that provides the keys and certificates used by WS-Security for authentication and
-     *                        validation.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID configuration web service.
-     */
-    public static LinkIDConfigurationServiceClient getConfigurationService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                           final X509Certificate[] sslCertificates) {
-
-        return getInstance()._getConfigurationService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID configuration web service.
-     *
-     * @param configuration   Configuration of the WS-Security layer that secures the transport.
-     * @param sslCertificates The server's SSL certificate.  If not {@code null}, validates whether SSL is encrypted using the given
-     *                        certificate.
-     *
-     * @return proxy to the linkID configuration web service.
-     */
-    public static LinkIDConfigurationServiceClient getConfigurationService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return getInstance()._getConfigurationService( configuration, sslCertificates );
-    }
-
-    @Override
-    protected LinkIDConfigurationServiceClient _getConfigurationService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
-
-        return new LinkIDConfigurationServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID configuration web service, using the WS-Security Username token profile
-     *
-     * @return proxy to the linkID configuration web service.
-     */
-    public static LinkIDConfigurationServiceClient getConfigurationService(final String wsUsername, final String wsPassword) {
-
-        return new LinkIDConfigurationServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
-                new AbstractWSSecurityUsernameTokenCallback() {
-                    @Override
-                    public String getUsername() {
-
-                        return wsUsername;
-                    }
-
-                    @Override
-                    public String getPassword() {
-
-                        return wsPassword;
-                    }
-
-                    @Nullable
-                    @Override
-                    public String handle(final String username) {
-
-                        return null;
-                    }
-
-                    @Override
-                    public boolean isInboundHeaderOptional() {
-
-                        return true;
-                    }
-                } );
-    }
-
-    /**
-     * Retrieve a proxy to the linkID configuration web service.
-     *
-     * @return proxy to the linkID configuration web service.
-     */
-    public static LinkIDConfigurationServiceClient getConfigurationService() {
-
-        if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
-
-            return getConfigurationService( LinkIDSDKConfigHolder.config().linkID().app().username(),
-                    LinkIDSDKConfigHolder.config().linkID().app().password() );
-        } else {
-
-            return getInstance()._getConfigurationService( new LinkIDSDKWSSecurityConfiguration(), null );
-        }
     }
 }

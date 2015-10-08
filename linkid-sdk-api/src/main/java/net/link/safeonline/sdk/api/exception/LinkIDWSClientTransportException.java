@@ -15,7 +15,7 @@ import javax.xml.ws.BindingProvider;
  *
  * @author wvdhaute
  */
-public class LinkIDWSClientTransportException extends Exception {
+public class LinkIDWSClientTransportException extends RuntimeException {
 
     private final transient BindingProvider bindingProvider;
     private                 String          location;

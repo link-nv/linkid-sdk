@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnException;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnSession;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDPollException;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDPollResponse;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.auth.protocol.ws.LinkIDAuthWSUtils;
 import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
@@ -42,42 +42,43 @@ public class ExampleWSServlet extends HttpServlet {
 
         logger.dbg( "doGet" );
 
-        LinkIDAuthnSession linkIDAuthnSession = (LinkIDAuthnSession) request.getSession().getAttribute( RESPONSE_SESSION_PARAM );
-        if (null == linkIDAuthnSession) {
+        LinkIDAuthSession linkIDAuthSession = (LinkIDAuthSession) request.getSession().getAttribute( RESPONSE_SESSION_PARAM );
+        if (null == linkIDAuthSession) {
             try {
                 LinkIDAuthenticationContext authenticationContext = new LinkIDAuthenticationContext();
                 authenticationContext.setApplicationName( config().linkID().app().name() );
                 authenticationContext.setIdentityProfiles( Collections.singletonList( "linkid_basic" ) );
                 authenticationContext.setLanguage( Locale.ENGLISH );
 
-                linkIDAuthnSession = LinkIDAuthWSUtils.startAuthentication( LinkIDServiceFactory.getAuthService(), authenticationContext, null );
+                linkIDAuthSession = LinkIDAuthWSUtils.startAuthentication( LinkIDServiceFactory.getLinkIDService(), authenticationContext, null );
 
                 // push on session
-                request.getSession().setAttribute( RESPONSE_SESSION_PARAM, linkIDAuthnSession );
+                request.getSession().setAttribute( RESPONSE_SESSION_PARAM, linkIDAuthSession );
 
                 response.setContentType( "image/png" );
                 OutputStream o = response.getOutputStream();
-                o.write( linkIDAuthnSession.getQrCodeImage() );
+                o.write( linkIDAuthSession.getQrCodeImage() );
                 o.flush();
                 o.close();
             }
-            catch (LinkIDAuthnException e) {
+            catch (LinkIDAuthException e) {
                 throw new InternalInconsistencyException( e );
             }
         } else {
 
             // poll
             try {
-                LinkIDPollResponse<Response> linkIDPollResponse = LinkIDAuthWSUtils.pollAuthentication( linkIDAuthnSession.getSessionId(), Locale.ENGLISH );
-                showPollResult( linkIDPollResponse, response );
+                LinkIDAuthPollResponse<Response> linkIDAuthPollResponse = LinkIDAuthWSUtils.pollAuthentication( linkIDAuthSession.getSessionId(),
+                        Locale.ENGLISH );
+                showPollResult( linkIDAuthPollResponse, response );
             }
-            catch (LinkIDPollException e) {
+            catch (LinkIDAuthPollException e) {
                 throw new InternalInconsistencyException( e );
             }
         }
     }
 
-    private void showPollResult(final LinkIDPollResponse<Response> linkIDPollResponse, final HttpServletResponse response)
+    private void showPollResult(final LinkIDAuthPollResponse<Response> linkIDAuthPollResponse, final HttpServletResponse response)
             throws IOException {
 
         response.getWriter().write( "<html>" );
@@ -86,13 +87,13 @@ public class ExampleWSServlet extends HttpServlet {
 
         response.getWriter().write( "<p>" );
         response.getWriter().write( "<h2>Session state</h2>" );
-        response.getWriter().write( "AuthnState  : " + linkIDPollResponse.getLinkIDAuthenticationState() + "<br/>" );
-        response.getWriter().write( "PaymentState: " + linkIDPollResponse.getPaymentState() + "<br/>" );
-        response.getWriter().write( "PaymentURL  : " + linkIDPollResponse.getPaymentMenuURL() + "<br/>" );
+        response.getWriter().write( "AuthnState  : " + linkIDAuthPollResponse.getLinkIDAuthenticationState() + "<br/>" );
+        response.getWriter().write( "PaymentState: " + linkIDAuthPollResponse.getPaymentState() + "<br/>" );
+        response.getWriter().write( "PaymentURL  : " + linkIDAuthPollResponse.getPaymentMenuURL() + "<br/>" );
         response.getWriter().write( "</p>" );
 
-        if (null != linkIDPollResponse.getResponse()) {
-            LinkIDAuthnResponse authnResponse = LinkIDAuthWSUtils.parse( linkIDPollResponse.getResponse() );
+        if (null != linkIDAuthPollResponse.getResponse()) {
+            LinkIDAuthnResponse authnResponse = LinkIDAuthWSUtils.parse( linkIDAuthPollResponse.getResponse() );
 
             response.getWriter().write( "<p>" );
             response.getWriter().write( "<h2>AuthnResponse</h2>" );

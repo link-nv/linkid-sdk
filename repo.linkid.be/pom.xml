@@ -98,18 +98,6 @@
         </dependency>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
-            <artifactId>example-mobile-haws-username</artifactId>
-            <type>war</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
-            <artifactId>example-mobile-haws-x509</artifactId>
-            <type>war</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
             <artifactId>example-ws</artifactId>
             <type>war</type>
             <version>${project.version}</version>

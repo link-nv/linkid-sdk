@@ -17,9 +17,10 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     private final String applicationName;
 
     public LinkIDWalletReportTransaction(final String walletId, final Date creationDate, final String transactionId, final double amount,
-                                         final LinkIDCurrency currency, final String walletCoin, final String userId, final String applicationName) {
+                                         final LinkIDCurrency currency, final String walletCoin, final double refundAmount, final String userId,
+                                         final String applicationName) {
 
-        super( walletId, creationDate, transactionId, amount, currency, walletCoin );
+        super( walletId, creationDate, transactionId, amount, currency, walletCoin, refundAmount );
 
         this.userId = userId;
         this.applicationName = applicationName;

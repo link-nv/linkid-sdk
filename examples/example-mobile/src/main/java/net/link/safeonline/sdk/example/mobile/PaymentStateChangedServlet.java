@@ -14,10 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentConstants;
-import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentStatus;
-import net.link.safeonline.sdk.api.ws.payment.LinkIDPaymentServiceClient;
+import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.logging.Logger;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Response;
 
 
 public class PaymentStateChangedServlet extends HttpServlet {
@@ -39,10 +41,10 @@ public class PaymentStateChangedServlet extends HttpServlet {
         // lookup the transaction
 
         // fetch the status report using the linkID payment web service
-        LinkIDPaymentServiceClient linkIDPaymentServiceClient = LinkIDServiceFactory.getPaymentService();
+        LinkIDServiceClient<AuthnRequest, Response> linkIDServiceClient = LinkIDServiceFactory.getLinkIDService();
         LinkIDPaymentStatus paymentState;
         try {
-            paymentState = linkIDPaymentServiceClient.getStatus( orderReference );
+            paymentState = linkIDServiceClient.getPaymentStatus( orderReference );
         }
         catch (LinkIDWSClientTransportException e) {
             logger.err( e, "Failed to get payment state..." );

@@ -16,8 +16,6 @@
 
     <modules>
         <module>example-mobile</module>
-        <module>example-mobile-haws-username</module>
-        <module>example-mobile-haws-x509</module>
         <module>example-ws</module>
         <module>example-ws-username</module>
     </modules>

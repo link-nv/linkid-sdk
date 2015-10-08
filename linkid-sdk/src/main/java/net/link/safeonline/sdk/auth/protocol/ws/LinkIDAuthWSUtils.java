@@ -9,18 +9,18 @@ import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.externalcode.LinkIDExternalCodeResponse;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentResponse;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthServiceClient;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnException;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDAuthnSession;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDPollException;
-import net.link.safeonline.sdk.api.ws.auth.LinkIDPollResponse;
+import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.safeonline.sdk.auth.util.LinkIDDeviceContextUtils;
 import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.safeonline.sdk.ws.LinkIDWSUsernameConfiguration;
-import net.link.safeonline.sdk.ws.auth.LinkIDAuthServiceClientImpl;
+import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.Assertion;
@@ -33,7 +33,12 @@ import org.opensaml.saml2.core.Response;
  * Date: 02/05/14
  * Time: 11:06
  */
-public abstract class LinkIDAuthWSUtils {
+public class LinkIDAuthWSUtils {
+
+    private LinkIDAuthWSUtils() {
+
+        throw new AssertionError();
+    }
 
     /**
      * Start a linkID authentication/payment session using the WS binding
@@ -42,15 +47,15 @@ public abstract class LinkIDAuthWSUtils {
      * @param authenticationContext   authentication context
      * @param userAgent               optional user agent which will be used for constructing the QR code URL
      *
-     * @return the {@link LinkIDAuthnSession} object
+     * @return the {@link LinkIDAuthSession} object
      *
-     * @throws LinkIDAuthnException something went wrong, check the error code what
+     * @throws LinkIDAuthException something went wrong, check the error code what
      */
-    public static LinkIDAuthnSession startAuthentication(final LinkIDWSUsernameConfiguration wsUsernameConfiguration,
-                                                         final LinkIDAuthenticationContext authenticationContext, final String userAgent)
-            throws LinkIDAuthnException {
+    public static LinkIDAuthSession startAuthentication(final LinkIDWSUsernameConfiguration wsUsernameConfiguration,
+                                                        final LinkIDAuthenticationContext authenticationContext, final String userAgent)
+            throws LinkIDAuthException {
 
-        return startAuthentication( getAuthServiceClient( wsUsernameConfiguration ), authenticationContext, userAgent );
+        return startAuthentication( getLinkIDServiceClient( wsUsernameConfiguration ), authenticationContext, userAgent );
     }
 
     /**
@@ -59,30 +64,30 @@ public abstract class LinkIDAuthWSUtils {
      * @param authenticationContext authentication context
      * @param userAgent             optional user agent which will be used for constructing the QR code URL
      *
-     * @return the {@link LinkIDAuthnSession} object
+     * @return the {@link LinkIDAuthSession} object
      *
-     * @throws LinkIDAuthnException something went wrong, check the error code what
+     * @throws LinkIDAuthException something went wrong, check the error code what
      */
-    public static LinkIDAuthnSession startAuthentication(final LinkIDAuthenticationContext authenticationContext, final String userAgent)
-            throws LinkIDAuthnException {
+    public static LinkIDAuthSession startAuthentication(final LinkIDAuthenticationContext authenticationContext, final String userAgent)
+            throws LinkIDAuthException {
 
-        return startAuthentication( LinkIDServiceFactory.getAuthService(), authenticationContext, userAgent );
+        return startAuthentication( LinkIDServiceFactory.getLinkIDService(), authenticationContext, userAgent );
     }
 
     /**
      * Start a linkID authentication/payment session using the WS binding
      *
-     * @param linkIDAuthServiceClient the linkID authentication web service client
-     * @param authenticationContext   authentication context
-     * @param userAgent               optional user agent which will be used for constructing the QR code URL
+     * @param linkIDServiceClient   the linkID authentication web service client
+     * @param authenticationContext authentication context
+     * @param userAgent             optional user agent which will be used for constructing the QR code URL
      *
-     * @return the {@link LinkIDAuthnSession} object
+     * @return the {@link LinkIDAuthSession} object
      *
-     * @throws LinkIDAuthnException something went wrong, check the error code what
+     * @throws LinkIDAuthException something went wrong, check the error code what
      */
-    public static LinkIDAuthnSession startAuthentication(final LinkIDAuthServiceClient<AuthnRequest, Response> linkIDAuthServiceClient,
-                                                         final LinkIDAuthenticationContext authenticationContext, final String userAgent)
-            throws LinkIDAuthnException {
+    public static LinkIDAuthSession startAuthentication(final LinkIDServiceClient<AuthnRequest, Response> linkIDServiceClient,
+                                                        final LinkIDAuthenticationContext authenticationContext, final String userAgent)
+            throws LinkIDAuthException {
 
         Map<String, String> deviceContextMap = LinkIDDeviceContextUtils.generate( authenticationContext.getAuthenticationMessage(),
                 authenticationContext.getFinishedMessage(), authenticationContext.getIdentityProfiles(), authenticationContext.getSessionExpiryOverride(),
@@ -93,7 +98,7 @@ public abstract class LinkIDAuthWSUtils {
                 authenticationContext.getApplicationFriendlyName(), "http://foo.bar", null, authenticationContext.isForceAuthentication(), deviceContextMap,
                 authenticationContext.getSubjectAttributes(), authenticationContext.getPaymentContext(), authenticationContext.getCallback() );
 
-        return linkIDAuthServiceClient.start( samlRequest, null != authenticationContext.getLanguage()? authenticationContext.getLanguage().getLanguage(): null,
+        return linkIDServiceClient.authStart( samlRequest, null != authenticationContext.getLanguage()? authenticationContext.getLanguage().getLanguage(): null,
                 userAgent );
     }
 
@@ -104,29 +109,29 @@ public abstract class LinkIDAuthWSUtils {
      *
      * @return the state of the linkID session
      */
-    public static LinkIDPollResponse<Response> pollAuthentication(final String sessionId, final Locale locale)
-            throws LinkIDPollException {
+    public static LinkIDAuthPollResponse<Response> pollAuthentication(final String sessionId, final Locale locale)
+            throws LinkIDAuthPollException {
 
-        return pollAuthentication( LinkIDServiceFactory.getAuthService(), sessionId, locale );
+        return pollAuthentication( LinkIDServiceFactory.getLinkIDService(), sessionId, locale );
     }
 
-    public static LinkIDPollResponse<Response> pollAuthentication(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration, final String sessionId,
-                                                                  final Locale locale)
-            throws LinkIDPollException {
+    public static LinkIDAuthPollResponse<Response> pollAuthentication(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration, final String sessionId,
+                                                                      final Locale locale)
+            throws LinkIDAuthPollException {
 
-        return pollAuthentication( getAuthServiceClient( linkIDWSUsernameConfiguration ), sessionId, locale );
+        return pollAuthentication( getLinkIDServiceClient( linkIDWSUsernameConfiguration ), sessionId, locale );
     }
 
-    public static LinkIDPollResponse<Response> pollAuthentication(final LinkIDAuthServiceClient<AuthnRequest, Response> linkIDAuthServiceClient,
-                                                                  final String sessionId, final Locale locale)
-            throws LinkIDPollException {
+    public static LinkIDAuthPollResponse<Response> pollAuthentication(final LinkIDServiceClient<AuthnRequest, Response> linkIDServiceClient,
+                                                                      final String sessionId, final Locale locale)
+            throws LinkIDAuthPollException {
 
-        return linkIDAuthServiceClient.poll( sessionId, locale.getLanguage() );
+        return linkIDServiceClient.authPoll( sessionId, locale.getLanguage() );
     }
 
-    public static LinkIDAuthServiceClient<AuthnRequest, Response> getAuthServiceClient(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration) {
+    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDServiceClient(final LinkIDWSUsernameConfiguration linkIDWSUsernameConfiguration) {
 
-        return new LinkIDAuthServiceClientImpl( LinkIDServiceFactory.getWsUsernameBase( linkIDWSUsernameConfiguration.getLinkIDBase() ),
+        return new LinkIDServiceClientImpl( LinkIDServiceFactory.getWsUsernameBase( linkIDWSUsernameConfiguration.getLinkIDBase() ),
                 linkIDWSUsernameConfiguration.getSSLCertificates(), new AbstractWSSecurityUsernameTokenCallback() {
             @Override
             public String getUsername() {

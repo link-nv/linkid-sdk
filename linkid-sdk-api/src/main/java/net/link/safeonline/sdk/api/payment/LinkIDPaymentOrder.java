@@ -20,6 +20,7 @@ public class LinkIDPaymentOrder implements Serializable {
     private final String                         description;
     private final LinkIDPaymentState             paymentState;
     private final double                         amountPayed;
+    private final double                         amountRefunded;
     private final boolean                        authorized;
     private final boolean                        captured;
     private final String                         orderReference;
@@ -31,9 +32,10 @@ public class LinkIDPaymentOrder implements Serializable {
     private final List<LinkIDWalletTransaction>  walletTransactions;
 
     public LinkIDPaymentOrder(final Date date, final double amount, final LinkIDCurrency currency, final String walletCoin, final String description,
-                              final LinkIDPaymentState paymentState, final double amountPayed, final boolean authorized, final boolean captured,
-                              final String orderReference, final String userId, final String email, final String givenName, final String familyName,
-                              final List<LinkIDPaymentTransaction> transactions, final List<LinkIDWalletTransaction> walletTransactions) {
+                              final LinkIDPaymentState paymentState, final double amountPayed, final double amountRefunded, final boolean authorized,
+                              final boolean captured, final String orderReference, final String userId, final String email, final String givenName,
+                              final String familyName, final List<LinkIDPaymentTransaction> transactions,
+                              final List<LinkIDWalletTransaction> walletTransactions) {
 
         this.date = date;
         this.amount = amount;
@@ -42,6 +44,7 @@ public class LinkIDPaymentOrder implements Serializable {
         this.description = description;
         this.paymentState = paymentState;
         this.amountPayed = amountPayed;
+        this.amountRefunded = amountRefunded;
         this.authorized = authorized;
         this.captured = captured;
         this.orderReference = orderReference;
@@ -66,6 +69,7 @@ public class LinkIDPaymentOrder implements Serializable {
                ", description='" + description + '\'' +
                ", paymentState=" + paymentState +
                ", amountPayed=" + amountPayed +
+               ", amountRefunded=" + amountRefunded +
                ", authorized=" + authorized +
                ", captured=" + captured +
                ", orderReference='" + orderReference + '\'' +
@@ -113,6 +117,11 @@ public class LinkIDPaymentOrder implements Serializable {
     public double getAmountPayed() {
 
         return amountPayed;
+    }
+
+    public double getAmountRefunded() {
+
+        return amountRefunded;
     }
 
     public boolean isAuthorized() {
