@@ -528,16 +528,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             for (LTQRInfo ltqrInfo : response.getSuccess().getResults()) {
 
                 infos.add( new LinkIDLTQRInfo( ltqrInfo.getLtqrReference(), ltqrInfo.getSessionId(), ltqrInfo.getCreated().toGregorianCalendar().getTime(),
-                        LinkIDServiceUtils.decodeQR( ltqrInfo.getEncodedQR() ), ltqrInfo.getQrContent(), ltqrInfo.getContent().getAuthenticationMessage(),
-                        ltqrInfo.getContent().getFinishedMessage(), ltqrInfo.isOneTimeUse(),
-                        null != ltqrInfo.getContent().getExpiryDate()? ltqrInfo.getContent().getExpiryDate().toGregorianCalendar().getTime(): null,
-                        ltqrInfo.getContent().getExpiryDuration(), LinkIDServiceUtils.getPaymentContext( ltqrInfo.getContent().getPaymentContext() ),
-                        LinkIDServiceUtils.getCallback( ltqrInfo.getContent().getCallback() ),
-                        LinkIDServiceUtils.getIdentityProfiles( ltqrInfo.getContent().getIdentityProfiles() ), ltqrInfo.getContent().getSessionExpiryOverride(),
-                        ltqrInfo.getContent().getTheme(), ltqrInfo.getContent().getMobileLandingSuccess(), ltqrInfo.getContent().getMobileLandingError(),
-                        ltqrInfo.getContent().getMobileLandingCancel(),
-                        LinkIDServiceUtils.getPollingConfiguration( ltqrInfo.getContent().getPollingConfiguration() ), ltqrInfo.getContent().isWaitForUnlock(),
-                        ltqrInfo.isLocked(), ltqrInfo.getContent().getLtqrStatusLocation() ) );
+                        LinkIDServiceUtils.decodeQR( ltqrInfo.getEncodedQR() ), ltqrInfo.getQrContent(), ltqrInfo.isOneTimeUse(),
+                        LinkIDServiceUtils.convert( ltqrInfo.getContent() ), ltqrInfo.isLocked() ) );
             }
             return infos;
         }

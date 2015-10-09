@@ -353,6 +353,70 @@ public class LinkIDServiceUtils {
         return ltqrContent;
     }
 
+    public static LinkIDLTQRContent convert(final LTQRContent ltqrContent) {
+
+        LinkIDLTQRContent.Builder builder = new LinkIDLTQRContent.Builder();
+
+        // custom msgs
+        builder.authenticationMessage( ltqrContent.getAuthenticationMessage() );
+        builder.finishedMessage( ltqrContent.getFinishedMessage() );
+
+        // payment context
+        PaymentContext wsPaymentContext = ltqrContent.getPaymentContext();
+        if (null != wsPaymentContext) {
+
+            LinkIDPaymentContext.Builder paymentContextBuilder = new LinkIDPaymentContext.Builder(
+                    new LinkIDPaymentAmount( wsPaymentContext.getAmount(), LinkIDServiceUtils.convert( wsPaymentContext.getCurrency() ),
+                            wsPaymentContext.getWalletCoin() ) ).description( wsPaymentContext.getDescription() )
+                                                                .orderReference( wsPaymentContext.getOrderReference() )
+                                                                .paymentProfile( wsPaymentContext.getPaymentProfile() )
+                                                                .paymentValidationTime( wsPaymentContext.getValidationTime() )
+                                                                .allowPartial( convert( wsPaymentContext.isAllowPartial() ) )
+                                                                .onlyWallets( convert( wsPaymentContext.isOnlyWallets() ) )
+                                                                .paymentStatusLocation( wsPaymentContext.getPaymentStatusLocation() );
+
+            if (convert( wsPaymentContext.isMandate() )) {
+                paymentContextBuilder.mandate( new LinkIDPaymentMandate( wsPaymentContext.getDescription(), wsPaymentContext.getMandateReference() ) );
+            }
+
+            builder.paymentContext( paymentContextBuilder.build() );
+        }
+
+        // callback
+        if (null != ltqrContent.getCallback()) {
+            builder.callback( new LinkIDCallback( ltqrContent.getCallback().getLocation(), ltqrContent.getCallback().getAppSessionId(),
+                    convert( ltqrContent.getCallback().isInApp() ) ) );
+        }
+
+        // identity profiles
+        if (!CollectionUtils.isEmpty( ltqrContent.getIdentityProfiles() )) {
+            builder.identityProfiles( ltqrContent.getIdentityProfiles() );
+        }
+
+        if (ltqrContent.getSessionExpiryOverride() > 0) {
+            builder.sessionExpiryOverride( ltqrContent.getSessionExpiryOverride() );
+        }
+        builder.theme( ltqrContent.getTheme() );
+        builder.mobileLandingSuccess( ltqrContent.getMobileLandingSuccess() );
+        builder.mobileLandingError( ltqrContent.getMobileLandingError() );
+        builder.mobileLandingCancel( ltqrContent.getMobileLandingCancel() );
+
+        // polling configuration
+        builder.pollingConfiguration( LinkIDServiceUtils.getPollingConfiguration( ltqrContent.getPollingConfiguration() ) );
+
+        // configuration
+        if (null != ltqrContent.getExpiryDate()) {
+            builder.expiryDate( ltqrContent.getExpiryDate().toGregorianCalendar().getTime() );
+        }
+        if (ltqrContent.getExpiryDuration() > 0) {
+            builder.expiryDuration( ltqrContent.getExpiryDuration() );
+        }
+        builder.waitForUnlock( ltqrContent.isWaitForUnlock() );
+        builder.ltqrStatusLocation( ltqrContent.getLtqrStatusLocation() );
+
+        return builder.build();
+    }
+
     public static LinkIDLTQRErrorCode convert(final net.lin_k.linkid._3.LTQRErrorCode errorCode) {
 
         switch (errorCode) {
@@ -649,6 +713,11 @@ public class LinkIDServiceUtils {
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static boolean convert(@Nullable final Boolean b) {
+
+        return null != b? b: false;
     }
 
 }
