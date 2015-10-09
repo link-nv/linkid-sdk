@@ -1,8 +1,8 @@
 package net.link.safeonline.sdk.api.ws.linkid.ltqr;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
+import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 
 
 /**
@@ -17,22 +17,20 @@ public class LinkIDLTQRInfo implements Serializable {
     private final String            sessionId;
     private final Date              created;
     //
-    private final byte[]            qrCodeImage;
-    private final String            qrCodeURL;
+    private final LinkIDQRInfo      qrCodeInfo;
     //
     private final boolean           oneTimeUse;
     private final LinkIDLTQRContent content;
     //
     private final boolean           locked;
 
-    public LinkIDLTQRInfo(final String ltqrReference, final String sessionId, final Date created, final byte[] qrCodeImage, final String qrCodeURL,
-                          final boolean oneTimeUse, final LinkIDLTQRContent content, final boolean locked) {
+    public LinkIDLTQRInfo(final String ltqrReference, final String sessionId, final Date created, final LinkIDQRInfo qrCodeInfo, final boolean oneTimeUse,
+                          final LinkIDLTQRContent content, final boolean locked) {
 
         this.ltqrReference = ltqrReference;
         this.sessionId = sessionId;
         this.created = created;
-        this.qrCodeImage = qrCodeImage;
-        this.qrCodeURL = qrCodeURL;
+        this.qrCodeInfo = qrCodeInfo;
         this.oneTimeUse = oneTimeUse;
         this.content = content;
         this.locked = locked;
@@ -45,8 +43,7 @@ public class LinkIDLTQRInfo implements Serializable {
                "ltqrReference='" + ltqrReference + '\'' +
                ", sessionId='" + sessionId + '\'' +
                ", created=" + created +
-               ", qrCodeImage=" + Arrays.toString( qrCodeImage ) +
-               ", qrCodeURL='" + qrCodeURL + '\'' +
+               ", qrCodeInfo='" + qrCodeInfo + '\'' +
                ", oneTimeUse=" + oneTimeUse +
                ", content=" + content +
                ", locked=" + locked +
@@ -70,14 +67,9 @@ public class LinkIDLTQRInfo implements Serializable {
         return created;
     }
 
-    public byte[] getQrCodeImage() {
+    public LinkIDQRInfo getQrCodeInfo() {
 
-        return qrCodeImage;
-    }
-
-    public String getQrCodeURL() {
-
-        return qrCodeURL;
+        return qrCodeInfo;
     }
 
     public boolean isOneTimeUse() {

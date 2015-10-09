@@ -20,6 +20,7 @@ import net.lin_k.linkid._3.LTQRPollingConfiguration;
 import net.lin_k.linkid._3.PaymentContext;
 import net.lin_k.linkid._3.PaymentMethodType;
 import net.lin_k.linkid._3.PaymentStatusType;
+import net.lin_k.linkid._3.QRCodeInfo;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -28,6 +29,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
+import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
@@ -393,7 +395,7 @@ public class LinkIDServiceUtils {
             builder.identityProfiles( ltqrContent.getIdentityProfiles() );
         }
 
-        if (ltqrContent.getSessionExpiryOverride() > 0) {
+        if (convert( ltqrContent.getSessionExpiryOverride() ) > 0) {
             builder.sessionExpiryOverride( ltqrContent.getSessionExpiryOverride() );
         }
         builder.theme( ltqrContent.getTheme() );
@@ -408,7 +410,7 @@ public class LinkIDServiceUtils {
         if (null != ltqrContent.getExpiryDate()) {
             builder.expiryDate( ltqrContent.getExpiryDate().toGregorianCalendar().getTime() );
         }
-        if (ltqrContent.getExpiryDuration() > 0) {
+        if (convert( ltqrContent.getExpiryDuration() ) > 0) {
             builder.expiryDuration( ltqrContent.getExpiryDuration() );
         }
         builder.waitForUnlock( ltqrContent.isWaitForUnlock() );
@@ -720,4 +722,15 @@ public class LinkIDServiceUtils {
         return null != b? b: false;
     }
 
+    public static long convert(@Nullable final Long l) {
+
+        return null != l? l: 0;
+    }
+
+    public static LinkIDQRInfo convert(final QRCodeInfo qrCodeInfo) {
+
+        return new LinkIDQRInfo( decodeQR( qrCodeInfo.getQrEncoded() ), qrCodeInfo.getQrEncoded(), qrCodeInfo.getQrURL(), qrCodeInfo.getQrContent(),
+                qrCodeInfo.isMobile(), qrCodeInfo.isTargetBlank() );
+
+    }
 }

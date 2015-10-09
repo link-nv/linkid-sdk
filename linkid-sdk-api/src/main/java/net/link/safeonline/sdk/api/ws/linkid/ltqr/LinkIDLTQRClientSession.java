@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.api.ws.linkid.ltqr;
 import java.io.Serializable;
 import java.util.Date;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
+import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -21,24 +22,21 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDLTQRClientSession implements Serializable {
 
-    private final byte[] qrCodeImage;
-    private final String qrCodeURL;
-    private final String ltqrReference;
-    private final String clientSessionId;
-    private final String userId;
-    private final Date   created;
+    private final String       ltqrReference;
+    private final LinkIDQRInfo qrCodeInfo;
+    private final String       clientSessionId;
+    private final String       userId;
+    private final Date         created;
 
     @Nullable
     private final String             paymentOrderReference;
     private final LinkIDPaymentState paymentState;
 
-    public LinkIDLTQRClientSession(final byte[] qrCodeImage, final String qrCodeURL, final String ltqrReference, final String clientSessionId,
-                                   final String userId, final Date created, final LinkIDPaymentState paymentState,
-                                   @Nullable final String paymentOrderReference) {
+    public LinkIDLTQRClientSession(final String ltqrReference, final LinkIDQRInfo qrCodeInfo, final String clientSessionId, final String userId,
+                                   final Date created, final LinkIDPaymentState paymentState, @Nullable final String paymentOrderReference) {
 
-        this.qrCodeImage = qrCodeImage;
-        this.qrCodeURL = qrCodeURL;
         this.ltqrReference = ltqrReference;
+        this.qrCodeInfo = qrCodeInfo;
         this.clientSessionId = clientSessionId;
         this.userId = userId;
         this.created = created;
@@ -46,26 +44,32 @@ public class LinkIDLTQRClientSession implements Serializable {
         this.paymentOrderReference = paymentOrderReference;
     }
 
+    // Helper methods
+
     @Override
     public String toString() {
 
-        return String.format( "QR code: %s, LTQR Ref: %s, ClientSessionID: %s, UserID: %s, Created: %s, PaymentState: %s, Payment order ref: %s", qrCodeURL,
-                ltqrReference, clientSessionId, userId, created, paymentState, paymentOrderReference );
+        return "LinkIDLTQRClientSession{" +
+               "ltqrReference='" + ltqrReference + '\'' +
+               ", qrCodeInfo=" + qrCodeInfo +
+               ", clientSessionId='" + clientSessionId + '\'' +
+               ", userId='" + userId + '\'' +
+               ", created=" + created +
+               ", paymentOrderReference='" + paymentOrderReference + '\'' +
+               ", paymentState=" + paymentState +
+               '}';
     }
 
-    public byte[] getQrCodeImage() {
-
-        return qrCodeImage;
-    }
-
-    public String getQrCodeURL() {
-
-        return qrCodeURL;
-    }
+    // Accessors
 
     public String getLtqrReference() {
 
         return ltqrReference;
+    }
+
+    public LinkIDQRInfo getQrCodeInfo() {
+
+        return qrCodeInfo;
     }
 
     public String getClientSessionId() {

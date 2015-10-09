@@ -57,29 +57,9 @@
                     <documentation>The authentication session ID, use this in the poll operation</documentation>
                 </annotation>
             </element>
-            <element name="encodedQRCode" type="string" minOccurs="1" maxOccurs="1">
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
                 <annotation>
-                    <documentation>Base64 encoded QR code image</documentation>
-                </annotation>
-            </element>
-            <element name="qrCodeURL" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>QR code URL, this will differ depending on the userAgent sent in the StartRequest</documentation>
-                </annotation>
-            </element>
-            <element name="mobile" type="boolean" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>If user agent was specified, will return whether the request was started from a mobile client or not. Else is false</documentation>
-                </annotation>
-            </element>
-            <element name="targetBlank" type="boolean" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>If user agent was specified, some devices require the target to be _blank in order for the link to open the linkID app. Else is false</documentation>
-                </annotation>
-            </element>
-            <element name="authenticationContext" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Authentication context (context shown in the client)</documentation>
+                    <documentation>linkID QR Code Information</documentation>
                 </annotation>
             </element>
         </sequence>
@@ -583,6 +563,11 @@
                     </annotation>
                 </element>
             </sequence>
+            <attribute name="userAgent" type="string" use="optional">
+                <annotation>
+                    <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+                </annotation>
+            </attribute>
             <attribute name="oneTimeUse" type="boolean" use="required">
                 <annotation>
                     <documentation>Long term QR session can only be used once</documentation>
@@ -616,6 +601,11 @@
                     </annotation>
                 </element>
             </sequence>
+            <attribute name="userAgent" type="string" use="optional">
+                <annotation>
+                    <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+                </annotation>
+            </attribute>
             <attribute name="resetUsed" type="boolean" use="optional">
                 <annotation>
                     <documentation>Optional flag for single use LTQR codes to let them be used again one time. If multi use this flag does nothing.</documentation>
@@ -715,6 +705,11 @@
                     </annotation>
                 </element>
             </sequence>
+            <attribute name="userAgent" type="string" use="optional">
+                <annotation>
+                    <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+                </annotation>
+            </attribute>
         </complexType>
     </element>
 
@@ -812,16 +807,6 @@
 
     <complexType name="LTQRPushSuccess">
         <sequence>
-            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
-                </annotation>
-            </element>
-            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Content of the QR code</documentation>
-                </annotation>
-            </element>
             <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The LTQR reference of this long term QR
@@ -835,6 +820,11 @@
                         This payment order reference will be used in the notifications to the Service Provider if applicable.</documentation>
                 </annotation>
             </element>
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>linkID QR Code Information</documentation>
+                </annotation>
+            </element>
         </sequence>
     </complexType>
 
@@ -844,16 +834,6 @@
 
     <complexType name="LTQRChangeSuccess">
         <sequence>
-            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
-                </annotation>
-            </element>
-            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Content of the QR code</documentation>
-                </annotation>
-            </element>
             <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The LTQR reference</documentation>
@@ -862,6 +842,11 @@
             <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional payment order reference</documentation>
+                </annotation>
+            </element>
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>linkID QR Code Information</documentation>
                 </annotation>
             </element>
         </sequence>
@@ -922,14 +907,9 @@
                     <documentation>Creation date</documentation>
                 </annotation>
             </element>
-            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
                 <annotation>
-                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
-                </annotation>
-            </element>
-            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Content of the QR code</documentation>
+                    <documentation>linkID QR Code Information</documentation>
                 </annotation>
             </element>
             <element name="content" type="tns:LTQRContent" minOccurs="1" maxOccurs="1">
@@ -952,16 +932,6 @@
 
     <complexType name="LTQRClientSession">
         <sequence>
-            <element name="encodedQR" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Base64 encoded QR code for the created long term session. In PNG format</documentation>
-                </annotation>
-            </element>
-            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
-                <annotation>
-                    <documentation>Content of the QR code</documentation>
-                </annotation>
-            </element>
             <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The LTQR reference</documentation>
@@ -970,6 +940,11 @@
             <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional payment order reference</documentation>
+                </annotation>
+            </element>
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>linkID QR Code Information</documentation>
                 </annotation>
             </element>
             <element name="clientSessionId" type="string" minOccurs="1" maxOccurs="1">
@@ -2170,5 +2145,34 @@
         </sequence>
     </complexType>
 
+    <complexType name="QRCodeInfo">
+        <sequence>
+            <element name="qrEncoded" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code image</documentation>
+                </annotation>
+            </element>
+            <element name="qrURL" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>QR code URL, this will differ depending on the userAgent sent in the StartRequest</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>QR code content, everything but the protocol</documentation>
+                </annotation>
+            </element>
+            <element name="mobile" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>If user agent was specified, will return whether the request was started from a mobile client or not. Else is false</documentation>
+                </annotation>
+            </element>
+            <element name="targetBlank" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>If user agent was specified, some devices require the target to be _blank in order for the link to open the linkID app. Else is false</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
 
 </schema>

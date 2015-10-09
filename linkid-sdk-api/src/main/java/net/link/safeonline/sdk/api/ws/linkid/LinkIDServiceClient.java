@@ -131,6 +131,7 @@ public interface LinkIDServiceClient<Request, Response> {
      * Push a long term QR session to linkID.
      *
      * @param content    Configuration of this LTQR
+     * @param userAgent  optional user agent case you want to get the QR code URL in the correct format
      * @param oneTimeUse Long term QR session can only be used once
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
@@ -138,7 +139,7 @@ public interface LinkIDServiceClient<Request, Response> {
      *
      * @throws LinkIDLTQRPushException failure
      */
-    LinkIDLTQRSession ltqrPush(LinkIDLTQRContent content, boolean oneTimeUse)
+    LinkIDLTQRSession ltqrPush(LinkIDLTQRContent content, String userAgent, boolean oneTimeUse)
             throws LinkIDLTQRPushException;
 
     /**
@@ -146,12 +147,13 @@ public interface LinkIDServiceClient<Request, Response> {
      *
      * @param ltqrReference LTQR reference, mandatory
      * @param content       Configuration of this LTQR
+     * @param userAgent     optional user agent case you want to get the QR code URL in the correct format
      * @param resetUsed     Optional flag for single use LTQR codes to let them be used again one time. If multi use this flag does nothing.
      * @param unlock        Unlocks the LTQR. When the first linkID user has finished for this LTQR, it will go back to locked if waitForUnlock=true.
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
-    LinkIDLTQRSession ltqrChange(String ltqrReference, LinkIDLTQRContent content, boolean resetUsed, boolean unlock)
+    LinkIDLTQRSession ltqrChange(String ltqrReference, LinkIDLTQRContent content, String userAgent, boolean resetUsed, boolean unlock)
             throws LinkIDLTQRChangeException;
 
     /**
@@ -187,12 +189,13 @@ public interface LinkIDServiceClient<Request, Response> {
      * Fetch info for the specified LTQR references
      *
      * @param ltqrReferences the list of LTQR references to fetch info for
+     * @param userAgent      optional user agent case you want to get the QR code URL in the correct format
      *
      * @return the LTQR info objects
      *
      * @throws LinkIDLTQRInfoException failure
      */
-    List<LinkIDLTQRInfo> ltqrInfo(List<String> ltqrReferences)
+    List<LinkIDLTQRInfo> ltqrInfo(List<String> ltqrReferences, String userAgent)
             throws LinkIDLTQRInfoException;
 
     /**

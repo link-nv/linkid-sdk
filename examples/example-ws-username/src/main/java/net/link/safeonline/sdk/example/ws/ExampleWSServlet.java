@@ -55,7 +55,7 @@ public class ExampleWSServlet extends HttpServlet {
 
                 response.setContentType( "image/png" );
                 OutputStream o = response.getOutputStream();
-                o.write( linkIDAuthSession.getQrCodeImage() );
+                o.write( linkIDAuthSession.getQrCodeInfo().getQrImage() );
                 o.flush();
                 o.close();
             }

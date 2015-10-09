@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.api.ws.linkid.ltqr;
 
 import java.io.Serializable;
+import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -18,34 +19,41 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LinkIDLTQRSession implements Serializable {
 
-    private final byte[] qrCodeImage;
-    private final String qrCodeURL;
-    private final String ltqrReference;
-
+    private final String       ltqrReference;
+    private final LinkIDQRInfo qrCodeInfo;
+    //
     @Nullable
-    private final String paymentOrderReference;    // optional payment order reference, if applicable
+    private final String       paymentOrderReference;    // optional payment order reference, if applicable
 
-    public LinkIDLTQRSession(final byte[] qrCodeImage, final String qrCodeURL, final String ltqrReference, @Nullable final String paymentOrderReference) {
+    public LinkIDLTQRSession(final String ltqrReference, final LinkIDQRInfo qrCodeInfo, @Nullable final String paymentOrderReference) {
 
-        this.qrCodeImage = qrCodeImage;
-        this.qrCodeURL = qrCodeURL;
         this.ltqrReference = ltqrReference;
+        this.qrCodeInfo = qrCodeInfo;
         this.paymentOrderReference = paymentOrderReference;
     }
 
-    public byte[] getQrCodeImage() {
+    // Helper methods
 
-        return qrCodeImage;
+    @Override
+    public String toString() {
+
+        return "LinkIDLTQRSession{" +
+               "ltqrReference='" + ltqrReference + '\'' +
+               ", qrCodeInfo=" + qrCodeInfo +
+               ", paymentOrderReference='" + paymentOrderReference + '\'' +
+               '}';
     }
 
-    public String getQrCodeURL() {
-
-        return qrCodeURL;
-    }
+    // Accessors
 
     public String getLtqrReference() {
 
         return ltqrReference;
+    }
+
+    public LinkIDQRInfo getQrCodeInfo() {
+
+        return qrCodeInfo;
     }
 
     @Nullable

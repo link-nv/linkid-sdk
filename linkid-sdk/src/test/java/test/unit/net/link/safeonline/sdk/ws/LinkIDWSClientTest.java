@@ -20,7 +20,6 @@ import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
-import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
@@ -128,7 +127,7 @@ public class LinkIDWSClientTest {
 
         LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        List<String> orderReferences = Arrays.asList( "QR-SHOP-ad4babdd-31e2-42e2-af54-a0648a9027be" );
+        List<String> orderReferences = Arrays.asList( "QR-SHOP-f0c5b593-0754-4ec0-a45c-664bb86bab11" );
 
         List<LinkIDPaymentOrder> linkIDPaymentOrders = client.getPaymentReportForOrderReferences( orderReferences );
         logger.inf( "# orders = %d", linkIDPaymentOrders.size() );
@@ -204,7 +203,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-        String walletOrganizationId = "60d3113d-7229-4387-a271-792d905ca4ed";
+        String walletOrganizationId = "urn:linkid:wallet:leaseplan";
 
         // operate
         try {
@@ -224,7 +223,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-        String walletId = "123b1c22-e6c5-4ebc-9255-e59b72db5abf";
+        String walletId = "6e2cc86f-4178-46e5-a483-ca5fd0ebd4a1";
 
         // operate
         try {
@@ -244,7 +243,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-        String walletId = "123b1c22-e6c5-4ebc-9255-e59b72db5abf";
+        String walletId = "6e2cc86f-4178-46e5-a483-ca5fd0ebd4a1";
 
         // operate
         try {
@@ -329,24 +328,11 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testPushLTQR()
-            throws Exception {
-
-        // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
-        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 5, LinkIDCurrency.EUR ) ).build();
-        LinkIDLTQRContent ltqrContent = new LinkIDLTQRContent.Builder().paymentContext( paymentContext ).build();
-
-        // operate
-        client.ltqrPush( ltqrContent, false );
-    }
-
-    //    @Test
     public void testGetPaymentStatus()
             throws Exception {
 
         // setup
-        String orderReference = "QR-SHOP-ad4babdd-31e2-42e2-af54-a0648a9027be";
+        String orderReference = "QR-SHOP-f0c5b593-0754-4ec0-a45c-664bb86bab11";
         LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
 
         // operate
@@ -363,15 +349,8 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String mandateDescription = null;
-        String mandateReference = null;
-        //        String mandateDescription = "LTQR mandate description";
-        //        String mandateReference = UUID.randomUUID().toString();
         LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) )   //
-                .orderReference( UUID.randomUUID().toString() )
-                .paymentAddBrowser( LinkIDPaymentAddBrowser.NOT_ALLOWED )
-                .mandate( new LinkIDPaymentMandate( mandateDescription, mandateReference ) )
-                .build();
+                .orderReference( UUID.randomUUID().toString() ).paymentAddBrowser( LinkIDPaymentAddBrowser.NOT_ALLOWED ).build();
         DateTime expiryDateTime = new DateTime();
         expiryDateTime = expiryDateTime.plusMonths( 2 );
 
@@ -384,19 +363,18 @@ public class LinkIDWSClientTest {
         LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
 
         // operate
-        LinkIDLTQRSession linkIDLTQRSession = client.ltqrPush( ltqrContent, false );
+        LinkIDLTQRSession linkIDLTQRSession = client.ltqrPush( ltqrContent, null, false );
 
         // verify
         assertNotNull( linkIDLTQRSession );
         assertNotNull( linkIDLTQRSession.getLtqrReference() );
 
-        logger.dbg( "Mandate reference: %s", mandateReference );
-        logger.dbg( "QR code URL: %s", linkIDLTQRSession.getQrCodeURL() );
+        logger.dbg( "QR code URL: %s", linkIDLTQRSession.getQrCodeInfo().getQrCodeURL() );
         logger.dbg( "LTQR ref: %s", linkIDLTQRSession.getLtqrReference() );
         logger.dbg( "Payment order ref: %s", linkIDLTQRSession.getPaymentOrderReference() );
 
         // write out QR image
-        ByteArrayInputStream bais = new ByteArrayInputStream( linkIDLTQRSession.getQrCodeImage() );
+        ByteArrayInputStream bais = new ByteArrayInputStream( linkIDLTQRSession.getQrCodeInfo().getQrImage() );
         BufferedImage qrImage = ImageIO.read( bais );
         ImageIO.write( qrImage, "png", new File( "qr.png" ) );
     }
@@ -407,12 +385,11 @@ public class LinkIDWSClientTest {
 
         // setup
         List<String> ltqrReferences = Lists.newLinkedList();
-        ltqrReferences.add( "fb3d7a95-64c8-47d3-8b6c-9d35ffe31da7" );
-        ltqrReferences.add( "7c228af7-a02f-4a78-a70a-1a332848c0c9" );
+        ltqrReferences.add( "856eed32-2119-4f94-b705-f177079e1b9e" );
         LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
 
         // operate
-        List<LinkIDLTQRInfo> linkIDLTQRInfos = client.ltqrInfo( ltqrReferences );
+        List<LinkIDLTQRInfo> linkIDLTQRInfos = client.ltqrInfo( ltqrReferences, null );
 
         // verify
         assertNotNull( linkIDLTQRInfos );

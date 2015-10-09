@@ -132,8 +132,6 @@ import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
-import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.utils.Base64;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Response;
@@ -208,17 +206,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
         if (null != response.getSuccess()) {
 
-            // convert base64 encoded QR image
-            byte[] qrCodeImage;
-            try {
-                qrCodeImage = Base64.decode( response.getSuccess().getEncodedQRCode() );
-            }
-            catch (Base64DecodingException e) {
-                throw new InternalInconsistencyException( "Could not decode the QR image!" );
-            }
-
-            return new LinkIDAuthSession( response.getSuccess().getSessionId(), qrCodeImage, response.getSuccess().getEncodedQRCode(),
-                    response.getSuccess().getQrCodeURL(), response.getSuccess().isMobile(), response.getSuccess().isTargetBlank() );
+            return new LinkIDAuthSession( response.getSuccess().getSessionId(), LinkIDServiceUtils.convert( response.getSuccess().getQrCodeInfo() ) );
         }
 
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );
@@ -366,12 +354,13 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDLTQRSession ltqrPush(final LinkIDLTQRContent content, final boolean oneTimeUse)
+    public LinkIDLTQRSession ltqrPush(final LinkIDLTQRContent content, final String userAgent, final boolean oneTimeUse)
             throws LinkIDLTQRPushException {
 
         LTQRPushRequest request = new LTQRPushRequest();
 
         request.setContent( LinkIDServiceUtils.convert( content ) );
+        request.setUserAgent( userAgent );
         request.setOneTimeUse( oneTimeUse );
 
         // operate
@@ -384,8 +373,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
         if (null != response.getSuccess()) {
 
-            return new LinkIDLTQRSession( LinkIDServiceUtils.decodeQR( response.getSuccess().getEncodedQR() ), response.getSuccess().getQrContent(),
-                    response.getSuccess().getLtqrReference(), response.getSuccess().getPaymentOrderReference() );
+            return new LinkIDLTQRSession( response.getSuccess().getLtqrReference(), LinkIDServiceUtils.convert( response.getSuccess().getQrCodeInfo() ),
+                    response.getSuccess().getPaymentOrderReference() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
@@ -393,13 +382,15 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDLTQRSession ltqrChange(final String ltqrReference, final LinkIDLTQRContent content, final boolean resetUsed, final boolean unlock)
+    public LinkIDLTQRSession ltqrChange(final String ltqrReference, final LinkIDLTQRContent content, final String userAgent, final boolean resetUsed,
+                                        final boolean unlock)
             throws LinkIDLTQRChangeException {
 
         LTQRChangeRequest request = new LTQRChangeRequest();
 
         request.setLtqrReference( ltqrReference );
         request.setContent( LinkIDServiceUtils.convert( content ) );
+        request.setUserAgent( userAgent );
         request.setResetUsed( resetUsed );
         request.setUnlock( unlock );
 
@@ -412,8 +403,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         }
 
         if (null != response.getSuccess()) {
-            return new LinkIDLTQRSession( LinkIDServiceUtils.decodeQR( response.getSuccess().getEncodedQR() ), response.getSuccess().getQrContent(),
-                    response.getSuccess().getLtqrReference(), response.getSuccess().getPaymentOrderReference() );
+            return new LinkIDLTQRSession( response.getSuccess().getLtqrReference(), LinkIDServiceUtils.convert( response.getSuccess().getQrCodeInfo() ),
+                    response.getSuccess().getPaymentOrderReference() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
@@ -452,10 +443,9 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
             for (LTQRClientSession clientSession : response.getSuccess().getSessions()) {
 
-                clientSessions.add( new LinkIDLTQRClientSession( LinkIDServiceUtils.decodeQR( clientSession.getEncodedQR() ), clientSession.getQrContent(),
-                        clientSession.getLtqrReference(), clientSession.getClientSessionId(), clientSession.getUserId(),
-                        clientSession.getCreated().toGregorianCalendar().getTime(), LinkIDServiceUtils.convert( clientSession.getPaymentStatus() ),
-                        clientSession.getPaymentOrderReference() ) );
+                clientSessions.add( new LinkIDLTQRClientSession( clientSession.getLtqrReference(), LinkIDServiceUtils.convert( clientSession.getQrCodeInfo() ),
+                        clientSession.getClientSessionId(), clientSession.getUserId(), clientSession.getCreated().toGregorianCalendar().getTime(),
+                        LinkIDServiceUtils.convert( clientSession.getPaymentStatus() ), clientSession.getPaymentOrderReference() ) );
             }
 
             return clientSessions;
@@ -503,7 +493,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public List<LinkIDLTQRInfo> ltqrInfo(final List<String> ltqrReferences)
+    public List<LinkIDLTQRInfo> ltqrInfo(final List<String> ltqrReferences, final String userAgent)
             throws LinkIDLTQRInfoException {
 
         LTQRInfoRequest request = new LTQRInfoRequest();
@@ -513,6 +503,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         }
 
         request.getLtqrReferences().addAll( ltqrReferences );
+        request.setUserAgent( userAgent );
 
         // operate
         LTQRInfoResponse response = getPort().ltqrInfo( request );
@@ -528,8 +519,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             for (LTQRInfo ltqrInfo : response.getSuccess().getResults()) {
 
                 infos.add( new LinkIDLTQRInfo( ltqrInfo.getLtqrReference(), ltqrInfo.getSessionId(), ltqrInfo.getCreated().toGregorianCalendar().getTime(),
-                        LinkIDServiceUtils.decodeQR( ltqrInfo.getEncodedQR() ), ltqrInfo.getQrContent(), ltqrInfo.isOneTimeUse(),
-                        LinkIDServiceUtils.convert( ltqrInfo.getContent() ), ltqrInfo.isLocked() ) );
+                        LinkIDServiceUtils.convert( ltqrInfo.getQrCodeInfo() ), ltqrInfo.isOneTimeUse(), LinkIDServiceUtils.convert( ltqrInfo.getContent() ),
+                        ltqrInfo.isLocked() ) );
             }
             return infos;
         }
