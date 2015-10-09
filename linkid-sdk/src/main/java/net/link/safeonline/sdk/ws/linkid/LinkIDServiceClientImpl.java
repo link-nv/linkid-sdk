@@ -248,7 +248,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
             LinkIDPaymentState paymentState = null;
             if (null != response.getSuccess().getPaymentState()) {
-                paymentState = LinkIDConversionUtils.convert( response.getSuccess().getPaymentState() );
+                paymentState = LinkIDServiceUtils.convert( response.getSuccess().getPaymentState() );
             }
 
             String paymentMenuURL = response.getSuccess().getPaymentMenuURL();

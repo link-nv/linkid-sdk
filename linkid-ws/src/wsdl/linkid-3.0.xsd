@@ -148,7 +148,7 @@
                     <documentation>The authentication state</documentation>
                 </annotation>
             </element>
-            <element name="paymentState" type="tns:AuthPaymentState" minOccurs="0" maxOccurs="1">
+            <element name="paymentState" type="tns:PaymentStatusType" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional payment state</documentation>
                 </annotation>
@@ -207,20 +207,6 @@
 					<documentation>The linkID authentication was ok, user did not have payment tokens and started the add new payment method flow</documentation>
 				</annotation>
 			</enumeration>
-		</restriction>
-	</simpleType>
-
-    <simpleType name="AuthPaymentState">
-		<annotation>
-			<documentation>Payment states</documentation>
-		</annotation>
-		<restriction base="string">
-			<enumeration value="linkid.payment.state.started" />
-			<enumeration value="linkid.payment.state.waiting" />
-            <enumeration value="linkid.payment.state.failed" />
-			<enumeration value="linkid.payment.state.refunded" />
-			<enumeration value="linkid.payment.state.refund_started" />
-            <enumeration value="linkid.payment.state.payed" />
 		</restriction>
 	</simpleType>
 
