@@ -1,11 +1,8 @@
 package net.link.safeonline.sdk.ws.linkid;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.linkid._3.AuthCancelErrorCode;
 import net.lin_k.linkid._3.AuthPollErrorCode;
@@ -31,6 +28,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
+import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
@@ -163,6 +161,21 @@ public class LinkIDServiceUtils {
                 return LinkIDLocalizationErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDLocalizationErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDCallbackPullErrorCode convert(final net.lin_k.linkid._3.CallbackPullErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_RESPONSE_INVALID_SESSION_ID:
+                return LinkIDCallbackPullErrorCode.ERROR_RESPONSE_INVALID_SESSION_ID;
+            case ERROR_UNEXPECTED:
+                return LinkIDCallbackPullErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDCallbackPullErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -464,40 +477,40 @@ public class LinkIDServiceUtils {
         return qrCodeImage;
     }
 
-    public static Set<String> getIdentityProfiles(@Nullable final List<String> identityProfiles) {
-
-        if (null == identityProfiles)
-            return null;
-
-        return Sets.newHashSet( identityProfiles );
-    }
-
-    public static LinkIDCallback getCallback(@Nullable final Callback callback) {
-
-        if (null == callback)
-            return null;
-
-        return new LinkIDCallback( callback.getLocation(), callback.getAppSessionId(), callback.isInApp() );
-    }
-
-    public static LinkIDPaymentContext getPaymentContext(@Nullable final PaymentContext paymentContext) {
-
-        if (null == paymentContext)
-            return null;
-
-        LinkIDPaymentContext.Builder builder = new LinkIDPaymentContext.Builder(
-                new LinkIDPaymentAmount( paymentContext.getAmount(), convert( paymentContext.getCurrency() ),   //
-                        paymentContext.getWalletCoin() ) ).description( paymentContext.getDescription() )
-                                                          .orderReference( paymentContext.getOrderReference() )
-                                                          .paymentProfile( paymentContext.getPaymentProfile() )
-                                                          .paymentValidationTime( paymentContext.getValidationTime() );
-
-        if (paymentContext.isMandate()) {
-            builder = builder.mandate( new LinkIDPaymentMandate( paymentContext.getMandateDescription(), paymentContext.getMandateReference() ) );
-        }
-
-        return builder.build();
-    }
+//    public static Set<String> getIdentityProfiles(@Nullable final List<String> identityProfiles) {
+//
+//        if (null == identityProfiles)
+//            return null;
+//
+//        return Sets.newHashSet( identityProfiles );
+//    }
+//
+//    public static LinkIDCallback getCallback(@Nullable final Callback callback) {
+//
+//        if (null == callback)
+//            return null;
+//
+//        return new LinkIDCallback( callback.getLocation(), callback.getAppSessionId(), callback.isInApp() );
+//    }
+//
+//    public static LinkIDPaymentContext getPaymentContext(@Nullable final PaymentContext paymentContext) {
+//
+//        if (null == paymentContext)
+//            return null;
+//
+//        LinkIDPaymentContext.Builder builder = new LinkIDPaymentContext.Builder(
+//                new LinkIDPaymentAmount( paymentContext.getAmount(), convert( paymentContext.getCurrency() ),   //
+//                        paymentContext.getWalletCoin() ) ).description( paymentContext.getDescription() )
+//                                                          .orderReference( paymentContext.getOrderReference() )
+//                                                          .paymentProfile( paymentContext.getPaymentProfile() )
+//                                                          .paymentValidationTime( paymentContext.getValidationTime() );
+//
+//        if (paymentContext.isMandate()) {
+//            builder = builder.mandate( new LinkIDPaymentMandate( paymentContext.getMandateDescription(), paymentContext.getMandateReference() ) );
+//        }
+//
+//        return builder.build();
+//    }
 
     public static LinkIDLTQRPollingConfiguration getPollingConfiguration(@Nullable final LTQRPollingConfiguration pollingConfiguration) {
 

@@ -272,6 +272,76 @@
 	</simpleType>
 
     <!-- **************************************************************************************************************************************************
+         *                                                                  Callback                                                                      *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Callback: Pull request -->
+
+    <element name="CallbackPullRequest">
+        <annotation>
+            <documentation>Fetch an authentication response for a linkID callback</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The session ID for the callback authentication response, returned in the redirect</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="CallbackPullResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:CallbackPullSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:CallbackPullError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="CallbackPullSuccess">
+        <sequence>
+            <any namespace='##any' processContents='lax' minOccurs='1' maxOccurs='1'>
+                <annotation>
+                    <documentation>The authentication response, e.g. a SAML2 response</documentation>
+                </annotation>
+            </any>
+        </sequence>
+    </complexType>
+
+    <complexType name="CallbackPullError">
+        <sequence>
+            <element name="error" type="tns:CallbackPullErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="info" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="CallbackPullErrorCode">
+		<annotation>
+			<documentation>Error codes for a Callback pull request</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.response.invalid.sessionId">
+				<annotation>
+					<documentation>No authentication response found with this sessionId</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something went wrong trying to pull the callback authentication response</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- **************************************************************************************************************************************************
          *                                                                  Configuration                                                                 *
          **************************************************************************************************************************************************  -->
 

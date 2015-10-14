@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
+import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -96,6 +97,18 @@ public interface LinkIDServiceClient<Request, Response> {
      */
     void authCancel(String sessionId)
             throws LinkIDAuthCancelException;
+
+    /**
+     * Fetch a linkID callback authentication response
+     *
+     * @param sessionId the sessionId of the authentication response
+     *
+     * @return the authentication response
+     *
+     * @throws LinkIDCallbackPullException something went wrong, check the error code and info message
+     */
+    Response callbackPull(String sessionId)
+            throws LinkIDCallbackPullException;
 
     /**
      * Fetch the application's themes

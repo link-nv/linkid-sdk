@@ -22,6 +22,8 @@ import net.lin_k.linkid._3.AuthPollRequest;
 import net.lin_k.linkid._3.AuthPollResponse;
 import net.lin_k.linkid._3.AuthStartRequest;
 import net.lin_k.linkid._3.AuthStartResponse;
+import net.lin_k.linkid._3.CallbackPullRequest;
+import net.lin_k.linkid._3.CallbackPullResponse;
 import net.lin_k.linkid._3.ConfigLocalization;
 import net.lin_k.linkid._3.ConfigLocalizationRequest;
 import net.lin_k.linkid._3.ConfigLocalizationResponse;
@@ -90,6 +92,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
@@ -122,6 +125,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
+import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.safeonline.ws.linkid.LinkIDWSServiceFactory;
 import net.link.util.InternalInconsistencyException;
@@ -183,6 +187,9 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         getBindingProvider().getRequestContext()
                             .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                     String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.path" ) ) );
+
+        // initialize SAML2
+        LinkIDAuthnRequestFactory.bootstrapSaml2();
     }
 
     @Override
@@ -280,6 +287,50 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         if (null != response.getError()) {
             throw new LinkIDAuthCancelException( LinkIDServiceUtils.convert( response.getError().getError() ), response.getError().getInfo() );
         }
+    }
+
+    @Override
+    public Response callbackPull(final String sessionId)
+            throws LinkIDCallbackPullException {
+
+        CallbackPullRequest request = new CallbackPullRequest();
+        request.setSessionId( sessionId );
+
+        // operate
+        CallbackPullResponse response = getPort().callbackPull( request );
+
+        // convert response
+        if (null != response.getError()) {
+            throw new LinkIDCallbackPullException( LinkIDServiceUtils.convert( response.getError().getError() ), response.getError().getInfo() );
+        }
+
+        if (null != response.getSuccess()) {
+
+            // parse authentication request
+            Element authnResponseElement = (Element) response.getSuccess().getAny();
+            if (null == authnResponseElement) {
+                throw new InternalInconsistencyException( "No SAML v2.0 authentication response found ?!" );
+            }
+
+            Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller( authnResponseElement );
+            XMLObject responseXMLObject;
+            if (null == unmarshaller) {
+                String responseString = DomUtils.domToString( authnResponseElement, true );
+                throw new InternalInconsistencyException(
+                        String.format( "Failed to unmarshall SAML v2.0 authentication response?!: Element=\"%s\"", responseString ) );
+            }
+            try {
+                responseXMLObject = unmarshaller.unmarshall( authnResponseElement );
+            }
+            catch (UnmarshallingException e) {
+                throw new InternalInconsistencyException( "Failed to unmarshall SAML v2.0 authentication response?!", e );
+            }
+
+            return (Response) responseXMLObject;
+        }
+
+        throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );
+
     }
 
     @Override

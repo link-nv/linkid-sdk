@@ -5,25 +5,25 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.haws;
+package net.link.safeonline.sdk.api.ws.callback;
 
 /**
  * Created by wvdhaute
  * Date: 14/01/14
  * Time: 11:03
  */
-public class LinkIDPushException extends Exception {
+public class LinkIDCallbackPullException extends Exception {
 
-    private final LinkIDPushErrorCode errorCode;
-    private final String              info;
+    private final LinkIDCallbackPullErrorCode errorCode;
+    private final String                      info;
 
-    public LinkIDPushException(final LinkIDPushErrorCode errorCode, final String info) {
+    public LinkIDCallbackPullException(final LinkIDCallbackPullErrorCode errorCode, final String info) {
 
         this.errorCode = errorCode;
         this.info = info;
     }
 
-    public LinkIDPushErrorCode getErrorCode() {
+    public LinkIDCallbackPullErrorCode getErrorCode() {
 
         return errorCode;
     }

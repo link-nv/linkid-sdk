@@ -28,6 +28,15 @@
 		<part name="response" element="tns:AuthCancelResponse" />
 	</message>
 
+    <!-- =================== Callback===== ========================= -->
+
+    <message name="callbackPullRequest">
+		<part name="request" element="tns:CallbackPullRequest" />
+	</message>
+	<message name="callbackPullResponse">
+		<part name="response" element="tns:CallbackPullResponse" />
+	</message>
+
     <!-- =================== Configuration ========================= -->
 
     <message name="configThemesRequest">
@@ -184,6 +193,10 @@
 			<input message="tns:authCancelRequest" />
 			<output message="tns:authCancelResponse" />
 		</operation>
+		<operation name="callbackPull">
+			<input message="tns:callbackPullRequest" />
+			<output message="tns:callbackPullResponse" />
+		</operation>
 		<operation name="configThemes">
 			<input message="tns:configThemesRequest" />
 			<output message="tns:configThemesResponse" />
@@ -290,6 +303,15 @@
         </operation>
         <operation name="authCancel">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.0:authCancel" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="callbackPull">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:callbackPull" />
             <input>
                 <soap:body use="literal" />
             </input>

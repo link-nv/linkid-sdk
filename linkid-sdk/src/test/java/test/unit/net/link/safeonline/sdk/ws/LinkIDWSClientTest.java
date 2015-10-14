@@ -114,6 +114,21 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
+    public void testCallbackPull()
+            throws Exception {
+
+        // setup
+        String sessionId = "00a44454-acbb-488e-ab54-6a7934a54bb1";
+        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+
+        // operate
+        Response response = client.callbackPull( sessionId );
+
+        // verify
+        assertNotNull( response );
+    }
+
+    //    @Test
     public void testIdMapping()
             throws Exception {
 
