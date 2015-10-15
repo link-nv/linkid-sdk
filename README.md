@@ -24,3 +24,9 @@ v3.0
   * LTQR Payment state == LinkIDPaymentState
   * LTQR: push, change, info now has userAgent support and will return more info about the linkID QR code
   * The linkID QR code info in LinkIDAuthSession is now avail in qrCodeInfo
+
+v3.2
+----
+  * Support for notification topic: **urn:net:lin-k:linkid:topic:ltqr:session:new**
+  * Support for notification topic: **urn:net:lin-k:linkid:topic:ltqr:session:update**
+  * Convenience class **LinkIDNotificationMessage** for parsing linkID notification topics
