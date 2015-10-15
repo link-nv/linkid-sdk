@@ -18,7 +18,8 @@ public enum LinkIDNotificationTopic {
     EXPIRED_PAYMENT( "urn:net:lin-k:linkid:topic:expired:payment" ),
     MANDATE_ARCHIVED( "urn:net:lin-k:linkid:topic:mandate:archived" ),
     LTQR_SESSION_NEW( "urn:net:lin-k:linkid:topic:ltqr:session:new" ),
-    LTQR_SESSION_UPDATE( "urn:net:lin-k:linkid:topic:ltqr:session:update" );
+    LTQR_SESSION_UPDATE( "urn:net:lin-k:linkid:topic:ltqr:session:update" ),
+    CONFIGURATION_UPDATE( "urn:net:lin-k:linkid:topic:config:update" );
 
     private final String topicUri;
 
