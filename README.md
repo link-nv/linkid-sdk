@@ -30,3 +30,7 @@ v3.2
   * Support for notification topic: **urn:net:lin-k:linkid:topic:ltqr:session:new**
   * Support for notification topic: **urn:net:lin-k:linkid:topic:ltqr:session:update**
   * Convenience class **LinkIDNotificationMessage** for parsing linkID notification topics
+  
+v3.3
+----
+  * Support for notification topic: **urn:net:lin-k:linkid:topic:config:update**
