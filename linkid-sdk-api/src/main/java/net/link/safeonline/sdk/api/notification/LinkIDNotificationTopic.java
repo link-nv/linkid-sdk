@@ -16,7 +16,9 @@ public enum LinkIDNotificationTopic {
     IDENTITY_UPDATE( "urn:net:lin-k:linkid:topic:user:identity:update" ),
     EXPIRED_AUTHENTICATION( "urn:net:lin-k:linkid:topic:expired:authentication" ),
     EXPIRED_PAYMENT( "urn:net:lin-k:linkid:topic:expired:payment" ),
-    MANDATE_ARCHIVED( "urn:net:lin-k:linkid:topic:mandate:archived" );
+    MANDATE_ARCHIVED( "urn:net:lin-k:linkid:topic:mandate:archived" ),
+    LTQR_SESSION_NEW( "urn:net:lin-k:linkid:topic:ltqr:session:new" ),
+    LTQR_SESSION_UPDATE( "urn:net:lin-k:linkid:topic:ltqr:session:update" );
 
     private final String topicUri;
 
@@ -31,6 +33,10 @@ public enum LinkIDNotificationTopic {
     }
 
     public static LinkIDNotificationTopic to(final String topicString) {
+
+        if (null == topicString) {
+            throw new RuntimeException( "No topic specified, aborting..." );
+        }
 
         for (LinkIDNotificationTopic topic : values()) {
             if (topic.getTopicUri().equals( topicString ))

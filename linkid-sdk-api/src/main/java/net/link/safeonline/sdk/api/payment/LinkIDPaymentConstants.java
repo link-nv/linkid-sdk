@@ -10,9 +10,4 @@ package net.link.safeonline.sdk.api.payment;
 public abstract class LinkIDPaymentConstants {
 
     public static final String PAYMENT_CHANGED_ORDER_REF_PARAM = "orderRef";
-
-    // LTQR
-    public static final String LTQR_REF_PARAM               = "ltqrRef";
-    public static final String LTQR_PAYMENT_ORDER_REF_PARAM = "paymentOrderRef";
-    public static final String LTQR_CLIENT_SESSION_ID_PARAM = "clientSessionId";
 }
