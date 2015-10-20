@@ -34,3 +34,8 @@ v3.2
 v3.3
 ----
   * Support for notification topic: **urn:net:lin-k:linkid:topic:config:update**
+
+v3.4
+---
+  * Support for notification topic: **urn:net:lin-k:linkid:topic:payment:update**
+    * This can be used as replacement for the paymentStatusLocation configuration
