@@ -9,10 +9,15 @@ package net.link.safeonline.sdk.api.notification;
 
 public abstract class LinkIDNotificationConstants {
 
+    //
+    // Core notifications
     public static final String TOPIC_PARAM                  = "topic";
     public static final String FILTER_PARAM                 = "filter";
-    public static final String USERID_PARAM                 = "userId";
+    public static final String USER_ID_PARAM                = "userId";
     public static final String INFO_PARAM                   = "info";
+    //
+    // Payment Status
+    public static final String PAYMENT_ORDER_REF_PARAM      = "orderRef";
     //
     // LTQR
     public static final String LTQR_REF_PARAM               = "ltqrRef";

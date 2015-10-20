@@ -15,9 +15,16 @@ import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopic;
 public class LinkIDNotificationMessage implements Serializable {
 
     private final LinkIDNotificationTopic topic;
+    //
+    // Core notifications
     private final String                  userId;
     private final String                  filter;
     private final String                  info;
+    //
+    // Payment status
+    private final String                  paymentOrderReference;
+    //
+    // LTQR
     private final String                  ltqrReference;
     private final String                  ltqrClientSessionId;
     private final String                  ltqrPaymentOrderReference;
@@ -25,9 +32,10 @@ public class LinkIDNotificationMessage implements Serializable {
     public LinkIDNotificationMessage(final HttpServletRequest request) {
 
         this.topic = LinkIDNotificationTopic.to( request.getParameter( LinkIDNotificationConstants.TOPIC_PARAM ) );
-        this.userId = request.getParameter( LinkIDNotificationConstants.USERID_PARAM );
+        this.userId = request.getParameter( LinkIDNotificationConstants.USER_ID_PARAM );
         this.filter = request.getParameter( LinkIDNotificationConstants.FILTER_PARAM );
         this.info = request.getParameter( LinkIDNotificationConstants.INFO_PARAM );
+        this.paymentOrderReference = request.getParameter( LinkIDNotificationConstants.PAYMENT_ORDER_REF_PARAM );
         this.ltqrReference = request.getParameter( LinkIDNotificationConstants.LTQR_REF_PARAM );
         this.ltqrClientSessionId = request.getParameter( LinkIDNotificationConstants.LTQR_CLIENT_SESSION_ID_PARAM );
         this.ltqrPaymentOrderReference = request.getParameter( LinkIDNotificationConstants.LTQR_PAYMENT_ORDER_REF_PARAM );
@@ -43,6 +51,7 @@ public class LinkIDNotificationMessage implements Serializable {
                ", userId='" + userId + '\'' +
                ", filter='" + filter + '\'' +
                ", info='" + info + '\'' +
+               ", paymentOrderReference='" + paymentOrderReference + '\'' +
                ", ltqrReference='" + ltqrReference + '\'' +
                ", ltqrClientSessionId='" + ltqrClientSessionId + '\'' +
                ", ltqrPaymentOrderReference='" + ltqrPaymentOrderReference + '\'' +
@@ -69,6 +78,11 @@ public class LinkIDNotificationMessage implements Serializable {
     public String getInfo() {
 
         return info;
+    }
+
+    public String getPaymentOrderReference() {
+
+        return paymentOrderReference;
     }
 
     public String getLtqrReference() {

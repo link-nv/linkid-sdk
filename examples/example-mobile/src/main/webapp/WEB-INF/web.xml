@@ -35,8 +35,8 @@
         </init-param>
     </servlet>
     <servlet>
-        <servlet-name>PaymentStateChangedServlet</servlet-name>
-        <servlet-class>net.link.safeonline.sdk.example.mobile.PaymentStateChangedServlet</servlet-class>
+        <servlet-name>LinkIDNotificationServlet</servlet-name>
+        <servlet-class>net.link.safeonline.sdk.example.mobile.LinkIDNotificationServlet</servlet-class>
     </servlet>
 
     <!-- Servlet Mappings -->
@@ -53,8 +53,8 @@
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PaymentStateChangedServlet</servlet-name>
-        <url-pattern>/paymentUpdate</url-pattern>
+        <servlet-name>LinkIDNotificationServlet</servlet-name>
+        <url-pattern>/linkid_notifications</url-pattern>
     </servlet-mapping>
 
     <filter>
