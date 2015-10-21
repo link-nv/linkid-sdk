@@ -18,8 +18,6 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusExceptio
 import net.link.safeonline.sdk.util.LinkIDNotificationMessage;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.logging.Logger;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.Response;
 
 
 public class LinkIDNotificationServlet extends HttpServlet {
@@ -33,7 +31,7 @@ public class LinkIDNotificationServlet extends HttpServlet {
         LinkIDNotificationMessage notificationMessage = new LinkIDNotificationMessage( request );
         logger.dbg( "Notification message: %s", notificationMessage );
 
-        LinkIDServiceClient<AuthnRequest, Response> linkIDServiceClient = LinkIDServiceFactory.getLinkIDService();
+        LinkIDServiceClient linkIDServiceClient = LinkIDServiceFactory.getLinkIDService();
 
         switch (notificationMessage.getTopic()) {
 

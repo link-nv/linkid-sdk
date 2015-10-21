@@ -10,7 +10,7 @@ package net.link.safeonline.sdk.example.mobile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.servlet.LinkIDInitiateLoginServlet;
-import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 
 
 public class ExampleMobileLoginServlet extends LinkIDInitiateLoginServlet {

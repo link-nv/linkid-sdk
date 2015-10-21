@@ -78,6 +78,8 @@ import net.lin_k.linkid._3.WalletReportRequest;
 import net.lin_k.linkid._3.WalletReportResponse;
 import net.lin_k.linkid._3.WalletReportTransaction;
 import net.lin_k.linkid._3.WalletTransaction;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -127,6 +129,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
+import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.safeonline.ws.linkid.LinkIDWSServiceFactory;
 import net.link.util.InternalInconsistencyException;
@@ -138,7 +141,6 @@ import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.jetbrains.annotations.Nullable;
-import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.XMLObject;
@@ -152,7 +154,7 @@ import org.w3c.dom.Element;
  * Date: 29/01/14
  * Time: 15:47
  */
-public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort> implements LinkIDServiceClient<AuthnRequest, Response> {
+public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort> implements LinkIDServiceClient {
 
     /**
      * Main constructor.
@@ -194,14 +196,14 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDAuthSession authStart(final AuthnRequest authnRequest, final String language, final String userAgent)
+    public LinkIDAuthSession authStart(final LinkIDAuthenticationContext authenticationContext, final String userAgent)
             throws LinkIDAuthException {
 
         AuthStartRequest request = new AuthStartRequest();
 
-        request.setAny( SamlUtils.marshall( authnRequest ) );
+        request.setAny( SamlUtils.marshall( LinkIDSaml2Utils.generate( authenticationContext ) ) );
 
-        request.setLanguage( language );
+        request.setLanguage( null != authenticationContext.getLanguage()? authenticationContext.getLanguage().getLanguage(): null );
         request.setUserAgent( userAgent );
 
         // operate
@@ -221,7 +223,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDAuthPollResponse<Response> authPoll(final String sessionId, final String language)
+    public LinkIDAuthPollResponse authPoll(final String sessionId, final String language)
             throws LinkIDAuthPollException {
 
         AuthPollRequest request = new AuthPollRequest();
@@ -250,7 +252,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             String paymentMenuURL = response.getSuccess().getPaymentMenuURL();
 
             // parse authentication request
-            XMLObject responseXMLObject = null;
+            LinkIDAuthnResponse linkIDAuthnResponse = null;
             if (null != response.getSuccess().getAuthenticationResponse()) {
                 Element authnResponseElement = (Element) response.getSuccess().getAuthenticationResponse().getAny();
                 if (null != authnResponseElement) {
@@ -261,7 +263,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                                 String.format( "Failed to unmarshall SAML v2.0 authentication response?!: Element=\"%s\"", responseString ) );
                     }
                     try {
-                        responseXMLObject = unmarshaller.unmarshall( authnResponseElement );
+                        XMLObject xmlObject = unmarshaller.unmarshall( authnResponseElement );
+                        linkIDAuthnResponse = LinkIDSaml2Utils.parse( (Response) xmlObject );
                     }
                     catch (UnmarshallingException e) {
                         throw new InternalInconsistencyException( "Failed to unmarshall SAML v2.0 authentication response?!", e );
@@ -269,7 +272,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                 }
             }
 
-            return new LinkIDAuthPollResponse<Response>( linkIDAuthenticationState, paymentState, paymentMenuURL, (Response) responseXMLObject );
+            return new LinkIDAuthPollResponse( linkIDAuthenticationState, paymentState, paymentMenuURL, linkIDAuthnResponse );
         }
 
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );
@@ -291,7 +294,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public Response callbackPull(final String sessionId)
+    public LinkIDAuthnResponse callbackPull(final String sessionId)
             throws LinkIDCallbackPullException {
 
         CallbackPullRequest request = new CallbackPullRequest();
@@ -314,20 +317,21 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             }
 
             Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller( authnResponseElement );
-            XMLObject responseXMLObject;
+            LinkIDAuthnResponse linkIDAuthnResponse;
             if (null == unmarshaller) {
                 String responseString = DomUtils.domToString( authnResponseElement, true );
                 throw new InternalInconsistencyException(
                         String.format( "Failed to unmarshall SAML v2.0 authentication response?!: Element=\"%s\"", responseString ) );
             }
             try {
-                responseXMLObject = unmarshaller.unmarshall( authnResponseElement );
+                XMLObject responseXMLObject = unmarshaller.unmarshall( authnResponseElement );
+                linkIDAuthnResponse = LinkIDSaml2Utils.parse( (Response) responseXMLObject );
             }
             catch (UnmarshallingException e) {
                 throw new InternalInconsistencyException( "Failed to unmarshall SAML v2.0 authentication response?!", e );
             }
 
-            return (Response) responseXMLObject;
+            return linkIDAuthnResponse;
         }
 
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );

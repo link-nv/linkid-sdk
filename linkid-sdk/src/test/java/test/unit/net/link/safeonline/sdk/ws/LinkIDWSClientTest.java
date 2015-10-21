@@ -15,6 +15,8 @@ import java.util.Locale;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
@@ -41,7 +43,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
-import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
+import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
@@ -53,8 +55,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.Response;
 
 
 /**
@@ -119,10 +119,10 @@ public class LinkIDWSClientTest {
 
         // setup
         String sessionId = "00a44454-acbb-488e-ab54-6a7934a54bb1";
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         // operate
-        Response response = client.callbackPull( sessionId );
+        LinkIDAuthnResponse response = client.callbackPull( sessionId );
 
         // verify
         assertNotNull( response );
@@ -140,7 +140,7 @@ public class LinkIDWSClientTest {
     public void testReportingPayment()
             throws Exception {
 
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         List<String> orderReferences = Arrays.asList( "QR-SHOP-f0c5b593-0754-4ec0-a45c-664bb86bab11" );
 
@@ -156,7 +156,7 @@ public class LinkIDWSClientTest {
     public void testReportingParking()
             throws Exception {
 
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         Date startDate = DateTime.now().minusYears( 1 ).toDate();
 
@@ -172,7 +172,7 @@ public class LinkIDWSClientTest {
     public void testReportingWallet()
             throws Exception {
 
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         String walletOrganizationId = "urn:linkid:wallet:leaseplan";
         Date startDate = DateTime.now().minusYears( 1 ).toDate();
@@ -195,7 +195,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String walletOrganizationId = "urn:linkid:wallet:leaseplan";
 
@@ -216,7 +216,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String walletOrganizationId = "urn:linkid:wallet:leaseplan";
 
@@ -236,7 +236,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String walletId = "6e2cc86f-4178-46e5-a483-ca5fd0ebd4a1";
 
@@ -256,7 +256,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String walletId = "6e2cc86f-4178-46e5-a483-ca5fd0ebd4a1";
 
@@ -276,7 +276,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
         String walletId = "123b1c22-e6c5-4ebc-9255-e59b72db5abf";
 
@@ -295,7 +295,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
+        LinkIDServiceClient client = getLinkIDServiceClient();
         String applicationName = "test-shop";
 
         // operate
@@ -318,15 +318,17 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String language = "be";
         String userAgent = "unit-test";
         LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 1, LinkIDCurrency.EUR ) ).build();
-        AuthnRequest authnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( APP_NAME, null, null, "http://foo.com", null, false, null, null,
-                paymentContext, null );
+
+        LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null, LinkIDProtocol.WS );
+        linkIDAuthenticationContext.setLanguage( new Locale( language ) );
+        linkIDAuthenticationContext.setPaymentContext( paymentContext );
 
         // operate: start
-        LinkIDAuthSession session = client.authStart( authnRequest, language, userAgent );
+        LinkIDAuthSession session = client.authStart( linkIDAuthenticationContext, userAgent );
 
     }
 
@@ -335,7 +337,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient<AuthnRequest, Response> client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String sessionId = "WpowEE";
 
         // operate
@@ -348,7 +350,7 @@ public class LinkIDWSClientTest {
 
         // setup
         String orderReference = "QR-SHOP-6b3ac19c-eee8-4732-a043-4a34bff16eca";
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
+        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         LinkIDPaymentStatus linkIDPaymentStatus = client.getPaymentStatus( orderReference );
@@ -375,7 +377,7 @@ public class LinkIDWSClientTest {
                                                                        .expiryDate( expiryDateTime.toDate() )
                                                                        .build();
 
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
+        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         LinkIDLTQRSession linkIDLTQRSession = client.ltqrPush( ltqrContent, null, false );
@@ -401,7 +403,7 @@ public class LinkIDWSClientTest {
         // setup
         List<String> ltqrReferences = Lists.newLinkedList();
         ltqrReferences.add( "856eed32-2119-4f94-b705-f177079e1b9e" );
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
+        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         List<LinkIDLTQRInfo> linkIDLTQRInfos = client.ltqrInfo( ltqrReferences, null );
@@ -424,7 +426,7 @@ public class LinkIDWSClientTest {
         String mandateReference = "dfc816ae-b2b6-4af6-9260-72c94b9a684d";
         LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder(
                 new LinkIDPaymentAmount( 1, "urn:linkid:wallet:coin:coffee" ) ).description( "Test description" ).build();
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
+        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         String orderReference = client.mandatePayment( mandateReference, linkIDPaymentContext, Locale.ENGLISH );
@@ -439,7 +441,7 @@ public class LinkIDWSClientTest {
 
         // Setup
         String orderReference = "foo";
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
+        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         client.capture( orderReference );
@@ -454,7 +456,7 @@ public class LinkIDWSClientTest {
         keys.add( "urn:linkid:wallet:coin:coffee" );
         keys.add( "urn:linkid:wallet:leaseplan" );
 
-        LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
+        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         List<LinkIDLocalization> localizations = client.getLocalization( keys );
@@ -466,7 +468,7 @@ public class LinkIDWSClientTest {
 
     // Auth
 
-    private LinkIDServiceClient<AuthnRequest, Response> getLinkIDServiceClient() {
+    private LinkIDServiceClient getLinkIDServiceClient() {
 
         return new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
     }

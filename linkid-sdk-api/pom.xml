@@ -63,6 +63,14 @@
     </reporting>
 
     <dependencies>
+        <!-- Specific Dependencies: linkID -->
+        <dependency>
+            <groupId>net.lin-k.linkid.client.sdk</groupId>
+            <artifactId>linkid-config</artifactId>
+            <version>GIT-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Util -->
         <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-common</artifactId>

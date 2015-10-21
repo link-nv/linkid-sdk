@@ -15,9 +15,12 @@ import java.util.List;
 import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.ws.LinkIDWebServiceConstants;
 import net.link.safeonline.sdk.auth.protocol.saml2.externalcode.LinkIDExternalCodeResponse;
 import net.link.safeonline.sdk.auth.protocol.saml2.paymentresponse.LinkIDPaymentResponse;
+import net.link.safeonline.sdk.auth.util.LinkIDDeviceContextUtils;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.saml.Saml2Utils;
 import net.link.util.saml.SamlUtils;
@@ -28,6 +31,7 @@ import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeStatement;
 import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
+import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.Namespace;
 import org.opensaml.xml.NamespaceManager;
@@ -46,11 +50,52 @@ import org.w3c.dom.Element;
  */
 public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
+    /**
+     * Generate a SAML v2.0 authentication request out of the specified linkID authentication context
+     *
+     * @param authenticationContext the linkID authentication context
+     *
+     * @return the generated SAML v2.0 request
+     */
+    public static AuthnRequest generate(final LinkIDAuthenticationContext authenticationContext) {
+
+        Map<String, String> deviceContextMap = LinkIDDeviceContextUtils.generate( authenticationContext.getAuthenticationMessage(),
+                authenticationContext.getFinishedMessage(), authenticationContext.getIdentityProfile(), authenticationContext.getSessionExpiryOverride(),
+                authenticationContext.getTheme(), authenticationContext.getMobileLandingSuccess(), authenticationContext.getMobileLandingError(),
+                authenticationContext.getMobileLandingCancel() );
+
+        return LinkIDAuthnRequestFactory.createAuthnRequest( authenticationContext.getApplicationName(), null,
+                authenticationContext.getApplicationFriendlyName(), "http://foo.bar", null, authenticationContext.isForceAuthentication(), deviceContextMap,
+                authenticationContext.getSubjectAttributes(), authenticationContext.getPaymentContext(), authenticationContext.getCallback() );
+    }
+
+    /**
+     * Parses the SAML v2.0 response
+     *
+     * @param response the SAML v2.0 response
+     */
+    public static LinkIDAuthnResponse parse(final Response response) {
+
+        String userId = null;
+        Map<String, List<LinkIDAttribute<Serializable>>> attributes = Maps.newHashMap();
+        if (!response.getAssertions().isEmpty()) {
+            Assertion assertion = response.getAssertions().get( 0 );
+            userId = assertion.getSubject().getNameID().getValue();
+            attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
+        }
+
+        net.link.safeonline.sdk.api.payment.LinkIDPaymentResponse paymentResponse = findPaymentResponse( response );
+        net.link.safeonline.sdk.api.externalcode.LinkIDExternalCodeResponse externalCodeResponse = findExternalCodeResponse( response );
+
+        return new LinkIDAuthnResponse( userId, attributes, paymentResponse, externalCodeResponse );
+    }
+
     public static <X extends XMLObject> X unmarshall(Element xmlElement) {
 
         X xmlObject = Saml2Utils.unmarshall( xmlElement );
         NamespaceManager xmlObjectNSM = new NamespaceManager( xmlObject );
-        xmlObjectNSM.registerNamespace( new Namespace( LinkIDWebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, LinkIDWebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
+        xmlObjectNSM.registerNamespace(
+                new Namespace( LinkIDWebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, LinkIDWebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
 
         return xmlObject;
     }

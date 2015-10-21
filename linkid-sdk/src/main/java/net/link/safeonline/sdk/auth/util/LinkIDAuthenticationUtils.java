@@ -11,7 +11,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolManager;
-import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 

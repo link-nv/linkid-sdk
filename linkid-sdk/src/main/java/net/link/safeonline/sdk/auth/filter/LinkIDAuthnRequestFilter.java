@@ -18,7 +18,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.util.LinkIDAuthenticationUtils;
-import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDSDKConfig;
 import net.link.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;

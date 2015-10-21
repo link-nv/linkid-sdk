@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.auth.LinkIDRequestConstants;
 import net.link.safeonline.sdk.auth.util.LinkIDAuthenticationUtils;
-import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.safeonline.sdk.servlet.LinkIDAbstractInjectionServlet;
 import org.jetbrains.annotations.Nullable;

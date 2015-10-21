@@ -11,7 +11,7 @@ import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config
 
 import java.net.URI;
 import net.link.safeonline.sdk.api.LinkIDConstants;
-import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
 import net.link.util.logging.Logger;
 

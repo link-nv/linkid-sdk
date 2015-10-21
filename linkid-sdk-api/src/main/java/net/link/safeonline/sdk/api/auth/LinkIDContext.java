@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.configuration;
+package net.link.safeonline.sdk.api.auth;
 
 import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config;
 import static net.link.util.util.ObjectUtils.ifNotNullElse;
@@ -16,6 +16,12 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Locale;
+import net.link.safeonline.sdk.configuration.LinkIDAppConfig;
+import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
+import net.link.safeonline.sdk.configuration.LinkIDProtocol;
+import net.link.safeonline.sdk.configuration.LinkIDProtocolConfig;
+import net.link.safeonline.sdk.configuration.LinkIDSAMLBinding;
+import net.link.safeonline.sdk.configuration.LinkIDSAMLProtocolConfig;
 import net.link.util.config.KeyProvider;
 import net.link.util.util.NNSupplier;
 import org.jetbrains.annotations.NotNull;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.configuration;
+package net.link.safeonline.sdk.api.auth;
 
 import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config;
 
@@ -18,6 +18,10 @@ import java.util.Locale;
 import java.util.Map;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.configuration.LinkIDAppConfig;
+import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
+import net.link.safeonline.sdk.configuration.LinkIDProtocol;
+import net.link.safeonline.sdk.configuration.LinkIDProtocolConfig;
 import net.link.util.config.KeyProvider;
 import org.jetbrains.annotations.Nullable;
 

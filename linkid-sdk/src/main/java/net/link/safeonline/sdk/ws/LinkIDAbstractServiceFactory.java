@@ -16,8 +16,6 @@ import net.link.safeonline.sdk.api.ws.sts.LinkIDSecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.LinkIDXkms2Client;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.Nullable;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.Response;
 
 
 /**
@@ -41,6 +39,5 @@ public abstract class LinkIDAbstractServiceFactory {
 
     protected abstract LinkIDXkms2Client _getXkms2Client(X509Certificate[] sslCertificates);
 
-    protected abstract LinkIDServiceClient<AuthnRequest, Response> _getLinkIDService(WSSecurityConfiguration configuration,
-                                                                                     @Nullable X509Certificate[] sslCertificates);
+    protected abstract LinkIDServiceClient _getLinkIDService(WSSecurityConfiguration configuration, @Nullable X509Certificate[] sslCertificates);
 }

@@ -10,6 +10,8 @@ package net.link.safeonline.sdk.api.ws.linkid;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -59,21 +61,20 @@ import org.jetbrains.annotations.Nullable;
  * <p/>
  */
 @SuppressWarnings("unused")
-public interface LinkIDServiceClient<Request, Response> {
+public interface LinkIDServiceClient {
 
     /**
      * Start a linkID authentication.
      *
-     * @param request   the authentication request
-     * @param language  optional language (default is en)
-     * @param userAgent optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be
-     *                  http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...
+     * @param authenticationContext the linkID authentication context
+     * @param userAgent             optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be
+     *                              http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...
      *
      * @return LinkIDAuthnSession the session details, e.g. ID,  QR code, ...
      *
      * @throws LinkIDAuthException something went wrong, check the error code and info message
      */
-    LinkIDAuthSession authStart(Request request, String language, String userAgent)
+    LinkIDAuthSession authStart(LinkIDAuthenticationContext authenticationContext, String userAgent)
             throws LinkIDAuthException;
 
     /**
@@ -86,7 +87,7 @@ public interface LinkIDServiceClient<Request, Response> {
      *
      * @throws LinkIDAuthPollException something went wrong, check the error code and info message
      */
-    LinkIDAuthPollResponse<Response> authPoll(String sessionId, String language)
+    LinkIDAuthPollResponse authPoll(String sessionId, String language)
             throws LinkIDAuthPollException;
 
     /**
@@ -108,7 +109,7 @@ public interface LinkIDServiceClient<Request, Response> {
      *
      * @throws LinkIDCallbackPullException something went wrong, check the error code and info message
      */
-    Response callbackPull(String sessionId)
+    LinkIDAuthnResponse callbackPull(String sessionId)
             throws LinkIDCallbackPullException;
 
     /**

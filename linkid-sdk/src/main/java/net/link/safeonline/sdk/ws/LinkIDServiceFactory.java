@@ -32,8 +32,6 @@ import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallbac
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.Response;
 
 
 /**
@@ -439,7 +437,7 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
      *
      * @return proxy to the linkID web service.
      */
-    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService(final String wsUsername, final String wsPassword) {
+    public static LinkIDServiceClient getLinkIDService(final String wsUsername, final String wsPassword) {
 
         return new LinkIDServiceClientImpl( getWsUsernameBase(), LinkIDServiceFactory.getSSLCertificates( null ),
                 new AbstractWSSecurityUsernameTokenCallback() {
@@ -475,7 +473,7 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService() {
+    public static LinkIDServiceClient getLinkIDService() {
 
         if (null != LinkIDSDKConfigHolder.config().linkID().app().username()) {
 
@@ -497,8 +495,8 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
-                                                                               final X509Certificate[] sslCertificates) {
+    public static LinkIDServiceClient getLinkIDService(final X500Principal trustedDN, @NotNull final KeyProvider keyProvider,
+                                                       final X509Certificate[] sslCertificates) {
 
         return getInstance()._getLinkIDService( new LinkIDSDKWSSecurityConfiguration( trustedDN, keyProvider ), sslCertificates );
     }
@@ -512,13 +510,13 @@ public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
      *
      * @return proxy to the linkID auth web service.
      */
-    public static LinkIDServiceClient<AuthnRequest, Response> getLinkIDService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    public static LinkIDServiceClient getLinkIDService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return getInstance()._getLinkIDService( configuration, sslCertificates );
     }
 
     @Override
-    protected LinkIDServiceClient<AuthnRequest, Response> _getLinkIDService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
+    protected LinkIDServiceClient _getLinkIDService(final WSSecurityConfiguration configuration, X509Certificate[] sslCertificates) {
 
         return new LinkIDServiceClientImpl( getWsBase(), getSSLCertificates( sslCertificates ), configuration );
     }

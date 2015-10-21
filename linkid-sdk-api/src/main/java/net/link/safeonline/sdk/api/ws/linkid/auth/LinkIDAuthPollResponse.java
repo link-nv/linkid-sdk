@@ -1,7 +1,9 @@
 package net.link.safeonline.sdk.api.ws.linkid.auth;
 
 import java.io.Serializable;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -9,20 +11,25 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
  * Date: 30/04/14
  * Time: 13:37
  */
-public class LinkIDAuthPollResponse<Response> implements Serializable {
+public class LinkIDAuthPollResponse implements Serializable {
 
+    // polling state
     private final LinkIDAuthenticationState linkIDAuthenticationState;
     private final LinkIDPaymentState        paymentState;
     private final String                    paymentMenuURL;
-    private final Response                  response;
+    //
+    // the linkID authentication response if finished
+    @Nullable
+    private final LinkIDAuthnResponse       linkIDAuthnResponse;
 
     public LinkIDAuthPollResponse(final LinkIDAuthenticationState linkIDAuthenticationState, final LinkIDPaymentState paymentState, final String paymentMenuURL,
-                                  final Response response) {
+                                  @Nullable final LinkIDAuthnResponse linkIDAuthnResponse) {
 
         this.linkIDAuthenticationState = linkIDAuthenticationState;
         this.paymentState = paymentState;
         this.paymentMenuURL = paymentMenuURL;
-        this.response = response;
+
+        this.linkIDAuthnResponse = linkIDAuthnResponse;
     }
 
     // Accessors
@@ -42,8 +49,10 @@ public class LinkIDAuthPollResponse<Response> implements Serializable {
         return paymentMenuURL;
     }
 
-    public Response getResponse() {
+    @Nullable
+    public LinkIDAuthnResponse getLinkIDAuthnResponse() {
 
-        return response;
+        return linkIDAuthnResponse;
     }
+
 }

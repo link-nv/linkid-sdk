@@ -23,7 +23,7 @@ import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolContext;
 import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.LinkIDRequestConfig;
 import net.link.safeonline.sdk.auth.util.LinkIDDeviceContextUtils;
-import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.util.common.CertificateChain;
 import net.link.util.logging.Logger;

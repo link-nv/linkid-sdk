@@ -16,17 +16,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
-import net.link.safeonline.sdk.auth.protocol.ws.LinkIDAuthWSUtils;
-import net.link.safeonline.sdk.configuration.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.logging.Logger;
-import org.opensaml.saml2.core.Response;
 
 
 public class ExampleWSServlet extends HttpServlet {
@@ -48,7 +45,7 @@ public class ExampleWSServlet extends HttpServlet {
                 authenticationContext.setApplicationName( config().linkID().app().name() );
                 authenticationContext.setLanguage( Locale.ENGLISH );
 
-                linkIDAuthSession = LinkIDAuthWSUtils.startAuthentication( LinkIDServiceFactory.getLinkIDService(), authenticationContext, null );
+                linkIDAuthSession = LinkIDServiceFactory.getLinkIDService().authStart( authenticationContext, null );
 
                 // push on session
                 request.getSession().setAttribute( RESPONSE_SESSION_PARAM, linkIDAuthSession );
@@ -66,8 +63,8 @@ public class ExampleWSServlet extends HttpServlet {
 
             // poll
             try {
-                LinkIDAuthPollResponse<Response> linkIDAuthPollResponse = LinkIDAuthWSUtils.pollAuthentication( linkIDAuthSession.getSessionId(),
-                        Locale.ENGLISH );
+                LinkIDAuthPollResponse linkIDAuthPollResponse = LinkIDServiceFactory.getLinkIDService()
+                                                                                    .authPoll( linkIDAuthSession.getSessionId(), Locale.ENGLISH.getLanguage() );
                 showPollResult( linkIDAuthPollResponse, response );
             }
             catch (LinkIDAuthPollException e) {
@@ -76,7 +73,7 @@ public class ExampleWSServlet extends HttpServlet {
         }
     }
 
-    private void showPollResult(final LinkIDAuthPollResponse<Response> linkIDAuthPollResponse, final HttpServletResponse response)
+    private void showPollResult(final LinkIDAuthPollResponse linkIDAuthPollResponse, final HttpServletResponse response)
             throws IOException {
 
         response.getWriter().write( "<html>" );
@@ -90,12 +87,11 @@ public class ExampleWSServlet extends HttpServlet {
         response.getWriter().write( "PaymentURL  : " + linkIDAuthPollResponse.getPaymentMenuURL() + "<br/>" );
         response.getWriter().write( "</p>" );
 
-        if (null != linkIDAuthPollResponse.getResponse()) {
-            LinkIDAuthnResponse authnResponse = LinkIDAuthWSUtils.parse( linkIDAuthPollResponse.getResponse() );
+        if (null != linkIDAuthPollResponse.getLinkIDAuthnResponse()) {
 
             response.getWriter().write( "<p>" );
             response.getWriter().write( "<h2>AuthnResponse</h2>" );
-            response.getWriter().write( "UserID: " + authnResponse.getUserId() + "<br/>" );
+            response.getWriter().write( "UserID: " + linkIDAuthPollResponse.getLinkIDAuthnResponse().getUserId() + "<br/>" );
             response.getWriter().write( "</p>" );
         }
 
