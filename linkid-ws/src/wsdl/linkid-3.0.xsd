@@ -899,6 +899,13 @@
     </complexType>
 
     <complexType name="LTQRPushError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
         <attribute name="errorCode" type="tns:LTQRErrorCode" use="required" />
     </complexType>
 
@@ -923,6 +930,13 @@
     </complexType>
 
     <complexType name="LTQRChangeError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
         <attribute name="errorCode" type="tns:LTQRChangeErrorCode" use="required" />
     </complexType>
 
@@ -1050,6 +1064,11 @@
 					<documentation>The provided Service Provider credentials are not correct.</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.context.invalid">
+				<annotation>
+					<documentation>The LTQR context is not valid, e.g. identity profile not allowed, ... check the error message for more info.</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened.</documentation>
@@ -1071,6 +1090,11 @@
 			<enumeration value="error.credentials.invalid">
 				<annotation>
 					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.context.invalid">
+				<annotation>
+					<documentation>The LTQR context is not valid, e.g. identity profile not allowed, ... check the error message for more info.</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.not.found">

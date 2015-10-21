@@ -424,7 +424,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
         // convert response
         if (null != response.getError()) {
-            throw new LinkIDLTQRPushException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            throw new LinkIDLTQRPushException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ), response.getError().getErrorMessage() );
         }
 
         if (null != response.getSuccess()) {
@@ -455,7 +455,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
         // convert response
         if (null != response.getError()) {
-            throw new LinkIDLTQRChangeException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            throw new LinkIDLTQRChangeException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ), response.getError().getErrorMessage() );
         }
 
         if (null != response.getSuccess()) {

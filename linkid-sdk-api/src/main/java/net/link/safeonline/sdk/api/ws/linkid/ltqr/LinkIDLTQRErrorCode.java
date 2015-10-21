@@ -15,6 +15,7 @@ package net.link.safeonline.sdk.api.ws.linkid.ltqr;
 public enum LinkIDLTQRErrorCode {
 
     ERROR_CREDENTIALS_INVALID,
+    ERROR_CONTEXT_INVALID,
     ERROR_UNEXPECTED,
     ERROR_MAINTENANCE
 }

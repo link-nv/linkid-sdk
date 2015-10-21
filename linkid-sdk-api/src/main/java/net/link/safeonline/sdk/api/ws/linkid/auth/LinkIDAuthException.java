@@ -15,21 +15,15 @@ package net.link.safeonline.sdk.api.ws.linkid.auth;
 public class LinkIDAuthException extends Exception {
 
     private final LinkIDAuthErrorCode errorCode;
-    private final String              info;
 
-    public LinkIDAuthException(final LinkIDAuthErrorCode errorCode, final String info) {
+    public LinkIDAuthException(final LinkIDAuthErrorCode errorCode, final String message) {
 
+        super( message );
         this.errorCode = errorCode;
-        this.info = info;
     }
 
     public LinkIDAuthErrorCode getErrorCode() {
 
         return errorCode;
-    }
-
-    public String getInfo() {
-
-        return info;
     }
 }

@@ -7,6 +7,9 @@
 
 package net.link.safeonline.sdk.api.ws.linkid.ltqr;
 
+import org.jetbrains.annotations.Nullable;
+
+
 /**
  * Created by wvdhaute
  * Date: 14/01/14
@@ -16,8 +19,9 @@ public class LinkIDLTQRChangeException extends Exception {
 
     private final LinkIDLTQRChangeErrorCode errorCode;
 
-    public LinkIDLTQRChangeException(final LinkIDLTQRChangeErrorCode errorCode) {
+    public LinkIDLTQRChangeException(final LinkIDLTQRChangeErrorCode errorCode, @Nullable final String errorMessage) {
 
+        super( errorMessage );
         this.errorCode = errorCode;
     }
 

@@ -29,6 +29,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
@@ -44,6 +45,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
+import net.link.safeonline.sdk.configuration.LinkIDTestConfigHolder;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
@@ -85,6 +87,8 @@ public class LinkIDWSClientTest {
         // DEBUG so ssl validation is skipped for local self signed ssl cert, obv do not do this in production, nor even against demo.linkid.be for that matter.
         System.setProperty( ApplicationMode.PROPERTY, ApplicationMode.DEBUG.name() );
         this.wsLocation = WS_LOCATION;
+
+        new LinkIDTestConfigHolder( "http://linkid.be", null, null ).install();
     }
 
     @Test
@@ -321,14 +325,21 @@ public class LinkIDWSClientTest {
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String language = "be";
         String userAgent = "unit-test";
-        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 1, LinkIDCurrency.EUR ) ).build();
+        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 1, LinkIDCurrency.EUR ) ).paymentProfile( "foo" )
+                                                                                                                                  .build();
 
         LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null, LinkIDProtocol.WS );
         linkIDAuthenticationContext.setLanguage( new Locale( language ) );
         linkIDAuthenticationContext.setPaymentContext( paymentContext );
 
         // operate: start
-        LinkIDAuthSession session = client.authStart( linkIDAuthenticationContext, userAgent );
+        try {
+            LinkIDAuthSession session = client.authStart( linkIDAuthenticationContext, userAgent );
+        }
+        catch (LinkIDAuthException e) {
+            logger.inf( "Error message: %s", e.getMessage() );
+            assertNotNull( e.getMessage() );
+        }
 
     }
 

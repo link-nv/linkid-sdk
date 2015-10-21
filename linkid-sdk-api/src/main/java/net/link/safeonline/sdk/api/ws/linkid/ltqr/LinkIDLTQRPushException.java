@@ -7,6 +7,9 @@
 
 package net.link.safeonline.sdk.api.ws.linkid.ltqr;
 
+import org.jetbrains.annotations.Nullable;
+
+
 /**
  * Created by wvdhaute
  * Date: 14/01/14
@@ -14,15 +17,16 @@ package net.link.safeonline.sdk.api.ws.linkid.ltqr;
  */
 public class LinkIDLTQRPushException extends Exception {
 
-    private final LinkIDLTQRErrorCode linkIDErrorCode;
+    private final LinkIDLTQRErrorCode errorCode;
 
-    public LinkIDLTQRPushException(final LinkIDLTQRErrorCode linkIDErrorCode) {
+    public LinkIDLTQRPushException(final LinkIDLTQRErrorCode errorCode, @Nullable final String errorMessage) {
 
-        this.linkIDErrorCode = linkIDErrorCode;
+        super( errorMessage );
+        this.errorCode = errorCode;
     }
 
     public LinkIDLTQRErrorCode getErrorCode() {
 
-        return linkIDErrorCode;
+        return errorCode;
     }
 }

@@ -434,6 +434,8 @@ public class LinkIDServiceUtils {
 
             case ERROR_CREDENTIALS_INVALID:
                 return LinkIDLTQRErrorCode.ERROR_CREDENTIALS_INVALID;
+            case ERROR_CONTEXT_INVALID:
+                return LinkIDLTQRErrorCode.ERROR_CONTEXT_INVALID;
             case ERROR_UNEXPECTED:
                 return LinkIDLTQRErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
