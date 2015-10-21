@@ -90,7 +90,7 @@ public class LinkIDAuthWSUtils {
             throws LinkIDAuthException {
 
         Map<String, String> deviceContextMap = LinkIDDeviceContextUtils.generate( authenticationContext.getAuthenticationMessage(),
-                authenticationContext.getFinishedMessage(), authenticationContext.getIdentityProfiles(), authenticationContext.getSessionExpiryOverride(),
+                authenticationContext.getFinishedMessage(), authenticationContext.getIdentityProfile(), authenticationContext.getSessionExpiryOverride(),
                 authenticationContext.getTheme(), authenticationContext.getMobileLandingSuccess(), authenticationContext.getMobileLandingError(),
                 authenticationContext.getMobileLandingCancel() );
 

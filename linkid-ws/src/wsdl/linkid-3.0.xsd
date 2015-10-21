@@ -816,9 +816,9 @@
                         <documentation>Optional callback</documentation>
                     </annotation>
                 </element>
-                <element name="identityProfiles" type="string" minOccurs="0" maxOccurs="unbounded">
+                <element name="identityProfile" type="string" minOccurs="0" maxOccurs="1">
                     <annotation>
-                        <documentation>Optional identity profiles</documentation>
+                        <documentation>Optional identity profile</documentation>
                     </annotation>
                 </element>
                 <element name="sessionExpiryOverride" type="long" minOccurs="0" maxOccurs="1">

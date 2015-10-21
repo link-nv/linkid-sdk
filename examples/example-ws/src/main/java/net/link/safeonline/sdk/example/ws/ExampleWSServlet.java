@@ -11,7 +11,6 @@ import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -47,7 +46,7 @@ public class ExampleWSServlet extends HttpServlet {
             try {
                 LinkIDAuthenticationContext authenticationContext = new LinkIDAuthenticationContext();
                 authenticationContext.setApplicationName( config().linkID().app().name() );
-                authenticationContext.setIdentityProfiles( Collections.singletonList( "linkid_basic" ) );
+                authenticationContext.setIdentityProfile( "linkid_basic" );
                 authenticationContext.setLanguage( Locale.ENGLISH );
 
                 linkIDAuthSession = LinkIDAuthWSUtils.startAuthentication( LinkIDServiceFactory.getLinkIDService(), authenticationContext, null );

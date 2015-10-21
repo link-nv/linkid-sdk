@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import net.link.util.config.KeyProvider;
 import net.link.util.util.NNSupplier;
@@ -51,7 +50,7 @@ public abstract class LinkIDContext implements Serializable {
     //
     private String                      authenticationMessage;
     private String                      finishedMessage;
-    private List<String>                identityProfiles;
+    private String                      identityProfile;
     private Long                        sessionExpiryOverride;
     private String                      theme;
     //
@@ -226,14 +225,14 @@ public abstract class LinkIDContext implements Serializable {
         this.finishedMessage = finishedMessage;
     }
 
-    public List<String> getIdentityProfiles() {
+    public String getIdentityProfile() {
 
-        return identityProfiles;
+        return identityProfile;
     }
 
-    public void setIdentityProfiles(final List<String> identityProfiles) {
+    public void setIdentityProfile(final String identityProfile) {
 
-        this.identityProfiles = identityProfiles;
+        this.identityProfile = identityProfile;
     }
 
     public void setApplicationName(final String applicationName) {

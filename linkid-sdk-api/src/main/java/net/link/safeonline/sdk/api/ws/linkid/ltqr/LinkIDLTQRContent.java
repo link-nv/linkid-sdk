@@ -2,7 +2,6 @@ package net.link.safeonline.sdk.api.ws.linkid.ltqr;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 
@@ -18,7 +17,7 @@ public class LinkIDLTQRContent implements Serializable {
     private final String                         finishedMessage;
     private final LinkIDPaymentContext           paymentContext;
     private final LinkIDCallback                 callback;
-    private final List<String>                   identityProfiles;
+    private final String                         identityProfile;
     private final long                           sessionExpiryOverride;
     private final String                         theme;
     private final String                         mobileLandingSuccess;
@@ -37,7 +36,7 @@ public class LinkIDLTQRContent implements Serializable {
         this.finishedMessage = builder.finishedMessage;
         this.paymentContext = builder.paymentContext;
         this.callback = builder.callback;
-        this.identityProfiles = builder.identityProfiles;
+        this.identityProfile = builder.identityProfile;
         this.sessionExpiryOverride = builder.sessionExpiryOverride;
         this.theme = builder.theme;
         this.mobileLandingSuccess = builder.mobileLandingSuccess;
@@ -59,7 +58,7 @@ public class LinkIDLTQRContent implements Serializable {
                ", finishedMessage='" + finishedMessage + '\'' +
                ", paymentContext=" + paymentContext +
                ", callback=" + callback +
-               ", identityProfiles=" + identityProfiles +
+               ", identityProfile=" + identityProfile +
                ", sessionExpiryOverride=" + sessionExpiryOverride +
                ", theme='" + theme + '\'' +
                ", mobileLandingSuccess='" + mobileLandingSuccess + '\'' +
@@ -83,7 +82,7 @@ public class LinkIDLTQRContent implements Serializable {
         private String                         finishedMessage       = null;
         private LinkIDPaymentContext           paymentContext        = null;
         private LinkIDCallback                 callback              = null;
-        private List<String>                   identityProfiles      = null;
+        private String                         identityProfile       = null;
         private long                           sessionExpiryOverride = -1;
         private String                         theme                 = null;
         private String                         mobileLandingSuccess  = null;
@@ -128,9 +127,9 @@ public class LinkIDLTQRContent implements Serializable {
             return this;
         }
 
-        public Builder identityProfiles(final List<String> identityProfiles) {
+        public Builder identityProfile(final String identityProfile) {
 
-            this.identityProfiles = identityProfiles;
+            this.identityProfile = identityProfile;
             return this;
         }
 
@@ -218,9 +217,9 @@ public class LinkIDLTQRContent implements Serializable {
         return callback;
     }
 
-    public List<String> getIdentityProfiles() {
+    public String getIdentityProfile() {
 
-        return identityProfiles;
+        return identityProfile;
     }
 
     public long getSessionExpiryOverride() {

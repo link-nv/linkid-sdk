@@ -53,7 +53,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErro
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.util.InternalInconsistencyException;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.jetbrains.annotations.Nullable;
@@ -338,10 +337,8 @@ public class LinkIDServiceUtils {
         // callback
         ltqrContent.setCallback( LinkIDServiceUtils.convert( content.getCallback() ) );
 
-        // identity profiles
-        if (!CollectionUtils.isEmpty( content.getIdentityProfiles() )) {
-            ltqrContent.getIdentityProfiles().addAll( content.getIdentityProfiles() );
-        }
+        // identity profile
+        ltqrContent.setIdentityProfile( content.getIdentityProfile() );
 
         if (content.getSessionExpiryOverride() > 0) {
             ltqrContent.setSessionExpiryOverride( content.getSessionExpiryOverride() );
@@ -404,10 +401,8 @@ public class LinkIDServiceUtils {
                     convert( ltqrContent.getCallback().isInApp() ) ) );
         }
 
-        // identity profiles
-        if (!CollectionUtils.isEmpty( ltqrContent.getIdentityProfiles() )) {
-            builder.identityProfiles( ltqrContent.getIdentityProfiles() );
-        }
+        // identity profile
+        builder.identityProfile( ltqrContent.getIdentityProfile() );
 
         if (convert( ltqrContent.getSessionExpiryOverride() ) > 0) {
             builder.sessionExpiryOverride( ltqrContent.getSessionExpiryOverride() );

@@ -15,8 +15,8 @@ public interface LinkIDDeviceContextConstants {
     String AUTHENTICATION_MESSAGE     = "linkID.authenticationMessage";
     String FINISHED_MESSAGE           = "linkID.finishedMessage";
     //
-    // optional identity profile(s)
-    String IDENTITY_PROFILE_PREFIX    = "linkID.identityProfile";
+    // optional identity profile
+    String IDENTITY_PROFILE           = "linkID.identityProfile";
     //
     // optional session expiry (seconds)
     String SESSION_EXPIRY_OVERRIDE    = "linkID.sessionExpiryOverride";

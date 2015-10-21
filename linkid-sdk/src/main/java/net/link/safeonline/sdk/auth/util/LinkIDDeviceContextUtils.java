@@ -1,7 +1,6 @@
 package net.link.safeonline.sdk.auth.util;
 
 import com.google.common.collect.Maps;
-import java.util.List;
 import java.util.Map;
 import net.link.safeonline.sdk.api.auth.device.LinkIDDeviceContextConstants;
 import org.jetbrains.annotations.Nullable;
@@ -15,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 public abstract class LinkIDDeviceContextUtils {
 
     public static Map<String, String> generate(@Nullable final String authenticationMessage, @Nullable final String finishedMessage,
-                                               @Nullable final List<String> identityProfiles, @Nullable final Long sessionExpiryOverride,
-                                               @Nullable final String theme, @Nullable final String mobileLandingSuccess,
-                                               @Nullable final String mobileLandingError, @Nullable final String mobileLandingCancel) {
+                                               @Nullable final String identityProfile, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
+                                               @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
+                                               @Nullable final String mobileLandingCancel) {
 
         Map<String, String> deviceContextMap = Maps.newHashMap();
 
@@ -28,13 +27,8 @@ public abstract class LinkIDDeviceContextUtils {
             deviceContextMap.put( LinkIDDeviceContextConstants.FINISHED_MESSAGE, finishedMessage );
         }
 
-        if (null != identityProfiles && !identityProfiles.isEmpty()) {
-
-            int i = 0;
-            for (String identityProfile : identityProfiles) {
-
-                deviceContextMap.put( String.format( "%s.%d", LinkIDDeviceContextConstants.IDENTITY_PROFILE_PREFIX, i ), identityProfile );
-            }
+        if (null != identityProfile) {
+            deviceContextMap.put( LinkIDDeviceContextConstants.IDENTITY_PROFILE, identityProfile );
         }
 
         if (null != sessionExpiryOverride) {

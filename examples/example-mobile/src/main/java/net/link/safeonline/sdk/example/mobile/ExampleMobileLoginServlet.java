@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.example.mobile;
 
-import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.servlet.LinkIDInitiateLoginServlet;
@@ -22,8 +21,7 @@ public class ExampleMobileLoginServlet extends LinkIDInitiateLoginServlet {
 
         linkIDAuthenticationContext.setAuthenticationMessage( "Custom authentication message" );
         linkIDAuthenticationContext.setFinishedMessage( "Custom finished message" );
-
-        linkIDAuthenticationContext.setIdentityProfiles( Collections.singletonList( "linkid_basic" ) );
+        linkIDAuthenticationContext.setIdentityProfile( "linkid_basic" );
 
         //        linkIDAuthenticationContext.setPaymentContext( new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 200, LinkIDCurrency.EUR ) ).build() );
 
