@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.util.LinkIDNotificationMessage;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.logging.Logger;
@@ -59,7 +60,13 @@ public class LinkIDNotificationServlet extends HttpServlet {
             case CONFIGURATION_UPDATE:
                 break;
             case PAYMENT_ORDER_UPDATE:
-                LinkIDPaymentStatus paymentState = linkIDServiceClient.getPaymentStatus( notificationMessage.getPaymentOrderReference() );
+                LinkIDPaymentStatus paymentState = null;
+                try {
+                    paymentState = linkIDServiceClient.getPaymentStatus( notificationMessage.getPaymentOrderReference() );
+                }
+                catch (LinkIDPaymentStatusException e) {
+                    logger.err( e, e.getMessage() );
+                }
                 logger.dbg( "  * state = %s", paymentState );
                 break;
         }

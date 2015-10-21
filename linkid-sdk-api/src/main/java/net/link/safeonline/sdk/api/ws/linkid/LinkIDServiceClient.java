@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
-import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -22,6 +21,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
@@ -43,6 +43,7 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.mandate.LinkIDMandatePaymentException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
@@ -217,8 +218,11 @@ public interface LinkIDServiceClient<Request, Response> {
      * @param orderReference the order reference of the payment order
      *
      * @return the payment status details
+     *
+     * @throws LinkIDPaymentStatusException failure
      */
-    LinkIDPaymentStatus getPaymentStatus(String orderReference);
+    LinkIDPaymentStatus getPaymentStatus(String orderReference)
+            throws LinkIDPaymentStatusException;
 
     /**
      * @param startDate startDate

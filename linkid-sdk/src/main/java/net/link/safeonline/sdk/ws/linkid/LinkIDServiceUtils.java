@@ -43,6 +43,7 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPollingConfiguration;
 import net.link.safeonline.sdk.api.ws.linkid.mandate.LinkIDMandatePaymentErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollErrorCode;
@@ -477,40 +478,40 @@ public class LinkIDServiceUtils {
         return qrCodeImage;
     }
 
-//    public static Set<String> getIdentityProfiles(@Nullable final List<String> identityProfiles) {
-//
-//        if (null == identityProfiles)
-//            return null;
-//
-//        return Sets.newHashSet( identityProfiles );
-//    }
-//
-//    public static LinkIDCallback getCallback(@Nullable final Callback callback) {
-//
-//        if (null == callback)
-//            return null;
-//
-//        return new LinkIDCallback( callback.getLocation(), callback.getAppSessionId(), callback.isInApp() );
-//    }
-//
-//    public static LinkIDPaymentContext getPaymentContext(@Nullable final PaymentContext paymentContext) {
-//
-//        if (null == paymentContext)
-//            return null;
-//
-//        LinkIDPaymentContext.Builder builder = new LinkIDPaymentContext.Builder(
-//                new LinkIDPaymentAmount( paymentContext.getAmount(), convert( paymentContext.getCurrency() ),   //
-//                        paymentContext.getWalletCoin() ) ).description( paymentContext.getDescription() )
-//                                                          .orderReference( paymentContext.getOrderReference() )
-//                                                          .paymentProfile( paymentContext.getPaymentProfile() )
-//                                                          .paymentValidationTime( paymentContext.getValidationTime() );
-//
-//        if (paymentContext.isMandate()) {
-//            builder = builder.mandate( new LinkIDPaymentMandate( paymentContext.getMandateDescription(), paymentContext.getMandateReference() ) );
-//        }
-//
-//        return builder.build();
-//    }
+    //    public static Set<String> getIdentityProfiles(@Nullable final List<String> identityProfiles) {
+    //
+    //        if (null == identityProfiles)
+    //            return null;
+    //
+    //        return Sets.newHashSet( identityProfiles );
+    //    }
+    //
+    //    public static LinkIDCallback getCallback(@Nullable final Callback callback) {
+    //
+    //        if (null == callback)
+    //            return null;
+    //
+    //        return new LinkIDCallback( callback.getLocation(), callback.getAppSessionId(), callback.isInApp() );
+    //    }
+    //
+    //    public static LinkIDPaymentContext getPaymentContext(@Nullable final PaymentContext paymentContext) {
+    //
+    //        if (null == paymentContext)
+    //            return null;
+    //
+    //        LinkIDPaymentContext.Builder builder = new LinkIDPaymentContext.Builder(
+    //                new LinkIDPaymentAmount( paymentContext.getAmount(), convert( paymentContext.getCurrency() ),   //
+    //                        paymentContext.getWalletCoin() ) ).description( paymentContext.getDescription() )
+    //                                                          .orderReference( paymentContext.getOrderReference() )
+    //                                                          .paymentProfile( paymentContext.getPaymentProfile() )
+    //                                                          .paymentValidationTime( paymentContext.getValidationTime() );
+    //
+    //        if (paymentContext.isMandate()) {
+    //            builder = builder.mandate( new LinkIDPaymentMandate( paymentContext.getMandateDescription(), paymentContext.getMandateReference() ) );
+    //        }
+    //
+    //        return builder.build();
+    //    }
 
     public static LinkIDLTQRPollingConfiguration getPollingConfiguration(@Nullable final LTQRPollingConfiguration pollingConfiguration) {
 
@@ -588,6 +589,23 @@ public class LinkIDServiceUtils {
                 return LinkIDMandatePaymentErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDMandatePaymentErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDPaymentStatusErrorCode convert(final net.lin_k.linkid._3.PaymentStatusErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_NOT_FOUND:
+                return LinkIDPaymentStatusErrorCode.ERROR_NOT_FOUND;
+            case ERROR_MULTIPLE_ORDERS_FOUND:
+                return LinkIDPaymentStatusErrorCode.ERROR_MULTIPLE_ORDERS_FOUND;
+            case ERROR_UNEXPECTED:
+                return LinkIDPaymentStatusErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDPaymentStatusErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

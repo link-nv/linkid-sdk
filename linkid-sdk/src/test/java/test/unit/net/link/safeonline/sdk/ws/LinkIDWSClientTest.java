@@ -347,7 +347,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String orderReference = "QR-SHOP-f0c5b593-0754-4ec0-a45c-664bb86bab11";
+        String orderReference = "QR-SHOP-6b3ac19c-eee8-4732-a043-4a34bff16eca";
         LinkIDServiceClient<AuthnRequest, Response> client = getLinkIDServiceClient();
 
         // operate

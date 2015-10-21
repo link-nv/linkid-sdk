@@ -118,6 +118,7 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.mandate.LinkIDMandatePaymentException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentDetails;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
@@ -580,41 +581,54 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDPaymentStatus getPaymentStatus(final String orderReference) {
+    public LinkIDPaymentStatus getPaymentStatus(final String orderReference)
+            throws LinkIDPaymentStatusException {
 
         PaymentStatusRequest request = new PaymentStatusRequest();
         request.setOrderReference( orderReference );
 
         try {
             // operate
-            PaymentStatusResponse statusResponse = getPort().paymentStatus( request );
+            PaymentStatusResponse response = getPort().paymentStatus( request );
 
-            // parse
-            List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
-            for (PaymentTransaction paymentTransaction : statusResponse.getPaymentDetails().getPaymentTransactions()) {
-                transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
-                        paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
-                        LinkIDSDKUtils.convert( paymentTransaction.getCreationDate() ), LinkIDSDKUtils.convert( paymentTransaction.getAuthorizationDate() ),
-                        LinkIDSDKUtils.convert( paymentTransaction.getCapturedDate() ), paymentTransaction.getDocdataReference(),
-                        paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
-                        paymentTransaction.getRefundAmount() ) );
+            // convert response
+            if (null != response.getError()) {
+                throw new LinkIDPaymentStatusException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
             }
 
-            List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
-            for (WalletTransaction walletTransaction : statusResponse.getPaymentDetails().getWalletTransactions()) {
-                walletTransactions.add(
-                        new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert( walletTransaction.getCreationDate() ),
-                                walletTransaction.getTransactionId(), walletTransaction.getAmount(),
-                                LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
-                                walletTransaction.getRefundAmount() ) );
+            if (null != response.getSuccess()) {
+
+                // parse
+                List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
+                for (PaymentTransaction paymentTransaction : response.getSuccess().getPaymentDetails().getPaymentTransactions()) {
+                    transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
+                            paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
+                            LinkIDSDKUtils.convert( paymentTransaction.getCreationDate() ), LinkIDSDKUtils.convert( paymentTransaction.getAuthorizationDate() ),
+                            LinkIDSDKUtils.convert( paymentTransaction.getCapturedDate() ), paymentTransaction.getDocdataReference(),
+                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
+                            paymentTransaction.getRefundAmount() ) );
+                }
+
+                List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
+                for (WalletTransaction walletTransaction : response.getSuccess().getPaymentDetails().getWalletTransactions()) {
+                    walletTransactions.add(
+                            new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert( walletTransaction.getCreationDate() ),
+                                    walletTransaction.getTransactionId(), walletTransaction.getAmount(),
+                                    LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
+                                    walletTransaction.getRefundAmount() ) );
+                }
+
+                return new LinkIDPaymentStatus( response.getSuccess().getOrderReference(), response.getSuccess().getUserId(),
+                        LinkIDServiceUtils.convert( response.getSuccess().getPaymentStatus() ), response.getSuccess().isAuthorized(),
+                        response.getSuccess().isCaptured(), response.getSuccess().getAmountPayed(), response.getSuccess().getAmount(),
+                        response.getSuccess().getRefundAmount(), LinkIDServiceUtils.convert( response.getSuccess().getCurrency() ),
+                        response.getSuccess().getWalletCoin(), response.getSuccess().getDescription(), response.getSuccess().getProfile(),
+                        LinkIDSDKUtils.convert( response.getSuccess().getCreated() ), response.getSuccess().getMandateReference(),
+                        new LinkIDPaymentDetails( transactions, walletTransactions ) );
             }
 
-            return new LinkIDPaymentStatus( statusResponse.getOrderReference(), statusResponse.getUserId(),
-                    LinkIDServiceUtils.convert( statusResponse.getPaymentStatus() ), statusResponse.isAuthorized(), statusResponse.isCaptured(),
-                    statusResponse.getAmountPayed(), statusResponse.getAmount(), statusResponse.getRefundAmount(),
-                    LinkIDServiceUtils.convert( statusResponse.getCurrency() ), statusResponse.getWalletCoin(), statusResponse.getDescription(),
-                    statusResponse.getProfile(), LinkIDSDKUtils.convert( statusResponse.getCreated() ), statusResponse.getMandateReference(),
-                    new LinkIDPaymentDetails( transactions, walletTransactions ) );
+            throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
         }
         catch (ClientTransportException e) {
             throw new LinkIDWSClientTransportException( getBindingProvider(), e );
