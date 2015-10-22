@@ -37,6 +37,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfo;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -391,7 +392,7 @@ public class LinkIDWSClientTest {
         LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
-        LinkIDLTQRSession linkIDLTQRSession = client.ltqrPush( ltqrContent, null, false );
+        LinkIDLTQRSession linkIDLTQRSession = client.ltqrPush( ltqrContent, null, LinkIDLTQRLockType.NEVER );
 
         // verify
         assertNotNull( linkIDLTQRSession );
