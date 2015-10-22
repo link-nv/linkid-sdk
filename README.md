@@ -39,3 +39,12 @@ v3.4
 ---
   * Support for notification topic: **urn:net:lin-k:linkid:topic:payment:update**
     * This can be used as replacement for the paymentStatusLocation configuration
+  * LTQR
+    * oneTimeUse is now the ON_FINISH locktype (see: LinkIDLTQRLockType)
+    * extra lock option: ON_SCAN (lock the LTQR code when 1st user scans it)
+    * waitForUnlock is now waitForUnblock
+    * resetUsed is now unlock
+    * unlock is now unblock ( sorry :/ )
+  * SAML v2.0 objects encapsulated from the WS client, no more need for the LinkIDAuthWSUtils class
+  * No longer possible to specify a list of identity profiles, only 1 is allowed now.
+    * If you want more complex identity profiles, just request a new identity from someone from linkID
