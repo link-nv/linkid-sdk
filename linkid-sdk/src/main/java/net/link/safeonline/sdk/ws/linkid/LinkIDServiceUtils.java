@@ -13,6 +13,7 @@ import net.lin_k.linkid._3.ConfigLocalizedImage;
 import net.lin_k.linkid._3.ConfigLocalizedImages;
 import net.lin_k.linkid._3.Currency;
 import net.lin_k.linkid._3.LTQRContent;
+import net.lin_k.linkid._3.LTQRLockType;
 import net.lin_k.linkid._3.LTQRPollingConfiguration;
 import net.lin_k.linkid._3.PaymentContext;
 import net.lin_k.linkid._3.PaymentMethodType;
@@ -41,6 +42,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesErrorCode
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPollingConfiguration;
 import net.link.safeonline.sdk.api.ws.linkid.mandate.LinkIDMandatePaymentErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
@@ -323,6 +325,42 @@ public class LinkIDServiceUtils {
 
     }
 
+    public static LTQRLockType convert(final LinkIDLTQRLockType lockType) {
+
+        if (null == lockType)
+            return null;
+
+        switch (lockType) {
+
+            case NEVER:
+                return LTQRLockType.NEVER;
+            case ON_SCAN:
+                return LTQRLockType.ON_SCAN;
+            case ON_FINISH:
+                return LTQRLockType.ON_FINISH;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported LTQR lock type: \"%s\"", lockType.name() ) );
+    }
+
+    public static LinkIDLTQRLockType convert(final LTQRLockType lockType) {
+
+        if (null == lockType)
+            return null;
+
+        switch (lockType) {
+
+            case NEVER:
+                return LinkIDLTQRLockType.NEVER;
+            case ON_SCAN:
+                return LinkIDLTQRLockType.ON_SCAN;
+            case ON_FINISH:
+                return LinkIDLTQRLockType.ON_FINISH;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported LTQR lock type: \"%s\"", lockType.name() ) );
+    }
+
     public static LTQRContent convert(final LinkIDLTQRContent content) {
 
         LTQRContent ltqrContent = new LTQRContent();
@@ -358,7 +396,7 @@ public class LinkIDServiceUtils {
         if (content.getExpiryDuration() > 0) {
             ltqrContent.setExpiryDuration( content.getExpiryDuration() );
         }
-        ltqrContent.setWaitForUnlock( content.isWaitForUnlock() );
+        ltqrContent.setWaitForUnblock( content.isWaitForUnblock() );
         if (null != content.getLtqrStatusLocation()) {
             ltqrContent.setLtqrStatusLocation( content.getLtqrStatusLocation() );
         }
@@ -422,7 +460,7 @@ public class LinkIDServiceUtils {
         if (convert( ltqrContent.getExpiryDuration() ) > 0) {
             builder.expiryDuration( ltqrContent.getExpiryDuration() );
         }
-        builder.waitForUnlock( ltqrContent.isWaitForUnlock() );
+        builder.waitForUnblock( ltqrContent.isWaitForUnblock() );
         builder.ltqrStatusLocation( ltqrContent.getLtqrStatusLocation() );
 
         return builder.build();

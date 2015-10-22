@@ -113,6 +113,7 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPullException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
@@ -410,14 +411,14 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDLTQRSession ltqrPush(final LinkIDLTQRContent content, final String userAgent, final boolean oneTimeUse)
+    public LinkIDLTQRSession ltqrPush(final LinkIDLTQRContent content, final String userAgent, final LinkIDLTQRLockType lockType)
             throws LinkIDLTQRPushException {
 
         LTQRPushRequest request = new LTQRPushRequest();
 
         request.setContent( LinkIDServiceUtils.convert( content ) );
         request.setUserAgent( userAgent );
-        request.setOneTimeUse( oneTimeUse );
+        request.setLockType( LinkIDServiceUtils.convert( lockType ) );
 
         // operate
         LTQRPushResponse response = getPort().ltqrPush( request );
@@ -438,8 +439,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDLTQRSession ltqrChange(final String ltqrReference, final LinkIDLTQRContent content, final String userAgent, final boolean resetUsed,
-                                        final boolean unlock)
+    public LinkIDLTQRSession ltqrChange(final String ltqrReference, final LinkIDLTQRContent content, final String userAgent, final boolean unlock,
+                                        final boolean unblock)
             throws LinkIDLTQRChangeException {
 
         LTQRChangeRequest request = new LTQRChangeRequest();
@@ -447,8 +448,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         request.setLtqrReference( ltqrReference );
         request.setContent( LinkIDServiceUtils.convert( content ) );
         request.setUserAgent( userAgent );
-        request.setResetUsed( resetUsed );
         request.setUnlock( unlock );
+        request.setUnblock( unblock );
 
         // operate
         LTQRChangeResponse response = getPort().ltqrChange( request );
@@ -575,8 +576,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             for (LTQRInfo ltqrInfo : response.getSuccess().getResults()) {
 
                 infos.add( new LinkIDLTQRInfo( ltqrInfo.getLtqrReference(), ltqrInfo.getSessionId(), ltqrInfo.getCreated().toGregorianCalendar().getTime(),
-                        LinkIDServiceUtils.convert( ltqrInfo.getQrCodeInfo() ), ltqrInfo.isOneTimeUse(), LinkIDServiceUtils.convert( ltqrInfo.getContent() ),
-                        ltqrInfo.isLocked() ) );
+                        LinkIDServiceUtils.convert( ltqrInfo.getQrCodeInfo() ), LinkIDServiceUtils.convert( ltqrInfo.getContent() ),
+                        LinkIDServiceUtils.convert( ltqrInfo.getLockType() ), ltqrInfo.isLocked(), ltqrInfo.isWaitForUnblock(), ltqrInfo.isBlocked() ) );
             }
             return infos;
         }

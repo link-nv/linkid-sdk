@@ -39,6 +39,7 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPullException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
@@ -145,16 +146,16 @@ public interface LinkIDServiceClient {
     /**
      * Push a long term QR session to linkID.
      *
-     * @param content    Configuration of this LTQR
-     * @param userAgent  optional user agent case you want to get the QR code URL in the correct format
-     * @param oneTimeUse Long term QR session can only be used once
+     * @param content   Configuration of this LTQR
+     * @param userAgent optional user agent case you want to get the QR code URL in the correct format
+     * @param lockType  lock type of the LTQR, check the enum for more info
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      * session ID will be used in the notifications to the Service Provider.
      *
      * @throws LinkIDLTQRPushException failure
      */
-    LinkIDLTQRSession ltqrPush(LinkIDLTQRContent content, String userAgent, boolean oneTimeUse)
+    LinkIDLTQRSession ltqrPush(LinkIDLTQRContent content, String userAgent, LinkIDLTQRLockType lockType)
             throws LinkIDLTQRPushException;
 
     /**
@@ -162,13 +163,13 @@ public interface LinkIDServiceClient {
      *
      * @param ltqrReference LTQR reference, mandatory
      * @param content       Configuration of this LTQR
-     * @param userAgent     optional user agent case you want to get the QR code URL in the correct format
-     * @param resetUsed     Optional flag for single use LTQR codes to let them be used again one time. If multi use this flag does nothing.
-     * @param unlock        Unlocks the LTQR. When the first linkID user has finished for this LTQR, it will go back to locked if waitForUnlock=true.
+     * @param userAgent     Optional user agent case you want to get the QR code URL in the correct format
+     * @param unlock        Unlocks the LTQR code that has been locked depending on the lockType
+     * @param unblock       Unblocks the LTQR code if waitForUnblock was set true. This will allow the users that were waiting to continue the QR session.
      *
      * @return Success object containing the QR in PNG format, the content of the QR code and a type 4 UUID session ID of the created long term session. This
      */
-    LinkIDLTQRSession ltqrChange(String ltqrReference, LinkIDLTQRContent content, String userAgent, boolean resetUsed, boolean unlock)
+    LinkIDLTQRSession ltqrChange(String ltqrReference, LinkIDLTQRContent content, String userAgent, boolean unlock, boolean unblock)
             throws LinkIDLTQRChangeException;
 
     /**

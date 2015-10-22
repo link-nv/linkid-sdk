@@ -638,9 +638,9 @@
                     <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
                 </annotation>
             </attribute>
-            <attribute name="oneTimeUse" type="boolean" use="required">
+            <attribute name="lockType" type="tns:LTQRLockType" use="required">
                 <annotation>
-                    <documentation>Long term QR session can only be used once</documentation>
+                    <documentation>LTQR lock type</documentation>
                 </annotation>
             </attribute>
 		</complexType>
@@ -676,14 +676,14 @@
                     <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
                 </annotation>
             </attribute>
-            <attribute name="resetUsed" type="boolean" use="optional">
-                <annotation>
-                    <documentation>Optional flag for single use LTQR codes to let them be used again one time. If multi use this flag does nothing.</documentation>
-                </annotation>
-            </attribute>
             <attribute name="unlock" type="boolean" use="required">
                 <annotation>
-                    <documentation>Unlocks the LTQR. When the first linkID user has finished for this LTQR, it will go back to locked if waitForUnlock=true.</documentation>
+                    <documentation>Unlock the LTQR if applicable (check the lock type) the LTQR.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="unblock" type="boolean" use="required">
+                <annotation>
+                    <documentation>Unblock the LTQR if applicable (if waitForUnblock is set). When the first linkID user finishes this LTQR and waitForUnblock=true, it will again be in a blocked state.</documentation>
                 </annotation>
             </attribute>
         </complexType>
@@ -868,9 +868,9 @@
                     Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
             </annotation>
         </attribute>
-        <attribute name="waitForUnlock" type="boolean" use="required">
+        <attribute name="waitForUnblock" type="boolean" use="required">
             <annotation>
-                <documentation>Marks the LTQR to wait for an explicit unlock call. This only makes sense for single-use LTQR codes. Unlock the LTQR with the change operation with unlock=true</documentation>
+                <documentation>LTQR code marked to block users until a changeRequest with unblock=true.</documentation>
             </annotation>
         </attribute>
     </complexType>
@@ -1001,14 +1001,24 @@
                     <documentation>The LTQR reference</documentation>
                 </annotation>
             </element>
-            <element name="oneTimeUse" type="boolean" minOccurs="1" maxOccurs="1">
+            <element name="lockType" type="tns:LTQRLockType" minOccurs="1" maxOccurs="1">
                 <annotation>
-                    <documentation>One time use or not?</documentation>
+                    <documentation>LTQR's lockType</documentation>
                 </annotation>
             </element>
             <element name="locked" type="boolean" minOccurs="1" maxOccurs="1">
                 <annotation>
-                    <documentation>Is the LTQR currently locked?</documentation>
+                    <documentation>Is the LTQR currently blocked?</documentation>
+                </annotation>
+            </element>
+            <element name="waitForUnblock" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the LTQR configured waitForUnblock?</documentation>
+                </annotation>
+            </element>
+            <element name="blocked" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the LTQR currently blocked?</documentation>
                 </annotation>
             </element>
         </sequence>
@@ -1053,6 +1063,29 @@
             </element>
         </sequence>
     </complexType>
+
+    <simpleType name="LTQRLockType">
+		<annotation>
+			<documentation>LTQR Lock types</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="NEVER">
+				<annotation>
+					<documentation>LTQR is never locked</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="on.scan">
+				<annotation>
+					<documentation>LTQR is locked when first user scans the LTQR, that first user is then the only one able to continue, rest will fail. Unlock the LTQR code for with a change request with unlock=true/</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="on.finish">
+				<annotation>
+					<documentation>LTQR is locked when first user finishes the linkID QR session created from the LTQR. If no payment context is attached, this means when he is authenticated, else when the order is payed. Unlock the LTQR code for with a change request with unlock=true/</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
 
     <simpleType name="LTQRErrorCode">
 		<annotation>

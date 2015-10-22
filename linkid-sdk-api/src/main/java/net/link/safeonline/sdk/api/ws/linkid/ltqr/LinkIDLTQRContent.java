@@ -27,7 +27,7 @@ public class LinkIDLTQRContent implements Serializable {
     private final String                         ltqrStatusLocation;
     private final Date                           expiryDate;
     private final long                           expiryDuration;
-    private final boolean                        waitForUnlock;
+    private final boolean                        waitForUnblock;
 
     private LinkIDLTQRContent(final Builder builder) {
 
@@ -46,7 +46,7 @@ public class LinkIDLTQRContent implements Serializable {
         this.ltqrStatusLocation = builder.ltqrStatusLocation;
         this.expiryDate = builder.expiryDate;
         this.expiryDuration = builder.expiryDuration;
-        this.waitForUnlock = builder.waitForUnlock;
+        this.waitForUnblock = builder.waitForUnblock;
 
     }
 
@@ -68,7 +68,7 @@ public class LinkIDLTQRContent implements Serializable {
                ", ltqrStatusLocation='" + ltqrStatusLocation + '\'' +
                ", expiryDate=" + expiryDate +
                ", expiryDuration=" + expiryDuration +
-               ", waitForUnlock=" + waitForUnlock +
+               ", waitForUnblock=" + waitForUnblock +
                '}';
     }
 
@@ -92,7 +92,7 @@ public class LinkIDLTQRContent implements Serializable {
         private String                         ltqrStatusLocation    = null;
         private Date                           expiryDate            = null;
         private long                           expiryDuration        = -1;
-        private boolean                        waitForUnlock         = false;
+        private boolean                        waitForUnblock        = false;
 
         public LinkIDLTQRContent build() {
 
@@ -187,9 +187,9 @@ public class LinkIDLTQRContent implements Serializable {
             return this;
         }
 
-        public Builder waitForUnlock(final boolean waitForUnlock) {
+        public Builder waitForUnblock(final boolean waitForUnblock) {
 
-            this.waitForUnlock = waitForUnlock;
+            this.waitForUnblock = waitForUnblock;
             return this;
         }
 
@@ -267,8 +267,8 @@ public class LinkIDLTQRContent implements Serializable {
         return expiryDuration;
     }
 
-    public boolean isWaitForUnlock() {
+    public boolean isWaitForUnblock() {
 
-        return waitForUnlock;
+        return waitForUnblock;
     }
 }
