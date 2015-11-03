@@ -513,41 +513,6 @@ public class LinkIDServiceUtils {
         return qrCodeImage;
     }
 
-    //    public static Set<String> getIdentityProfiles(@Nullable final List<String> identityProfiles) {
-    //
-    //        if (null == identityProfiles)
-    //            return null;
-    //
-    //        return Sets.newHashSet( identityProfiles );
-    //    }
-    //
-    //    public static LinkIDCallback getCallback(@Nullable final Callback callback) {
-    //
-    //        if (null == callback)
-    //            return null;
-    //
-    //        return new LinkIDCallback( callback.getLocation(), callback.getAppSessionId(), callback.isInApp() );
-    //    }
-    //
-    //    public static LinkIDPaymentContext getPaymentContext(@Nullable final PaymentContext paymentContext) {
-    //
-    //        if (null == paymentContext)
-    //            return null;
-    //
-    //        LinkIDPaymentContext.Builder builder = new LinkIDPaymentContext.Builder(
-    //                new LinkIDPaymentAmount( paymentContext.getAmount(), convert( paymentContext.getCurrency() ),   //
-    //                        paymentContext.getWalletCoin() ) ).description( paymentContext.getDescription() )
-    //                                                          .orderReference( paymentContext.getOrderReference() )
-    //                                                          .paymentProfile( paymentContext.getPaymentProfile() )
-    //                                                          .paymentValidationTime( paymentContext.getValidationTime() );
-    //
-    //        if (paymentContext.isMandate()) {
-    //            builder = builder.mandate( new LinkIDPaymentMandate( paymentContext.getMandateDescription(), paymentContext.getMandateReference() ) );
-    //        }
-    //
-    //        return builder.build();
-    //    }
-
     public static LinkIDLTQRPollingConfiguration getPollingConfiguration(@Nullable final LTQRPollingConfiguration pollingConfiguration) {
 
         if (null == pollingConfiguration) {

@@ -326,8 +326,7 @@ public class LinkIDWSClientTest {
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String language = "be";
         String userAgent = "unit-test";
-        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 1, LinkIDCurrency.EUR ) ).paymentProfile( "foo" )
-                                                                                                                                  .build();
+        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 0.512123, LinkIDCurrency.EUR ) ).build();
 
         LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null, LinkIDProtocol.WS );
         linkIDAuthenticationContext.setLanguage( new Locale( language ) );
@@ -336,6 +335,12 @@ public class LinkIDWSClientTest {
         // operate: start
         try {
             LinkIDAuthSession session = client.authStart( linkIDAuthenticationContext, userAgent );
+
+            // write out QR image
+            ByteArrayInputStream bais = new ByteArrayInputStream( session.getQrCodeInfo().getQrImage() );
+            BufferedImage qrImage = ImageIO.read( bais );
+            ImageIO.write( qrImage, "png", new File( "qr.png" ) );
+
         }
         catch (LinkIDAuthException e) {
             logger.inf( "Error message: %s", e.getMessage() );
