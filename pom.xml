@@ -458,7 +458,7 @@
         <linkid.ws.idmapping.path>idmapping</linkid.ws.idmapping.path>
         <linkid.ws.sts.path>sts</linkid.ws.sts.path>
         <linkid.ws.xkms2.path>xkms2</linkid.ws.xkms2.path>
-        <linkid.ws.path>linkid30</linkid.ws.path>
+        <linkid.ws.path>linkid31</linkid.ws.path>
 
         <!-- DEFAULT VERSIONS, SEE PLUGINS -->
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
