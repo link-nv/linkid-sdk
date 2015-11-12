@@ -39,3 +39,7 @@ v3.4
   * SAML v2.0 objects encapsulated from the WS client, no more need for the LinkIDAuthWSUtils class
   * No longer possible to specify a list of identity profiles, only 1 is allowed now.
     * If you want more complex identity profiles, just request a new identity from someone from linkID
+    
+v3.5
+----
+  * QRCodeInfo.targetBlank support dropped
