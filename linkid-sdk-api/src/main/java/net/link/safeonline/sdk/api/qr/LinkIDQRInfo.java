@@ -17,17 +17,14 @@ public class LinkIDQRInfo implements Serializable {
     private final String  qrCodeURL;        // URL of the QR code to be shown in mobile clients ( if user agent was specified ), else defaults to default protocol
     private final String  qrContent;        // QR code content ( everything but the protocol )
     private final boolean mobile;           // If user agent was specified, will return whether the request was started from a mobile client or not. Else is false
-    private final boolean targetBlank;      // If user agent was specified, some devices require the target to be _blank in order for the link to open the linkID app. Else is false
 
-    public LinkIDQRInfo(final byte[] qrImage, final String qrEncoded, final String qrCodeURL, final String qrContent, final boolean mobile,
-                        final boolean targetBlank) {
+    public LinkIDQRInfo(final byte[] qrImage, final String qrEncoded, final String qrCodeURL, final String qrContent, final boolean mobile) {
 
         this.qrImage = qrImage;
         this.qrEncoded = qrEncoded;
         this.qrCodeURL = qrCodeURL;
         this.qrContent = qrContent;
         this.mobile = mobile;
-        this.targetBlank = targetBlank;
     }
 
     // Helper methods
@@ -41,7 +38,6 @@ public class LinkIDQRInfo implements Serializable {
                ", qrCodeURL='" + qrCodeURL + '\'' +
                ", qrContent='" + qrContent + '\'' +
                ", mobile=" + mobile +
-               ", targetBlank=" + targetBlank +
                '}';
     }
 
@@ -72,8 +68,4 @@ public class LinkIDQRInfo implements Serializable {
         return mobile;
     }
 
-    public boolean isTargetBlank() {
-
-        return targetBlank;
-    }
 }

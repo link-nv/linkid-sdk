@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:linkid:3.1"
+             xmlns:tns="urn:net:lin-k:linkid:3.1" name="LinkIDWebService">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:net:lin-k:linkid:3.1" schemaLocation="linkid-3.1.xsd" />
+        </schema>
+    </types>
+
+    <!-- =================== Authentication ========================= -->
+
+    <message name="authStartRequest">
+		<part name="request" element="tns:AuthStartRequest" />
+	</message>
+	<message name="authStartResponse">
+		<part name="response" element="tns:AuthStartResponse" />
+	</message>
+    <message name="authPollRequest">
+		<part name="request" element="tns:AuthPollRequest" />
+	</message>
+	<message name="authPollResponse">
+		<part name="response" element="tns:AuthPollResponse" />
+	</message>
+    <message name="authCancelRequest">
+		<part name="request" element="tns:AuthCancelRequest" />
+	</message>
+	<message name="authCancelResponse">
+		<part name="response" element="tns:AuthCancelResponse" />
+	</message>
+
+    <!-- =================== Callback===== ========================= -->
+
+    <message name="callbackPullRequest">
+		<part name="request" element="tns:CallbackPullRequest" />
+	</message>
+	<message name="callbackPullResponse">
+		<part name="response" element="tns:CallbackPullResponse" />
+	</message>
+
+    <!-- =================== Configuration ========================= -->
+
+    <message name="configThemesRequest">
+		<part name="request" element="tns:ConfigThemesRequest" />
+	</message>
+	<message name="configThemesResponse">
+		<part name="response" element="tns:ConfigThemesResponse" />
+	</message>
+    <message name="configLocalizationRequest">
+		<part name="request" element="tns:ConfigLocalizationRequest" />
+	</message>
+	<message name="configLocalizationResponse">
+		<part name="response" element="tns:ConfigLocalizationResponse" />
+	</message>
+
+    <!-- =================== Payment capture ========================= -->
+
+    <message name="paymentCaptureRequest">
+		<part name="request" element="tns:PaymentCaptureRequest" />
+	</message>
+	<message name="paymentCaptureResponse">
+		<part name="response" element="tns:PaymentCaptureResponse" />
+	</message>
+
+    <!-- =================== LTQR ==================================== -->
+
+    <message name="ltqrPushRequest">
+		<part name="request" element="tns:LTQRPushRequest" />
+	</message>
+	<message name="ltqrPushResponse">
+		<part name="response" element="tns:LTQRPushResponse" />
+	</message>
+    <message name="ltqrChangeRequest">
+		<part name="request" element="tns:LTQRChangeRequest" />
+	</message>
+	<message name="ltqrChangeResponse">
+		<part name="response" element="tns:LTQRChangeResponse" />
+	</message>
+    <message name="ltqrPullRequest">
+		<part name="request" element="tns:LTQRPullRequest" />
+	</message>
+	<message name="ltqrPullResponse">
+		<part name="response" element="tns:LTQRPullResponse" />
+	</message>
+    <message name="ltqrRemoveRequest">
+		<part name="request" element="tns:LTQRRemoveRequest" />
+	</message>
+	<message name="ltqrRemoveResponse">
+		<part name="response" element="tns:LTQRRemoveResponse" />
+	</message>
+    <message name="ltqrInfoRequest">
+		<part name="request" element="tns:LTQRInfoRequest" />
+	</message>
+	<message name="ltqrInfoResponse">
+		<part name="response" element="tns:LTQRInfoResponse" />
+	</message>
+
+    <!-- =================== Payment status ================================ -->
+
+    <message name="paymentStatusRequest">
+		<part name="request" element="tns:PaymentStatusRequest" />
+	</message>
+	<message name="paymentStatusResponse">
+		<part name="response" element="tns:PaymentStatusResponse" />
+	</message>
+
+    <!-- =================== Reporting ================================ -->
+
+    <message name="paymentReportRequest">
+		<part name="request" element="tns:PaymentReportRequest" />
+	</message>
+    <message name="paymentReportResponse">
+		<part name="response" element="tns:PaymentReportResponse" />
+	</message>
+	<message name="parkingReportRequest">
+		<part name="request" element="tns:ParkingReportRequest" />
+	</message>
+    <message name="parkingReportResponse">
+		<part name="response" element="tns:ParkingReportResponse" />
+	</message>
+	<message name="walletReportRequest">
+		<part name="request" element="tns:WalletReportRequest" />
+	</message>
+    <message name="walletReportResponse">
+		<part name="response" element="tns:WalletReportResponse" />
+	</message>
+
+    <!-- =================== Payment mandate ================================ -->
+
+    <message name="mandatePaymentRequest">
+		<part name="request" element="tns:MandatePaymentRequest" />
+	</message>
+	<message name="mandatePaymentResponse">
+		<part name="response" element="tns:MandatePaymentResponse" />
+	</message>
+
+    <!-- =================== Wallets ================================ -->
+
+    <message name="walletEnrollRequest">
+		<part name="request" element="tns:WalletEnrollRequest" />
+	</message>
+	<message name="walletEnrollResponse">
+		<part name="response" element="tns:WalletEnrollResponse" />
+	</message>
+        <message name="walletGetInfoRequest">
+		<part name="request" element="tns:WalletGetInfoRequest" />
+	</message>
+	<message name="walletGetInfoResponse">
+		<part name="response" element="tns:WalletGetInfoResponse" />
+	</message>
+    <message name="walletAddCreditRequest">
+		<part name="request" element="tns:WalletAddCreditRequest" />
+	</message>
+	<message name="walletAddCreditResponse">
+		<part name="response" element="tns:WalletAddCreditResponse" />
+	</message>
+    <message name="walletRemoveCreditRequest">
+		<part name="request" element="tns:WalletRemoveCreditRequest" />
+	</message>
+	<message name="walletRemoveCreditResponse">
+		<part name="response" element="tns:WalletRemoveCreditResponse" />
+	</message>
+    <message name="walletRemoveRequest">
+		<part name="request" element="tns:WalletRemoveRequest" />
+	</message>
+	<message name="walletRemoveResponse">
+		<part name="response" element="tns:WalletRemoveResponse" />
+	</message>
+    <message name="walletCommitRequest">
+		<part name="request" element="tns:WalletCommitRequest" />
+	</message>
+	<message name="walletCommitResponse">
+		<part name="response" element="tns:WalletCommitResponse" />
+	</message>
+    <message name="walletReleaseRequest">
+		<part name="request" element="tns:WalletReleaseRequest" />
+	</message>
+	<message name="walletReleaseResponse">
+		<part name="response" element="tns:WalletReleaseResponse" />
+	</message>
+
+    <!-- =========================== Ports ========================== -->
+
+    <portType name="LinkIDServicePort">
+		<operation name="authStart">
+			<input message="tns:authStartRequest" />
+			<output message="tns:authStartResponse" />
+		</operation>
+		<operation name="authPoll">
+			<input message="tns:authPollRequest" />
+			<output message="tns:authPollResponse" />
+		</operation>
+		<operation name="authCancel">
+			<input message="tns:authCancelRequest" />
+			<output message="tns:authCancelResponse" />
+		</operation>
+		<operation name="callbackPull">
+			<input message="tns:callbackPullRequest" />
+			<output message="tns:callbackPullResponse" />
+		</operation>
+		<operation name="configThemes">
+			<input message="tns:configThemesRequest" />
+			<output message="tns:configThemesResponse" />
+		</operation>
+		<operation name="configLocalization">
+			<input message="tns:configLocalizationRequest" />
+			<output message="tns:configLocalizationResponse" />
+		</operation>
+		<operation name="paymentCapture">
+			<input message="tns:paymentCaptureRequest" />
+			<output message="tns:paymentCaptureResponse" />
+		</operation>
+		<operation name="ltqrPush">
+			<input message="tns:ltqrPushRequest" />
+			<output message="tns:ltqrPushResponse" />
+		</operation>
+		<operation name="ltqrChange">
+			<input message="tns:ltqrChangeRequest" />
+			<output message="tns:ltqrChangeResponse" />
+		</operation>
+		<operation name="ltqrPull">
+			<input message="tns:ltqrPullRequest" />
+			<output message="tns:ltqrPullResponse" />
+		</operation>
+		<operation name="ltqrRemove">
+			<input message="tns:ltqrRemoveRequest" />
+			<output message="tns:ltqrRemoveResponse" />
+		</operation>
+		<operation name="ltqrInfo">
+			<input message="tns:ltqrInfoRequest" />
+			<output message="tns:ltqrInfoResponse" />
+		</operation>
+		<operation name="paymentStatus">
+			<input message="tns:paymentStatusRequest" />
+			<output message="tns:paymentStatusResponse" />
+		</operation>
+		<operation name="paymentReport">
+			<input message="tns:paymentReportRequest" />
+			<output message="tns:paymentReportResponse" />
+		</operation>
+		<operation name="parkingReport">
+			<input message="tns:parkingReportRequest" />
+			<output message="tns:parkingReportResponse" />
+		</operation>
+		<operation name="walletReport">
+			<input message="tns:walletReportRequest" />
+			<output message="tns:walletReportResponse" />
+		</operation>
+		<operation name="mandatePayment">
+			<input message="tns:mandatePaymentRequest" />
+			<output message="tns:mandatePaymentResponse" />
+		</operation>
+		<operation name="walletEnroll">
+			<input message="tns:walletEnrollRequest" />
+			<output message="tns:walletEnrollResponse" />
+		</operation>
+		<operation name="walletGetInfo">
+			<input message="tns:walletGetInfoRequest" />
+			<output message="tns:walletGetInfoResponse" />
+		</operation>
+		<operation name="walletAddCredit">
+			<input message="tns:walletAddCreditRequest" />
+			<output message="tns:walletAddCreditResponse" />
+		</operation>
+		<operation name="walletRemoveCredit">
+			<input message="tns:walletRemoveCreditRequest" />
+			<output message="tns:walletRemoveCreditResponse" />
+		</operation>
+		<operation name="walletRemove">
+			<input message="tns:walletRemoveRequest" />
+			<output message="tns:walletRemoveResponse" />
+		</operation>
+		<operation name="walletCommit">
+			<input message="tns:walletCommitRequest" />
+			<output message="tns:walletCommitResponse" />
+		</operation>
+		<operation name="walletRelease">
+			<input message="tns:walletReleaseRequest" />
+			<output message="tns:walletReleaseResponse" />
+		</operation>
+    </portType>
+
+    <!-- ========================= Bindings ======================== -->
+
+    <binding name="LinkIDServiceBinding" type="tns:LinkIDServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="authStart">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:authStart" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="authPoll">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:authPoll" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="authCancel">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:authCancel" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="callbackPull">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:callbackPull" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="configThemes">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:themes" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="configLocalization">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:localization" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentCapture">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:paymentCapture" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrPush">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrPush" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrChange">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrChange" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrPull">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrPull" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrRemove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrInfo">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrInfo" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentStatus">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:paymentStatus" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentReport">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:paymentReport" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="parkingReport">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:parkingReport" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletReport">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletReport" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="mandatePayment">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:mandatePayment" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletEnroll">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletEnroll" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletGetInfo">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletGetInfo" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletAddCredit">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletAddCredit" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletRemoveCredit">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletRemoveCredit" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletRemove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletCommit">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletCommit" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletRelease">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletRelease" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- ========================= Services ======================== -->
+
+    <service name="LinkIDService">
+        <port name="LinkIDServicePort" binding="tns:LinkIDServiceBinding">
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/linkid30/" />
+        </port>
+    </service>
+</definitions>

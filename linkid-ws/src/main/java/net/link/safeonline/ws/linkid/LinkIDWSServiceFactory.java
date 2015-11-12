@@ -22,10 +22,10 @@ public class LinkIDWSServiceFactory {
     public static LinkIDService newInstance() {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL wsdlUrl = classLoader.getResource( "linkid-3.0.wsdl" );
+        URL wsdlUrl = classLoader.getResource( "linkid-3.1.wsdl" );
         if (null == wsdlUrl)
             throw new RuntimeException( "linkID WSDL not found" );
 
-        return new LinkIDService( wsdlUrl, new QName( "urn:net:lin-k:linkid:3.0", "LinkIDService" ) );
+        return new LinkIDService( wsdlUrl, new QName( "urn:net:lin-k:linkid:3.1", "LinkIDService" ) );
     }
 }

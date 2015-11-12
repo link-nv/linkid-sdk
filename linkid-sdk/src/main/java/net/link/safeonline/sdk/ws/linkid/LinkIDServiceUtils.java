@@ -761,7 +761,7 @@ public class LinkIDServiceUtils {
     public static LinkIDQRInfo convert(final QRCodeInfo qrCodeInfo) {
 
         return new LinkIDQRInfo( decodeQR( qrCodeInfo.getQrEncoded() ), qrCodeInfo.getQrEncoded(), qrCodeInfo.getQrURL(), qrCodeInfo.getQrContent(),
-                qrCodeInfo.isMobile(), qrCodeInfo.isTargetBlank() );
+                qrCodeInfo.isMobile() );
 
     }
 }

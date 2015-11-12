@@ -38,6 +38,7 @@
                         <wsdlFile>ws-trust-1.3.wsdl</wsdlFile>
                         <wsdlFile>xkms.wsdl</wsdlFile>
                         <wsdlFile>linkid-3.0.wsdl</wsdlFile>
+                        <wsdlFile>linkid-3.1.wsdl</wsdlFile>
                         <wsdlFile>safe-online-payment.wsdl</wsdlFile>
                         <wsdlFile>safe-online-payment-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-payment-3.0.wsdl</wsdlFile>
