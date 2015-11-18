@@ -5,13 +5,13 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.linkid.capture;
+package net.link.safeonline.sdk.api.ws.linkid.payment;
 
-public enum LinkIDCaptureErrorCode {
+public enum LinkIDPaymentRefundErrorCode {
 
-    ERROR_CAPTURE_UNKNOWN,
-    ERROR_CAPTURE_FAILED,
-    ERROR_CAPTURE_TOKEN_NOT_FOUND,
+    ERROR_ORDER_UNKNOWN,
+    ERROR_ORDER_ALREADY_REFUNDED,
+    ERROR_REFUND_FAILED,
     ERROR_MAINTENANCE
 
 }

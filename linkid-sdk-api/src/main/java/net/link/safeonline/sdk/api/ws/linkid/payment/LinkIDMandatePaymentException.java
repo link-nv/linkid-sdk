@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.linkid.mandate;
+package net.link.safeonline.sdk.api.ws.linkid.payment;
 
 public class LinkIDMandatePaymentException extends Exception {
 

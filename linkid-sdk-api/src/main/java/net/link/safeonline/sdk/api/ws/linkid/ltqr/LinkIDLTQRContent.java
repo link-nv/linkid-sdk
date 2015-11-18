@@ -28,6 +28,7 @@ public class LinkIDLTQRContent implements Serializable {
     private final Date                           expiryDate;
     private final long                           expiryDuration;
     private final boolean                        waitForUnblock;
+    private final LinkIDFavoritesConfiguration   favoritesConfiguration;
 
     private LinkIDLTQRContent(final Builder builder) {
 
@@ -47,6 +48,7 @@ public class LinkIDLTQRContent implements Serializable {
         this.expiryDate = builder.expiryDate;
         this.expiryDuration = builder.expiryDuration;
         this.waitForUnblock = builder.waitForUnblock;
+        this.favoritesConfiguration = builder.favoritesConfiguration;
 
     }
 
@@ -69,6 +71,7 @@ public class LinkIDLTQRContent implements Serializable {
                ", expiryDate=" + expiryDate +
                ", expiryDuration=" + expiryDuration +
                ", waitForUnblock=" + waitForUnblock +
+               ", favoritesConfiguration=" + favoritesConfiguration +
                '}';
     }
 
@@ -78,21 +81,22 @@ public class LinkIDLTQRContent implements Serializable {
     public static class Builder {
 
         // Optional parameters
-        private String                         authenticationMessage = null;
-        private String                         finishedMessage       = null;
-        private LinkIDPaymentContext           paymentContext        = null;
-        private LinkIDCallback                 callback              = null;
-        private String                         identityProfile       = null;
-        private long                           sessionExpiryOverride = -1;
-        private String                         theme                 = null;
-        private String                         mobileLandingSuccess  = null;
-        private String                         mobileLandingError    = null;
-        private String                         mobileLandingCancel   = null;
-        private LinkIDLTQRPollingConfiguration pollingConfiguration  = null;
-        private String                         ltqrStatusLocation    = null;
-        private Date                           expiryDate            = null;
-        private long                           expiryDuration        = -1;
-        private boolean                        waitForUnblock        = false;
+        private String                         authenticationMessage  = null;
+        private String                         finishedMessage        = null;
+        private LinkIDPaymentContext           paymentContext         = null;
+        private LinkIDCallback                 callback               = null;
+        private String                         identityProfile        = null;
+        private long                           sessionExpiryOverride  = -1;
+        private String                         theme                  = null;
+        private String                         mobileLandingSuccess   = null;
+        private String                         mobileLandingError     = null;
+        private String                         mobileLandingCancel    = null;
+        private LinkIDLTQRPollingConfiguration pollingConfiguration   = null;
+        private String                         ltqrStatusLocation     = null;
+        private Date                           expiryDate             = null;
+        private long                           expiryDuration         = -1;
+        private boolean                        waitForUnblock         = false;
+        private LinkIDFavoritesConfiguration   favoritesConfiguration = null;
 
         public LinkIDLTQRContent build() {
 
@@ -193,6 +197,12 @@ public class LinkIDLTQRContent implements Serializable {
             return this;
         }
 
+        public Builder favoritesConfiguration(final LinkIDFavoritesConfiguration favoritesConfiguration) {
+
+            this.favoritesConfiguration = favoritesConfiguration;
+            return this;
+        }
+
     }
 
     // Accessors
@@ -270,5 +280,10 @@ public class LinkIDLTQRContent implements Serializable {
     public boolean isWaitForUnblock() {
 
         return waitForUnblock;
+    }
+
+    public LinkIDFavoritesConfiguration getFavoritesConfiguration() {
+
+        return favoritesConfiguration;
     }
 }

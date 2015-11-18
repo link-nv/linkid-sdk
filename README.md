@@ -43,3 +43,9 @@ v3.4
 v3.5
 ----
   * QRCodeInfo.targetBlank support dropped
+  * LTQR favoritresConfiguration support
+  * LinkIDServiceClient.capture renamed to paymentCapture
+  * paymentRefund support
+  * LinkIDPaymentCapturexxx moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.capture
+  * LinkIDMandatePaymentxxx moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.mandate
+  * LinkIDWalletReports: type support  

@@ -17,15 +17,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LinkIDLTQRPushException extends Exception {
 
-    private final LinkIDLTQRErrorCode errorCode;
+    private final LinkIDLTQRPushErrorCode errorCode;
 
-    public LinkIDLTQRPushException(final LinkIDLTQRErrorCode errorCode, @Nullable final String errorMessage) {
+    public LinkIDLTQRPushException(final LinkIDLTQRPushErrorCode errorCode, @Nullable final String errorMessage) {
 
         super( errorMessage );
         this.errorCode = errorCode;
     }
 
-    public LinkIDLTQRErrorCode getErrorCode() {
+    public LinkIDLTQRPushErrorCode getErrorCode() {
 
         return errorCode;
     }

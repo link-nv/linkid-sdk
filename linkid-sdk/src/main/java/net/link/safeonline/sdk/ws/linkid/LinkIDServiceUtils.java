@@ -12,6 +12,7 @@ import net.lin_k.linkid._3.ConfigLocalizationKeyType;
 import net.lin_k.linkid._3.ConfigLocalizedImage;
 import net.lin_k.linkid._3.ConfigLocalizedImages;
 import net.lin_k.linkid._3.Currency;
+import net.lin_k.linkid._3.FavoritesConfiguration;
 import net.lin_k.linkid._3.LTQRContent;
 import net.lin_k.linkid._3.LTQRLockType;
 import net.lin_k.linkid._3.LTQRPollingConfiguration;
@@ -19,6 +20,7 @@ import net.lin_k.linkid._3.PaymentContext;
 import net.lin_k.linkid._3.PaymentMethodType;
 import net.lin_k.linkid._3.PaymentStatusType;
 import net.lin_k.linkid._3.QRCodeInfo;
+import net.lin_k.linkid._3.WalletReportType;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -29,22 +31,26 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.capture.LinkIDCaptureErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKeyType;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImages;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDFavoritesConfiguration;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPollingConfiguration;
-import net.link.safeonline.sdk.api.ws.linkid.mandate.LinkIDMandatePaymentErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitErrorCode;
@@ -183,18 +189,35 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDCaptureErrorCode convert(final net.lin_k.linkid._3.PaymentCaptureErrorCode errorCode) {
+    public static LinkIDPaymentCaptureErrorCode convert(final net.lin_k.linkid._3.PaymentCaptureErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_CAPTURE_UNKNOWN:
-                return LinkIDCaptureErrorCode.ERROR_CAPTURE_UNKNOWN;
+                return LinkIDPaymentCaptureErrorCode.ERROR_CAPTURE_UNKNOWN;
             case ERROR_CAPTURE_FAILED:
-                return LinkIDCaptureErrorCode.ERROR_CAPTURE_FAILED;
+                return LinkIDPaymentCaptureErrorCode.ERROR_CAPTURE_FAILED;
             case ERROR_CAPTURE_TOKEN_NOT_FOUND:
-                return LinkIDCaptureErrorCode.ERROR_CAPTURE_TOKEN_NOT_FOUND;
+                return LinkIDPaymentCaptureErrorCode.ERROR_CAPTURE_TOKEN_NOT_FOUND;
             case ERROR_MAINTENANCE:
-                return LinkIDCaptureErrorCode.ERROR_MAINTENANCE;
+                return LinkIDPaymentCaptureErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDPaymentRefundErrorCode convert(final net.lin_k.linkid._3.PaymentRefundErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_ORDER_UNKNOWN:
+                return LinkIDPaymentRefundErrorCode.ERROR_ORDER_UNKNOWN;
+            case ERROR_ORDER_ALREADY_REFUNDED:
+                return LinkIDPaymentRefundErrorCode.ERROR_ORDER_ALREADY_REFUNDED;
+            case ERROR_REFUND_FAILED:
+                return LinkIDPaymentRefundErrorCode.ERROR_REFUND_FAILED;
+            case ERROR_MAINTENANCE:
+                return LinkIDPaymentRefundErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -299,6 +322,29 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unsupported payment state: \"%s\"", paymentState.name() ) );
     }
 
+    public static LinkIDWalletReportType convert(final WalletReportType type) {
+
+        if (null == type) {
+            return null;
+        }
+
+        switch (type) {
+
+            case USER_TRANSACTION:
+                return LinkIDWalletReportType.USER_TRANSACTION;
+            case APPLICATION_ADD_CREDIT_INITIAL:
+                return LinkIDWalletReportType.APPLICATION_ADD_CREDIT_INITIAL;
+            case APPLICATION_ADD_CREDIT:
+                return LinkIDWalletReportType.APPLICATION_ADD_CREDIT;
+            case APPLICATION_REMOVE_CREDIT:
+                return LinkIDWalletReportType.APPLICATION_REMOVE_CREDIT;
+            case APPLICATION_REFUND:
+                return LinkIDWalletReportType.APPLICATION_REFUND;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported wallet report type: \"%s\"", type.name() ) );
+    }
+
     @Nullable
     public static LTQRPollingConfiguration convert(@Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration) {
 
@@ -319,6 +365,23 @@ public class LinkIDServiceUtils {
             }
 
             return wsPollingConfiguration;
+        }
+
+        return null;
+
+    }
+
+    @Nullable
+    public static FavoritesConfiguration convert(@Nullable final LinkIDFavoritesConfiguration favoritesConfiguration) {
+
+        if (null != favoritesConfiguration) {
+            FavoritesConfiguration wsFavoritesConfiguration = new FavoritesConfiguration();
+            wsFavoritesConfiguration.setTitle( favoritesConfiguration.getTitle() );
+            wsFavoritesConfiguration.setInfo( favoritesConfiguration.getInfo() );
+            wsFavoritesConfiguration.setLogoEncoded( favoritesConfiguration.getLogoEncoded() );
+            wsFavoritesConfiguration.setBackgroundColor( favoritesConfiguration.getBackgroundColor() );
+            wsFavoritesConfiguration.setTextColor( favoritesConfiguration.getTextColor() );
+            return wsFavoritesConfiguration;
         }
 
         return null;
@@ -387,7 +450,7 @@ public class LinkIDServiceUtils {
         ltqrContent.setMobileLandingCancel( content.getMobileLandingCancel() );
 
         // polling configuration
-        ltqrContent.setPollingConfiguration( LinkIDServiceUtils.convert( content.getPollingConfiguration() ) );
+        ltqrContent.setPollingConfiguration( convert( content.getPollingConfiguration() ) );
 
         // configuration
         if (null != content.getExpiryDate()) {
@@ -399,6 +462,11 @@ public class LinkIDServiceUtils {
         ltqrContent.setWaitForUnblock( content.isWaitForUnblock() );
         if (null != content.getLtqrStatusLocation()) {
             ltqrContent.setLtqrStatusLocation( content.getLtqrStatusLocation() );
+        }
+
+        // favorites configuration
+        if (null != content.getFavoritesConfiguration()) {
+            ltqrContent.setFavoritesConfiguration( convert( content.getFavoritesConfiguration() ) );
         }
 
         return ltqrContent;
@@ -483,14 +551,53 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
+    public static LinkIDLTQRPushErrorCode convert(final net.lin_k.linkid._3.LTQRPushErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CREDENTIALS_INVALID:
+                return LinkIDLTQRPushErrorCode.ERROR_CREDENTIALS_INVALID;
+            case ERROR_CONTEXT_INVALID:
+                return LinkIDLTQRPushErrorCode.ERROR_CONTEXT_INVALID;
+            case ERROR_FAVORITES_LOGO_ENCODING:
+                return LinkIDLTQRPushErrorCode.ERROR_FAVORITES_LOGO_ENCODING;
+            case ERROR_FAVORITES_LOGO_FORMAT:
+                return LinkIDLTQRPushErrorCode.ERROR_FAVORITES_LOGO_FORMAT;
+            case ERROR_FAVORITES_LOGO_SIZE:
+                return LinkIDLTQRPushErrorCode.ERROR_FAVORITES_LOGO_SIZE;
+            case ERROR_FAVORITES_BACKGROUND_COLOR_INVALID:
+                return LinkIDLTQRPushErrorCode.ERROR_FAVORITES_BACKGROUND_COLOR_INVALID;
+            case ERROR_FAVORITES_TEXT_COLOR_INVALID:
+                return LinkIDLTQRPushErrorCode.ERROR_FAVORITES_TEXT_COLOR_INVALID;
+            case ERROR_UNEXPECTED:
+                return LinkIDLTQRPushErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDLTQRPushErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
     public static LinkIDLTQRChangeErrorCode convert(final net.lin_k.linkid._3.LTQRChangeErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_CREDENTIALS_INVALID:
                 return LinkIDLTQRChangeErrorCode.ERROR_CREDENTIALS_INVALID;
+            case ERROR_CONTEXT_INVALID:
+                return LinkIDLTQRChangeErrorCode.ERROR_CONTEXT_INVALID;
             case ERROR_NOT_FOUND:
                 return LinkIDLTQRChangeErrorCode.ERROR_NOT_FOUND;
+            case ERROR_FAVORITES_LOGO_ENCODING:
+                return LinkIDLTQRChangeErrorCode.ERROR_FAVORITES_LOGO_ENCODING;
+            case ERROR_FAVORITES_LOGO_FORMAT:
+                return LinkIDLTQRChangeErrorCode.ERROR_FAVORITES_LOGO_FORMAT;
+            case ERROR_FAVORITES_LOGO_SIZE:
+                return LinkIDLTQRChangeErrorCode.ERROR_FAVORITES_LOGO_SIZE;
+            case ERROR_FAVORITES_BACKGROUND_COLOR_INVALID:
+                return LinkIDLTQRChangeErrorCode.ERROR_FAVORITES_BACKGROUND_COLOR_INVALID;
+            case ERROR_FAVORITES_TEXT_COLOR_INVALID:
+                return LinkIDLTQRChangeErrorCode.ERROR_FAVORITES_TEXT_COLOR_INVALID;
             case ERROR_UNEXPECTED:
                 return LinkIDLTQRChangeErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:

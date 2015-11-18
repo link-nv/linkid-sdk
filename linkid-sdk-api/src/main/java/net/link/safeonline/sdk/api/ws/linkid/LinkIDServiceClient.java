@@ -29,7 +29,6 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
-import net.link.safeonline.sdk.api.ws.linkid.capture.LinkIDCaptureException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
@@ -44,7 +43,9 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPullException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
-import net.link.safeonline.sdk.api.ws.linkid.mandate.LinkIDMandatePaymentException;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureException;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -136,12 +137,42 @@ public interface LinkIDServiceClient {
             throws LinkIDLocalizationException;
 
     /**
+     * Fetch the payment status of specified order
+     *
+     * @param orderReference the order reference of the payment order
+     *
+     * @return the payment status details
+     *
+     * @throws LinkIDPaymentStatusException failure
+     */
+    LinkIDPaymentStatus getPaymentStatus(String orderReference)
+            throws LinkIDPaymentStatusException;
+
+    /**
      * Capture a payment
      *
-     * @throws LinkIDCaptureException something went wrong, check the error code in the exception
+     * @throws LinkIDPaymentCaptureException something went wrong, check the error code in the exception
      */
-    void capture(String orderReference)
-            throws LinkIDCaptureException;
+    void paymentCapture(String orderReference)
+            throws LinkIDPaymentCaptureException;
+
+    /**
+     * Refund a payment
+     *
+     * @throws LinkIDPaymentRefundException something went wrong, check the error code in the exception
+     */
+    void paymentRefund(String orderReference)
+            throws LinkIDPaymentRefundException;
+
+    /**
+     * Make a payment for specified mandate
+     *
+     * @return the order reference for this payment
+     *
+     * @throws LinkIDMandatePaymentException something went wrong, check the error code in the exception
+     */
+    String mandatePayment(String mandateReference, LinkIDPaymentContext paymentContext, Locale locale)
+            throws LinkIDMandatePaymentException;
 
     /**
      * Push a long term QR session to linkID.
@@ -213,18 +244,6 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDLTQRInfo> ltqrInfo(List<String> ltqrReferences, String userAgent)
             throws LinkIDLTQRInfoException;
-
-    /**
-     * Fetch the payment status of specified order
-     *
-     * @param orderReference the order reference of the payment order
-     *
-     * @return the payment status details
-     *
-     * @throws LinkIDPaymentStatusException failure
-     */
-    LinkIDPaymentStatus getPaymentStatus(String orderReference)
-            throws LinkIDPaymentStatusException;
 
     /**
      * @param startDate startDate
@@ -349,16 +368,6 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, LinkIDReportWalletFilter walletFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * Make a payment for specified mandate
-     *
-     * @return the order reference for this payment
-     *
-     * @throws LinkIDMandatePaymentException something went wrong, check the error code in the exception
-     */
-    String mandatePayment(String mandateReference, LinkIDPaymentContext paymentContext, Locale locale)
-            throws LinkIDMandatePaymentException;
 
     /**
      * Enroll users for a wallet. Optionally specify initial credit to add to wallet if applicable

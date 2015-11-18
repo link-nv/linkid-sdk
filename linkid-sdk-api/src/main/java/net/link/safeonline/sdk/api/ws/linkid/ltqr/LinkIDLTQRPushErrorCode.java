@@ -12,11 +12,10 @@ package net.link.safeonline.sdk.api.ws.linkid.ltqr;
  * Date: 14/01/14
  * Time: 11:04
  */
-public enum LinkIDLTQRChangeErrorCode {
+public enum LinkIDLTQRPushErrorCode {
 
     ERROR_CREDENTIALS_INVALID,
     ERROR_CONTEXT_INVALID,
-    ERROR_NOT_FOUND,
     ERROR_FAVORITES_LOGO_ENCODING,
     ERROR_FAVORITES_LOGO_FORMAT,
     ERROR_FAVORITES_LOGO_SIZE,

@@ -461,7 +461,7 @@ public class LinkIDWSClientTest {
         LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
-        client.capture( orderReference );
+        client.paymentCapture( orderReference );
     }
 
     //    @Test

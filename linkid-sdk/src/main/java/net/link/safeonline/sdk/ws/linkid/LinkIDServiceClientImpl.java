@@ -52,6 +52,8 @@ import net.lin_k.linkid._3.ParkingSession;
 import net.lin_k.linkid._3.PaymentCaptureRequest;
 import net.lin_k.linkid._3.PaymentCaptureResponse;
 import net.lin_k.linkid._3.PaymentOrder;
+import net.lin_k.linkid._3.PaymentRefundRequest;
+import net.lin_k.linkid._3.PaymentRefundResponse;
 import net.lin_k.linkid._3.PaymentReportRequest;
 import net.lin_k.linkid._3.PaymentReportResponse;
 import net.lin_k.linkid._3.PaymentStatusRequest;
@@ -102,7 +104,6 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
-import net.link.safeonline.sdk.api.ws.linkid.capture.LinkIDCaptureException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
@@ -118,8 +119,10 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPullException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
-import net.link.safeonline.sdk.api.ws.linkid.mandate.LinkIDMandatePaymentException;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentDetails;
+import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -393,8 +396,63 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public void capture(final String orderReference)
-            throws LinkIDCaptureException {
+    public LinkIDPaymentStatus getPaymentStatus(final String orderReference)
+            throws LinkIDPaymentStatusException {
+
+        PaymentStatusRequest request = new PaymentStatusRequest();
+        request.setOrderReference( orderReference );
+
+        try {
+            // operate
+            PaymentStatusResponse response = getPort().paymentStatus( request );
+
+            // convert response
+            if (null != response.getError()) {
+                throw new LinkIDPaymentStatusException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            }
+
+            if (null != response.getSuccess()) {
+
+                // parse
+                List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
+                for (PaymentTransaction paymentTransaction : response.getSuccess().getPaymentDetails().getPaymentTransactions()) {
+                    transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
+                            paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
+                            LinkIDSDKUtils.convert( paymentTransaction.getCreationDate() ), LinkIDSDKUtils.convert( paymentTransaction.getAuthorizationDate() ),
+                            LinkIDSDKUtils.convert( paymentTransaction.getCapturedDate() ), paymentTransaction.getDocdataReference(),
+                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
+                            paymentTransaction.getRefundAmount() ) );
+                }
+
+                List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
+                for (WalletTransaction walletTransaction : response.getSuccess().getPaymentDetails().getWalletTransactions()) {
+                    walletTransactions.add(
+                            new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert( walletTransaction.getCreationDate() ),
+                                    walletTransaction.getTransactionId(), walletTransaction.getAmount(),
+                                    LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
+                                    walletTransaction.getRefundAmount() ) );
+                }
+
+                return new LinkIDPaymentStatus( response.getSuccess().getOrderReference(), response.getSuccess().getUserId(),
+                        LinkIDServiceUtils.convert( response.getSuccess().getPaymentStatus() ), response.getSuccess().isAuthorized(),
+                        response.getSuccess().isCaptured(), response.getSuccess().getAmountPayed(), response.getSuccess().getAmount(),
+                        response.getSuccess().getRefundAmount(), LinkIDServiceUtils.convert( response.getSuccess().getCurrency() ),
+                        response.getSuccess().getWalletCoin(), response.getSuccess().getDescription(), response.getSuccess().getProfile(),
+                        LinkIDSDKUtils.convert( response.getSuccess().getCreated() ), response.getSuccess().getMandateReference(),
+                        new LinkIDPaymentDetails( transactions, walletTransactions ) );
+            }
+
+            throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
+        }
+        catch (ClientTransportException e) {
+            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
+        }
+    }
+
+    @Override
+    public void paymentCapture(final String orderReference)
+            throws LinkIDPaymentCaptureException {
 
         PaymentCaptureRequest request = new PaymentCaptureRequest();
 
@@ -404,10 +462,57 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         PaymentCaptureResponse response = getPort().paymentCapture( request );
 
         if (null != response.getError()) {
-            throw new LinkIDCaptureException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            throw new LinkIDPaymentCaptureException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
         }
 
         // all good...
+    }
+
+    @Override
+    public void paymentRefund(final String orderReference)
+            throws LinkIDPaymentRefundException {
+
+        PaymentRefundRequest request = new PaymentRefundRequest();
+
+        request.setOrderReference( orderReference );
+
+        // operate
+        PaymentRefundResponse response = getPort().paymentRefund( request );
+
+        if (null != response.getError()) {
+            throw new LinkIDPaymentRefundException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        // all good...
+    }
+
+    @Override
+    public String mandatePayment(final String mandateReference, final LinkIDPaymentContext linkIDPaymentContext, final Locale locale)
+            throws LinkIDMandatePaymentException {
+
+        MandatePaymentRequest request = new MandatePaymentRequest();
+
+        request.setPaymentContext( LinkIDServiceUtils.convert( linkIDPaymentContext ) );
+        request.setMandateReference( mandateReference );
+        if (null != locale) {
+            request.setLanguage( locale.getLanguage() );
+        } else {
+            request.setLanguage( Locale.ENGLISH.getLanguage() );
+        }
+
+        // operate
+        MandatePaymentResponse response = getPort().mandatePayment( request );
+
+        if (null != response.getError()) {
+            throw new LinkIDMandatePaymentException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            return response.getSuccess().getOrderReference();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override
@@ -586,61 +691,6 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDPaymentStatus getPaymentStatus(final String orderReference)
-            throws LinkIDPaymentStatusException {
-
-        PaymentStatusRequest request = new PaymentStatusRequest();
-        request.setOrderReference( orderReference );
-
-        try {
-            // operate
-            PaymentStatusResponse response = getPort().paymentStatus( request );
-
-            // convert response
-            if (null != response.getError()) {
-                throw new LinkIDPaymentStatusException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            }
-
-            if (null != response.getSuccess()) {
-
-                // parse
-                List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
-                for (PaymentTransaction paymentTransaction : response.getSuccess().getPaymentDetails().getPaymentTransactions()) {
-                    transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
-                            paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
-                            LinkIDSDKUtils.convert( paymentTransaction.getCreationDate() ), LinkIDSDKUtils.convert( paymentTransaction.getAuthorizationDate() ),
-                            LinkIDSDKUtils.convert( paymentTransaction.getCapturedDate() ), paymentTransaction.getDocdataReference(),
-                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
-                            paymentTransaction.getRefundAmount() ) );
-                }
-
-                List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
-                for (WalletTransaction walletTransaction : response.getSuccess().getPaymentDetails().getWalletTransactions()) {
-                    walletTransactions.add(
-                            new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert( walletTransaction.getCreationDate() ),
-                                    walletTransaction.getTransactionId(), walletTransaction.getAmount(),
-                                    LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
-                                    walletTransaction.getRefundAmount() ) );
-                }
-
-                return new LinkIDPaymentStatus( response.getSuccess().getOrderReference(), response.getSuccess().getUserId(),
-                        LinkIDServiceUtils.convert( response.getSuccess().getPaymentStatus() ), response.getSuccess().isAuthorized(),
-                        response.getSuccess().isCaptured(), response.getSuccess().getAmountPayed(), response.getSuccess().getAmount(),
-                        response.getSuccess().getRefundAmount(), LinkIDServiceUtils.convert( response.getSuccess().getCurrency() ),
-                        response.getSuccess().getWalletCoin(), response.getSuccess().getDescription(), response.getSuccess().getProfile(),
-                        LinkIDSDKUtils.convert( response.getSuccess().getCreated() ), response.getSuccess().getMandateReference(),
-                        new LinkIDPaymentDetails( transactions, walletTransactions ) );
-            }
-
-            throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
-
-        }
-        catch (ClientTransportException e) {
-            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
-        }
-    }
-
-    @Override
     public List<LinkIDPaymentOrder> getPaymentReport(final Date startDate, @Nullable final Date endDate)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
@@ -722,35 +772,6 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
         return getWalletReport( walletOrganizationId, null, null, walletFilter );
-    }
-
-    @Override
-    public String mandatePayment(final String mandateReference, final LinkIDPaymentContext linkIDPaymentContext, final Locale locale)
-            throws LinkIDMandatePaymentException {
-
-        MandatePaymentRequest request = new MandatePaymentRequest();
-
-        request.setPaymentContext( LinkIDServiceUtils.convert( linkIDPaymentContext ) );
-        request.setMandateReference( mandateReference );
-        if (null != locale) {
-            request.setLanguage( locale.getLanguage() );
-        } else {
-            request.setLanguage( Locale.ENGLISH.getLanguage() );
-        }
-
-        // operate
-        MandatePaymentResponse response = getPort().mandatePayment( request );
-
-        if (null != response.getError()) {
-            throw new LinkIDMandatePaymentException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-        }
-
-        if (null != response.getSuccess()) {
-
-            return response.getSuccess().getOrderReference();
-        }
-
-        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override
@@ -1009,7 +1030,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                         LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ), walletReportTransaction.getTransactionId(),
                         walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),
                         walletReportTransaction.getWalletCoin(), walletReportTransaction.getRefundAmount(), walletReportTransaction.getUserId(),
-                        walletReportTransaction.getApplicationName() ) );
+                        walletReportTransaction.getApplicationName(), LinkIDServiceUtils.convert( walletReportTransaction.getType() ) ) );
             }
 
             return transactions;

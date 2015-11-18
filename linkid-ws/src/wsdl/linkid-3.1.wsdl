@@ -28,7 +28,7 @@
 		<part name="response" element="tns:AuthCancelResponse" />
 	</message>
 
-    <!-- =================== Callback===== ========================= -->
+    <!-- =================== Callback ============================== -->
 
     <message name="callbackPullRequest">
 		<part name="request" element="tns:CallbackPullRequest" />
@@ -52,13 +52,31 @@
 		<part name="response" element="tns:ConfigLocalizationResponse" />
 	</message>
 
-    <!-- =================== Payment capture ========================= -->
+    <!-- =================== Payments ========================= -->
 
+    <message name="paymentStatusRequest">
+		<part name="request" element="tns:PaymentStatusRequest" />
+	</message>
+	<message name="paymentStatusResponse">
+		<part name="response" element="tns:PaymentStatusResponse" />
+	</message>
     <message name="paymentCaptureRequest">
 		<part name="request" element="tns:PaymentCaptureRequest" />
 	</message>
 	<message name="paymentCaptureResponse">
 		<part name="response" element="tns:PaymentCaptureResponse" />
+	</message>
+    <message name="paymentRefundRequest">
+		<part name="request" element="tns:PaymentRefundRequest" />
+	</message>
+	<message name="paymentRefundResponse">
+		<part name="response" element="tns:PaymentRefundResponse" />
+	</message>
+    <message name="mandatePaymentRequest">
+		<part name="request" element="tns:MandatePaymentRequest" />
+	</message>
+	<message name="mandatePaymentResponse">
+		<part name="response" element="tns:MandatePaymentResponse" />
 	</message>
 
     <!-- =================== LTQR ==================================== -->
@@ -94,15 +112,6 @@
 		<part name="response" element="tns:LTQRInfoResponse" />
 	</message>
 
-    <!-- =================== Payment status ================================ -->
-
-    <message name="paymentStatusRequest">
-		<part name="request" element="tns:PaymentStatusRequest" />
-	</message>
-	<message name="paymentStatusResponse">
-		<part name="response" element="tns:PaymentStatusResponse" />
-	</message>
-
     <!-- =================== Reporting ================================ -->
 
     <message name="paymentReportRequest">
@@ -122,15 +131,6 @@
 	</message>
     <message name="walletReportResponse">
 		<part name="response" element="tns:WalletReportResponse" />
-	</message>
-
-    <!-- =================== Payment mandate ================================ -->
-
-    <message name="mandatePaymentRequest">
-		<part name="request" element="tns:MandatePaymentRequest" />
-	</message>
-	<message name="mandatePaymentResponse">
-		<part name="response" element="tns:MandatePaymentResponse" />
 	</message>
 
     <!-- =================== Wallets ================================ -->
@@ -205,9 +205,21 @@
 			<input message="tns:configLocalizationRequest" />
 			<output message="tns:configLocalizationResponse" />
 		</operation>
+		<operation name="paymentStatus">
+			<input message="tns:paymentStatusRequest" />
+			<output message="tns:paymentStatusResponse" />
+		</operation>
 		<operation name="paymentCapture">
 			<input message="tns:paymentCaptureRequest" />
 			<output message="tns:paymentCaptureResponse" />
+		</operation>
+		<operation name="paymentRefund">
+			<input message="tns:paymentRefundRequest" />
+			<output message="tns:paymentRefundResponse" />
+		</operation>
+		<operation name="mandatePayment">
+			<input message="tns:mandatePaymentRequest" />
+			<output message="tns:mandatePaymentResponse" />
 		</operation>
 		<operation name="ltqrPush">
 			<input message="tns:ltqrPushRequest" />
@@ -229,10 +241,6 @@
 			<input message="tns:ltqrInfoRequest" />
 			<output message="tns:ltqrInfoResponse" />
 		</operation>
-		<operation name="paymentStatus">
-			<input message="tns:paymentStatusRequest" />
-			<output message="tns:paymentStatusResponse" />
-		</operation>
 		<operation name="paymentReport">
 			<input message="tns:paymentReportRequest" />
 			<output message="tns:paymentReportResponse" />
@@ -244,10 +252,6 @@
 		<operation name="walletReport">
 			<input message="tns:walletReportRequest" />
 			<output message="tns:walletReportResponse" />
-		</operation>
-		<operation name="mandatePayment">
-			<input message="tns:mandatePaymentRequest" />
-			<output message="tns:mandatePaymentResponse" />
 		</operation>
 		<operation name="walletEnroll">
 			<input message="tns:walletEnrollRequest" />
@@ -284,7 +288,7 @@
     <binding name="LinkIDServiceBinding" type="tns:LinkIDServicePort">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
         <operation name="authStart">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:authStart" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:authStart" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -293,7 +297,7 @@
             </output>
         </operation>
         <operation name="authPoll">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:authPoll" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:authPoll" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -302,7 +306,7 @@
             </output>
         </operation>
         <operation name="authCancel">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:authCancel" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:authCancel" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -311,7 +315,7 @@
             </output>
         </operation>
         <operation name="callbackPull">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:callbackPull" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:callbackPull" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -320,7 +324,7 @@
             </output>
         </operation>
         <operation name="configThemes">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:themes" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:themes" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -329,61 +333,7 @@
             </output>
         </operation>
         <operation name="configLocalization">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:localization" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="paymentCapture">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:paymentCapture" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="ltqrPush">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrPush" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="ltqrChange">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrChange" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="ltqrPull">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrPull" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="ltqrRemove">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrRemove" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="ltqrInfo">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:ltqrInfo" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:localization" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -392,7 +342,7 @@
             </output>
         </operation>
         <operation name="paymentStatus">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:paymentStatus" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentStatus" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -400,8 +350,8 @@
                 <soap:body use="literal" />
             </output>
         </operation>
-        <operation name="paymentReport">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:paymentReport" />
+        <operation name="paymentCapture">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentCapture" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -409,17 +359,8 @@
                 <soap:body use="literal" />
             </output>
         </operation>
-        <operation name="parkingReport">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:parkingReport" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="walletReport">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletReport" />
+        <operation name="paymentRefund">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentRefund" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -428,7 +369,79 @@
             </output>
         </operation>
         <operation name="mandatePayment">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:mandatePayment" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:mandatePayment" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrPush">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:ltqrPush" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrChange">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:ltqrChange" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrPull">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:ltqrPull" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:ltqrRemove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrInfo">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:ltqrInfo" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentReport">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentReport" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="parkingReport">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:parkingReport" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletReport">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletReport" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -437,7 +450,7 @@
             </output>
         </operation>
         <operation name="walletEnroll">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletEnroll" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletEnroll" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -446,7 +459,7 @@
             </output>
         </operation>
         <operation name="walletGetInfo">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletGetInfo" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletGetInfo" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -455,7 +468,7 @@
             </output>
         </operation>
         <operation name="walletAddCredit">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletAddCredit" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletAddCredit" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -464,7 +477,7 @@
             </output>
         </operation>
         <operation name="walletRemoveCredit">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletRemoveCredit" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletRemoveCredit" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -473,7 +486,7 @@
             </output>
         </operation>
         <operation name="walletRemove">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletRemove" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletRemove" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -482,7 +495,7 @@
             </output>
         </operation>
         <operation name="walletCommit">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletCommit" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletCommit" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -491,7 +504,7 @@
             </output>
         </operation>
         <operation name="walletRelease">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.0:walletRelease" />
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletRelease" />
             <input>
                 <soap:body use="literal" />
             </input>
@@ -505,7 +518,7 @@
 
     <service name="LinkIDService">
         <port name="LinkIDServicePort" binding="tns:LinkIDServiceBinding">
-            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/linkid30/" />
+            <soap:address location="http://localhost:8080/${safe-online.ws.webapp.url}/linkid31/" />
         </port>
     </service>
 </definitions>

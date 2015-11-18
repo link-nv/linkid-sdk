@@ -13,17 +13,19 @@ import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
 
-    private final String userId;
-    private final String applicationName;
+    private final String                 userId;
+    private final String                 applicationName;
+    private final LinkIDWalletReportType type;
 
     public LinkIDWalletReportTransaction(final String walletId, final Date creationDate, final String transactionId, final double amount,
                                          final LinkIDCurrency currency, final String walletCoin, final double refundAmount, final String userId,
-                                         final String applicationName) {
+                                         final String applicationName, final LinkIDWalletReportType type) {
 
         super( walletId, creationDate, transactionId, amount, currency, walletCoin, refundAmount );
 
         this.userId = userId;
         this.applicationName = applicationName;
+        this.type = type;
     }
 
     // Helper methods
@@ -34,6 +36,7 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
         return "LinkIDWalletReportTransaction{" +
                "userId='" + userId + '\'' +
                ", applicationName='" + applicationName + '\'' +
+               ", type='" + type + '\'' +
                '}';
     }
 
@@ -47,5 +50,10 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     public String getApplicationName() {
 
         return applicationName;
+    }
+
+    public LinkIDWalletReportType getType() {
+
+        return type;
     }
 }
