@@ -21,6 +21,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
@@ -349,6 +351,16 @@ public interface LinkIDServiceClient {
                                        @Nullable LinkIDReportWalletFilter walletFilter, @Nullable LinkIDReportDateFilter dateFilter,
                                        @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
+
+    /**
+     * @param walletIds the list of walletIds to get info about
+     *
+     * @return list of wallet report info objects for the specified walletIds. If a walletId was not found it will be skipped
+     *
+     * @throws LinkIDWSClientTransportException could not contact the linkID web service
+     */
+    List<LinkIDWalletInfoReport> getWalletInfoReport(List<String> walletIds)
+            throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException;
 
     /**
      * Enroll users for a wallet. Optionally specify initial credit to add to wallet if applicable

@@ -2,6 +2,7 @@ package net.link.safeonline.sdk.api.payment;
 
 import java.io.Serializable;
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -14,6 +15,7 @@ public class LinkIDWalletTransaction implements Serializable {
 
     private final String         walletId;
     private final Date           creationDate;
+    @Nullable
     private final String         transactionId;
     private final double         amount;
     private final LinkIDCurrency currency;
@@ -60,6 +62,7 @@ public class LinkIDWalletTransaction implements Serializable {
         return creationDate;
     }
 
+    @Nullable
     public String getTransactionId() {
 
         return transactionId;

@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -191,6 +192,28 @@ public class LinkIDWSClientTest {
 
         for (LinkIDWalletReportTransaction transaction : walletReport.getWalletTransactions()) {
             logger.inf( "transaction: %s (wallet: %s)", transaction, transaction.getWalletId() );
+        }
+    }
+
+    @Test
+    public void testWalletInfoReport()
+            throws Exception {
+
+        // setup
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        List<String> walletIds = Lists.newLinkedList();
+        walletIds.add( "123b1c22-e6c5-4ebc-9255-e59b72db5abf" );
+        walletIds.add( "13ff6203-a086-483a-8e3c-382ce63f9a9a" );
+        walletIds.add( "foo" );
+
+        // operate
+        List<LinkIDWalletInfoReport> result = client.getWalletInfoReport( walletIds );
+
+        // verify
+        assertNotNull( result );
+        assertEquals( walletIds.size() - 1, result.size() );
+        for (LinkIDWalletInfoReport info : result) {
+            logger.inf( "Info: %s", info );
         }
     }
 

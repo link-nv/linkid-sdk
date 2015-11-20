@@ -132,6 +132,12 @@
     <message name="walletReportResponse">
 		<part name="response" element="tns:WalletReportResponse" />
 	</message>
+	<message name="walletInfoReportRequest">
+		<part name="request" element="tns:WalletInfoReportRequest" />
+	</message>
+    <message name="walletInfoReportResponse">
+		<part name="response" element="tns:WalletInfoReportResponse" />
+	</message>
 
     <!-- =================== Wallets ================================ -->
 
@@ -252,6 +258,10 @@
 		<operation name="walletReport">
 			<input message="tns:walletReportRequest" />
 			<output message="tns:walletReportResponse" />
+		</operation>
+		<operation name="walletInfoReport">
+			<input message="tns:walletInfoReportRequest" />
+			<output message="tns:walletInfoReportResponse" />
 		</operation>
 		<operation name="walletEnroll">
 			<input message="tns:walletEnrollRequest" />
@@ -442,6 +452,15 @@
         </operation>
         <operation name="walletReport">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletReport" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletInfoReport">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletInfoReport" />
             <input>
                 <soap:body use="literal" />
             </input>

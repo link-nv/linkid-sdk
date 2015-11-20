@@ -70,6 +70,9 @@ import net.lin_k.linkid._3_1.core.WalletEnrollRequest;
 import net.lin_k.linkid._3_1.core.WalletEnrollResponse;
 import net.lin_k.linkid._3_1.core.WalletGetInfoRequest;
 import net.lin_k.linkid._3_1.core.WalletGetInfoResponse;
+import net.lin_k.linkid._3_1.core.WalletInfoReport;
+import net.lin_k.linkid._3_1.core.WalletInfoReportRequest;
+import net.lin_k.linkid._3_1.core.WalletInfoReportResponse;
 import net.lin_k.linkid._3_1.core.WalletReleaseRequest;
 import net.lin_k.linkid._3_1.core.WalletReleaseResponse;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditRequest;
@@ -97,6 +100,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -805,6 +810,36 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             }
 
             return new LinkIDWalletReport( response.getTotal(), transactions );
+        }
+        catch (ClientTransportException e) {
+            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
+        }
+    }
+
+    @Override
+    public List<LinkIDWalletInfoReport> getWalletInfoReport(final List<String> walletIds)
+            throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException {
+
+        WalletInfoReportRequest request = new WalletInfoReportRequest();
+
+        request.getWalletId().addAll( walletIds );
+
+        try {
+
+            WalletInfoReportResponse response = getPort().walletInfoReport( request );
+
+            if (null != response.getError()) {
+                throw new LinkIDWalletInfoReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            }
+
+            List<LinkIDWalletInfoReport> result = Lists.newLinkedList();
+            for (WalletInfoReport walletInfo : response.getWalletInfo()) {
+                result.add( new LinkIDWalletInfoReport( walletInfo.getWalletId(), LinkIDSDKUtils.convert( walletInfo.getCreated() ),
+                        LinkIDSDKUtils.convert( walletInfo.getRemoved() ), walletInfo.getUserId(), walletInfo.getOrganizationId(), walletInfo.getBalance() ) );
+            }
+
+            return result;
+
         }
         catch (ClientTransportException e) {
             throw new LinkIDWSClientTransportException( getBindingProvider(), e );

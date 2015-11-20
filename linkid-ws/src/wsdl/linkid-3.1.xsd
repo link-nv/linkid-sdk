@@ -1604,6 +1604,25 @@
         </complexType>
     </element>
 
+    <!-- Reporting: Wallet info report -->
+
+    <element name="WalletInfoReportRequest">
+        <complexType>
+            <sequence>
+                <element name="walletId" type="string" minOccurs="1" maxOccurs="unbounded" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="WalletInfoReportResponse">
+        <complexType>
+            <sequence>
+                <element name="walletInfo" type="tns:WalletInfoReport" minOccurs="0" maxOccurs="unbounded" />
+                <element name="error" type="tns:WalletInfoReportError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
     <!-- Reporting: Common -->
 
     <complexType name="ReportPageFilter">
@@ -1636,6 +1655,17 @@
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
             <element name="applicationName" type="string" minOccurs="1" maxOccurs="1" />
             <element name="type" type="tns:WalletReportType" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletInfoReport">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="created" type="date" minOccurs="1" maxOccurs="1" />
+            <element name="removed" type="date" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="organizationId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="balance" type="double" minOccurs="1" maxOccurs="1" />
         </sequence>
     </complexType>
 
@@ -1698,6 +1728,28 @@
 					<documentation>Invalid page filter config, e.g. firstResult > total</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened, consult a linkID dev for more information</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="WalletInfoReportError">
+        <attribute name="errorCode" type="tns:WalletInfoReportErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="WalletInfoReportErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened, consult a linkID dev for more information</documentation>

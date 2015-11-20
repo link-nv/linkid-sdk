@@ -35,6 +35,7 @@ import net.lin_k.linkid._3_1.core.WalletAddCreditErrorCode;
 import net.lin_k.linkid._3_1.core.WalletCommitErrorCode;
 import net.lin_k.linkid._3_1.core.WalletEnrollErrorCode;
 import net.lin_k.linkid._3_1.core.WalletGetInfoErrorCode;
+import net.lin_k.linkid._3_1.core.WalletInfoReportErrorCode;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
@@ -49,6 +50,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportErrorCode;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
@@ -677,6 +679,19 @@ public class LinkIDServiceUtils {
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDWalletInfoReportErrorCode convert(final WalletInfoReportErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNEXPECTED:
+                return LinkIDWalletInfoReportErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletInfoReportErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected wallet info report error code %s!", errorCode.name() ) );
     }
 
     public static LinkIDMandatePaymentErrorCode convert(final MandatePaymentErrorCode errorCode) {

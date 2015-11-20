@@ -3,6 +3,7 @@ package net.link.safeonline.sdk.api.reporting;
 import java.util.Date;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -13,6 +14,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
 
+    @Nullable
     private final String                 userId;
     private final String                 applicationName;
     private final LinkIDWalletReportType type;
@@ -42,6 +44,7 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
 
     // Accessors
 
+    @Nullable
     public String getUserId() {
 
         return userId;
