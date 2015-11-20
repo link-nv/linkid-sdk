@@ -11,12 +11,10 @@ import java.io.Serializable;
 public class LinkIDReportWalletFilter implements Serializable {
 
     private final String walletId;
-    private final String userId;
 
-    public LinkIDReportWalletFilter(final String walletId, final String userId) {
+    public LinkIDReportWalletFilter(final String walletId) {
 
         this.walletId = walletId;
-        this.userId = userId;
     }
 
     public String getWalletId() {
@@ -24,8 +22,4 @@ public class LinkIDReportWalletFilter implements Serializable {
         return walletId;
     }
 
-    public String getUserId() {
-
-        return userId;
-    }
 }

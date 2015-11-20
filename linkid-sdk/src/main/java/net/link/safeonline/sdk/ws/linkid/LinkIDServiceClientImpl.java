@@ -11,75 +11,75 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.xml.internal.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.xml.ws.BindingProvider;
-import net.lin_k.linkid._3.AuthCancelRequest;
-import net.lin_k.linkid._3.AuthCancelResponse;
-import net.lin_k.linkid._3.AuthPollRequest;
-import net.lin_k.linkid._3.AuthPollResponse;
-import net.lin_k.linkid._3.AuthStartRequest;
-import net.lin_k.linkid._3.AuthStartResponse;
-import net.lin_k.linkid._3.CallbackPullRequest;
-import net.lin_k.linkid._3.CallbackPullResponse;
-import net.lin_k.linkid._3.ConfigLocalization;
-import net.lin_k.linkid._3.ConfigLocalizationRequest;
-import net.lin_k.linkid._3.ConfigLocalizationResponse;
-import net.lin_k.linkid._3.ConfigLocalizationValue;
-import net.lin_k.linkid._3.ConfigThemes;
-import net.lin_k.linkid._3.ConfigThemesRequest;
-import net.lin_k.linkid._3.ConfigThemesResponse;
-import net.lin_k.linkid._3.LTQRChangeRequest;
-import net.lin_k.linkid._3.LTQRChangeResponse;
-import net.lin_k.linkid._3.LTQRClientSession;
-import net.lin_k.linkid._3.LTQRInfo;
-import net.lin_k.linkid._3.LTQRInfoRequest;
-import net.lin_k.linkid._3.LTQRInfoResponse;
-import net.lin_k.linkid._3.LTQRPullRequest;
-import net.lin_k.linkid._3.LTQRPullResponse;
-import net.lin_k.linkid._3.LTQRPushRequest;
-import net.lin_k.linkid._3.LTQRPushResponse;
-import net.lin_k.linkid._3.LTQRRemoveRequest;
-import net.lin_k.linkid._3.LTQRRemoveResponse;
-import net.lin_k.linkid._3.LinkIDServicePort;
-import net.lin_k.linkid._3.MandatePaymentRequest;
-import net.lin_k.linkid._3.MandatePaymentResponse;
-import net.lin_k.linkid._3.ParkingReportRequest;
-import net.lin_k.linkid._3.ParkingReportResponse;
-import net.lin_k.linkid._3.ParkingSession;
-import net.lin_k.linkid._3.PaymentCaptureRequest;
-import net.lin_k.linkid._3.PaymentCaptureResponse;
-import net.lin_k.linkid._3.PaymentOrder;
-import net.lin_k.linkid._3.PaymentRefundRequest;
-import net.lin_k.linkid._3.PaymentRefundResponse;
-import net.lin_k.linkid._3.PaymentReportRequest;
-import net.lin_k.linkid._3.PaymentReportResponse;
-import net.lin_k.linkid._3.PaymentStatusRequest;
-import net.lin_k.linkid._3.PaymentStatusResponse;
-import net.lin_k.linkid._3.PaymentTransaction;
-import net.lin_k.linkid._3.ReportApplicationFilter;
-import net.lin_k.linkid._3.ReportDateFilter;
-import net.lin_k.linkid._3.ReportWalletFilter;
-import net.lin_k.linkid._3.WalletAddCreditRequest;
-import net.lin_k.linkid._3.WalletAddCreditResponse;
-import net.lin_k.linkid._3.WalletCommitRequest;
-import net.lin_k.linkid._3.WalletCommitResponse;
-import net.lin_k.linkid._3.WalletEnrollRequest;
-import net.lin_k.linkid._3.WalletEnrollResponse;
-import net.lin_k.linkid._3.WalletGetInfoRequest;
-import net.lin_k.linkid._3.WalletGetInfoResponse;
-import net.lin_k.linkid._3.WalletReleaseRequest;
-import net.lin_k.linkid._3.WalletReleaseResponse;
-import net.lin_k.linkid._3.WalletRemoveCreditRequest;
-import net.lin_k.linkid._3.WalletRemoveCreditResponse;
-import net.lin_k.linkid._3.WalletRemoveRequest;
-import net.lin_k.linkid._3.WalletRemoveResponse;
-import net.lin_k.linkid._3.WalletReportRequest;
-import net.lin_k.linkid._3.WalletReportResponse;
-import net.lin_k.linkid._3.WalletReportTransaction;
-import net.lin_k.linkid._3.WalletTransaction;
+import net.lin_k.linkid._3_1.core.AuthCancelRequest;
+import net.lin_k.linkid._3_1.core.AuthCancelResponse;
+import net.lin_k.linkid._3_1.core.AuthPollRequest;
+import net.lin_k.linkid._3_1.core.AuthPollResponse;
+import net.lin_k.linkid._3_1.core.AuthStartRequest;
+import net.lin_k.linkid._3_1.core.AuthStartResponse;
+import net.lin_k.linkid._3_1.core.CallbackPullRequest;
+import net.lin_k.linkid._3_1.core.CallbackPullResponse;
+import net.lin_k.linkid._3_1.core.ConfigLocalization;
+import net.lin_k.linkid._3_1.core.ConfigLocalizationRequest;
+import net.lin_k.linkid._3_1.core.ConfigLocalizationResponse;
+import net.lin_k.linkid._3_1.core.ConfigLocalizationValue;
+import net.lin_k.linkid._3_1.core.ConfigThemes;
+import net.lin_k.linkid._3_1.core.ConfigThemesRequest;
+import net.lin_k.linkid._3_1.core.ConfigThemesResponse;
+import net.lin_k.linkid._3_1.core.LTQRChangeRequest;
+import net.lin_k.linkid._3_1.core.LTQRChangeResponse;
+import net.lin_k.linkid._3_1.core.LTQRClientSession;
+import net.lin_k.linkid._3_1.core.LTQRInfo;
+import net.lin_k.linkid._3_1.core.LTQRInfoRequest;
+import net.lin_k.linkid._3_1.core.LTQRInfoResponse;
+import net.lin_k.linkid._3_1.core.LTQRPullRequest;
+import net.lin_k.linkid._3_1.core.LTQRPullResponse;
+import net.lin_k.linkid._3_1.core.LTQRPushRequest;
+import net.lin_k.linkid._3_1.core.LTQRPushResponse;
+import net.lin_k.linkid._3_1.core.LTQRRemoveRequest;
+import net.lin_k.linkid._3_1.core.LTQRRemoveResponse;
+import net.lin_k.linkid._3_1.core.LinkIDServicePort;
+import net.lin_k.linkid._3_1.core.MandatePaymentRequest;
+import net.lin_k.linkid._3_1.core.MandatePaymentResponse;
+import net.lin_k.linkid._3_1.core.ParkingReportRequest;
+import net.lin_k.linkid._3_1.core.ParkingReportResponse;
+import net.lin_k.linkid._3_1.core.ParkingSession;
+import net.lin_k.linkid._3_1.core.PaymentCaptureRequest;
+import net.lin_k.linkid._3_1.core.PaymentCaptureResponse;
+import net.lin_k.linkid._3_1.core.PaymentOrder;
+import net.lin_k.linkid._3_1.core.PaymentRefundRequest;
+import net.lin_k.linkid._3_1.core.PaymentRefundResponse;
+import net.lin_k.linkid._3_1.core.PaymentReportRequest;
+import net.lin_k.linkid._3_1.core.PaymentReportResponse;
+import net.lin_k.linkid._3_1.core.PaymentStatusRequest;
+import net.lin_k.linkid._3_1.core.PaymentStatusResponse;
+import net.lin_k.linkid._3_1.core.PaymentTransaction;
+import net.lin_k.linkid._3_1.core.ReportApplicationFilter;
+import net.lin_k.linkid._3_1.core.ReportDateFilter;
+import net.lin_k.linkid._3_1.core.ReportPageFilter;
+import net.lin_k.linkid._3_1.core.ReportWalletFilter;
+import net.lin_k.linkid._3_1.core.WalletAddCreditRequest;
+import net.lin_k.linkid._3_1.core.WalletAddCreditResponse;
+import net.lin_k.linkid._3_1.core.WalletCommitRequest;
+import net.lin_k.linkid._3_1.core.WalletCommitResponse;
+import net.lin_k.linkid._3_1.core.WalletEnrollRequest;
+import net.lin_k.linkid._3_1.core.WalletEnrollResponse;
+import net.lin_k.linkid._3_1.core.WalletGetInfoRequest;
+import net.lin_k.linkid._3_1.core.WalletGetInfoResponse;
+import net.lin_k.linkid._3_1.core.WalletReleaseRequest;
+import net.lin_k.linkid._3_1.core.WalletReleaseResponse;
+import net.lin_k.linkid._3_1.core.WalletRemoveCreditRequest;
+import net.lin_k.linkid._3_1.core.WalletRemoveCreditResponse;
+import net.lin_k.linkid._3_1.core.WalletRemoveRequest;
+import net.lin_k.linkid._3_1.core.WalletRemoveResponse;
+import net.lin_k.linkid._3_1.core.WalletReportRequest;
+import net.lin_k.linkid._3_1.core.WalletReportResponse;
+import net.lin_k.linkid._3_1.core.WalletReportTransaction;
+import net.lin_k.linkid._3_1.core.WalletTransaction;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
@@ -90,10 +90,14 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
+import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
@@ -691,87 +695,120 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public List<LinkIDPaymentOrder> getPaymentReport(final Date startDate, @Nullable final Date endDate)
+    public LinkIDPaymentReport getPaymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getPaymentReport( startDate, endDate, null, null );
+        return getPaymentReport( dateFilter, pageFilter, null, null );
     }
 
     @Override
-    public List<LinkIDPaymentOrder> getPaymentReportForOrderReferences(final List<String> orderReferences)
+    public LinkIDPaymentReport getPaymentReportForOrderReferences(final List<String> orderReferences, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getPaymentReport( null, null, orderReferences, null );
+        return getPaymentReport( null, pageFilter, orderReferences, null );
     }
 
     @Override
-    public List<LinkIDPaymentOrder> getPaymentReportForMandates(final List<String> mandateReferences)
+    public LinkIDPaymentReport getPaymentReportForMandates(final List<String> mandateReferences, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getPaymentReport( null, null, null, mandateReferences );
+        return getPaymentReport( null, pageFilter, null, mandateReferences );
     }
 
     @Override
-    public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate)
+    public LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getParkingReport( startDate, endDate, null, null, null, null );
+        return getParkingReport( dateFilter, pageFilter, null, null, null, null );
     }
 
     @Override
-    public List<LinkIDParkingSession> getParkingReport(final Date startDate, @Nullable final Date endDate, @Nullable final List<String> parkings)
+    public LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
+                                                @Nullable final List<String> parkings)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getParkingReport( startDate, endDate, null, null, null, parkings );
+        return getParkingReport( dateFilter, pageFilter, null, null, null, parkings );
     }
 
     @Override
-    public List<LinkIDParkingSession> getParkingReportForBarCodes(final List<String> barCodes)
+    public LinkIDParkingReport getParkingReportForBarCodes(final List<String> barCodes, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getParkingReport( null, null, barCodes, null, null, null );
+        return getParkingReport( null, pageFilter, barCodes, null, null, null );
     }
 
     @Override
-    public List<LinkIDParkingSession> getParkingReportForTicketNumbers(final List<String> ticketNumbers)
+    public LinkIDParkingReport getParkingReportForTicketNumbers(final List<String> ticketNumbers, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getParkingReport( null, null, null, ticketNumbers, null, null );
+        return getParkingReport( null, pageFilter, null, ticketNumbers, null, null );
     }
 
     @Override
-    public List<LinkIDParkingSession> getParkingReportForDTAKeys(final List<String> dtaKeys)
+    public LinkIDParkingReport getParkingReportForDTAKeys(final List<String> dtaKeys, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getParkingReport( null, null, null, null, dtaKeys, null );
+        return getParkingReport( null, pageFilter, null, null, dtaKeys, null );
     }
 
     @Override
-    public List<LinkIDParkingSession> getParkingReportForParkings(final List<String> parkings)
+    public LinkIDWalletReport getWalletReport(final String walletOrganizationId, @Nullable final LinkIDReportApplicationFilter applicationFilter,
+                                              @Nullable final LinkIDReportWalletFilter walletFilter, @Nullable final LinkIDReportDateFilter dateFilter,
+                                              @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getParkingReport( null, null, null, null, null, parkings );
-    }
+        WalletReportRequest request = new WalletReportRequest();
 
-    @Override
-    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final LinkIDReportDateFilter dateFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
+        request.setWalletOrganizationId( walletOrganizationId );
 
-        return getWalletReport( walletOrganizationId, dateFilter, null, null );
-    }
+        if (null != dateFilter) {
+            ReportDateFilter wsDateFilter = new ReportDateFilter();
+            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
+            if (null != dateFilter.getEndDate()) {
+                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
+            }
+            request.setDateFilter( wsDateFilter );
+        }
+        if (null != pageFilter) {
+            ReportPageFilter wsPageFilter = new ReportPageFilter();
+            wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
+            wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
+            request.setPageFilter( wsPageFilter );
+        }
+        if (null != applicationFilter) {
+            ReportApplicationFilter wsApplicationFilter = new ReportApplicationFilter();
+            wsApplicationFilter.setApplicationName( applicationFilter.getApplicationName() );
+            request.setApplicationFilter( wsApplicationFilter );
+        }
+        if (null != walletFilter) {
+            ReportWalletFilter wsWalletFilter = new ReportWalletFilter();
+            wsWalletFilter.setWalletId( walletFilter.getWalletId() );
+            request.setWalletFilter( wsWalletFilter );
+        }
 
-    @Override
-    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final LinkIDReportApplicationFilter applicationFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
+        try {
+            WalletReportResponse response = getPort().walletReport( request );
 
-        return getWalletReport( walletOrganizationId, null, applicationFilter, null );
-    }
+            if (null != response.getError()) {
+                throw new LinkIDReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            }
 
-    @Override
-    public List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, final LinkIDReportWalletFilter walletFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
+            List<LinkIDWalletReportTransaction> transactions = Lists.newLinkedList();
 
-        return getWalletReport( walletOrganizationId, null, null, walletFilter );
+            for (WalletReportTransaction walletReportTransaction : response.getTransactions()) {
+
+                transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getWalletId(),
+                        LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ), walletReportTransaction.getTransactionId(),
+                        walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),
+                        walletReportTransaction.getWalletCoin(), walletReportTransaction.getRefundAmount(), walletReportTransaction.getUserId(),
+                        walletReportTransaction.getApplicationName(), LinkIDServiceUtils.convert( walletReportTransaction.getType() ) ) );
+            }
+
+            return new LinkIDWalletReport( response.getTotal(), transactions );
+        }
+        catch (ClientTransportException e) {
+            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
+        }
     }
 
     @Override
@@ -986,14 +1023,11 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
     // Helper methods
 
-    private List<LinkIDWalletReportTransaction> getWalletReport(final String walletOrganizationId, @Nullable final LinkIDReportDateFilter dateFilter,
-                                                                @Nullable final LinkIDReportApplicationFilter applicationFilter,
-                                                                @Nullable final LinkIDReportWalletFilter walletFilter)
+    private LinkIDPaymentReport getPaymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
+                                                 @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        WalletReportRequest request = new WalletReportRequest();
-
-        request.setWalletOrganizationId( walletOrganizationId );
+        PaymentReportRequest request = new PaymentReportRequest();
 
         if (null != dateFilter) {
             ReportDateFilter wsDateFilter = new ReportDateFilter();
@@ -1003,54 +1037,11 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             }
             request.setDateFilter( wsDateFilter );
         }
-        if (null != applicationFilter) {
-            ReportApplicationFilter wsApplicationFilter = new ReportApplicationFilter();
-            wsApplicationFilter.setApplicationName( applicationFilter.getApplicationName() );
-            request.setApplicationFilter( wsApplicationFilter );
-        }
-        if (null != walletFilter) {
-            ReportWalletFilter wsWalletFilter = new ReportWalletFilter();
-            wsWalletFilter.setWalletId( walletFilter.getWalletId() );
-            wsWalletFilter.setUserId( walletFilter.getUserId() );
-            request.setWalletFilter( wsWalletFilter );
-        }
-
-        try {
-            WalletReportResponse response = getPort().walletReport( request );
-
-            if (null != response.getError()) {
-                throw new LinkIDReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            }
-
-            List<LinkIDWalletReportTransaction> transactions = Lists.newLinkedList();
-
-            for (WalletReportTransaction walletReportTransaction : response.getTransactions()) {
-
-                transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getWalletId(),
-                        LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ), walletReportTransaction.getTransactionId(),
-                        walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),
-                        walletReportTransaction.getWalletCoin(), walletReportTransaction.getRefundAmount(), walletReportTransaction.getUserId(),
-                        walletReportTransaction.getApplicationName(), LinkIDServiceUtils.convert( walletReportTransaction.getType() ) ) );
-            }
-
-            return transactions;
-        }
-        catch (ClientTransportException e) {
-            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
-        }
-    }
-
-    private List<LinkIDPaymentOrder> getPaymentReport(@Nullable final Date startDate, @Nullable final Date endDate,
-                                                      @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
-
-        PaymentReportRequest request = new PaymentReportRequest();
-
-        if (null != startDate) {
-            request.setStartDate( LinkIDSDKUtils.convert( startDate ) );
-        }
-        if (null != endDate) {
-            request.setEndDate( LinkIDSDKUtils.convert( endDate ) );
+        if (null != pageFilter) {
+            ReportPageFilter wsPageFilter = new ReportPageFilter();
+            wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
+            wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
+            request.setPageFilter( wsPageFilter );
         }
         if (null != orderReferences) {
             request.getOrderReferences().addAll( orderReferences );
@@ -1099,25 +1090,33 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                         paymentOrder.getEmail(), paymentOrder.getGivenName(), paymentOrder.getFamilyName(), transactions, walletTransactions ) );
             }
 
-            return orders;
+            return new LinkIDPaymentReport( response.getTotal(), orders );
         }
         catch (ClientTransportException e) {
             throw new LinkIDWSClientTransportException( getBindingProvider(), e );
         }
     }
 
-    private List<LinkIDParkingSession> getParkingReport(@Nullable final Date startDate, @Nullable final Date endDate, @Nullable final List<String> barCodes,
-                                                        @Nullable final List<String> ticketNumbers, @Nullable final List<String> dtaKeys,
-                                                        @Nullable final List<String> parkings)
+    private LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
+                                                 @Nullable final List<String> barCodes, @Nullable final List<String> ticketNumbers,
+                                                 @Nullable final List<String> dtaKeys, @Nullable final List<String> parkings)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
         ParkingReportRequest request = new ParkingReportRequest();
 
-        if (null != startDate) {
-            request.setStartDate( LinkIDSDKUtils.convert( startDate ) );
+        if (null != dateFilter) {
+            ReportDateFilter wsDateFilter = new ReportDateFilter();
+            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
+            if (null != dateFilter.getEndDate()) {
+                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
+            }
+            request.setDateFilter( wsDateFilter );
         }
-        if (null != endDate) {
-            request.setEndDate( LinkIDSDKUtils.convert( endDate ) );
+        if (null != pageFilter) {
+            ReportPageFilter wsPageFilter = new ReportPageFilter();
+            wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
+            wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
+            request.setPageFilter( wsPageFilter );
         }
         if (null != barCodes) {
             request.getBarCodes().addAll( barCodes );
@@ -1147,7 +1146,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                         LinkIDServiceUtils.convert( session.getPaymentState() ) ) );
             }
 
-            return sessions;
+            return new LinkIDParkingReport( response.getTotal(), sessions );
         }
         catch (ClientTransportException e) {
             throw new LinkIDWSClientTransportException( getBindingProvider(), e );

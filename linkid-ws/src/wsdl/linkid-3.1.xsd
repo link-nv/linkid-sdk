@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1" xmlns:tns="urn:net:lin-k:linkid:3.1" elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -1538,15 +1539,16 @@
             <sequence>
                 <element name="orderReferences" type="string" minOccurs="0" maxOccurs="unbounded" />
                 <element name="mandateReferences" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1" />
+                <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1" />
             </sequence>
-            <attribute name="startDate" type="dateTime" use="optional" />
-            <attribute name="endDate" type="dateTime" use="optional" />
 		</complexType>
 	</element>
 
     <element name="PaymentReportResponse">
         <complexType>
             <sequence>
+                <element name="total" type="long" minOccurs="1" maxOccurs="1" />
                 <element name="orders" type="tns:PaymentOrder" minOccurs="0" maxOccurs="unbounded" />
                 <element name="error" type="tns:ReportError" minOccurs="0" maxOccurs="1" />
             </sequence>
@@ -1562,15 +1564,16 @@
                 <element name="ticketNumbers" type="string" minOccurs="0" maxOccurs="unbounded" />
                 <element name="dtaKeys" type="string" minOccurs="0" maxOccurs="unbounded" />
                 <element name="parkings" type="string" minOccurs="0" maxOccurs="unbounded" />
+                <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1" />
+                <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1" />
             </sequence>
-            <attribute name="startDate" type="dateTime" use="optional" />
-            <attribute name="endDate" type="dateTime" use="optional" />
 		</complexType>
 	</element>
 
     <element name="ParkingReportResponse">
         <complexType>
             <sequence>
+                <element name="total" type="long" minOccurs="1" maxOccurs="1" />
                 <element name="sessions" type="tns:ParkingSession" minOccurs="0" maxOccurs="unbounded" />
                 <element name="error" type="tns:ReportError" minOccurs="0" maxOccurs="1" />
             </sequence>
@@ -1586,6 +1589,7 @@
                 <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1" />
                 <element name="applicationFilter" type="tns:ReportApplicationFilter" minOccurs="0" maxOccurs="1" />
                 <element name="walletFilter" type="tns:ReportWalletFilter" minOccurs="0" maxOccurs="1" />
+                <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1" />
             </sequence>
         </complexType>
     </element>
@@ -1593,6 +1597,7 @@
     <element name="WalletReportResponse">
         <complexType>
             <sequence>
+                <element name="total" type="long" minOccurs="1" maxOccurs="1" />
                 <element name="transactions" type="tns:WalletReportTransaction" minOccurs="0" maxOccurs="unbounded" />
                 <element name="error" type="tns:ReportError" minOccurs="0" maxOccurs="1" />
             </sequence>
@@ -1600,6 +1605,11 @@
     </element>
 
     <!-- Reporting: Common -->
+
+    <complexType name="ReportPageFilter">
+        <attribute name="firstResult" type="int" use="required" />
+        <attribute name="maxResults" type="int" use="required" />
+    </complexType>
 
     <complexType name="ReportDateFilter">
         <attribute name="startDate" type="dateTime" use="required" />
@@ -1612,7 +1622,6 @@
 
     <complexType name="ReportWalletFilter">
         <attribute name="walletId" type="string" use="required" />
-        <attribute name="userId" type="string" use="required" />
     </complexType>
 
     <complexType name="WalletReportTransaction">
@@ -1635,6 +1644,16 @@
 			<enumeration value="user.transaction">
 				<annotation>
 					<documentation>Transaction initiated by the user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="wallet.add">
+				<annotation>
+					<documentation>Wallet was added</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="wallet.remove">
+				<annotation>
+					<documentation>Wallet was removed</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="application.add.credit.initial">
@@ -1672,6 +1691,11 @@
 			<enumeration value="error.too.many.results">
 				<annotation>
 					<documentation>There are too many results to return, please narrow down your search</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.invalid.page">
+				<annotation>
+					<documentation>Invalid page filter config, e.g. firstResult > total</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.unexpected">

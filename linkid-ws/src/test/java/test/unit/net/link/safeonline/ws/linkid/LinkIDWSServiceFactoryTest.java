@@ -8,7 +8,7 @@
 package test.unit.net.link.safeonline.ws.linkid;
 
 import junit.framework.TestCase;
-import net.lin_k.linkid._3.LinkIDService;
+import net.lin_k.linkid._3_1.core.LinkIDService;
 import net.link.safeonline.ws.linkid.LinkIDWSServiceFactory;
 
 

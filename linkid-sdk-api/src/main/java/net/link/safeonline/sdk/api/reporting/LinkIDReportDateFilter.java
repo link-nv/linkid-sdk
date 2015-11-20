@@ -16,7 +16,7 @@ public class LinkIDReportDateFilter implements Serializable {
     @Nullable
     private final Date endDate;
 
-    public LinkIDReportDateFilter(final Date startDate, final Date endDate) {
+    public LinkIDReportDateFilter(final Date startDate, @Nullable final Date endDate) {
 
         this.startDate = startDate;
         this.endDate = endDate;
@@ -27,9 +27,8 @@ public class LinkIDReportDateFilter implements Serializable {
         return startDate;
     }
 
-    @Nullable
     public Date getEndDate() {
 
-        return endDate;
+        return null != endDate? endDate: new Date();
     }
 }

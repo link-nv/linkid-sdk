@@ -201,4 +201,25 @@ public abstract class LinkIDConversionUtils {
         throw new InternalInconsistencyException( String.format( "Invalid authentication state %s!", authenticationState ) );
     }
 
+    public static LinkIDAuthenticationState convert(final net.lin_k.linkid._3_1.core.AuthAuthenticationState authenticationState) {
+
+        switch (authenticationState) {
+
+            case LINKID_STATE_STARTED:
+                return LinkIDAuthenticationState.STARTED;
+            case LINKID_STATE_RETRIEVED:
+                return LinkIDAuthenticationState.RETRIEVED;
+            case LINKID_STATE_AUTHENTICATED:
+                return LinkIDAuthenticationState.AUTHENTICATED;
+            case LINKID_STATE_EXPIRED:
+                return LinkIDAuthenticationState.EXPIRED;
+            case LINKID_STATE_FAILED:
+                return LinkIDAuthenticationState.FAILED;
+            case LINKID_STATE_PAYMENT_ADD:
+                return LinkIDAuthenticationState.PAYMENT_ADD;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Invalid authentication state %s!", authenticationState ) );
+    }
+
 }

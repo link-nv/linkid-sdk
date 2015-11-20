@@ -4,23 +4,41 @@ import com.google.common.collect.Maps;
 import java.util.Date;
 import java.util.Map;
 import javax.xml.datatype.XMLGregorianCalendar;
-import net.lin_k.linkid._3.AuthCancelErrorCode;
-import net.lin_k.linkid._3.AuthPollErrorCode;
-import net.lin_k.linkid._3.AuthStartErrorCode;
-import net.lin_k.linkid._3.Callback;
-import net.lin_k.linkid._3.ConfigLocalizationKeyType;
-import net.lin_k.linkid._3.ConfigLocalizedImage;
-import net.lin_k.linkid._3.ConfigLocalizedImages;
-import net.lin_k.linkid._3.Currency;
-import net.lin_k.linkid._3.FavoritesConfiguration;
-import net.lin_k.linkid._3.LTQRContent;
-import net.lin_k.linkid._3.LTQRLockType;
-import net.lin_k.linkid._3.LTQRPollingConfiguration;
-import net.lin_k.linkid._3.PaymentContext;
-import net.lin_k.linkid._3.PaymentMethodType;
-import net.lin_k.linkid._3.PaymentStatusType;
-import net.lin_k.linkid._3.QRCodeInfo;
-import net.lin_k.linkid._3.WalletReportType;
+import net.lin_k.linkid._3_1.core.AuthCancelErrorCode;
+import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
+import net.lin_k.linkid._3_1.core.AuthStartErrorCode;
+import net.lin_k.linkid._3_1.core.Callback;
+import net.lin_k.linkid._3_1.core.CallbackPullErrorCode;
+import net.lin_k.linkid._3_1.core.ConfigLocalizationErrorCode;
+import net.lin_k.linkid._3_1.core.ConfigLocalizationKeyType;
+import net.lin_k.linkid._3_1.core.ConfigLocalizedImage;
+import net.lin_k.linkid._3_1.core.ConfigLocalizedImages;
+import net.lin_k.linkid._3_1.core.ConfigThemesErrorCode;
+import net.lin_k.linkid._3_1.core.Currency;
+import net.lin_k.linkid._3_1.core.FavoritesConfiguration;
+import net.lin_k.linkid._3_1.core.LTQRChangeErrorCode;
+import net.lin_k.linkid._3_1.core.LTQRContent;
+import net.lin_k.linkid._3_1.core.LTQRErrorCode;
+import net.lin_k.linkid._3_1.core.LTQRLockType;
+import net.lin_k.linkid._3_1.core.LTQRPollingConfiguration;
+import net.lin_k.linkid._3_1.core.LTQRPushErrorCode;
+import net.lin_k.linkid._3_1.core.MandatePaymentErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentCaptureErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentContext;
+import net.lin_k.linkid._3_1.core.PaymentMethodType;
+import net.lin_k.linkid._3_1.core.PaymentRefundErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentStatusErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentStatusType;
+import net.lin_k.linkid._3_1.core.QRCodeInfo;
+import net.lin_k.linkid._3_1.core.ReportErrorCode;
+import net.lin_k.linkid._3_1.core.WalletAddCreditErrorCode;
+import net.lin_k.linkid._3_1.core.WalletCommitErrorCode;
+import net.lin_k.linkid._3_1.core.WalletEnrollErrorCode;
+import net.lin_k.linkid._3_1.core.WalletGetInfoErrorCode;
+import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
+import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
+import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
+import net.lin_k.linkid._3_1.core.WalletReportType;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -148,7 +166,7 @@ public class LinkIDServiceUtils {
         return new LinkIDLocalizedImages( imageMap );
     }
 
-    public static LinkIDThemesErrorCode convert(final net.lin_k.linkid._3.ConfigThemesErrorCode errorCode) {
+    public static LinkIDThemesErrorCode convert(final ConfigThemesErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -161,7 +179,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDLocalizationErrorCode convert(final net.lin_k.linkid._3.ConfigLocalizationErrorCode errorCode) {
+    public static LinkIDLocalizationErrorCode convert(final ConfigLocalizationErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -174,7 +192,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDCallbackPullErrorCode convert(final net.lin_k.linkid._3.CallbackPullErrorCode errorCode) {
+    public static LinkIDCallbackPullErrorCode convert(final CallbackPullErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -189,7 +207,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDPaymentCaptureErrorCode convert(final net.lin_k.linkid._3.PaymentCaptureErrorCode errorCode) {
+    public static LinkIDPaymentCaptureErrorCode convert(final PaymentCaptureErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -206,7 +224,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDPaymentRefundErrorCode convert(final net.lin_k.linkid._3.PaymentRefundErrorCode errorCode) {
+    public static LinkIDPaymentRefundErrorCode convert(final PaymentRefundErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -322,29 +340,6 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unsupported payment state: \"%s\"", paymentState.name() ) );
     }
 
-    public static LinkIDWalletReportType convert(final WalletReportType type) {
-
-        if (null == type) {
-            return null;
-        }
-
-        switch (type) {
-
-            case USER_TRANSACTION:
-                return LinkIDWalletReportType.USER_TRANSACTION;
-            case APPLICATION_ADD_CREDIT_INITIAL:
-                return LinkIDWalletReportType.APPLICATION_ADD_CREDIT_INITIAL;
-            case APPLICATION_ADD_CREDIT:
-                return LinkIDWalletReportType.APPLICATION_ADD_CREDIT;
-            case APPLICATION_REMOVE_CREDIT:
-                return LinkIDWalletReportType.APPLICATION_REMOVE_CREDIT;
-            case APPLICATION_REFUND:
-                return LinkIDWalletReportType.APPLICATION_REFUND;
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unsupported wallet report type: \"%s\"", type.name() ) );
-    }
-
     @Nullable
     public static LTQRPollingConfiguration convert(@Nullable final LinkIDLTQRPollingConfiguration pollingConfiguration) {
 
@@ -433,10 +428,10 @@ public class LinkIDServiceUtils {
         ltqrContent.setFinishedMessage( content.getFinishedMessage() );
 
         // payment context
-        ltqrContent.setPaymentContext( LinkIDServiceUtils.convert( content.getPaymentContext() ) );
+        ltqrContent.setPaymentContext( convert( content.getPaymentContext() ) );
 
         // callback
-        ltqrContent.setCallback( LinkIDServiceUtils.convert( content.getCallback() ) );
+        ltqrContent.setCallback( convert( content.getCallback() ) );
 
         // identity profile
         ltqrContent.setIdentityProfile( content.getIdentityProfile() );
@@ -485,7 +480,7 @@ public class LinkIDServiceUtils {
         if (null != wsPaymentContext) {
 
             LinkIDPaymentContext.Builder paymentContextBuilder = new LinkIDPaymentContext.Builder(
-                    new LinkIDPaymentAmount( wsPaymentContext.getAmount(), LinkIDServiceUtils.convert( wsPaymentContext.getCurrency() ),
+                    new LinkIDPaymentAmount( wsPaymentContext.getAmount(), convert( wsPaymentContext.getCurrency() ),
                             wsPaymentContext.getWalletCoin() ) ).description( wsPaymentContext.getDescription() )
                                                                 .orderReference( wsPaymentContext.getOrderReference() )
                                                                 .paymentProfile( wsPaymentContext.getPaymentProfile() )
@@ -519,7 +514,7 @@ public class LinkIDServiceUtils {
         builder.mobileLandingCancel( ltqrContent.getMobileLandingCancel() );
 
         // polling configuration
-        builder.pollingConfiguration( LinkIDServiceUtils.getPollingConfiguration( ltqrContent.getPollingConfiguration() ) );
+        builder.pollingConfiguration( getPollingConfiguration( ltqrContent.getPollingConfiguration() ) );
 
         // configuration
         if (null != ltqrContent.getExpiryDate()) {
@@ -534,7 +529,7 @@ public class LinkIDServiceUtils {
         return builder.build();
     }
 
-    public static LinkIDLTQRErrorCode convert(final net.lin_k.linkid._3.LTQRErrorCode errorCode) {
+    public static LinkIDLTQRErrorCode convert(final LTQRErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -551,7 +546,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDLTQRPushErrorCode convert(final net.lin_k.linkid._3.LTQRPushErrorCode errorCode) {
+    public static LinkIDLTQRPushErrorCode convert(final LTQRPushErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -578,7 +573,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDLTQRChangeErrorCode convert(final net.lin_k.linkid._3.LTQRChangeErrorCode errorCode) {
+    public static LinkIDLTQRChangeErrorCode convert(final LTQRChangeErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -615,7 +610,7 @@ public class LinkIDServiceUtils {
             qrCodeImage = Base64.decode( encodedQR );
         }
         catch (Base64DecodingException e) {
-            throw new InternalInconsistencyException( "Could not decode the QR image!" );
+            throw new InternalInconsistencyException( "Could not decode the QR image!", e );
         }
         return qrCodeImage;
     }
@@ -667,12 +662,14 @@ public class LinkIDServiceUtils {
         return null != xmlDate? xmlDate.toGregorianCalendar().getTime(): null;
     }
 
-    public static LinkIDReportErrorCode convert(final net.lin_k.linkid._3.ReportErrorCode errorCode) {
+    public static LinkIDReportErrorCode convert(final ReportErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_TOO_MANY_RESULTS:
                 return LinkIDReportErrorCode.ERROR_TOO_MANY_RESULTS;
+            case ERROR_INVALID_PAGE:
+                return LinkIDReportErrorCode.ERROR_INVALID_PAGE;
             case ERROR_UNEXPECTED:
                 return LinkIDReportErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -682,7 +679,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDMandatePaymentErrorCode convert(final net.lin_k.linkid._3.MandatePaymentErrorCode errorCode) {
+    public static LinkIDMandatePaymentErrorCode convert(final MandatePaymentErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -701,7 +698,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDPaymentStatusErrorCode convert(final net.lin_k.linkid._3.PaymentStatusErrorCode errorCode) {
+    public static LinkIDPaymentStatusErrorCode convert(final PaymentStatusErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -718,7 +715,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletEnrollErrorCode convert(final net.lin_k.linkid._3.WalletEnrollErrorCode errorCode) {
+    public static LinkIDWalletEnrollErrorCode convert(final WalletEnrollErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -741,7 +738,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletGetInfoErrorCode convert(final net.lin_k.linkid._3.WalletGetInfoErrorCode errorCode) {
+    public static LinkIDWalletGetInfoErrorCode convert(final WalletGetInfoErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -758,7 +755,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletAddCreditErrorCode convert(final net.lin_k.linkid._3.WalletAddCreditErrorCode errorCode) {
+    public static LinkIDWalletAddCreditErrorCode convert(final WalletAddCreditErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -779,7 +776,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletRemoveCreditErrorCode convert(final net.lin_k.linkid._3.WalletRemoveCreditErrorCode errorCode) {
+    public static LinkIDWalletRemoveCreditErrorCode convert(final WalletRemoveCreditErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -800,7 +797,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletRemoveErrorCode convert(final net.lin_k.linkid._3.WalletRemoveErrorCode errorCode) {
+    public static LinkIDWalletRemoveErrorCode convert(final WalletRemoveErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -817,7 +814,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletCommitErrorCode convert(final net.lin_k.linkid._3.WalletCommitErrorCode errorCode) {
+    public static LinkIDWalletCommitErrorCode convert(final WalletCommitErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -836,7 +833,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletReleaseErrorCode convert(final net.lin_k.linkid._3.WalletReleaseErrorCode errorCode) {
+    public static LinkIDWalletReleaseErrorCode convert(final WalletReleaseErrorCode errorCode) {
 
         switch (errorCode) {
 
@@ -869,6 +866,57 @@ public class LinkIDServiceUtils {
 
         return new LinkIDQRInfo( decodeQR( qrCodeInfo.getQrEncoded() ), qrCodeInfo.getQrEncoded(), qrCodeInfo.getQrURL(), qrCodeInfo.getQrContent(),
                 qrCodeInfo.isMobile() );
+
+    }
+
+    public static LinkIDWalletReportType convert(final WalletReportType type) {
+
+        if (null == type) {
+            return null;
+        }
+
+        switch (type) {
+
+            case USER_TRANSACTION:
+                return LinkIDWalletReportType.USER_TRANSACTION;
+            case WALLET_ADD:
+                return LinkIDWalletReportType.WALLET_ADD;
+            case WALLET_REMOVE:
+                return LinkIDWalletReportType.WALLET_REMOVE;
+            case APPLICATION_ADD_CREDIT_INITIAL:
+                return LinkIDWalletReportType.APPLICATION_ADD_CREDIT_INITIAL;
+            case APPLICATION_ADD_CREDIT:
+                return LinkIDWalletReportType.APPLICATION_ADD_CREDIT;
+            case APPLICATION_REMOVE_CREDIT:
+                return LinkIDWalletReportType.APPLICATION_REMOVE_CREDIT;
+            case APPLICATION_REFUND:
+                return LinkIDWalletReportType.APPLICATION_REFUND;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported wallet report type: \"%s\"", type.name() ) );
+    }
+
+    public static WalletReportType convert(final LinkIDWalletReportType walletReportType) {
+
+        switch (walletReportType) {
+
+            case USER_TRANSACTION:
+                return WalletReportType.USER_TRANSACTION;
+            case WALLET_ADD:
+                return WalletReportType.WALLET_ADD;
+            case WALLET_REMOVE:
+                return WalletReportType.WALLET_REMOVE;
+            case APPLICATION_ADD_CREDIT_INITIAL:
+                return WalletReportType.APPLICATION_ADD_CREDIT_INITIAL;
+            case APPLICATION_ADD_CREDIT:
+                return WalletReportType.APPLICATION_ADD_CREDIT;
+            case APPLICATION_REMOVE_CREDIT:
+                return WalletReportType.APPLICATION_REMOVE_CREDIT;
+            case APPLICATION_REFUND:
+                return WalletReportType.APPLICATION_REFUND;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected wallet report type %s!", walletReportType.name() ) );
 
     }
 }

@@ -7,21 +7,21 @@
 
 package net.link.safeonline.sdk.api.ws.linkid;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
-import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
-import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
+import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
+import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
-import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
@@ -246,127 +246,108 @@ public interface LinkIDServiceClient {
             throws LinkIDLTQRInfoException;
 
     /**
-     * @param startDate startDate
-     * @param endDate   optional endDate, not specified means till now
+     * @param dateFilter optional date filter
+     * @param pageFilter optional page filter
      *
      * @return The payment orders matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDPaymentOrder> getPaymentReport(Date startDate, @Nullable Date endDate)
+    LinkIDPaymentReport getPaymentReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param orderReferences order references
+     * @param pageFilter      optional page filter
      *
      * @return The payment orders matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDPaymentOrder> getPaymentReportForOrderReferences(List<String> orderReferences)
+    LinkIDPaymentReport getPaymentReportForOrderReferences(List<String> orderReferences, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param mandateReferences mandate references
+     * @param pageFilter        optional page filter
      *
      * @return The payment orders matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDPaymentOrder> getPaymentReportForMandates(List<String> mandateReferences)
+    LinkIDPaymentReport getPaymentReportForMandates(List<String> mandateReferences, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param startDate startDate
-     * @param endDate   optional endDate, not specified means till now
+     * @param dateFilter optional date filter
+     * @param pageFilter optional page filter
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDParkingSession> getParkingReport(Date startDate, @Nullable Date endDate)
+    LinkIDParkingReport getParkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param startDate startDate
-     * @param endDate   optional endDate, not specified means till now
-     * @param parkings  optional list of parkings
+     * @param dateFilter optional date filter
+     * @param pageFilter optional page filter
+     * @param parkings   optional list of parkings
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDParkingSession> getParkingReport(Date startDate, @Nullable Date endDate, @Nullable List<String> parkings)
+    LinkIDParkingReport getParkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter,
+                                         @Nullable List<String> parkings)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param barCodes bar codes
+     * @param barCodes   bar codes
+     * @param pageFilter optional page filter
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDParkingSession> getParkingReportForBarCodes(List<String> barCodes)
+    LinkIDParkingReport getParkingReportForBarCodes(List<String> barCodes, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param ticketNumbers ticket numbers
+     * @param pageFilter    optional page filter
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDParkingSession> getParkingReportForTicketNumbers(List<String> ticketNumbers)
+    LinkIDParkingReport getParkingReportForTicketNumbers(List<String> ticketNumbers, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param dtaKeys dtaKeys
+     * @param dtaKeys    dtaKeys
+     * @param pageFilter optional page filter
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDParkingSession> getParkingReportForDTAKeys(List<String> dtaKeys)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param parkings parkings
-     *
-     * @return The parking sessions matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    List<LinkIDParkingSession> getParkingReportForParkings(List<String> parkings)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param dateFilter date filter
-     *
-     * @return the wallet transactions matching your search. If none found and empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, LinkIDReportDateFilter dateFilter)
+    LinkIDParkingReport getParkingReportForDTAKeys(List<String> dtaKeys, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
      * @param applicationFilter application filter
+     * @param walletFilter      wallet filter
+     * @param dateFilter        date filter
+     * @param pageFilter        optional page filter
      *
      * @return the wallet transactions matching your search. If none found and empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, LinkIDReportApplicationFilter applicationFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param walletFilter wallet filter
-     *
-     * @return the wallet transactions matching your search. If none found and empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    List<LinkIDWalletReportTransaction> getWalletReport(String walletOrganizationId, LinkIDReportWalletFilter walletFilter)
+    LinkIDWalletReport getWalletReport(String walletOrganizationId, @Nullable LinkIDReportApplicationFilter applicationFilter,
+                                       @Nullable LinkIDReportWalletFilter walletFilter, @Nullable LinkIDReportDateFilter dateFilter,
+                                       @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**

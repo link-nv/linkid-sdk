@@ -9,7 +9,7 @@ package net.link.safeonline.ws.linkid;
 
 import java.net.URL;
 import javax.xml.namespace.QName;
-import net.lin_k.linkid._3.LinkIDService;
+import net.lin_k.linkid._3_1.core.LinkIDService;
 
 
 public class LinkIDWSServiceFactory {
@@ -26,6 +26,6 @@ public class LinkIDWSServiceFactory {
         if (null == wsdlUrl)
             throw new RuntimeException( "linkID WSDL not found" );
 
-        return new LinkIDService( wsdlUrl, new QName( "urn:net:lin-k:linkid:3.1", "LinkIDService" ) );
+        return new LinkIDService( wsdlUrl, new QName( "urn:net:lin-k:linkid:3.1:core", "LinkIDService" ) );
     }
 }

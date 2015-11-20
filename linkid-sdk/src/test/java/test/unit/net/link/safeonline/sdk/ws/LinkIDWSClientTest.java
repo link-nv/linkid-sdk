@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -23,7 +22,12 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
+import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
+import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
@@ -142,55 +146,50 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testReportingPayment()
+    public void testPaymentReport()
             throws Exception {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         List<String> orderReferences = Arrays.asList( "QR-SHOP-f0c5b593-0754-4ec0-a45c-664bb86bab11" );
 
-        List<LinkIDPaymentOrder> linkIDPaymentOrders = client.getPaymentReportForOrderReferences( orderReferences );
-        logger.inf( "# orders = %d", linkIDPaymentOrders.size() );
+        LinkIDPaymentReport paymentReport = client.getPaymentReportForOrderReferences( orderReferences, null );
+        logger.inf( "# orders = %d", paymentReport.getPaymentOrders().size() );
 
-        for (LinkIDPaymentOrder linkIDPaymentOrder : linkIDPaymentOrders) {
+        for (LinkIDPaymentOrder linkIDPaymentOrder : paymentReport.getPaymentOrders()) {
             logger.inf( "Order: %s", linkIDPaymentOrder );
         }
     }
 
     //    @Test
-    public void testReportingParking()
+    public void testParkingReport()
             throws Exception {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        Date startDate = DateTime.now().minusYears( 1 ).toDate();
+        LinkIDReportDateFilter dateFilter = new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null );
 
-        List<LinkIDParkingSession> linkIDParkingSessions = client.getParkingReport( startDate, null );
-        logger.inf( "# orders = %d", linkIDParkingSessions.size() );
+        LinkIDParkingReport parkingReport = client.getParkingReport( dateFilter, null );
+        logger.inf( "# orders = %d", parkingReport.getParkingSessions().size() );
 
-        for (LinkIDParkingSession linkIDParkingSession : linkIDParkingSessions) {
+        for (LinkIDParkingSession linkIDParkingSession : parkingReport.getParkingSessions()) {
             logger.inf( "Session: %s", linkIDParkingSession );
         }
     }
 
     //    @Test
-    public void testReportingWallet()
+    public void testWalletReport()
             throws Exception {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        String walletOrganizationId = "urn:linkid:wallet:leaseplan";
-        Date startDate = DateTime.now().minusYears( 1 ).toDate();
-        String applicationName = "test-shop";
-        String walletId = "ff52177f-8f80-4640-9e86-558f6b1b24c3";
-        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        LinkIDWalletReport walletReport = client.getWalletReport( "urn:linkid:wallet:leaseplan", null,
+                new LinkIDReportWalletFilter( "123b1c22-e6c5-4ebc-9255-e59b72db5abf" ),
+                new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null ), new LinkIDReportPageFilter( 0, 40 ) );
+        logger.inf( "Total = %d", walletReport.getTotal() );
+        logger.inf( "# txns = %d", walletReport.getWalletTransactions().size() );
 
-        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportDateFilter( startDate, null ) );
-        //        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportApplicationFilter( applicationName ) );
-        //        List<LinkIDWalletReportTransaction> transactions = client.getWalletReport( walletOrganizationId, new LinkIDReportWalletFilter( walletId, userId ) );
-        logger.inf( "# txns = %d", transactions.size() );
-
-        for (LinkIDWalletReportTransaction transaction : transactions) {
+        for (LinkIDWalletReportTransaction transaction : walletReport.getWalletTransactions()) {
             logger.inf( "transaction: %s (wallet: %s)", transaction, transaction.getWalletId() );
         }
     }
@@ -384,7 +383,12 @@ public class LinkIDWSClientTest {
 
         // setup
         LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) )   //
-                .orderReference( UUID.randomUUID().toString() ).paymentAddBrowser( LinkIDPaymentAddBrowser.NOT_ALLOWED ).build();
+                                                                                                                                            .orderReference(
+                                                                                                                                                    UUID.randomUUID()
+                                                                                                                                                        .toString() )
+                                                                                                                                            .paymentAddBrowser(
+                                                                                                                                                    LinkIDPaymentAddBrowser.NOT_ALLOWED )
+                                                                                                                                            .build();
         DateTime expiryDateTime = new DateTime();
         expiryDateTime = expiryDateTime.plusMonths( 2 );
 
