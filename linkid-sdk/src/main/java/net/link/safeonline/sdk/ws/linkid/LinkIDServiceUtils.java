@@ -672,6 +672,8 @@ public class LinkIDServiceUtils {
                 return LinkIDReportErrorCode.ERROR_TOO_MANY_RESULTS;
             case ERROR_INVALID_PAGE:
                 return LinkIDReportErrorCode.ERROR_INVALID_PAGE;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDReportErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDReportErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -685,6 +687,8 @@ public class LinkIDServiceUtils {
 
         switch (errorCode) {
 
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDWalletInfoReportErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletInfoReportErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -744,6 +748,8 @@ public class LinkIDServiceUtils {
                 return LinkIDWalletEnrollErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_USER_ALREADY_ENROLLED:
                 return LinkIDWalletEnrollErrorCode.ERROR_USER_ALREADY_ENROLLED;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDWalletEnrollErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletEnrollErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -761,6 +767,8 @@ public class LinkIDServiceUtils {
                 return LinkIDWalletGetInfoErrorCode.ERROR_UNKNOWN_WALLET;
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletGetInfoErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDWalletGetInfoErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletGetInfoErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -782,6 +790,8 @@ public class LinkIDServiceUtils {
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_WALLET_COIN;
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDWalletAddCreditErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -803,6 +813,8 @@ public class LinkIDServiceUtils {
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_WALLET_COIN;
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDWalletRemoveCreditErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -820,6 +832,8 @@ public class LinkIDServiceUtils {
                 return LinkIDWalletRemoveErrorCode.ERROR_UNKNOWN_WALLET;
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletRemoveErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDWalletRemoveErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDWalletRemoveErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:

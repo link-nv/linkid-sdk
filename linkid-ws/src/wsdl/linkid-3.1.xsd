@@ -1728,6 +1728,11 @@
 					<documentation>Invalid page filter config, e.g. firstResult > total</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened, consult a linkID dev for more information</documentation>
@@ -1750,6 +1755,11 @@
 			<documentation>Error codes</documentation>
 		</annotation>
 		<restriction base="string">
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened, consult a linkID dev for more information</documentation>
@@ -1854,6 +1864,11 @@
 					<documentation>User was already enrolled</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened</documentation>
@@ -1922,6 +1937,11 @@
 			<enumeration value="error.unknown.user">
 				<annotation>
 					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.unexpected">
@@ -2012,6 +2032,11 @@
 					<documentation>No such linkID user</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened</documentation>
@@ -2100,6 +2125,11 @@
 					<documentation>No such linkID user</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened</documentation>
@@ -2161,6 +2191,11 @@
 			<enumeration value="error.unknown.user">
 				<annotation>
 					<documentation>No such linkID user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied</documentation>
 				</annotation>
 			</enumeration>
 			<enumeration value="error.unexpected">

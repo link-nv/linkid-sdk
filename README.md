@@ -48,4 +48,6 @@ v3.5
   * paymentRefund support
   * LinkIDPaymentCapturexxx moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.capture
   * LinkIDMandatePaymentxxx moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.mandate
-  * LinkIDWalletReports: type support  
+  * LinkIDWalletReports: type support 
+  * getWalletInfoReport support 
+  * walletXXX calls and reporting calls return a permission denied error code
