@@ -184,7 +184,7 @@ public class LinkIDWSClientTest {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        LinkIDWalletReport walletReport = client.getWalletReport( "urn:linkid:wallet:leaseplan", null,
+        LinkIDWalletReport walletReport = client.getWalletReport( new Locale( "nl" ), "urn:linkid:wallet:leaseplan", null,
                 new LinkIDReportWalletFilter( "123b1c22-e6c5-4ebc-9255-e59b72db5abf" ),
                 new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null ), new LinkIDReportPageFilter( 0, 40 ) );
         logger.inf( "Total = %d", walletReport.getTotal() );
@@ -207,7 +207,7 @@ public class LinkIDWSClientTest {
         walletIds.add( "foo" );
 
         // operate
-        List<LinkIDWalletInfoReport> result = client.getWalletInfoReport( walletIds );
+        List<LinkIDWalletInfoReport> result = client.getWalletInfoReport( new Locale( "nl" ), walletIds );
 
         // verify
         assertNotNull( result );

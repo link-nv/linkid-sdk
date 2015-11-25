@@ -338,6 +338,7 @@ public interface LinkIDServiceClient {
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
+     * @param locale            optional locale, if not specified will default to en
      * @param applicationFilter application filter
      * @param walletFilter      wallet filter
      * @param dateFilter        date filter
@@ -347,19 +348,20 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    LinkIDWalletReport getWalletReport(String walletOrganizationId, @Nullable LinkIDReportApplicationFilter applicationFilter,
+    LinkIDWalletReport getWalletReport(@Nullable Locale locale, String walletOrganizationId, @Nullable LinkIDReportApplicationFilter applicationFilter,
                                        @Nullable LinkIDReportWalletFilter walletFilter, @Nullable LinkIDReportDateFilter dateFilter,
                                        @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
+     * @param locale    optional locale, if not specified will default to en
      * @param walletIds the list of walletIds to get info about
      *
      * @return list of wallet report info objects for the specified walletIds. If a walletId was not found it will be skipped
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDWalletInfoReport> getWalletInfoReport(List<String> walletIds)
+    List<LinkIDWalletInfoReport> getWalletInfoReport(@Nullable Locale locale, List<String> walletIds)
             throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException;
 
     /**

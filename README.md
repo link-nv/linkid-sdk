@@ -40,14 +40,16 @@ v3.4
   * No longer possible to specify a list of identity profiles, only 1 is allowed now.
     * If you want more complex identity profiles, just request a new identity from someone from linkID
     
-v3.5
+v3.7
 ----
   * QRCodeInfo.targetBlank support dropped
-  * LTQR favoritresConfiguration support
+  * LTQR FavoritesConfiguration support
   * LinkIDServiceClient.capture renamed to paymentCapture
   * paymentRefund support
-  * LinkIDPaymentCapturexxx moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.capture
-  * LinkIDMandatePaymentxxx moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.mandate
+  * LinkIDPaymentCaptureXXX classes moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.capture
+  * LinkIDMandatePaymentXXX classes moved to net.link.safeonline.sdk.api.ws.linkid.payment package from net.link.safeonline.sdk.api.ws.linkid.mandate
   * LinkIDWalletReports: type support 
   * getWalletInfoReport support 
   * walletXXX calls and reporting calls return a permission denied error code
+  * WalletInfoReport: returns localized wallet organization
+  * WalletReport: returns localized application, returns payment description if applicable

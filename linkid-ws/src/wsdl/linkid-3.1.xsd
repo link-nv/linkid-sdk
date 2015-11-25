@@ -10,6 +10,8 @@
 			First version that merged all linkID specific non standaard WS's
             V3.1 (November 18, 2015):
             QRCodeInfo.targetBlank support dropped, favorites configuration support, payment refund support, extended wallet report
+            V3.7 (November 25, 2015):
+            WalletInfoReport: returns localized wallet organization, WalletReport: returns localized application, returns payment description if applicable
 		</documentation>
 	</annotation>
 
@@ -1585,6 +1587,13 @@
     <element name="WalletReportRequest">
         <complexType>
             <sequence>
+                <element name="language" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>
+                            Optional language in ISO-639-1 format, if not specified, defaults to en
+                        </documentation>
+                    </annotation>
+                </element>
                 <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1" />
                 <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1" />
                 <element name="applicationFilter" type="tns:ReportApplicationFilter" minOccurs="0" maxOccurs="1" />
@@ -1609,6 +1618,13 @@
     <element name="WalletInfoReportRequest">
         <complexType>
             <sequence>
+                <element name="language" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>
+                            Optional language in ISO-639-1 format, if not specified, defaults to en
+                        </documentation>
+                    </annotation>
+                </element>
                 <element name="walletId" type="string" minOccurs="1" maxOccurs="unbounded" />
             </sequence>
         </complexType>
@@ -1652,8 +1668,10 @@
             <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1" />
             <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1" />
             <element name="refundAmount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="paymentDescription" type="string" minOccurs="0" maxOccurs="1" />
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
             <element name="applicationName" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="applicationFriendly" type="string" minOccurs="1" maxOccurs="1" />
             <element name="type" type="tns:WalletReportType" minOccurs="1" maxOccurs="1" />
         </sequence>
     </complexType>
@@ -1665,6 +1683,7 @@
             <element name="removed" type="date" minOccurs="1" maxOccurs="1" />
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
             <element name="organizationId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="organization" type="string" minOccurs="1" maxOccurs="1" />
             <element name="balance" type="double" minOccurs="1" maxOccurs="1" />
         </sequence>
     </complexType>

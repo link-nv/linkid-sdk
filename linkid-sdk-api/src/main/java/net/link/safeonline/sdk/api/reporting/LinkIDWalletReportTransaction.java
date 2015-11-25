@@ -17,16 +17,19 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     @Nullable
     private final String                 userId;
     private final String                 applicationName;
+    private final String                 applicationFriendly;
     private final LinkIDWalletReportType type;
 
     public LinkIDWalletReportTransaction(final String walletId, final Date creationDate, final String transactionId, final double amount,
-                                         final LinkIDCurrency currency, final String walletCoin, final double refundAmount, final String userId,
-                                         final String applicationName, final LinkIDWalletReportType type) {
+                                         final LinkIDCurrency currency, final String walletCoin, final double refundAmount,
+                                         @Nullable final String paymentDescription, @Nullable final String userId, final String applicationName,
+                                         final String applicationFriendly, final LinkIDWalletReportType type) {
 
-        super( walletId, creationDate, transactionId, amount, currency, walletCoin, refundAmount );
+        super( walletId, creationDate, transactionId, amount, currency, walletCoin, refundAmount, paymentDescription );
 
         this.userId = userId;
         this.applicationName = applicationName;
+        this.applicationFriendly = applicationFriendly;
         this.type = type;
     }
 
@@ -38,7 +41,9 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
         return "LinkIDWalletReportTransaction{" +
                "userId='" + userId + '\'' +
                ", applicationName='" + applicationName + '\'' +
+               ", applicationFriendly='" + applicationFriendly + '\'' +
                ", type='" + type + '\'' +
+               ", super='" + super.toString() + '\'' +
                '}';
     }
 
@@ -53,6 +58,11 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     public String getApplicationName() {
 
         return applicationName;
+    }
+
+    public String getApplicationFriendly() {
+
+        return applicationFriendly;
     }
 
     public LinkIDWalletReportType getType() {

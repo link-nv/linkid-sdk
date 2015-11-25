@@ -439,7 +439,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                             new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert( walletTransaction.getCreationDate() ),
                                     walletTransaction.getTransactionId(), walletTransaction.getAmount(),
                                     LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
-                                    walletTransaction.getRefundAmount() ) );
+                                    walletTransaction.getRefundAmount(), response.getSuccess().getDescription() ) );
                 }
 
                 return new LinkIDPaymentStatus( response.getSuccess().getOrderReference(), response.getSuccess().getUserId(),
@@ -757,12 +757,17 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDWalletReport getWalletReport(final String walletOrganizationId, @Nullable final LinkIDReportApplicationFilter applicationFilter,
+    public LinkIDWalletReport getWalletReport(@Nullable final Locale locale, final String walletOrganizationId,
+                                              @Nullable final LinkIDReportApplicationFilter applicationFilter,
                                               @Nullable final LinkIDReportWalletFilter walletFilter, @Nullable final LinkIDReportDateFilter dateFilter,
                                               @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
         WalletReportRequest request = new WalletReportRequest();
+
+        if (null != locale) {
+            request.setLanguage( locale.getLanguage() );
+        }
 
         request.setWalletOrganizationId( walletOrganizationId );
 
@@ -805,8 +810,9 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                 transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getWalletId(),
                         LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ), walletReportTransaction.getTransactionId(),
                         walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),
-                        walletReportTransaction.getWalletCoin(), walletReportTransaction.getRefundAmount(), walletReportTransaction.getUserId(),
-                        walletReportTransaction.getApplicationName(), LinkIDServiceUtils.convert( walletReportTransaction.getType() ) ) );
+                        walletReportTransaction.getWalletCoin(), walletReportTransaction.getRefundAmount(), walletReportTransaction.getPaymentDescription(),
+                        walletReportTransaction.getUserId(), walletReportTransaction.getApplicationName(), walletReportTransaction.getApplicationFriendly(),
+                        LinkIDServiceUtils.convert( walletReportTransaction.getType() ) ) );
             }
 
             return new LinkIDWalletReport( response.getTotal(), transactions );
@@ -817,11 +823,14 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public List<LinkIDWalletInfoReport> getWalletInfoReport(final List<String> walletIds)
+    public List<LinkIDWalletInfoReport> getWalletInfoReport(@Nullable final Locale locale, final List<String> walletIds)
             throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException {
 
         WalletInfoReportRequest request = new WalletInfoReportRequest();
 
+        if (null != locale) {
+            request.setLanguage( locale.getLanguage() );
+        }
         request.getWalletId().addAll( walletIds );
 
         try {
@@ -835,7 +844,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             List<LinkIDWalletInfoReport> result = Lists.newLinkedList();
             for (WalletInfoReport walletInfo : response.getWalletInfo()) {
                 result.add( new LinkIDWalletInfoReport( walletInfo.getWalletId(), LinkIDSDKUtils.convert( walletInfo.getCreated() ),
-                        LinkIDSDKUtils.convert( walletInfo.getRemoved() ), walletInfo.getUserId(), walletInfo.getOrganizationId(), walletInfo.getBalance() ) );
+                        LinkIDSDKUtils.convert( walletInfo.getRemoved() ), walletInfo.getUserId(), walletInfo.getOrganizationId(), walletInfo.getOrganization(),
+                        walletInfo.getBalance() ) );
             }
 
             return result;
@@ -1114,7 +1124,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                             new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
                                     walletTransaction.getTransactionId(), walletTransaction.getAmount(),
                                     LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
-                                    walletTransaction.getRefundAmount() ) );
+                                    walletTransaction.getRefundAmount(), paymentOrder.getDescription() ) );
                 }
 
                 // order
