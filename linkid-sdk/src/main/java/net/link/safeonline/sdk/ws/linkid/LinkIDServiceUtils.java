@@ -518,6 +518,9 @@ public class LinkIDServiceUtils {
         // polling configuration
         builder.pollingConfiguration( getPollingConfiguration( ltqrContent.getPollingConfiguration() ) );
 
+        // favorites configuration
+        builder.favoritesConfiguration( getFavoritesConfiguration( ltqrContent.getFavoritesConfiguration() ) );
+
         // configuration
         if (null != ltqrContent.getExpiryDate()) {
             builder.expiryDate( ltqrContent.getExpiryDate().toGregorianCalendar().getTime() );
@@ -617,6 +620,7 @@ public class LinkIDServiceUtils {
         return qrCodeImage;
     }
 
+    @Nullable
     public static LinkIDLTQRPollingConfiguration getPollingConfiguration(@Nullable final LTQRPollingConfiguration pollingConfiguration) {
 
         if (null == pollingConfiguration) {
@@ -635,6 +639,17 @@ public class LinkIDServiceUtils {
                                                                         > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM
                 ? pollingConfiguration.getPaymentPollInterval(): -1 );
 
+    }
+
+    @Nullable
+    public static LinkIDFavoritesConfiguration getFavoritesConfiguration(@Nullable final FavoritesConfiguration favoritesConfiguration) {
+
+        if (null == favoritesConfiguration) {
+            return null;
+        }
+
+        return new LinkIDFavoritesConfiguration( favoritesConfiguration.getTitle(), favoritesConfiguration.getInfo(), favoritesConfiguration.getLogoEncoded(),
+                favoritesConfiguration.getBackgroundColor(), favoritesConfiguration.getTextColor() );
     }
 
     public static LinkIDPaymentMethodType convert(final PaymentMethodType paymentMethodType) {
