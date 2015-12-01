@@ -510,6 +510,18 @@ public class LinkIDWSClientTest {
         assertEquals( 4, localizations.get( 0 ).getValues().size() );
     }
 
+    //    @Test
+    public void testPaymentRefund()
+            throws Exception {
+
+        // Setup
+        String orderReference = "QR-SHOP-02a319e2-4de9-454f-8426-007398993eac";
+        LinkIDServiceClient client = getLinkIDServiceClient();
+
+        // operate
+        client.paymentRefund( orderReference );
+    }
+
     // Auth
 
     private LinkIDServiceClient getLinkIDServiceClient() {
