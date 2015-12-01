@@ -157,7 +157,6 @@ public class LinkIDPaymentContext implements Serializable {
         return map;
     }
 
-    @Nullable
     public static LinkIDPaymentContext fromMap(final Map<String, String> paymentContextMap) {
 
         // check map valid
@@ -169,7 +168,8 @@ public class LinkIDPaymentContext implements Serializable {
         }
         double amount = Double.parseDouble( paymentContextMap.get( AMOUNT_KEY ) );
         if (amount <= 0) {
-            throw new LinkIDInvalidPaymentContextException( String.format( "Invalid payment context amount: %f", amount ) );
+            // invalid amount, drop payment context and fallback to an authentication
+            return null;
         }
         if (!paymentContextMap.containsKey( VALIDATION_TIME_KEY )) {
             throw new LinkIDInvalidPaymentContextException( "Payment context's validation time field is not present!" );
