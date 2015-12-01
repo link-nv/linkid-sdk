@@ -598,6 +598,8 @@ public class LinkIDServiceUtils {
                 return LinkIDLTQRChangeErrorCode.ERROR_FAVORITES_BACKGROUND_COLOR_INVALID;
             case ERROR_FAVORITES_TEXT_COLOR_INVALID:
                 return LinkIDLTQRChangeErrorCode.ERROR_FAVORITES_TEXT_COLOR_INVALID;
+            case ERROR_CONFLICT:
+                return LinkIDLTQRChangeErrorCode.ERROR_CONFLICT;
             case ERROR_UNEXPECTED:
                 return LinkIDLTQRChangeErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:

@@ -1492,6 +1492,11 @@
 					<documentation>The favorites text color is invalid ( valid is e.g. #000000 ).</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.conflict">
+				<annotation>
+					<documentation>LTQR could not be modified right now, please retry...</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened.</documentation>
