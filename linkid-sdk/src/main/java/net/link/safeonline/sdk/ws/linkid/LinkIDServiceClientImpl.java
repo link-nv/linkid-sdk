@@ -591,7 +591,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                             ltqrPushResponse.getSuccess().getPaymentOrderReference() ) ) );
                 } else {
                     results.add( new LinkIDLTQRPushResponse( LinkIDServiceUtils.convert( ltqrPushResponse.getError().getErrorCode() ),
-                            response.getError().getErrorMessage() ) );
+                            ltqrPushResponse.getError().getErrorMessage() ) );
                 }
             }
             return results;

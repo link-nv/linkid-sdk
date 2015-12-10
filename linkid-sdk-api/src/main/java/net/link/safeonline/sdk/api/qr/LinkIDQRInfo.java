@@ -1,7 +1,6 @@
 package net.link.safeonline.sdk.api.qr;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 
 /**
@@ -33,8 +32,6 @@ public class LinkIDQRInfo implements Serializable {
     public String toString() {
 
         return "LinkIDQRInfo{" +
-               "qrImage=" + Arrays.toString( qrImage ) +
-               ", qrEncoded='" + qrEncoded + '\'' +
                ", qrCodeURL='" + qrCodeURL + '\'' +
                ", qrContent='" + qrContent + '\'' +
                ", mobile=" + mobile +
