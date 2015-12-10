@@ -40,7 +40,7 @@ v3.4
   * No longer possible to specify a list of identity profiles, only 1 is allowed now.
     * If you want more complex identity profiles, just request a new identity from someone from linkID
     
-v3.7.1
+v3.7.3
 ----
   * QRCodeInfo.targetBlank support dropped
   * LTQR FavoritesConfiguration support
@@ -54,3 +54,7 @@ v3.7.1
   * WalletInfoReport: returns localized wallet organization
   * WalletReport: returns localized application, returns payment description if applicable
   * LTQR.change: conflict error code introduced case the change operation fails due to locking
+
+v3.8
+----
+  * LTQR Bulk pushs support
