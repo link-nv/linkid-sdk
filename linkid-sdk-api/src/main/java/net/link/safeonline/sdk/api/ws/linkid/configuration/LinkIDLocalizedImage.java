@@ -1,11 +1,14 @@
 package net.link.safeonline.sdk.api.ws.linkid.configuration;
 
+import java.io.Serializable;
+
+
 /**
  * Created by wvdhaute
  * Date: 10/03/15
  * Time: 14:22
  */
-public class LinkIDLocalizedImage {
+public class LinkIDLocalizedImage implements Serializable {
 
     private final String url;
     private final String language;

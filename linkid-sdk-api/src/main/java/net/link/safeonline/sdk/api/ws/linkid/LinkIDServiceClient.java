@@ -35,6 +35,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
@@ -42,7 +43,9 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPullException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
@@ -190,6 +193,18 @@ public interface LinkIDServiceClient {
      */
     LinkIDLTQRSession ltqrPush(LinkIDLTQRContent content, String userAgent, LinkIDLTQRLockType lockType)
             throws LinkIDLTQRPushException;
+
+    /**
+     * Bulk push long term QR sessions to linkID
+     *
+     * @param contents the LTQR request contents
+     *
+     * @return list of response for the LTQR requests
+     *
+     * @throws LinkIDLTQRBulkPushException failure, check error code
+     */
+    List<LinkIDLTQRPushResponse> ltqrBulkPush(List<LinkIDLTQRPushContent> contents)
+            throws LinkIDLTQRBulkPushException;
 
     /**
      * Change an existing long term QR code

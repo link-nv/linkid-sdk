@@ -30,6 +30,8 @@ import net.lin_k.linkid._3_1.core.ConfigLocalizationValue;
 import net.lin_k.linkid._3_1.core.ConfigThemes;
 import net.lin_k.linkid._3_1.core.ConfigThemesRequest;
 import net.lin_k.linkid._3_1.core.ConfigThemesResponse;
+import net.lin_k.linkid._3_1.core.LTQRBulkPushRequest;
+import net.lin_k.linkid._3_1.core.LTQRBulkPushResponse;
 import net.lin_k.linkid._3_1.core.LTQRChangeRequest;
 import net.lin_k.linkid._3_1.core.LTQRChangeResponse;
 import net.lin_k.linkid._3_1.core.LTQRClientSession;
@@ -38,8 +40,10 @@ import net.lin_k.linkid._3_1.core.LTQRInfoRequest;
 import net.lin_k.linkid._3_1.core.LTQRInfoResponse;
 import net.lin_k.linkid._3_1.core.LTQRPullRequest;
 import net.lin_k.linkid._3_1.core.LTQRPullResponse;
+import net.lin_k.linkid._3_1.core.LTQRPushContent;
 import net.lin_k.linkid._3_1.core.LTQRPushRequest;
 import net.lin_k.linkid._3_1.core.LTQRPushResponse;
+import net.lin_k.linkid._3_1.core.LTQRPushResponse2;
 import net.lin_k.linkid._3_1.core.LTQRRemoveRequest;
 import net.lin_k.linkid._3_1.core.LTQRRemoveResponse;
 import net.lin_k.linkid._3_1.core.LinkIDServicePort;
@@ -118,6 +122,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationExc
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
@@ -125,7 +130,9 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPullException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
@@ -550,6 +557,47 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
 
+    }
+
+    @Override
+    public List<LinkIDLTQRPushResponse> ltqrBulkPush(final List<LinkIDLTQRPushContent> contents)
+            throws LinkIDLTQRBulkPushException {
+
+        LTQRBulkPushRequest request = new LTQRBulkPushRequest();
+
+        for (LinkIDLTQRPushContent content : contents) {
+            LTQRPushContent ltqrPushContent = new LTQRPushContent();
+            ltqrPushContent.setContent( LinkIDServiceUtils.convert( content.getContent() ) );
+            ltqrPushContent.setUserAgent( content.getUserAgent() );
+            ltqrPushContent.setLockType( LinkIDServiceUtils.convert( content.getLockType() ) );
+            request.getRequests().add( ltqrPushContent );
+        }
+
+        // operate
+        LTQRBulkPushResponse response = getPort().ltqrBulkPush( request );
+
+        // convert response
+        if (null != response.getError()) {
+            throw new LinkIDLTQRBulkPushException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ), response.getError().getErrorMessage() );
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDLTQRPushResponse> results = Lists.newLinkedList();
+            for (LTQRPushResponse2 ltqrPushResponse : response.getSuccess().getResponses()) {
+                if (null != ltqrPushResponse.getSuccess()) {
+                    results.add( new LinkIDLTQRPushResponse( new LinkIDLTQRSession( ltqrPushResponse.getSuccess().getLtqrReference(),
+                            LinkIDServiceUtils.convert( ltqrPushResponse.getSuccess().getQrCodeInfo() ),
+                            ltqrPushResponse.getSuccess().getPaymentOrderReference() ) ) );
+                } else {
+                    results.add( new LinkIDLTQRPushResponse( LinkIDServiceUtils.convert( ltqrPushResponse.getError().getErrorCode() ),
+                            response.getError().getErrorMessage() ) );
+                }
+            }
+            return results;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override

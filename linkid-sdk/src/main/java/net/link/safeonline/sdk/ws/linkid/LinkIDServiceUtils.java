@@ -16,6 +16,7 @@ import net.lin_k.linkid._3_1.core.ConfigLocalizedImages;
 import net.lin_k.linkid._3_1.core.ConfigThemesErrorCode;
 import net.lin_k.linkid._3_1.core.Currency;
 import net.lin_k.linkid._3_1.core.FavoritesConfiguration;
+import net.lin_k.linkid._3_1.core.LTQRBulkPushErrorCode;
 import net.lin_k.linkid._3_1.core.LTQRChangeErrorCode;
 import net.lin_k.linkid._3_1.core.LTQRContent;
 import net.lin_k.linkid._3_1.core.LTQRErrorCode;
@@ -62,6 +63,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImages;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDFavoritesConfiguration;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRErrorCode;
@@ -573,6 +575,23 @@ public class LinkIDServiceUtils {
                 return LinkIDLTQRPushErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDLTQRPushErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDLTQRBulkPushErrorCode convert(final LTQRBulkPushErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CREDENTIALS_INVALID:
+                return LinkIDLTQRBulkPushErrorCode.ERROR_CREDENTIALS_INVALID;
+            case ERROR_TOO_MANY_REQUESTS:
+                return LinkIDLTQRBulkPushErrorCode.ERROR_TOO_MANY_REQUESTS;
+            case ERROR_UNEXPECTED:
+                return LinkIDLTQRBulkPushErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDLTQRBulkPushErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

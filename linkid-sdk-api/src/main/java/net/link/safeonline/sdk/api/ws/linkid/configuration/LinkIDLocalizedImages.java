@@ -1,5 +1,6 @@
 package net.link.safeonline.sdk.api.ws.linkid.configuration;
 
+import java.io.Serializable;
 import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * Date: 10/03/15
  * Time: 14:22
  */
-public class LinkIDLocalizedImages {
+public class LinkIDLocalizedImages implements Serializable {
 
     private final Map<String, LinkIDLocalizedImage> imageMap;
 

@@ -929,6 +929,29 @@
         </complexType>
     </element>
 
+    <!-- LTQR: Bulk Push request -->
+
+    <element name="LTQRBulkPushRequest">
+        <complexType>
+            <sequence>
+                <element name="requests" type="tns:LTQRPushContent" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The LTQR Push requests</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="LTQRBulkPushResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LTQRBulkPushSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LTQRBulkPushError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
     <!-- LTQR: Change request -->
 
     <element name="LTQRChangeRequest">
@@ -1187,6 +1210,82 @@
         </sequence>
         <attribute name="errorCode" type="tns:LTQRPushErrorCode" use="required" />
     </complexType>
+
+    <complexType name="LTQRPushContent">
+        <sequence>
+            <element name="content" type="tns:LTQRContent" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The content of this LTQR</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="userAgent" type="string" use="optional">
+            <annotation>
+                <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="lockType" type="tns:LTQRLockType" use="required">
+            <annotation>
+                <documentation>LTQR lock type</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="LTQRBulkPushSuccess">
+        <sequence>
+            <element name="responses" type="tns:LTQRPushResponse2" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The LTQR codes or error response if one failed</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRPushResponse2">
+        <sequence>
+            <element name="success" type="tns:LTQRPushSuccess" minOccurs="0" maxOccurs="1" />
+            <element name="error" type="tns:LTQRPushError" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRBulkPushError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:LTQRBulkPushErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="LTQRBulkPushErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.too.many.requests">
+				<annotation>
+					<documentation>Too many requests, please send less in one bulk</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
 
     <complexType name="LTQRChangeSuccess">
         <sequence>

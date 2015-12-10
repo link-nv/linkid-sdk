@@ -43,6 +43,8 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushContent;
+import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -405,26 +407,11 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) )   //
-                                                                                                                                            .orderReference(
-                                                                                                                                                    UUID.randomUUID()
-                                                                                                                                                        .toString() )
-                                                                                                                                            .paymentAddBrowser(
-                                                                                                                                                    LinkIDPaymentAddBrowser.NOT_ALLOWED )
-                                                                                                                                            .build();
-        DateTime expiryDateTime = new DateTime();
-        expiryDateTime = expiryDateTime.plusMonths( 2 );
-
-        LinkIDLTQRContent ltqrContent = new LinkIDLTQRContent.Builder().authenticationMessage( "LTQR Test" )
-                                                                       .finishedMessage( "LTQR Test finished" )
-                                                                       .paymentContext( linkIDPaymentContext )
-                                                                       .expiryDate( expiryDateTime.toDate() )
-                                                                       .build();
-
         LinkIDServiceClient client = getLinkIDServiceClient();
+        LinkIDLTQRPushContent pushContent = generatePushContent();
 
         // operate
-        LinkIDLTQRSession linkIDLTQRSession = client.ltqrPush( ltqrContent, null, LinkIDLTQRLockType.NEVER );
+        LinkIDLTQRSession linkIDLTQRSession = client.ltqrPush( pushContent.getContent(), pushContent.getUserAgent(), pushContent.getLockType() );
 
         // verify
         assertNotNull( linkIDLTQRSession );
@@ -438,6 +425,48 @@ public class LinkIDWSClientTest {
         ByteArrayInputStream bais = new ByteArrayInputStream( linkIDLTQRSession.getQrCodeInfo().getQrImage() );
         BufferedImage qrImage = ImageIO.read( bais );
         ImageIO.write( qrImage, "png", new File( "qr.png" ) );
+    }
+
+    @Test
+    public void testLTQRBulkPush()
+            throws Exception {
+
+        // setup
+        LinkIDServiceClient client = getLinkIDServiceClient();
+        List<LinkIDLTQRPushContent> contents = Lists.newLinkedList();
+        for (int i = 0; i < 50; i++) {
+            contents.add( generatePushContent() );
+        }
+
+        // operate
+        List<LinkIDLTQRPushResponse> results = client.ltqrBulkPush( contents );
+
+        // verify
+        assertNotNull( results );
+        assertEquals( contents.size(), results.size() );
+
+        // dump LTQR refs
+        for (LinkIDLTQRPushResponse result : results) {
+            logger.dbg( "Result: %s", result );
+            logger.dbg( "===============================" );
+        }
+
+    }
+
+    private static LinkIDLTQRPushContent generatePushContent() {
+
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) ).orderReference(
+                UUID.randomUUID().toString() ).paymentAddBrowser( LinkIDPaymentAddBrowser.NOT_ALLOWED ).build();
+        DateTime expiryDateTime = new DateTime();
+        expiryDateTime = expiryDateTime.plusMonths( 2 );
+
+        LinkIDLTQRContent ltqrContent = new LinkIDLTQRContent.Builder().authenticationMessage( "LTQR Test" )
+                                                                       .finishedMessage( "LTQR Test finished" )
+                                                                       .paymentContext( linkIDPaymentContext )
+                                                                       .expiryDate( expiryDateTime.toDate() )
+                                                                       .build();
+
+        return new LinkIDLTQRPushContent( ltqrContent, null, LinkIDLTQRLockType.NEVER );
     }
 
     //    @Test

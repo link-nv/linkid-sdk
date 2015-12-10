@@ -87,6 +87,12 @@
 	<message name="ltqrPushResponse">
 		<part name="response" element="tns:LTQRPushResponse" />
 	</message>
+    <message name="ltqrBulkPushRequest">
+		<part name="request" element="tns:LTQRBulkPushRequest" />
+	</message>
+	<message name="ltqrBulkPushResponse">
+		<part name="response" element="tns:LTQRBulkPushResponse" />
+	</message>
     <message name="ltqrChangeRequest">
 		<part name="request" element="tns:LTQRChangeRequest" />
 	</message>
@@ -230,6 +236,10 @@
 		<operation name="ltqrPush">
 			<input message="tns:ltqrPushRequest" />
 			<output message="tns:ltqrPushResponse" />
+		</operation>
+		<operation name="ltqrBulkPush">
+			<input message="tns:ltqrBulkPushRequest" />
+			<output message="tns:ltqrBulkPushResponse" />
 		</operation>
 		<operation name="ltqrChange">
 			<input message="tns:ltqrChangeRequest" />
@@ -389,6 +399,15 @@
         </operation>
         <operation name="ltqrPush">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:ltqrPush" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="ltqrBulkPush">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:ltqrBulkPush" />
             <input>
                 <soap:body use="literal" />
             </input>

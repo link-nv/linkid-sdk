@@ -81,7 +81,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         if (!response.getAssertions().isEmpty()) {
             Assertion assertion = response.getAssertions().get( 0 );
             userId = assertion.getSubject().getNameID().getValue();
-            attributes.putAll( LinkIDSaml2Utils.getAttributeValues( assertion ) );
+            attributes.putAll( getAttributeValues( assertion ) );
         }
 
         net.link.safeonline.sdk.api.payment.LinkIDPaymentResponse paymentResponse = findPaymentResponse( response );
@@ -92,7 +92,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
     public static <X extends XMLObject> X unmarshall(Element xmlElement) {
 
-        X xmlObject = Saml2Utils.unmarshall( xmlElement );
+        X xmlObject = SamlUtils.unmarshall( xmlElement );
         NamespaceManager xmlObjectNSM = new NamespaceManager( xmlObject );
         xmlObjectNSM.registerNamespace(
                 new Namespace( LinkIDWebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE, LinkIDWebServiceConstants.SAFE_ONLINE_SAML_PREFIX ) );
