@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client.sdk</groupId>
         <artifactId>examples</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>3.9</version>
     </parent>
 
     <name>linkID SDK Mobile Example</name>
@@ -13,7 +13,7 @@
 
     <groupId>net.lin-k.linkid.client.sdk.examples</groupId>
     <artifactId>example-mobile</artifactId>
-    <version>GIT-SNAPSHOT</version>
+    <version>3.9</version>
     <packaging>war</packaging>
 
     <build>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-sdk</artifactId>
-            <version>GIT-SNAPSHOT</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>net.lin-k.util</groupId>
