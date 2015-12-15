@@ -12,15 +12,15 @@ public class LinkIDFavoritesConfiguration implements Serializable {
 
     private final String title;
     private final String info;
-    private final String logoEncoded;
+    private final String logoUrl;
     private final String backgroundColor;
     private final String textColor;
 
-    public LinkIDFavoritesConfiguration(final String title, final String info, final String logoEncoded, final String backgroundColor, final String textColor) {
+    public LinkIDFavoritesConfiguration(final String title, final String info, final String logoUrl, final String backgroundColor, final String textColor) {
 
         this.title = title;
         this.info = info;
-        this.logoEncoded = logoEncoded;
+        this.logoUrl = logoUrl;
         this.backgroundColor = backgroundColor;
         this.textColor = textColor;
     }
@@ -31,7 +31,7 @@ public class LinkIDFavoritesConfiguration implements Serializable {
         return "LinkIDFavoritesConfiguration{" +
                "title='" + title + '\'' +
                ", info='" + info + '\'' +
-               ", logoEncoded='" + logoEncoded + '\'' +
+               ", logoUrl='" + logoUrl + '\'' +
                ", backgroundColor='" + backgroundColor + '\'' +
                ", textColor='" + textColor + '\'' +
                '}';
@@ -49,9 +49,9 @@ public class LinkIDFavoritesConfiguration implements Serializable {
         return info;
     }
 
-    public String getLogoEncoded() {
+    public String getLogoUrl() {
 
-        return logoEncoded;
+        return logoUrl;
     }
 
     public String getBackgroundColor() {

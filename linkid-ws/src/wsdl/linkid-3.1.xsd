@@ -2739,9 +2739,9 @@
                     <documentation>Optional info to display in the user's favorites. If not present, the application description is used</documentation>
                 </annotation>
             </element>
-            <element name="logoEncoded" type="string" minOccurs="0" maxOccurs="1">
+            <element name="logoUrl" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
-                    <documentation>Optional encoded logo image to display in the user's favorites. If not present, the application logo is used. Note that there are size restrictions ( less than 20kB )</documentation>
+                    <documentation>Optional logo image url to display in the user's favorites. If not present, the application logo is used. Note that there are size restrictions</documentation>
                 </annotation>
             </element>
             <element name="backgroundColor" type="string" minOccurs="0" maxOccurs="1">

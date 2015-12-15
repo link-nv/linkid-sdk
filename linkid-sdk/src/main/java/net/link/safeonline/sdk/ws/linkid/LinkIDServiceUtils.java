@@ -377,7 +377,7 @@ public class LinkIDServiceUtils {
             FavoritesConfiguration wsFavoritesConfiguration = new FavoritesConfiguration();
             wsFavoritesConfiguration.setTitle( favoritesConfiguration.getTitle() );
             wsFavoritesConfiguration.setInfo( favoritesConfiguration.getInfo() );
-            wsFavoritesConfiguration.setLogoEncoded( favoritesConfiguration.getLogoEncoded() );
+            wsFavoritesConfiguration.setLogoUrl( favoritesConfiguration.getLogoUrl() );
             wsFavoritesConfiguration.setBackgroundColor( favoritesConfiguration.getBackgroundColor() );
             wsFavoritesConfiguration.setTextColor( favoritesConfiguration.getTextColor() );
             return wsFavoritesConfiguration;
@@ -669,7 +669,7 @@ public class LinkIDServiceUtils {
             return null;
         }
 
-        return new LinkIDFavoritesConfiguration( favoritesConfiguration.getTitle(), favoritesConfiguration.getInfo(), favoritesConfiguration.getLogoEncoded(),
+        return new LinkIDFavoritesConfiguration( favoritesConfiguration.getTitle(), favoritesConfiguration.getInfo(), favoritesConfiguration.getLogoUrl(),
                 favoritesConfiguration.getBackgroundColor(), favoritesConfiguration.getTextColor() );
     }
 
