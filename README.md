@@ -55,6 +55,7 @@ v3.7.3
   * WalletReport: returns localized application, returns payment description if applicable
   * LTQR.change: conflict error code introduced case the change operation fails due to locking
 
-v3.8
+v3.9
 ----
   * LTQR Bulk pushs support
+  * FavoritesConfiguration: pass along the URL of the image to use, not the encoded contents
