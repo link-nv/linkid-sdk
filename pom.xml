@@ -385,7 +385,7 @@
     <repositories>
         <repository>
             <id>central</id>
-            <name>Lin.k internal repo</name>
+            <name>linkID internal repo</name>
             <url>${repo.url}</url>
             <releases>
                 <enabled>true</enabled>
@@ -402,7 +402,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>central</id>
-            <name>Lin.k internal repo</name>
+            <name>linkID internal repo</name>
             <url>${repo.plugin.url}</url>
             <releases>
                 <enabled>true</enabled>

@@ -389,6 +389,11 @@
                     <documentation>Default theme?</documentation>
                 </annotation>
             </element>
+            <element name="owner" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the application fetching the theme the owner of it?</documentation>
+                </annotation>
+            </element>
             <element name="logo" type="tns:ConfigLocalizedImages" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>The application logo, shown in the manage linkID section</documentation>

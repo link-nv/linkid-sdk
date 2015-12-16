@@ -13,6 +13,7 @@ public class LinkIDTheme implements Serializable {
 
     private final String                name;
     private final boolean               defaultTheme;
+    private final boolean               owner;
     //
     private final LinkIDLocalizedImages logo;
     private final LinkIDLocalizedImages authLogo;
@@ -23,12 +24,13 @@ public class LinkIDTheme implements Serializable {
     private final String                backgroundColor;
     private final String                textColor;
 
-    public LinkIDTheme(final String name, final boolean defaultTheme, final LinkIDLocalizedImages logo, final LinkIDLocalizedImages authLogo,
-                       final LinkIDLocalizedImages background, final LinkIDLocalizedImages tabletBackground, final LinkIDLocalizedImages alternativeBackground,
-                       final String backgroundColor, final String textColor) {
+    public LinkIDTheme(final String name, final boolean defaultTheme, final boolean owner, final LinkIDLocalizedImages logo,
+                       final LinkIDLocalizedImages authLogo, final LinkIDLocalizedImages background, final LinkIDLocalizedImages tabletBackground,
+                       final LinkIDLocalizedImages alternativeBackground, final String backgroundColor, final String textColor) {
 
         this.name = name;
         this.defaultTheme = defaultTheme;
+        this.owner = owner;
         this.logo = logo;
         this.authLogo = authLogo;
         this.background = background;
@@ -46,6 +48,7 @@ public class LinkIDTheme implements Serializable {
         return "LinkIDTheme{" +
                "name='" + name + '\'' +
                ", defaultTheme=" + defaultTheme +
+               ", owner=" + owner +
                ", logo=" + logo +
                ", authLogo=" + authLogo +
                ", background=" + background +
@@ -66,6 +69,11 @@ public class LinkIDTheme implements Serializable {
     public boolean isDefaultTheme() {
 
         return defaultTheme;
+    }
+
+    public boolean isOwner() {
+
+        return owner;
     }
 
     public LinkIDLocalizedImages getLogo() {

@@ -376,10 +376,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         List<LinkIDTheme> linkIDThemes = Lists.newLinkedList();
         for (ConfigThemes themes : response.getSuccess().getThemes()) {
 
-            linkIDThemes.add( new LinkIDTheme( themes.getName(), themes.isDefaultTheme(), LinkIDServiceUtils.convert( themes.getLogo() ),
-                    LinkIDServiceUtils.convert( themes.getAuthLogo() ), LinkIDServiceUtils.convert( themes.getBackground() ),
-                    LinkIDServiceUtils.convert( themes.getTabletBackground() ), LinkIDServiceUtils.convert( themes.getAlternativeBackground() ),
-                    themes.getBackgroundColor(), themes.getTextColor() ) );
+            linkIDThemes.add( new LinkIDTheme( themes.getName(), themes.isDefaultTheme(), LinkIDServiceUtils.convert( themes.isOwner() ),
+                    LinkIDServiceUtils.convert( themes.getLogo() ), LinkIDServiceUtils.convert( themes.getAuthLogo() ),
+                    LinkIDServiceUtils.convert( themes.getBackground() ), LinkIDServiceUtils.convert( themes.getTabletBackground() ),
+                    LinkIDServiceUtils.convert( themes.getAlternativeBackground() ), themes.getBackgroundColor(), themes.getTextColor() ) );
         }
 
         return new LinkIDThemes( linkIDThemes );
