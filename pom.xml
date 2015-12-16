@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
 
     <organization>
-        <name>Lin.k N.V.</name>
-        <url>http://www.lin-k.net</url>
+        <name>linkID N.V.</name>
+        <url>https://www.linkid.be</url>
     </organization>
 
     <!-- DEVELOPERS -->
@@ -20,28 +20,20 @@
         <developer>
             <id>dhouthoo</id>
             <name>Dieter Houthooft</name>
-            <email>dieter@lin-k.net</email>
+            <email>dieter@linkid.be</email>
             <roles>
                 <role>development</role>
             </roles>
             <timezone>+1</timezone>
-            <properties>
-                <msn>ddekunst@hotmail.com</msn>
-            </properties>
         </developer>
         <developer>
             <id>wvdhaute</id>
             <name>Wim Vandenhaute</name>
-            <email>wim@lin-k.net</email>
+            <email>wim@linkid.be</email>
             <roles>
                 <role>development</role>
             </roles>
             <timezone>+1</timezone>
-            <properties>
-                <msn>wim.vandenhaute@easynet.be</msn>
-                <private-email>wim.vandenhaute@gmail.com
-                </private-email>
-            </properties>
         </developer>
     </developers>
 
