@@ -8,7 +8,6 @@ import com.google.common.collect.Lists;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -114,7 +113,7 @@ public class LinkIDWSClientTest {
         String userId = "2b35dbab-2ba2-403b-8c36-a8399c3af3d5";
 
         LinkIDDataClient client = new LinkIDDataClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        List<LinkIDAttribute<? extends Serializable>> attributes = client.getAttributes( userId, "profile.givenName" );
+        List attributes = client.getAttributes( userId, "profile.givenName" );
 
         // set
         client.setAttributeValue( userId, attributes );

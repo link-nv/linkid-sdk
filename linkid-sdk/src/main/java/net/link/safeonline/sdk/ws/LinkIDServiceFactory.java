@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDServiceFactory extends LinkIDAbstractServiceFactory {
 
-    private static LinkIDAbstractServiceFactory instance = new LinkIDServiceFactory();
+    private static final LinkIDAbstractServiceFactory instance = new LinkIDServiceFactory();
 
     protected LinkIDServiceFactory() {
 

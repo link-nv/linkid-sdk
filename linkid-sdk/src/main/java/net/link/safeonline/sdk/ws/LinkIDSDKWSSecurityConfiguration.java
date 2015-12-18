@@ -54,6 +54,7 @@ public class LinkIDSDKWSSecurityConfiguration extends AbstractWSSecurityConfigur
         this.keyProvider = keyProvider;
     }
 
+    @Override
     public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
 
         // Manually check whether the end certificate has the correct DN.
@@ -82,12 +83,13 @@ public class LinkIDSDKWSSecurityConfiguration extends AbstractWSSecurityConfigur
 
     public X500Principal getTrustedDN() {
 
-        return ObjectUtils.ifNotNullElse( trustedDN, LinkIDSDKConfigHolder.config().linkID().app().trustedDN() );
+        return ifNotNullElse( trustedDN, LinkIDSDKConfigHolder.config().linkID().app().trustedDN() );
     }
 
     public KeyProvider getKeyProvider() {
 
         return ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
+            @Override
             @NotNull
             public KeyProvider get() {
 
@@ -96,11 +98,13 @@ public class LinkIDSDKWSSecurityConfiguration extends AbstractWSSecurityConfigur
         } );
     }
 
+    @Override
     public CertificateChain getIdentityCertificateChain() {
 
         return getKeyProvider().getIdentityCertificateChain();
     }
 
+    @Override
     public PrivateKey getPrivateKey() {
 
         return getKeyProvider().getIdentityKeyPair().getPrivate();
