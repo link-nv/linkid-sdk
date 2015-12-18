@@ -80,9 +80,11 @@ public class LinkIDWSClientTest {
     //private static final String WS_LOCATION = "https://demo.linkid.be/linkid-ws-username";
     private static final String WS_LOCATION = "https://192.168.5.14:8443/linkid-ws-username";
 
-    //private static final String APP_NAME = "example-mobile";
-    //private static final String APP_USERNAME = "example-mobile";
-    //private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+    // demo config
+    //    private static final String APP_NAME = "example-mobile";
+    //    private static final String APP_USERNAME = "example-mobile";
+    //    private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+    // local config
     private static final String APP_NAME     = "test-shop";
     private static final String APP_USERNAME = "test-shop";
     private static final String APP_PASSWORD = "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
@@ -259,6 +261,22 @@ public class LinkIDWSClientTest {
             logger.err( "GetInfo error: %s", e.getErrorCode() );
             fail();
         }
+    }
+
+    //    @Test
+    public void testWalletAdd()
+            throws Exception {
+
+        // setup
+        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String walletOrganizationId = "urn:linkid:wallet:leaseplan";
+
+        // operate
+        String walletId = client.walletEnroll( userId, walletOrganizationId, 100, LinkIDCurrency.EUR, null );
+
+        // verify
+        assertNotNull( walletId );
     }
 
     //    @Test
