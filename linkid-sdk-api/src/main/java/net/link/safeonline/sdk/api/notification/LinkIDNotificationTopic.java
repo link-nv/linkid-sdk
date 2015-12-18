@@ -7,6 +7,9 @@
 
 package net.link.safeonline.sdk.api.notification;
 
+import net.link.util.InternalInconsistencyException;
+
+
 public enum LinkIDNotificationTopic {
 
     REMOVE_USER( "urn:net:lin-k:linkid:topic:user:remove" ),
@@ -38,7 +41,7 @@ public enum LinkIDNotificationTopic {
     public static LinkIDNotificationTopic to(final String topicString) {
 
         if (null == topicString) {
-            throw new RuntimeException( "No topic specified, aborting..." );
+            throw new InternalInconsistencyException( "No topic specified, aborting..." );
         }
 
         for (LinkIDNotificationTopic topic : values()) {
@@ -46,6 +49,6 @@ public enum LinkIDNotificationTopic {
                 return topic;
         }
 
-        throw new RuntimeException( String.format( "Invalid topic URI: %s", topicString ) );
+        throw new InternalInconsistencyException( String.format( "Invalid topic URI: %s", topicString ) );
     }
 }
