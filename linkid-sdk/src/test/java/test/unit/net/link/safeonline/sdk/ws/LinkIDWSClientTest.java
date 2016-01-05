@@ -52,6 +52,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.safeonline.sdk.configuration.LinkIDTestConfigHolder;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
@@ -108,7 +109,7 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testData()
             throws Exception {
 
@@ -234,7 +235,7 @@ public class LinkIDWSClientTest {
             //            String walletId = client.enroll( userId, walletOrganizationId, 500, LinkIDCurrency.EUR, null );
             String walletOrganizationId = "urn:linkid:wallet:leaseplan";
             String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-            String walletId = client.walletEnroll( userId, walletOrganizationId, 500, null, "urn:linkid:wallet:coin:coffee" );
+            String walletId = client.walletEnroll( userId, walletOrganizationId, 500, null, "urn:linkid:wallet:coin:coffee", null );
             logger.inf( "Enrolled wallet: %s", walletId );
         }
         catch (LinkIDWalletEnrollException e) {
@@ -271,9 +272,11 @@ public class LinkIDWSClientTest {
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String walletOrganizationId = "urn:linkid:wallet:leaseplan";
+        String walletCoin = "urn:linkid:wallet:coin:coffee";
+        LinkIDWalletReportInfo reportInfo = new LinkIDWalletReportInfo( UUID.randomUUID().toString(), "unit test" );
 
         // operate
-        String walletId = client.walletEnroll( userId, walletOrganizationId, 100, LinkIDCurrency.EUR, null );
+        String walletId = client.walletEnroll( userId, walletOrganizationId, 1, null, walletCoin, reportInfo );
 
         // verify
         assertNotNull( walletId );
@@ -289,9 +292,11 @@ public class LinkIDWSClientTest {
         // operate
         try {
             //            client.addCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
-            String walletId = "6e2cc86f-4178-46e5-a483-ca5fd0ebd4a1";
+            String walletId = "341a8eca-45d4-4a18-a193-03a150d24185";
             String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-            client.walletAddCredit( userId, walletId, 100, null, "urn:linkid:wallet:coin:coffee" );
+            String walletCoin = "urn:linkid:wallet:coin:coffee";
+            LinkIDWalletReportInfo reportInfo = new LinkIDWalletReportInfo( UUID.randomUUID().toString(), "unit test" );
+            client.walletAddCredit( userId, walletId, 100, null, walletCoin, reportInfo );
         }
         catch (LinkIDWalletAddCreditException e) {
             logger.err( "Add credit error: %s", e.getErrorCode() );
@@ -309,9 +314,11 @@ public class LinkIDWSClientTest {
         // operate
         try {
             //            client.removeCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
-            String walletId = "6e2cc86f-4178-46e5-a483-ca5fd0ebd4a1";
+            String walletId = "341a8eca-45d4-4a18-a193-03a150d24185";
             String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
-            client.walletRemoveCredit( userId, walletId, 100, null, "urn:linkid:wallet:coin:coffee" );
+            String walletCoin = "urn:linkid:wallet:coin:coffee";
+            LinkIDWalletReportInfo reportInfo = new LinkIDWalletReportInfo( UUID.randomUUID().toString(), "unit test" );
+            client.walletRemoveCredit( userId, walletId, 100, null, walletCoin, reportInfo );
         }
         catch (LinkIDWalletRemoveCreditException e) {
             logger.err( "Remove credit error: %s", e.getErrorCode() );

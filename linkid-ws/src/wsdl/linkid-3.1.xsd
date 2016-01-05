@@ -1782,6 +1782,7 @@
             <element name="applicationName" type="string" minOccurs="1" maxOccurs="1" />
             <element name="applicationFriendly" type="string" minOccurs="1" maxOccurs="1" />
             <element name="type" type="tns:WalletReportType" minOccurs="1" maxOccurs="1" />
+            <element name="reportInfo" type="tns:WalletReportInfo" minOccurs="0" maxOccurs="1" />
         </sequence>
     </complexType>
 
@@ -1940,6 +1941,11 @@
 						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
 					</annotation>
 				</element>
+                <element name="reportInfo" type="tns:WalletReportInfo" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional info if credits were added or removed</documentation>
+                    </annotation>
+                </element>
             </sequence>
 		</complexType>
 	</element>
@@ -2120,6 +2126,11 @@
 						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
 					</annotation>
 				</element>
+                <element name="reportInfo" type="tns:WalletReportInfo" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional info if credits were added or removed</documentation>
+                    </annotation>
+                </element>
             </sequence>
 		</complexType>
 	</element>
@@ -2213,6 +2224,11 @@
 						<documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
 					</annotation>
 				</element>
+                <element name="reportInfo" type="tns:WalletReportInfo" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>optional info if credits were added or removed</documentation>
+                    </annotation>
+                </element>
             </sequence>
 		</complexType>
 	</element>
@@ -2489,6 +2505,23 @@
 			</enumeration>
 		</restriction>
 	</simpleType>
+
+    <!-- Wallet common -->
+
+    <complexType name="WalletReportInfo">
+        <sequence>
+            <element name="reference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional reference</documentation>
+                </annotation>
+            </element>
+            <element name="description" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional description</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
 
     <!-- **************************************************************************************************************************************************
          *                                                                  Common                                                                        *

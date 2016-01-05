@@ -40,6 +40,7 @@ import net.lin_k.linkid._3_1.core.WalletInfoReportErrorCode;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
+import net.lin_k.linkid._3_1.core.WalletReportInfo;
 import net.lin_k.linkid._3_1.core.WalletReportType;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
@@ -81,6 +82,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoErrorCode
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.util.InternalInconsistencyException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
@@ -987,5 +989,28 @@ public class LinkIDServiceUtils {
 
         throw new InternalInconsistencyException( String.format( "Unexpected wallet report type %s!", walletReportType.name() ) );
 
+    }
+
+    @Nullable
+    public static WalletReportInfo convert(@Nullable final LinkIDWalletReportInfo reportInfo) {
+
+        if (null != reportInfo) {
+            WalletReportInfo wsReportInfo = new WalletReportInfo();
+            wsReportInfo.setReference( reportInfo.getReference() );
+            wsReportInfo.setDescription( reportInfo.getDescription() );
+            return wsReportInfo;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static LinkIDWalletReportInfo convert(@Nullable final WalletReportInfo wsReportInfo) {
+
+        if (null != wsReportInfo) {
+            return new LinkIDWalletReportInfo( wsReportInfo.getReference(), wsReportInfo.getDescription() );
+        }
+
+        return null;
     }
 }

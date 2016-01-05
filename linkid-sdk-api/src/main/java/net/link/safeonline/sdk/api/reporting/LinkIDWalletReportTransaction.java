@@ -3,6 +3,7 @@ package net.link.safeonline.sdk.api.reporting;
 import java.util.Date;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -19,11 +20,14 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     private final String                 applicationName;
     private final String                 applicationFriendly;
     private final LinkIDWalletReportType type;
+    @Nullable
+    private final LinkIDWalletReportInfo reportInfo;
 
     public LinkIDWalletReportTransaction(final String walletId, final Date creationDate, final String transactionId, final double amount,
                                          final LinkIDCurrency currency, final String walletCoin, final double refundAmount,
                                          @Nullable final String paymentDescription, @Nullable final String userId, final String applicationName,
-                                         final String applicationFriendly, final LinkIDWalletReportType type) {
+                                         final String applicationFriendly, final LinkIDWalletReportType type,
+                                         @Nullable final LinkIDWalletReportInfo reportInfo) {
 
         super( walletId, creationDate, transactionId, amount, currency, walletCoin, refundAmount, paymentDescription );
 
@@ -31,6 +35,7 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
         this.applicationName = applicationName;
         this.applicationFriendly = applicationFriendly;
         this.type = type;
+        this.reportInfo = reportInfo;
     }
 
     // Helper methods
@@ -43,6 +48,7 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
                ", applicationName='" + applicationName + '\'' +
                ", applicationFriendly='" + applicationFriendly + '\'' +
                ", type='" + type + '\'' +
+               ", reportInfo='" + reportInfo + '\'' +
                ", super='" + super.toString() + '\'' +
                '}';
     }
@@ -68,5 +74,11 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     public LinkIDWalletReportType getType() {
 
         return type;
+    }
+
+    @Nullable
+    public LinkIDWalletReportInfo getReportInfo() {
+
+        return reportInfo;
     }
 }

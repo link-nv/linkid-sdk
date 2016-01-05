@@ -60,6 +60,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -382,11 +383,14 @@ public interface LinkIDServiceClient {
     /**
      * Enroll users for a wallet. Optionally specify initial credit to add to wallet if applicable
      *
+     * @param reportInfo optional wallet report info
+     *
      * @return walletId the enrolled wallet ID
      *
      * @throws LinkIDWalletEnrollException something went wrong, check the error code in the exception
      */
-    String walletEnroll(String userId, String walletOrganizationId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoin)
+    String walletEnroll(String userId, String walletOrganizationId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoin,
+                        @Nullable LinkIDWalletReportInfo reportInfo)
             throws LinkIDWalletEnrollException;
 
     /**
@@ -408,7 +412,8 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDWalletAddCreditException something went wrong, check the error code in the exception
      */
-    void walletAddCredit(String userId, String walletId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoi)
+    void walletAddCredit(String userId, String walletId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoin,
+                         @Nullable LinkIDWalletReportInfo reportInfo)
             throws LinkIDWalletAddCreditException;
 
     /**
@@ -417,7 +422,8 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDWalletRemoveCreditException something went wrong, check the error code in the exception
      */
-    void walletRemoveCredit(String userId, String walletId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoi)
+    void walletRemoveCredit(String userId, String walletId, double amount, @Nullable LinkIDCurrency currency, @Nullable String walletCoin,
+                            @Nullable LinkIDWalletReportInfo reportInfo)
             throws LinkIDWalletRemoveCreditException;
 
     /**

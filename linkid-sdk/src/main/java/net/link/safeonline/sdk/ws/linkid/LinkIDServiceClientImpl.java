@@ -148,6 +148,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDAuthnRequestFactory;
 import net.link.safeonline.sdk.auth.protocol.saml2.LinkIDSaml2Utils;
 import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
@@ -860,7 +861,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                         walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),
                         walletReportTransaction.getWalletCoin(), walletReportTransaction.getRefundAmount(), walletReportTransaction.getPaymentDescription(),
                         walletReportTransaction.getUserId(), walletReportTransaction.getApplicationName(), walletReportTransaction.getApplicationFriendly(),
-                        LinkIDServiceUtils.convert( walletReportTransaction.getType() ) ) );
+                        LinkIDServiceUtils.convert( walletReportTransaction.getType() ),
+                        LinkIDServiceUtils.convert( walletReportTransaction.getReportInfo() ) ) );
             }
 
             return new LinkIDWalletReport( response.getTotal(), transactions );
@@ -906,7 +908,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
     @Override
     public String walletEnroll(final String userId, final String walletOrganizationId, final double amount, @Nullable final LinkIDCurrency currency,
-                               @Nullable final String walletCoin)
+                               @Nullable final String walletCoin, @Nullable final LinkIDWalletReportInfo reportInfo)
             throws LinkIDWalletEnrollException {
 
         //request
@@ -918,6 +920,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         request.setAmount( amount );
         request.setCurrency( LinkIDServiceUtils.convert( currency ) );
         request.setWalletCoin( walletCoin );
+        request.setReportInfo( LinkIDServiceUtils.convert( reportInfo ) );
 
         // operate
         WalletEnrollResponse response = getPort().walletEnroll( request );
@@ -970,7 +973,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
     @Override
     public void walletAddCredit(final String userId, final String walletId, final double amount, @Nullable final LinkIDCurrency currency,
-                                @Nullable final String walletCoin)
+                                @Nullable final String walletCoin, @Nullable final LinkIDWalletReportInfo reportInfo)
             throws LinkIDWalletAddCreditException {
 
         //request
@@ -982,6 +985,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         request.setAmount( amount );
         request.setCurrency( LinkIDServiceUtils.convert( currency ) );
         request.setWalletCoin( walletCoin );
+        request.setReportInfo( LinkIDServiceUtils.convert( reportInfo ) );
 
         // operate
         WalletAddCreditResponse response = getPort().walletAddCredit( request );
@@ -1002,7 +1006,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
     @Override
     public void walletRemoveCredit(final String userId, final String walletId, final double amount, @Nullable final LinkIDCurrency currency,
-                                   @Nullable final String walletCoin)
+                                   @Nullable final String walletCoin, @Nullable final LinkIDWalletReportInfo reportInfo)
             throws LinkIDWalletRemoveCreditException {
 
         //request
@@ -1014,6 +1018,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         request.setAmount( amount );
         request.setCurrency( LinkIDServiceUtils.convert( currency ) );
         request.setWalletCoin( walletCoin );
+        request.setReportInfo( LinkIDServiceUtils.convert( reportInfo ) );
 
         // operate
         WalletRemoveCreditResponse response = getPort().walletRemoveCredit( request );
