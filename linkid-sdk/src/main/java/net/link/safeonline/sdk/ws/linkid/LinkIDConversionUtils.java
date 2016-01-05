@@ -10,6 +10,7 @@ import net.link.util.InternalInconsistencyException;
  * Date: 30/04/14
  * Time: 16:59
  */
+@SuppressWarnings("UnnecessaryFullyQualifiedName")
 public abstract class LinkIDConversionUtils {
 
     public static net.lin_k.safe_online.auth.AuthenticationState convert(final LinkIDAuthenticationState linkIDAuthenticationState) {

@@ -1814,6 +1814,11 @@
 					<documentation>Wallet was removed</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="wallet.unremove">
+				<annotation>
+					<documentation>Wallet was unremoved</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="application.add.credit.initial">
 				<annotation>
 					<documentation>Application added credit to the wallet when the wallet was created</documentation>

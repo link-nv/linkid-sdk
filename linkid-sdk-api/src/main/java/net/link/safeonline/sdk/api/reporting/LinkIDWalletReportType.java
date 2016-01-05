@@ -10,6 +10,7 @@ public enum LinkIDWalletReportType {
     USER_TRANSACTION,
     WALLET_ADD,
     WALLET_REMOVE,
+    WALLET_UNREMOVE,    // linkID operator unremoved the wallet
     APPLICATION_ADD_CREDIT_INITIAL,
     APPLICATION_ADD_CREDIT,
     APPLICATION_REMOVE_CREDIT,

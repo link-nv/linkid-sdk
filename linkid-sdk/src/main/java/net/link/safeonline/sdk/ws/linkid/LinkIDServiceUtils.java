@@ -948,6 +948,8 @@ public class LinkIDServiceUtils {
                 return LinkIDWalletReportType.WALLET_ADD;
             case WALLET_REMOVE:
                 return LinkIDWalletReportType.WALLET_REMOVE;
+            case WALLET_UNREMOVE:
+                return LinkIDWalletReportType.WALLET_UNREMOVE;
             case APPLICATION_ADD_CREDIT_INITIAL:
                 return LinkIDWalletReportType.APPLICATION_ADD_CREDIT_INITIAL;
             case APPLICATION_ADD_CREDIT:
@@ -971,6 +973,8 @@ public class LinkIDServiceUtils {
                 return WalletReportType.WALLET_ADD;
             case WALLET_REMOVE:
                 return WalletReportType.WALLET_REMOVE;
+            case WALLET_UNREMOVE:
+                return WalletReportType.WALLET_UNREMOVE;
             case APPLICATION_ADD_CREDIT_INITIAL:
                 return WalletReportType.APPLICATION_ADD_CREDIT_INITIAL;
             case APPLICATION_ADD_CREDIT:
