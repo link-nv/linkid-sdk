@@ -59,3 +59,8 @@ v3.9
 ----
   * LTQR Bulk pushs support
   * FavoritesConfiguration: pass along the URL of the image to use, not the encoded contents
+  
+v3.9.2
+----
+  * getThemes: owner flag support
+  * LinkIDWalletReportInfo support
