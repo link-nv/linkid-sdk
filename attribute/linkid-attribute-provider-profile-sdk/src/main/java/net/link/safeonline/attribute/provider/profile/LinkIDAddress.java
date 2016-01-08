@@ -37,7 +37,7 @@ public class LinkIDAddress implements Serializable {
 
     // Helper methods
 
-    public static List<LinkIDAddress> getAddress(final List<LinkIDAttribute<Serializable>> addressAttributes) {
+    public static List<LinkIDAddress> getAddress(final List<? extends LinkIDAttribute<Serializable>> addressAttributes) {
 
         if (null == addressAttributes) {
             return new LinkedList<LinkIDAddress>();
