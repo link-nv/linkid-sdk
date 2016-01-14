@@ -7,8 +7,8 @@ package net.link.safeonline.sdk.api.callback;
  */
 public abstract class LinkIDCallbackConstants {
 
-    public static final String PARAM_APPLICATION_ID = "appId";
-    public static final String PARAM_RESPONSE_ID    = "responseId";
-    public static final String PARAM_APP_SESSION_ID = "appSessionId";
-    public static final String PARAM_LANGUAGE       = "language";
+    public static final String PARAM_APPLICATION_NAME = "appId";
+    public static final String PARAM_RESPONSE_ID      = "responseId";
+    public static final String PARAM_APP_SESSION_ID   = "appSessionId";
+    public static final String PARAM_LANGUAGE         = "language";
 }
