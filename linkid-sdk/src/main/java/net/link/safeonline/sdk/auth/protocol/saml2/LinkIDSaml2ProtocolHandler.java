@@ -17,13 +17,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
+import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.auth.protocol.LinkIDAuthnProtocolRequestContext;
 import net.link.safeonline.sdk.auth.protocol.LinkIDAuthnProtocolResponseContext;
 import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolContext;
 import net.link.safeonline.sdk.auth.protocol.LinkIDProtocolHandler;
 import net.link.safeonline.sdk.auth.protocol.LinkIDRequestConfig;
 import net.link.safeonline.sdk.auth.util.LinkIDDeviceContextUtils;
-import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.util.common.CertificateChain;
 import net.link.util.logging.Logger;
@@ -76,8 +76,8 @@ public class LinkIDSaml2ProtocolHandler implements LinkIDProtocolHandler {
             certificateChain = new CertificateChain( authnContext.getApplicationCertificate() );
         }
 
-        LinkIDRequestUtil.sendRequest( linkIDRequestConfig.getAuthnService(), authnContext.getSAML().getBinding(), samlRequest,
-                authnContext.getApplicationKeyPair(), certificateChain, response, authnContext.getSAML().getRelayState(), templateResourceName,
+        LinkIDRequestUtil.sendRequest( linkIDRequestConfig.getAuthnService(), authnContext.getSaml().getBinding(), samlRequest,
+                authnContext.getApplicationKeyPair(), certificateChain, response, authnContext.getSaml().getRelayState(), templateResourceName,
                 authnContext.getLanguage() );
 
         logger.dbg( "sending Authn Request for: %s issuer=%s", authnContext.getApplicationName(), samlRequest.getIssuer().getValue() );
