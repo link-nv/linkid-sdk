@@ -67,9 +67,8 @@ public class LinkIDSaml2ProtocolHandler implements LinkIDProtocolHandler {
                 authnContext.getMobileLandingError(), authnContext.getMobileLandingCancel() );
 
         AuthnRequest samlRequest = LinkIDAuthnRequestFactory.createAuthnRequest( authnContext.getApplicationName(), null,
-                authnContext.getApplicationFriendlyName(), linkIDRequestConfig.getLandingURL(), linkIDRequestConfig.getAuthnService(),
-                authnContext.isForceAuthentication(), deviceContext, authnContext.getSubjectAttributes(), authnContext.getPaymentContext(),
-                authnContext.getCallback() );
+                authnContext.getApplicationFriendlyName(), linkIDRequestConfig.getLandingURL(), linkIDRequestConfig.getAuthnService(), true, deviceContext,
+                authnContext.getSubjectAttributes(), authnContext.getPaymentContext(), authnContext.getCallback() );
 
         CertificateChain certificateChain = null;
         if (null != authnContext.getApplicationCertificate()) {

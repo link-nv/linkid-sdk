@@ -65,7 +65,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
                 authenticationContext.getMobileLandingCancel() );
 
         return LinkIDAuthnRequestFactory.createAuthnRequest( authenticationContext.getApplicationName(), null,
-                authenticationContext.getApplicationFriendlyName(), "http://foo.bar", null, authenticationContext.isForceAuthentication(), deviceContextMap,
+                authenticationContext.getApplicationFriendlyName(), "http://foo.bar", null, true, deviceContextMap,
                 authenticationContext.getSubjectAttributes(), authenticationContext.getPaymentContext(), authenticationContext.getCallback() );
     }
 

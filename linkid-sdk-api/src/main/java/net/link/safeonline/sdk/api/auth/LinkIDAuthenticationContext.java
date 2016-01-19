@@ -43,7 +43,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     private Locale                          language;
     private String                          target;
     private String                          landingUrl;                 // optional landing url, if not specified is constructed in {@LinkIDRequestConfig}
-    private boolean                         forceAuthentication;
     //
     private LinkIDProtocol                  protocol;
     private SAMLContext                     saml;
@@ -170,8 +169,6 @@ public class LinkIDAuthenticationContext implements Serializable {
 
         this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language, target,
                 protocol );
-
-        this.forceAuthentication = forceAuthentication;
     }
 
     /**
@@ -225,7 +222,6 @@ public class LinkIDAuthenticationContext implements Serializable {
                ", language=" + language +
                ", target='" + target + '\'' +
                ", landingUrl='" + landingUrl + '\'' +
-               ", forceAuthentication=" + forceAuthentication +
                ", protocol=" + protocol +
                ", saml=" + saml +
                ", authenticationMessage='" + authenticationMessage + '\'' +
@@ -322,16 +318,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     public void setLandingUrl(final String landingUrl) {
 
         this.landingUrl = landingUrl;
-    }
-
-    public boolean isForceAuthentication() {
-
-        return forceAuthentication;
-    }
-
-    public void setForceAuthentication(final boolean forceAuthentication) {
-
-        this.forceAuthentication = forceAuthentication;
     }
 
     public LinkIDProtocol getProtocol() {
