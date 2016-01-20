@@ -36,8 +36,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     private Collection<X509Certificate>     trustedCertificates;
     //
     private Locale                          language;
-    private String                          target;
-    private String                          landingUrl;                 // optional landing url, if not specified is constructed in {@LinkIDRequestConfig}
     //
     private String                          authenticationMessage;
     private String                          finishedMessage;
@@ -54,26 +52,22 @@ public class LinkIDAuthenticationContext implements Serializable {
     private LinkIDCallback                  callback;
 
     /**
-     * @see #LinkIDAuthenticationContext(String, KeyProvider, String)
+     * @see #LinkIDAuthenticationContext(String, KeyProvider)
      */
     public LinkIDAuthenticationContext() {
 
-        this( null, null, (String) null );
+        this( null, null );
     }
 
     /**
      * @param applicationName The name of the application that the user is being authenticated for. May be {@code null}, in which case
      *                        {@link LinkIDAppConfig#name()} will be used.
-     * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
-     *                        user will be sent to after the authentication response has been handled (or with the authentication response,
-     *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
-     *                        context path.
      *
-     * @see #LinkIDAuthenticationContext(String, String, KeyProvider, boolean, Locale, String)
+     * @see #LinkIDAuthenticationContext(String, String, KeyProvider, boolean, Locale)
      */
-    public LinkIDAuthenticationContext(String applicationName, String target) {
+    public LinkIDAuthenticationContext(String applicationName) {
 
-        this( applicationName, null, null, false, null, target );
+        this( applicationName, null, null, false, null );
     }
 
     /**
@@ -82,16 +76,12 @@ public class LinkIDAuthenticationContext implements Serializable {
      * @param keyProvider     The provider that will provide the necessary keys and certificates to authenticate and sign the application's
      *                        requests and responses or verify the linkID server's communications.  May be {@code null}, in which case
      *                        {@link LinkIDAppConfig#keyProvider()} will be used.
-     * @param target          Either an absolute URL or a path relative to the application's context path that specifies the location the
-     *                        user will be sent to after the authentication response has been handled (or with the authentication response,
-     *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
-     *                        context path.
      *
-     * @see #LinkIDAuthenticationContext(String, String, KeyProvider, boolean, Locale, String)
+     * @see #LinkIDAuthenticationContext(String, String, KeyProvider, boolean, Locale)
      */
-    public LinkIDAuthenticationContext(@Nullable String applicationName, @Nullable KeyProvider keyProvider, String target) {
+    public LinkIDAuthenticationContext(@Nullable String applicationName, @Nullable KeyProvider keyProvider) {
 
-        this( applicationName, null, null != keyProvider? keyProvider: config().linkID().app().keyProvider(), false, null, target );
+        this( applicationName, null, null != keyProvider? keyProvider: config().linkID().app().keyProvider(), false, null );
     }
 
     /**
@@ -105,22 +95,18 @@ public class LinkIDAuthenticationContext implements Serializable {
      * @param forceAuthentication     If {@code true}, users initiating authentication while in a live SSO environment will still be
      *                                required to fully identify and authenticate themselves with a device.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
-     * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
-     *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
-     *                                user is sent to the application's context path.
      *
-     * @see #LinkIDAuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, Locale, String)
+     * @see #LinkIDAuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, Locale)
      */
     public LinkIDAuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, @Nullable KeyProvider keyProvider,
-                                       boolean forceAuthentication, @Nullable Locale language, String target) {
+                                       boolean forceAuthentication, @Nullable Locale language) {
 
         this( applicationName, applicationFriendlyName, //
                 null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
                 null != keyProvider? keyProvider.getIdentityCertificate(): null,//
                 null != keyProvider? keyProvider.getTrustedCertificates(): null, //
                 null != keyProvider? keyProvider.getTrustedCertificate( LinkIDConfigUtils.SSL_ALIAS ): null, //
-                forceAuthentication, language, target );
+                forceAuthentication, language );
     }
 
     /**
@@ -140,16 +126,12 @@ public class LinkIDAuthenticationContext implements Serializable {
      * @param forceAuthentication     If {@code true}, users initiating authentication while in a live SSO environment will still be
      *                                required to fully identify and authenticate themselves with a device.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
-     * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
-     *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
-     *                                user is sent to the application's context path.
      */
     public LinkIDAuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                                        X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
-                                       boolean forceAuthentication, Locale language, String target) {
+                                       boolean forceAuthentication, Locale language) {
 
-        this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language, target );
+        this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language );
     }
 
     /**
@@ -167,14 +149,10 @@ public class LinkIDAuthenticationContext implements Serializable {
      *                                communication with the server. May be {@code null}, in which case no SSL certificate validation
      *                                will take place.
      * @param language                The language that the linkID services should use for localization of their interaction with the user.
-     * @param target                  Either an absolute URL or a path relative to the application's context path that specifies the
-     *                                location the user will be sent to after the authentication response has been handled (or with the
-     *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
-     *                                user is sent to the application's context path.
      */
     private LinkIDAuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                                         X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
-                                        Locale language, String target) {
+                                        Locale language) {
 
         this.applicationName = null != applicationName? applicationName: config().linkID().app().name();
         this.applicationFriendlyName = applicationFriendlyName;
@@ -182,7 +160,6 @@ public class LinkIDAuthenticationContext implements Serializable {
         this.applicationCertificate = applicationCertificate;
         this.trustedCertificates = trustedCertificates;
         this.language = ifNotNullElseNullable( language, config().linkID().language() );
-        this.target = target;
     }
 
     // Helper methods
@@ -196,8 +173,6 @@ public class LinkIDAuthenticationContext implements Serializable {
                ", applicationCertificate=" + applicationCertificate +
                ", trustedCertificates=" + trustedCertificates +
                ", language=" + language +
-               ", target='" + target + '\'' +
-               ", landingUrl='" + landingUrl + '\'' +
                ", authenticationMessage='" + authenticationMessage + '\'' +
                ", finishedMessage='" + finishedMessage + '\'' +
                ", identityProfile='" + identityProfile + '\'' +
@@ -272,26 +247,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     public void setLanguage(final Locale language) {
 
         this.language = language;
-    }
-
-    public String getTarget() {
-
-        return target;
-    }
-
-    public void setTarget(final String target) {
-
-        this.target = target;
-    }
-
-    public String getLandingUrl() {
-
-        return landingUrl;
-    }
-
-    public void setLandingUrl(final String landingUrl) {
-
-        this.landingUrl = landingUrl;
     }
 
     public String getAuthenticationMessage() {
