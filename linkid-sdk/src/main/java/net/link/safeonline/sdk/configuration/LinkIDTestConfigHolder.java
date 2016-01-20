@@ -165,14 +165,7 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
 
         public static class TestLinkIDProtocolConfig implements LinkIDProtocolConfig {
 
-            public LinkIDProtocol defaultProtocol;
-            public Duration       maxTimeOffset;
-
-            @Override
-            public LinkIDProtocol defaultProtocol() {
-
-                return defaultProtocol;
-            }
+            public Duration maxTimeOffset;
 
             @Override
             public Duration maxTimeOffset() {

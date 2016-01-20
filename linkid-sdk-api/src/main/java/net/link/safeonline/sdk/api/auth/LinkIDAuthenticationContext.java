@@ -8,7 +8,6 @@
 package net.link.safeonline.sdk.api.auth;
 
 import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config;
-import static net.link.util.util.ObjectUtils.ifNotNullElse;
 import static net.link.util.util.ObjectUtils.ifNotNullElseNullable;
 
 import java.io.Serializable;
@@ -22,8 +21,6 @@ import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.configuration.LinkIDAppConfig;
 import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
-import net.link.safeonline.sdk.configuration.LinkIDProtocol;
-import net.link.safeonline.sdk.configuration.LinkIDProtocolConfig;
 import net.link.util.config.KeyProvider;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,8 +38,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     private Locale                          language;
     private String                          target;
     private String                          landingUrl;                 // optional landing url, if not specified is constructed in {@LinkIDRequestConfig}
-    //
-    private LinkIDProtocol                  protocol;
     //
     private String                          authenticationMessage;
     private String                          finishedMessage;
@@ -73,13 +68,12 @@ public class LinkIDAuthenticationContext implements Serializable {
      *                        user will be sent to after the authentication response has been handled (or with the authentication response,
      *                        if there is no landing page).  May be {@code null}, in which case the user is sent to the application's
      *                        context path.
-     * @param protocol        Authentication protocol to use
      *
      * @see #LinkIDAuthenticationContext(String, String, KeyProvider, boolean, Locale, String)
      */
-    public LinkIDAuthenticationContext(String applicationName, String target, LinkIDProtocol protocol) {
+    public LinkIDAuthenticationContext(String applicationName, String target) {
 
-        this( applicationName, null, null, false, null, target, protocol );
+        this( applicationName, null, null, false, null, target );
     }
 
     /**
@@ -97,7 +91,7 @@ public class LinkIDAuthenticationContext implements Serializable {
      */
     public LinkIDAuthenticationContext(@Nullable String applicationName, @Nullable KeyProvider keyProvider, String target) {
 
-        this( applicationName, null, keyProvider, false, null, target );
+        this( applicationName, null, null != keyProvider? keyProvider: config().linkID().app().keyProvider(), false, null, target );
     }
 
     /**
@@ -116,24 +110,17 @@ public class LinkIDAuthenticationContext implements Serializable {
      *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
      *
-     * @see #LinkIDAuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, Locale, String, LinkIDProtocol)
+     * @see #LinkIDAuthenticationContext(String, String, KeyPair, X509Certificate, Collection, X509Certificate, boolean, Locale, String)
      */
     public LinkIDAuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, @Nullable KeyProvider keyProvider,
                                        boolean forceAuthentication, @Nullable Locale language, String target) {
-
-        this( applicationName, applicationFriendlyName, null != keyProvider? keyProvider: config().linkID().app().keyProvider(), forceAuthentication, language,
-                target, null );
-    }
-
-    public LinkIDAuthenticationContext(String applicationName, @Nullable String applicationFriendlyName, @Nullable KeyProvider keyProvider,
-                                       boolean forceAuthentication, @Nullable Locale language, String target, @Nullable LinkIDProtocol protocol) {
 
         this( applicationName, applicationFriendlyName, //
                 null != keyProvider? keyProvider.getIdentityKeyPair(): null, //
                 null != keyProvider? keyProvider.getIdentityCertificate(): null,//
                 null != keyProvider? keyProvider.getTrustedCertificates(): null, //
                 null != keyProvider? keyProvider.getTrustedCertificate( LinkIDConfigUtils.SSL_ALIAS ): null, //
-                forceAuthentication, language, target, protocol );
+                forceAuthentication, language, target );
     }
 
     /**
@@ -157,15 +144,12 @@ public class LinkIDAuthenticationContext implements Serializable {
      *                                location the user will be sent to after the authentication response has been handled (or with the
      *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
-     * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
-     *                                {@code null}, in which case {@link LinkIDProtocolConfig#defaultProtocol()} will be used.
      */
     public LinkIDAuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                                        X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
-                                       boolean forceAuthentication, Locale language, String target, LinkIDProtocol protocol) {
+                                       boolean forceAuthentication, Locale language, String target) {
 
-        this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language, target,
-                protocol );
+        this( applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, trustedCertificates, sslCertificate, language, target );
     }
 
     /**
@@ -187,12 +171,10 @@ public class LinkIDAuthenticationContext implements Serializable {
      *                                location the user will be sent to after the authentication response has been handled (or with the
      *                                authentication response, if there is no landing page).  May be {@code null}, in which case the
      *                                user is sent to the application's context path.
-     * @param protocol                The protocol to use for the communication between the application and the linkID services.  May be
-     *                                {@code null}, in which case {@link LinkIDProtocolConfig#defaultProtocol()} will be used.
      */
     private LinkIDAuthenticationContext(String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
                                         X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
-                                        Locale language, String target, LinkIDProtocol protocol) {
+                                        Locale language, String target) {
 
         this.applicationName = null != applicationName? applicationName: config().linkID().app().name();
         this.applicationFriendlyName = applicationFriendlyName;
@@ -201,7 +183,6 @@ public class LinkIDAuthenticationContext implements Serializable {
         this.trustedCertificates = trustedCertificates;
         this.language = ifNotNullElseNullable( language, config().linkID().language() );
         this.target = target;
-        this.protocol = ifNotNullElse( protocol, config().proto().defaultProtocol() );
     }
 
     // Helper methods
@@ -217,7 +198,6 @@ public class LinkIDAuthenticationContext implements Serializable {
                ", language=" + language +
                ", target='" + target + '\'' +
                ", landingUrl='" + landingUrl + '\'' +
-               ", protocol=" + protocol +
                ", authenticationMessage='" + authenticationMessage + '\'' +
                ", finishedMessage='" + finishedMessage + '\'' +
                ", identityProfile='" + identityProfile + '\'' +
@@ -312,16 +292,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     public void setLandingUrl(final String landingUrl) {
 
         this.landingUrl = landingUrl;
-    }
-
-    public LinkIDProtocol getProtocol() {
-
-        return protocol;
-    }
-
-    public void setProtocol(final LinkIDProtocol protocol) {
-
-        this.protocol = protocol;
     }
 
     public String getAuthenticationMessage() {

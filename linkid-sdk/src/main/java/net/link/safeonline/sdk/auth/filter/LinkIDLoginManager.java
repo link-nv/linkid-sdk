@@ -15,7 +15,6 @@ import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.externalcode.LinkIDExternalCodeResponse;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentResponse;
-import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.util.common.CertificateChain;
 
 
@@ -36,9 +35,6 @@ public class LinkIDLoginManager {
     public static final String USERID_SESSION_ATTRIBUTE                 = LinkIDLoginManager.class.getName() + ".userId";
     public static final String ATTRIBUTES_SESSION_ATTRIBUTE             = LinkIDLoginManager.class.getName() + ".attributes";
     public static final String CERTIFICATE_CHAIN_SESSION_ATTRIBUTE      = LinkIDLoginManager.class.getName() + ".certificateChain";
-    public static final String PROTOCOL_SESSION_ATTRIBUTE               = LinkIDLoginManager.class.getName() + ".protocol";
-    // e.g. SAML2 assertion sent directly to SP after authentication done from a client app
-    public static final String PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE    = LinkIDLoginManager.class.getName() + ".protocolNoRequest";
     public static final String PAYMENT_RESPONSE_SESSION_ATTRIBUTE       = LinkIDLoginManager.class.getName() + ".paymentResponse";
     public static final String EXTERNAL_CODE_RESPONSE_SESSION_ATTRIBUTE = LinkIDLoginManager.class.getName() + ".externalCodeResponse";
 
@@ -122,8 +118,6 @@ public class LinkIDLoginManager {
         httpSession.removeAttribute( USERID_SESSION_ATTRIBUTE );
         cleanupAttributes( httpSession );
         httpSession.removeAttribute( CERTIFICATE_CHAIN_SESSION_ATTRIBUTE );
-        httpSession.removeAttribute( PROTOCOL_SESSION_ATTRIBUTE );
-        httpSession.removeAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE );
     }
 
@@ -131,8 +125,6 @@ public class LinkIDLoginManager {
 
         httpSession.setAttribute( USERID_SESSION_ATTRIBUTE, linkIDAuthnResponse.getUserId() );
         httpSession.setAttribute( ATTRIBUTES_SESSION_ATTRIBUTE, linkIDAuthnResponse.getAttributes() );
-        httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, LinkIDProtocol.WS );
-        httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, false );
         httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, linkIDAuthnResponse.getPaymentResponse() );
         httpSession.setAttribute( EXTERNAL_CODE_RESPONSE_SESSION_ATTRIBUTE, linkIDAuthnResponse.getExternalCodeResponse() );
     }

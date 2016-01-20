@@ -23,17 +23,6 @@ import org.joda.time.Duration;
 public interface LinkIDProtocolConfig {
 
     /**
-     * The authentication protocol used to begin the session with the linkID authentication web application. See {@link LinkIDProtocol} for the
-     * possible values.
-     * <p/>
-     * <i>[required, default: SAML2]</i>
-     *
-     * @return authentication protocol to use
-     */
-    @Property(required = true, unset = "SAML2")
-    LinkIDProtocol defaultProtocol();
-
-    /**
      * The maximum deviation in milliseconds between timestamps in WS-Security messages and the current system time.  This is used to
      * compensate for possible differences of the server and client's system clock.
      * <p/>

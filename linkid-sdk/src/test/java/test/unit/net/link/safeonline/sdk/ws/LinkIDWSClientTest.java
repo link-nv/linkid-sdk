@@ -53,7 +53,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
-import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.safeonline.sdk.configuration.LinkIDTestConfigHolder;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
@@ -377,7 +376,7 @@ public class LinkIDWSClientTest {
         String language = "be";
         LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 0.512123, LinkIDCurrency.EUR ) ).build();
 
-        LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null, LinkIDProtocol.WS );
+        LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null );
         linkIDAuthenticationContext.setLanguage( new Locale( language ) );
         linkIDAuthenticationContext.setPaymentContext( paymentContext );
 
