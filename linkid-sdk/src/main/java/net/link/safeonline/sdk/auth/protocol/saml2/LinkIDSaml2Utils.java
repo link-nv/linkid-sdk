@@ -60,7 +60,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         Map<String, String> deviceContextMap = LinkIDDeviceContextUtils.generate( authenticationContext.getAuthenticationMessage(),
                 authenticationContext.getFinishedMessage(), authenticationContext.getIdentityProfile(), authenticationContext.getSessionExpiryOverride(),
                 authenticationContext.getTheme(), authenticationContext.getMobileLandingSuccess(), authenticationContext.getMobileLandingError(),
-                authenticationContext.getMobileLandingCancel() );
+                authenticationContext.getMobileLandingCancel(), authenticationContext.getNotificationLocation() );
 
         return LinkIDAuthnRequestFactory.createAuthnRequest( authenticationContext.getApplicationName(), null,
                 authenticationContext.getApplicationFriendlyName(), "http://foo.bar", null, true, deviceContextMap,

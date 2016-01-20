@@ -177,7 +177,7 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDMandatePaymentException something went wrong, check the error code in the exception
      */
-    String mandatePayment(String mandateReference, LinkIDPaymentContext paymentContext, Locale locale)
+    String mandatePayment(String mandateReference, LinkIDPaymentContext paymentContext, @Nullable String notificationLocation, Locale locale)
             throws LinkIDMandatePaymentException;
 
     /**

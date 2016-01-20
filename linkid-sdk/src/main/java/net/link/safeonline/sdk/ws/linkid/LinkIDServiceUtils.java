@@ -470,6 +470,11 @@ public class LinkIDServiceUtils {
             ltqrContent.setFavoritesConfiguration( convert( content.getFavoritesConfiguration() ) );
         }
 
+        // notification location
+        if (null != content.getNotificationLocation()) {
+            ltqrContent.setNotificationLocation( content.getNotificationLocation() );
+        }
+
         return ltqrContent;
     }
 
@@ -534,6 +539,9 @@ public class LinkIDServiceUtils {
         }
         builder.waitForUnblock( ltqrContent.isWaitForUnblock() );
         builder.ltqrStatusLocation( ltqrContent.getLtqrStatusLocation() );
+
+        // notification location
+        builder.notificationLocation( ltqrContent.getNotificationLocation() );
 
         return builder.build();
     }

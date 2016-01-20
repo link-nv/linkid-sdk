@@ -42,6 +42,7 @@ public class LinkIDAuthenticationContext implements Serializable {
     private String                          identityProfile;
     private Long                            sessionExpiryOverride;
     private String                          theme;
+    private String                          notificationLocation;
     //
     private String                          mobileLandingSuccess;       // landing page for an authn/payment started on iOS browser
     private String                          mobileLandingError;         // landing page for an authn/payment started on iOS browser
@@ -178,6 +179,7 @@ public class LinkIDAuthenticationContext implements Serializable {
                ", identityProfile='" + identityProfile + '\'' +
                ", sessionExpiryOverride=" + sessionExpiryOverride +
                ", theme='" + theme + '\'' +
+               ", notificationLocation='" + notificationLocation + '\'' +
                ", mobileLandingSuccess='" + mobileLandingSuccess + '\'' +
                ", mobileLandingError='" + mobileLandingError + '\'' +
                ", mobileLandingCancel='" + mobileLandingCancel + '\'' +
@@ -297,6 +299,16 @@ public class LinkIDAuthenticationContext implements Serializable {
     public void setTheme(final String theme) {
 
         this.theme = theme;
+    }
+
+    public String getNotificationLocation() {
+
+        return notificationLocation;
+    }
+
+    public void setNotificationLocation(final String notificationLocation) {
+
+        this.notificationLocation = notificationLocation;
     }
 
     public String getMobileLandingSuccess() {

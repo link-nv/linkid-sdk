@@ -16,7 +16,7 @@ public abstract class LinkIDDeviceContextUtils {
     public static Map<String, String> generate(@Nullable final String authenticationMessage, @Nullable final String finishedMessage,
                                                @Nullable final String identityProfile, @Nullable final Long sessionExpiryOverride, @Nullable final String theme,
                                                @Nullable final String mobileLandingSuccess, @Nullable final String mobileLandingError,
-                                               @Nullable final String mobileLandingCancel) {
+                                               @Nullable final String mobileLandingCancel, @Nullable final String notificationLocation) {
 
         Map<String, String> deviceContextMap = Maps.newHashMap();
 
@@ -47,6 +47,9 @@ public abstract class LinkIDDeviceContextUtils {
         }
         if (null != mobileLandingCancel) {
             deviceContextMap.put( LinkIDDeviceContextConstants.MOBILE_LANDING_CANCEL_URL, mobileLandingCancel );
+        }
+        if (null != notificationLocation) {
+            deviceContextMap.put( LinkIDDeviceContextConstants.NOTIFICATION_LOCATION, notificationLocation );
         }
 
         return deviceContextMap;

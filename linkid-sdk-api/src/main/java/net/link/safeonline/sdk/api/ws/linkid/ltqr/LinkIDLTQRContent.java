@@ -29,6 +29,7 @@ public class LinkIDLTQRContent implements Serializable {
     private final long                           expiryDuration;
     private final boolean                        waitForUnblock;
     private final LinkIDFavoritesConfiguration   favoritesConfiguration;
+    private final String                         notificationLocation;
 
     private LinkIDLTQRContent(final Builder builder) {
 
@@ -49,6 +50,7 @@ public class LinkIDLTQRContent implements Serializable {
         this.expiryDuration = builder.expiryDuration;
         this.waitForUnblock = builder.waitForUnblock;
         this.favoritesConfiguration = builder.favoritesConfiguration;
+        this.notificationLocation = builder.notificationLocation;
 
     }
 
@@ -72,6 +74,7 @@ public class LinkIDLTQRContent implements Serializable {
                ", expiryDuration=" + expiryDuration +
                ", waitForUnblock=" + waitForUnblock +
                ", favoritesConfiguration=" + favoritesConfiguration +
+               ", notificationLocation=" + notificationLocation +
                '}';
     }
 
@@ -97,6 +100,7 @@ public class LinkIDLTQRContent implements Serializable {
         private long                           expiryDuration         = -1;
         private boolean                        waitForUnblock         = false;
         private LinkIDFavoritesConfiguration   favoritesConfiguration = null;
+        private String                         notificationLocation   = null;
 
         public LinkIDLTQRContent build() {
 
@@ -203,6 +207,12 @@ public class LinkIDLTQRContent implements Serializable {
             return this;
         }
 
+        public Builder notificationLocation(final String notificationLocation) {
+
+            this.notificationLocation = notificationLocation;
+            return this;
+        }
+
     }
 
     // Accessors
@@ -285,5 +295,10 @@ public class LinkIDLTQRContent implements Serializable {
     public LinkIDFavoritesConfiguration getFavoritesConfiguration() {
 
         return favoritesConfiguration;
+    }
+
+    public String getNotificationLocation() {
+
+        return notificationLocation;
     }
 }

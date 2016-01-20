@@ -830,6 +830,11 @@
                         <documentation>Optional payment context</documentation>
                     </annotation>
                 </element>
+                <element name="notificationLocation" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional notification location override</documentation>
+                    </annotation>
+                </element>
             </sequence>
             <attribute name="language" type="string" use="optional">
                 <annotation>
@@ -1161,6 +1166,11 @@
             <element name="favoritesConfiguration" type="tns:FavoritesConfiguration" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional favorites configuration, if not present the LTQR code will not be favoritable</documentation>
+                </annotation>
+            </element>
+            <element name="notificationLocation" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional notification location override</documentation>
                 </annotation>
             </element>
         </sequence>

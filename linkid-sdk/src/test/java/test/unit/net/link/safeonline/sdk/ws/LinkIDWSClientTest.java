@@ -489,6 +489,7 @@ public class LinkIDWSClientTest {
                                                                        .finishedMessage( "LTQR Test finished" )
                                                                        .paymentContext( linkIDPaymentContext )
                                                                        .expiryDate( expiryDateTime.toDate() )
+                                                                       .notificationLocation( "https://demo.linkid.be" )
                                                                        .build();
 
         return new LinkIDLTQRPushContent( ltqrContent, null, LinkIDLTQRLockType.NEVER );
@@ -527,7 +528,7 @@ public class LinkIDWSClientTest {
         LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
-        String orderReference = client.mandatePayment( mandateReference, linkIDPaymentContext, Locale.ENGLISH );
+        String orderReference = client.mandatePayment( mandateReference, linkIDPaymentContext, null, Locale.ENGLISH );
 
         // verify
         assertNotNull( orderReference );

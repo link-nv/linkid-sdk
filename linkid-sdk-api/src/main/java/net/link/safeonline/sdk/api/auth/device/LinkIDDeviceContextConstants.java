@@ -28,4 +28,7 @@ public interface LinkIDDeviceContextConstants {
     String MOBILE_LANDING_SUCCESS_URL = "linkID.mobileLandingSuccess";
     String MOBILE_LANDING_ERROR_URL   = "linkID.mobileLandingError";
     String MOBILE_LANDING_CANCEL_URL  = "linkID.mobileLandingCancel";
+    //
+    // optional notification location override
+    String NOTIFICATION_LOCATION      = "linkID.notificationLocation";
 }

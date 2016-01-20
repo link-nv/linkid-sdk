@@ -504,13 +504,15 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public String mandatePayment(final String mandateReference, final LinkIDPaymentContext linkIDPaymentContext, final Locale locale)
+    public String mandatePayment(final String mandateReference, final LinkIDPaymentContext linkIDPaymentContext, @Nullable final String notificationLocation,
+                                 final Locale locale)
             throws LinkIDMandatePaymentException {
 
         MandatePaymentRequest request = new MandatePaymentRequest();
 
         request.setPaymentContext( LinkIDServiceUtils.convert( linkIDPaymentContext ) );
         request.setMandateReference( mandateReference );
+        request.setNotificationLocation( notificationLocation );
         if (null != locale) {
             request.setLanguage( locale.getLanguage() );
         } else {
