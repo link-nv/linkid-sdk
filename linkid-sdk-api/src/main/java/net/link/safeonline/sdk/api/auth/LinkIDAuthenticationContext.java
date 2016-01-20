@@ -24,8 +24,6 @@ import net.link.safeonline.sdk.configuration.LinkIDAppConfig;
 import net.link.safeonline.sdk.configuration.LinkIDConfigUtils;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.safeonline.sdk.configuration.LinkIDProtocolConfig;
-import net.link.safeonline.sdk.configuration.LinkIDSAMLBinding;
-import net.link.safeonline.sdk.configuration.LinkIDSAMLProtocolConfig;
 import net.link.util.config.KeyProvider;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +43,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     private String                          landingUrl;                 // optional landing url, if not specified is constructed in {@LinkIDRequestConfig}
     //
     private LinkIDProtocol                  protocol;
-    private SAMLContext                     saml;
     //
     private String                          authenticationMessage;
     private String                          finishedMessage;
@@ -197,8 +194,6 @@ public class LinkIDAuthenticationContext implements Serializable {
                                         X509Certificate applicationCertificate, Collection<X509Certificate> trustedCertificates, X509Certificate sslCertificate,
                                         Locale language, String target, LinkIDProtocol protocol) {
 
-        saml = new SAMLContext();
-
         this.applicationName = null != applicationName? applicationName: config().linkID().app().name();
         this.applicationFriendlyName = applicationFriendlyName;
         this.applicationKeyPair = applicationKeyPair;
@@ -223,7 +218,6 @@ public class LinkIDAuthenticationContext implements Serializable {
                ", target='" + target + '\'' +
                ", landingUrl='" + landingUrl + '\'' +
                ", protocol=" + protocol +
-               ", saml=" + saml +
                ", authenticationMessage='" + authenticationMessage + '\'' +
                ", finishedMessage='" + finishedMessage + '\'' +
                ", identityProfile='" + identityProfile + '\'' +
@@ -328,16 +322,6 @@ public class LinkIDAuthenticationContext implements Serializable {
     public void setProtocol(final LinkIDProtocol protocol) {
 
         this.protocol = protocol;
-    }
-
-    public SAMLContext getSaml() {
-
-        return saml;
-    }
-
-    public void setSaml(final SAMLContext saml) {
-
-        this.saml = saml;
     }
 
     public String getAuthenticationMessage() {
@@ -448,49 +432,5 @@ public class LinkIDAuthenticationContext implements Serializable {
     public void setCallback(final LinkIDCallback callback) {
 
         this.callback = callback;
-    }
-
-    public static class SAMLContext implements Serializable {
-
-        private final LinkIDSAMLBinding binding;
-        private final String            relayState;
-
-        public SAMLContext() {
-
-            this( null, null, null );
-        }
-
-        /**
-         * @param binding    The SAML binding that should be used to establish SAML communication.  May be {@code null}, in which case
-         *                   the value of {@link LinkIDSAMLProtocolConfig#binding()} will be used.
-         * @param relayState The Relay State that is sent along with SAML communications. May be {@code null}, in which case the value
-         *                   of {@link LinkIDSAMLProtocolConfig#relayState()} will be used.
-         * @param breakFrame break frame, used for having the linkID authentication process in an iframe. At the end of the process, the
-         *                   SAML2 browser POST will make it break out of the iframe.
-         */
-        public SAMLContext(@Nullable LinkIDSAMLBinding binding, @Nullable String relayState, @Nullable Boolean breakFrame) {
-
-            this.binding = ifNotNullElse( binding, config().proto().saml().binding() );
-            this.relayState = ifNotNullElseNullable( relayState, config().proto().saml().relayState() );
-        }
-
-        @Override
-        public String toString() {
-
-            return "SAMLContext{" +
-                   "binding=" + binding +
-                   ", relayState='" + relayState + '\'' +
-                   '}';
-        }
-
-        public LinkIDSAMLBinding getBinding() {
-
-            return binding;
-        }
-
-        public String getRelayState() {
-
-            return relayState;
-        }
     }
 }

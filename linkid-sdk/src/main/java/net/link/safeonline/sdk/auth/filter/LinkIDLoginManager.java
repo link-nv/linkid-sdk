@@ -15,7 +15,6 @@ import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.externalcode.LinkIDExternalCodeResponse;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentResponse;
-import net.link.safeonline.sdk.auth.protocol.LinkIDAuthnProtocolResponseContext;
 import net.link.safeonline.sdk.configuration.LinkIDProtocol;
 import net.link.util.common.CertificateChain;
 
@@ -126,28 +125,6 @@ public class LinkIDLoginManager {
         httpSession.removeAttribute( PROTOCOL_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE );
         httpSession.removeAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE );
-    }
-
-    /**
-     * This method is invoked by the SDK after handling an authentication response to make the authentication data available to the
-     * application.
-     *
-     * @param httpSession     The session on which the credentials will be made available.
-     * @param responseContext response context containing e.g.
-     *                        the userId of the SafeOnline authenticated principal.
-     *                        the attributes from the identity of the authenticated application.
-     *                        the devices the SafeOnline authenticated principal used to authenticate with.
-     *                        the certificate chain optionally present if response was signed and contained it embedded
-     */
-    public static void set(final HttpSession httpSession, final LinkIDAuthnProtocolResponseContext responseContext) {
-
-        httpSession.setAttribute( USERID_SESSION_ATTRIBUTE, responseContext.getUserId() );
-        httpSession.setAttribute( ATTRIBUTES_SESSION_ATTRIBUTE, responseContext.getAttributes() );
-        httpSession.setAttribute( CERTIFICATE_CHAIN_SESSION_ATTRIBUTE, responseContext.getCertificateChain() );
-        httpSession.setAttribute( PROTOCOL_SESSION_ATTRIBUTE, responseContext.getRequest().getLinkIDProtocolHandler().getProtocol() );
-        httpSession.setAttribute( PROTOCOL_NO_REQUEST_SESSION_ATTRIBUTE, null == responseContext.getRequest().getId() );
-        httpSession.setAttribute( PAYMENT_RESPONSE_SESSION_ATTRIBUTE, responseContext.getPaymentResponse() );
-        httpSession.setAttribute( EXTERNAL_CODE_RESPONSE_SESSION_ATTRIBUTE, responseContext.getExternalCodeResponse() );
     }
 
     public static void set(final HttpSession httpSession, final LinkIDAuthnResponse linkIDAuthnResponse) {

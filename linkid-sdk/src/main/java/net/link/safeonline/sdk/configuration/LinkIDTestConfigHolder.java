@@ -7,15 +7,16 @@
 
 package net.link.safeonline.sdk.configuration;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.List;
 import java.util.Locale;
 import javax.security.auth.x500.X500Principal;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import net.link.util.common.DummyServletRequest;
-import net.link.util.config.*;
+import net.link.util.config.AppConfig;
+import net.link.util.config.ConfigHolder;
+import net.link.util.config.KeyProvider;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.Duration;
 
@@ -94,7 +95,6 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
         private final TestLinkIDWebConfig      web    = new TestLinkIDWebConfig();
         private final TestLinkIDProtocolConfig proto  = new TestLinkIDProtocolConfig();
         private final TestLinkIDConfig         linkID = new TestLinkIDConfig();
-        private final TestLinkIDJAASConfig     jaas   = new TestLinkIDJAASConfig();
         private final AppConfig appConfig;
 
         TestLinkIDSDKConfig(String appBase, AppConfig appConfig) {
@@ -124,12 +124,6 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
         }
 
         @Override
-        public TestLinkIDJAASConfig jaas() {
-
-            return jaas;
-        }
-
-        @Override
         @SuppressWarnings("unchecked")
         public <C extends AppConfig> C app(Class<C> appConfigType) {
 
@@ -141,7 +135,6 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
             public String appBase;
             public String appConfidentialBase;
             public String appPath;
-            public String landingPath;
             public String linkIDBase;
 
             @Override
@@ -163,12 +156,6 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
             }
 
             @Override
-            public String landingPath() {
-
-                return landingPath;
-            }
-
-            @Override
             public String linkIDBase() {
 
                 return linkIDBase;
@@ -178,15 +165,8 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
 
         public static class TestLinkIDProtocolConfig implements LinkIDProtocolConfig {
 
-            private final TestLinkIDSAMLProtocolConfig saml = new TestLinkIDSAMLProtocolConfig();
             public LinkIDProtocol defaultProtocol;
             public Duration       maxTimeOffset;
-
-            @Override
-            public TestLinkIDSAMLProtocolConfig saml() {
-
-                return saml;
-            }
 
             @Override
             public LinkIDProtocol defaultProtocol() {
@@ -200,30 +180,6 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
                 return maxTimeOffset;
             }
 
-            public static class TestLinkIDSAMLProtocolConfig implements LinkIDSAMLProtocolConfig {
-
-                public String            postBindingTemplate;
-                public LinkIDSAMLBinding binding;
-                public String            relayState;
-
-                @Override
-                public String postBindingTemplate() {
-
-                    return postBindingTemplate;
-                }
-
-                @Override
-                public LinkIDSAMLBinding binding() {
-
-                    return binding;
-                }
-
-                @Override
-                public String relayState() {
-
-                    return relayState;
-                }
-            }
         }
 
 
@@ -284,31 +240,5 @@ public class LinkIDTestConfigHolder extends ConfigHolder {
             }
         }
 
-
-        public static class TestLinkIDJAASConfig implements LinkIDJAASConfig {
-
-            public String context;
-            public String loginPath;
-
-            public List<String> publicPaths;
-
-            @Override
-            public String context() {
-
-                return context;
-            }
-
-            @Override
-            public String loginPath() {
-
-                return loginPath;
-            }
-
-            @Override
-            public List<String> publicPaths() {
-
-                return publicPaths;
-            }
-        }
     }
 }

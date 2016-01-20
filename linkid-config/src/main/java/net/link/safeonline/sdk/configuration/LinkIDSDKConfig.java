@@ -33,11 +33,6 @@ public interface LinkIDSDKConfig extends RootConfig {
     LinkIDConfig linkID();
 
     /**
-     * @return JAAS context configuration.  For applications that want to set a JAAS context based on linkID credentials.
-     */
-    LinkIDJAASConfig jaas();
-
-    /**
      * @return Protocol configuration.  SAML/OpenID/... parameters.
      */
     LinkIDProtocolConfig proto();

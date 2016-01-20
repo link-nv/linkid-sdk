@@ -74,16 +74,6 @@ public interface LinkIDWebConfig {
     String appPath();
 
     /**
-     * PATH within our application where linkID's authentication response will be posted to.  Absolute URLs to this path will use the
-     * {@link
-     * #appConfidentialBase()}.
-     * <p/>
-     * <i>[optional, default: post the response straight to the authentication's target URL]</i>
-     */
-    @Property(required = false)
-    String landingPath();
-
-    /**
      * Property that defines the base URL to linkID.
      * <p/>
      * <i>[required, default: https://demo.linkid.be]</i>

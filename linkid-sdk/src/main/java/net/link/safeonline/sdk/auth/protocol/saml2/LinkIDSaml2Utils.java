@@ -29,8 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeStatement;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.Namespace;
@@ -155,19 +153,6 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         }
 
         return attribute;
-    }
-
-    public static String findApplicationName(final Assertion assertion) {
-
-        String applicationName = null;
-        List<AudienceRestriction> audienceRestrictions = assertion.getConditions().getAudienceRestrictions();
-        if (!audienceRestrictions.isEmpty()) {
-            List<Audience> audiences = audienceRestrictions.get( 0 ).getAudiences();
-            if (!audiences.isEmpty())
-                applicationName = audiences.get( 0 ).getAudienceURI();
-        }
-
-        return applicationName;
     }
 
     @Nullable

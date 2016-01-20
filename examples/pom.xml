@@ -15,7 +15,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>example-mobile</module>
         <module>example-ws</module>
         <module>example-ws-username</module>
     </modules>

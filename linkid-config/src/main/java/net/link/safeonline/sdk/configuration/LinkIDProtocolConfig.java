@@ -22,8 +22,6 @@ import org.joda.time.Duration;
 @Group(prefix = "proto")
 public interface LinkIDProtocolConfig {
 
-    LinkIDSAMLProtocolConfig saml();
-
     /**
      * The authentication protocol used to begin the session with the linkID authentication web application. See {@link LinkIDProtocol} for the
      * possible values.
