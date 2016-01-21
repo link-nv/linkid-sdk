@@ -30,6 +30,8 @@ import net.lin_k.linkid._3_1.core.ConfigLocalizationValue;
 import net.lin_k.linkid._3_1.core.ConfigThemes;
 import net.lin_k.linkid._3_1.core.ConfigThemesRequest;
 import net.lin_k.linkid._3_1.core.ConfigThemesResponse;
+import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsRequest;
+import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsResponse;
 import net.lin_k.linkid._3_1.core.LTQRBulkPushRequest;
 import net.lin_k.linkid._3_1.core.LTQRBulkPushResponse;
 import net.lin_k.linkid._3_1.core.LTQRChangeRequest;
@@ -117,6 +119,8 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
@@ -357,6 +361,37 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );
 
+    }
+
+    @Override
+    public List<LinkIDApplication> configWalletApplications(final String walletOrganizationId, final Locale locale)
+            throws LinkIDConfigWalletApplicationsException {
+
+        ConfigWalletApplicationsRequest request = new ConfigWalletApplicationsRequest();
+        request.setWalletOrganizationId( walletOrganizationId );
+        if (null != locale) {
+            request.setLanguage( locale.getLanguage() );
+        } else {
+            request.setLanguage( Locale.ENGLISH.getLanguage() );
+        }
+
+        // operate
+        ConfigWalletApplicationsResponse response = getPort().configWalletApplications( request );
+
+        // convert response
+        if (null != response.getError()) {
+            throw new LinkIDConfigWalletApplicationsException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            List<LinkIDApplication> applications = Lists.newLinkedList();
+            for (net.lin_k.linkid._3_1.core.LinkIDApplication application : response.getSuccess().getApplications()) {
+                applications.add( new LinkIDApplication( application.getName(), application.getFriendlyName() ) );
+            }
+            return applications;
+        }
+
+        throw new InternalInconsistencyException( "No succes nor error element in the response ?!" );
     }
 
     @Override

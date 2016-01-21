@@ -14,6 +14,7 @@ import net.lin_k.linkid._3_1.core.ConfigLocalizationKeyType;
 import net.lin_k.linkid._3_1.core.ConfigLocalizedImage;
 import net.lin_k.linkid._3_1.core.ConfigLocalizedImages;
 import net.lin_k.linkid._3_1.core.ConfigThemesErrorCode;
+import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsErrorCode;
 import net.lin_k.linkid._3_1.core.Currency;
 import net.lin_k.linkid._3_1.core.FavoritesConfiguration;
 import net.lin_k.linkid._3_1.core.LTQRBulkPushErrorCode;
@@ -58,6 +59,7 @@ import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKeyType;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
@@ -170,6 +172,23 @@ public class LinkIDServiceUtils {
             imageMap.put( localizedImage.getLanguage(), new LinkIDLocalizedImage( localizedImage.getUrl(), localizedImage.getLanguage() ) );
         }
         return new LinkIDLocalizedImages( imageMap );
+    }
+
+    public static LinkIDConfigWalletApplicationsErrorCode convert(final ConfigWalletApplicationsErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_WALLET_ORGANIZATION:
+                return LinkIDConfigWalletApplicationsErrorCode.ERROR_UNKNOWN_WALLET_ORGANIZATION;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDConfigWalletApplicationsErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDConfigWalletApplicationsErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDConfigWalletApplicationsErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
     public static LinkIDThemesErrorCode convert(final ConfigThemesErrorCode errorCode) {

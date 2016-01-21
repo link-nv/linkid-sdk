@@ -350,6 +350,74 @@
          *                                                                  Configuration                                                                 *
          **************************************************************************************************************************************************  -->
 
+    <!-- Configuration: Wallet applications request -->
+
+    <element name="ConfigWalletApplicationsRequest">
+        <complexType>
+            <attribute name="walletOrganizationId" type="string" use="optional">
+                <annotation>
+                    <documentation>The linkID wallet organization ID</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+	<element name="ConfigWalletApplicationsResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ConfigWalletApplicationsSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ConfigWalletApplicationsError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ConfigWalletApplicationsSuccess">
+        <sequence>
+            <element name="applications" type="tns:LinkIDApplication" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The applications allowed to use this wallet organization</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+	<complexType name="ConfigWalletApplicationsError">
+        <attribute name="errorCode" type="tns:ConfigWalletApplicationsErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ConfigWalletApplicationsErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet.organization">
+				<annotation>
+					<documentation>No such wallet organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Not allowed to fetch this list</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Configuration: Theme request -->
 
     <element name="ConfigThemesRequest">
@@ -2805,6 +2873,21 @@
             <element name="textColor" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>The application text color (#xxxxxx) to use in the user's favorites. If not present the application's default theme's text color is used</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LinkIDApplication">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The non localized application name</documentation>
+                </annotation>
+            </element>
+            <element name="friendlyName" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The localized application name</documentation>
                 </annotation>
             </element>
         </sequence>

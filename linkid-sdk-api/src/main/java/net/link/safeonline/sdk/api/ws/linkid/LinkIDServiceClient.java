@@ -31,6 +31,8 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
@@ -119,6 +121,19 @@ public interface LinkIDServiceClient {
      */
     LinkIDAuthnResponse callbackPull(String sessionId)
             throws LinkIDCallbackPullException;
+
+    /**
+     * Fetch the list of linkID applications allowed to use specified wallet organization
+     *
+     * @param walletOrganizationId the wallet organization ID
+     * @param locale               locale to return the application friendly name in
+     *
+     * @return the list of applications
+     *
+     * @throws LinkIDConfigWalletApplicationsException something went wrong, check the error code and info message
+     */
+    List<LinkIDApplication> configWalletApplications(String walletOrganizationId, Locale locale)
+            throws LinkIDConfigWalletApplicationsException;
 
     /**
      * Fetch the application's themes

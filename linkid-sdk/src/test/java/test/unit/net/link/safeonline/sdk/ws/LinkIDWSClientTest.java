@@ -36,6 +36,7 @@ import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClien
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
@@ -545,6 +546,23 @@ public class LinkIDWSClientTest {
 
         // operate
         client.paymentCapture( orderReference );
+    }
+
+    //    @Test
+    public void testConfigWalletApplications()
+            throws Exception {
+
+        // Setup
+        String walletOrganizationId = "urn:linkid:wallet:leaseplan";
+
+        LinkIDServiceClient client = getLinkIDServiceClient();
+
+        // Operate
+        List<LinkIDApplication> applications = client.configWalletApplications( walletOrganizationId, Locale.ENGLISH );
+
+        // Verify
+        assertNotNull( applications );
+        assertEquals( 3, applications.size() );
     }
 
     //    @Test
