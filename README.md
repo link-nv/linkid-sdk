@@ -74,3 +74,5 @@ v4.0
     * AUTHENTICATION_PAYMENT_FINISHED
     * AUTHENTICATION_CANCELED
     * AUTHENTICATION_FAILED
+  * ConfigWalletApplications operation: fetch apps allowed to use specified wallet organization.
+    * Only allowed if requesting app has the reporting permission on that wallet organization
