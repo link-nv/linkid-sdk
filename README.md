@@ -64,3 +64,13 @@ v3.9.2
 ----
   * getThemes: owner flag support
   * LinkIDWalletReportInfo support
+  
+v4.0
+---
+  * Possibility to override the linkID notification location for LTQR, authentication and mandata payments
+  * New notification topics to provide an alternative to actively polling linkID
+    * AUTHENTICATION_RETRIEVED
+    * AUTHENTICATION_SUCCESS
+    * AUTHENTICATION_PAYMENT_FINISHED
+    * AUTHENTICATION_CANCELED
+    * AUTHENTICATION_FAILED
