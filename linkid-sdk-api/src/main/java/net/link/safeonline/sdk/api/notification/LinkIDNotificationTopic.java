@@ -24,7 +24,12 @@ public enum LinkIDNotificationTopic {
     LTQR_SESSION_CANCEL( "urn:net:lin-k:linkid:topic:ltqr:session:cancel" ),
     LTQR_SESSION_UPDATE( "urn:net:lin-k:linkid:topic:ltqr:session:update" ),
     CONFIGURATION_UPDATE( "urn:net:lin-k:linkid:topic:config:update" ),
-    PAYMENT_ORDER_UPDATE( "urn:net:lin-k:linkid:topic:payment:update" );
+    PAYMENT_ORDER_UPDATE( "urn:net:lin-k:linkid:topic:payment:update" ),
+    AUTHENTICATION_RETRIEVED( "urn:net:lin-k:linkid:topic:authentication:retrieved" ),
+    AUTHENTICATION_SUCCESS( "urn:net:lin-k:linkid:topic:authentication:success" ),
+    AUTHENTICATION_PAYMENT_FINISHED( "urn:net:lin-k:linkid:topic:authentication:payment:finished" ),
+    AUTHENTICATION_CANCELED( "urn:net:lin-k:linkid:topic:authentication:canceled" ),
+    AUTHENTICATION_FAILED( "urn:net:lin-k:linkid:topic:authentication:failed" );
 
     private final String topicUri;
 

@@ -378,7 +378,8 @@ public class LinkIDWSClientTest {
 
         LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null );
         linkIDAuthenticationContext.setLanguage( new Locale( language ) );
-        linkIDAuthenticationContext.setPaymentContext( paymentContext );
+        //        linkIDAuthenticationContext.setPaymentContext( paymentContext );
+        linkIDAuthenticationContext.setNotificationLocation( "https://demo.linkid.be" );
 
         // operate: start
         try {
