@@ -375,7 +375,7 @@ public class LinkIDWSClientTest {
         // setup
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String language = "be";
-        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 0.512123, LinkIDCurrency.EUR ) ).build();
+        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 100, LinkIDCurrency.EUR ) ).build();
 
         LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null );
         linkIDAuthenticationContext.setLanguage( new Locale( language ) );

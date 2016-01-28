@@ -324,6 +324,7 @@
                         <forkMode>always</forkMode>
                         <useSystemClassLoader>true</useSystemClassLoader>
                         <childDelegation>false</childDelegation>
+                        <argLine>-Xmx1024m</argLine>
                         <systemProperties>
                           <property>
                             <name>java.awt.headless</name>
