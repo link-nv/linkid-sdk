@@ -19,6 +19,7 @@ public class LinkIDCallbackPullException extends Exception {
 
     public LinkIDCallbackPullException(final LinkIDCallbackPullErrorCode errorCode, final String info) {
 
+        super( String.format( "Error code: %s, info: %s", errorCode, info ) );
         this.errorCode = errorCode;
         this.info = info;
     }

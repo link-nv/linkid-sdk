@@ -1,6 +1,5 @@
 <component name="CopyrightManager">
   <settings default="linkID">
-    <module2copyright />
     <LanguageOptions name="Groovy">
       <option name="fileTypeOverride" value="1" />
     </LanguageOptions>
