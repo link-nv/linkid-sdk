@@ -67,6 +67,8 @@ v3.9.2
   
 v4.0
 ---
+  * LinkIDCallbackResponse to encapsulate the parsing the query parameters
+  * LinkIDCallbackConstants.PARAM_APPLICATION_ID -> LinkIDCallbackConstants.PARAM_APPLICATION_NAME
   * Possibility to override the linkID notification location for LTQR, authentication and mandata payments
   * New notification topics to provide an alternative to actively polling linkID
     * AUTHENTICATION_RETRIEVED

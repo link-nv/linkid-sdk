@@ -2602,6 +2602,357 @@
     </complexType>
 
     <!-- **************************************************************************************************************************************************
+         *                                                                  Vouchers                                                                      *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Vouchers: reward -->
+
+    <element name="VoucherRewardRequest">
+        <complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>User ID to give voucher points to</documentation>
+                    </annotation>
+                </element>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The voucher organization ID</documentation>
+                    </annotation>
+                </element>
+                <element name="points" type="long" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Amount of points to reward</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="VoucherRewardResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherRewardSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherRewardError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherRewardSuccess">
+    </complexType>
+
+    <complexType name="VoucherRewardError">
+		<attribute name="errorCode" type="tns:VoucherRewardErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherRewardErrorCode">
+		<annotation>
+			<documentation>Voucher Reward Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.voucher.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Application not allowed to modify vouchers for this organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Vouchers: list -->
+
+    <element name="VoucherListRequest">
+        <complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>User ID to give voucher points to</documentation>
+                    </annotation>
+                </element>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The voucher organization ID</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="VoucherListResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherListSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherListError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherListSuccess">
+        <sequence>
+            <element name="vouchers" type="tns:Voucher" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+        <attribute name="total" type="long" use="required" />
+    </complexType>
+
+    <complexType name="VoucherListError">
+		<attribute name="errorCode" type="tns:VoucherListErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherListErrorCode">
+		<annotation>
+			<documentation>Voucher List Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.voucher.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Application not allowed to list vouchers for this organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Vouchers: list redeemed -->
+
+    <element name="VoucherListRedeemedRequest">
+        <complexType>
+            <sequence>
+                <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>User ID to give voucher points to</documentation>
+                    </annotation>
+                </element>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The voucher organization ID</documentation>
+                    </annotation>
+                </element>
+                <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional date filter</documentation>
+                    </annotation>
+                </element>
+                <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional page filter</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="VoucherListRedeemedResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherListRedeemedSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherListRedeemedError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherListRedeemedSuccess">
+        <sequence>
+            <element name="vouchers" type="tns:Voucher" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+        <attribute name="total" type="long" use="required" />
+    </complexType>
+
+    <complexType name="VoucherListRedeemedError">
+		<attribute name="errorCode" type="tns:VoucherListRedeemedErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherListRedeemedErrorCode">
+		<annotation>
+			<documentation>Voucher List Redeemed Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.user">
+				<annotation>
+					<documentation>No such user</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.voucher.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.too.many.results">
+				<annotation>
+					<documentation>There are too many results to return, please narrow down your search</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.invalid.page">
+				<annotation>
+					<documentation>Invalid page filter config, e.g. firstResult > total</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Application not allowed to list vouchers for this organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Vouchers: redeem -->
+
+    <element name="VoucherRedeemRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher to redeem</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="VoucherRedeemResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherRedeemSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherRedeemError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherRedeemSuccess">
+    </complexType>
+
+    <complexType name="VoucherRedeemError">
+		<attribute name="errorCode" type="tns:VoucherRedeemErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherRedeemErrorCode">
+		<annotation>
+			<documentation>Voucher Redeem Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.voucher">
+				<annotation>
+					<documentation>No such voucher with that ID</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.already.redeemed">
+				<annotation>
+					<documentation>Specified voucher was already redeemed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Application not allowed to redeem vouchers for this organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Voucher: common -->
+
+    <complexType name="Voucher">
+        <sequence>
+            <element name="id" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The ID of the specific voucher</documentation>
+                </annotation>
+            </element>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Localized name of the voucher organization</documentation>
+                </annotation>
+            </element>
+            <element name="description" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Localized description of the voucher organization</documentation>
+                </annotation>
+            </element>
+            <element name="logoUrl" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>URL of the logo of the voucher organization</documentation>
+                </annotation>
+            </element>
+            <element name="activated" type="dateTime" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Time the voucher was activated ( i.e. # points on it > voucher.organization.limit )</documentation>
+                </annotation>
+            </element>
+            <element name="redeemed" type="dateTime" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Time the voucher was redeemed</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <!-- **************************************************************************************************************************************************
          *                                                                  Common                                                                        *
          **************************************************************************************************************************************************  -->
 

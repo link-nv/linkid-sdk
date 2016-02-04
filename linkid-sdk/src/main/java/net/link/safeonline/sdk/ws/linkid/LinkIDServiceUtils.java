@@ -2,6 +2,7 @@ package net.link.safeonline.sdk.ws.linkid;
 
 import com.google.common.collect.Maps;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.linkid._3_1.core.AuthCancelErrorCode;
@@ -32,7 +33,16 @@ import net.lin_k.linkid._3_1.core.PaymentRefundErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentStatusErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentStatusType;
 import net.lin_k.linkid._3_1.core.QRCodeInfo;
+import net.lin_k.linkid._3_1.core.ReportApplicationFilter;
+import net.lin_k.linkid._3_1.core.ReportDateFilter;
 import net.lin_k.linkid._3_1.core.ReportErrorCode;
+import net.lin_k.linkid._3_1.core.ReportPageFilter;
+import net.lin_k.linkid._3_1.core.ReportWalletFilter;
+import net.lin_k.linkid._3_1.core.Voucher;
+import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherRewardErrorCode;
 import net.lin_k.linkid._3_1.core.WalletAddCreditErrorCode;
 import net.lin_k.linkid._3_1.core.WalletCommitErrorCode;
 import net.lin_k.linkid._3_1.core.WalletEnrollErrorCode;
@@ -52,9 +62,14 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
+import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportErrorCode;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
@@ -77,6 +92,10 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentErrorCo
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollErrorCode;
@@ -946,6 +965,86 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
+    public static LinkIDVoucherRewardErrorCode convert(final VoucherRewardErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_USER:
+                return LinkIDVoucherRewardErrorCode.ERROR_UNEXPECTED;
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherRewardErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherRewardErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherRewardErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherRewardErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherListErrorCode convert(final VoucherListErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_USER:
+                return LinkIDVoucherListErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherListErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherListErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherListErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherListErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherListRedeemedErrorCode convert(final VoucherListRedeemedErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_USER:
+                return LinkIDVoucherListRedeemedErrorCode.ERROR_UNKNOWN_USER;
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherListRedeemedErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_TOO_MANY_RESULTS:
+                return LinkIDVoucherListRedeemedErrorCode.ERROR_TOO_MANY_RESULTS;
+            case ERROR_INVALID_PAGE:
+                return LinkIDVoucherListRedeemedErrorCode.ERROR_INVALID_PAGE;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherListRedeemedErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherListRedeemedErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherListRedeemedErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherRedeemErrorCode convert(final VoucherRedeemErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_VOUCHER:
+                return LinkIDVoucherRedeemErrorCode.ERROR_UNKNOWN_VOUCHER;
+            case ERROR_ALREADY_REDEEMED:
+                return LinkIDVoucherRedeemErrorCode.ERROR_ALREADY_REDEEMED;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherRedeemErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherRedeemErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherRedeemErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
     public static boolean convert(@Nullable final Boolean b) {
 
         return null != b? b: false;
@@ -1039,5 +1138,68 @@ public class LinkIDServiceUtils {
         }
 
         return null;
+    }
+
+    public static String convert(@Nullable final Locale locale) {
+
+        return null != locale? locale.getLanguage(): Locale.ENGLISH.getLanguage();
+    }
+
+    @Nullable
+    public static ReportDateFilter convert(@Nullable final LinkIDReportDateFilter dateFilter) {
+
+        if (null != dateFilter) {
+            ReportDateFilter wsDateFilter = new ReportDateFilter();
+            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
+            if (null != dateFilter.getEndDate()) {
+                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
+            }
+            return wsDateFilter;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static ReportPageFilter convert(@Nullable final LinkIDReportPageFilter pageFilter) {
+
+        if (null != pageFilter) {
+            ReportPageFilter wsPageFilter = new ReportPageFilter();
+            wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
+            wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
+            return wsPageFilter;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static ReportApplicationFilter convert(@Nullable final LinkIDReportApplicationFilter applicationFilter) {
+
+        if (null != applicationFilter) {
+            ReportApplicationFilter wsApplicationFilter = new ReportApplicationFilter();
+            wsApplicationFilter.setApplicationName( applicationFilter.getApplicationName() );
+            return wsApplicationFilter;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static ReportWalletFilter convert(@Nullable final LinkIDReportWalletFilter walletFilter) {
+
+        if (null != walletFilter) {
+            ReportWalletFilter wsWalletFilter = new ReportWalletFilter();
+            wsWalletFilter.setWalletId( walletFilter.getWalletId() );
+            return wsWalletFilter;
+        }
+
+        return null;
+    }
+
+    public static LinkIDVoucher convert(final Voucher voucher) {
+
+        return new LinkIDVoucher( voucher.getId(), voucher.getName(), voucher.getDescription(), voucher.getLogoUrl(), convert( voucher.getActivated() ),
+                convert( voucher.getRedeemed() ) );
     }
 }

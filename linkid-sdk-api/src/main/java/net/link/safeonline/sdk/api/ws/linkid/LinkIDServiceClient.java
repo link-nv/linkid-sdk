@@ -24,6 +24,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
+import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
@@ -55,6 +56,10 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureExcepti
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
@@ -465,5 +470,58 @@ public interface LinkIDServiceClient {
      */
     void walletRelease(String userId, String walletId, String walletTransactionId)
             throws LinkIDWalletReleaseException;
+
+    /**
+     * Add points for specified user and specified voucher organization.
+     *
+     * @param userId                the scoped user ID
+     * @param voucherOrganizationId the voucher organization ID
+     * @param points                # of points to add
+     *
+     * @throws LinkIDVoucherRewardException something went wrong, check the error code in the exception
+     */
+    void voucherReward(String userId, String voucherOrganizationId, long points)
+            throws LinkIDVoucherRewardException;
+
+    /**
+     * List the vouchers specified user has for specified voucher organization
+     *
+     * @param userId                the scoped user ID
+     * @param voucherOrganizationId the voucher organization ID
+     * @param locale                locale for returning localization voucher organization name, description
+     *
+     * @return the list of active vouchers
+     *
+     * @throws LinkIDVoucherListException something went wrong, check the error code in the exception
+     */
+    LinkIDVouchers voucherList(String userId, String voucherOrganizationId, Locale locale)
+            throws LinkIDVoucherListException;
+
+    /**
+     * List the redeemed vouchers specified user has for specified voucher organization
+     *
+     * @param userId                the scoped user ID
+     * @param voucherOrganizationId the voucher organization ID
+     * @param locale                locale for returning localization voucher organization name, description
+     * @param dateFilter            optional date filter
+     * @param pageFilter            optional page filter
+     *
+     * @return the list of redeemed vouchers
+     *
+     * @throws LinkIDVoucherListRedeemedException something went wrong, check the error code in the exception
+     */
+    LinkIDVouchers voucherListRedeemed(String userId, String voucherOrganizationId, Locale locale, @Nullable LinkIDReportDateFilter dateFilter,
+                                       @Nullable LinkIDReportPageFilter pageFilter)
+            throws LinkIDVoucherListRedeemedException;
+
+    /**
+     * Redeem the specified voucher
+     *
+     * @param voucherId ID of the voucher
+     *
+     * @throws LinkIDVoucherRedeemException something went wrong, check the error code in the exception
+     */
+    void voucherRedeem(String voucherId)
+            throws LinkIDVoucherRedeemException;
 
 }
