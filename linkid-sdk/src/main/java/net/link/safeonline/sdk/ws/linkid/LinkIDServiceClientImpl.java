@@ -64,10 +64,15 @@ import net.lin_k.linkid._3_1.core.PaymentReportResponse;
 import net.lin_k.linkid._3_1.core.PaymentStatusRequest;
 import net.lin_k.linkid._3_1.core.PaymentStatusResponse;
 import net.lin_k.linkid._3_1.core.PaymentTransaction;
-import net.lin_k.linkid._3_1.core.ReportApplicationFilter;
-import net.lin_k.linkid._3_1.core.ReportDateFilter;
-import net.lin_k.linkid._3_1.core.ReportPageFilter;
-import net.lin_k.linkid._3_1.core.ReportWalletFilter;
+import net.lin_k.linkid._3_1.core.Voucher;
+import net.lin_k.linkid._3_1.core.VoucherListRedeemedRequest;
+import net.lin_k.linkid._3_1.core.VoucherListRedeemedResponse;
+import net.lin_k.linkid._3_1.core.VoucherListRequest;
+import net.lin_k.linkid._3_1.core.VoucherListResponse;
+import net.lin_k.linkid._3_1.core.VoucherRedeemRequest;
+import net.lin_k.linkid._3_1.core.VoucherRedeemResponse;
+import net.lin_k.linkid._3_1.core.VoucherRewardRequest;
+import net.lin_k.linkid._3_1.core.VoucherRewardResponse;
 import net.lin_k.linkid._3_1.core.WalletAddCreditRequest;
 import net.lin_k.linkid._3_1.core.WalletAddCreditResponse;
 import net.lin_k.linkid._3_1.core.WalletCommitRequest;
@@ -110,6 +115,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
@@ -145,6 +152,10 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentDetails;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
@@ -224,10 +235,11 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public LinkIDAuthSession authStart(final LinkIDAuthenticationContext authenticationContext, final String userAgent)
             throws LinkIDAuthException {
 
+        // request
         AuthStartRequest request = new AuthStartRequest();
 
+        // input
         request.setAny( SamlUtils.marshall( LinkIDSaml2Utils.generate( authenticationContext ) ) );
-
         request.setLanguage( null != authenticationContext.getLanguage()? authenticationContext.getLanguage().getLanguage(): null );
         request.setUserAgent( userAgent );
 
@@ -251,8 +263,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public LinkIDAuthPollResponse authPoll(final String sessionId, final String language)
             throws LinkIDAuthPollException {
 
+        // request
         AuthPollRequest request = new AuthPollRequest();
 
+        // input
         request.setSessionId( sessionId );
         request.setLanguage( language );
 
@@ -307,7 +321,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public void authCancel(final String sessionId)
             throws LinkIDAuthCancelException {
 
+        // request
         AuthCancelRequest request = new AuthCancelRequest();
+
+        // input
         request.setSessionId( sessionId );
 
         // operate
@@ -322,7 +339,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public LinkIDAuthnResponse callbackPull(final String sessionId)
             throws LinkIDCallbackPullException {
 
+        // request
         CallbackPullRequest request = new CallbackPullRequest();
+
+        // input
         request.setSessionId( sessionId );
 
         // operate
@@ -367,13 +387,12 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public List<LinkIDApplication> configWalletApplications(final String walletOrganizationId, final Locale locale)
             throws LinkIDConfigWalletApplicationsException {
 
+        // request
         ConfigWalletApplicationsRequest request = new ConfigWalletApplicationsRequest();
+
+        // input
         request.setWalletOrganizationId( walletOrganizationId );
-        if (null != locale) {
-            request.setLanguage( locale.getLanguage() );
-        } else {
-            request.setLanguage( Locale.ENGLISH.getLanguage() );
-        }
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
 
         // operate
         ConfigWalletApplicationsResponse response = getPort().configWalletApplications( request );
@@ -425,7 +444,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public List<LinkIDLocalization> getLocalization(final List<String> keys)
             throws LinkIDLocalizationException {
 
+        // request
         ConfigLocalizationRequest request = new ConfigLocalizationRequest();
+
+        // input
         request.getKey().addAll( keys );
 
         // operate
@@ -451,7 +473,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public LinkIDPaymentStatus getPaymentStatus(final String orderReference)
             throws LinkIDPaymentStatusException {
 
+        // request
         PaymentStatusRequest request = new PaymentStatusRequest();
+
+        // input
         request.setOrderReference( orderReference );
 
         try {
@@ -506,8 +531,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public void paymentCapture(final String orderReference)
             throws LinkIDPaymentCaptureException {
 
+        // request
         PaymentCaptureRequest request = new PaymentCaptureRequest();
 
+        // input
         request.setOrderReference( orderReference );
 
         // operate
@@ -524,8 +551,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public void paymentRefund(final String orderReference)
             throws LinkIDPaymentRefundException {
 
+        // request
         PaymentRefundRequest request = new PaymentRefundRequest();
 
+        // input
         request.setOrderReference( orderReference );
 
         // operate
@@ -543,16 +572,14 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                                  final Locale locale)
             throws LinkIDMandatePaymentException {
 
+        // request
         MandatePaymentRequest request = new MandatePaymentRequest();
 
+        // input
         request.setPaymentContext( LinkIDServiceUtils.convert( linkIDPaymentContext ) );
         request.setMandateReference( mandateReference );
         request.setNotificationLocation( notificationLocation );
-        if (null != locale) {
-            request.setLanguage( locale.getLanguage() );
-        } else {
-            request.setLanguage( Locale.ENGLISH.getLanguage() );
-        }
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
 
         // operate
         MandatePaymentResponse response = getPort().mandatePayment( request );
@@ -573,8 +600,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public LinkIDLTQRSession ltqrPush(final LinkIDLTQRContent content, final String userAgent, final LinkIDLTQRLockType lockType)
             throws LinkIDLTQRPushException {
 
+        // request
         LTQRPushRequest request = new LTQRPushRequest();
 
+        // input
         request.setContent( LinkIDServiceUtils.convert( content ) );
         request.setUserAgent( userAgent );
         request.setLockType( LinkIDServiceUtils.convert( lockType ) );
@@ -601,8 +630,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public List<LinkIDLTQRPushResponse> ltqrBulkPush(final List<LinkIDLTQRPushContent> contents)
             throws LinkIDLTQRBulkPushException {
 
+        // request
         LTQRBulkPushRequest request = new LTQRBulkPushRequest();
 
+        // input
         for (LinkIDLTQRPushContent content : contents) {
             LTQRPushContent ltqrPushContent = new LTQRPushContent();
             ltqrPushContent.setContent( LinkIDServiceUtils.convert( content.getContent() ) );
@@ -643,8 +674,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                                         final boolean unblock)
             throws LinkIDLTQRChangeException {
 
+        // request
         LTQRChangeRequest request = new LTQRChangeRequest();
 
+        // input
         request.setLtqrReference( ltqrReference );
         request.setContent( LinkIDServiceUtils.convert( content ) );
         request.setUserAgent( userAgent );
@@ -672,16 +705,16 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                                                   @Nullable final List<String> clientSessionIds)
             throws LinkIDLTQRPullException {
 
+        // request
         LTQRPullRequest request = new LTQRPullRequest();
 
+        // input
         if (null != ltqrReferences && !ltqrReferences.isEmpty()) {
             request.getLtqrReferences().addAll( ltqrReferences );
         }
-
         if (null != paymentOrderReferences && !paymentOrderReferences.isEmpty()) {
             request.getPaymentOrderReferences().addAll( paymentOrderReferences );
         }
-
         if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
             request.getClientSessionIds().addAll( clientSessionIds );
         }
@@ -716,18 +749,17 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                            @Nullable final List<String> clientSessionIds)
             throws LinkIDLTQRRemoveException {
 
+        // request
         LTQRRemoveRequest request = new LTQRRemoveRequest();
 
+        // input
         if (null == ltqrReferences || ltqrReferences.isEmpty()) {
             throw new InternalInconsistencyException( "Removing LTQR session requires the LTQR references to be not empty" );
         }
-
         request.getLtqrReferences().addAll( ltqrReferences );
-
         if (null != paymentOrderReferences && !paymentOrderReferences.isEmpty()) {
             request.getPaymentOrderReferences().addAll( paymentOrderReferences );
         }
-
         if (null != clientSessionIds && !clientSessionIds.isEmpty()) {
             request.getClientSessionIds().addAll( clientSessionIds );
         }
@@ -753,12 +785,13 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public List<LinkIDLTQRInfo> ltqrInfo(final List<String> ltqrReferences, final String userAgent)
             throws LinkIDLTQRInfoException {
 
+        // request
         LTQRInfoRequest request = new LTQRInfoRequest();
 
+        // input
         if (null == ltqrReferences || ltqrReferences.isEmpty()) {
             throw new InternalInconsistencyException( "No LTQR references to fetch information for!" );
         }
-
         request.getLtqrReferences().addAll( ltqrReferences );
         request.setUserAgent( userAgent );
 
@@ -849,39 +882,18 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                                               @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
+        // request
         WalletReportRequest request = new WalletReportRequest();
 
-        if (null != locale) {
-            request.setLanguage( locale.getLanguage() );
-        }
-
+        // input
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
         request.setWalletOrganizationId( walletOrganizationId );
+        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
+        request.setApplicationFilter( LinkIDServiceUtils.convert( applicationFilter ) );
+        request.setWalletFilter( LinkIDServiceUtils.convert( walletFilter ) );
 
-        if (null != dateFilter) {
-            ReportDateFilter wsDateFilter = new ReportDateFilter();
-            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
-            if (null != dateFilter.getEndDate()) {
-                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
-            }
-            request.setDateFilter( wsDateFilter );
-        }
-        if (null != pageFilter) {
-            ReportPageFilter wsPageFilter = new ReportPageFilter();
-            wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
-            wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
-            request.setPageFilter( wsPageFilter );
-        }
-        if (null != applicationFilter) {
-            ReportApplicationFilter wsApplicationFilter = new ReportApplicationFilter();
-            wsApplicationFilter.setApplicationName( applicationFilter.getApplicationName() );
-            request.setApplicationFilter( wsApplicationFilter );
-        }
-        if (null != walletFilter) {
-            ReportWalletFilter wsWalletFilter = new ReportWalletFilter();
-            wsWalletFilter.setWalletId( walletFilter.getWalletId() );
-            request.setWalletFilter( wsWalletFilter );
-        }
-
+        // operate
         try {
             WalletReportResponse response = getPort().walletReport( request );
 
@@ -913,13 +925,14 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     public List<LinkIDWalletInfoReport> getWalletInfoReport(@Nullable final Locale locale, final List<String> walletIds)
             throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException {
 
+        // request
         WalletInfoReportRequest request = new WalletInfoReportRequest();
 
-        if (null != locale) {
-            request.setLanguage( locale.getLanguage() );
-        }
+        // input
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
         request.getWalletId().addAll( walletIds );
 
+        // operate
         try {
 
             WalletInfoReportResponse response = getPort().walletInfoReport( request );
@@ -1156,28 +1169,137 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
+    @Override
+    public void voucherReward(final String userId, final String voucherOrganizationId, final long points)
+            throws LinkIDVoucherRewardException {
+
+        // request
+        VoucherRewardRequest request = new VoucherRewardRequest();
+
+        // input
+        request.setUserId( userId );
+        request.setVoucherOrganizationId( voucherOrganizationId );
+        request.setPoints( points );
+
+        // operate
+        VoucherRewardResponse response = getPort().voucherReward( request );
+
+        // response
+        if (null != response.getError()) {
+            throw new LinkIDVoucherRewardException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            // all good <o/
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public LinkIDVouchers voucherList(final String userId, final String voucherOrganizationId, final Locale locale)
+            throws LinkIDVoucherListException {
+
+        // request
+        VoucherListRequest request = new VoucherListRequest();
+
+        // input
+        request.setUserId( userId );
+        request.setVoucherOrganizationId( voucherOrganizationId );
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
+
+        // operate
+        VoucherListResponse response = getPort().voucherList( request );
+
+        // response
+        if (null != response.getError()) {
+            throw new LinkIDVoucherListException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            List<LinkIDVoucher> vouchers = Lists.newLinkedList();
+            for (Voucher voucher : response.getSuccess().getVouchers()) {
+                vouchers.add( LinkIDServiceUtils.convert( voucher ) );
+            }
+            return new LinkIDVouchers( vouchers, response.getSuccess().getTotal() );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public LinkIDVouchers voucherListRedeemed(final String userId, final String voucherOrganizationId, final Locale locale,
+                                              @Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
+            throws LinkIDVoucherListRedeemedException {
+
+        // request
+        VoucherListRedeemedRequest request = new VoucherListRedeemedRequest();
+
+        // input
+        request.setUserId( userId );
+        request.setVoucherOrganizationId( voucherOrganizationId );
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
+        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
+
+        // operate
+        VoucherListRedeemedResponse response = getPort().voucherListRedeemed( request );
+
+        // response
+        if (null != response.getError()) {
+            throw new LinkIDVoucherListRedeemedException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            List<LinkIDVoucher> vouchers = Lists.newLinkedList();
+            for (Voucher voucher : response.getSuccess().getVouchers()) {
+                vouchers.add( LinkIDServiceUtils.convert( voucher ) );
+            }
+            return new LinkIDVouchers( vouchers, response.getSuccess().getTotal() );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void voucherRedeem(final String voucherId)
+            throws LinkIDVoucherRedeemException {
+
+        // request
+        VoucherRedeemRequest request = new VoucherRedeemRequest();
+
+        // input
+        request.setVoucherId( voucherId );
+
+        // operate
+        VoucherRedeemResponse response = getPort().voucherRedeem( request );
+
+        // response
+        if (null != response.getError()) {
+            throw new LinkIDVoucherRedeemException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            // all good <o/
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
     // Helper methods
 
     private LinkIDPaymentReport getPaymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
                                                  @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
+        // request
         PaymentReportRequest request = new PaymentReportRequest();
 
-        if (null != dateFilter) {
-            ReportDateFilter wsDateFilter = new ReportDateFilter();
-            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
-            if (null != dateFilter.getEndDate()) {
-                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
-            }
-            request.setDateFilter( wsDateFilter );
-        }
-        if (null != pageFilter) {
-            ReportPageFilter wsPageFilter = new ReportPageFilter();
-            wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
-            wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
-            request.setPageFilter( wsPageFilter );
-        }
+        // input
+        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
         if (null != orderReferences) {
             request.getOrderReferences().addAll( orderReferences );
         }
@@ -1237,22 +1359,12 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                                                  @Nullable final List<String> dtaKeys, @Nullable final List<String> parkings)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
+        // request
         ParkingReportRequest request = new ParkingReportRequest();
 
-        if (null != dateFilter) {
-            ReportDateFilter wsDateFilter = new ReportDateFilter();
-            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
-            if (null != dateFilter.getEndDate()) {
-                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
-            }
-            request.setDateFilter( wsDateFilter );
-        }
-        if (null != pageFilter) {
-            ReportPageFilter wsPageFilter = new ReportPageFilter();
-            wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
-            wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
-            request.setPageFilter( wsPageFilter );
-        }
+        // input
+        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
         if (null != barCodes) {
             request.getBarCodes().addAll( barCodes );
         }

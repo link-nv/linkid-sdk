@@ -596,6 +596,20 @@ public class LinkIDWSClientTest {
         client.paymentRefund( orderReference );
     }
 
+    @Test
+    public void testVoucherModify()
+            throws Exception {
+
+        // Setup
+        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String voucherOrganizationId = "";
+
+        LinkIDServiceClient client = getLinkIDServiceClient();
+
+        // Operate
+        client.voucherReward( userId, voucherOrganizationId, 1 );
+    }
+
     // Auth
 
     private LinkIDServiceClient getLinkIDServiceClient() {
