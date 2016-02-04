@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.idmapping;
 
-import com.sun.xml.internal.ws.client.ClientTransportException;
+import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.idmapping.LinkIDNameIDMappingRequestType;

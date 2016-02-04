@@ -79,6 +79,12 @@
             <artifactId>util-ws</artifactId>
         </dependency>
 
+        <!-- WS -->
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>

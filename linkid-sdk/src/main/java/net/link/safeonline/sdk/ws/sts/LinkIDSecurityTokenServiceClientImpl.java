@@ -7,7 +7,7 @@
 
 package net.link.safeonline.sdk.ws.sts;
 
-import com.sun.xml.internal.ws.client.ClientTransportException;
+import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;

@@ -9,7 +9,7 @@ package net.link.safeonline.sdk.ws.linkid;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.sun.xml.internal.ws.client.ClientTransportException;
+import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Locale;
