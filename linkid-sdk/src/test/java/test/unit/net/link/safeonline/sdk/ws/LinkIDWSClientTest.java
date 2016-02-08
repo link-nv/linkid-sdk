@@ -374,15 +374,14 @@ public class LinkIDWSClientTest {
         String language = "be";
         LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 100, LinkIDCurrency.EUR ) ).build();
 
-        LinkIDAuthenticationContext linkIDAuthenticationContext = new LinkIDAuthenticationContext( APP_NAME, null );
-        linkIDAuthenticationContext.setLanguage( new Locale( language ) );
-        //        linkIDAuthenticationContext.setPaymentContext( paymentContext );
-        linkIDAuthenticationContext.setNotificationLocation( "https://demo.linkid.be" );
+        LinkIDAuthenticationContext context = new LinkIDAuthenticationContext.Builder( APP_NAME ).language( new Locale( language ) )
+                                                                                                 .notificationLocation( "https://demo.linkid.be" )
+                                                                                                 .build();
 
         // operate: start
         try {
             String userAgent = "unit-test";
-            LinkIDAuthSession session = client.authStart( linkIDAuthenticationContext, userAgent );
+            LinkIDAuthSession session = client.authStart( context, userAgent );
 
             // write out QR image
             ByteArrayInputStream bais = new ByteArrayInputStream( session.getQrCodeInfo().getQrImage() );
@@ -593,7 +592,7 @@ public class LinkIDWSClientTest {
         client.paymentRefund( orderReference );
     }
 
-    @Test
+    //    @Test
     public void testVoucherModify()
             throws Exception {
 

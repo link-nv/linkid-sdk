@@ -39,7 +39,6 @@ import net.link.util.test.pkix.PkiTestUtils;
 import net.link.util.test.web.DomTestUtils;
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.xml.XMLObject;
@@ -87,9 +86,6 @@ public class LinkIDAuthnRequestFactoryTest {
 
         assertNotNull( resultAuthnRequest.getIssuer() );
         assertEquals( applicationName, resultAuthnRequest.getIssuer().getValue() );
-
-        assertNotNull( resultAuthnRequest.getProtocolBinding() );
-        assertEquals( SAMLConstants.SAML2_POST_BINDING_URI, resultAuthnRequest.getProtocolBinding() );
 
         assertNotNull( resultAuthnRequest.getDestination() );
         assertEquals( destinationURL, resultAuthnRequest.getDestination() );
