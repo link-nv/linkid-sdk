@@ -83,4 +83,5 @@ v4.1
 ---
   * Configuration simplified
     * no more need to configure a ConfigFilter or set a ConfigHolder. The WS client now takes an extra LinkIDConfigService argument. You can use the default LinkIDConfig implementation which will look for a linkID.properties file or you can use your own.
+    * linkid-config module no longer exists
   * Voucher support
