@@ -16,7 +16,7 @@ import java.util.Collection;
 import net.link.safeonline.sdk.api.configuration.LinkIDConfigService;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.LazyPublicKeyTrustLinker;
-import net.link.util.config.KeyProvider;
+import net.link.util.keyprovider.KeyProvider;
 import net.link.util.logging.Logger;
 import net.link.util.util.ObjectUtils;
 import net.link.util.ws.security.x509.AbstractWSSecurityConfiguration;

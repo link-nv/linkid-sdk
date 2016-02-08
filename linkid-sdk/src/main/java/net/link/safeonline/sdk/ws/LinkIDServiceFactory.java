@@ -22,7 +22,7 @@ import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImp
 import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
 import net.link.safeonline.sdk.ws.sts.LinkIDSecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.LinkIDXkms2ClientImpl;
-import net.link.util.config.KeyProvider;
+import net.link.util.keyprovider.KeyProvider;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import org.jetbrains.annotations.Nullable;
