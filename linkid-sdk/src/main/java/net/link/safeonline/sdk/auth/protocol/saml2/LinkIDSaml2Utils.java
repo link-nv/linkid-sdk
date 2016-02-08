@@ -62,9 +62,8 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
                 authenticationContext.getTheme(), authenticationContext.getMobileLandingSuccess(), authenticationContext.getMobileLandingError(),
                 authenticationContext.getMobileLandingCancel(), authenticationContext.getNotificationLocation() );
 
-        return LinkIDAuthnRequestFactory.createAuthnRequest( authenticationContext.getApplicationName(), null,
-                authenticationContext.getApplicationFriendlyName(), "http://foo.bar", null, true, deviceContextMap,
-                authenticationContext.getSubjectAttributes(), authenticationContext.getPaymentContext(), authenticationContext.getCallback() );
+        return LinkIDAuthnRequestFactory.createAuthnRequest( authenticationContext.getApplicationName(), null, deviceContextMap,
+                authenticationContext.getAttributeSuggestions(), authenticationContext.getPaymentContext(), authenticationContext.getCallback() );
     }
 
     /**
@@ -114,7 +113,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
             List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( linkIDAttribute.getName() );
             if (null == attributes) {
-                attributes = new LinkedList<LinkIDAttribute<Serializable>>();
+                attributes = new LinkedList<>();
             }
             attributes.add( linkIDAttribute );
             attributeMap.put( linkIDAttribute.getName(), attributes );
@@ -126,7 +125,7 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
     private static LinkIDAttribute<Serializable> getAttributeSDK(Attribute attributeType) {
 
         String attributeId = attributeType.getUnknownAttributes().get( LinkIDWebServiceConstants.ATTRIBUTE_ID );
-        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<Serializable>( attributeId, attributeType.getName(), null );
+        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<>( attributeId, attributeType.getName(), null );
 
         List<XMLObject> attributeValues = attributeType.getAttributeValues();
         if (attributeValues.isEmpty())
@@ -136,11 +135,11 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
         if (null != xmlValue.getOrderedChildren() && !xmlValue.getOrderedChildren().isEmpty()) {
 
             // compound
-            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<LinkIDAttribute<?>>();
+            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<>();
             for (XMLObject memberAttributeObject : attributeValues.get( 0 ).getOrderedChildren()) {
 
                 Attribute memberAttribute = (Attribute) memberAttributeObject;
-                LinkIDAttribute<Serializable> member = new LinkIDAttribute<Serializable>( attributeId, memberAttribute.getName(), null );
+                LinkIDAttribute<Serializable> member = new LinkIDAttribute<>( attributeId, memberAttribute.getName(), null );
                 if (!memberAttribute.getAttributeValues().isEmpty()) {
                     member.setValue( toJavaObject( memberAttribute.getAttributeValues().get( 0 ) ) );
                 }

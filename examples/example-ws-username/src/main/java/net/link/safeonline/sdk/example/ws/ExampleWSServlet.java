@@ -7,8 +7,6 @@
 
 package net.link.safeonline.sdk.example.ws;
 
-import static net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder.config;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Locale;
@@ -21,6 +19,7 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
+import net.link.safeonline.sdk.configuration.LinkIDConfig;
 import net.link.safeonline.sdk.ws.LinkIDServiceFactory;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.logging.Logger;
@@ -41,11 +40,9 @@ public class ExampleWSServlet extends HttpServlet {
         LinkIDAuthSession linkIDAuthSession = (LinkIDAuthSession) request.getSession().getAttribute( RESPONSE_SESSION_PARAM );
         if (null == linkIDAuthSession) {
             try {
-                LinkIDAuthenticationContext authenticationContext = new LinkIDAuthenticationContext();
-                authenticationContext.setApplicationName( config().linkID().app().name() );
-                authenticationContext.setLanguage( Locale.ENGLISH );
+                LinkIDAuthenticationContext authenticationContext = new LinkIDAuthenticationContext.Builder( LinkIDConfig.get() ).build();
 
-                linkIDAuthSession = LinkIDServiceFactory.getLinkIDService().authStart( authenticationContext, null );
+                linkIDAuthSession = LinkIDServiceFactory.getLinkIDService( LinkIDConfig.get() ).authStart( authenticationContext, null );
 
                 // push on session
                 request.getSession().setAttribute( RESPONSE_SESSION_PARAM, linkIDAuthSession );
@@ -63,7 +60,7 @@ public class ExampleWSServlet extends HttpServlet {
 
             // poll
             try {
-                LinkIDAuthPollResponse linkIDAuthPollResponse = LinkIDServiceFactory.getLinkIDService()
+                LinkIDAuthPollResponse linkIDAuthPollResponse = LinkIDServiceFactory.getLinkIDService( LinkIDConfig.get() )
                                                                                     .authPoll( linkIDAuthSession.getSessionId(), Locale.ENGLISH.getLanguage() );
                 showPollResult( linkIDAuthPollResponse, response );
             }
@@ -73,7 +70,7 @@ public class ExampleWSServlet extends HttpServlet {
         }
     }
 
-    private void showPollResult(final LinkIDAuthPollResponse linkIDAuthPollResponse, final HttpServletResponse response)
+    private static void showPollResult(final LinkIDAuthPollResponse linkIDAuthPollResponse, final HttpServletResponse response)
             throws IOException {
 
         response.getWriter().write( "<html>" );

@@ -41,11 +41,6 @@
     <dependencies>
         <dependency>
             <groupId>net.lin-k.linkid.client.sdk</groupId>
-            <artifactId>linkid-config</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk</groupId>
             <artifactId>linkid-ws</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -266,7 +266,7 @@ public class LinkIDPaymentContext implements Serializable {
 
         // Required parameters
         private final LinkIDPaymentAmount amount;
-
+        //
         // Optional parameters - initialized to default values
         private String                  description           = null;
         private String                  orderReference        = null;

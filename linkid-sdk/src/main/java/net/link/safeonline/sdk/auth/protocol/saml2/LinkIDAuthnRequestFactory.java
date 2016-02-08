@@ -48,10 +48,7 @@ import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.common.Extensions;
 import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.xml.Configuration;
@@ -118,28 +115,18 @@ public class LinkIDAuthnRequestFactory {
      * Creates a SAML2 authentication request. For the moment we allow the Service Provider to pass on the Assertion Consumer Service URL
      * itself. Later on we could use the SAML Metadata service or a persistent server-side application field to locate this service.
      *
-     * @param issuerName                  issuer of the authentication request
-     * @param audiences                   the optional list of audiences is the optional list of application pools that can be specified
-     *                                    for
-     *                                    use in Single Sign On
-     * @param applicationFriendlyName     optional application friendly name to be displayed by linkID
-     * @param assertionConsumerServiceURL the optional location of the assertion consumer service. This location can be used by the IdP to
-     *                                    send back the SAML
-     *                                    response message.
-     * @param destinationURL              the optional location of the destination IdP.
-     * @param forceAuthentication         whether authentication should be forced and SSO ignore
-     * @param deviceContextMap            optional device context, can contain context attributes for specific device's like the iOS client
-     * @param subjectAttributesMap        optional map attributes of the to be authenticated subject. These values will be used if needed
-     *                                    in case of missing attributes in the linkID authentication flow. The key's are the linkID
-     *                                    attribute names.
-     * @param paymentContext              optional payment context case the authentication serves as a payment request.
-     * @param linkIDCallback              optional callback config for when the linkID auth/payment has finished
+     * @param issuerName           issuer of the authentication request
+     * @param destinationURL       the optional location of the destination IdP.
+     * @param deviceContextMap     optional device context, can contain context attributes for specific device's like the iOS client
+     * @param subjectAttributesMap optional map attributes of the to be authenticated subject. These values will be used if needed
+     *                             in case of missing attributes in the linkID authentication flow. The key's are the linkID
+     *                             attribute names.
+     * @param paymentContext       optional payment context case the authentication serves as a payment request.
+     * @param linkIDCallback       optional callback config for when the linkID auth/payment has finished
      *
      * @return unsigned SAML v2.0 AuthnRequest object
      */
-    public static AuthnRequest createAuthnRequest(String issuerName, @Nullable List<String> audiences, @Nullable String applicationFriendlyName,
-                                                  String assertionConsumerServiceURL, @Nullable String destinationURL, boolean forceAuthentication,
-                                                  @Nullable Map<String, String> deviceContextMap,
+    public static AuthnRequest createAuthnRequest(String issuerName, @Nullable String destinationURL, @Nullable Map<String, String> deviceContextMap,
                                                   @Nullable Map<String, List<Serializable>> subjectAttributesMap,
                                                   @Nullable net.link.safeonline.sdk.api.payment.LinkIDPaymentContext paymentContext,
                                                   @Nullable net.link.safeonline.sdk.api.callback.LinkIDCallback linkIDCallback) {
@@ -149,7 +136,7 @@ public class LinkIDAuthnRequestFactory {
 
         AuthnRequest request = SamlUtils.buildXMLObject( AuthnRequest.DEFAULT_ELEMENT_NAME );
 
-        request.setForceAuthn( forceAuthentication );
+        request.setForceAuthn( true );
         SecureRandomIdentifierGenerator idGenerator;
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
@@ -165,34 +152,12 @@ public class LinkIDAuthnRequestFactory {
         issuer.setValue( issuerName );
         request.setIssuer( issuer );
 
-        if (null != assertionConsumerServiceURL) {
-            request.setAssertionConsumerServiceURL( assertionConsumerServiceURL );
-            request.setProtocolBinding( SAMLConstants.SAML2_POST_BINDING_URI );
-        }
-
         if (null != destinationURL)
             request.setDestination( destinationURL );
-
-        if (null != applicationFriendlyName)
-            request.setProviderName( applicationFriendlyName );
 
         NameIDPolicy nameIdPolicy = SamlUtils.buildXMLObject( NameIDPolicy.DEFAULT_ELEMENT_NAME );
         nameIdPolicy.setAllowCreate( true );
         request.setNameIDPolicy( nameIdPolicy );
-
-        if (null != audiences) {
-            Conditions conditions = SamlUtils.buildXMLObject( Conditions.DEFAULT_ELEMENT_NAME );
-            List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-            AudienceRestriction audienceRestriction = SamlUtils.buildXMLObject( AudienceRestriction.DEFAULT_ELEMENT_NAME );
-            audienceRestrictions.add( audienceRestriction );
-            List<Audience> audienceList = audienceRestriction.getAudiences();
-            for (String audienceName : audiences) {
-                Audience audience = SamlUtils.buildXMLObject( Audience.DEFAULT_ELEMENT_NAME );
-                audienceList.add( audience );
-                audience.setAudienceURI( audienceName );
-            }
-            request.setConditions( conditions );
-        }
 
         // add device context
         if (null != deviceContextMap) {

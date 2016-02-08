@@ -401,7 +401,6 @@
     <modules>
         <module>linkid-container-test</module>
 
-        <module>linkid-config</module>
         <module>linkid-sdk-api</module>
         <module>linkid-sdk</module>
         <module>linkid-ws</module>

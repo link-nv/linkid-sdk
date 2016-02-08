@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -62,13 +63,11 @@ public class LinkIDAuthnRequestFactoryTest {
         // Setup Data
         String applicationName = "test-application-id";
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
         String destinationURL = "https://test.idp.com/entry";
 
         // Test
         long begin = System.currentTimeMillis();
-        AuthnRequest samlAuthnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL,
-                false, null, null, null, null );
+        AuthnRequest samlAuthnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( applicationName, destinationURL, null, null, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
 
         logger.dbg( DomUtils.domToString( SamlUtils.marshall( samlAuthnRequest ) ) );
@@ -88,9 +87,6 @@ public class LinkIDAuthnRequestFactoryTest {
 
         assertNotNull( resultAuthnRequest.getIssuer() );
         assertEquals( applicationName, resultAuthnRequest.getIssuer().getValue() );
-
-        assertNotNull( resultAuthnRequest.getAssertionConsumerServiceURL() );
-        assertEquals( assertionConsumerServiceURL, resultAuthnRequest.getAssertionConsumerServiceURL() );
 
         assertNotNull( resultAuthnRequest.getProtocolBinding() );
         assertEquals( SAMLConstants.SAML2_POST_BINDING_URI, resultAuthnRequest.getProtocolBinding() );
@@ -112,7 +108,6 @@ public class LinkIDAuthnRequestFactoryTest {
 
         // Setup Data
         String applicationName = "test-application-id";
-        String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
         String destinationURL = "https://test.idp.com/entry";
 
         KeyPair rootKeyPair = PkiTestUtils.generateKeyPair();
@@ -126,8 +121,7 @@ public class LinkIDAuthnRequestFactoryTest {
 
         // Test
         long begin = System.currentTimeMillis();
-        AuthnRequest samlAuthnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL,
-                false, null, null, null, null );
+        AuthnRequest samlAuthnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( applicationName, destinationURL, null, null, null, null );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, certificateChain ) );
         long end = System.currentTimeMillis();
 
@@ -157,7 +151,6 @@ public class LinkIDAuthnRequestFactoryTest {
 
         // Setup Data
         String applicationName = "test-application-id";
-        String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
         String destinationURL = "https://test.idp.com/entry";
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -174,7 +167,7 @@ public class LinkIDAuthnRequestFactoryTest {
         String testAttributeDate = "test.attribute.date";
 
         subjectAttributesMap.put( testAttributeString, Arrays.<Serializable>asList( "value1", "value2", "value3" ) );
-        subjectAttributesMap.put( testAttributeBoolean, Arrays.<Serializable>asList( true ) );
+        subjectAttributesMap.put( testAttributeBoolean, Collections.<Serializable>singletonList( true ) );
         subjectAttributesMap.put( testAttributeDate, Arrays.<Serializable>asList( new Date(), new Date() ) );
 
         // Setup Payment context
@@ -187,8 +180,8 @@ public class LinkIDAuthnRequestFactoryTest {
 
         // Test
         long begin = System.currentTimeMillis();
-        AuthnRequest samlAuthnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( applicationName, null, null, assertionConsumerServiceURL, destinationURL,
-                false, deviceContextMap, subjectAttributesMap, paymentContext, linkIDCallback );
+        AuthnRequest samlAuthnRequest = LinkIDAuthnRequestFactory.createAuthnRequest( applicationName, destinationURL, deviceContextMap, subjectAttributesMap,
+                paymentContext, linkIDCallback );
         String samlAuthnRequestToken = DomUtils.domToString( SamlUtils.sign( samlAuthnRequest, keyPair, null ) );
         long end = System.currentTimeMillis();
 

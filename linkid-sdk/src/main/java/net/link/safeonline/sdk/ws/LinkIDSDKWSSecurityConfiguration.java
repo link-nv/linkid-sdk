@@ -7,25 +7,19 @@
 
 package net.link.safeonline.sdk.ws;
 
-import static net.link.util.util.ObjectUtils.ifNotNullElse;
-
 import be.fedict.trust.TrustValidator;
 import be.fedict.trust.linker.TrustLinkerResultException;
 import be.fedict.trust.repository.MemoryCertificateRepository;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
-import javax.security.auth.x500.X500Principal;
-import net.link.safeonline.sdk.configuration.LinkIDSDKConfigHolder;
+import net.link.safeonline.sdk.api.configuration.LinkIDConfigService;
 import net.link.util.common.CertificateChain;
 import net.link.util.common.LazyPublicKeyTrustLinker;
 import net.link.util.config.KeyProvider;
 import net.link.util.logging.Logger;
-import net.link.util.util.NNSupplier;
 import net.link.util.util.ObjectUtils;
 import net.link.util.ws.security.x509.AbstractWSSecurityConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joda.time.Duration;
 
 
@@ -40,17 +34,12 @@ public class LinkIDSDKWSSecurityConfiguration extends AbstractWSSecurityConfigur
 
     static final Logger logger = Logger.get( LinkIDSDKWSSecurityConfiguration.class );
 
-    private final X500Principal trustedDN;
-    private final KeyProvider   keyProvider;
+    private final LinkIDConfigService config;
+    private final KeyProvider         keyProvider;
 
-    public LinkIDSDKWSSecurityConfiguration() {
+    public LinkIDSDKWSSecurityConfiguration(final LinkIDConfigService config, final KeyProvider keyProvider) {
 
-        this( null, null );
-    }
-
-    public LinkIDSDKWSSecurityConfiguration(@Nullable final X500Principal trustedDN, @Nullable final KeyProvider keyProvider) {
-
-        this.trustedDN = trustedDN;
+        this.config = config;
         this.keyProvider = keyProvider;
     }
 
@@ -58,14 +47,14 @@ public class LinkIDSDKWSSecurityConfiguration extends AbstractWSSecurityConfigur
     public boolean isCertificateChainTrusted(final CertificateChain aCertificateChain) {
 
         // Manually check whether the end certificate has the correct DN.
-        if (!ObjectUtils.isEqual( aCertificateChain.getIdentityCertificate().getSubjectX500Principal(), getTrustedDN() )) {
+        if (!ObjectUtils.isEqual( aCertificateChain.getIdentityCertificate().getSubjectX500Principal(), config.trustedDN() )) {
             logger.err( "End certificate's DN does not match the one specified in the configuration: \"%s\" - \"%s\"",
-                    aCertificateChain.getIdentityCertificate().getSubjectX500Principal(), getTrustedDN() );
+                    aCertificateChain.getIdentityCertificate().getSubjectX500Principal(), config.trustedDN() );
             return false;
         }
 
         MemoryCertificateRepository certificateRepository = new MemoryCertificateRepository();
-        Collection<X509Certificate> trustedCertificates = getKeyProvider().getTrustedCertificates();
+        Collection<X509Certificate> trustedCertificates = keyProvider.getTrustedCertificates();
         for (X509Certificate trustedCertificate : trustedCertificates)
             certificateRepository.addTrustPoint( trustedCertificate );
 
@@ -81,38 +70,21 @@ public class LinkIDSDKWSSecurityConfiguration extends AbstractWSSecurityConfigur
         }
     }
 
-    public X500Principal getTrustedDN() {
-
-        return ifNotNullElse( trustedDN, LinkIDSDKConfigHolder.config().linkID().app().trustedDN() );
-    }
-
-    public KeyProvider getKeyProvider() {
-
-        return ifNotNullElse( keyProvider, new NNSupplier<KeyProvider>() {
-            @Override
-            @NotNull
-            public KeyProvider get() {
-
-                return LinkIDSDKConfigHolder.config().linkID().app().keyProvider();
-            }
-        } );
-    }
-
     @Override
     public CertificateChain getIdentityCertificateChain() {
 
-        return getKeyProvider().getIdentityCertificateChain();
+        return keyProvider.getIdentityCertificateChain();
     }
 
     @Override
     public PrivateKey getPrivateKey() {
 
-        return getKeyProvider().getIdentityKeyPair().getPrivate();
+        return keyProvider.getIdentityKeyPair().getPrivate();
     }
 
     @Override
     public Duration getMaximumAge() {
 
-        return LinkIDSDKConfigHolder.config().proto().maxTimeOffset();
+        return config.maxTimeOffset();
     }
 }
