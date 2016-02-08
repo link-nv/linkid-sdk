@@ -78,3 +78,9 @@ v4.0
     * AUTHENTICATION_FAILED
   * ConfigWalletApplications operation: fetch apps allowed to use specified wallet organization.
     * Only allowed if requesting app has the reporting permission on that wallet organization
+
+v4.1
+---
+  * Configuration simplified
+    * no more need to configure a ConfigFilter or set a ConfigHolder. The WS client now takes an extra LinkIDConfigService argument. You can use the default LinkIDConfig implementation which will look for a linkID.properties file or you can use your own.
+  * Voucher support
