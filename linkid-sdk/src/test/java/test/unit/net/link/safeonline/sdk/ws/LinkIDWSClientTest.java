@@ -30,6 +30,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
@@ -593,17 +594,66 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testVoucherModify()
+    public void testVoucherReward()
             throws Exception {
 
         // Setup
-        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
-        String voucherOrganizationId = "";
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String voucherOrganizationId = "E50CCE04-9FFB-44B2-814A-3E08524C50CF";
 
         LinkIDServiceClient client = getLinkIDServiceClient();
 
         // Operate
-        client.voucherReward( userId, voucherOrganizationId, 1 );
+        client.voucherReward( userId, voucherOrganizationId, 15 );
+    }
+
+    //    @Test
+    public void testVoucherList()
+            throws Exception {
+
+        // Setup
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String voucherOrganizationId = "E50CCE04-9FFB-44B2-814A-3E08524C50CF";
+
+        LinkIDServiceClient client = getLinkIDServiceClient();
+
+        // Operate
+        LinkIDVouchers vouchers = client.voucherList( userId, voucherOrganizationId, Locale.ENGLISH );
+
+        // Verify
+        assertNotNull( vouchers );
+        assertEquals( vouchers.getTotal(), vouchers.getVouchers().size() );
+    }
+
+    //    @Test
+    public void voucherListRedeemed()
+            throws Exception {
+
+        // Setup
+        String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
+        String voucherOrganizationId = "E50CCE04-9FFB-44B2-814A-3E08524C50CF";
+
+        LinkIDServiceClient client = getLinkIDServiceClient();
+
+        // Operate
+        LinkIDVouchers vouchers = client.voucherListRedeemed( userId, voucherOrganizationId, Locale.ENGLISH, null, null );
+
+        // Verify
+        assertNotNull( vouchers );
+        assertEquals( vouchers.getTotal(), vouchers.getVouchers().size() );
+    }
+
+    //    @Test
+    public void testVoucherRedeem()
+            throws Exception {
+
+        // Setup
+        String voucherId = "089f7b53-c34c-44cf-b64a-769744d854c7";
+
+        LinkIDServiceClient client = getLinkIDServiceClient();
+
+        // Operate
+        client.voucherRedeem( voucherId );
     }
 
     // Auth
