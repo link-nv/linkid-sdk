@@ -117,7 +117,8 @@ public class LinkIDServiceFactory {
                 new LinkIDSDKWSSecurityConfiguration( linkIDConfigService, keyProvider ) );
     }
 
-    public static LinkIDNameIdentifierMappingClient getIdMappingService(final LinkIDConfigService linkIDConfigService, final String username, final String password) {
+    public static LinkIDNameIdentifierMappingClient getIdMappingService(final LinkIDConfigService linkIDConfigService, final String username,
+                                                                        final String password) {
 
         return new LinkIDNameIdentifierMappingClientImpl( getWsUsernameBase( linkIDConfigService ), getSSLCertificates( linkIDConfigService, null ),
                 getUsernameTokenCallback( username, password ) );
@@ -187,9 +188,10 @@ public class LinkIDServiceFactory {
         };
     }
 
+    @Nullable
     private static X509Certificate[] getSSLCertificates(final LinkIDConfigService linkIDConfigService, @Nullable final KeyProvider keyProvider) {
 
-        X509Certificate sslCertificate = keyProvider.getTrustedCertificate( LinkIDConstants.SSL_ALIAS );
+        X509Certificate sslCertificate = keyProvider != null? keyProvider.getTrustedCertificate( LinkIDConstants.SSL_ALIAS ): null;
         if (null != keyProvider && null != sslCertificate) {
             return new X509Certificate[] { sslCertificate };
         } else {
