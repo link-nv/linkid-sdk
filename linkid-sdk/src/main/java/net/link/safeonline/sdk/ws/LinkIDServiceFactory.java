@@ -192,7 +192,7 @@ public class LinkIDServiceFactory {
     private static X509Certificate[] getSSLCertificates(final LinkIDConfigService linkIDConfigService, @Nullable final KeyProvider keyProvider) {
 
         X509Certificate sslCertificate = keyProvider != null? keyProvider.getTrustedCertificate( LinkIDConstants.SSL_ALIAS ): null;
-        if (null != keyProvider && null != sslCertificate) {
+        if (null != sslCertificate) {
             return new X509Certificate[] { sslCertificate };
         } else {
             return linkIDConfigService.sslCertificates();
