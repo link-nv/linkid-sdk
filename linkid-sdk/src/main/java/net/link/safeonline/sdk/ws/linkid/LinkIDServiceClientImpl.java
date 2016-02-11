@@ -176,6 +176,7 @@ import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
+import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.Nullable;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.Configuration;
@@ -820,60 +821,119 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDPaymentReport getPaymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
+    public LinkIDPaymentReport getPaymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final List<String> orderReferences,
+                                                @Nullable final List<String> mandateReferences, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getPaymentReport( dateFilter, pageFilter, null, null );
+        // request
+        PaymentReportRequest request = new PaymentReportRequest();
+
+        // input
+        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
+        if (!CollectionUtils.isEmpty( orderReferences )) {
+            request.getOrderReferences().addAll( orderReferences );
+        }
+        if (!CollectionUtils.isEmpty( mandateReferences )) {
+            request.getMandateReferences().addAll( mandateReferences );
+        }
+
+        try {
+            PaymentReportResponse response = getPort().paymentReport( request );
+
+            if (null != response.getError()) {
+                throw new LinkIDReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            }
+
+            List<LinkIDPaymentOrder> orders = Lists.newLinkedList();
+            for (PaymentOrder paymentOrder : response.getOrders()) {
+
+                // payment transactions
+                List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
+                for (PaymentTransaction paymentTransaction : paymentOrder.getTransactions()) {
+                    transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
+                            paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
+                            LinkIDServiceUtils.convert( paymentTransaction.getCreationDate() ),
+                            LinkIDServiceUtils.convert( paymentTransaction.getAuthorizationDate() ),
+                            LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ),
+                            LinkIDServiceUtils.convert( paymentTransaction.getRefundedDate() ), paymentTransaction.getDocdataReference(),
+                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
+                            paymentTransaction.getRefundAmount() ) );
+                }
+
+                // wallet transactions
+                List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
+                for (WalletTransaction walletTransaction : paymentOrder.getWalletTransactions()) {
+                    walletTransactions.add(
+                            new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
+                                    LinkIDServiceUtils.convert( walletTransaction.getRefundedDate() ),
+                                    LinkIDSDKUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
+                                    walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ),
+                                    walletTransaction.getWalletCoin(), walletTransaction.getRefundAmount(), paymentOrder.getDescription() ) );
+                }
+
+                // order
+                orders.add( new LinkIDPaymentOrder( LinkIDServiceUtils.convert( paymentOrder.getDate() ), paymentOrder.getAmount(),
+                        LinkIDServiceUtils.convert( paymentOrder.getCurrency() ), paymentOrder.getWalletCoin(), paymentOrder.getDescription(),
+                        LinkIDServiceUtils.convert( paymentOrder.getPaymentState() ), paymentOrder.getAmountPayed(), paymentOrder.getAmountRefunded(),
+                        paymentOrder.isAuthorized(), LinkIDServiceUtils.convert( paymentOrder.getAuthorizedDate() ), paymentOrder.isCaptured(),
+                        LinkIDServiceUtils.convert( paymentOrder.getCapturedDate() ), paymentOrder.isRefunded(),
+                        LinkIDServiceUtils.convert( paymentOrder.getRefundedDate() ), paymentOrder.getOrderReference(), paymentOrder.getUserId(),
+                        paymentOrder.getEmail(), paymentOrder.getGivenName(), paymentOrder.getFamilyName(), transactions, walletTransactions ) );
+            }
+
+            return new LinkIDPaymentReport( response.getTotal(), orders );
+        }
+        catch (ClientTransportException e) {
+            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
+        }
     }
 
     @Override
-    public LinkIDPaymentReport getPaymentReportForOrderReferences(final List<String> orderReferences, @Nullable final LinkIDReportPageFilter pageFilter)
+    public LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final List<String> parkings,
+                                                @Nullable final List<String> barCodes, @Nullable final List<String> ticketNumbers,
+                                                @Nullable final List<String> dtaKeys, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
-        return getPaymentReport( null, pageFilter, orderReferences, null );
-    }
+        // request
+        ParkingReportRequest request = new ParkingReportRequest();
 
-    @Override
-    public LinkIDPaymentReport getPaymentReportForMandates(final List<String> mandateReferences, @Nullable final LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
+        // input
+        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
+        if (!CollectionUtils.isEmpty( barCodes )) {
+            request.getBarCodes().addAll( barCodes );
+        }
+        if (!CollectionUtils.isEmpty( ticketNumbers )) {
+            request.getTicketNumbers().addAll( ticketNumbers );
+        }
+        if (!CollectionUtils.isEmpty( dtaKeys )) {
+            request.getDtaKeys().addAll( dtaKeys );
+        }
+        if (!CollectionUtils.isEmpty( parkings )) {
+            request.getParkings().addAll( parkings );
+        }
 
-        return getPaymentReport( null, pageFilter, null, mandateReferences );
-    }
+        try {
+            ParkingReportResponse response = getPort().parkingReport( request );
 
-    @Override
-    public LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
+            if (null != response.getError()) {
+                throw new LinkIDReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            }
 
-        return getParkingReport( dateFilter, pageFilter, null, null, null, null );
-    }
+            List<LinkIDParkingSession> sessions = Lists.newLinkedList();
 
-    @Override
-    public LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
-                                                @Nullable final List<String> parkings)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
+            for (ParkingSession session : response.getSessions()) {
+                sessions.add( new LinkIDParkingSession( session.getDate().toGregorianCalendar().getTime(), session.getBarCode(), session.getParking(),
+                        session.getUserId(), session.getTurnover(), session.isValidated(), session.getPaymentOrderReference(),
+                        LinkIDServiceUtils.convert( session.getPaymentState() ) ) );
+            }
 
-        return getParkingReport( dateFilter, pageFilter, null, null, null, parkings );
-    }
-
-    @Override
-    public LinkIDParkingReport getParkingReportForBarCodes(final List<String> barCodes, @Nullable final LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
-
-        return getParkingReport( null, pageFilter, barCodes, null, null, null );
-    }
-
-    @Override
-    public LinkIDParkingReport getParkingReportForTicketNumbers(final List<String> ticketNumbers, @Nullable final LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
-
-        return getParkingReport( null, pageFilter, null, ticketNumbers, null, null );
-    }
-
-    @Override
-    public LinkIDParkingReport getParkingReportForDTAKeys(final List<String> dtaKeys, @Nullable final LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
-
-        return getParkingReport( null, pageFilter, null, null, dtaKeys, null );
+            return new LinkIDParkingReport( response.getTotal(), sessions );
+        }
+        catch (ClientTransportException e) {
+            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
+        }
     }
 
     @Override
@@ -1290,121 +1350,4 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
-
-    // Helper methods
-
-    private LinkIDPaymentReport getPaymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
-                                                 @Nullable final List<String> orderReferences, @Nullable final List<String> mandateReferences)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
-
-        // request
-        PaymentReportRequest request = new PaymentReportRequest();
-
-        // input
-        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
-        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
-        if (null != orderReferences) {
-            request.getOrderReferences().addAll( orderReferences );
-        }
-        if (null != mandateReferences) {
-            request.getMandateReferences().addAll( mandateReferences );
-        }
-
-        try {
-            PaymentReportResponse response = getPort().paymentReport( request );
-
-            if (null != response.getError()) {
-                throw new LinkIDReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            }
-
-            List<LinkIDPaymentOrder> orders = Lists.newLinkedList();
-            for (PaymentOrder paymentOrder : response.getOrders()) {
-
-                // payment transactions
-                List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
-                for (PaymentTransaction paymentTransaction : paymentOrder.getTransactions()) {
-                    transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
-                            paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getCreationDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getAuthorizationDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getRefundedDate() ), paymentTransaction.getDocdataReference(),
-                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
-                            paymentTransaction.getRefundAmount() ) );
-                }
-
-                // wallet transactions
-                List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
-                for (WalletTransaction walletTransaction : paymentOrder.getWalletTransactions()) {
-                    walletTransactions.add(
-                            new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
-                                    LinkIDServiceUtils.convert( walletTransaction.getRefundedDate() ),
-                                    LinkIDSDKUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
-                                    walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ),
-                                    walletTransaction.getWalletCoin(), walletTransaction.getRefundAmount(), paymentOrder.getDescription() ) );
-                }
-
-                // order
-                orders.add( new LinkIDPaymentOrder( LinkIDServiceUtils.convert( paymentOrder.getDate() ), paymentOrder.getAmount(),
-                        LinkIDServiceUtils.convert( paymentOrder.getCurrency() ), paymentOrder.getWalletCoin(), paymentOrder.getDescription(),
-                        LinkIDServiceUtils.convert( paymentOrder.getPaymentState() ), paymentOrder.getAmountPayed(), paymentOrder.getAmountRefunded(),
-                        paymentOrder.isAuthorized(), LinkIDServiceUtils.convert( paymentOrder.getAuthorizedDate() ), paymentOrder.isCaptured(),
-                        LinkIDServiceUtils.convert( paymentOrder.getCapturedDate() ), paymentOrder.isRefunded(),
-                        LinkIDServiceUtils.convert( paymentOrder.getRefundedDate() ), paymentOrder.getOrderReference(), paymentOrder.getUserId(),
-                        paymentOrder.getEmail(), paymentOrder.getGivenName(), paymentOrder.getFamilyName(), transactions, walletTransactions ) );
-            }
-
-            return new LinkIDPaymentReport( response.getTotal(), orders );
-        }
-        catch (ClientTransportException e) {
-            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
-        }
-    }
-
-    private LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
-                                                 @Nullable final List<String> barCodes, @Nullable final List<String> ticketNumbers,
-                                                 @Nullable final List<String> dtaKeys, @Nullable final List<String> parkings)
-            throws LinkIDWSClientTransportException, LinkIDReportException {
-
-        // request
-        ParkingReportRequest request = new ParkingReportRequest();
-
-        // input
-        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
-        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
-        if (null != barCodes) {
-            request.getBarCodes().addAll( barCodes );
-        }
-        if (null != ticketNumbers) {
-            request.getTicketNumbers().addAll( ticketNumbers );
-        }
-        if (null != dtaKeys) {
-            request.getDtaKeys().addAll( dtaKeys );
-        }
-        if (null != parkings) {
-            request.getParkings().addAll( parkings );
-        }
-
-        try {
-            ParkingReportResponse response = getPort().parkingReport( request );
-
-            if (null != response.getError()) {
-                throw new LinkIDReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            }
-
-            List<LinkIDParkingSession> sessions = Lists.newLinkedList();
-
-            for (ParkingSession session : response.getSessions()) {
-                sessions.add( new LinkIDParkingSession( session.getDate().toGregorianCalendar().getTime(), session.getBarCode(), session.getParking(),
-                        session.getUserId(), session.getTurnover(), session.isValidated(), session.getPaymentOrderReference(),
-                        LinkIDServiceUtils.convert( session.getPaymentState() ) ) );
-            }
-
-            return new LinkIDParkingReport( response.getTotal(), sessions );
-        }
-        catch (ClientTransportException e) {
-            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
-        }
-    }
-
 }

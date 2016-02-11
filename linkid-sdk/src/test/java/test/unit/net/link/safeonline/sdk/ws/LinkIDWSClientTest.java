@@ -158,7 +158,7 @@ public class LinkIDWSClientTest {
 
         List<String> orderReferences = Collections.singletonList( "e527bd0748864a07bd7781aa42e9cca2" );
 
-        LinkIDPaymentReport paymentReport = client.getPaymentReportForOrderReferences( orderReferences, null );
+        LinkIDPaymentReport paymentReport = client.getPaymentReport( null, orderReferences, null, null );
         logger.inf( "# orders = %d", paymentReport.getPaymentOrders().size() );
 
         for (LinkIDPaymentOrder linkIDPaymentOrder : paymentReport.getPaymentOrders()) {
@@ -174,7 +174,7 @@ public class LinkIDWSClientTest {
 
         LinkIDReportDateFilter dateFilter = new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null );
 
-        LinkIDParkingReport parkingReport = client.getParkingReport( dateFilter, null );
+        LinkIDParkingReport parkingReport = client.getParkingReport( dateFilter, null, null, null, null, null );
         logger.inf( "# orders = %d", parkingReport.getParkingSessions().size() );
 
         for (LinkIDParkingSession linkIDParkingSession : parkingReport.getParkingSessions()) {

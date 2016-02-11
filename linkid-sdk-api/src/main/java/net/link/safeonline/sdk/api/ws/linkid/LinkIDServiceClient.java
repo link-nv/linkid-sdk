@@ -284,93 +284,33 @@ public interface LinkIDServiceClient {
             throws LinkIDLTQRInfoException;
 
     /**
-     * @param dateFilter optional date filter
-     * @param pageFilter optional page filter
-     *
-     * @return The payment orders matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    LinkIDPaymentReport getPaymentReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param orderReferences order references
-     * @param pageFilter      optional page filter
-     *
-     * @return The payment orders matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    LinkIDPaymentReport getPaymentReportForOrderReferences(List<String> orderReferences, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param mandateReferences mandate references
+     * @param dateFilter        optional date filter
+     * @param orderReferences   optional order references
+     * @param mandateReferences optional mandate references
      * @param pageFilter        optional page filter
      *
      * @return The payment orders matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    LinkIDPaymentReport getPaymentReportForMandates(List<String> mandateReferences, @Nullable LinkIDReportPageFilter pageFilter)
+    LinkIDPaymentReport getPaymentReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> orderReferences,
+                                         @Nullable List<String> mandateReferences, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param dateFilter optional date filter
-     * @param pageFilter optional page filter
-     *
-     * @return The parking sessions matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    LinkIDParkingReport getParkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param dateFilter optional date filter
-     * @param pageFilter optional page filter
-     * @param parkings   optional list of parkings
-     *
-     * @return The parking sessions matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    LinkIDParkingReport getParkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter,
-                                         @Nullable List<String> parkings)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param barCodes   bar codes
-     * @param pageFilter optional page filter
-     *
-     * @return The parking sessions matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    LinkIDParkingReport getParkingReportForBarCodes(List<String> barCodes, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param ticketNumbers ticket numbers
+     * @param dateFilter    optional date filter
+     * @param parkings      optional list of parkings
+     * @param barCodes      optional list of bar codes
+     * @param ticketNumbers optional list of ticket numbers
+     * @param dtaKeys       optional list of DTA keys
      * @param pageFilter    optional page filter
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    LinkIDParkingReport getParkingReportForTicketNumbers(List<String> ticketNumbers, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
-
-    /**
-     * @param dtaKeys    dtaKeys
-     * @param pageFilter optional page filter
-     *
-     * @return The parking sessions matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
-     */
-    LinkIDParkingReport getParkingReportForDTAKeys(List<String> dtaKeys, @Nullable LinkIDReportPageFilter pageFilter)
+    LinkIDParkingReport getParkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> parkings, @Nullable List<String> barCodes,
+                                         @Nullable List<String> ticketNumbers, @Nullable List<String> dtaKeys, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
