@@ -23,13 +23,13 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     @Nullable
     private final LinkIDWalletReportInfo reportInfo;
 
-    public LinkIDWalletReportTransaction(final String walletId, final Date creationDate, final String transactionId, final double amount,
-                                         final LinkIDCurrency currency, final String walletCoin, final double refundAmount,
-                                         @Nullable final String paymentDescription, @Nullable final String userId, final String applicationName,
-                                         final String applicationFriendly, final LinkIDWalletReportType type,
+    public LinkIDWalletReportTransaction(final String walletId, final Date creationDate, @Nullable final Date refundedDate, @Nullable final Date committedDate,
+                                         final String transactionId, final double amount, final LinkIDCurrency currency, final String walletCoin,
+                                         final double refundAmount, @Nullable final String paymentDescription, @Nullable final String userId,
+                                         final String applicationName, final String applicationFriendly, final LinkIDWalletReportType type,
                                          @Nullable final LinkIDWalletReportInfo reportInfo) {
 
-        super( walletId, creationDate, transactionId, amount, currency, walletCoin, refundAmount, paymentDescription );
+        super( walletId, creationDate, refundedDate, committedDate, transactionId, amount, currency, walletCoin, refundAmount, paymentDescription );
 
         this.userId = userId;
         this.applicationName = applicationName;

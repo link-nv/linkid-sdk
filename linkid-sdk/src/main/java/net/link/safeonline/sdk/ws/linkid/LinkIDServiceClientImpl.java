@@ -496,18 +496,19 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                     transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
                             paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
                             LinkIDSDKUtils.convert( paymentTransaction.getCreationDate() ), LinkIDSDKUtils.convert( paymentTransaction.getAuthorizationDate() ),
-                            LinkIDSDKUtils.convert( paymentTransaction.getCapturedDate() ), paymentTransaction.getDocdataReference(),
-                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
-                            paymentTransaction.getRefundAmount() ) );
+                            LinkIDSDKUtils.convert( paymentTransaction.getCapturedDate() ), LinkIDSDKUtils.convert( paymentTransaction.getRefundedDate() ),
+                            paymentTransaction.getDocdataReference(), paymentTransaction.getAmount(),
+                            LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ), paymentTransaction.getRefundAmount() ) );
                 }
 
                 List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
                 for (WalletTransaction walletTransaction : response.getSuccess().getPaymentDetails().getWalletTransactions()) {
                     walletTransactions.add(
                             new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDSDKUtils.convert( walletTransaction.getCreationDate() ),
-                                    walletTransaction.getTransactionId(), walletTransaction.getAmount(),
-                                    LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
-                                    walletTransaction.getRefundAmount(), response.getSuccess().getDescription() ) );
+                                    LinkIDSDKUtils.convert( walletTransaction.getRefundedDate() ),
+                                    LinkIDSDKUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
+                                    walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ),
+                                    walletTransaction.getWalletCoin(), walletTransaction.getRefundAmount(), response.getSuccess().getDescription() ) );
                 }
 
                 return new LinkIDPaymentStatus( response.getSuccess().getOrderReference(), response.getSuccess().getUserId(),
@@ -906,7 +907,9 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
             for (WalletReportTransaction walletReportTransaction : response.getTransactions()) {
 
                 transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getWalletId(),
-                        LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ), walletReportTransaction.getTransactionId(),
+                        LinkIDSDKUtils.convert( walletReportTransaction.getCreationDate() ),
+                        LinkIDSDKUtils.convert( walletReportTransaction.getRefundedDate() ),
+                        LinkIDSDKUtils.convert( walletReportTransaction.getCommittedDate() ), walletReportTransaction.getTransactionId(),
                         walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),
                         walletReportTransaction.getWalletCoin(), walletReportTransaction.getRefundAmount(), walletReportTransaction.getPaymentDescription(),
                         walletReportTransaction.getUserId(), walletReportTransaction.getApplicationName(), walletReportTransaction.getApplicationFriendly(),
@@ -1324,7 +1327,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                             paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
                             LinkIDServiceUtils.convert( paymentTransaction.getCreationDate() ),
                             LinkIDServiceUtils.convert( paymentTransaction.getAuthorizationDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ), paymentTransaction.getDocdataReference(),
+                            LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ),
+                            LinkIDServiceUtils.convert( paymentTransaction.getRefundedDate() ), paymentTransaction.getDocdataReference(),
                             paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
                             paymentTransaction.getRefundAmount() ) );
                 }
@@ -1334,16 +1338,19 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
                 for (WalletTransaction walletTransaction : paymentOrder.getWalletTransactions()) {
                     walletTransactions.add(
                             new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
-                                    walletTransaction.getTransactionId(), walletTransaction.getAmount(),
-                                    LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
-                                    walletTransaction.getRefundAmount(), paymentOrder.getDescription() ) );
+                                    LinkIDServiceUtils.convert( walletTransaction.getRefundedDate() ),
+                                    LinkIDSDKUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
+                                    walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ),
+                                    walletTransaction.getWalletCoin(), walletTransaction.getRefundAmount(), paymentOrder.getDescription() ) );
                 }
 
                 // order
                 orders.add( new LinkIDPaymentOrder( LinkIDServiceUtils.convert( paymentOrder.getDate() ), paymentOrder.getAmount(),
                         LinkIDServiceUtils.convert( paymentOrder.getCurrency() ), paymentOrder.getWalletCoin(), paymentOrder.getDescription(),
                         LinkIDServiceUtils.convert( paymentOrder.getPaymentState() ), paymentOrder.getAmountPayed(), paymentOrder.getAmountRefunded(),
-                        paymentOrder.isAuthorized(), paymentOrder.isCaptured(), paymentOrder.getOrderReference(), paymentOrder.getUserId(),
+                        paymentOrder.isAuthorized(), LinkIDServiceUtils.convert( paymentOrder.getAuthorizedDate() ), paymentOrder.isCaptured(),
+                        LinkIDServiceUtils.convert( paymentOrder.getCapturedDate() ), paymentOrder.isRefunded(),
+                        LinkIDServiceUtils.convert( paymentOrder.getRefundedDate() ), paymentOrder.getOrderReference(), paymentOrder.getUserId(),
                         paymentOrder.getEmail(), paymentOrder.getGivenName(), paymentOrder.getFamilyName(), transactions, walletTransactions ) );
             }
 

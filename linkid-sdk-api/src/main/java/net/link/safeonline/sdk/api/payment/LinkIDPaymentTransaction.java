@@ -2,6 +2,7 @@ package net.link.safeonline.sdk.api.payment;
 
 import java.io.Serializable;
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -18,14 +19,16 @@ public class LinkIDPaymentTransaction implements Serializable {
     private final Date                    creationDate;
     private final Date                    authorizationDate;
     private final Date                    capturedDate;
+    @Nullable
+    private final Date                    refundedDate;
     private final String                  docdataReference;
     private final double                  amount;
     private final LinkIDCurrency          currency;
     private final double                  refundAmount;
 
     public LinkIDPaymentTransaction(final LinkIDPaymentMethodType paymentMethodType, final String paymentMethod, final LinkIDPaymentState paymentState,
-                                    final Date creationDate, final Date authorizationDate, final Date capturedDate, final String docdataReference,
-                                    final double amount, final LinkIDCurrency currency, final double refundAmount) {
+                                    final Date creationDate, final Date authorizationDate, final Date capturedDate, @Nullable final Date refundedDate,
+                                    final String docdataReference, final double amount, final LinkIDCurrency currency, final double refundAmount) {
 
         this.paymentMethodType = paymentMethodType;
         this.paymentMethod = paymentMethod;
@@ -33,6 +36,7 @@ public class LinkIDPaymentTransaction implements Serializable {
         this.creationDate = creationDate;
         this.authorizationDate = authorizationDate;
         this.capturedDate = capturedDate;
+        this.refundedDate = refundedDate;
         this.docdataReference = docdataReference;
         this.amount = amount;
         this.currency = currency;
@@ -51,6 +55,7 @@ public class LinkIDPaymentTransaction implements Serializable {
                ", creationDate=" + creationDate +
                ", authorizationDate=" + authorizationDate +
                ", capturedDate=" + capturedDate +
+               ", refundedDate=" + refundedDate +
                ", docdataReference='" + docdataReference + '\'' +
                ", amount=" + amount +
                ", currency=" + currency +
@@ -88,6 +93,12 @@ public class LinkIDPaymentTransaction implements Serializable {
     public Date getCapturedDate() {
 
         return capturedDate;
+    }
+
+    @Nullable
+    public Date getRefundedDate() {
+
+        return refundedDate;
     }
 
     public String getDocdataReference() {

@@ -479,8 +479,8 @@ public class LinkIDWSClientTest {
 
     private static LinkIDLTQRPushContent generatePushContent() {
 
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) ).orderReference(
-                UUID.randomUUID().toString() ).paymentAddBrowser( LinkIDPaymentAddBrowser.NOT_ALLOWED ).build();
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) ).paymentAddBrowser(
+                LinkIDPaymentAddBrowser.NOT_ALLOWED ).build();
         DateTime expiryDateTime = new DateTime();
         expiryDateTime = expiryDateTime.plusMonths( 2 );
 
@@ -521,9 +521,9 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String mandateReference = "dfc816ae-b2b6-4af6-9260-72c94b9a684d";
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder(
-                new LinkIDPaymentAmount( 1, "urn:linkid:wallet:coin:coffee" ) ).description( "Test description" ).build();
+        String mandateReference = "67106414-0020-47dd-b755-ee74e16d9e1f";
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 1, LinkIDCurrency.EUR ) ).description(
+                "Test description" ).build();
         LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
@@ -586,7 +586,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // Setup
-        String orderReference = "QR-SHOP-02a319e2-4de9-454f-8426-007398993eac";
+        String orderReference = "24e01f29c9434adb842331f5399b545a";
         LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate

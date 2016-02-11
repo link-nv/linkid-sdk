@@ -3,6 +3,7 @@ package net.link.safeonline.sdk.api.payment;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -22,7 +23,14 @@ public class LinkIDPaymentOrder implements Serializable {
     private final double                         amountPayed;
     private final double                         amountRefunded;
     private final boolean                        authorized;
+    @Nullable
+    private final Date                           authorizedDate;
     private final boolean                        captured;
+    @Nullable
+    private final Date                           capturedDate;
+    private final boolean                        refunded;
+    @Nullable
+    private final Date                           refundedDate;
     private final String                         orderReference;
     private final String                         userId;
     private final String                         email;
@@ -33,7 +41,8 @@ public class LinkIDPaymentOrder implements Serializable {
 
     public LinkIDPaymentOrder(final Date date, final double amount, final LinkIDCurrency currency, final String walletCoin, final String description,
                               final LinkIDPaymentState paymentState, final double amountPayed, final double amountRefunded, final boolean authorized,
-                              final boolean captured, final String orderReference, final String userId, final String email, final String givenName,
+                              @Nullable final Date authorizedDate, final boolean captured, @Nullable final Date capturedDate, final boolean refunded,
+                              @Nullable final Date refundedDate, final String orderReference, final String userId, final String email, final String givenName,
                               final String familyName, final List<LinkIDPaymentTransaction> transactions,
                               final List<LinkIDWalletTransaction> walletTransactions) {
 
@@ -46,7 +55,11 @@ public class LinkIDPaymentOrder implements Serializable {
         this.amountPayed = amountPayed;
         this.amountRefunded = amountRefunded;
         this.authorized = authorized;
+        this.authorizedDate = authorizedDate;
         this.captured = captured;
+        this.capturedDate = capturedDate;
+        this.refunded = refunded;
+        this.refundedDate = refundedDate;
         this.orderReference = orderReference;
         this.userId = userId;
         this.email = email;
@@ -71,7 +84,11 @@ public class LinkIDPaymentOrder implements Serializable {
                ", amountPayed=" + amountPayed +
                ", amountRefunded=" + amountRefunded +
                ", authorized=" + authorized +
+               ", authorizedDate=" + authorizedDate +
                ", captured=" + captured +
+               ", capturedDate=" + capturedDate +
+               ", refunded=" + refunded +
+               ", refundedDate=" + refundedDate +
                ", orderReference='" + orderReference + '\'' +
                ", userId='" + userId + '\'' +
                ", email='" + email + '\'' +
@@ -129,9 +146,32 @@ public class LinkIDPaymentOrder implements Serializable {
         return authorized;
     }
 
+    @Nullable
+    public Date getAuthorizedDate() {
+
+        return authorizedDate;
+    }
+
     public boolean isCaptured() {
 
         return captured;
+    }
+
+    @Nullable
+    public Date getCapturedDate() {
+
+        return capturedDate;
+    }
+
+    public boolean isRefunded() {
+
+        return refunded;
+    }
+
+    @Nullable
+    public Date getRefundedDate() {
+
+        return refundedDate;
     }
 
     public String getOrderReference() {

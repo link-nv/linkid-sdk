@@ -1855,6 +1855,8 @@
             <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1" />
             <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1" />
             <element name="refundAmount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="refundedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="committedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
             <element name="paymentDescription" type="string" minOccurs="0" maxOccurs="1" />
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
             <element name="applicationName" type="string" minOccurs="1" maxOccurs="1" />
@@ -3105,6 +3107,7 @@
             <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
             <element name="authorizationDate" type="dateTime" minOccurs="0" maxOccurs="1" />
             <element name="capturedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="refundedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
             <element name="docdataReference" type="string" minOccurs="0" maxOccurs="1" />
             <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
             <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1" />
@@ -3134,6 +3137,8 @@
             <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1" />
             <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1" />
             <element name="refundAmount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="refundedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="committedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
         </sequence>
     </complexType>
 
@@ -3148,7 +3153,11 @@
             <element name="amountPayed" type="double" minOccurs="1" maxOccurs="1" />
             <element name="amountRefunded" type="double" minOccurs="1" maxOccurs="1" />
             <element name="authorized" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="authorizedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
             <element name="captured" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="capturedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="refunded" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="refundedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
             <element name="orderReference" type="string" minOccurs="1" maxOccurs="1" />
             <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
             <element name="email" type="string" minOccurs="1" maxOccurs="1" />
