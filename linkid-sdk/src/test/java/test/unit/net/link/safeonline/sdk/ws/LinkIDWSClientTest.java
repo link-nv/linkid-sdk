@@ -156,7 +156,7 @@ public class LinkIDWSClientTest {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        List<String> orderReferences = Collections.singletonList( "QR-SHOP-f0c5b593-0754-4ec0-a45c-664bb86bab11" );
+        List<String> orderReferences = Collections.singletonList( "e527bd0748864a07bd7781aa42e9cca2" );
 
         LinkIDPaymentReport paymentReport = client.getPaymentReportForOrderReferences( orderReferences, null );
         logger.inf( "# orders = %d", paymentReport.getPaymentOrders().size() );
@@ -188,8 +188,8 @@ public class LinkIDWSClientTest {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        LinkIDWalletReport walletReport = client.getWalletReport( new Locale( "nl" ), "urn:linkid:wallet:leaseplan", null,
-                new LinkIDReportWalletFilter( "123b1c22-e6c5-4ebc-9255-e59b72db5abf" ),
+        LinkIDWalletReport walletReport = client.getWalletReport( new Locale( "nl" ), "urn:linkid:wallet:fake:visa", null,
+                new LinkIDReportWalletFilter( "53EB61D1-731C-4711-A4D4-20AF824AB86C" ),
                 new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null ), new LinkIDReportPageFilter( 0, 40 ) );
         logger.inf( "Total = %d", walletReport.getTotal() );
         logger.inf( "# txns = %d", walletReport.getWalletTransactions().size() );
