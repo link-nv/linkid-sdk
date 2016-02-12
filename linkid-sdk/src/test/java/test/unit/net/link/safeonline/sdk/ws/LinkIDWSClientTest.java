@@ -176,7 +176,7 @@ public class LinkIDWSClientTest {
         LinkIDReportDateFilter dateFilter = new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null );
 
         LinkIDParkingReport parkingReport = client.getParkingReport( dateFilter, null, null, null, null, null );
-        logger.inf( "# orders = %d", parkingReport.getParkingSessions().size() );
+        logger.inf( "# sessions = %d", parkingReport.getParkingSessions().size() );
 
         for (LinkIDParkingSession linkIDParkingSession : parkingReport.getParkingSessions()) {
             logger.inf( "Session: %s", linkIDParkingSession );
