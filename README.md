@@ -85,3 +85,15 @@ v4.1
     * no more need to configure a ConfigFilter or set a ConfigHolder. The WS client now takes an extra LinkIDConfigService argument. You can use the default LinkIDConfig implementation which will look for a linkID.properties file or you can use your own.
     * linkid-config module no longer exists
   * Voucher support
+
+v4.1.2
+---
+  * Payment order, Payment transaction: refundedDate field added
+  * Wallet transaction: refundedDate, committedDate added
+  * Payment report calls merged
+  * Parking report calls merged
+  
+  
+  
+  
+  
