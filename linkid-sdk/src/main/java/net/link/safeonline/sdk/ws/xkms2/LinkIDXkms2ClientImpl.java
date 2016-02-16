@@ -48,6 +48,11 @@ public class LinkIDXkms2ClientImpl extends LinkIDAbstractWSClient<XKMSPortType> 
         super( location, LinkIDXkms2ServiceFactory.newInstance().getXKMSPort(), sslCertificates );
     }
 
+    public LinkIDXkms2ClientImpl(String location, String path, X509Certificate[] sslCertificates) {
+
+        super( location, path, LinkIDXkms2ServiceFactory.newInstance().getXKMSPort(), sslCertificates );
+    }
+
     @Override
     protected String getLocationProperty() {
 
@@ -68,13 +73,13 @@ public class LinkIDXkms2ClientImpl extends LinkIDAbstractWSClient<XKMSPortType> 
         validate( useKeyWithApplication, useKeyWithIdentifier, new CertificateChain( certificateChain ) );
     }
 
-    public void validate(final CertificateChain certificateChain)
+    private void validate(final CertificateChain certificateChain)
             throws LinkIDWSClientTransportException, LinkIDValidationFailedException, CertificateEncodingException {
 
         validate( null, null, certificateChain );
     }
 
-    public void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier, final CertificateChain certificateChain)
+    private void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier, final CertificateChain certificateChain)
             throws LinkIDWSClientTransportException, LinkIDValidationFailedException, CertificateEncodingException {
 
         logger.dbg( "validate (useKeyWith: %s=%s)", useKeyWithApplication, useKeyWithIdentifier );
@@ -106,7 +111,7 @@ public class LinkIDXkms2ClientImpl extends LinkIDAbstractWSClient<XKMSPortType> 
         try {
             result = getPort().validate( request );
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             throw new LinkIDWSClientTransportException( getBindingProvider(), e );
         }
 

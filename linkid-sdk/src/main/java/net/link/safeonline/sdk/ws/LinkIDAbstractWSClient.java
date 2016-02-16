@@ -23,6 +23,14 @@ public abstract class LinkIDAbstractWSClient<P> extends AbstractWSClient<P> {
 
     }
 
+    protected LinkIDAbstractWSClient(final String location, final String path, final P port, @Nullable final X509Certificate[] sslCertificates) {
+
+        super( port, sslCertificates );
+
+        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/%s", location, path ) );
+
+    }
+
     private static String getSDKProperty(final String key) {
 
         ResourceBundle properties = ResourceBundle.getBundle( "sdk_config" );
