@@ -11,6 +11,8 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import net.link.safeonline.sdk.api.exception.LinkIDValidationFailedException;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
+import net.link.util.common.CertificateChain;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -27,9 +29,9 @@ public interface LinkIDXkms2Client {
      *
      * @param certificateChain the  certificate chain.
      *
-     * @throws LinkIDWSClientTransportException   something went wrong sending the XKMS 2.0 Validation Request.
-     * @throws LinkIDValidationFailedException    validation failed.
-     * @throws CertificateEncodingException failed to encode a certificate in the chain.
+     * @throws LinkIDWSClientTransportException something went wrong sending the XKMS 2.0 Validation Request.
+     * @throws LinkIDValidationFailedException  validation failed.
+     * @throws CertificateEncodingException     failed to encode a certificate in the chain.
      */
     void validate(X509Certificate... certificateChain)
             throws LinkIDWSClientTransportException, LinkIDValidationFailedException, CertificateEncodingException;
@@ -39,10 +41,13 @@ public interface LinkIDXkms2Client {
      *
      * @param certificateChain the certificate chain.
      *
-     * @throws LinkIDWSClientTransportException   something went wrong sending the XKMS 2.0 Validation Request.
-     * @throws LinkIDValidationFailedException    validation failed.
-     * @throws CertificateEncodingException failed to encode a certificate in the chain.
+     * @throws LinkIDWSClientTransportException something went wrong sending the XKMS 2.0 Validation Request.
+     * @throws LinkIDValidationFailedException  validation failed.
+     * @throws CertificateEncodingException     failed to encode a certificate in the chain.
      */
     void validate(String useKeyWithApplication, String useKeyWithIdentifier, X509Certificate... certificateChain)
+            throws LinkIDWSClientTransportException, LinkIDValidationFailedException, CertificateEncodingException;
+
+    void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier, final CertificateChain certificateChain)
             throws LinkIDWSClientTransportException, LinkIDValidationFailedException, CertificateEncodingException;
 }

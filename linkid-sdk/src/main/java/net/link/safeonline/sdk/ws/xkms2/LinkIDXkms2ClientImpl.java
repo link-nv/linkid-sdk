@@ -79,7 +79,8 @@ public class LinkIDXkms2ClientImpl extends LinkIDAbstractWSClient<XKMSPortType> 
         validate( null, null, certificateChain );
     }
 
-    private void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier, final CertificateChain certificateChain)
+    @Override
+    public void validate(@Nullable final String useKeyWithApplication, @Nullable final String useKeyWithIdentifier, final CertificateChain certificateChain)
             throws LinkIDWSClientTransportException, LinkIDValidationFailedException, CertificateEncodingException {
 
         logger.dbg( "validate (useKeyWith: %s=%s)", useKeyWithApplication, useKeyWithIdentifier );
