@@ -9,16 +9,14 @@ package net.link.safeonline.sdk.ws.xkms2;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.api.exception.LinkIDValidationFailedException;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.ws.xkms2.LinkIDResultMajorCode;
 import net.link.safeonline.sdk.api.ws.xkms2.LinkIDXkms2Client;
-import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
+import net.link.safeonline.sdk.ws.LinkIDAbstractWSClient;
 import net.link.safeonline.ws.xkms2.LinkIDXkms2ServiceFactory;
 import net.link.util.common.CertificateChain;
 import net.link.util.logging.Logger;
-import net.link.util.ws.AbstractWSClient;
 import org.jetbrains.annotations.Nullable;
 import org.w3._2000._09.xmldsig.KeyInfoType;
 import org.w3._2000._09.xmldsig.X509DataType;
@@ -35,32 +33,25 @@ import org.w3._2002._03.xkms.XKMSPortType;
  *
  * @author wvdhaute
  */
-public class LinkIDXkms2ClientImpl extends AbstractWSClient<XKMSPortType> implements LinkIDXkms2Client {
+public class LinkIDXkms2ClientImpl extends LinkIDAbstractWSClient<XKMSPortType> implements LinkIDXkms2Client {
 
     private static final Logger logger = Logger.get( LinkIDXkms2ClientImpl.class );
 
     /**
      * Main constructor.
      *
-     * @param location        the location (host:port) of the LinkID XKMS 2 web service.
+     * @param location        the location (host:port) of the XKMS 2 web service.
      * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
      */
     public LinkIDXkms2ClientImpl(String location, X509Certificate[] sslCertificates) {
 
-        this( location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.xkms2.path" ), sslCertificates );
+        super( location, LinkIDXkms2ServiceFactory.newInstance().getXKMSPort(), sslCertificates );
     }
 
-    /**
-     * Main constructor.
-     *
-     * @param location        the location (host:port) of the XKMS 2 web service.
-     * @param path            the path where the XKMS2 WS runs
-     * @param sslCertificates If not {@code null} will verify the server SSL {@link X509Certificate}.
-     */
-    public LinkIDXkms2ClientImpl(String location, String path, X509Certificate[] sslCertificates) {
+    @Override
+    protected String getLocationProperty() {
 
-        super( LinkIDXkms2ServiceFactory.newInstance().getXKMSPort(), sslCertificates );
-        getBindingProvider().getRequestContext().put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY, String.format( "%s/%s", location, path ) );
+        return "linkid.ws.xkms2.path";
     }
 
     @Override

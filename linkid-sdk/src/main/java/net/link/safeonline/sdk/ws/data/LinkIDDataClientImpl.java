@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Binding;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.AddressingFeature;
 import liberty.dst._2006_08.ref.safe_online.AppDataType;
@@ -44,10 +43,9 @@ import net.link.safeonline.sdk.api.ws.data.LinkIDDataServiceConstants;
 import net.link.safeonline.sdk.api.ws.data.LinkIDSecondLevelStatusCode;
 import net.link.safeonline.sdk.api.ws.data.LinkIDTopLevelStatusCode;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
-import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
+import net.link.safeonline.sdk.ws.LinkIDAbstractWSClient;
 import net.link.safeonline.ws.data.LinkIDDataServiceFactory;
 import net.link.util.logging.Logger;
-import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
@@ -60,7 +58,7 @@ import oasis.names.tc.saml._2_0.assertion.AttributeType;
  *
  * @author fcorneli
  */
-public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> implements LinkIDDataClient {
+public class LinkIDDataClientImpl extends LinkIDAbstractWSClient<DataServicePort> implements LinkIDDataClient {
 
     private static final Logger logger = Logger.get( LinkIDDataClientImpl.class );
 
@@ -95,17 +93,20 @@ public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> impl
 
     private LinkIDDataClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( LinkIDDataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ), sslCertificates );
-        getBindingProvider().getRequestContext()
-                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                    String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.data.path" ) ) );
+        super( location, LinkIDDataServiceFactory.newInstance().getDataServicePort( new AddressingFeature() ), sslCertificates );
 
-                /*
+        /*
          * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to come first since it
          * feeds additional XML Id's to be signed by the WS-Security handler.
          */
         targetIdentityHandler = new LinkIDTargetIdentityClientHandler();
         initTargetIdentityHandler();
+    }
+
+    @Override
+    protected String getLocationProperty() {
+
+        return "linkid.ws.data.path";
     }
 
     @Override
@@ -167,7 +168,7 @@ public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> impl
         validateStatus( queryResponse.getStatus() );
 
         // parse attributes
-        List<LinkIDAttribute<T>> attributes = new LinkedList<LinkIDAttribute<T>>();
+        List<LinkIDAttribute<T>> attributes = new LinkedList<>();
 
         List<DataType> dataList = queryResponse.getData();
         for (DataType data : dataList) {
@@ -213,7 +214,7 @@ public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> impl
     public void removeAttributes(final String userId, final String attributeName)
             throws LinkIDWSClientTransportException, LinkIDRequestDeniedException {
 
-        removeAttributes( userId, Collections.<LinkIDAttribute<? extends Serializable>>singletonList( new LinkIDAttribute<Serializable>( attributeName, null ) ) );
+        removeAttributes( userId, Collections.<LinkIDAttribute<? extends Serializable>>singletonList( new LinkIDAttribute<>( attributeName, null ) ) );
     }
 
     @Override
@@ -221,7 +222,7 @@ public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> impl
             throws LinkIDWSClientTransportException, LinkIDRequestDeniedException {
 
         removeAttributes( userId,
-                Collections.<LinkIDAttribute<? extends Serializable>>singletonList( new LinkIDAttribute<Serializable>( attributeId, attributeName, null ) ) );
+                Collections.<LinkIDAttribute<? extends Serializable>>singletonList( new LinkIDAttribute<>( attributeId, attributeName, null ) ) );
     }
 
     @Override
@@ -254,6 +255,7 @@ public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> impl
         validateStatus( deleteResponse.getStatus() );
     }
 
+    @SuppressWarnings("rawtypes")
     private void initTargetIdentityHandler() {
 
         Binding binding = getBindingProvider().getBinding();
@@ -299,7 +301,7 @@ public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> impl
     private static LinkIDAttribute<? extends Serializable> getAttributeSDK(AttributeType attributeType) {
 
         String attributeId = findAttributeId( attributeType );
-        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<Serializable>( attributeId, attributeType.getName(), null );
+        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<>( attributeId, attributeType.getName(), null );
 
         List<Object> attributeValues = attributeType.getAttributeValue();
         if (attributeValues.isEmpty()) {
@@ -312,11 +314,11 @@ public class LinkIDDataClientImpl extends AbstractWSClient<DataServicePort> impl
             AttributeType compoundValue = (AttributeType) attributeValues.get( 0 );
 
             // compound
-            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<LinkIDAttribute<?>>();
+            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<>();
             for (Object memberAttributeObject : compoundValue.getAttributeValue()) {
 
                 AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-                LinkIDAttribute<Serializable> member = new LinkIDAttribute<Serializable>( attributeId, memberAttribute.getName(), null );
+                LinkIDAttribute<Serializable> member = new LinkIDAttribute<>( attributeId, memberAttribute.getName(), null );
                 if (!memberAttribute.getAttributeValue().isEmpty()) {
                     member.setValue( convertFromXmlDatatypeToClient( memberAttribute.getAttributeValue().get( 0 ) ) );
                 }

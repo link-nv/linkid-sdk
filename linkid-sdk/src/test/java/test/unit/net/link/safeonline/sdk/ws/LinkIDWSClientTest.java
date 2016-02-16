@@ -186,14 +186,13 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testWalletReport()
             throws Exception {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        LinkIDWalletReportTypeFilter walletReportTypeFilter = new LinkIDWalletReportTypeFilter(
-                Arrays.asList( LinkIDWalletReportType.USER_TRANSACTION, LinkIDWalletReportType.APPLICATION_REFUND ) );
+        LinkIDWalletReportTypeFilter walletReportTypeFilter = new LinkIDWalletReportTypeFilter( Arrays.asList( LinkIDWalletReportType.USER_TRANSACTION ) );
 
         LinkIDWalletReport walletReport = client.walletReport( new Locale( "nl" ), "urn:linkid:wallet:fake:visa", null,
                 new LinkIDReportWalletFilter( "53EB61D1-731C-4711-A4D4-20AF824AB86C" ), walletReportTypeFilter,

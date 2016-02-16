@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
 import net.link.safeonline.sdk.api.exception.LinkIDAttributeNotFoundException;
@@ -29,11 +28,10 @@ import net.link.safeonline.sdk.api.ws.LinkIDSamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.LinkIDSamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.LinkIDWebServiceConstants;
 import net.link.safeonline.sdk.api.ws.attrib.LinkIDAttributeClient;
-import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
+import net.link.safeonline.sdk.ws.LinkIDAbstractWSClient;
 import net.link.safeonline.ws.attrib.LinkIDSAMLAttributeServiceFactory;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.logging.Logger;
-import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
@@ -58,7 +56,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author fcorneli
  */
-public class LinkIDAttributeClientImpl extends AbstractWSClient<SAMLAttributePort> implements LinkIDAttributeClient {
+public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttributePort> implements LinkIDAttributeClient {
 
     static final Logger logger = Logger.get( LinkIDAttributeClientImpl.class );
 
@@ -92,10 +90,13 @@ public class LinkIDAttributeClientImpl extends AbstractWSClient<SAMLAttributePor
 
     private LinkIDAttributeClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( LinkIDSAMLAttributeServiceFactory.newInstance().getSAMLAttributePort(), sslCertificates );
-        getBindingProvider().getRequestContext()
-                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                    String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.attribute.path" ) ) );
+        super( location, LinkIDSAMLAttributeServiceFactory.newInstance().getSAMLAttributePort(), sslCertificates );
+    }
+
+    @Override
+    protected String getLocationProperty() {
+
+        return "linkid.ws.attribute.path";
     }
 
     private ResponseType getResponse(AttributeQueryType request)

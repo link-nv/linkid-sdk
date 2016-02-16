@@ -2,8 +2,11 @@ package net.link.safeonline.sdk.ws.linkid;
 
 import com.google.common.collect.Maps;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.linkid._3_1.core.AuthCancelErrorCode;
 import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
@@ -54,6 +57,7 @@ import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
 import net.lin_k.linkid._3_1.core.WalletReportInfo;
 import net.lin_k.linkid._3_1.core.WalletReportType;
 import net.lin_k.linkid._3_1.core.WalletReportTypeFilter;
+import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -106,7 +110,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseErrorCode
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
-import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
 import net.link.util.InternalInconsistencyException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
@@ -495,7 +498,7 @@ public class LinkIDServiceUtils {
 
         // configuration
         if (null != content.getExpiryDate()) {
-            ltqrContent.setExpiryDate( LinkIDSDKUtils.convert( content.getExpiryDate() ) );
+            ltqrContent.setExpiryDate( convert( content.getExpiryDate() ) );
         }
         if (content.getExpiryDuration() > 0) {
             ltqrContent.setExpiryDuration( content.getExpiryDuration() );
@@ -743,11 +746,6 @@ public class LinkIDServiceUtils {
         }
 
         return LinkIDPaymentMethodType.UNKNOWN;
-    }
-
-    public static Date convert(XMLGregorianCalendar xmlDate) {
-
-        return null != xmlDate? xmlDate.toGregorianCalendar().getTime(): null;
     }
 
     public static LinkIDReportErrorCode convert(final ReportErrorCode errorCode) {
@@ -1152,9 +1150,9 @@ public class LinkIDServiceUtils {
 
         if (null != dateFilter) {
             ReportDateFilter wsDateFilter = new ReportDateFilter();
-            wsDateFilter.setStartDate( LinkIDSDKUtils.convert( dateFilter.getStartDate() ) );
+            wsDateFilter.setStartDate( convert( dateFilter.getStartDate() ) );
             if (null != dateFilter.getEndDate()) {
-                wsDateFilter.setEndDate( LinkIDSDKUtils.convert( dateFilter.getEndDate() ) );
+                wsDateFilter.setEndDate( convert( dateFilter.getEndDate() ) );
             }
             return wsDateFilter;
         }
@@ -1217,5 +1215,165 @@ public class LinkIDServiceUtils {
 
         return new LinkIDVoucher( voucher.getId(), voucher.getName(), voucher.getDescription(), voucher.getLogoUrl(), convert( voucher.getActivated() ),
                 convert( voucher.getRedeemed() ) );
+    }
+
+    public static XMLGregorianCalendar convert(final Date date) {
+
+        if (null == date)
+            return null;
+
+        GregorianCalendar c = new GregorianCalendar();
+        c.setTime( date );
+        try {
+            return DatatypeFactory.newInstance().newXMLGregorianCalendar( c );
+        }
+        catch (DatatypeConfigurationException e) {
+            throw new InternalInconsistencyException( e );
+        }
+    }
+
+    public static Date convert(final XMLGregorianCalendar calender) {
+
+        if (null == calender)
+            return null;
+
+        return calender.toGregorianCalendar().getTime();
+    }
+
+    public static LinkIDCurrency convert(final net.lin_k.safe_online.common.Currency currency) {
+
+        if (null == currency)
+            return null;
+
+        switch (currency) {
+
+            case EUR:
+                return LinkIDCurrency.EUR;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported currency: \"%s\"", currency.name() ) );
+    }
+
+    public static net.lin_k.safe_online.common.Currency convertCommon(final LinkIDCurrency currency) {
+
+        if (null == currency)
+            return null;
+
+        switch (currency) {
+
+            case EUR:
+                return net.lin_k.safe_online.common.Currency.EUR;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported currency: \"%s\"", currency.name() ) );
+    }
+
+    public static LinkIDPaymentState convert(final net.lin_k.safe_online.common.PaymentStatusType paymentState) {
+
+        if (null == paymentState)
+            return null;
+
+        switch (paymentState) {
+
+            case STARTED:
+                return LinkIDPaymentState.STARTED;
+            case AUTHORIZED:
+                return LinkIDPaymentState.PAYED;
+            case FAILED:
+                return LinkIDPaymentState.FAILED;
+            case REFUNDED:
+                return LinkIDPaymentState.REFUNDED;
+            case REFUND_STARTED:
+                return LinkIDPaymentState.REFUND_STARTED;
+            case WAITING_FOR_UPDATE:
+                return LinkIDPaymentState.WAITING_FOR_UPDATE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported payment state: \"%s\"", paymentState.name() ) );
+    }
+
+    public static net.lin_k.safe_online.common.PaymentMethodType convert(final LinkIDPaymentMethodType linkIDPaymentMethodType) {
+
+        if (null == linkIDPaymentMethodType)
+            return null;
+
+        switch (linkIDPaymentMethodType) {
+
+            case UNKNOWN:
+                return net.lin_k.safe_online.common.PaymentMethodType.UNKNOWN;
+            case VISA:
+                return net.lin_k.safe_online.common.PaymentMethodType.VISA;
+            case MASTERCARD:
+                return net.lin_k.safe_online.common.PaymentMethodType.MASTERCARD;
+            case SEPA:
+                return net.lin_k.safe_online.common.PaymentMethodType.SEPA;
+            case KLARNA:
+                return net.lin_k.safe_online.common.PaymentMethodType.KLARNA;
+        }
+
+        return net.lin_k.safe_online.common.PaymentMethodType.UNKNOWN;
+    }
+
+    public static LinkIDPaymentMethodType convert(final net.lin_k.safe_online.common.PaymentMethodType paymentMethodType) {
+
+        if (null == paymentMethodType)
+            return null;
+
+        switch (paymentMethodType) {
+
+            case UNKNOWN:
+                return LinkIDPaymentMethodType.UNKNOWN;
+            case VISA:
+                return LinkIDPaymentMethodType.VISA;
+            case MASTERCARD:
+                return LinkIDPaymentMethodType.MASTERCARD;
+            case SEPA:
+                return LinkIDPaymentMethodType.SEPA;
+            case KLARNA:
+                return LinkIDPaymentMethodType.KLARNA;
+        }
+
+        return LinkIDPaymentMethodType.UNKNOWN;
+    }
+
+    public static LinkIDLTQRPollingConfiguration getPollingConfiguration(@Nullable final PollingConfiguration pollingConfiguration) {
+
+        if (null == pollingConfiguration) {
+            return null;
+        }
+
+        return new LinkIDLTQRPollingConfiguration(
+                null != pollingConfiguration.getPollAttempts() && pollingConfiguration.getPollAttempts() > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM
+                        ? pollingConfiguration.getPollAttempts(): -1,
+                null != pollingConfiguration.getPollInterval() && pollingConfiguration.getPollInterval() > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM
+                        ? pollingConfiguration.getPollInterval(): -1, null != pollingConfiguration.getPaymentPollAttempts()
+                                                                      && pollingConfiguration.getPaymentPollAttempts()
+                                                                         > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM
+                ? pollingConfiguration.getPaymentPollAttempts(): -1, null != pollingConfiguration.getPaymentPollInterval()
+                                                                     && pollingConfiguration.getPaymentPollInterval()
+                                                                        > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM
+                ? pollingConfiguration.getPaymentPollInterval(): -1 );
+
+    }
+
+    public static LinkIDLTQRPollingConfiguration getPollingConfiguration(
+            @Nullable final net.lin_k.safe_online.ltqr._4.PollingConfiguration pollingConfiguration) {
+
+        if (null == pollingConfiguration) {
+            return null;
+        }
+
+        return new LinkIDLTQRPollingConfiguration(
+                null != pollingConfiguration.getPollAttempts() && pollingConfiguration.getPollAttempts() > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM
+                        ? pollingConfiguration.getPollAttempts(): -1,
+                null != pollingConfiguration.getPollInterval() && pollingConfiguration.getPollInterval() > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM
+                        ? pollingConfiguration.getPollInterval(): -1, null != pollingConfiguration.getPaymentPollAttempts()
+                                                                      && pollingConfiguration.getPaymentPollAttempts()
+                                                                         > LinkIDConstants.LINKID_LTQR_POLLING_ATTEMPTS_MINIMUM
+                ? pollingConfiguration.getPaymentPollAttempts(): -1, null != pollingConfiguration.getPaymentPollInterval()
+                                                                     && pollingConfiguration.getPaymentPollInterval()
+                                                                        > LinkIDConstants.LINKID_LTQR_POLLING_INTERVAL_MINIMUM
+                ? pollingConfiguration.getPaymentPollInterval(): -1 );
+
     }
 }

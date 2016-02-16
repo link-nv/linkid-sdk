@@ -14,18 +14,16 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.api.exception.LinkIDValidationFailedException;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.ws.LinkIDWebServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.LinkIDSecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.LinkIDSecurityTokenServiceConstants;
 import net.link.safeonline.sdk.api.ws.sts.LinkIDTrustDomainType;
-import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
+import net.link.safeonline.sdk.ws.LinkIDAbstractWSClient;
 import net.link.safeonline.ws.sts.LinkIDSecurityTokenServiceFactory;
 import net.link.util.logging.Logger;
 import net.link.util.saml.SamlUtils;
-import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +42,8 @@ import org.w3c.dom.Element;
  *
  * @author fcorneli
  */
-public class LinkIDSecurityTokenServiceClientImpl extends AbstractWSClient<SecurityTokenServicePort> implements LinkIDSecurityTokenServiceClient<Response> {
+public class LinkIDSecurityTokenServiceClientImpl extends LinkIDAbstractWSClient<SecurityTokenServicePort> implements
+        LinkIDSecurityTokenServiceClient<Response> {
 
     private static final Logger logger = Logger.get( LinkIDSecurityTokenServiceClientImpl.class );
 
@@ -57,15 +56,19 @@ public class LinkIDSecurityTokenServiceClientImpl extends AbstractWSClient<Secur
      */
     public LinkIDSecurityTokenServiceClientImpl(String location, X509Certificate[] sslCertificates, final WSSecurityConfiguration configuration) {
 
-        super( LinkIDSecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort(), sslCertificates );
-        getBindingProvider().getRequestContext()
-                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                    String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.sts.path" ) ) );
+        super( location, LinkIDSecurityTokenServiceFactory.newInstance().getSecurityTokenServicePort(), sslCertificates );
 
         WSSecurityX509TokenHandler.install( getBindingProvider(), configuration );
     }
 
-    private void validate(Element token, LinkIDTrustDomainType trustDomain, @Nullable Map<QName, String> otherAttributes, String queryString, StringBuffer requestUrl)
+    @Override
+    protected String getLocationProperty() {
+
+        return "linkid.ws.sts.path";
+    }
+
+    private void validate(Element token, LinkIDTrustDomainType trustDomain, @Nullable Map<QName, String> otherAttributes, String queryString,
+                          StringBuffer requestUrl)
             throws LinkIDWSClientTransportException, LinkIDValidationFailedException {
 
         RequestSecurityTokenType request = new RequestSecurityTokenType();
@@ -122,7 +125,7 @@ public class LinkIDSecurityTokenServiceClientImpl extends AbstractWSClient<Secur
     public void validateResponse(final Response response, final String requestIssuer, final String requestQueryString, final StringBuffer requestURL)
             throws LinkIDWSClientTransportException, LinkIDValidationFailedException {
 
-        Map<QName, String> otherAttributes = new HashMap<QName, String>();
+        Map<QName, String> otherAttributes = new HashMap<>();
         otherAttributes.put( LinkIDWebServiceConstants.SAML_AUDIENCE_ATTRIBUTE, requestIssuer );
 
         validate( SamlUtils.marshall( response ), LinkIDTrustDomainType.LINK_ID, otherAttributes, requestQueryString, requestURL );

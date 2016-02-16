@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.ws.idmapping;
 
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
-import javax.xml.ws.BindingProvider;
 import net.lin_k.safe_online.idmapping.LinkIDNameIDMappingRequestType;
 import net.lin_k.safe_online.idmapping.NameIdentifierMappingPort;
 import net.link.safeonline.sdk.api.exception.LinkIDRequestDeniedException;
@@ -19,11 +18,10 @@ import net.link.safeonline.sdk.api.ws.LinkIDSamlpSecondLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.LinkIDSamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingConstants;
-import net.link.safeonline.sdk.ws.LinkIDSDKUtils;
+import net.link.safeonline.sdk.ws.LinkIDAbstractWSClient;
 import net.link.safeonline.ws.idmapping.LinkIDNameIdentifierMappingServiceFactory;
 import net.link.util.InternalInconsistencyException;
 import net.link.util.logging.Logger;
-import net.link.util.ws.AbstractWSClient;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
@@ -40,7 +38,7 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
  *
  * @author fcorneli
  */
-public class LinkIDNameIdentifierMappingClientImpl extends AbstractWSClient<NameIdentifierMappingPort> implements LinkIDNameIdentifierMappingClient {
+public class LinkIDNameIdentifierMappingClientImpl extends LinkIDAbstractWSClient<NameIdentifierMappingPort> implements LinkIDNameIdentifierMappingClient {
 
     private static final Logger logger = Logger.get( LinkIDNameIdentifierMappingClientImpl.class );
 
@@ -74,10 +72,13 @@ public class LinkIDNameIdentifierMappingClientImpl extends AbstractWSClient<Name
 
     private LinkIDNameIdentifierMappingClientImpl(final String location, final X509Certificate[] sslCertificates) {
 
-        super( LinkIDNameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort(), sslCertificates );
-        getBindingProvider().getRequestContext()
-                            .put( BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                    String.format( "%s/%s", location, LinkIDSDKUtils.getSDKProperty( "linkid.ws.idmapping.path" ) ) );
+        super( location, LinkIDNameIdentifierMappingServiceFactory.newInstance().getNameIdentifierMappingPort(), sslCertificates );
+    }
+
+    @Override
+    protected String getLocationProperty() {
+
+        return "linkid.ws.idmapping.path";
     }
 
     @Override
