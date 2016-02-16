@@ -1785,6 +1785,7 @@
                 <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1" />
                 <element name="applicationFilter" type="tns:ReportApplicationFilter" minOccurs="0" maxOccurs="1" />
                 <element name="walletFilter" type="tns:ReportWalletFilter" minOccurs="0" maxOccurs="1" />
+                <element name="walletReportTypeFilter" type="tns:WalletReportTypeFilter" minOccurs="0" maxOccurs="1" />
                 <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1" />
             </sequence>
         </complexType>
@@ -1844,6 +1845,12 @@
 
     <complexType name="ReportWalletFilter">
         <attribute name="walletId" type="string" use="required" />
+    </complexType>
+
+    <complexType name="WalletReportTypeFilter">
+        <sequence>
+            <element name="type" type="tns:WalletReportType" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
     </complexType>
 
     <complexType name="WalletReportTransaction">

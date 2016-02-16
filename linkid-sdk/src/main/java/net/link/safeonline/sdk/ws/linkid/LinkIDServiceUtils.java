@@ -53,6 +53,7 @@ import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
 import net.lin_k.linkid._3_1.core.WalletReportInfo;
 import net.lin_k.linkid._3_1.core.WalletReportType;
+import net.lin_k.linkid._3_1.core.WalletReportTypeFilter;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -69,6 +70,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportErrorCode;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
@@ -1192,6 +1194,20 @@ public class LinkIDServiceUtils {
             ReportWalletFilter wsWalletFilter = new ReportWalletFilter();
             wsWalletFilter.setWalletId( walletFilter.getWalletId() );
             return wsWalletFilter;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static WalletReportTypeFilter convert(@Nullable final LinkIDWalletReportTypeFilter walletReportTypeFilter) {
+
+        if (null != walletReportTypeFilter) {
+            WalletReportTypeFilter filter = new WalletReportTypeFilter();
+            for (LinkIDWalletReportType type : walletReportTypeFilter.getTypes()) {
+                filter.getType().add( convert( type ) );
+            }
+            return filter;
         }
 
         return null;

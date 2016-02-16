@@ -93,7 +93,12 @@ v4.1.2
   * Payment report calls merged
   * Parking report calls merged
   
-  
+v4.1.3
+---
+  * getPaymentReport -> paymentReport
+  * getParkingReport -> parkingReport
+  * getWalletReport -> walletReport
+  * getWalletInfoReport -> walletInfoReport
   
   
   

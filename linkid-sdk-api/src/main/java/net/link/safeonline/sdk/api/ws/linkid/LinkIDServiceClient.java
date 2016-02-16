@@ -24,6 +24,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
@@ -293,8 +294,8 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    LinkIDPaymentReport getPaymentReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> orderReferences,
-                                         @Nullable List<String> mandateReferences, @Nullable LinkIDReportPageFilter pageFilter)
+    LinkIDPaymentReport paymentReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> orderReferences,
+                                      @Nullable List<String> mandateReferences, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
@@ -309,24 +310,25 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    LinkIDParkingReport getParkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> parkings, @Nullable List<String> barCodes,
-                                         @Nullable List<String> ticketNumbers, @Nullable List<String> dtaKeys, @Nullable LinkIDReportPageFilter pageFilter)
+    LinkIDParkingReport parkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> parkings, @Nullable List<String> barCodes,
+                                      @Nullable List<String> ticketNumbers, @Nullable List<String> dtaKeys, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
-     * @param locale            optional locale, if not specified will default to en
-     * @param applicationFilter application filter
-     * @param walletFilter      wallet filter
-     * @param dateFilter        date filter
-     * @param pageFilter        optional page filter
+     * @param locale                 optional locale, if not specified will default to en
+     * @param applicationFilter      application filter
+     * @param walletFilter           wallet filter
+     * @param walletReportTypeFilter optional wallet report type filter
+     * @param dateFilter             date filter
+     * @param pageFilter             optional page filter
      *
      * @return the wallet transactions matching your search. If none found and empty list is returned
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    LinkIDWalletReport getWalletReport(@Nullable Locale locale, String walletOrganizationId, @Nullable LinkIDReportApplicationFilter applicationFilter,
-                                       @Nullable LinkIDReportWalletFilter walletFilter, @Nullable LinkIDReportDateFilter dateFilter,
-                                       @Nullable LinkIDReportPageFilter pageFilter)
+    LinkIDWalletReport walletReport(@Nullable Locale locale, String walletOrganizationId, @Nullable LinkIDReportApplicationFilter applicationFilter,
+                                    @Nullable LinkIDReportWalletFilter walletFilter, @Nullable LinkIDWalletReportTypeFilter walletReportTypeFilter,
+                                    @Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException;
 
     /**
@@ -337,7 +339,7 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDWalletInfoReport> getWalletInfoReport(@Nullable Locale locale, List<String> walletIds)
+    List<LinkIDWalletInfoReport> walletInfoReport(@Nullable Locale locale, List<String> walletIds)
             throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException;
 
     /**

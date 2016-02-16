@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +31,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
@@ -79,7 +82,7 @@ public class LinkIDWSClientTest {
     private static final Logger logger = Logger.get( LinkIDWSClientTest.class );
 
     //private static final String WS_LOCATION = "https://demo.linkid.be/linkid-ws-username";
-    private static final String WS_LOCATION = "https://192.168.5.14:8443/linkid-ws-username";
+    private static final String WS_LOCATION = "https://192.168.1.14:8443/linkid-ws-username";
 
     // demo config
     //    private static final String APP_NAME = "example-mobile";
@@ -158,8 +161,8 @@ public class LinkIDWSClientTest {
 
         List<String> orderReferences = Collections.singletonList( "e527bd0748864a07bd7781aa42e9cca2" );
 
-        LinkIDPaymentReport paymentReport = client.getPaymentReport( new LinkIDReportDateFilter( DateTime.now().minusMonths( 1 ).toDate(), null ),
-                orderReferences, null, null );
+        LinkIDPaymentReport paymentReport = client.paymentReport( new LinkIDReportDateFilter( DateTime.now().minusMonths( 1 ).toDate(), null ), orderReferences,
+                null, null );
         logger.inf( "# orders = %d", paymentReport.getPaymentOrders().size() );
 
         for (LinkIDPaymentOrder linkIDPaymentOrder : paymentReport.getPaymentOrders()) {
@@ -175,7 +178,7 @@ public class LinkIDWSClientTest {
 
         LinkIDReportDateFilter dateFilter = new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null );
 
-        LinkIDParkingReport parkingReport = client.getParkingReport( dateFilter, null, null, null, null, null );
+        LinkIDParkingReport parkingReport = client.parkingReport( dateFilter, null, null, null, null, null );
         logger.inf( "# sessions = %d", parkingReport.getParkingSessions().size() );
 
         for (LinkIDParkingSession linkIDParkingSession : parkingReport.getParkingSessions()) {
@@ -183,14 +186,17 @@ public class LinkIDWSClientTest {
         }
     }
 
-    //    @Test
+    @Test
     public void testWalletReport()
             throws Exception {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        LinkIDWalletReport walletReport = client.getWalletReport( new Locale( "nl" ), "urn:linkid:wallet:fake:visa", null,
-                new LinkIDReportWalletFilter( "53EB61D1-731C-4711-A4D4-20AF824AB86C" ),
+        LinkIDWalletReportTypeFilter walletReportTypeFilter = new LinkIDWalletReportTypeFilter(
+                Arrays.asList( LinkIDWalletReportType.USER_TRANSACTION, LinkIDWalletReportType.APPLICATION_REFUND ) );
+
+        LinkIDWalletReport walletReport = client.walletReport( new Locale( "nl" ), "urn:linkid:wallet:fake:visa", null,
+                new LinkIDReportWalletFilter( "53EB61D1-731C-4711-A4D4-20AF824AB86C" ), walletReportTypeFilter,
                 new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null ), new LinkIDReportPageFilter( 0, 40 ) );
         logger.inf( "Total = %d", walletReport.getTotal() );
         logger.inf( "# txns = %d", walletReport.getWalletTransactions().size() );
@@ -212,7 +218,7 @@ public class LinkIDWSClientTest {
         walletIds.add( "foo" );
 
         // operate
-        List<LinkIDWalletInfoReport> result = client.getWalletInfoReport( new Locale( "nl" ), walletIds );
+        List<LinkIDWalletInfoReport> result = client.walletInfoReport( new Locale( "nl" ), walletIds );
 
         // verify
         assertNotNull( result );

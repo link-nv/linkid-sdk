@@ -115,6 +115,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -821,8 +822,8 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDPaymentReport getPaymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final List<String> orderReferences,
-                                                @Nullable final List<String> mandateReferences, @Nullable final LinkIDReportPageFilter pageFilter)
+    public LinkIDPaymentReport paymentReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final List<String> orderReferences,
+                                             @Nullable final List<String> mandateReferences, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
         // request
@@ -890,9 +891,9 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDParkingReport getParkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final List<String> parkings,
-                                                @Nullable final List<String> barCodes, @Nullable final List<String> ticketNumbers,
-                                                @Nullable final List<String> dtaKeys, @Nullable final LinkIDReportPageFilter pageFilter)
+    public LinkIDParkingReport parkingReport(@Nullable final LinkIDReportDateFilter dateFilter, @Nullable final List<String> parkings,
+                                             @Nullable final List<String> barCodes, @Nullable final List<String> ticketNumbers,
+                                             @Nullable final List<String> dtaKeys, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
         // request
@@ -937,10 +938,10 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public LinkIDWalletReport getWalletReport(@Nullable final Locale locale, final String walletOrganizationId,
-                                              @Nullable final LinkIDReportApplicationFilter applicationFilter,
-                                              @Nullable final LinkIDReportWalletFilter walletFilter, @Nullable final LinkIDReportDateFilter dateFilter,
-                                              @Nullable final LinkIDReportPageFilter pageFilter)
+    public LinkIDWalletReport walletReport(@Nullable final Locale locale, final String walletOrganizationId,
+                                           @Nullable final LinkIDReportApplicationFilter applicationFilter,
+                                           @Nullable final LinkIDReportWalletFilter walletFilter, @Nullable LinkIDWalletReportTypeFilter walletReportTypeFilter,
+                                           @Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDWSClientTransportException, LinkIDReportException {
 
         // request
@@ -953,6 +954,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
         request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
         request.setApplicationFilter( LinkIDServiceUtils.convert( applicationFilter ) );
         request.setWalletFilter( LinkIDServiceUtils.convert( walletFilter ) );
+        request.setWalletReportTypeFilter( LinkIDServiceUtils.convert( walletReportTypeFilter ) );
 
         // operate
         try {
@@ -985,7 +987,7 @@ public class LinkIDServiceClientImpl extends AbstractWSClient<LinkIDServicePort>
     }
 
     @Override
-    public List<LinkIDWalletInfoReport> getWalletInfoReport(@Nullable final Locale locale, final List<String> walletIds)
+    public List<LinkIDWalletInfoReport> walletInfoReport(@Nullable final Locale locale, final List<String> walletIds)
             throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException {
 
         // request
