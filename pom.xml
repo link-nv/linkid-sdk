@@ -7,7 +7,7 @@
     <inceptionYear>2006</inceptionYear>
     <groupId>net.lin-k.linkid.client</groupId>
     <artifactId>sdk</artifactId>
-    <version>GIT-SNAPSHOT</version>
+    <version>4.1.3</version>
     <packaging>pom</packaging>
 
     <organization>
@@ -503,7 +503,7 @@
             <dependency>
                 <groupId>net.lin-k.linkid.client.sdk</groupId>
                 <artifactId>linkid-container-test</artifactId>
-                <version>GIT-SNAPSHOT</version>
+                <version>4.1.3</version>
                 <scope>test</scope>
                 <type>pom</type>
             </dependency>
