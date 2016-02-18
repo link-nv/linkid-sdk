@@ -3151,6 +3151,7 @@
 
     <complexType name="PaymentOrder">
         <sequence>
+            <element name="profile" type="string" minOccurs="0" maxOccurs="1" />
             <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
             <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
             <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1" />

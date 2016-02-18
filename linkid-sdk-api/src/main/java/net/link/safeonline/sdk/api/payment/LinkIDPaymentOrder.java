@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDPaymentOrder implements Serializable {
 
+    private final String                         profile;
     private final Date                           date;
     private final double                         amount;
     private final LinkIDCurrency                 currency;
@@ -39,13 +40,14 @@ public class LinkIDPaymentOrder implements Serializable {
     private final List<LinkIDPaymentTransaction> transactions;
     private final List<LinkIDWalletTransaction>  walletTransactions;
 
-    public LinkIDPaymentOrder(final Date date, final double amount, final LinkIDCurrency currency, final String walletCoin, final String description,
-                              final LinkIDPaymentState paymentState, final double amountPayed, final double amountRefunded, final boolean authorized,
-                              @Nullable final Date authorizedDate, final boolean captured, @Nullable final Date capturedDate, final boolean refunded,
-                              @Nullable final Date refundedDate, final String orderReference, final String userId, final String email, final String givenName,
-                              final String familyName, final List<LinkIDPaymentTransaction> transactions,
+    public LinkIDPaymentOrder(final String profile, final Date date, final double amount, final LinkIDCurrency currency, final String walletCoin,
+                              final String description, final LinkIDPaymentState paymentState, final double amountPayed, final double amountRefunded,
+                              final boolean authorized, @Nullable final Date authorizedDate, final boolean captured, @Nullable final Date capturedDate,
+                              final boolean refunded, @Nullable final Date refundedDate, final String orderReference, final String userId, final String email,
+                              final String givenName, final String familyName, final List<LinkIDPaymentTransaction> transactions,
                               final List<LinkIDWalletTransaction> walletTransactions) {
 
+        this.profile = profile;
         this.date = date;
         this.amount = amount;
         this.currency = currency;
@@ -75,7 +77,8 @@ public class LinkIDPaymentOrder implements Serializable {
     public String toString() {
 
         return "LinkIDPaymentOrder{" +
-               "date=" + date +
+               "profile=" + profile +
+               ", date=" + date +
                ", amount=" + amount +
                ", currency=" + currency +
                ", walletCoin=" + walletCoin +
@@ -100,6 +103,11 @@ public class LinkIDPaymentOrder implements Serializable {
     }
 
     // Accessors
+
+    public String getProfile() {
+
+        return profile;
+    }
 
     public Date getDate() {
 
