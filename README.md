@@ -100,5 +100,9 @@ v4.1.3
   * getWalletReport -> walletReport
   * getWalletInfoReport -> walletInfoReport
   
-  
+v4.1.5
+---
+  * LinkIDAuthPollResponse
+    * linkIDAuthenticationState -> authenticationState
+    * linkIDAuthnResponse -> authnResponse
   
