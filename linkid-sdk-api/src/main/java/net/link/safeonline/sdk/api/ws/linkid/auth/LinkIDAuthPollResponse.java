@@ -14,29 +14,29 @@ import org.jetbrains.annotations.Nullable;
 public class LinkIDAuthPollResponse implements Serializable {
 
     // polling state
-    private final LinkIDAuthenticationState linkIDAuthenticationState;
+    private final LinkIDAuthenticationState authenticationState;
     private final LinkIDPaymentState        paymentState;
     private final String                    paymentMenuURL;
     //
     // the linkID authentication response if finished
     @Nullable
-    private final LinkIDAuthnResponse       linkIDAuthnResponse;
+    private final LinkIDAuthnResponse       authnResponse;
 
-    public LinkIDAuthPollResponse(final LinkIDAuthenticationState linkIDAuthenticationState, final LinkIDPaymentState paymentState, final String paymentMenuURL,
-                                  @Nullable final LinkIDAuthnResponse linkIDAuthnResponse) {
+    public LinkIDAuthPollResponse(final LinkIDAuthenticationState authenticationState, final LinkIDPaymentState paymentState, final String paymentMenuURL,
+                                  @Nullable final LinkIDAuthnResponse authnResponse) {
 
-        this.linkIDAuthenticationState = linkIDAuthenticationState;
+        this.authenticationState = authenticationState;
         this.paymentState = paymentState;
         this.paymentMenuURL = paymentMenuURL;
 
-        this.linkIDAuthnResponse = linkIDAuthnResponse;
+        this.authnResponse = authnResponse;
     }
 
     // Accessors
 
-    public LinkIDAuthenticationState getLinkIDAuthenticationState() {
+    public LinkIDAuthenticationState getAuthenticationState() {
 
-        return linkIDAuthenticationState;
+        return authenticationState;
     }
 
     public LinkIDPaymentState getPaymentState() {
@@ -50,9 +50,9 @@ public class LinkIDAuthPollResponse implements Serializable {
     }
 
     @Nullable
-    public LinkIDAuthnResponse getLinkIDAuthnResponse() {
+    public LinkIDAuthnResponse getAuthnResponse() {
 
-        return linkIDAuthnResponse;
+        return authnResponse;
     }
 
 }
