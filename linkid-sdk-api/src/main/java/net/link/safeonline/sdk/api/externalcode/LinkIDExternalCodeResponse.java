@@ -3,6 +3,7 @@ package net.link.safeonline.sdk.api.externalcode;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import net.link.util.InternalInconsistencyException;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -27,9 +28,18 @@ public class LinkIDExternalCodeResponse implements Serializable {
 
     // Helper methods
 
+    @Override
+    public String toString() {
+
+        return "LinkIDExternalCodeResponse{" +
+               "reference='" + reference + '\'' +
+               ", type=" + type +
+               '}';
+    }
+
     public Map<String, String> toMap() {
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
 
         map.put( REFERENCE_KEY, reference );
         map.put( TYPE_KEY, type.name() );
@@ -42,9 +52,9 @@ public class LinkIDExternalCodeResponse implements Serializable {
 
         // check map valid
         if (!externalCodeResponseMap.containsKey( REFERENCE_KEY ))
-            throw new RuntimeException( "External code response's reference field is not present!" );
+            throw new InternalInconsistencyException( "External code response's reference field is not present!" );
         if (!externalCodeResponseMap.containsKey( TYPE_KEY ))
-            throw new RuntimeException( "External code response's type field is not present!" );
+            throw new InternalInconsistencyException( "External code response's type field is not present!" );
 
         // convert
         return new LinkIDExternalCodeResponse( externalCodeResponseMap.get( REFERENCE_KEY ),

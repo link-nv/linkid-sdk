@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.api.payment;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import net.link.util.InternalInconsistencyException;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -50,9 +51,21 @@ public class LinkIDPaymentResponse implements Serializable {
 
     // Helper methods
 
+    @Override
+    public String toString() {
+
+        return "LinkIDPaymentResponse{" +
+               "orderReference='" + orderReference + '\'' +
+               ", paymentState=" + paymentState +
+               ", mandateReference='" + mandateReference + '\'' +
+               ", paymentMenuURL='" + paymentMenuURL + '\'' +
+               ", docdataReference='" + docdataReference + '\'' +
+               '}';
+    }
+
     public Map<String, String> toMap() {
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
 
         map.put( ORDER_REF_KEY, orderReference );
         if (null != paymentState) {
@@ -74,9 +87,9 @@ public class LinkIDPaymentResponse implements Serializable {
 
         // check map valid
         if (!paymentResponseMap.containsKey( ORDER_REF_KEY ))
-            throw new RuntimeException( "Payment response's order reference field is not present!" );
+            throw new InternalInconsistencyException( "Payment response's order reference field is not present!" );
         if (!paymentResponseMap.containsKey( STATE_KEY ))
-            throw new RuntimeException( "Payment response's state field is not present!" );
+            throw new InternalInconsistencyException( "Payment response's state field is not present!" );
 
         // convert
         return new LinkIDPaymentResponse( paymentResponseMap.get( ORDER_REF_KEY ), LinkIDPaymentState.parse( paymentResponseMap.get( STATE_KEY ) ),

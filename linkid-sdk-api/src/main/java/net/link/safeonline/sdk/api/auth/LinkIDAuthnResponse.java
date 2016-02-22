@@ -32,7 +32,12 @@ public class LinkIDAuthnResponse implements Serializable {
     @Override
     public String toString() {
 
-        return String.format( "linkID.authnResponse: userId=\"%s\"", userId );
+        return "LinkIDAuthnResponse{" +
+               "userId='" + userId + '\'' +
+               ", attributes=" + attributes +
+               ", paymentResponse=" + paymentResponse +
+               ", externalCodeResponse=" + externalCodeResponse +
+               '}';
     }
 
     // Accessors

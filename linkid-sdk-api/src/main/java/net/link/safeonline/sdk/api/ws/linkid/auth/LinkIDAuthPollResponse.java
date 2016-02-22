@@ -32,6 +32,19 @@ public class LinkIDAuthPollResponse implements Serializable {
         this.authnResponse = authnResponse;
     }
 
+    // Helper methods
+
+    @Override
+    public String toString() {
+
+        return "LinkIDAuthPollResponse{" +
+               "authenticationState=" + authenticationState +
+               ", paymentState=" + paymentState +
+               ", paymentMenuURL='" + paymentMenuURL + '\'' +
+               ", authnResponse=" + authnResponse +
+               '}';
+    }
+
     // Accessors
 
     public LinkIDAuthenticationState getAuthenticationState() {
