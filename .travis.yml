@@ -1,6 +1,0 @@
-language: java
-jdk:
-  - openjdk6
-notifications:
-  email:
-    - safeonline-dev@lin-k.net
