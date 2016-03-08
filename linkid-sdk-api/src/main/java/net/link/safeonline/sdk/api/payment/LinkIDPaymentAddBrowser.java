@@ -1,5 +1,8 @@
 package net.link.safeonline.sdk.api.payment;
 
+import net.link.util.InternalInconsistencyException;
+
+
 /**
  * Created by wvdhaute
  * Date: 19/09/14
@@ -13,7 +16,7 @@ public enum LinkIDPaymentAddBrowser {
     public static LinkIDPaymentAddBrowser parse(final String valueString) {
 
         if (null == valueString)
-            return LinkIDPaymentAddBrowser.NOT_ALLOWED;
+            return NOT_ALLOWED;
 
         for (LinkIDPaymentAddBrowser value : LinkIDPaymentAddBrowser.values()) {
 
@@ -22,7 +25,7 @@ public enum LinkIDPaymentAddBrowser {
             }
         }
 
-        throw new RuntimeException( String.format( "Unsupported PaymentAddBrowser option %s!", valueString ) );
+        throw new InternalInconsistencyException( String.format( "Unsupported PaymentAddBrowser option %s!", valueString ) );
     }
 
 }
