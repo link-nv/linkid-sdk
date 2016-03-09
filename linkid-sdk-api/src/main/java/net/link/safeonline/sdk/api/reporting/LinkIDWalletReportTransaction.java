@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
 
+    private final String                 id;
     @Nullable
     private final String                 userId;
     private final String                 applicationName;
@@ -23,14 +24,15 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     @Nullable
     private final LinkIDWalletReportInfo reportInfo;
 
-    public LinkIDWalletReportTransaction(final String walletId, final Date creationDate, @Nullable final Date refundedDate, @Nullable final Date committedDate,
-                                         final String transactionId, final double amount, final LinkIDCurrency currency, final String walletCoin,
-                                         final double refundAmount, @Nullable final String paymentDescription, @Nullable final String userId,
-                                         final String applicationName, final String applicationFriendly, final LinkIDWalletReportType type,
-                                         @Nullable final LinkIDWalletReportInfo reportInfo) {
+    public LinkIDWalletReportTransaction(final String id, final String walletId, final Date creationDate, @Nullable final Date refundedDate,
+                                         @Nullable final Date committedDate, final String transactionId, final double amount, final LinkIDCurrency currency,
+                                         final String walletCoin, final double refundAmount, @Nullable final String paymentDescription,
+                                         @Nullable final String userId, final String applicationName, final String applicationFriendly,
+                                         final LinkIDWalletReportType type, @Nullable final LinkIDWalletReportInfo reportInfo) {
 
         super( walletId, creationDate, refundedDate, committedDate, transactionId, amount, currency, walletCoin, refundAmount, paymentDescription );
 
+        this.id = id;
         this.userId = userId;
         this.applicationName = applicationName;
         this.applicationFriendly = applicationFriendly;
@@ -44,7 +46,8 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     public String toString() {
 
         return "LinkIDWalletReportTransaction{" +
-               "userId='" + userId + '\'' +
+               "id='" + id + '\'' +
+               ", userId='" + userId + '\'' +
                ", applicationName='" + applicationName + '\'' +
                ", applicationFriendly='" + applicationFriendly + '\'' +
                ", type='" + type + '\'' +
@@ -54,6 +57,11 @@ public class LinkIDWalletReportTransaction extends LinkIDWalletTransaction {
     }
 
     // Accessors
+
+    public String getId() {
+
+        return id;
+    }
 
     @Nullable
     public String getUserId() {

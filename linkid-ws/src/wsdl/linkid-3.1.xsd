@@ -1855,6 +1855,7 @@
 
     <complexType name="WalletReportTransaction">
         <sequence>
+            <element name="id" type="string" minOccurs="1" maxOccurs="1" />
             <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
             <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
             <element name="transactionId" type="string" minOccurs="1" maxOccurs="1" />
