@@ -106,3 +106,7 @@ v4.1.5
     * linkIDAuthenticationState -> authenticationState
     * linkIDAuthnResponse -> authnResponse
   
+v4.2.0
+---
+  * LinkIDWalletReportTransaction.id support
+    * unique ID for each wallet report entry
