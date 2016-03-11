@@ -8,7 +8,6 @@ import com.google.common.collect.Lists;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -31,8 +30,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
-import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
-import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
@@ -82,16 +79,12 @@ public class LinkIDWSClientTest {
     private static final Logger logger = Logger.get( LinkIDWSClientTest.class );
 
     //private static final String WS_LOCATION = "https://demo.linkid.be/linkid-ws-username";
-    private static final String WS_LOCATION = "https://192.168.1.14:8443/linkid-ws-username";
+    private static final String WS_LOCATION = "https://192.168.5.14:8443/linkid-ws-username";
 
     // demo config
-    //    private static final String APP_NAME = "example-mobile";
-    //    private static final String APP_USERNAME = "example-mobile";
-    //    private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
-    // local config
-    private static final String APP_NAME     = "test-shop";
-    private static final String APP_USERNAME = "test-shop";
-    private static final String APP_PASSWORD = "5E017416-23B2-47E1-A9E0-43EE3C75A1B0";
+    private static final String APP_NAME     = "example-mobile";
+    private static final String APP_USERNAME = "example-mobile";
+    private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
 
     private String wsLocation;
 
@@ -192,10 +185,10 @@ public class LinkIDWSClientTest {
 
         LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
-        LinkIDWalletReportTypeFilter walletReportTypeFilter = new LinkIDWalletReportTypeFilter( Arrays.asList( LinkIDWalletReportType.USER_TRANSACTION ) );
+        //        LinkIDWalletReportTypeFilter walletReportTypeFilter = new LinkIDWalletReportTypeFilter( Arrays.asList( LinkIDWalletReportType.USER_TRANSACTION ) );
 
         LinkIDWalletReport walletReport = client.walletReport( new Locale( "nl" ), "urn:linkid:wallet:fake:visa", null,
-                new LinkIDReportWalletFilter( "53EB61D1-731C-4711-A4D4-20AF824AB86C" ), walletReportTypeFilter,
+                new LinkIDReportWalletFilter( "53EB61D1-731C-4711-A4D4-20AF824AB86C" ), null,
                 new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null ), new LinkIDReportPageFilter( 0, 40 ) );
         logger.inf( "Total = %d", walletReport.getTotal() );
         logger.inf( "# txns = %d", walletReport.getWalletTransactions().size() );
