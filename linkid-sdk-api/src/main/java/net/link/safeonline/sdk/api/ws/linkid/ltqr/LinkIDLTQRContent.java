@@ -107,6 +107,7 @@ public class LinkIDLTQRContent implements Serializable {
             return new LinkIDLTQRContent( this );
         }
 
+        @SuppressWarnings("RedundantNoArgConstructor")
         public Builder() {
             // no required parameters
         }
