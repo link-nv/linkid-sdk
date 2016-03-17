@@ -33,7 +33,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
-import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
@@ -56,7 +55,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditExce
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
-import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
 import net.link.util.common.ApplicationMode;
 import net.link.util.logging.Logger;
@@ -136,14 +134,6 @@ public class LinkIDWSClientTest {
 
         // verify
         assertNotNull( response );
-    }
-
-    //    @Test
-    public void testIdMapping()
-            throws Exception {
-
-        LinkIDNameIdentifierMappingClient client = new LinkIDNameIdentifierMappingClientImpl( wsLocation, null, getUsernameTokenCallback() );
-        String userId = client.getUserId( "profile.email.address", "wim.vandenhaute@gmail.com" );
     }
 
     //    @Test

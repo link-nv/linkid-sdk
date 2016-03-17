@@ -25,7 +25,7 @@ public enum LinkIDSamlpTopLevelErrorCode {
 
     private final String errorCode;
 
-    private final static Map<String, LinkIDSamlpTopLevelErrorCode> errorCodeMap = new HashMap<String, LinkIDSamlpTopLevelErrorCode>();
+    private static final Map<String, LinkIDSamlpTopLevelErrorCode> errorCodeMap = new HashMap<>();
 
     static {
         LinkIDSamlpTopLevelErrorCode[] errorCodes = LinkIDSamlpTopLevelErrorCode.values();
@@ -33,7 +33,7 @@ public enum LinkIDSamlpTopLevelErrorCode {
             errorCodeMap.put( errorCode.getErrorCode(), errorCode );
     }
 
-    private LinkIDSamlpTopLevelErrorCode(String errorCode) {
+    LinkIDSamlpTopLevelErrorCode(String errorCode) {
 
         this.errorCode = errorCode;
     }

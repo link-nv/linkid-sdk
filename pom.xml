@@ -427,7 +427,6 @@
         <!-- WS locations -->
         <linkid.ws.attribute.path>attrib</linkid.ws.attribute.path>
         <linkid.ws.data.path>data</linkid.ws.data.path>
-        <linkid.ws.idmapping.path>idmapping</linkid.ws.idmapping.path>
         <linkid.ws.sts.path>sts</linkid.ws.sts.path>
         <linkid.ws.xkms2.path>xkms2</linkid.ws.xkms2.path>
         <linkid.ws.path>linkid31</linkid.ws.path>

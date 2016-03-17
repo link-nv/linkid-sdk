@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * SAMLp version 2.0 Second-Level Error Code.
- *
+ * <p/>
  * <p>
  * Specification: 3.2.2.2 Element StatusCode - Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS
  * Standard, 15 March 2005
@@ -31,7 +31,7 @@ public enum LinkIDSamlpSecondLevelErrorCode {
 
     private final String errorCode;
 
-    private final static Map<String, LinkIDSamlpSecondLevelErrorCode> errorCodeMap = new HashMap<String, LinkIDSamlpSecondLevelErrorCode>();
+    private static final Map<String, LinkIDSamlpSecondLevelErrorCode> errorCodeMap = new HashMap<>();
 
     static {
         LinkIDSamlpSecondLevelErrorCode[] errorCodes = LinkIDSamlpSecondLevelErrorCode.values();
@@ -39,7 +39,7 @@ public enum LinkIDSamlpSecondLevelErrorCode {
             errorCodeMap.put( errorCode.getErrorCode(), errorCode );
     }
 
-    private LinkIDSamlpSecondLevelErrorCode(String errorCode) {
+    LinkIDSamlpSecondLevelErrorCode(String errorCode) {
 
         this.errorCode = errorCode;
     }

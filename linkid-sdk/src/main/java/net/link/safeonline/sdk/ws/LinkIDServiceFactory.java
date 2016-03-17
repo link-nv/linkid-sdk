@@ -12,13 +12,11 @@ import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.configuration.LinkIDConfigService;
 import net.link.safeonline.sdk.api.ws.attrib.LinkIDAttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
-import net.link.safeonline.sdk.api.ws.idmapping.LinkIDNameIdentifierMappingClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.sts.LinkIDSecurityTokenServiceClient;
 import net.link.safeonline.sdk.api.ws.xkms2.LinkIDXkms2Client;
 import net.link.safeonline.sdk.ws.attrib.LinkIDAttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
-import net.link.safeonline.sdk.ws.idmapping.LinkIDNameIdentifierMappingClientImpl;
 import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
 import net.link.safeonline.sdk.ws.sts.LinkIDSecurityTokenServiceClientImpl;
 import net.link.safeonline.sdk.ws.xkms2.LinkIDXkms2ClientImpl;
@@ -99,28 +97,6 @@ public class LinkIDServiceFactory {
     public static LinkIDDataClient getDataService(final LinkIDConfigService linkIDConfigService, final String username, final String password) {
 
         return new LinkIDDataClientImpl( getWsUsernameBase( linkIDConfigService ), getSSLCertificates( linkIDConfigService, null ),
-                getUsernameTokenCallback( username, password ) );
-
-    }
-
-    // ID Mapping WS
-
-    public static LinkIDNameIdentifierMappingClient getIdMappingService(final LinkIDConfigService linkIDConfigService) {
-
-        return new LinkIDNameIdentifierMappingClientImpl( getWsUsernameBase( linkIDConfigService ), getSSLCertificates( linkIDConfigService, null ),
-                getUsernameTokenCallback( linkIDConfigService.username(), linkIDConfigService.password() ) );
-    }
-
-    public static LinkIDNameIdentifierMappingClient getIdMappingService(final LinkIDConfigService linkIDConfigService, final KeyProvider keyProvider) {
-
-        return new LinkIDNameIdentifierMappingClientImpl( getWsBase( linkIDConfigService ), getSSLCertificates( linkIDConfigService, keyProvider ),
-                new LinkIDSDKWSSecurityConfiguration( linkIDConfigService, keyProvider ) );
-    }
-
-    public static LinkIDNameIdentifierMappingClient getIdMappingService(final LinkIDConfigService linkIDConfigService, final String username,
-                                                                        final String password) {
-
-        return new LinkIDNameIdentifierMappingClientImpl( getWsUsernameBase( linkIDConfigService ), getSSLCertificates( linkIDConfigService, null ),
                 getUsernameTokenCallback( username, password ) );
 
     }

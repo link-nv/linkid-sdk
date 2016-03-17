@@ -53,7 +53,6 @@
                         <wsdlFile>safe-online-mandate-3.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws.wsdl</wsdlFile>
                         <wsdlFile>safe-online-haws-2.0.wsdl</wsdlFile>
-                        <wsdlFile>safe-online-idmapping.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth-2.0.wsdl</wsdlFile>
                         <wsdlFile>safe-online-auth-3.0.wsdl</wsdlFile>
