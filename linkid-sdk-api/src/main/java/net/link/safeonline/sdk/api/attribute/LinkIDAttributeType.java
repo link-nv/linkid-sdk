@@ -22,7 +22,6 @@ public class LinkIDAttributeType implements Serializable {
     private boolean        userEditable;
     private boolean        userRemovable;
     private boolean        multivalued;
-    private boolean        mappable;
 
     // only sensible for compounds
     private boolean                   compoundMember;
@@ -31,22 +30,21 @@ public class LinkIDAttributeType implements Serializable {
 
     public LinkIDAttributeType() {
 
-        this.members = new LinkedList<LinkIDAttributeType>();
+        this.members = new LinkedList<>();
     }
 
     public LinkIDAttributeType(final String name) {
 
-        this( name, null, false, false, false, false, false, false, false );
+        this( name, null, false, false, false, false, false, false );
     }
 
-    public LinkIDAttributeType(String name, LinkIDDataType type, boolean userVisible, boolean userEditable, boolean multivalued, boolean mappable,
-                               boolean required) {
+    public LinkIDAttributeType(String name, LinkIDDataType type, boolean userVisible, boolean userEditable, boolean multivalued, boolean required) {
 
-        this( name, type, userVisible, userEditable, false, multivalued, mappable, false, required );
+        this( name, type, userVisible, userEditable, false, multivalued, false, required );
     }
 
     public LinkIDAttributeType(String name, LinkIDDataType type, boolean userVisible, boolean userEditable, boolean userRemovable, boolean multivalued,
-                               boolean mappable, boolean compoundMember, boolean required) {
+                               boolean compoundMember, boolean required) {
 
         this.name = name;
         this.type = type;
@@ -55,10 +53,9 @@ public class LinkIDAttributeType implements Serializable {
         this.userEditable = userEditable;
         this.userRemovable = userRemovable;
         this.multivalued = multivalued;
-        this.mappable = mappable;
         this.compoundMember = compoundMember;
         this.required = required;
-        this.members = new LinkedList<LinkIDAttributeType>();
+        this.members = new LinkedList<>();
     }
 
     public String getName() {
@@ -94,11 +91,6 @@ public class LinkIDAttributeType implements Serializable {
     public boolean isCompound() {
 
         return type == LinkIDDataType.COMPOUNDED;
-    }
-
-    public boolean isMappable() {
-
-        return mappable;
     }
 
     public boolean isCompoundMember() {
@@ -144,11 +136,6 @@ public class LinkIDAttributeType implements Serializable {
     public void setMultivalued(final boolean multivalued) {
 
         this.multivalued = multivalued;
-    }
-
-    public void setMappable(final boolean mappable) {
-
-        this.mappable = mappable;
     }
 
     public void setCompoundMember(final boolean compoundMember) {
