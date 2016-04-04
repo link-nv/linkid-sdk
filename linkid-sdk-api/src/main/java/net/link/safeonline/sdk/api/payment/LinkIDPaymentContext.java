@@ -24,9 +24,6 @@ public class LinkIDPaymentContext implements Serializable {
     public static final String ORDER_REFERENCE_KEY      = "PaymentContext.orderReference";
     public static final String PROFILE_KEY              = "PaymentContext.profile";
     public static final String VALIDATION_TIME_KEY      = "PaymentContext.validationTime";
-    public static final String ADD_LINK_KEY             = "PaymentContext.addLinkKey";
-    public static final String RETURN_MENU_URL_KEY      = "PaymentContext.returnMenuURL";
-    public static final String ADD_BROWSER_KEY          = "PaymentContext.addBrowser";
     public static final String MANDATE_KEY              = "PaymentContext.mandate";
     public static final String MANDATE_DESCRIPTION_KEY  = "PaymentContext.mandateDescription";
     public static final String MANDATE_REFERENCE_KEY    = "PaymentContext.mandateReference";
@@ -41,37 +38,33 @@ public class LinkIDPaymentContext implements Serializable {
     public static final String ALLOW_PARTIAL_KEY        = "PaymentContext.allowPartial";
     public static final String ONLY_WALLETS_KEY         = "PaymentContext.onlyWallets";
 
-    private final LinkIDPaymentAmount     amount;
-    private final String                  description;
+    private final LinkIDPaymentAmount  amount;
+    private final String               description;
     //
     // optional order reference, if not specified linkID will generate one in UUID format
-    private final String                  orderReference;
+    private final String               orderReference;
     //
     // optional payment profile
-    private final String                  paymentProfile;
+    private final String               paymentProfile;
     //
     // maximum time to wait for payment validation, if not specified defaults to 5s
-    private final int                     paymentValidationTime;
-    //
-    // whether or not to allow to display the option in the client to add a payment method in the browser.
-    // default is not allowed
-    private final LinkIDPaymentAddBrowser paymentAddBrowser;
+    private final int                  paymentValidationTime;
     //
     // mandates
     @Nullable
-    private final LinkIDPaymentMandate    mandate;      // payment context for a mandate?
+    private final LinkIDPaymentMandate mandate;      // payment context for a mandate?
     //
     // optional payment menu return URLs (docdata payment menu)
     @Nullable
-    private final LinkIDPaymentMenu       paymentMenu;
+    private final LinkIDPaymentMenu    paymentMenu;
     //
     // optional payment status location, if not specified the default location(s) in the linkID application configuration will be used
     @Nullable
-    private final String                  paymentStatusLocation;
+    private final String               paymentStatusLocation;
     //
     // wallet related flags
-    private final boolean                 allowPartial;       // allow partial payments via wallets, this flag does make sense if you allow normal payment methods
-    private final boolean                 onlyWallets;        // allow only wallets for this payment
+    private final boolean              allowPartial;       // allow partial payments via wallets, this flag does make sense if you allow normal payment methods
+    private final boolean              onlyWallets;        // allow only wallets for this payment
 
     private LinkIDPaymentContext(final Builder builder) {
 
@@ -86,9 +79,6 @@ public class LinkIDPaymentContext implements Serializable {
         //        if (builder.amount.getAmount() <= 0) {
         //            throw new IllegalStateException( "LinkIDPaymentContext.amount is <= 0, this is not allowed" );
         //        }
-        if (builder.onlyWallets && builder.paymentAddBrowser == LinkIDPaymentAddBrowser.REDIRECT) {
-            throw new IllegalStateException( "LinkIDPaymentContext: setting onlyWallets and allowing continue in browser makes no sense, aborting..." );
-        }
 
         // initialize
         this.amount = builder.amount;
@@ -96,7 +86,6 @@ public class LinkIDPaymentContext implements Serializable {
         this.orderReference = builder.orderReference;
         this.paymentProfile = builder.paymentProfile;
         this.paymentValidationTime = builder.paymentValidationTime;
-        this.paymentAddBrowser = builder.paymentAddBrowser;
         this.mandate = builder.mandate;
         this.paymentMenu = builder.paymentMenu;
         this.paymentStatusLocation = builder.paymentStatusLocation;
@@ -108,7 +97,7 @@ public class LinkIDPaymentContext implements Serializable {
 
     public Map<String, String> toMap() {
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
 
         map.put( AMOUNT_KEY, Double.toString( amount.getAmount() ) );
         if (null != amount.getCurrency()) {
@@ -128,7 +117,6 @@ public class LinkIDPaymentContext implements Serializable {
             map.put( PROFILE_KEY, paymentProfile );
         }
         map.put( VALIDATION_TIME_KEY, Integer.toString( paymentValidationTime ) );
-        map.put( ADD_BROWSER_KEY, paymentAddBrowser.name() );
 
         if (null != mandate) {
             map.put( MANDATE_KEY, Boolean.toString( true ) );
@@ -174,36 +162,8 @@ public class LinkIDPaymentContext implements Serializable {
         if (!paymentContextMap.containsKey( VALIDATION_TIME_KEY )) {
             throw new LinkIDInvalidPaymentContextException( "Payment context's validation time field is not present!" );
         }
-        if (getBoolean( paymentContextMap, ONLY_WALLETS_KEY )
-            && LinkIDPaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) ) == LinkIDPaymentAddBrowser.REDIRECT) {
-            throw new LinkIDInvalidPaymentContextException(
-                    "LinkIDPaymentContext: setting onlyWallets and allowing continue in browser makes no sense, aborting..." );
-        }
-
-        LinkIDPaymentAddBrowser paymentAddBrowser = LinkIDPaymentAddBrowser.parse( paymentContextMap.get( ADD_BROWSER_KEY ) );
-
-        // TODO: backward support for old SDK, remove one day...
-        String addLinkString = paymentContextMap.get( ADD_LINK_KEY );
-        if (null != addLinkString) {
-            boolean addLink = Boolean.parseBoolean( addLinkString );
-            if (addLink) {
-                paymentAddBrowser = LinkIDPaymentAddBrowser.REDIRECT;
-            }
-        }
-        String returnMenuString = paymentContextMap.get( RETURN_MENU_URL_KEY );
-        if (null != returnMenuString) {
-            boolean returnMenu = Boolean.parseBoolean( returnMenuString );
-            if (returnMenu) {
-                paymentAddBrowser = LinkIDPaymentAddBrowser.REDIRECT;
-            }
-        }
 
         String walletCoin = paymentContextMap.get( WALLET_COIN_KEY );
-
-        // if payment context only allows wallet coins, override the paymentAddBrowser flag
-        if (null != walletCoin) {
-            paymentAddBrowser = LinkIDPaymentAddBrowser.NOT_ALLOWED;
-        }
 
         // initialize
         Builder builder = new Builder( new LinkIDPaymentAmount( amount, LinkIDCurrency.parse( paymentContextMap.get( CURRENCY_KEY ) ), walletCoin ) );
@@ -211,7 +171,6 @@ public class LinkIDPaymentContext implements Serializable {
         builder.orderReference( paymentContextMap.get( ORDER_REFERENCE_KEY ) );
         builder.paymentProfile( paymentContextMap.get( PROFILE_KEY ) );
         builder.paymentValidationTime( Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ) );
-        builder.paymentAddBrowser( paymentAddBrowser );
         builder.allowPartial( getBoolean( paymentContextMap, ALLOW_PARTIAL_KEY ) );
         builder.onlyWallets( getBoolean( paymentContextMap, ONLY_WALLETS_KEY ) );
 
@@ -250,7 +209,6 @@ public class LinkIDPaymentContext implements Serializable {
                ", orderReference='" + orderReference + '\'' +
                ", paymentProfile='" + paymentProfile + '\'' +
                ", paymentValidationTime=" + paymentValidationTime +
-               ", paymentAddBrowser=" + paymentAddBrowser +
                ", mandate=" + mandate +
                ", paymentMenu=" + paymentMenu +
                ", paymentStatusLocation=" + paymentStatusLocation +
@@ -268,16 +226,15 @@ public class LinkIDPaymentContext implements Serializable {
         private final LinkIDPaymentAmount amount;
         //
         // Optional parameters - initialized to default values
-        private String                  description           = null;
-        private String                  orderReference        = null;
-        private String                  paymentProfile        = null;
-        private int                     paymentValidationTime = 5;
-        private LinkIDPaymentAddBrowser paymentAddBrowser     = LinkIDPaymentAddBrowser.NOT_ALLOWED;
-        private LinkIDPaymentMandate    mandate               = null;
-        private LinkIDPaymentMenu       paymentMenu           = null;
-        private String                  paymentStatusLocation = null;
-        private boolean                 allowPartial          = false;
-        private boolean                 onlyWallets           = false;
+        private String               description           = null;
+        private String               orderReference        = null;
+        private String               paymentProfile        = null;
+        private int                  paymentValidationTime = 5;
+        private LinkIDPaymentMandate mandate               = null;
+        private LinkIDPaymentMenu    paymentMenu           = null;
+        private String               paymentStatusLocation = null;
+        private boolean              allowPartial          = false;
+        private boolean              onlyWallets           = false;
 
         public LinkIDPaymentContext build() {
 
@@ -310,12 +267,6 @@ public class LinkIDPaymentContext implements Serializable {
         public Builder paymentValidationTime(final int paymentValidationTime) {
 
             this.paymentValidationTime = paymentValidationTime;
-            return this;
-        }
-
-        public Builder paymentAddBrowser(final LinkIDPaymentAddBrowser paymentAddBrowser) {
-
-            this.paymentAddBrowser = paymentAddBrowser;
             return this;
         }
 
@@ -375,11 +326,6 @@ public class LinkIDPaymentContext implements Serializable {
     public int getPaymentValidationTime() {
 
         return paymentValidationTime;
-    }
-
-    public LinkIDPaymentAddBrowser getPaymentAddBrowser() {
-
-        return paymentAddBrowser;
     }
 
     @Nullable

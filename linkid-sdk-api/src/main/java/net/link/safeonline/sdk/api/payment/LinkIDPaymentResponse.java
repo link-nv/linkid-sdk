@@ -21,15 +21,11 @@ public class LinkIDPaymentResponse implements Serializable {
     public static final String STATE_KEY        = "PaymentResponse.state";
     public static final String MANDATE_REF_KEY  = "PaymentResponse.mandateRef";
     //
-    public static final String MENU_URL_KEY     = "PaymentResponse.menuURL";
-    //
     public static final String DOCDATA__REF_KEY = "PaymentResponse.docdataRef";
 
     private final String             orderReference;
     private final LinkIDPaymentState paymentState;
     private final String             mandateReference;
-    //
-    private final String             paymentMenuURL;
     //
     private final String             docdataReference;
 
@@ -38,13 +34,11 @@ public class LinkIDPaymentResponse implements Serializable {
      * @param paymentState   the payment order state
      */
     public LinkIDPaymentResponse(final String orderReference, final LinkIDPaymentState paymentState, @Nullable final String mandateReference,
-                                 @Nullable final String docdataReference, @Nullable final String paymentMenuURL) {
+                                 @Nullable final String docdataReference) {
 
         this.orderReference = orderReference;
         this.paymentState = paymentState;
         this.mandateReference = mandateReference;
-
-        this.paymentMenuURL = paymentMenuURL;
 
         this.docdataReference = docdataReference;
     }
@@ -58,7 +52,6 @@ public class LinkIDPaymentResponse implements Serializable {
                "orderReference='" + orderReference + '\'' +
                ", paymentState=" + paymentState +
                ", mandateReference='" + mandateReference + '\'' +
-               ", paymentMenuURL='" + paymentMenuURL + '\'' +
                ", docdataReference='" + docdataReference + '\'' +
                '}';
     }
@@ -74,8 +67,6 @@ public class LinkIDPaymentResponse implements Serializable {
             map.put( STATE_KEY, LinkIDPaymentState.STARTED.name() );
         }
         map.put( MANDATE_REF_KEY, mandateReference );
-
-        map.put( MENU_URL_KEY, paymentMenuURL );
 
         map.put( DOCDATA__REF_KEY, docdataReference );
 
@@ -93,7 +84,7 @@ public class LinkIDPaymentResponse implements Serializable {
 
         // convert
         return new LinkIDPaymentResponse( paymentResponseMap.get( ORDER_REF_KEY ), LinkIDPaymentState.parse( paymentResponseMap.get( STATE_KEY ) ),
-                paymentResponseMap.get( MANDATE_REF_KEY ), paymentResponseMap.get( DOCDATA__REF_KEY ), paymentResponseMap.get( MENU_URL_KEY ) );
+                paymentResponseMap.get( MANDATE_REF_KEY ), paymentResponseMap.get( DOCDATA__REF_KEY ) );
     }
 
     // Accessors
@@ -118,8 +109,4 @@ public class LinkIDPaymentResponse implements Serializable {
         return docdataReference;
     }
 
-    public String getPaymentMenuURL() {
-
-        return paymentMenuURL;
-    }
 }

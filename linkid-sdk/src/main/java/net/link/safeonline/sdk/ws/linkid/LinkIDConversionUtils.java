@@ -27,8 +27,6 @@ public abstract class LinkIDConversionUtils {
                 return net.lin_k.safe_online.auth.AuthenticationState.LINKID_STATE_EXPIRED;
             case FAILED:
                 return net.lin_k.safe_online.auth.AuthenticationState.LINKID_STATE_FAILED;
-            case PAYMENT_ADD:
-                return net.lin_k.safe_online.auth.AuthenticationState.LINKID_STATE_PAYMENT_ADD;
         }
 
         throw new InternalInconsistencyException( String.format( "Invalid authentication state: %s", linkIDAuthenticationState ) );
@@ -48,8 +46,6 @@ public abstract class LinkIDConversionUtils {
                 return net.lin_k.safe_online.auth._2.AuthenticationState.LINKID_STATE_EXPIRED;
             case FAILED:
                 return net.lin_k.safe_online.auth._2.AuthenticationState.LINKID_STATE_FAILED;
-            case PAYMENT_ADD:
-                return net.lin_k.safe_online.auth._2.AuthenticationState.LINKID_STATE_PAYMENT_ADD;
         }
 
         throw new InternalInconsistencyException( String.format( "Invalid authentication state: %s", linkIDAuthenticationState ) );
@@ -69,8 +65,6 @@ public abstract class LinkIDConversionUtils {
                 return net.lin_k.safe_online.auth._3.AuthenticationState.LINKID_STATE_EXPIRED;
             case FAILED:
                 return net.lin_k.safe_online.auth._3.AuthenticationState.LINKID_STATE_FAILED;
-            case PAYMENT_ADD:
-                return net.lin_k.safe_online.auth._3.AuthenticationState.LINKID_STATE_PAYMENT_ADD;
         }
 
         throw new InternalInconsistencyException( String.format( "Invalid authentication state: %s", linkIDAuthenticationState ) );
@@ -196,7 +190,7 @@ public abstract class LinkIDConversionUtils {
             case LINKID_STATE_FAILED:
                 return LinkIDAuthenticationState.FAILED;
             case LINKID_STATE_PAYMENT_ADD:
-                return LinkIDAuthenticationState.PAYMENT_ADD;
+                return LinkIDAuthenticationState.FAILED;
         }
 
         throw new InternalInconsistencyException( String.format( "Invalid authentication state %s!", authenticationState ) );
@@ -217,7 +211,7 @@ public abstract class LinkIDConversionUtils {
             case LINKID_STATE_FAILED:
                 return LinkIDAuthenticationState.FAILED;
             case LINKID_STATE_PAYMENT_ADD:
-                return LinkIDAuthenticationState.PAYMENT_ADD;
+                return LinkIDAuthenticationState.FAILED;
         }
 
         throw new InternalInconsistencyException( String.format( "Invalid authentication state %s!", authenticationState ) );

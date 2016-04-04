@@ -11,7 +11,6 @@ public enum LinkIDAuthenticationState {
     RETRIEVED,
     AUTHENTICATED,
     EXPIRED,
-    FAILED,
-    PAYMENT_ADD
+    FAILED
 
 }

@@ -18,7 +18,6 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
-import net.link.safeonline.sdk.api.payment.LinkIDPaymentAddBrowser;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
@@ -468,8 +467,7 @@ public class LinkIDWSClientTest {
 
     private static LinkIDLTQRPushContent generatePushContent() {
 
-        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) ).paymentAddBrowser(
-                LinkIDPaymentAddBrowser.NOT_ALLOWED ).build();
+        LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 10, LinkIDCurrency.EUR ) ).build();
         DateTime expiryDateTime = new DateTime();
         expiryDateTime = expiryDateTime.plusMonths( 2 );
 
