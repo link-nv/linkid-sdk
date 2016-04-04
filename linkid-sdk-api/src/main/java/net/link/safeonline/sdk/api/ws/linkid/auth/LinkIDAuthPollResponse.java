@@ -16,18 +16,16 @@ public class LinkIDAuthPollResponse implements Serializable {
     // polling state
     private final LinkIDAuthenticationState authenticationState;
     private final LinkIDPaymentState        paymentState;
-    private final String                    paymentMenuURL;
     //
     // the linkID authentication response if finished
     @Nullable
     private final LinkIDAuthnResponse       authnResponse;
 
-    public LinkIDAuthPollResponse(final LinkIDAuthenticationState authenticationState, final LinkIDPaymentState paymentState, final String paymentMenuURL,
+    public LinkIDAuthPollResponse(final LinkIDAuthenticationState authenticationState, final LinkIDPaymentState paymentState,
                                   @Nullable final LinkIDAuthnResponse authnResponse) {
 
         this.authenticationState = authenticationState;
         this.paymentState = paymentState;
-        this.paymentMenuURL = paymentMenuURL;
 
         this.authnResponse = authnResponse;
     }
@@ -40,7 +38,6 @@ public class LinkIDAuthPollResponse implements Serializable {
         return "LinkIDAuthPollResponse{" +
                "authenticationState=" + authenticationState +
                ", paymentState=" + paymentState +
-               ", paymentMenuURL='" + paymentMenuURL + '\'' +
                ", authnResponse=" + authnResponse +
                '}';
     }
@@ -55,11 +52,6 @@ public class LinkIDAuthPollResponse implements Serializable {
     public LinkIDPaymentState getPaymentState() {
 
         return paymentState;
-    }
-
-    public String getPaymentMenuURL() {
-
-        return paymentMenuURL;
     }
 
     @Nullable

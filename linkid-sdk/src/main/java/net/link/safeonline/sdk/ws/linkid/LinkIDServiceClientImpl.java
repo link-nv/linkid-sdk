@@ -291,8 +291,6 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 paymentState = LinkIDServiceUtils.convert( response.getSuccess().getPaymentState() );
             }
 
-            String paymentMenuURL = response.getSuccess().getPaymentMenuURL();
-
             // parse authentication request
             LinkIDAuthnResponse linkIDAuthnResponse = null;
             if (null != response.getSuccess().getAuthenticationResponse()) {
@@ -314,7 +312,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 }
             }
 
-            return new LinkIDAuthPollResponse( linkIDAuthenticationState, paymentState, paymentMenuURL, linkIDAuthnResponse );
+            return new LinkIDAuthPollResponse( linkIDAuthenticationState, paymentState, linkIDAuthnResponse );
         }
 
         throw new InternalInconsistencyException( "No sessionId nor error element in the response ?!" );

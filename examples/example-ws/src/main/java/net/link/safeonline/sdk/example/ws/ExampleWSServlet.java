@@ -82,7 +82,6 @@ public class ExampleWSServlet extends HttpServlet {
         response.getWriter().write( "<h2>Session state</h2>" );
         response.getWriter().write( "AuthnState  : " + linkIDAuthPollResponse.getAuthenticationState() + "<br/>" );
         response.getWriter().write( "PaymentState: " + linkIDAuthPollResponse.getPaymentState() + "<br/>" );
-        response.getWriter().write( "PaymentURL  : " + linkIDAuthPollResponse.getPaymentMenuURL() + "<br/>" );
         response.getWriter().write( "</p>" );
 
         if (null != linkIDAuthPollResponse.getAuthnResponse()) {
