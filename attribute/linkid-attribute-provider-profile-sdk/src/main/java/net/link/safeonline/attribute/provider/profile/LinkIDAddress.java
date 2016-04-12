@@ -40,10 +40,10 @@ public class LinkIDAddress implements Serializable {
     public static List<LinkIDAddress> getAddress(final List<? extends LinkIDAttribute<Serializable>> addressAttributes) {
 
         if (null == addressAttributes) {
-            return new LinkedList<LinkIDAddress>();
+            return new LinkedList<>();
         }
 
-        List<LinkIDAddress> linkIDAddresses = new LinkedList<LinkIDAddress>();
+        List<LinkIDAddress> linkIDAddresses = new LinkedList<>();
         for (LinkIDAttribute<Serializable> addressAttribute : addressAttributes) {
 
             LinkIDCompound addressLinkIDCompound = (LinkIDCompound) addressAttribute.getValue();
@@ -63,8 +63,17 @@ public class LinkIDAddress implements Serializable {
         return linkIDAddresses;
     }
 
+    public String getStreetNumberAndBus() {
+
+        if (null != streetBus) {
+            return String.format( "%s %s", streetNumber, streetBus );
+        }
+
+        return streetNumber;
+    }
+
     /**
-     * @return street, streetnumber, (streetbus)
+     * @return street, streetNumber, (streetBus)
      */
     public String getAddress() {
 
