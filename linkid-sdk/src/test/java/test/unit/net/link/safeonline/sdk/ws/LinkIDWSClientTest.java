@@ -430,6 +430,7 @@ public class LinkIDWSClientTest {
                                                                        .paymentContext( linkIDPaymentContext )
                                                                        .expiryDate( expiryDateTime.toDate() )
                                                                        .notificationLocation( "https://demo.linkid.be" )
+                                                                       .theme( "eidtest" )
                                                                        .build();
 
         return new LinkIDLTQRPushContent( ltqrContent, null, LinkIDLTQRLockType.NEVER );
