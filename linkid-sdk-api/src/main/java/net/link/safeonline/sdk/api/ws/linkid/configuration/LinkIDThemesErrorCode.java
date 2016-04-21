@@ -9,7 +9,8 @@ package net.link.safeonline.sdk.api.ws.linkid.configuration;
 
 public enum LinkIDThemesErrorCode {
 
-    ERROR_UNKNOWN_APPLICATION,
-    ERROR_MAINTENANCE
+    @Deprecated ERROR_UNKNOWN_APPLICATION,
+    ERROR_MAINTENANCE,
+    ERROR_UNEXPECTED
 
 }

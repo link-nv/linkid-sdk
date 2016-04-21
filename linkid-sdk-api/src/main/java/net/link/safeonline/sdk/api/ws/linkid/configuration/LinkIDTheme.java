@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.api.ws.linkid.configuration;
 
 import java.io.Serializable;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 
 
 /**
@@ -12,6 +13,8 @@ import java.io.Serializable;
 public class LinkIDTheme implements Serializable {
 
     private final String                name;
+    private final String                friendlyName;
+    private final LinkIDThemeStatusCode status;
     private final boolean               defaultTheme;
     private final boolean               owner;
     //
@@ -24,11 +27,14 @@ public class LinkIDTheme implements Serializable {
     private final String                backgroundColor;
     private final String                textColor;
 
-    public LinkIDTheme(final String name, final boolean defaultTheme, final boolean owner, final LinkIDLocalizedImages logo,
-                       final LinkIDLocalizedImages authLogo, final LinkIDLocalizedImages background, final LinkIDLocalizedImages tabletBackground,
-                       final LinkIDLocalizedImages alternativeBackground, final String backgroundColor, final String textColor) {
+    public LinkIDTheme(final String name, final String friendlyName, final LinkIDThemeStatusCode status, final boolean defaultTheme, final boolean owner,
+                       final LinkIDLocalizedImages logo, final LinkIDLocalizedImages authLogo, final LinkIDLocalizedImages background,
+                       final LinkIDLocalizedImages tabletBackground, final LinkIDLocalizedImages alternativeBackground, final String backgroundColor,
+                       final String textColor) {
 
         this.name = name;
+        this.friendlyName = friendlyName;
+        this.status = status;
         this.defaultTheme = defaultTheme;
         this.owner = owner;
         this.logo = logo;
@@ -47,6 +53,8 @@ public class LinkIDTheme implements Serializable {
 
         return "LinkIDTheme{" +
                "name='" + name + '\'' +
+               ", friendlyName=" + friendlyName +
+               ", status=" + status +
                ", defaultTheme=" + defaultTheme +
                ", owner=" + owner +
                ", logo=" + logo +
@@ -64,6 +72,16 @@ public class LinkIDTheme implements Serializable {
     public String getName() {
 
         return name;
+    }
+
+    public String getFriendlyName() {
+
+        return friendlyName;
+    }
+
+    public LinkIDThemeStatusCode getStatus() {
+
+        return status;
     }
 
     public boolean isDefaultTheme() {

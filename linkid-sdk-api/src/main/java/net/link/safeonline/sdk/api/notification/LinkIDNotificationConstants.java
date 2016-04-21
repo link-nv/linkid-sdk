@@ -7,21 +7,24 @@
 
 package net.link.safeonline.sdk.api.notification;
 
-public abstract class LinkIDNotificationConstants {
+public interface LinkIDNotificationConstants {
 
     //
     // Core notifications
-    public static final String TOPIC_PARAM                  = "topic";
-    public static final String FILTER_PARAM                 = "filter";
-    public static final String USER_ID_PARAM                = "userId";
-    public static final String INFO_PARAM                   = "info";
+    String TOPIC_PARAM                  = "topic";
+    String FILTER_PARAM                 = "filter";
+    String USER_ID_PARAM                = "userId";
+    String INFO_PARAM                   = "info";
     //
     // Payment Status
-    public static final String PAYMENT_ORDER_REF_PARAM      = "orderRef";
+    String PAYMENT_ORDER_REF_PARAM      = "orderRef";
     //
     // LTQR
-    public static final String LTQR_REF_PARAM               = "ltqrRef";
-    public static final String LTQR_PAYMENT_ORDER_REF_PARAM = "paymentOrderRef";
-    public static final String LTQR_CLIENT_SESSION_ID_PARAM = "clientSessionId";
+    String LTQR_REF_PARAM               = "ltqrRef";
+    String LTQR_PAYMENT_ORDER_REF_PARAM = "paymentOrderRef";
+    String LTQR_CLIENT_SESSION_ID_PARAM = "clientSessionId";
+    //
+    // Theme
+    String THEME_NAME_PARAM             = "themeName";
 
 }

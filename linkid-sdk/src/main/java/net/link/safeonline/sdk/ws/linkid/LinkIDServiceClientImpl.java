@@ -26,9 +26,6 @@ import net.lin_k.linkid._3_1.core.ConfigLocalization;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationRequest;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationResponse;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationValue;
-import net.lin_k.linkid._3_1.core.ConfigThemes;
-import net.lin_k.linkid._3_1.core.ConfigThemesRequest;
-import net.lin_k.linkid._3_1.core.ConfigThemesResponse;
 import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsRequest;
 import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsResponse;
 import net.lin_k.linkid._3_1.core.LTQRBulkPushRequest;
@@ -63,6 +60,17 @@ import net.lin_k.linkid._3_1.core.PaymentReportResponse;
 import net.lin_k.linkid._3_1.core.PaymentStatusRequest;
 import net.lin_k.linkid._3_1.core.PaymentStatusResponse;
 import net.lin_k.linkid._3_1.core.PaymentTransaction;
+import net.lin_k.linkid._3_1.core.ThemeAddRequest;
+import net.lin_k.linkid._3_1.core.ThemeAddResponse;
+import net.lin_k.linkid._3_1.core.ThemeConfig;
+import net.lin_k.linkid._3_1.core.ThemeError;
+import net.lin_k.linkid._3_1.core.ThemeRemoveRequest;
+import net.lin_k.linkid._3_1.core.ThemeRemoveResponse;
+import net.lin_k.linkid._3_1.core.ThemeStatusRequest;
+import net.lin_k.linkid._3_1.core.ThemeStatusResponse;
+import net.lin_k.linkid._3_1.core.Themes;
+import net.lin_k.linkid._3_1.core.ThemesRequest;
+import net.lin_k.linkid._3_1.core.ThemesResponse;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedRequest;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedResponse;
@@ -115,6 +123,10 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeError;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -152,6 +164,9 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentDetails;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
@@ -412,33 +427,6 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         throw new InternalInconsistencyException( "No succes nor error element in the response ?!" );
-    }
-
-    @Override
-    public LinkIDThemes getThemes(final String applicationName)
-            throws LinkIDThemesException {
-
-        ConfigThemesRequest request = new ConfigThemesRequest();
-        request.setApplicationName( applicationName );
-
-        // operate
-        ConfigThemesResponse response = getPort().configThemes( request );
-
-        if (null != response.getError()) {
-            throw new LinkIDThemesException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-        }
-
-        // all good...
-        List<LinkIDTheme> linkIDThemes = Lists.newLinkedList();
-        for (ConfigThemes themes : response.getSuccess().getThemes()) {
-
-            linkIDThemes.add( new LinkIDTheme( themes.getName(), themes.isDefaultTheme(), LinkIDServiceUtils.convert( themes.isOwner() ),
-                    LinkIDServiceUtils.convert( themes.getLogo() ), LinkIDServiceUtils.convert( themes.getAuthLogo() ),
-                    LinkIDServiceUtils.convert( themes.getBackground() ), LinkIDServiceUtils.convert( themes.getTabletBackground() ),
-                    LinkIDServiceUtils.convert( themes.getAlternativeBackground() ), themes.getBackgroundColor(), themes.getTextColor() ) );
-        }
-
-        return new LinkIDThemes( linkIDThemes );
     }
 
     @Override
@@ -1352,5 +1340,132 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public String themeAdd(final LinkIDThemeConfig themeConfig)
+            throws LinkIDThemeAddException {
+
+        ThemeAddRequest request = new ThemeAddRequest();
+
+        ThemeConfig wsThemeConfig = new ThemeConfig();
+        wsThemeConfig.setName( themeConfig.getName() );
+        wsThemeConfig.setFriendlyName( themeConfig.getFriendlyName() );
+        wsThemeConfig.setDefaultTheme( themeConfig.isDefaultTheme() );
+        wsThemeConfig.setLogo( LinkIDServiceUtils.convert( themeConfig.getLogos() ) );
+        wsThemeConfig.setAuthLogo( LinkIDServiceUtils.convert( themeConfig.getAuthLogos() ) );
+        wsThemeConfig.setBackground( LinkIDServiceUtils.convert( themeConfig.getBackgrounds() ) );
+        wsThemeConfig.setTabletBackground( LinkIDServiceUtils.convert( themeConfig.getTabletBackgrounds() ) );
+        wsThemeConfig.setAlternativeBackground( LinkIDServiceUtils.convert( themeConfig.getAlternativeBackgrounds() ) );
+        wsThemeConfig.setBackgroundColor( themeConfig.getBackgroundColor() );
+        wsThemeConfig.setTextColor( themeConfig.getTextColor() );
+        request.setConfig( wsThemeConfig );
+
+        // operate
+        ThemeAddResponse response = getPort().themeAdd( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDThemeAddException( response.getError().getErrorMessage(), LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else if (null != response.getError().getError()) {
+
+                ThemeError themeError = response.getError().getError();
+
+                throw new LinkIDThemeAddException( new LinkIDThemeError( LinkIDServiceUtils.convert( themeError.getBackgroundColorError() ),
+                        LinkIDServiceUtils.convert( themeError.getTextColorError() ) ) );
+
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+            return response.getSuccess().getName();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
+    }
+
+    @Override
+    public void themeRemove(final String themeName, final boolean removeReleased)
+            throws LinkIDThemeRemoveException {
+
+        ThemeRemoveRequest request = new ThemeRemoveRequest();
+        request.setName( themeName );
+        request.setRemoveReleased( removeReleased );
+
+        // operate
+        ThemeRemoveResponse response = getPort().themeRemove( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            throw new LinkIDThemeRemoveException( response.getError().getErrorMessage(), LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
+    }
+
+    @Override
+    public LinkIDThemeStatus themeStatus(final String themeName)
+            throws LinkIDThemeStatusException {
+
+        ThemeStatusRequest request = new ThemeStatusRequest();
+        request.setName( themeName );
+
+        // operate
+        ThemeStatusResponse response = getPort().themeStatus( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            throw new LinkIDThemeStatusException( response.getError().getErrorMessage(), LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            return new LinkIDThemeStatus( LinkIDServiceUtils.convert( response.getSuccess().getStatusCode() ), response.getSuccess().getInfoMessage(),
+                    LinkIDServiceUtils.convert( response.getSuccess().getErrorReport() ) );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
+    }
+
+    @Override
+    public LinkIDThemes themes(final LinkIDThemeStatusCode linkIDThemeStatusCode)
+            throws LinkIDThemesException {
+
+        ThemesRequest request = new ThemesRequest();
+        request.setStatusCode( LinkIDConversionUtils.convert( linkIDThemeStatusCode ) );
+
+        // operate
+        ThemesResponse response = getPort().themes( request );
+
+        if (null != response.getError()) {
+            throw new LinkIDThemesException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        // all good...
+        List<LinkIDTheme> linkIDThemes = Lists.newLinkedList();
+        for (Themes themes : response.getSuccess().getThemes()) {
+
+            linkIDThemes.add(
+                    new LinkIDTheme( themes.getName(), themes.getFriendlyName(), LinkIDServiceUtils.convert( themes.getStatusCode() ), themes.isDefaultTheme(),
+                            LinkIDServiceUtils.convert( themes.isOwner() ), LinkIDServiceUtils.convert( themes.getLogo() ),
+                            LinkIDServiceUtils.convert( themes.getAuthLogo() ), LinkIDServiceUtils.convert( themes.getBackground() ),
+                            LinkIDServiceUtils.convert( themes.getTabletBackground() ), LinkIDServiceUtils.convert( themes.getAlternativeBackground() ),
+                            themes.getBackgroundColor(), themes.getTextColor() ) );
+        }
+
+        return new LinkIDThemes( linkIDThemes );
     }
 }

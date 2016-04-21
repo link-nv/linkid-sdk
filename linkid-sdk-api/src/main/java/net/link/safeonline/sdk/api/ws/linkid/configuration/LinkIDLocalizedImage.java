@@ -19,6 +19,12 @@ public class LinkIDLocalizedImage implements Serializable {
         this.language = language;
     }
 
+    public LinkIDLocalizedImage(final String url) {
+
+        this.url = url;
+        this.language = "en";
+    }
+
     // Helper methods
 
     @Override

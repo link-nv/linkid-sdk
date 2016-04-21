@@ -1,8 +1,11 @@
 package net.link.safeonline.sdk.ws.linkid;
 
+import net.lin_k.linkid._3_1.core.ThemeStatusCode;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
 import net.link.util.InternalInconsistencyException;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -10,7 +13,7 @@ import net.link.util.InternalInconsistencyException;
  * Date: 30/04/14
  * Time: 16:59
  */
-@SuppressWarnings("UnnecessaryFullyQualifiedName")
+@SuppressWarnings({ "UnnecessaryFullyQualifiedName", "unused" })
 public abstract class LinkIDConversionUtils {
 
     public static net.lin_k.safe_online.auth.AuthenticationState convert(final LinkIDAuthenticationState linkIDAuthenticationState) {
@@ -217,4 +220,26 @@ public abstract class LinkIDConversionUtils {
         throw new InternalInconsistencyException( String.format( "Invalid authentication state %s!", authenticationState ) );
     }
 
+    @Nullable
+    public static ThemeStatusCode convert(@Nullable final LinkIDThemeStatusCode linkIDThemeStatusCode) {
+
+        if (null == linkIDThemeStatusCode) {
+            return null;
+        }
+
+        switch (linkIDThemeStatusCode) {
+
+            case REJECTED:
+                return ThemeStatusCode.STATUS_REJECTED;
+            case PENDING:
+                return ThemeStatusCode.STATUS_PENDING;
+            case ACCEPTED:
+                return ThemeStatusCode.STATUS_ACCEPTED;
+            case RELEASED:
+                return ThemeStatusCode.STATUS_RELEASED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Invalid LinkIDThemeStatusCode %s!", linkIDThemeStatusCode ) );
+
+    }
 }

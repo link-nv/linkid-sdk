@@ -25,6 +25,9 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
@@ -57,6 +60,9 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureExcepti
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
@@ -140,14 +146,6 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDApplication> configWalletApplications(String walletOrganizationId, Locale locale)
             throws LinkIDConfigWalletApplicationsException;
-
-    /**
-     * Fetch the application's themes
-     *
-     * @throws LinkIDThemesException something went wrong, check the error code in the exception
-     */
-    LinkIDThemes getThemes(String applicationName)
-            throws LinkIDThemesException;
 
     /**
      * Fetch the specified keys's localization in linkID.
@@ -465,5 +463,50 @@ public interface LinkIDServiceClient {
      */
     void voucherRedeem(String voucherId)
             throws LinkIDVoucherRedeemException;
+
+    /**
+     * Request a new linkID Theme
+     *
+     * @param themeConfig the theme configuration
+     *
+     * @return the official technical name of the theme
+     *
+     * @throws LinkIDThemeAddException something went wrong, check the error code and info message
+     */
+    String themeAdd(LinkIDThemeConfig themeConfig)
+            throws LinkIDThemeAddException;
+
+    /**
+     * Request to remove a linkID theme
+     *
+     * @param themeName      the name of the theme
+     * @param removeReleased is the theme a pending theme or an already released one
+     *
+     * @throws LinkIDThemeRemoveException something went wrong, check the error code and info message
+     */
+    void themeRemove(String themeName, boolean removeReleased)
+            throws LinkIDThemeRemoveException;
+
+    /**
+     * Fetch the status of the theme request
+     *
+     * @param themeName the name of the theme
+     *
+     * @return the status
+     *
+     * @throws LinkIDThemeStatusException something went wrong, check the error code and info message
+     */
+    LinkIDThemeStatus themeStatus(String themeName)
+            throws LinkIDThemeStatusException;
+
+    /**
+     * Fetch the application's themes, if needed filtered by status code
+     *
+     * @param themeStatusCode optional status code for filtering
+     *
+     * @throws LinkIDThemesException something went wrong, check the error code in the exception
+     */
+    LinkIDThemes themes(@Nullable LinkIDThemeStatusCode themeStatusCode)
+            throws LinkIDThemesException;
 
 }

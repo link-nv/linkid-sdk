@@ -28,6 +28,9 @@ public class LinkIDNotificationMessage implements Serializable {
     private final String                  ltqrReference;
     private final String                  ltqrClientSessionId;
     private final String                  ltqrPaymentOrderReference;
+    //
+    // Theme
+    private final String                  themeName;
 
     public LinkIDNotificationMessage(final HttpServletRequest request) {
 
@@ -39,6 +42,7 @@ public class LinkIDNotificationMessage implements Serializable {
         this.ltqrReference = request.getParameter( LinkIDNotificationConstants.LTQR_REF_PARAM );
         this.ltqrClientSessionId = request.getParameter( LinkIDNotificationConstants.LTQR_CLIENT_SESSION_ID_PARAM );
         this.ltqrPaymentOrderReference = request.getParameter( LinkIDNotificationConstants.LTQR_PAYMENT_ORDER_REF_PARAM );
+        this.themeName = request.getParameter( LinkIDNotificationConstants.THEME_NAME_PARAM );
     }
 
     // Helper methods
@@ -55,6 +59,7 @@ public class LinkIDNotificationMessage implements Serializable {
                ", ltqrReference='" + ltqrReference + '\'' +
                ", ltqrClientSessionId='" + ltqrClientSessionId + '\'' +
                ", ltqrPaymentOrderReference='" + ltqrPaymentOrderReference + '\'' +
+               ", themeName='" + themeName + '\'' +
                '}';
     }
 
@@ -98,5 +103,10 @@ public class LinkIDNotificationMessage implements Serializable {
     public String getLtqrPaymentOrderReference() {
 
         return ltqrPaymentOrderReference;
+    }
+
+    public String getThemeName() {
+
+        return themeName;
     }
 }

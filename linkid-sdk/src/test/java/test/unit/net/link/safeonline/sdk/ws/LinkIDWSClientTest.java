@@ -29,6 +29,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
@@ -37,6 +39,7 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException;
@@ -83,7 +86,8 @@ public class LinkIDWSClientTest {
     private static final String APP_USERNAME = "example-mobile";
     private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
 
-    private String wsLocation;
+    private String              wsLocation;
+    private LinkIDServiceClient client;
 
     @Before
     public void setUp()
@@ -92,6 +96,8 @@ public class LinkIDWSClientTest {
         // DEBUG so ssl validation is skipped for local self signed ssl cert, obv do not do this in production, nor even against demo.linkid.be for that matter.
         System.setProperty( ApplicationMode.PROPERTY, ApplicationMode.DEBUG.name() );
         this.wsLocation = WS_LOCATION;
+
+        client = getLinkIDServiceClient();
     }
 
     @Test
@@ -126,7 +132,6 @@ public class LinkIDWSClientTest {
 
         // setup
         String sessionId = "00a44454-acbb-488e-ab54-6a7934a54bb1";
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         // operate
         LinkIDAuthnResponse response = client.callbackPull( sessionId );
@@ -138,8 +143,6 @@ public class LinkIDWSClientTest {
     //    @Test
     public void testPaymentReport()
             throws Exception {
-
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         List<String> orderReferences = Collections.singletonList( "e527bd0748864a07bd7781aa42e9cca2" );
 
@@ -156,8 +159,6 @@ public class LinkIDWSClientTest {
     public void testParkingReport()
             throws Exception {
 
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-
         LinkIDReportDateFilter dateFilter = new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null );
 
         LinkIDParkingReport parkingReport = client.parkingReport( dateFilter, null, null, null, null, null );
@@ -171,8 +172,6 @@ public class LinkIDWSClientTest {
     //    @Test
     public void testWalletReport()
             throws Exception {
-
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         //        LinkIDWalletReportTypeFilter walletReportTypeFilter = new LinkIDWalletReportTypeFilter( Arrays.asList( LinkIDWalletReportType.USER_TRANSACTION ) );
 
@@ -192,7 +191,6 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         List<String> walletIds = Lists.newLinkedList();
         walletIds.add( "123b1c22-e6c5-4ebc-9255-e59b72db5abf" );
         walletIds.add( "13ff6203-a086-483a-8e3c-382ce63f9a9a" );
@@ -213,9 +211,6 @@ public class LinkIDWSClientTest {
     public void testWalletEnrollment()
             throws Exception {
 
-        // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-
         // operate
         try {
             //            String walletId = client.enroll( userId, walletOrganizationId, 500, LinkIDCurrency.EUR, null );
@@ -233,9 +228,6 @@ public class LinkIDWSClientTest {
     //    @Test
     public void testWalletGetInfo()
             throws Exception {
-
-        // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         // operate
         try {
@@ -255,7 +247,6 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String walletOrganizationId = "urn:linkid:wallet:leaseplan";
         String walletCoin = "urn:linkid:wallet:coin:coffee";
@@ -271,9 +262,6 @@ public class LinkIDWSClientTest {
     //    @Test
     public void testWalletAddCredit()
             throws Exception {
-
-        // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
 
         // operate
         try {
@@ -294,9 +282,6 @@ public class LinkIDWSClientTest {
     public void testWalletRemoveCredit()
             throws Exception {
 
-        // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-
         // operate
         try {
             //            client.removeCredit( userId, walletId, 100, LinkIDCurrency.EUR, null );
@@ -316,9 +301,6 @@ public class LinkIDWSClientTest {
     public void testWalletRemove()
             throws Exception {
 
-        // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
-
         // operate
         try {
             String walletId = "123b1c22-e6c5-4ebc-9255-e59b72db5abf";
@@ -332,34 +314,10 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testThemes()
-            throws Exception {
-
-        // setup
-        LinkIDServiceClient client = getLinkIDServiceClient();
-
-        // operate
-        try {
-            String applicationName = "test-shop";
-            LinkIDThemes linkIDThemes = client.getThemes( applicationName );
-            assertNotNull( linkIDThemes );
-            assertNotNull( linkIDThemes.findDefaultTheme() );
-            for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
-                logger.dbg( "Theme: %s", linkIDTheme );
-            }
-        }
-        catch (LinkIDThemesException e) {
-            logger.err( "Themes error: %s", e.getErrorCode() );
-            fail();
-        }
-    }
-
-    //    @Test
     public void testStartAuthentication()
             throws Exception {
 
         // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String language = "be";
         LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 100, LinkIDCurrency.EUR ) ).build();
 
@@ -390,7 +348,6 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient client = new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
         String sessionId = "WpowEE";
 
         // operate
@@ -403,14 +360,13 @@ public class LinkIDWSClientTest {
 
         // setup
         String orderReference = "QR-SHOP-6b3ac19c-eee8-4732-a043-4a34bff16eca";
-        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         LinkIDPaymentStatus linkIDPaymentStatus = client.getPaymentStatus( orderReference );
 
         // verify
         assertNotNull( linkIDPaymentStatus );
-        assertEquals( linkIDPaymentStatus.getOrderReference(), orderReference );
+        assertEquals( orderReference, linkIDPaymentStatus.getOrderReference() );
         assertNotNull( linkIDPaymentStatus.getUserId() );
     }
 
@@ -419,7 +375,6 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient client = getLinkIDServiceClient();
         LinkIDLTQRPushContent pushContent = generatePushContent();
 
         // operate
@@ -444,7 +399,6 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        LinkIDServiceClient client = getLinkIDServiceClient();
         List<LinkIDLTQRPushContent> contents = Lists.newLinkedList();
         for (int i = 0; i < 200; i++) {
             contents.add( generatePushContent() );
@@ -488,7 +442,6 @@ public class LinkIDWSClientTest {
         // setup
         List<String> ltqrReferences = Lists.newLinkedList();
         ltqrReferences.add( "856eed32-2119-4f94-b705-f177079e1b9e" );
-        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         List<LinkIDLTQRInfo> linkIDLTQRInfos = client.ltqrInfo( ltqrReferences, null );
@@ -511,7 +464,6 @@ public class LinkIDWSClientTest {
         String mandateReference = "67106414-0020-47dd-b755-ee74e16d9e1f";
         LinkIDPaymentContext linkIDPaymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 1, LinkIDCurrency.EUR ) ).description(
                 "Test description" ).build();
-        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         String orderReference = client.mandatePayment( mandateReference, linkIDPaymentContext, null, Locale.ENGLISH );
@@ -526,7 +478,6 @@ public class LinkIDWSClientTest {
 
         // Setup
         String orderReference = "foo";
-        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         client.paymentCapture( orderReference );
@@ -538,8 +489,6 @@ public class LinkIDWSClientTest {
 
         // Setup
         String walletOrganizationId = "urn:linkid:wallet:leaseplan";
-
-        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // Operate
         List<LinkIDApplication> applications = client.configWalletApplications( walletOrganizationId, Locale.ENGLISH );
@@ -558,8 +507,6 @@ public class LinkIDWSClientTest {
         keys.add( "urn:linkid:wallet:coin:coffee" );
         keys.add( "urn:linkid:wallet:leaseplan" );
 
-        LinkIDServiceClient client = getLinkIDServiceClient();
-
         // operate
         List<LinkIDLocalization> localizations = client.getLocalization( keys );
 
@@ -574,7 +521,6 @@ public class LinkIDWSClientTest {
 
         // Setup
         String orderReference = "24e01f29c9434adb842331f5399b545a";
-        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // operate
         client.paymentRefund( orderReference );
@@ -588,8 +534,6 @@ public class LinkIDWSClientTest {
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String voucherOrganizationId = "E50CCE04-9FFB-44B2-814A-3E08524C50CF";
 
-        LinkIDServiceClient client = getLinkIDServiceClient();
-
         // Operate
         client.voucherReward( userId, voucherOrganizationId, 15 );
     }
@@ -601,8 +545,6 @@ public class LinkIDWSClientTest {
         // Setup
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String voucherOrganizationId = "E50CCE04-9FFB-44B2-814A-3E08524C50CF";
-
-        LinkIDServiceClient client = getLinkIDServiceClient();
 
         // Operate
         LinkIDVouchers vouchers = client.voucherList( userId, voucherOrganizationId, Locale.ENGLISH );
@@ -620,8 +562,6 @@ public class LinkIDWSClientTest {
         String userId = "e4269366-ddfb-43dc-838d-01569a8c4c22";
         String voucherOrganizationId = "E50CCE04-9FFB-44B2-814A-3E08524C50CF";
 
-        LinkIDServiceClient client = getLinkIDServiceClient();
-
         // Operate
         LinkIDVouchers vouchers = client.voucherListRedeemed( userId, voucherOrganizationId, Locale.ENGLISH, null, null );
 
@@ -637,10 +577,77 @@ public class LinkIDWSClientTest {
         // Setup
         String voucherId = "089f7b53-c34c-44cf-b64a-769744d854c7";
 
-        LinkIDServiceClient client = getLinkIDServiceClient();
-
         // Operate
         client.voucherRedeem( voucherId );
+    }
+
+    //    @Test
+    public void testThemeAdd()
+            throws Exception {
+
+        // setup
+        String applicationName = "test-shop";
+        List<LinkIDLocalizedImage> logos = Collections.singletonList(
+                new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png" ) );
+        //        List<LinkIDLocalizedImage> logos = Collections.singletonList( new LinkIDLocalizedImage( "http://www.kaagent.be/assets/images/icons/icon_200.jpg" ) );
+        List<LinkIDLocalizedImage> backgrounds = Collections.singletonList(
+                new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/bg/phone/iwish.png" ) );
+        List<LinkIDLocalizedImage> tabletBackgrounds = Collections.singletonList(
+                new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/bg/tablet/iwish.png" ) );
+        List<LinkIDLocalizedImage> altBackgrounds = Collections.singletonList(
+                new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/bg/alternative/iwish.png" ) );
+        //        List<LinkIDLocalizedImage> logos = Collections.singletonList(
+        //                new LinkIDLocalizedImage( "https://service.linkid.be/linkid-static/js/linkid.extra.js" ) );
+
+        LinkIDThemeConfig config = new LinkIDThemeConfig( "themeTest2", "Theme test2", false, logos, logos, backgrounds, tabletBackgrounds, altBackgrounds,
+                "#000000", "#FFFFFF" );
+
+        // operate
+        String themeName = client.themeAdd( config );
+
+        // verify
+        assertNotNull( themeName );
+        logger.dbg( "Theme name: %s", themeName );
+    }
+
+    //    @Test
+    public void testThemeStatus()
+            throws Exception {
+
+        // operate
+        LinkIDThemeStatus status = client.themeStatus( "urn:be:linkid:example-mobile:themeTest" );
+
+        // verify
+        assertNotNull( status );
+        logger.dbg( "Status: %s", status );
+
+    }
+
+    //    @Test
+    public void testThemeRemove()
+            throws Exception {
+
+        // operate
+        client.themeRemove( "wanagogo", true );
+
+    }
+
+    //    @Test
+    public void testThemes()
+            throws Exception {
+
+        // operate
+        try {
+            LinkIDThemes linkIDThemes = client.themes( null );
+            assertNotNull( linkIDThemes );
+            for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
+                logger.dbg( "Theme: %s", linkIDTheme );
+            }
+        }
+        catch (LinkIDThemesException e) {
+            logger.err( "Themes error: %s", e.getErrorCode() );
+            fail();
+        }
     }
 
     // Auth

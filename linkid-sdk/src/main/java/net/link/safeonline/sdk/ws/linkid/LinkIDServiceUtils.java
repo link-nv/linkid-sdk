@@ -1,8 +1,10 @@
 package net.link.safeonline.sdk.ws.linkid;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -15,9 +17,6 @@ import net.lin_k.linkid._3_1.core.Callback;
 import net.lin_k.linkid._3_1.core.CallbackPullErrorCode;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationErrorCode;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationKeyType;
-import net.lin_k.linkid._3_1.core.ConfigLocalizedImage;
-import net.lin_k.linkid._3_1.core.ConfigLocalizedImages;
-import net.lin_k.linkid._3_1.core.ConfigThemesErrorCode;
 import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsErrorCode;
 import net.lin_k.linkid._3_1.core.Currency;
 import net.lin_k.linkid._3_1.core.FavoritesConfiguration;
@@ -28,6 +27,8 @@ import net.lin_k.linkid._3_1.core.LTQRErrorCode;
 import net.lin_k.linkid._3_1.core.LTQRLockType;
 import net.lin_k.linkid._3_1.core.LTQRPollingConfiguration;
 import net.lin_k.linkid._3_1.core.LTQRPushErrorCode;
+import net.lin_k.linkid._3_1.core.LocalizedImage;
+import net.lin_k.linkid._3_1.core.LocalizedImages;
 import net.lin_k.linkid._3_1.core.MandatePaymentErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentCaptureErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentContext;
@@ -41,6 +42,16 @@ import net.lin_k.linkid._3_1.core.ReportDateFilter;
 import net.lin_k.linkid._3_1.core.ReportErrorCode;
 import net.lin_k.linkid._3_1.core.ReportPageFilter;
 import net.lin_k.linkid._3_1.core.ReportWalletFilter;
+import net.lin_k.linkid._3_1.core.ThemeAddErrorCode;
+import net.lin_k.linkid._3_1.core.ThemeColorError;
+import net.lin_k.linkid._3_1.core.ThemeColorErrorCode;
+import net.lin_k.linkid._3_1.core.ThemeImageError;
+import net.lin_k.linkid._3_1.core.ThemeImageErrorCode;
+import net.lin_k.linkid._3_1.core.ThemeRemoveErrorCode;
+import net.lin_k.linkid._3_1.core.ThemeStatusCode;
+import net.lin_k.linkid._3_1.core.ThemeStatusErrorCode;
+import net.lin_k.linkid._3_1.core.ThemeStatusErrorReport;
+import net.lin_k.linkid._3_1.core.ThemesErrorCode;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
@@ -75,6 +86,12 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportErrorCode;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeColorError;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeColorErrorCode;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeImageError;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeImageErrorCode;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
+import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusErrorReport;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
@@ -98,6 +115,9 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentErrorCo
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
@@ -121,6 +141,7 @@ import org.jetbrains.annotations.Nullable;
  * Date: 08/10/15
  * Time: 13:43
  */
+@SuppressWarnings("unused")
 public class LinkIDServiceUtils {
 
     private LinkIDServiceUtils() {
@@ -186,13 +207,13 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected key type %s!", type.name() ) );
     }
 
-    public static LinkIDLocalizedImages convert(final ConfigLocalizedImages localizedImages) {
+    public static LinkIDLocalizedImages convert(final LocalizedImages localizedImages) {
 
         if (null == localizedImages)
             return null;
 
         Map<String, LinkIDLocalizedImage> imageMap = Maps.newHashMap();
-        for (ConfigLocalizedImage localizedImage : localizedImages.getImages()) {
+        for (LocalizedImage localizedImage : localizedImages.getImages()) {
             imageMap.put( localizedImage.getLanguage(), new LinkIDLocalizedImage( localizedImage.getUrl(), localizedImage.getLanguage() ) );
         }
         return new LinkIDLocalizedImages( imageMap );
@@ -215,12 +236,12 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDThemesErrorCode convert(final ConfigThemesErrorCode errorCode) {
+    public static LinkIDThemesErrorCode convert(final ThemesErrorCode errorCode) {
 
         switch (errorCode) {
 
-            case ERROR_UNKNOWN_APPLICATION:
-                return LinkIDThemesErrorCode.ERROR_UNKNOWN_APPLICATION;
+            case ERROR_UNEXPECTED:
+                return LinkIDThemesErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDThemesErrorCode.ERROR_MAINTENANCE;
         }
@@ -1376,4 +1397,164 @@ public class LinkIDServiceUtils {
                 ? pollingConfiguration.getPaymentPollInterval(): -1 );
 
     }
+
+    @Nullable
+    public static LinkIDThemeStatusCode convert(@Nullable final ThemeStatusCode themeStatusCode) {
+
+        if (null == themeStatusCode) {
+            return null;
+        }
+
+        switch (themeStatusCode) {
+
+            case STATUS_REJECTED:
+                return LinkIDThemeStatusCode.REJECTED;
+            case STATUS_PENDING:
+                return LinkIDThemeStatusCode.PENDING;
+            case STATUS_ACCEPTED:
+                return LinkIDThemeStatusCode.ACCEPTED;
+            case STATUS_RELEASED:
+                return LinkIDThemeStatusCode.RELEASED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported themeStatusCode: \"%s\"", themeStatusCode.name() ) );
+
+    }
+
+    @Nullable
+    public static LocalizedImages convert(@Nullable final List<LinkIDLocalizedImage> linkIDLocalizedImages) {
+
+        if (null == linkIDLocalizedImages || linkIDLocalizedImages.isEmpty()) {
+            return null;
+        }
+
+        LocalizedImages localizedImages = new LocalizedImages();
+        for (LinkIDLocalizedImage linkIDLocalizedImage : linkIDLocalizedImages) {
+            LocalizedImage image = new LocalizedImage();
+            image.setLanguage( linkIDLocalizedImage.getLanguage() );
+            image.setUrl( linkIDLocalizedImage.getUrl() );
+            localizedImages.getImages().add( image );
+        }
+
+        return localizedImages;
+    }
+
+    public static LinkIDThemeAddErrorCode convert(final ThemeAddErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDThemeAddErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDThemeAddErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDThemeAddErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDThemeColorError convert(final ThemeColorError themeColorError) {
+
+        return new LinkIDThemeColorError( convert( themeColorError.getErrorCode() ), themeColorError.getErrorMessage() );
+    }
+
+    private static LinkIDThemeColorErrorCode convert(final ThemeColorErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_FORMAT:
+                return LinkIDThemeColorErrorCode.ERROR_FORMAT;
+            case ERROR_UNEXPECTED:
+                return LinkIDThemeColorErrorCode.ERROR_UNEXPECTED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDThemeRemoveErrorCode convert(final ThemeRemoveErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDThemeRemoveErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_NOT_FOUND:
+                return LinkIDThemeRemoveErrorCode.ERROR_NOT_FOUND;
+            case ERROR_UNEXPECTED:
+                return LinkIDThemeRemoveErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDThemeRemoveErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDThemeStatusErrorCode convert(final ThemeStatusErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDThemeStatusErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_NOT_FOUND:
+                return LinkIDThemeStatusErrorCode.ERROR_NOT_FOUND;
+            case ERROR_UNEXPECTED:
+                return LinkIDThemeStatusErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDThemeStatusErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDThemeStatusErrorReport convert(final ThemeStatusErrorReport errorReport) {
+
+        return new LinkIDThemeStatusErrorReport( convertThemeImageErrors( errorReport.getLogoErrors() ),
+                convertThemeImageErrors( errorReport.getAuthLogoErrors() ), convertThemeImageErrors( errorReport.getBackgroundErrors() ),
+                convertThemeImageErrors( errorReport.getTabletBackgroundErrors() ), convertThemeImageErrors( errorReport.getAlternativeBackgroundErrors() ) );
+    }
+
+    @Nullable
+    public static List<LinkIDThemeImageError> convertThemeImageErrors(final List<ThemeImageError> themeImageErrors) {
+
+        if (null == themeImageErrors) {
+            return null;
+        }
+
+        List<LinkIDThemeImageError> errors = Lists.newLinkedList();
+        for (ThemeImageError themeImageError : themeImageErrors) {
+            errors.add( convert( themeImageError ) );
+        }
+        return errors;
+    }
+
+    public static LinkIDThemeImageError convert(final ThemeImageError themeImageError) {
+
+        return new LinkIDThemeImageError( themeImageError.getLanguage(), convert( themeImageError.getErrorCode() ), themeImageError.getErrorMessage() );
+    }
+
+    public static LinkIDThemeImageErrorCode convert(final ThemeImageErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_FORMAT:
+                return LinkIDThemeImageErrorCode.ERROR_FORMAT;
+            case ERROR_SIZE:
+                return LinkIDThemeImageErrorCode.ERROR_SIZE;
+            case ERROR_DIMENSION:
+                return LinkIDThemeImageErrorCode.ERROR_DIMENSION;
+            case ERROR_UNEXPECTED:
+                return LinkIDThemeImageErrorCode.ERROR_UNEXPECTED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
 }

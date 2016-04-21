@@ -29,7 +29,10 @@ public enum LinkIDNotificationTopic {
     AUTHENTICATION_SUCCESS( "urn:net:lin-k:linkid:topic:authentication:success" ),
     AUTHENTICATION_PAYMENT_FINISHED( "urn:net:lin-k:linkid:topic:authentication:payment:finished" ),
     AUTHENTICATION_CANCELED( "urn:net:lin-k:linkid:topic:authentication:canceled" ),
-    AUTHENTICATION_FAILED( "urn:net:lin-k:linkid:topic:authentication:failed" );
+    AUTHENTICATION_FAILED( "urn:net:lin-k:linkid:topic:authentication:failed" ),
+    THEME_UPDATE( "urn:net:lin-k:linkid:topic:theme:update" ),
+    THEME_REMOVAL_SUCCESS( "urn:net:lin-k:linkid:topic:theme:removal:success" ),
+    THEME_REMOVAL_REJECTED( "urn:net:lin-k:linkid:topic:theme:removal:rejected" );
 
     private final String topicUri;
 

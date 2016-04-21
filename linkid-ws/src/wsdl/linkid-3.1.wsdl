@@ -196,7 +196,7 @@
 		<part name="response" element="tns:WalletReleaseResponse" />
 	</message>
 
-	<!-- =================== Vouchers ================================ -->
+    <!-- =================== Vouchers ================================ -->
 
     <message name="voucherRewardRequest">
 		<part name="request" element="tns:VoucherRewardRequest" />
@@ -221,6 +221,33 @@
 	</message>
 	<message name="voucherRedeemResponse">
 		<part name="response" element="tns:VoucherRedeemResponse" />
+	</message>
+
+    <!-- =================== Themes ========================= -->
+
+    <message name="themeAddRequest">
+		<part name="request" element="tns:ThemeAddRequest" />
+	</message>
+	<message name="themeAddResponse">
+		<part name="response" element="tns:ThemeAddResponse" />
+	</message>
+    <message name="themeRemoveRequest">
+		<part name="request" element="tns:ThemeRemoveRequest" />
+	</message>
+	<message name="themeRemoveResponse">
+		<part name="response" element="tns:ThemeRemoveResponse" />
+	</message>
+    <message name="themeStatusRequest">
+		<part name="request" element="tns:ThemeStatusRequest" />
+	</message>
+	<message name="themeStatusResponse">
+		<part name="response" element="tns:ThemeStatusResponse" />
+	</message>
+    <message name="themesRequest">
+		<part name="request" element="tns:ThemesRequest" />
+	</message>
+	<message name="themesResponse">
+		<part name="response" element="tns:ThemesResponse" />
 	</message>
 
     <!-- =========================== Ports ========================== -->
@@ -353,6 +380,22 @@
 		<operation name="voucherRedeem">
 			<input message="tns:voucherRedeemRequest" />
 			<output message="tns:voucherRedeemResponse" />
+		</operation>
+		<operation name="themeAdd">
+			<input message="tns:themeAddRequest" />
+			<output message="tns:themeAddResponse" />
+		</operation>
+		<operation name="themeRemove">
+			<input message="tns:themeRemoveRequest" />
+			<output message="tns:themeRemoveResponse" />
+		</operation>
+		<operation name="themeStatus">
+			<input message="tns:themeStatusRequest" />
+			<output message="tns:themeStatusResponse" />
+		</operation>
+		<operation name="themes">
+			<input message="tns:themesRequest" />
+			<output message="tns:themesResponse" />
 		</operation>
     </portType>
 
@@ -641,6 +684,42 @@
         </operation>
         <operation name="voucherRedeem">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherRedeem" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="themeAdd">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:themeAdd" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="themeRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:themeRemove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="themeStatus">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:themeStatus" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="themes">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:themes" />
             <input>
                 <soap:body use="literal" />
             </input>
