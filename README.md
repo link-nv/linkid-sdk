@@ -119,8 +119,9 @@ v4.5.0
 ---
   * continue in browser support dropped
 
-v6.6.1
+v4.6.1
 ----
   * LinkIDWallet(Report)Transaction: walletOrganizationId added
+  * LinkIDPaymentTransaction: id added
   * Application name added in notification messages
   * Theme operations: add/remove/status/list added
