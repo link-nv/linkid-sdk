@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDPaymentTransaction implements Serializable {
 
+    private final String                  id;
     private final LinkIDPaymentMethodType paymentMethodType;
     private final String                  paymentMethod;
     private final LinkIDPaymentState      paymentState;
@@ -26,10 +27,12 @@ public class LinkIDPaymentTransaction implements Serializable {
     private final LinkIDCurrency          currency;
     private final double                  refundAmount;
 
-    public LinkIDPaymentTransaction(final LinkIDPaymentMethodType paymentMethodType, final String paymentMethod, final LinkIDPaymentState paymentState,
-                                    final Date creationDate, final Date authorizationDate, final Date capturedDate, @Nullable final Date refundedDate,
-                                    final String docdataReference, final double amount, final LinkIDCurrency currency, final double refundAmount) {
+    public LinkIDPaymentTransaction(final String id, final LinkIDPaymentMethodType paymentMethodType, final String paymentMethod,
+                                    final LinkIDPaymentState paymentState, final Date creationDate, final Date authorizationDate, final Date capturedDate,
+                                    @Nullable final Date refundedDate, final String docdataReference, final double amount, final LinkIDCurrency currency,
+                                    final double refundAmount) {
 
+        this.id = id;
         this.paymentMethodType = paymentMethodType;
         this.paymentMethod = paymentMethod;
         this.paymentState = paymentState;
@@ -49,7 +52,8 @@ public class LinkIDPaymentTransaction implements Serializable {
     public String toString() {
 
         return "LinkIDPaymentTransaction{" +
-               "paymentMethodType=" + paymentMethodType +
+               "id=" + id +
+               ", paymentMethodType='" + paymentMethodType + '\'' +
                ", paymentMethod='" + paymentMethod + '\'' +
                ", paymentState=" + paymentState +
                ", creationDate=" + creationDate +
@@ -64,6 +68,11 @@ public class LinkIDPaymentTransaction implements Serializable {
     }
 
     // Accessors
+
+    public String getId() {
+
+        return id;
+    }
 
     public LinkIDPaymentMethodType getPaymentMethodType() {
 

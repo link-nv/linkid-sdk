@@ -148,7 +148,7 @@ public class LinkIDWSClientTest {
 
         //        List<String> orderReferences = Collections.singletonList( "e527bd0748864a07bd7781aa42e9cca2" );
 
-        LinkIDPaymentReport paymentReport = client.paymentReport( new LinkIDReportDateFilter( DateTime.now().minusMonths( 1 ).toDate(), null ), null, null,
+        LinkIDPaymentReport paymentReport = client.paymentReport( new LinkIDReportDateFilter( DateTime.now().minusMonths( 10 ).toDate(), null ), null, null,
                 null );
         logger.inf( "# orders = %d", paymentReport.getPaymentOrders().size() );
 
@@ -367,7 +367,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String orderReference = "c8fb8ef59a954cb9bd7dc20646db08b8";
+        String orderReference = "2efde30165c848e7963a699281042db7";
 
         // operate
         LinkIDPaymentStatus linkIDPaymentStatus = client.getPaymentStatus( orderReference );

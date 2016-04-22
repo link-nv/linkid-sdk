@@ -3669,6 +3669,7 @@
 
     <complexType name="PaymentTransaction">
         <sequence>
+            <element name="id" type="string" minOccurs="1" maxOccurs="1" />
             <element name="paymentMethodType" type="tns:PaymentMethodType" minOccurs="1" maxOccurs="1" />
             <element name="paymentMethod" type="string" minOccurs="1" maxOccurs="1" />
             <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />

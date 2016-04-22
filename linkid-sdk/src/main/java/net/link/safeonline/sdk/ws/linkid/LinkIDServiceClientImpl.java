@@ -482,14 +482,15 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 // parse
                 List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
                 for (PaymentTransaction paymentTransaction : response.getSuccess().getPaymentDetails().getPaymentTransactions()) {
-                    transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
-                            paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getCreationDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getAuthorizationDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getRefundedDate() ), paymentTransaction.getDocdataReference(),
-                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
-                            paymentTransaction.getRefundAmount() ) );
+                    transactions.add(
+                            new LinkIDPaymentTransaction( paymentTransaction.getId(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
+                                    paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getCreationDate() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getAuthorizationDate() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getRefundedDate() ), paymentTransaction.getDocdataReference(),
+                                    paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
+                                    paymentTransaction.getRefundAmount() ) );
                 }
 
                 List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
@@ -841,14 +842,15 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 // payment transactions
                 List<LinkIDPaymentTransaction> transactions = Lists.newLinkedList();
                 for (PaymentTransaction paymentTransaction : paymentOrder.getTransactions()) {
-                    transactions.add( new LinkIDPaymentTransaction( LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
-                            paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getCreationDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getAuthorizationDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ),
-                            LinkIDServiceUtils.convert( paymentTransaction.getRefundedDate() ), paymentTransaction.getDocdataReference(),
-                            paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
-                            paymentTransaction.getRefundAmount() ) );
+                    transactions.add(
+                            new LinkIDPaymentTransaction( paymentTransaction.getId(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentMethodType() ),
+                                    paymentTransaction.getPaymentMethod(), LinkIDServiceUtils.convert( paymentTransaction.getPaymentState() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getCreationDate() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getAuthorizationDate() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getCapturedDate() ),
+                                    LinkIDServiceUtils.convert( paymentTransaction.getRefundedDate() ), paymentTransaction.getDocdataReference(),
+                                    paymentTransaction.getAmount(), LinkIDServiceUtils.convert( paymentTransaction.getCurrency() ),
+                                    paymentTransaction.getRefundAmount() ) );
                 }
 
                 // wallet transactions
