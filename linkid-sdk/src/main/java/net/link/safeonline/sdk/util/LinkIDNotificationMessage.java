@@ -15,6 +15,7 @@ import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopic;
 public class LinkIDNotificationMessage implements Serializable {
 
     private final LinkIDNotificationTopic topic;
+    private final String                  applicationName;
     //
     // Core notifications
     private final String                  userId;
@@ -35,6 +36,7 @@ public class LinkIDNotificationMessage implements Serializable {
     public LinkIDNotificationMessage(final HttpServletRequest request) {
 
         this.topic = LinkIDNotificationTopic.to( request.getParameter( LinkIDNotificationConstants.TOPIC_PARAM ) );
+        this.applicationName = request.getParameter( LinkIDNotificationConstants.APPLICATION_NAME_PARAM );
         this.userId = request.getParameter( LinkIDNotificationConstants.USER_ID_PARAM );
         this.filter = request.getParameter( LinkIDNotificationConstants.FILTER_PARAM );
         this.info = request.getParameter( LinkIDNotificationConstants.INFO_PARAM );
@@ -52,6 +54,7 @@ public class LinkIDNotificationMessage implements Serializable {
 
         return "LinkIDNotificationMessage{" +
                "topic=" + topic +
+               ", applicationName='" + applicationName + '\'' +
                ", userId='" + userId + '\'' +
                ", filter='" + filter + '\'' +
                ", info='" + info + '\'' +
@@ -68,6 +71,11 @@ public class LinkIDNotificationMessage implements Serializable {
     public LinkIDNotificationTopic getTopic() {
 
         return topic;
+    }
+
+    public String getApplicationName() {
+
+        return applicationName;
     }
 
     public String getUserId() {

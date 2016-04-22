@@ -12,6 +12,7 @@ public interface LinkIDNotificationConstants {
     //
     // Core notifications
     String TOPIC_PARAM                  = "topic";
+    String APPLICATION_NAME_PARAM       = "application";
     String FILTER_PARAM                 = "filter";
     String USER_ID_PARAM                = "userId";
     String INFO_PARAM                   = "info";
