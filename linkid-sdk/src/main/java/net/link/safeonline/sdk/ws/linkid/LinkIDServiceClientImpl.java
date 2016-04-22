@@ -494,12 +494,12 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
                 List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
                 for (WalletTransaction walletTransaction : response.getSuccess().getPaymentDetails().getWalletTransactions()) {
-                    walletTransactions.add(
-                            new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
-                                    LinkIDServiceUtils.convert( walletTransaction.getRefundedDate() ),
-                                    LinkIDServiceUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
-                                    walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ),
-                                    walletTransaction.getWalletCoin(), walletTransaction.getRefundAmount(), response.getSuccess().getDescription() ) );
+                    walletTransactions.add( new LinkIDWalletTransaction( walletTransaction.getWalletId(), walletTransaction.getWalletOrganizationId(),
+                            LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
+                            LinkIDServiceUtils.convert( walletTransaction.getRefundedDate() ),
+                            LinkIDServiceUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
+                            walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
+                            walletTransaction.getRefundAmount(), response.getSuccess().getDescription() ) );
                 }
 
                 return new LinkIDPaymentStatus( response.getSuccess().getOrderReference(), response.getSuccess().getUserId(),
@@ -854,12 +854,12 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 // wallet transactions
                 List<LinkIDWalletTransaction> walletTransactions = Lists.newLinkedList();
                 for (WalletTransaction walletTransaction : paymentOrder.getWalletTransactions()) {
-                    walletTransactions.add(
-                            new LinkIDWalletTransaction( walletTransaction.getWalletId(), LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
-                                    LinkIDServiceUtils.convert( walletTransaction.getRefundedDate() ),
-                                    LinkIDServiceUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
-                                    walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ),
-                                    walletTransaction.getWalletCoin(), walletTransaction.getRefundAmount(), paymentOrder.getDescription() ) );
+                    walletTransactions.add( new LinkIDWalletTransaction( walletTransaction.getWalletId(), walletTransaction.getWalletOrganizationId(),
+                            LinkIDServiceUtils.convert( walletTransaction.getCreationDate() ),
+                            LinkIDServiceUtils.convert( walletTransaction.getRefundedDate() ),
+                            LinkIDServiceUtils.convert( walletTransaction.getCommittedDate() ), walletTransaction.getTransactionId(),
+                            walletTransaction.getAmount(), LinkIDServiceUtils.convert( walletTransaction.getCurrency() ), walletTransaction.getWalletCoin(),
+                            walletTransaction.getRefundAmount(), paymentOrder.getDescription() ) );
                 }
 
                 // order
@@ -957,8 +957,8 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
             for (WalletReportTransaction walletReportTransaction : response.getTransactions()) {
 
-                transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getId(), walletReportTransaction.getWalletId(),
-                        LinkIDServiceUtils.convert( walletReportTransaction.getCreationDate() ),
+                transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getId(), walletReportTransaction.getWalletOrganizationId(),
+                        walletReportTransaction.getWalletId(), LinkIDServiceUtils.convert( walletReportTransaction.getCreationDate() ),
                         LinkIDServiceUtils.convert( walletReportTransaction.getRefundedDate() ),
                         LinkIDServiceUtils.convert( walletReportTransaction.getCommittedDate() ), walletReportTransaction.getTransactionId(),
                         walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),
