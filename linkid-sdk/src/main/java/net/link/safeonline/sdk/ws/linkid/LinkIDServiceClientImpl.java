@@ -957,8 +957,8 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
             for (WalletReportTransaction walletReportTransaction : response.getTransactions()) {
 
-                transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getId(), walletReportTransaction.getWalletOrganizationId(),
-                        walletReportTransaction.getWalletId(), LinkIDServiceUtils.convert( walletReportTransaction.getCreationDate() ),
+                transactions.add( new LinkIDWalletReportTransaction( walletReportTransaction.getId(), walletReportTransaction.getWalletId(),
+                        walletReportTransaction.getWalletOrganizationId(), LinkIDServiceUtils.convert( walletReportTransaction.getCreationDate() ),
                         LinkIDServiceUtils.convert( walletReportTransaction.getRefundedDate() ),
                         LinkIDServiceUtils.convert( walletReportTransaction.getCommittedDate() ), walletReportTransaction.getTransactionId(),
                         walletReportTransaction.getAmount(), LinkIDServiceUtils.convert( walletReportTransaction.getCurrency() ),

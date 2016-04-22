@@ -21,6 +21,8 @@ import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
+import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
@@ -144,14 +146,20 @@ public class LinkIDWSClientTest {
     public void testPaymentReport()
             throws Exception {
 
-        List<String> orderReferences = Collections.singletonList( "e527bd0748864a07bd7781aa42e9cca2" );
+        //        List<String> orderReferences = Collections.singletonList( "e527bd0748864a07bd7781aa42e9cca2" );
 
-        LinkIDPaymentReport paymentReport = client.paymentReport( new LinkIDReportDateFilter( DateTime.now().minusMonths( 1 ).toDate(), null ), orderReferences,
-                null, null );
+        LinkIDPaymentReport paymentReport = client.paymentReport( new LinkIDReportDateFilter( DateTime.now().minusMonths( 1 ).toDate(), null ), null, null,
+                null );
         logger.inf( "# orders = %d", paymentReport.getPaymentOrders().size() );
 
         for (LinkIDPaymentOrder linkIDPaymentOrder : paymentReport.getPaymentOrders()) {
             logger.inf( "Order: %s", linkIDPaymentOrder );
+            for (LinkIDPaymentTransaction linkIDPaymentTransaction : linkIDPaymentOrder.getTransactions()) {
+                logger.inf( "Payment transaction: %s", linkIDPaymentTransaction );
+            }
+            for (LinkIDWalletTransaction linkIDWalletTransaction : linkIDPaymentOrder.getWalletTransactions()) {
+                logger.inf( "Wallet transaction: %s", linkIDWalletTransaction );
+            }
         }
     }
 
@@ -355,11 +363,11 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testGetPaymentStatus()
+    public void testPaymentStatus()
             throws Exception {
 
         // setup
-        String orderReference = "QR-SHOP-6b3ac19c-eee8-4732-a043-4a34bff16eca";
+        String orderReference = "c8fb8ef59a954cb9bd7dc20646db08b8";
 
         // operate
         LinkIDPaymentStatus linkIDPaymentStatus = client.getPaymentStatus( orderReference );
@@ -368,6 +376,14 @@ public class LinkIDWSClientTest {
         assertNotNull( linkIDPaymentStatus );
         assertEquals( orderReference, linkIDPaymentStatus.getOrderReference() );
         assertNotNull( linkIDPaymentStatus.getUserId() );
+        logger.inf( "Payment status: %s", linkIDPaymentStatus );
+        logger.inf( "Payment status: %s", linkIDPaymentStatus.getPaymentDetails() );
+        for (LinkIDPaymentTransaction paymentTransaction : linkIDPaymentStatus.getPaymentDetails().getTransactions()) {
+            logger.inf( "Payment transaction: %s", paymentTransaction );
+        }
+        for (LinkIDWalletTransaction walletTransaction : linkIDPaymentStatus.getPaymentDetails().getWalletTransactions()) {
+            logger.inf( "Wallet transaction: %s", walletTransaction );
+        }
     }
 
     //    @Test
