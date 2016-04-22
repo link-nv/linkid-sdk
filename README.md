@@ -110,3 +110,17 @@ v4.2.0
 ---
   * LinkIDWalletReportTransaction.id support
     * unique ID for each wallet report entry
+
+v4.3.0
+---
+  * ID mapping WS support dropped
+
+v4.5.0
+---
+  * continue in browser support dropped
+
+v6.6.1
+----
+  * LinkIDWallet(Report)Transaction: walletOrganizationId added
+  * Application name added in notification messages
+  * Theme operations: add/remove/status/list added
