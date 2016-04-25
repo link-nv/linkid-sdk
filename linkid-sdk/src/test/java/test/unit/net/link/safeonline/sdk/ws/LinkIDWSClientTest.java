@@ -616,7 +616,7 @@ public class LinkIDWSClientTest {
         //        List<LinkIDLocalizedImage> logos = Collections.singletonList(
         //                new LinkIDLocalizedImage( "https://service.linkid.be/linkid-static/js/linkid.extra.js" ) );
 
-        LinkIDThemeConfig config = new LinkIDThemeConfig( "themeTest2", "Theme test2", false, logos, logos, backgrounds, tabletBackgrounds, altBackgrounds,
+        LinkIDThemeConfig config = new LinkIDThemeConfig( "themeTest", "Theme test", false, logos, logos, backgrounds, tabletBackgrounds, altBackgrounds,
                 "#000000", "#FFFFFF" );
 
         // operate
