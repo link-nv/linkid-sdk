@@ -645,7 +645,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        client.themeRemove( "wanagogo", true );
+        client.themeRemove( "template-blue", true );
 
     }
 
@@ -655,7 +655,8 @@ public class LinkIDWSClientTest {
 
         // operate
         try {
-            LinkIDThemes linkIDThemes = client.themes( null );
+            //            LinkIDThemes linkIDThemes = client.themes( "urn:be:linkid:example-mobile:theme:themeTest", null );
+            LinkIDThemes linkIDThemes = client.themes( null, null );
             assertNotNull( linkIDThemes );
             for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
                 logger.dbg( "Theme: %s", linkIDTheme );

@@ -1443,10 +1443,11 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDThemes themes(final LinkIDThemeStatusCode linkIDThemeStatusCode)
+    public LinkIDThemes themes(@Nullable final String themeName, @Nullable final LinkIDThemeStatusCode linkIDThemeStatusCode)
             throws LinkIDThemesException {
 
         ThemesRequest request = new ThemesRequest();
+        request.setName( themeName );
         request.setStatusCode( LinkIDConversionUtils.convert( linkIDThemeStatusCode ) );
 
         // operate
@@ -1460,14 +1461,10 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         List<LinkIDTheme> linkIDThemes = Lists.newLinkedList();
         for (Themes themes : response.getSuccess().getThemes()) {
 
-            linkIDThemes.add(
-                    new LinkIDTheme( themes.getName(), themes.getFriendlyName(), LinkIDServiceUtils.convert( themes.getStatusCode() ), themes.isDefaultTheme(),
-                            LinkIDServiceUtils.convert( themes.isOwner() ), LinkIDServiceUtils.convert( themes.getLogo() ),
-                            LinkIDServiceUtils.convert( themes.getAuthLogo() ), LinkIDServiceUtils.convert( themes.getBackground() ),
-                            LinkIDServiceUtils.convert( themes.getTabletBackground() ), LinkIDServiceUtils.convert( themes.getAlternativeBackground() ),
-                            themes.getBackgroundColor(), themes.getTextColor() ) );
+            linkIDThemes.add( LinkIDServiceUtils.convert( themes ) );
         }
 
         return new LinkIDThemes( linkIDThemes );
     }
+
 }

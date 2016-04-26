@@ -3062,7 +3062,8 @@
 
     <element name="ThemesRequest">
         <complexType>
-           <attribute name="statusCode" type="tns:ThemeStatusCode" use="optional" />
+            <attribute name="name" type="string" use="optional" />
+            <attribute name="statusCode" type="tns:ThemeStatusCode" use="optional" />
         </complexType>
 	</element>
 

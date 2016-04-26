@@ -51,6 +51,7 @@ import net.lin_k.linkid._3_1.core.ThemeRemoveErrorCode;
 import net.lin_k.linkid._3_1.core.ThemeStatusCode;
 import net.lin_k.linkid._3_1.core.ThemeStatusErrorCode;
 import net.lin_k.linkid._3_1.core.ThemeStatusErrorReport;
+import net.lin_k.linkid._3_1.core.Themes;
 import net.lin_k.linkid._3_1.core.ThemesErrorCode;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
@@ -102,6 +103,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationErr
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKeyType;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImages;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDFavoritesConfiguration;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushErrorCode;
@@ -1419,6 +1421,17 @@ public class LinkIDServiceUtils {
 
         throw new InternalInconsistencyException( String.format( "Unsupported themeStatusCode: \"%s\"", themeStatusCode.name() ) );
 
+    }
+
+    public static LinkIDTheme convert(@Nullable final Themes themes) {
+
+        if (null == themes) {
+            return null;
+        }
+
+        return new LinkIDTheme( themes.getName(), themes.getFriendlyName(), convert( themes.getStatusCode() ), themes.isDefaultTheme(),
+                convert( themes.isOwner() ), convert( themes.getLogo() ), convert( themes.getAuthLogo() ), convert( themes.getBackground() ),
+                convert( themes.getTabletBackground() ), convert( themes.getAlternativeBackground() ), themes.getBackgroundColor(), themes.getTextColor() );
     }
 
     @Nullable

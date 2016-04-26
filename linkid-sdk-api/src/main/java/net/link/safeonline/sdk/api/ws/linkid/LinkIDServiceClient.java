@@ -500,13 +500,14 @@ public interface LinkIDServiceClient {
             throws LinkIDThemeStatusException;
 
     /**
-     * Fetch the application's themes, if needed filtered by status code
+     * Fetch the application's themes, if needed filtered by themeName, status code
      *
+     * @param themeName       optional theme name for filtering
      * @param themeStatusCode optional status code for filtering
      *
      * @throws LinkIDThemesException something went wrong, check the error code in the exception
      */
-    LinkIDThemes themes(@Nullable LinkIDThemeStatusCode themeStatusCode)
+    LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDThemeStatusCode themeStatusCode)
             throws LinkIDThemesException;
 
 }
