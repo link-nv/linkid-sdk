@@ -15,6 +15,7 @@ public class LinkIDWalletTransaction implements Serializable {
 
     private final String         walletId;
     private final String         walletOrganizationId;
+    private final String         walletOrganizationFriendly;
     private final Date           creationDate;
     @Nullable
     private final Date           refundedDate;
@@ -29,12 +30,14 @@ public class LinkIDWalletTransaction implements Serializable {
     @Nullable
     private final String         paymentDescription;
 
-    public LinkIDWalletTransaction(final String walletId, final String walletOrganizationId, final Date creationDate, @Nullable final Date refundedDate,
-                                   @Nullable final Date committedDate, @Nullable final String transactionId, final double amount, final LinkIDCurrency currency,
-                                   final String walletCoin, final double refundAmount, @Nullable final String paymentDescription) {
+    public LinkIDWalletTransaction(final String walletId, final String walletOrganizationId, final String walletOrganizationFriendly, final Date creationDate,
+                                   @Nullable final Date refundedDate, @Nullable final Date committedDate, @Nullable final String transactionId,
+                                   final double amount, final LinkIDCurrency currency, final String walletCoin, final double refundAmount,
+                                   @Nullable final String paymentDescription) {
 
         this.walletId = walletId;
         this.walletOrganizationId = walletOrganizationId;
+        this.walletOrganizationFriendly = walletOrganizationFriendly;
         this.creationDate = creationDate;
         this.refundedDate = refundedDate;
         this.committedDate = committedDate;
@@ -54,6 +57,7 @@ public class LinkIDWalletTransaction implements Serializable {
         return "LinkIDWalletTransaction{" +
                "walletId='" + walletId + '\'' +
                ", walletOrganizationId=" + walletOrganizationId +
+               ", walletOrganizationFriendly=" + walletOrganizationFriendly +
                ", creationDate=" + creationDate +
                ", refundedDate=" + refundedDate +
                ", committedDate=" + committedDate +
@@ -76,6 +80,11 @@ public class LinkIDWalletTransaction implements Serializable {
     public String getWalletOrganizationId() {
 
         return walletOrganizationId;
+    }
+
+    public String getWalletOrganizationFriendly() {
+
+        return walletOrganizationFriendly;
     }
 
     public Date getCreationDate() {
