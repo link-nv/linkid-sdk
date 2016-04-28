@@ -125,3 +125,11 @@ v4.6.1
   * LinkIDPaymentTransaction: id added
   * Application name added in notification messages
   * Theme operations: add/remove/status/list added
+  
+v4.7.0
+----
+  * themes call: optional themeName filter
+
+v4.7.1
+----
+  * walletOrganizationFriendly added to LinkIDWallet(Report)Transaction
