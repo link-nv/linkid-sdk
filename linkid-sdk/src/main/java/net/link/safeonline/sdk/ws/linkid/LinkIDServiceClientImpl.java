@@ -76,6 +76,8 @@ import net.lin_k.linkid._3_1.core.VoucherListRedeemedRequest;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedResponse;
 import net.lin_k.linkid._3_1.core.VoucherListRequest;
 import net.lin_k.linkid._3_1.core.VoucherListResponse;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateRequest;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateResponse;
 import net.lin_k.linkid._3_1.core.VoucherRedeemRequest;
 import net.lin_k.linkid._3_1.core.VoucherRedeemResponse;
 import net.lin_k.linkid._3_1.core.VoucherRewardRequest;
@@ -128,6 +130,7 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
@@ -169,6 +172,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -1340,6 +1344,39 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
             // all good <o/
             return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public String voucherOrganizationAddUpdate(final LinkIDVoucherOrganization voucherOrganization)
+            throws LinkIDVoucherOrganizationAddUpdateException {
+
+        // request
+        VoucherOrganizationAddUpdateRequest request = new VoucherOrganizationAddUpdateRequest();
+
+        // input
+        request.setVoucherOrganizationId( voucherOrganization.getId() );
+        request.setLogoUrl( voucherOrganization.getLogoUrl() );
+        request.setVoucherLimit( voucherOrganization.getVoucherLimit() );
+
+        // operate
+        VoucherOrganizationAddUpdateResponse response = getPort().voucherOrganizationAddUpdate( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDVoucherOrganizationAddUpdateException( response.getError().getErrorMessage(),
+                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+            return response.getSuccess().getName();
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

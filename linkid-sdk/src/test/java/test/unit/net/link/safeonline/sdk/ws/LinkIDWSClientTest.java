@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
+import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
@@ -33,6 +34,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
@@ -668,6 +670,24 @@ public class LinkIDWSClientTest {
             logger.err( "Themes error: %s", e.getErrorCode() );
             fail();
         }
+    }
+
+    @Test
+    public void testVoucherOrganizationAdd()
+            throws Exception {
+
+        // setup
+        LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test",
+                "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 5,
+                Collections.singletonList( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "Test voucher" ) ),
+                Collections.singletonList( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "Test voucher description" ) ) );
+
+        // operate
+        String voucherName = client.voucherOrganizationAddUpdate( voucherOrganization );
+
+        // verify
+        assertNotNull( voucherName );
+        logger.dbg( "Voucher name: %s", voucherName );
     }
 
     // Auth

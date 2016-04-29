@@ -2927,6 +2927,111 @@
 		</restriction>
 	</simpleType>
 
+
+    <!-- Voucher organizations: add/update -->
+
+
+    <element name="VoucherOrganizationAddUpdateRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher organization to add/update</documentation>
+                    </annotation>
+                </element>
+                <element name="logoUrl" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The url of the voucher logo</documentation>
+                    </annotation>
+                </element>
+                <element name="voucherLimit" type="long" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The size of the voucher</documentation>
+                    </annotation>
+                </element>
+                <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The voucher organization name localizations</documentation>
+                    </annotation>
+                </element>
+                <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The voucher organization description localizations</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="VoucherOrganizationAddUpdateResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherOrganizationAddUpdateSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherOrganizationAddUpdateError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherOrganizationAddUpdateSuccess">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The official technical name of the voucher organization, to be used in subsequent calls</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="VoucherOrganizationAddUpdateError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:VoucherOrganizationAddUpdateErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherOrganizationAddUpdateErrorCode">
+		<annotation>
+			<documentation>Voucher organization add Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.logo.format">
+				<annotation>
+					<documentation>The image format is not supported</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.logo.size">
+				<annotation>
+					<documentation>The image size is big.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.logo.dimension">
+				<annotation>
+					<documentation>The image dimension is not ok.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Invalid name, e.g. already exists, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
     <!-- Voucher: common -->
 
     <complexType name="Voucher">
@@ -3822,6 +3927,21 @@
             <element name="friendlyName" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The localized application name</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Localization">
+        <sequence>
+            <element name="languageCode" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 language code. Optional, default is en</documentation>
+                </annotation>
+            </element>
+            <element name="value" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The localization value</documentation>
                 </annotation>
             </element>
         </sequence>

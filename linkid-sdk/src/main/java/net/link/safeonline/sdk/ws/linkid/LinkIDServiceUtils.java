@@ -27,6 +27,7 @@ import net.lin_k.linkid._3_1.core.LTQRErrorCode;
 import net.lin_k.linkid._3_1.core.LTQRLockType;
 import net.lin_k.linkid._3_1.core.LTQRPollingConfiguration;
 import net.lin_k.linkid._3_1.core.LTQRPushErrorCode;
+import net.lin_k.linkid._3_1.core.Localization;
 import net.lin_k.linkid._3_1.core.LocalizedImage;
 import net.lin_k.linkid._3_1.core.LocalizedImages;
 import net.lin_k.linkid._3_1.core.MandatePaymentErrorCode;
@@ -56,6 +57,7 @@ import net.lin_k.linkid._3_1.core.ThemesErrorCode;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherRewardErrorCode;
 import net.lin_k.linkid._3_1.core.WalletAddCreditErrorCode;
@@ -72,6 +74,7 @@ import net.lin_k.linkid._3_1.core.WalletReportTypeFilter;
 import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
+import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -122,6 +125,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCode;
@@ -133,6 +137,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErro
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.util.InternalInconsistencyException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.jetbrains.annotations.Nullable;
@@ -1068,6 +1073,27 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
+    public static LinkIDVoucherOrganizationAddUpdateErrorCode convert(final VoucherOrganizationAddUpdateErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_LOGO_FORMAT:
+                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_LOGO_FORMAT;
+            case ERROR_LOGO_SIZE:
+                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_LOGO_SIZE;
+            case ERROR_LOGO_DIMENSION:
+                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_LOGO_DIMENSION;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
     public static boolean convert(@Nullable final Boolean b) {
 
         return null != b? b: false;
@@ -1570,4 +1596,17 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
+    public static List<LinkIDLocalizationValue> convertLocalizations(final List<Localization> localizations) {
+
+        List<LinkIDLocalizationValue> values = Lists.newLinkedList();
+        if (CollectionUtils.isEmpty( localizations )) {
+            return values;
+        }
+
+        for (Localization localization : localizations) {
+            values.add( new LinkIDLocalizationValue( localization.getLanguageCode(), localization.getValue() ) );
+        }
+
+        return values;
+    }
 }

@@ -28,6 +28,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
@@ -65,6 +66,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -463,6 +465,18 @@ public interface LinkIDServiceClient {
      */
     void voucherRedeem(String voucherId)
             throws LinkIDVoucherRedeemException;
+
+    /**
+     * Add/update a voucher organization
+     *
+     * @param voucherOrganization the voucher organization
+     *
+     * @return the technical name of the added/update voucher organization
+     *
+     * @throws LinkIDVoucherOrganizationAddUpdateException something went wrong, check the error code in the exception
+     */
+    String voucherOrganizationAddUpdate(LinkIDVoucherOrganization voucherOrganization)
+            throws LinkIDVoucherOrganizationAddUpdateException;
 
     /**
      * Request a new linkID Theme
