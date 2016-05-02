@@ -59,6 +59,7 @@ import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddPermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationPermissionType;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
@@ -131,6 +132,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardErrorCode;
@@ -1636,6 +1638,26 @@ public class LinkIDServiceUtils {
 
     }
 
+    public static LinkIDVoucherPermissionType convert(final VoucherOrganizationPermissionType permissionType) {
+
+        if (null == permissionType) {
+            return null;
+        }
+
+        switch (permissionType) {
+
+            case PERMISSION_REWARD:
+                return LinkIDVoucherPermissionType.REWARD;
+            case PERMISSION_LIST:
+                return LinkIDVoucherPermissionType.LIST;
+            case PERMISSION_REDEEM:
+                return LinkIDVoucherPermissionType.REDEEM;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected permission type %s!", permissionType.name() ) );
+
+    }
+
     public static LinkIDVoucherOrganizationAddPermissionErrorCode convert(final VoucherOrganizationAddPermissionErrorCode errorCode) {
 
         if (null == errorCode) {
@@ -1677,6 +1699,25 @@ public class LinkIDServiceUtils {
                 return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherOrganizationListPermissionsErrorCode convert(final VoucherOrganizationListPermissionsErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherOrganizationListPermissionsErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherOrganizationListPermissionsErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherOrganizationListPermissionsErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

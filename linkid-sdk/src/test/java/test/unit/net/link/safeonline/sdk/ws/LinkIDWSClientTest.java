@@ -724,6 +724,20 @@ public class LinkIDWSClientTest {
         }
     }
 
+    @Test
+    public void testVoucherOrganizationListPermissions()
+            throws Exception {
+
+        // operate
+        List<LinkIDVoucherPermissionType> permissions = client.voucherOrganizationListPermissions( "urn:be:linkid:example-mobile:theme:test" );
+
+        // verify
+        assertNotNull( permissions );
+        for (LinkIDVoucherPermissionType permission : permissions) {
+            logger.dbg( "Permission: %s", permission );
+        }
+    }
+
     // Auth
 
     private LinkIDServiceClient getLinkIDServiceClient() {

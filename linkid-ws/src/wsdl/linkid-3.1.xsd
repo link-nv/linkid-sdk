@@ -3191,6 +3191,73 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Voucher organizations: list permissions -->
+
+    <element name="VoucherOrganizationListPermissionsRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher organization</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="VoucherOrganizationListPermissionsResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherOrganizationListPermissionsSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherOrganizationListPermissionsError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherOrganizationListPermissionsSuccess">
+        <sequence>
+            <element name="permissions" type="tns:VoucherOrganizationPermissionType" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The list of permissions the caller application has</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="VoucherOrganizationListPermissionsError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:VoucherOrganizationListPermissionsErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherOrganizationListPermissionsErrorCode">
+		<annotation>
+			<documentation>Voucher organization add permission error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.voucher.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Voucher: common -->
 
     <simpleType name="VoucherOrganizationPermissionType">

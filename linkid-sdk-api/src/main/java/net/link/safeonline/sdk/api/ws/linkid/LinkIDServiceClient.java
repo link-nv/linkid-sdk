@@ -69,6 +69,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
@@ -507,6 +508,18 @@ public interface LinkIDServiceClient {
      */
     void voucherOrganizationRemovePermission(String voucherOrganizationId, @Nullable String applicationName, LinkIDVoucherPermissionType permissionType)
             throws LinkIDVoucherOrganizationRemovePermissionException;
+
+    /**
+     * Returns the list of permissions the caller application has for specified voucher organization
+     *
+     * @param voucherOrganizationId the voucher organization ID
+     *
+     * @return the list of permissions
+     *
+     * @throws LinkIDVoucherOrganizationListPermissionsException something went wrong, check the error code in the exception
+     */
+    List<LinkIDVoucherPermissionType> voucherOrganizationListPermissions(String voucherOrganizationId)
+            throws LinkIDVoucherOrganizationListPermissionsException;
 
     /**
      * Request a new linkID Theme
