@@ -494,15 +494,18 @@ public interface LinkIDServiceClient {
             throws LinkIDVoucherOrganizationAddPermissionException;
 
     /**
-     * Remove a permission for specified voucher organization from specified application. Have to be owner of the voucher organization to do this
+     * Remove a permission for specified voucher organization.
+     * <p>
+     * If no application name is specified the permission for your application will be removed.
+     * If an application name is specified, you'll have to be owner of the voucher organization to remove the permission
      *
      * @param voucherOrganizationId the voucher organization ID
-     * @param applicationName       the application's technical name
+     * @param applicationName       optional application name if the owner wants to remove the permission
      * @param permissionType        what permission to remove
      *
      * @throws LinkIDVoucherOrganizationRemovePermissionException something went wrong, check the error code in the exception
      */
-    void voucherOrganizationRemovePermission(String voucherOrganizationId, String applicationName, LinkIDVoucherPermissionType permissionType)
+    void voucherOrganizationRemovePermission(String voucherOrganizationId, @Nullable String applicationName, LinkIDVoucherPermissionType permissionType)
             throws LinkIDVoucherOrganizationRemovePermissionException;
 
     /**

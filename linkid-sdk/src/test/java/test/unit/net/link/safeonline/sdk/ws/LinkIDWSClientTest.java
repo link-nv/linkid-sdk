@@ -693,15 +693,15 @@ public class LinkIDWSClientTest {
         logger.dbg( "Voucher name: %s", voucherName );
     }
 
-    @Test
+    //    @Test
     public void testVoucherOrganizationAddPermission()
             throws Exception {
 
         // operate
         try {
             client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.LIST );
-            //            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REWARD );
-            //            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REDEEM );
+            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REWARD );
+            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REDEEM );
         }
         catch (LinkIDVoucherOrganizationAddPermissionException e) {
             fail();

@@ -1444,7 +1444,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public void voucherOrganizationRemovePermission(final String voucherOrganizationId, final String applicationName,
+    public void voucherOrganizationRemovePermission(final String voucherOrganizationId, @Nullable final String applicationName,
                                                     final LinkIDVoucherPermissionType permissionType)
             throws LinkIDVoucherOrganizationRemovePermissionException {
 

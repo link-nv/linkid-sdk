@@ -3121,7 +3121,7 @@
                         <documentation>The ID of the voucher organization</documentation>
                     </annotation>
                 </element>
-                <element name="applicationName" type="string" minOccurs="1" maxOccurs="1">
+                <element name="applicationName" type="string" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>The technical name of the application</documentation>
                     </annotation>
