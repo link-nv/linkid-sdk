@@ -57,7 +57,10 @@ import net.lin_k.linkid._3_1.core.ThemesErrorCode;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationAddPermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationPermissionType;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherRewardErrorCode;
 import net.lin_k.linkid._3_1.core.WalletAddCreditErrorCode;
@@ -97,6 +100,7 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeImageErrorCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusErrorReport;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
@@ -125,7 +129,9 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCode;
@@ -1608,5 +1614,71 @@ public class LinkIDServiceUtils {
         }
 
         return values;
+    }
+
+    public static VoucherOrganizationPermissionType convert(final LinkIDVoucherPermissionType permissionType) {
+
+        if (null == permissionType) {
+            return null;
+        }
+
+        switch (permissionType) {
+
+            case REWARD:
+                return VoucherOrganizationPermissionType.PERMISSION_REWARD;
+            case LIST:
+                return VoucherOrganizationPermissionType.PERMISSION_LIST;
+            case REDEEM:
+                return VoucherOrganizationPermissionType.PERMISSION_REDEEM;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected permission type %s!", permissionType.name() ) );
+
+    }
+
+    public static LinkIDVoucherOrganizationAddPermissionErrorCode convert(final VoucherOrganizationAddPermissionErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_UNKNOWN_APPLICATION:
+                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_UNKNOWN_APPLICATION;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherOrganizationRemovePermissionErrorCode convert(final VoucherOrganizationRemovePermissionErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_UNKNOWN_APPLICATION:
+                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNKNOWN_APPLICATION;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 }

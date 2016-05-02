@@ -35,6 +35,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
@@ -54,6 +55,8 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
@@ -688,6 +691,36 @@ public class LinkIDWSClientTest {
         // verify
         assertNotNull( voucherName );
         logger.dbg( "Voucher name: %s", voucherName );
+    }
+
+    //    @Test
+    public void testVoucherOrganizationAddPermission()
+            throws Exception {
+
+        // operate
+        try {
+            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.LIST );
+            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REWARD );
+            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REDEEM );
+        }
+        catch (LinkIDVoucherOrganizationAddPermissionException e) {
+            fail();
+        }
+    }
+
+    //    @Test
+    public void testVoucherOrganizationRemovePermission()
+            throws Exception {
+
+        // operate
+        try {
+            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.LIST );
+            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REWARD );
+            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REDEEM );
+        }
+        catch (LinkIDVoucherOrganizationRemovePermissionException e) {
+            fail();
+        }
     }
 
     // Auth

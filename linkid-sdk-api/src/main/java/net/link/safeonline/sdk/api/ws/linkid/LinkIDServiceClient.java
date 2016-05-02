@@ -29,6 +29,7 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
@@ -66,7 +67,9 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -477,6 +480,30 @@ public interface LinkIDServiceClient {
      */
     String voucherOrganizationAddUpdate(LinkIDVoucherOrganization voucherOrganization)
             throws LinkIDVoucherOrganizationAddUpdateException;
+
+    /**
+     * Add a permission for specified voucher organization to specified application. Have to be owner of the voucher organization to do this
+     *
+     * @param voucherOrganizationId the voucher organization ID
+     * @param applicationName       the application's technical name
+     * @param permissionType        what permission to give
+     *
+     * @throws LinkIDVoucherOrganizationAddPermissionException something went wrong, check the error code in the exception
+     */
+    void voucherOrganizationAddPermission(String voucherOrganizationId, String applicationName, LinkIDVoucherPermissionType permissionType)
+            throws LinkIDVoucherOrganizationAddPermissionException;
+
+    /**
+     * Remove a permission for specified voucher organization from specified application. Have to be owner of the voucher organization to do this
+     *
+     * @param voucherOrganizationId the voucher organization ID
+     * @param applicationName       the application's technical name
+     * @param permissionType        what permission to remove
+     *
+     * @throws LinkIDVoucherOrganizationRemovePermissionException something went wrong, check the error code in the exception
+     */
+    void voucherOrganizationRemovePermission(String voucherOrganizationId, String applicationName, LinkIDVoucherPermissionType permissionType)
+            throws LinkIDVoucherOrganizationRemovePermissionException;
 
     /**
      * Request a new linkID Theme
