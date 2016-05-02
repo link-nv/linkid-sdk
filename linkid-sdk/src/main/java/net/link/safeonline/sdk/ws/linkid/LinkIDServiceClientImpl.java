@@ -45,6 +45,7 @@ import net.lin_k.linkid._3_1.core.LTQRPushResponse2;
 import net.lin_k.linkid._3_1.core.LTQRRemoveRequest;
 import net.lin_k.linkid._3_1.core.LTQRRemoveResponse;
 import net.lin_k.linkid._3_1.core.LinkIDServicePort;
+import net.lin_k.linkid._3_1.core.Localization;
 import net.lin_k.linkid._3_1.core.MandatePaymentRequest;
 import net.lin_k.linkid._3_1.core.MandatePaymentResponse;
 import net.lin_k.linkid._3_1.core.ParkingReportRequest;
@@ -106,6 +107,7 @@ import net.lin_k.linkid._3_1.core.WalletTransaction;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
+import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -1360,6 +1362,24 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         request.setVoucherOrganizationId( voucherOrganization.getId() );
         request.setLogoUrl( voucherOrganization.getLogoUrl() );
         request.setVoucherLimit( voucherOrganization.getVoucherLimit() );
+
+        if (!CollectionUtils.isEmpty( voucherOrganization.getNameLocalizations() )) {
+            for (LinkIDLocalizationValue nameValue : voucherOrganization.getNameLocalizations()) {
+                Localization localization = new Localization();
+                localization.setLanguageCode( nameValue.getLanguageCode() );
+                localization.setValue( nameValue.getValue() );
+                request.getNameLocalization().add( localization );
+            }
+        }
+
+        if (!CollectionUtils.isEmpty( voucherOrganization.getDescriptionLocalizations() )) {
+            for (LinkIDLocalizationValue nameValue : voucherOrganization.getDescriptionLocalizations()) {
+                Localization localization = new Localization();
+                localization.setLanguageCode( nameValue.getLanguageCode() );
+                localization.setValue( nameValue.getValue() );
+                request.getDescriptionLocalization().add( localization );
+            }
+        }
 
         // operate
         VoucherOrganizationAddUpdateResponse response = getPort().voucherOrganizationAddUpdate( request );

@@ -672,13 +672,13 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testVoucherOrganizationAdd()
             throws Exception {
 
         // setup
         LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test",
-                "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 5,
+                "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 4,
                 Collections.singletonList( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "Test voucher" ) ),
                 Collections.singletonList( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "Test voucher description" ) ) );
 
