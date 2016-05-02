@@ -714,6 +714,7 @@ public class LinkIDWSClientTest {
 
         // operate
         try {
+            //            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", null, LinkIDVoucherPermissionType.LIST );
             client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.LIST );
             client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REWARD );
             client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REDEEM );
