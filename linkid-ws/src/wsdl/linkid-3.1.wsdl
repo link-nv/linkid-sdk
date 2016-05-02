@@ -246,12 +246,12 @@
 	<message name="voucherOrganizationListPermissionsResponse">
 		<part name="response" element="tns:VoucherOrganizationListPermissionsResponse" />
 	</message>
-    <!--<message name="voucherOrganizationListRequest">-->
-		<!--<part name="request" element="tns:VoucherOrganizationListRequest" />-->
-	<!--</message>-->
-	<!--<message name="voucherOrganizationListResponse">-->
-		<!--<part name="response" element="tns:VoucherOrganizationListResponse" />-->
-	<!--</message>-->
+    <message name="voucherOrganizationListRequest">
+		<part name="request" element="tns:VoucherOrganizationListRequest" />
+	</message>
+	<message name="voucherOrganizationListResponse">
+		<part name="response" element="tns:VoucherOrganizationListResponse" />
+	</message>
     <!--<message name="voucherOrganizationRemoveRequest">-->
 		<!--<part name="request" element="tns:VoucherOrganizationRemoveRequest" />-->
 	<!--</message>-->
@@ -433,10 +433,10 @@
 			<input message="tns:voucherOrganizationListPermissionsRequest" />
 			<output message="tns:voucherOrganizationListPermissionsResponse" />
 		</operation>
-		<!--<operation name="voucherOrganizationList">-->
-			<!--<input message="tns:voucherOrganizationListRequest" />-->
-			<!--<output message="tns:voucherOrganizationListResponse" />-->
-		<!--</operation>-->
+		<operation name="voucherOrganizationList">
+			<input message="tns:voucherOrganizationListRequest" />
+			<output message="tns:voucherOrganizationListResponse" />
+		</operation>
 		<!--<operation name="voucherOrganizationRemove">-->
 			<!--<input message="tns:voucherOrganizationRemoveRequest" />-->
 			<!--<output message="tns:voucherOrganizationRemoveResponse" />-->
@@ -787,15 +787,15 @@
                 <soap:body use="literal" />
             </output>
         </operation>
-        <!--<operation name="voucherOrganizationList">-->
-            <!--<soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationList" />-->
-            <!--<input>-->
-                <!--<soap:body use="literal" />-->
-            <!--</input>-->
-            <!--<output>-->
-                <!--<soap:body use="literal" />-->
-            <!--</output>-->
-        <!--</operation>-->
+        <operation name="voucherOrganizationList">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationList" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
         <!--<operation name="voucherOrganizationRemove">-->
             <!--<soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationRemove" />-->
             <!--<input>-->

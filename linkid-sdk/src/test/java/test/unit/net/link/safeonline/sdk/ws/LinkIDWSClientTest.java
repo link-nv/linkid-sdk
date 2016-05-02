@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -35,6 +36,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -676,14 +678,19 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testVoucherOrganizationAdd()
+    public void testVoucherOrganizationAddUpdate()
             throws Exception {
 
         // setup
+        List<LinkIDLocalizationValue> nameLocalizations = new LinkedList<>();
+        List<LinkIDLocalizationValue> descriptionLocalizations = new LinkedList<>();
+        nameLocalizations.add( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "en: Test voucher" ) );
+        nameLocalizations.add( new LinkIDLocalizationValue( "nl", "nl: Test voucher" ) );
+        descriptionLocalizations.add( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "en: Test voucher description" ) );
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "nl: Test voucher description" ) );
+
         LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test",
-                "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 4,
-                Collections.singletonList( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "Test voucher" ) ),
-                Collections.singletonList( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "Test voucher description" ) ) );
+                "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 5, nameLocalizations, descriptionLocalizations );
 
         // operate
         String voucherName = client.voucherOrganizationAddUpdate( voucherOrganization );
@@ -724,7 +731,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testVoucherOrganizationListPermissions()
             throws Exception {
 
@@ -735,6 +742,20 @@ public class LinkIDWSClientTest {
         assertNotNull( permissions );
         for (LinkIDVoucherPermissionType permission : permissions) {
             logger.dbg( "Permission: %s", permission );
+        }
+    }
+
+    //    @Test
+    public void testVoucherOrganizationList()
+            throws Exception {
+
+        // operate
+        List<LinkIDVoucherOrganizationDetails> organizations = client.voucherOrganizationList();
+
+        // verify
+        assertNotNull( organizations );
+        for (LinkIDVoucherOrganizationDetails organization : organizations) {
+            logger.dbg( "Voucher organization: %s", organization );
         }
     }
 

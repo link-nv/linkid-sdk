@@ -2934,29 +2934,9 @@
     <element name="VoucherOrganizationAddUpdateRequest">
         <complexType>
             <sequence>
-                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <element name="organization" type="tns:VoucherOrganization" minOccurs="1" maxOccurs="1">
                     <annotation>
-                        <documentation>The ID of the voucher organization to add/update</documentation>
-                    </annotation>
-                </element>
-                <element name="logoUrl" type="string" minOccurs="1" maxOccurs="1">
-                    <annotation>
-                        <documentation>The url of the voucher logo</documentation>
-                    </annotation>
-                </element>
-                <element name="voucherLimit" type="long" minOccurs="1" maxOccurs="1">
-                    <annotation>
-                        <documentation>The size of the voucher</documentation>
-                    </annotation>
-                </element>
-                <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
-                    <annotation>
-                        <documentation>The voucher organization name localizations</documentation>
-                    </annotation>
-                </element>
-                <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
-                    <annotation>
-                        <documentation>The voucher organization description localizations</documentation>
+                        <documentation>The voucher organization configuration</documentation>
                     </annotation>
                 </element>
             </sequence>
@@ -3258,7 +3238,119 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Voucher organizations: list -->
+
+    <element name="VoucherOrganizationListRequest">
+        <complexType>
+
+        </complexType>
+    </element>
+
+    <element name="VoucherOrganizationListResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherOrganizationListSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherOrganizationListError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherOrganizationListSuccess">
+        <sequence>
+            <element name="organizationDetails" type="tns:VoucherOrganizationDetails" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The voucher organization details the caller application owns</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="VoucherOrganizationListError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:VoucherOrganizationListErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherOrganizationListErrorCode">
+		<annotation>
+			<documentation>Voucher organization list error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
     <!-- Voucher: common -->
+
+    <complexType name="VoucherOrganizationDetails">
+        <sequence>
+            <element name="organization" type="tns:VoucherOrganization" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Voucher organization configuration</documentation>
+                </annotation>
+            </element>
+            <element name="rewardPermissionApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the REWARD permission</documentation>
+                </annotation>
+            </element>
+            <element name="listPermissionApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the LIST permission</documentation>
+                </annotation>
+            </element>
+            <element name="redeemPermissionApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the REDEEM permission</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="VoucherOrganization">
+        <sequence>
+            <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The ID of the voucher organization to add/update</documentation>
+                </annotation>
+            </element>
+            <element name="logoUrl" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The url of the voucher logo</documentation>
+                </annotation>
+            </element>
+            <element name="voucherLimit" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The size of the voucher</documentation>
+                </annotation>
+            </element>
+            <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The voucher organization name localizations</documentation>
+                </annotation>
+            </element>
+            <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The voucher organization description localizations</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
 
     <simpleType name="VoucherOrganizationPermissionType">
 		<annotation>

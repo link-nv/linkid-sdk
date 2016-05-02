@@ -57,8 +57,11 @@ import net.lin_k.linkid._3_1.core.ThemesErrorCode;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganization;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddPermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationDetails;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationPermissionType;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionErrorCode;
@@ -101,6 +104,8 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeImageErrorCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusErrorReport;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
@@ -132,6 +137,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
@@ -1722,4 +1728,37 @@ public class LinkIDServiceUtils {
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
+
+    public static LinkIDVoucherOrganizationListErrorCode convert(final VoucherOrganizationListErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherOrganizationListErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherOrganizationListErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherOrganizationDetails convert(final VoucherOrganizationDetails voucherOrganizationDetails) {
+
+        return new LinkIDVoucherOrganizationDetails( convert( voucherOrganizationDetails.getOrganization() ),
+                voucherOrganizationDetails.getRewardPermissionApplications(), voucherOrganizationDetails.getListPermissionApplications(),
+                voucherOrganizationDetails.getRedeemPermissionApplications() );
+
+    }
+
+    public static LinkIDVoucherOrganization convert(final VoucherOrganization request) {
+
+        return new LinkIDVoucherOrganization( request.getVoucherOrganizationId(), request.getLogoUrl(), request.getVoucherLimit(),
+                convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ) );
+
+    }
+
 }

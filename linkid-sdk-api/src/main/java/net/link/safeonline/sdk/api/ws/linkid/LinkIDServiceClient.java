@@ -29,6 +29,7 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -69,6 +70,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
@@ -520,6 +522,17 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDVoucherPermissionType> voucherOrganizationListPermissions(String voucherOrganizationId)
             throws LinkIDVoucherOrganizationListPermissionsException;
+
+    /**
+     * Returns the list of voucher organizations the caller application owns
+     * *
+     *
+     * @return the list of owned voucher organizations
+     *
+     * @throws LinkIDVoucherOrganizationListException something went wrong, check the error code in the exception
+     */
+    List<LinkIDVoucherOrganizationDetails> voucherOrganizationList()
+            throws LinkIDVoucherOrganizationListException;
 
     /**
      * Request a new linkID Theme

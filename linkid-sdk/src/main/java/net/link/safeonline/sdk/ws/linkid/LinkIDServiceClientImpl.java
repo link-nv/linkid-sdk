@@ -14,103 +14,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import net.lin_k.linkid._3_1.core.AuthCancelRequest;
-import net.lin_k.linkid._3_1.core.AuthCancelResponse;
-import net.lin_k.linkid._3_1.core.AuthPollRequest;
-import net.lin_k.linkid._3_1.core.AuthPollResponse;
-import net.lin_k.linkid._3_1.core.AuthStartRequest;
-import net.lin_k.linkid._3_1.core.AuthStartResponse;
-import net.lin_k.linkid._3_1.core.CallbackPullRequest;
-import net.lin_k.linkid._3_1.core.CallbackPullResponse;
-import net.lin_k.linkid._3_1.core.ConfigLocalization;
-import net.lin_k.linkid._3_1.core.ConfigLocalizationRequest;
-import net.lin_k.linkid._3_1.core.ConfigLocalizationResponse;
-import net.lin_k.linkid._3_1.core.ConfigLocalizationValue;
-import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsRequest;
-import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsResponse;
-import net.lin_k.linkid._3_1.core.LTQRBulkPushRequest;
-import net.lin_k.linkid._3_1.core.LTQRBulkPushResponse;
-import net.lin_k.linkid._3_1.core.LTQRChangeRequest;
-import net.lin_k.linkid._3_1.core.LTQRChangeResponse;
-import net.lin_k.linkid._3_1.core.LTQRClientSession;
-import net.lin_k.linkid._3_1.core.LTQRInfo;
-import net.lin_k.linkid._3_1.core.LTQRInfoRequest;
-import net.lin_k.linkid._3_1.core.LTQRInfoResponse;
-import net.lin_k.linkid._3_1.core.LTQRPullRequest;
-import net.lin_k.linkid._3_1.core.LTQRPullResponse;
-import net.lin_k.linkid._3_1.core.LTQRPushContent;
-import net.lin_k.linkid._3_1.core.LTQRPushRequest;
-import net.lin_k.linkid._3_1.core.LTQRPushResponse;
-import net.lin_k.linkid._3_1.core.LTQRPushResponse2;
-import net.lin_k.linkid._3_1.core.LTQRRemoveRequest;
-import net.lin_k.linkid._3_1.core.LTQRRemoveResponse;
-import net.lin_k.linkid._3_1.core.LinkIDServicePort;
-import net.lin_k.linkid._3_1.core.Localization;
-import net.lin_k.linkid._3_1.core.MandatePaymentRequest;
-import net.lin_k.linkid._3_1.core.MandatePaymentResponse;
-import net.lin_k.linkid._3_1.core.ParkingReportRequest;
-import net.lin_k.linkid._3_1.core.ParkingReportResponse;
-import net.lin_k.linkid._3_1.core.ParkingSession;
-import net.lin_k.linkid._3_1.core.PaymentCaptureRequest;
-import net.lin_k.linkid._3_1.core.PaymentCaptureResponse;
-import net.lin_k.linkid._3_1.core.PaymentOrder;
-import net.lin_k.linkid._3_1.core.PaymentRefundRequest;
-import net.lin_k.linkid._3_1.core.PaymentRefundResponse;
-import net.lin_k.linkid._3_1.core.PaymentReportRequest;
-import net.lin_k.linkid._3_1.core.PaymentReportResponse;
-import net.lin_k.linkid._3_1.core.PaymentStatusRequest;
-import net.lin_k.linkid._3_1.core.PaymentStatusResponse;
-import net.lin_k.linkid._3_1.core.PaymentTransaction;
-import net.lin_k.linkid._3_1.core.ThemeAddRequest;
-import net.lin_k.linkid._3_1.core.ThemeAddResponse;
-import net.lin_k.linkid._3_1.core.ThemeConfig;
-import net.lin_k.linkid._3_1.core.ThemeError;
-import net.lin_k.linkid._3_1.core.ThemeRemoveRequest;
-import net.lin_k.linkid._3_1.core.ThemeRemoveResponse;
-import net.lin_k.linkid._3_1.core.ThemeStatusRequest;
-import net.lin_k.linkid._3_1.core.ThemeStatusResponse;
-import net.lin_k.linkid._3_1.core.Themes;
-import net.lin_k.linkid._3_1.core.ThemesRequest;
-import net.lin_k.linkid._3_1.core.ThemesResponse;
-import net.lin_k.linkid._3_1.core.Voucher;
-import net.lin_k.linkid._3_1.core.VoucherListRedeemedRequest;
-import net.lin_k.linkid._3_1.core.VoucherListRedeemedResponse;
-import net.lin_k.linkid._3_1.core.VoucherListRequest;
-import net.lin_k.linkid._3_1.core.VoucherListResponse;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationAddPermissionRequest;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationAddPermissionResponse;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateRequest;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateResponse;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsRequest;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsResponse;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationPermissionType;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionRequest;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionResponse;
-import net.lin_k.linkid._3_1.core.VoucherRedeemRequest;
-import net.lin_k.linkid._3_1.core.VoucherRedeemResponse;
-import net.lin_k.linkid._3_1.core.VoucherRewardRequest;
-import net.lin_k.linkid._3_1.core.VoucherRewardResponse;
-import net.lin_k.linkid._3_1.core.WalletAddCreditRequest;
-import net.lin_k.linkid._3_1.core.WalletAddCreditResponse;
-import net.lin_k.linkid._3_1.core.WalletCommitRequest;
-import net.lin_k.linkid._3_1.core.WalletCommitResponse;
-import net.lin_k.linkid._3_1.core.WalletEnrollRequest;
-import net.lin_k.linkid._3_1.core.WalletEnrollResponse;
-import net.lin_k.linkid._3_1.core.WalletGetInfoRequest;
-import net.lin_k.linkid._3_1.core.WalletGetInfoResponse;
-import net.lin_k.linkid._3_1.core.WalletInfoReport;
-import net.lin_k.linkid._3_1.core.WalletInfoReportRequest;
-import net.lin_k.linkid._3_1.core.WalletInfoReportResponse;
-import net.lin_k.linkid._3_1.core.WalletReleaseRequest;
-import net.lin_k.linkid._3_1.core.WalletReleaseResponse;
-import net.lin_k.linkid._3_1.core.WalletRemoveCreditRequest;
-import net.lin_k.linkid._3_1.core.WalletRemoveCreditResponse;
-import net.lin_k.linkid._3_1.core.WalletRemoveRequest;
-import net.lin_k.linkid._3_1.core.WalletRemoveResponse;
-import net.lin_k.linkid._3_1.core.WalletReportRequest;
-import net.lin_k.linkid._3_1.core.WalletReportResponse;
-import net.lin_k.linkid._3_1.core.WalletReportTransaction;
-import net.lin_k.linkid._3_1.core.WalletTransaction;
+import net.lin_k.linkid._3_1.core.*;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
@@ -140,6 +44,7 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -184,6 +89,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
@@ -1370,16 +1276,18 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         VoucherOrganizationAddUpdateRequest request = new VoucherOrganizationAddUpdateRequest();
 
         // input
-        request.setVoucherOrganizationId( voucherOrganization.getId() );
-        request.setLogoUrl( voucherOrganization.getLogoUrl() );
-        request.setVoucherLimit( voucherOrganization.getVoucherLimit() );
+        VoucherOrganization organization = new VoucherOrganization();
+        request.setOrganization( organization );
+        organization.setVoucherOrganizationId( voucherOrganization.getId() );
+        organization.setLogoUrl( voucherOrganization.getLogoUrl() );
+        organization.setVoucherLimit( voucherOrganization.getVoucherLimit() );
 
         if (!CollectionUtils.isEmpty( voucherOrganization.getNameLocalizations() )) {
             for (LinkIDLocalizationValue nameValue : voucherOrganization.getNameLocalizations()) {
                 Localization localization = new Localization();
                 localization.setLanguageCode( nameValue.getLanguageCode() );
                 localization.setValue( nameValue.getValue() );
-                request.getNameLocalization().add( localization );
+                organization.getNameLocalization().add( localization );
             }
         }
 
@@ -1388,7 +1296,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 Localization localization = new Localization();
                 localization.setLanguageCode( nameValue.getLanguageCode() );
                 localization.setValue( nameValue.getValue() );
-                request.getDescriptionLocalization().add( localization );
+                organization.getDescriptionLocalization().add( localization );
             }
         }
 
@@ -1514,6 +1422,38 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             }
 
             return permissions;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public List<LinkIDVoucherOrganizationDetails> voucherOrganizationList()
+            throws LinkIDVoucherOrganizationListException {
+
+        // operate
+        VoucherOrganizationListResponse response = getPort().voucherOrganizationList( new VoucherOrganizationListRequest() );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDVoucherOrganizationListException( response.getError().getErrorMessage(),
+                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDVoucherOrganizationDetails> organizations = Lists.newLinkedList();
+
+            for (VoucherOrganizationDetails voucherOrganizationDetails : response.getSuccess().getOrganizationDetails()) {
+                organizations.add( LinkIDServiceUtils.convert( voucherOrganizationDetails ) );
+            }
+
+            return organizations;
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
