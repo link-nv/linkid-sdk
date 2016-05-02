@@ -32,6 +32,9 @@ public class LinkIDNotificationMessage implements Serializable {
     //
     // Theme
     private final String                  themeName;
+    //
+    // Vouchers
+    private final String                  voucherOrganizationId;
 
     public LinkIDNotificationMessage(final HttpServletRequest request) {
 
@@ -45,6 +48,7 @@ public class LinkIDNotificationMessage implements Serializable {
         this.ltqrClientSessionId = request.getParameter( LinkIDNotificationConstants.LTQR_CLIENT_SESSION_ID_PARAM );
         this.ltqrPaymentOrderReference = request.getParameter( LinkIDNotificationConstants.LTQR_PAYMENT_ORDER_REF_PARAM );
         this.themeName = request.getParameter( LinkIDNotificationConstants.THEME_NAME_PARAM );
+        this.voucherOrganizationId = request.getParameter( LinkIDNotificationConstants.VOUCHER_ORGANIZATION_ID_PARAM );
     }
 
     // Helper methods
@@ -63,6 +67,7 @@ public class LinkIDNotificationMessage implements Serializable {
                ", ltqrClientSessionId='" + ltqrClientSessionId + '\'' +
                ", ltqrPaymentOrderReference='" + ltqrPaymentOrderReference + '\'' +
                ", themeName='" + themeName + '\'' +
+               ", voucherOrganizationId='" + voucherOrganizationId + '\'' +
                '}';
     }
 
@@ -116,5 +121,10 @@ public class LinkIDNotificationMessage implements Serializable {
     public String getThemeName() {
 
         return themeName;
+    }
+
+    public String getVoucherOrganizationId() {
+
+        return voucherOrganizationId;
     }
 }

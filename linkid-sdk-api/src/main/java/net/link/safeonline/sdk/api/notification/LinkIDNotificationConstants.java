@@ -11,21 +11,24 @@ public interface LinkIDNotificationConstants {
 
     //
     // Core notifications
-    String TOPIC_PARAM                  = "topic";
-    String APPLICATION_NAME_PARAM       = "application";
-    String FILTER_PARAM                 = "filter";
-    String USER_ID_PARAM                = "userId";
-    String INFO_PARAM                   = "info";
+    String TOPIC_PARAM                   = "topic";
+    String APPLICATION_NAME_PARAM        = "application";
+    String FILTER_PARAM                  = "filter";
+    String USER_ID_PARAM                 = "userId";
+    String INFO_PARAM                    = "info";
     //
     // Payment Status
-    String PAYMENT_ORDER_REF_PARAM      = "orderRef";
+    String PAYMENT_ORDER_REF_PARAM       = "orderRef";
     //
     // LTQR
-    String LTQR_REF_PARAM               = "ltqrRef";
-    String LTQR_PAYMENT_ORDER_REF_PARAM = "paymentOrderRef";
-    String LTQR_CLIENT_SESSION_ID_PARAM = "clientSessionId";
+    String LTQR_REF_PARAM                = "ltqrRef";
+    String LTQR_PAYMENT_ORDER_REF_PARAM  = "paymentOrderRef";
+    String LTQR_CLIENT_SESSION_ID_PARAM  = "clientSessionId";
     //
     // Theme
-    String THEME_NAME_PARAM             = "themeName";
+    String THEME_NAME_PARAM              = "themeName";
+    //
+    // Vouchers
+    String VOUCHER_ORGANIZATION_ID_PARAM = "voucherOrganizationId";
 
 }
