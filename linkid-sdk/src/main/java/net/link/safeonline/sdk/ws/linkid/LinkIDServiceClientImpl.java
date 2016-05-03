@@ -91,6 +91,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAd
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
@@ -1454,6 +1455,38 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             }
 
             return organizations;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void voucherOrganizationRemove(final String voucherOrganizationId)
+            throws LinkIDVoucherOrganizationRemoveException {
+
+        // request
+        VoucherOrganizationRemoveRequest request = new VoucherOrganizationRemoveRequest();
+
+        // input
+        request.setVoucherOrganizationId( voucherOrganizationId );
+
+        // operate
+        VoucherOrganizationRemoveResponse response = getPort().voucherOrganizationRemove( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDVoucherOrganizationRemoveException( response.getError().getErrorMessage(),
+                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+
+            return;
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

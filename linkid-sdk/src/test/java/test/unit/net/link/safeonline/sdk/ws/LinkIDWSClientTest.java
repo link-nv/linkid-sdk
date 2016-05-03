@@ -759,6 +759,14 @@ public class LinkIDWSClientTest {
         }
     }
 
+    //    @Test
+    public void testVoucherOrganizationRemove()
+            throws Exception {
+
+        // operate
+        client.voucherOrganizationRemove( "urn:be:linkid:example-mobile:theme:test" );
+    }
+
     // Auth
 
     private LinkIDServiceClient getLinkIDServiceClient() {

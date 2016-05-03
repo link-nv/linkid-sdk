@@ -72,6 +72,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAd
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
@@ -533,6 +534,19 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDVoucherOrganizationDetails> voucherOrganizationList()
             throws LinkIDVoucherOrganizationListException;
+
+    /**
+     * Remove specified voucher organization
+     * <p>
+     * NOTE: this can only be done if no vouchers exist for it. Once a voucher has been created ( not necessarily redeemed ) there is no way to remove this
+     * voucher organization.
+     *
+     * @param voucherOrganizationId the voucher organization ID
+     *
+     * @throws LinkIDVoucherOrganizationRemoveException something went wrong, check the error code in the exception
+     */
+    void voucherOrganizationRemove(String voucherOrganizationId)
+            throws LinkIDVoucherOrganizationRemoveException;
 
     /**
      * Request a new linkID Theme

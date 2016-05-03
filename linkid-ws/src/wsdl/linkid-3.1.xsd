@@ -3242,7 +3242,6 @@
 
     <element name="VoucherOrganizationListRequest">
         <complexType>
-
         </complexType>
     </element>
 
@@ -3294,6 +3293,70 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Voucher organizations: remove -->
+
+    <element name="VoucherOrganizationRemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher organization</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="VoucherOrganizationRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherOrganizationRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherOrganizationRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherOrganizationRemoveSuccess">
+    </complexType>
+
+    <complexType name="VoucherOrganizationRemoveError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:VoucherOrganizationRemoveErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherOrganizationRemoveErrorCode">
+		<annotation>
+			<documentation>Voucher organization list error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.voucher.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Not owner, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
 
     <!-- Voucher: common -->
 
