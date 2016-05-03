@@ -15,6 +15,7 @@ import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
 import net.lin_k.linkid._3_1.core.AuthStartErrorCode;
 import net.lin_k.linkid._3_1.core.Callback;
 import net.lin_k.linkid._3_1.core.CallbackPullErrorCode;
+import net.lin_k.linkid._3_1.core.ConfigApplicationsErrorCode;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationErrorCode;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationKeyType;
 import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsErrorCode;
@@ -112,6 +113,7 @@ import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigApplicationsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKeyType;
@@ -1779,6 +1781,23 @@ public class LinkIDServiceUtils {
                 return LinkIDVoucherOrganizationRemoveErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDVoucherOrganizationRemoveErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDConfigApplicationsErrorCode convert(final ConfigApplicationsErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_UNEXPECTED:
+                return LinkIDConfigApplicationsErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDConfigApplicationsErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

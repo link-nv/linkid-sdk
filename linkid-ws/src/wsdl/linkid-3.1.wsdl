@@ -57,6 +57,12 @@
 	<message name="configLocalizationResponse">
 		<part name="response" element="tns:ConfigLocalizationResponse" />
 	</message>
+    <message name="configApplicationsRequest">
+		<part name="request" element="tns:ConfigApplicationsRequest" />
+	</message>
+	<message name="configApplicationsResponse">
+		<part name="response" element="tns:ConfigApplicationsResponse" />
+	</message>
 
     <!-- =================== Payments ========================= -->
 
@@ -317,6 +323,10 @@
 			<input message="tns:configLocalizationRequest" />
 			<output message="tns:configLocalizationResponse" />
 		</operation>
+		<operation name="configApplications">
+			<input message="tns:configApplicationsRequest" />
+			<output message="tns:configApplicationsResponse" />
+		</operation>
 		<operation name="paymentStatus">
 			<input message="tns:paymentStatusRequest" />
 			<output message="tns:paymentStatusResponse" />
@@ -519,6 +529,15 @@
         </operation>
         <operation name="configLocalization">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:localization" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="configApplications">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:configApplications" />
             <input>
                 <soap:body use="literal" />
             </input>

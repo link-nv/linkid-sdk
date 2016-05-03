@@ -57,6 +57,8 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDetails;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
@@ -380,6 +382,48 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             localizations.add( new LinkIDLocalization( localization.getKey(), LinkIDServiceUtils.convert( localization.getType() ), values ) );
         }
         return localizations;
+    }
+
+    @Override
+    public List<LinkIDApplicationDetails> configApplications(final List<String> applicationNames, final Locale locale)
+            throws LinkIDConfigApplicationsException {
+
+        // request
+        ConfigApplicationsRequest request = new ConfigApplicationsRequest();
+
+        // input
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
+        request.getNames().addAll( applicationNames );
+
+        // operate
+        ConfigApplicationsResponse response = getPort().configApplications( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDConfigApplicationsException( response.getError().getErrorMessage(),
+                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDApplicationDetails> applications = Lists.newLinkedList();
+
+            for (ApplicationDetails applicationDetails : response.getSuccess().getApplications()) {
+                applications.add(
+                        new LinkIDApplicationDetails( applicationDetails.getName(), applicationDetails.getFriendlyName(), applicationDetails.getDescription(),
+                                applicationDetails.getApplicationURL(), applicationDetails.getLogo() ) );
+            }
+
+            return applications;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
     }
 
     @Override

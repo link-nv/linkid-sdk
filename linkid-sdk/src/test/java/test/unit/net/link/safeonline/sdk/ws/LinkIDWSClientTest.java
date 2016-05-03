@@ -45,6 +45,7 @@ import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDetails;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
@@ -537,6 +538,25 @@ public class LinkIDWSClientTest {
         // verify
         assertEquals( 4, localizations.size() );
         assertEquals( 4, localizations.get( 0 ).getValues().size() );
+    }
+
+    //    @Test
+    public void testConfigApplications()
+            throws Exception {
+
+        // Setup
+        List<String> applicationNames = Lists.newLinkedList();
+        applicationNames.add( "linkID-oper" );
+        applicationNames.add( "example-mobile" );
+
+        // operate
+        List<LinkIDApplicationDetails> applications = client.configApplications( applicationNames, Locale.ENGLISH );
+
+        // verify
+        assertEquals( applicationNames.size(), applications.size() );
+        for (LinkIDApplicationDetails application : applications) {
+            logger.dbg( "Application details: %s", application );
+        }
     }
 
     //    @Test

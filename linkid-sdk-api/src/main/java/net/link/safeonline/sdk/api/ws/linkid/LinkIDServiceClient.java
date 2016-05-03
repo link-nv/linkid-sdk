@@ -40,6 +40,8 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDetails;
+import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
@@ -169,6 +171,19 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDLocalization> getLocalization(List<String> keys)
             throws LinkIDLocalizationException;
+
+    /**
+     * Fetch application details for the specified list of technical application names. If not found, it's not in the result list.
+     *
+     * @param applicationNames the application technical names
+     * @param locale           the locale
+     *
+     * @return the application details
+     *
+     * @throws LinkIDConfigApplicationsException something went wrong, check the error code in the exception
+     */
+    List<LinkIDApplicationDetails> configApplications(List<String> applicationNames, Locale locale)
+            throws LinkIDConfigApplicationsException;
 
     /**
      * Fetch the payment status of specified order

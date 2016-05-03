@@ -644,6 +644,104 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Configuration: Applications -->
+
+    <element name="ConfigApplicationsRequest">
+		<complexType>
+            <sequence>
+                <element name="names" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Application technical name(s)</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+		</complexType>
+	</element>
+
+	<element name="ConfigApplicationsResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ConfigApplicationsSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ConfigApplicationsError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ConfigApplicationsSuccess">
+        <sequence>
+            <element name="applications" type="tns:ApplicationDetails" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The application details</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ApplicationDetails">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The application's technical name</documentation>
+                </annotation>
+            </element>
+            <element name="friendlyName" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application's localized friendly name</documentation>
+                </annotation>
+            </element>
+            <element name="description" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application's localized description</documentation>
+                </annotation>
+            </element>
+            <element name="applicationURL" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application's URL</documentation>
+                </annotation>
+            </element>
+            <element name="logo" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application's default theme's logo shown in manage linkID</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ConfigApplicationsError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:ConfigApplicationsErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ConfigApplicationsErrorCode">
+		<annotation>
+			<documentation>Config application error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
     <!-- **************************************************************************************************************************************************
          *                                                                  Payments                                                                      *
          **************************************************************************************************************************************************  -->
