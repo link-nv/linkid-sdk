@@ -133,3 +133,8 @@ v4.7.0
 v4.7.1
 ----
   * walletOrganizationFriendly added to LinkIDWallet(Report)Transaction
+  
+v4.8.1
+----
+  * Voucher support
+  * configApplications operation added
