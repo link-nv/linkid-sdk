@@ -1474,8 +1474,8 @@ public class LinkIDServiceUtils {
         }
 
         return new LinkIDTheme( themes.getName(), themes.getFriendlyName(), convert( themes.getStatusCode() ), themes.isDefaultTheme(),
-                convert( themes.isOwner() ), convert( themes.getLogo() ), convert( themes.getAuthLogo() ), convert( themes.getBackground() ),
-                convert( themes.getTabletBackground() ), convert( themes.getAlternativeBackground() ), themes.getBackgroundColor(), themes.getTextColor() );
+                convert( themes.isOwner() ), convert( themes.getLogo() ), convert( themes.getBackground() ), convert( themes.getTabletBackground() ),
+                convert( themes.getAlternativeBackground() ), themes.getBackgroundColor(), themes.getTextColor() );
     }
 
     @Nullable
@@ -1574,8 +1574,8 @@ public class LinkIDServiceUtils {
     public static LinkIDThemeStatusErrorReport convert(final ThemeStatusErrorReport errorReport) {
 
         return new LinkIDThemeStatusErrorReport( convertThemeImageErrors( errorReport.getLogoErrors() ),
-                convertThemeImageErrors( errorReport.getAuthLogoErrors() ), convertThemeImageErrors( errorReport.getBackgroundErrors() ),
-                convertThemeImageErrors( errorReport.getTabletBackgroundErrors() ), convertThemeImageErrors( errorReport.getAlternativeBackgroundErrors() ) );
+                convertThemeImageErrors( errorReport.getBackgroundErrors() ), convertThemeImageErrors( errorReport.getTabletBackgroundErrors() ),
+                convertThemeImageErrors( errorReport.getAlternativeBackgroundErrors() ) );
     }
 
     @Nullable

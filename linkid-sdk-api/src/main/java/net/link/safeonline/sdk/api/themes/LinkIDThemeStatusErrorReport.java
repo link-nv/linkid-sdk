@@ -23,21 +23,17 @@ public class LinkIDThemeStatusErrorReport implements Serializable {
     @Nullable
     private final List<LinkIDThemeImageError> logoErrors;
     @Nullable
-    private final List<LinkIDThemeImageError> authLogoErrors;
-    @Nullable
     private final List<LinkIDThemeImageError> backgroundErrors;
     @Nullable
     private final List<LinkIDThemeImageError> tabletBackgroundErrors;
     @Nullable
     private final List<LinkIDThemeImageError> alternativeBackgroundErrors;
 
-    public LinkIDThemeStatusErrorReport(@Nullable final List<LinkIDThemeImageError> logoErrors, @Nullable final List<LinkIDThemeImageError> authLogoErrors,
-                                        @Nullable final List<LinkIDThemeImageError> backgroundErrors,
+    public LinkIDThemeStatusErrorReport(@Nullable final List<LinkIDThemeImageError> logoErrors, @Nullable final List<LinkIDThemeImageError> backgroundErrors,
                                         @Nullable final List<LinkIDThemeImageError> tabletBackgroundErrors,
                                         @Nullable final List<LinkIDThemeImageError> alternativeBackgroundErrors) {
 
         this.logoErrors = logoErrors;
-        this.authLogoErrors = authLogoErrors;
         this.backgroundErrors = backgroundErrors;
         this.tabletBackgroundErrors = tabletBackgroundErrors;
         this.alternativeBackgroundErrors = alternativeBackgroundErrors;
@@ -50,7 +46,6 @@ public class LinkIDThemeStatusErrorReport implements Serializable {
 
         return "LinkIDThemeError{" +
                "logoErrors=" + logoErrors +
-               ", authLogoErrors=" + authLogoErrors +
                ", backgroundErrors=" + backgroundErrors +
                ", tabletBackgroundErrors=" + tabletBackgroundErrors +
                ", alternativeBackgroundErrors=" + alternativeBackgroundErrors +
@@ -63,12 +58,6 @@ public class LinkIDThemeStatusErrorReport implements Serializable {
     public List<LinkIDThemeImageError> getLogoErrors() {
 
         return logoErrors;
-    }
-
-    @Nullable
-    public List<LinkIDThemeImageError> getAuthLogoErrors() {
-
-        return authLogoErrors;
     }
 
     @Nullable

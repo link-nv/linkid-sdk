@@ -1547,7 +1547,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         wsThemeConfig.setFriendlyName( themeConfig.getFriendlyName() );
         wsThemeConfig.setDefaultTheme( themeConfig.isDefaultTheme() );
         wsThemeConfig.setLogo( LinkIDServiceUtils.convert( themeConfig.getLogos() ) );
-        wsThemeConfig.setAuthLogo( LinkIDServiceUtils.convert( themeConfig.getAuthLogos() ) );
+        wsThemeConfig.setAuthLogo( LinkIDServiceUtils.convert( themeConfig.getLogos() ) );
         wsThemeConfig.setBackground( LinkIDServiceUtils.convert( themeConfig.getBackgrounds() ) );
         wsThemeConfig.setTabletBackground( LinkIDServiceUtils.convert( themeConfig.getTabletBackgrounds() ) );
         wsThemeConfig.setAlternativeBackground( LinkIDServiceUtils.convert( themeConfig.getAlternativeBackgrounds() ) );

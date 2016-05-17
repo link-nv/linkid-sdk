@@ -15,7 +15,6 @@ package net.link.safeonline.sdk.api.themes;
 public enum LinkIDThemeImageType {
 
     LOGO,
-    AUTH_LOGO,
     BACKGROUND,
     TABLET_BACKGROUND,
     ALTERNATIVE_BACKGROUND

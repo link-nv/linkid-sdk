@@ -19,7 +19,6 @@ public class LinkIDTheme implements Serializable {
     private final boolean               owner;
     //
     private final LinkIDLocalizedImages logo;
-    private final LinkIDLocalizedImages authLogo;
     private final LinkIDLocalizedImages background;
     private final LinkIDLocalizedImages tabletBackground;
     private final LinkIDLocalizedImages alternativeBackground;
@@ -28,9 +27,8 @@ public class LinkIDTheme implements Serializable {
     private final String                textColor;
 
     public LinkIDTheme(final String name, final String friendlyName, final LinkIDThemeStatusCode status, final boolean defaultTheme, final boolean owner,
-                       final LinkIDLocalizedImages logo, final LinkIDLocalizedImages authLogo, final LinkIDLocalizedImages background,
-                       final LinkIDLocalizedImages tabletBackground, final LinkIDLocalizedImages alternativeBackground, final String backgroundColor,
-                       final String textColor) {
+                       final LinkIDLocalizedImages logo, final LinkIDLocalizedImages background, final LinkIDLocalizedImages tabletBackground,
+                       final LinkIDLocalizedImages alternativeBackground, final String backgroundColor, final String textColor) {
 
         this.name = name;
         this.friendlyName = friendlyName;
@@ -38,7 +36,6 @@ public class LinkIDTheme implements Serializable {
         this.defaultTheme = defaultTheme;
         this.owner = owner;
         this.logo = logo;
-        this.authLogo = authLogo;
         this.background = background;
         this.tabletBackground = tabletBackground;
         this.alternativeBackground = alternativeBackground;
@@ -58,7 +55,6 @@ public class LinkIDTheme implements Serializable {
                ", defaultTheme=" + defaultTheme +
                ", owner=" + owner +
                ", logo=" + logo +
-               ", authLogo=" + authLogo +
                ", background=" + background +
                ", tabletBackground=" + tabletBackground +
                ", alternativeBackground=" + alternativeBackground +
@@ -97,11 +93,6 @@ public class LinkIDTheme implements Serializable {
     public LinkIDLocalizedImages getLogo() {
 
         return logo;
-    }
-
-    public LinkIDLocalizedImages getAuthLogo() {
-
-        return authLogo;
     }
 
     public LinkIDLocalizedImages getBackground() {

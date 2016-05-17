@@ -20,7 +20,6 @@ public class LinkIDThemeConfig implements Serializable {
     private final boolean                    defaultTheme;
     //
     private final List<LinkIDLocalizedImage> logos;
-    private final List<LinkIDLocalizedImage> authLogos;
     private final List<LinkIDLocalizedImage> backgrounds;
     private final List<LinkIDLocalizedImage> tabletBackgrounds;
     private final List<LinkIDLocalizedImage> alternativeBackgrounds;
@@ -29,15 +28,13 @@ public class LinkIDThemeConfig implements Serializable {
     private final String                     textColor;
 
     public LinkIDThemeConfig(final String name, final String friendlyName, final boolean defaultTheme, final List<LinkIDLocalizedImage> logos,
-                             final List<LinkIDLocalizedImage> authLogos, final List<LinkIDLocalizedImage> backgrounds,
-                             final List<LinkIDLocalizedImage> tabletBackgrounds, final List<LinkIDLocalizedImage> alternativeBackgrounds,
-                             final String backgroundColor, final String textColor) {
+                             final List<LinkIDLocalizedImage> backgrounds, final List<LinkIDLocalizedImage> tabletBackgrounds,
+                             final List<LinkIDLocalizedImage> alternativeBackgrounds, final String backgroundColor, final String textColor) {
 
         this.name = name;
         this.friendlyName = friendlyName;
         this.defaultTheme = defaultTheme;
         this.logos = logos;
-        this.authLogos = authLogos;
         this.backgrounds = backgrounds;
         this.tabletBackgrounds = tabletBackgrounds;
         this.alternativeBackgrounds = alternativeBackgrounds;
@@ -55,7 +52,6 @@ public class LinkIDThemeConfig implements Serializable {
                ", friendlyName=" + friendlyName +
                ", defaultTheme=" + defaultTheme +
                ", logos=" + logos +
-               ", authLogos=" + authLogos +
                ", backgrounds=" + backgrounds +
                ", tabletBackgrounds=" + tabletBackgrounds +
                ", alternativeBackgrounds=" + alternativeBackgrounds +
@@ -84,11 +80,6 @@ public class LinkIDThemeConfig implements Serializable {
     public List<LinkIDLocalizedImage> getLogos() {
 
         return logos;
-    }
-
-    public List<LinkIDLocalizedImage> getAuthLogos() {
-
-        return authLogos;
     }
 
     public List<LinkIDLocalizedImage> getBackgrounds() {
