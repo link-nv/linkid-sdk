@@ -17,26 +17,21 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDPaymentContext implements Serializable {
 
-    public static final String AMOUNT_KEY               = "PaymentContext.amount";
-    public static final String CURRENCY_KEY             = "PaymentContext.currency";
-    public static final String WALLET_COIN_KEY          = "PaymentContext.walletCoin";
-    public static final String DESCRIPTION_KEY          = "PaymentContext.description";
-    public static final String ORDER_REFERENCE_KEY      = "PaymentContext.orderReference";
-    public static final String PROFILE_KEY              = "PaymentContext.profile";
-    public static final String VALIDATION_TIME_KEY      = "PaymentContext.validationTime";
-    public static final String MANDATE_KEY              = "PaymentContext.mandate";
-    public static final String MANDATE_DESCRIPTION_KEY  = "PaymentContext.mandateDescription";
-    public static final String MANDATE_REFERENCE_KEY    = "PaymentContext.mandateReference";
+    public static final String AMOUNT_KEY              = "PaymentContext.amount";
+    public static final String CURRENCY_KEY            = "PaymentContext.currency";
+    public static final String WALLET_COIN_KEY         = "PaymentContext.walletCoin";
+    public static final String DESCRIPTION_KEY         = "PaymentContext.description";
+    public static final String ORDER_REFERENCE_KEY     = "PaymentContext.orderReference";
+    public static final String PROFILE_KEY             = "PaymentContext.profile";
+    public static final String VALIDATION_TIME_KEY     = "PaymentContext.validationTime";
+    public static final String MANDATE_KEY             = "PaymentContext.mandate";
+    public static final String MANDATE_DESCRIPTION_KEY = "PaymentContext.mandateDescription";
+    public static final String MANDATE_REFERENCE_KEY   = "PaymentContext.mandateReference";
     //
-    public static final String MENU_RESULT_SUCCESS_KEY  = "PaymentContext.menuResultSuccess";
-    public static final String MENU_RESULT_CANCELED_KEY = "PaymentContext.menuResultCanceled";
-    public static final String MENU_RESULT_PENDING_KEY  = "PaymentContext.menuResultPending";
-    public static final String MENU_RESULT_ERROR_KEY    = "PaymentContext.menuResultError";
+    public static final String STATUS_LOCATION_KEY     = "PaymentContext.statusLocation";
     //
-    public static final String STATUS_LOCATION_KEY      = "PaymentContext.statusLocation";
-    //
-    public static final String ALLOW_PARTIAL_KEY        = "PaymentContext.allowPartial";
-    public static final String ONLY_WALLETS_KEY         = "PaymentContext.onlyWallets";
+    public static final String ALLOW_PARTIAL_KEY       = "PaymentContext.allowPartial";
+    public static final String ONLY_WALLETS_KEY        = "PaymentContext.onlyWallets";
 
     private final LinkIDPaymentAmount  amount;
     private final String               description;
@@ -53,10 +48,6 @@ public class LinkIDPaymentContext implements Serializable {
     // mandates
     @Nullable
     private final LinkIDPaymentMandate mandate;      // payment context for a mandate?
-    //
-    // optional payment menu return URLs (docdata payment menu)
-    @Nullable
-    private final LinkIDPaymentMenu    paymentMenu;
     //
     // optional payment status location, if not specified the default location(s) in the linkID application configuration will be used
     @Nullable
@@ -87,7 +78,6 @@ public class LinkIDPaymentContext implements Serializable {
         this.paymentProfile = builder.paymentProfile;
         this.paymentValidationTime = builder.paymentValidationTime;
         this.mandate = builder.mandate;
-        this.paymentMenu = builder.paymentMenu;
         this.paymentStatusLocation = builder.paymentStatusLocation;
         this.allowPartial = builder.allowPartial;
         this.onlyWallets = builder.onlyWallets;
@@ -126,13 +116,6 @@ public class LinkIDPaymentContext implements Serializable {
             }
         } else {
             map.put( MANDATE_KEY, Boolean.toString( false ) );
-        }
-
-        if (null != paymentMenu) {
-            map.put( MENU_RESULT_SUCCESS_KEY, paymentMenu.getMenuResultSuccess() );
-            map.put( MENU_RESULT_CANCELED_KEY, paymentMenu.getMenuResultCanceled() );
-            map.put( MENU_RESULT_PENDING_KEY, paymentMenu.getMenuResultPending() );
-            map.put( MENU_RESULT_ERROR_KEY, paymentMenu.getMenuResultError() );
         }
 
         if (null != paymentStatusLocation) {
@@ -182,12 +165,6 @@ public class LinkIDPaymentContext implements Serializable {
         // payment status location
         builder.paymentStatusLocation( paymentContextMap.get( STATUS_LOCATION_KEY ) );
 
-        // payment menu
-        if (paymentContextMap.containsKey( MENU_RESULT_SUCCESS_KEY )) {
-            builder.paymentMenu( new LinkIDPaymentMenu( paymentContextMap.get( MENU_RESULT_SUCCESS_KEY ), paymentContextMap.get( MENU_RESULT_CANCELED_KEY ),
-                    paymentContextMap.get( MENU_RESULT_PENDING_KEY ), paymentContextMap.get( MENU_RESULT_ERROR_KEY ) ) );
-        }
-
         return builder.build();
     }
 
@@ -210,7 +187,6 @@ public class LinkIDPaymentContext implements Serializable {
                ", paymentProfile='" + paymentProfile + '\'' +
                ", paymentValidationTime=" + paymentValidationTime +
                ", mandate=" + mandate +
-               ", paymentMenu=" + paymentMenu +
                ", paymentStatusLocation=" + paymentStatusLocation +
                ", allowPartial=" + allowPartial +
                ", onlyWallets=" + onlyWallets +
@@ -231,7 +207,6 @@ public class LinkIDPaymentContext implements Serializable {
         private String               paymentProfile        = null;
         private int                  paymentValidationTime = 5;
         private LinkIDPaymentMandate mandate               = null;
-        private LinkIDPaymentMenu    paymentMenu           = null;
         private String               paymentStatusLocation = null;
         private boolean              allowPartial          = false;
         private boolean              onlyWallets           = false;
@@ -273,12 +248,6 @@ public class LinkIDPaymentContext implements Serializable {
         public Builder mandate(final LinkIDPaymentMandate mandate) {
 
             this.mandate = mandate;
-            return this;
-        }
-
-        public Builder paymentMenu(final LinkIDPaymentMenu paymentMenu) {
-
-            this.paymentMenu = paymentMenu;
             return this;
         }
 
@@ -332,12 +301,6 @@ public class LinkIDPaymentContext implements Serializable {
     public LinkIDPaymentMandate getMandate() {
 
         return mandate;
-    }
-
-    @Nullable
-    public LinkIDPaymentMenu getPaymentMenu() {
-
-        return paymentMenu;
     }
 
     @Nullable
