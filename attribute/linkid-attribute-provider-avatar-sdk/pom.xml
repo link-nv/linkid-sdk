@@ -5,7 +5,7 @@
     <parent>
         <groupId>net.lin-k.linkid.client.sdk</groupId>
         <artifactId>attribute</artifactId>
-        <version>GIT-SNAPSHOT</version>
+        <version>4.10.0</version>
     </parent>
     <name>linkID Attribute Provider Avatar SDK</name>
     <description>linkID Attribute Provider Avatar SDK</description>
