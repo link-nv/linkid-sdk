@@ -738,11 +738,11 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // Setup
-        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String userId = "5A878718-C846-4092-AFFE-93CCCDDA83E6";
         String voucherOrganizationId = "urn:be:linkid:example-mobile:theme:test";
 
         // Operate
-        client.voucherReward( userId, voucherOrganizationId, 15 );
+        client.voucherReward( userId, voucherOrganizationId, 3 );
     }
 
     //    @Test
@@ -750,7 +750,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // Setup
-        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String userId = "5A878718-C846-4092-AFFE-93CCCDDA83E6";
         String voucherOrganizationId = "urn:be:linkid:example-mobile:theme:test";
 
         // Operate
@@ -769,7 +769,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // Setup
-        String userId = "9e4d2818-d9d4-454c-9b1d-1f067a1f7469";
+        String userId = "5A878718-C846-4092-AFFE-93CCCDDA83E6";
         String voucherOrganizationId = "urn:be:linkid:example-mobile:theme:test";
 
         // Operate
