@@ -142,4 +142,5 @@ v4.8.1
 v4.x.y
 ----
   * Voucher organization activate/deactivate support
-  * List voucher organizations: filtering on id(s) support + includeStats support 
+  * List voucher organizations: filtering on id(s) support + includeStats support
+  * Voucher organization list users support
