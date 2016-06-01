@@ -138,3 +138,7 @@ v4.8.1
 ----
   * Voucher support
   * configApplications operation added
+
+v4.x.y
+----
+  * Voucher organization activate/deactivate support
