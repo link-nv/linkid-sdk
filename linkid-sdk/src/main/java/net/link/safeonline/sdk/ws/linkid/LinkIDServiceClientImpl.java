@@ -89,6 +89,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
@@ -1523,6 +1524,39 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
             if (null != response.getError().getErrorCode()) {
                 throw new LinkIDVoucherOrganizationRemoveException( response.getError().getErrorMessage(),
+                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void voucherOrganizationActivate(final String voucherOrganizationId, final boolean active)
+            throws LinkIDVoucherOrganizationActivateException {
+
+        // request
+        VoucherOrganizationActivateRequest request = new VoucherOrganizationActivateRequest();
+
+        // input
+        request.setVoucherOrganizationId( voucherOrganizationId );
+        request.setActive( active );
+
+        // operate
+        VoucherOrganizationActivateResponse response = getPort().voucherOrganizationActivate( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDVoucherOrganizationActivateException( response.getError().getErrorMessage(),
                         LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
             } else {
                 throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );

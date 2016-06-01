@@ -711,7 +711,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testVoucherOrganizationList()
             throws Exception {
 
@@ -731,6 +731,22 @@ public class LinkIDWSClientTest {
 
         // operate
         client.voucherOrganizationRemove( "urn:be:linkid:example-mobile:theme:test" );
+    }
+
+    //    @Test
+    public void testVoucherOrganizationActivate()
+            throws Exception {
+
+        // operate
+        client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:theme:test", true );
+    }
+
+    //    @Test
+    public void testVoucherOrganizationDeactivate()
+            throws Exception {
+
+        // operate
+        client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:theme:test", false );
     }
 
     //    @Test

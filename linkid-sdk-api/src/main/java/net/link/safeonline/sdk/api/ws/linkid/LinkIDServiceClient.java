@@ -70,6 +70,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
@@ -562,6 +563,17 @@ public interface LinkIDServiceClient {
      */
     void voucherOrganizationRemove(String voucherOrganizationId)
             throws LinkIDVoucherOrganizationRemoveException;
+
+    /**
+     * Activate ( or deactivate ) specified voucher organization
+     *
+     * @param voucherOrganizationId the voucher organization ID
+     * @param active                activate or deactivate
+     *
+     * @throws LinkIDVoucherOrganizationActivateException something went wrong, check the error code in the exception
+     */
+    void voucherOrganizationActivate(String voucherOrganizationId, boolean active)
+            throws LinkIDVoucherOrganizationActivateException;
 
     /**
      * Request a new linkID Theme

@@ -3456,6 +3456,76 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Voucher organizations: activate -->
+
+    <element name="VoucherOrganizationActivateRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher organization</documentation>
+                    </annotation>
+                </element>
+                <element name="active" type="boolean" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Activate or deactive?</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="VoucherOrganizationActivateResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherOrganizationActivateSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherOrganizationActivateError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherOrganizationActivateSuccess">
+    </complexType>
+
+    <complexType name="VoucherOrganizationActivateError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:VoucherOrganizationActivateErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherOrganizationActivateErrorCode">
+		<annotation>
+			<documentation>Voucher organization activate error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.voucher.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Not owner, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Voucher: common -->
 
     <complexType name="VoucherOrganizationDetails">
