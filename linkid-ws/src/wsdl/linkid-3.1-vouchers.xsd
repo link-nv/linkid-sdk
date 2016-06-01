@@ -91,9 +91,14 @@
                         <documentation>User ID to give voucher points to</documentation>
                     </annotation>
                 </element>
-                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <element name="voucherOrganizationId" type="string" minOccurs="0" maxOccurs="1">
                     <annotation>
                         <documentation>The voucher organization ID</documentation>
+                    </annotation>
+                </element>
+                <element name="includeInactive" type="boolean" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Also return not yet active vouchers?</documentation>
                     </annotation>
                 </element>
             </sequence>
@@ -1046,6 +1051,16 @@
                     <documentation>URL of the logo of the voucher organization</documentation>
                 </annotation>
             </element>
+            <element name="counter" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Voucher counter</documentation>
+                </annotation>
+            </element>
+            <element name="limit" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Voucher limit</documentation>
+                </annotation>
+            </element>
             <element name="activated" type="dateTime" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Time the voucher was activated ( i.e. # points on it > voucher.organization.limit )</documentation>
@@ -1054,6 +1069,11 @@
             <element name="redeemed" type="dateTime" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Time the voucher was redeemed</documentation>
+                </annotation>
+            </element>
+            <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The voucher's organization ID</documentation>
                 </annotation>
             </element>
         </sequence>

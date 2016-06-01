@@ -1225,7 +1225,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDVouchers voucherList(final String userId, final String voucherOrganizationId, final Locale locale)
+    public LinkIDVouchers voucherList(final String userId, @Nullable final String voucherOrganizationId, boolean includeInactive, final Locale locale)
             throws LinkIDVoucherListException {
 
         // request
@@ -1234,6 +1234,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         // input
         request.setUserId( userId );
         request.setVoucherOrganizationId( voucherOrganizationId );
+        request.setIncludeInactive( includeInactive );
         request.setLanguage( LinkIDServiceUtils.convert( locale ) );
 
         // operate

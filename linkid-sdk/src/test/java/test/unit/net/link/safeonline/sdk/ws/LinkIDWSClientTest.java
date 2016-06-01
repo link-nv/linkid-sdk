@@ -741,7 +741,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testVoucherOrganizationListUsers()
             throws Exception {
 
@@ -791,7 +791,7 @@ public class LinkIDWSClientTest {
         client.voucherReward( userId, voucherOrganizationId, 3 );
     }
 
-    //    @Test
+    @Test
     public void testVoucherList()
             throws Exception {
 
@@ -800,7 +800,7 @@ public class LinkIDWSClientTest {
         String voucherOrganizationId = "urn:be:linkid:example-mobile:theme:test";
 
         // Operate
-        LinkIDVouchers vouchers = client.voucherList( userId, voucherOrganizationId, Locale.ENGLISH );
+        LinkIDVouchers vouchers = client.voucherList( userId, voucherOrganizationId, true, Locale.ENGLISH );
 
         // Verify
         assertNotNull( vouchers );

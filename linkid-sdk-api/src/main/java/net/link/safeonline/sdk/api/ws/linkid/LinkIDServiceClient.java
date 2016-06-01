@@ -453,14 +453,15 @@ public interface LinkIDServiceClient {
      * List the vouchers specified user has for specified voucher organization
      *
      * @param userId                the scoped user ID
-     * @param voucherOrganizationId the voucher organization ID
+     * @param voucherOrganizationId optional voucher organization ID
+     * @param includeInactive       include inactive vouchers
      * @param locale                locale for returning localization voucher organization name, description
      *
      * @return the list of active vouchers
      *
      * @throws LinkIDVoucherListException something went wrong, check the error code in the exception
      */
-    LinkIDVouchers voucherList(String userId, String voucherOrganizationId, Locale locale)
+    LinkIDVouchers voucherList(String userId, @Nullable String voucherOrganizationId, boolean includeInactive, Locale locale)
             throws LinkIDVoucherListException;
 
     /**
