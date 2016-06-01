@@ -725,7 +725,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testVoucherOrganizationListFilteredWithStats()
             throws Exception {
 
@@ -738,6 +738,20 @@ public class LinkIDWSClientTest {
         for (LinkIDVoucherOrganizationDetails organization : organizations) {
             assertNotNull( organization.getStats() );
             logger.dbg( "Voucher organization: %s", organization );
+        }
+    }
+
+    @Test
+    public void testVoucherOrganizationListUsers()
+            throws Exception {
+
+        // operate
+        List<String> userIds = client.voucherOrganizationListUsers( "urn:be:linkid:example-mobile:theme:test" );
+
+        // verify
+        assertNotNull( userIds );
+        for (String userId : userIds) {
+            logger.dbg( "Voucher user: %s", userId );
         }
     }
 

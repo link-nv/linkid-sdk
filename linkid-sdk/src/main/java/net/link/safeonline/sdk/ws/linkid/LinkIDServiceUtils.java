@@ -65,6 +65,7 @@ import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationDetails;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationListUsersErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationPermissionType;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemoveErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionErrorCode;
@@ -146,6 +147,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAd
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
@@ -1751,6 +1753,27 @@ public class LinkIDServiceUtils {
                 return LinkIDVoucherOrganizationListErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDVoucherOrganizationListErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherOrganizationListUsersErrorCode convert(final VoucherOrganizationListUsersErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

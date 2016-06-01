@@ -75,6 +75,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAd
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
@@ -552,6 +553,18 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable List<String> voucherOrganizationIds, boolean includeStats)
             throws LinkIDVoucherOrganizationListException;
+
+    /**
+     * Returns the list of users that have a voucher for specified voucher organization
+     *
+     * @param voucherOrganizationId the voucher organization ID
+     *
+     * @return the user IDs
+     *
+     * @throws LinkIDVoucherOrganizationListUsersException something went wrong, check the error code in the exception
+     */
+    List<String> voucherOrganizationListUsers(String voucherOrganizationId)
+            throws LinkIDVoucherOrganizationListUsersException;
 
     /**
      * Remove specified voucher organization
