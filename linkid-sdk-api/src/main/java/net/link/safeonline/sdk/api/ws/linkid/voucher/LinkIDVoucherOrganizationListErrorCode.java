@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.ws.linkid.voucher;
 
 public enum LinkIDVoucherOrganizationListErrorCode {
 
+    ERROR_PERMISSION_DENIED,
     ERROR_UNEXPECTED,
     ERROR_MAINTENANCE
 

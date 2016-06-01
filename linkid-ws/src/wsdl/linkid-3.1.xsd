@@ -3340,6 +3340,18 @@
 
     <element name="VoucherOrganizationListRequest">
         <complexType>
+            <sequence>
+                <element name="organizationIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of organization ID's to fetch</documentation>
+                    </annotation>
+                </element>
+                <element name="includeStats" type="boolean" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Include organization statistics?</documentation>
+                    </annotation>
+                </element>
+            </sequence>
         </complexType>
     </element>
 
@@ -3378,6 +3390,11 @@
 			<documentation>Voucher organization list error codes</documentation>
 		</annotation>
 		<restriction base="string">
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Not owner, ...</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unexpected">
 				<annotation>
 					<documentation>Something unexpected happened</documentation>
@@ -3535,6 +3552,11 @@
                     <documentation>Voucher organization configuration</documentation>
                 </annotation>
             </element>
+            <element name="stats" type="tns:VoucherOrganizationStats" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional voucher organization stats, if requested</documentation>
+                </annotation>
+            </element>
             <element name="rewardPermissionApplications" type="string" minOccurs="0" maxOccurs="unbounded">
                 <annotation>
                     <documentation>List of applications that have the REWARD permission</documentation>
@@ -3583,6 +3605,31 @@
             <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
                 <annotation>
                     <documentation>The voucher organization description localizations</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="VoucherOrganizationStats">
+        <sequence>
+            <element name="numberOfVouchers" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Total number of vouchers, not yet active, active and redeemed ones</documentation>
+                </annotation>
+            </element>
+            <element name="numberOfInactiveVouchers" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Total number of inactive vouchers, i.e. voucher limit not yet reached</documentation>
+                </annotation>
+            </element>
+            <element name="numberOfActiveVouchers" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Total number of active vouchers, i.e. not yet redeemed</documentation>
+                </annotation>
+            </element>
+            <element name="numberOfRedeemedVouchers" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Total number of redeemed vouchers</documentation>
                 </annotation>
             </element>
         </sequence>

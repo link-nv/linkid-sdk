@@ -542,13 +542,15 @@ public interface LinkIDServiceClient {
 
     /**
      * Returns the list of voucher organizations the caller application owns
-     * *
+     *
+     * @param voucherOrganizationIds optional list of voucher organization IDs
+     * @param includeStats           include stats?
      *
      * @return the list of owned voucher organizations
      *
      * @throws LinkIDVoucherOrganizationListException something went wrong, check the error code in the exception
      */
-    List<LinkIDVoucherOrganizationDetails> voucherOrganizationList()
+    List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable List<String> voucherOrganizationIds, boolean includeStats)
             throws LinkIDVoucherOrganizationListException;
 
     /**

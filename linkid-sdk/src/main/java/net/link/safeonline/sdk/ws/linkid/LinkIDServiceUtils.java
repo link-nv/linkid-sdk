@@ -68,6 +68,7 @@ import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationPermissionType;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemoveErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionErrorCode;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationStats;
 import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherRewardErrorCode;
 import net.lin_k.linkid._3_1.core.WalletAddCreditErrorCode;
@@ -109,6 +110,7 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusErrorReport;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationStats;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
@@ -1743,6 +1745,8 @@ public class LinkIDServiceUtils {
 
         switch (errorCode) {
 
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherOrganizationListErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_UNEXPECTED:
                 return LinkIDVoucherOrganizationListErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
@@ -1754,7 +1758,7 @@ public class LinkIDServiceUtils {
 
     public static LinkIDVoucherOrganizationDetails convert(final VoucherOrganizationDetails voucherOrganizationDetails) {
 
-        return new LinkIDVoucherOrganizationDetails( convert( voucherOrganizationDetails.getOrganization() ),
+        return new LinkIDVoucherOrganizationDetails( convert( voucherOrganizationDetails.getOrganization() ), convert( voucherOrganizationDetails.getStats() ),
                 voucherOrganizationDetails.getRewardPermissionApplications(), voucherOrganizationDetails.getListPermissionApplications(),
                 voucherOrganizationDetails.getRedeemPermissionApplications() );
 
@@ -1765,6 +1769,17 @@ public class LinkIDServiceUtils {
         return new LinkIDVoucherOrganization( request.getVoucherOrganizationId(), request.getLogoUrl(), request.getVoucherLimit(), request.isActive(),
                 convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ) );
 
+    }
+
+    @Nullable
+    public static LinkIDVoucherOrganizationStats convert(@Nullable final VoucherOrganizationStats voucherOrganizationStats) {
+
+        if (null != voucherOrganizationStats) {
+            return new LinkIDVoucherOrganizationStats( voucherOrganizationStats.getNumberOfVouchers(), voucherOrganizationStats.getNumberOfInactiveVouchers(),
+                    voucherOrganizationStats.getNumberOfActiveVouchers(), voucherOrganizationStats.getNumberOfRedeemedVouchers() );
+        }
+
+        return null;
     }
 
     public static LinkIDVoucherOrganizationRemoveErrorCode convert(final VoucherOrganizationRemoveErrorCode errorCode) {

@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.voucher;
 
 import java.io.Serializable;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -18,17 +19,22 @@ import java.util.List;
  */
 public class LinkIDVoucherOrganizationDetails implements Serializable {
 
-    private final LinkIDVoucherOrganization organization;
+    private final LinkIDVoucherOrganization      organization;
+    //
+    @Nullable
+    private final LinkIDVoucherOrganizationStats stats;
     //
     // permissions
-    private final List<String>              rewardPermissionApplications;
-    private final List<String>              listPermissionApplications;
-    private final List<String>              redeemPermissionApplications;
+    private final List<String>                   rewardPermissionApplications;
+    private final List<String>                   listPermissionApplications;
+    private final List<String>                   redeemPermissionApplications;
 
-    public LinkIDVoucherOrganizationDetails(final LinkIDVoucherOrganization organization, final List<String> rewardPermissionApplications,
-                                            final List<String> listPermissionApplications, final List<String> redeemPermissionApplications) {
+    public LinkIDVoucherOrganizationDetails(final LinkIDVoucherOrganization organization, @Nullable final LinkIDVoucherOrganizationStats stats,
+                                            final List<String> rewardPermissionApplications, final List<String> listPermissionApplications,
+                                            final List<String> redeemPermissionApplications) {
 
         this.organization = organization;
+        this.stats = stats;
         this.rewardPermissionApplications = rewardPermissionApplications;
         this.listPermissionApplications = listPermissionApplications;
         this.redeemPermissionApplications = redeemPermissionApplications;
@@ -41,6 +47,7 @@ public class LinkIDVoucherOrganizationDetails implements Serializable {
 
         return "LinkIDVoucherOrganization{" +
                "organization='" + organization + '\'' +
+               ", stats=" + stats +
                ", rewardPermissionApplications=" + rewardPermissionApplications +
                ", listPermissionApplications=" + listPermissionApplications +
                ", redeemPermissionApplications=" + redeemPermissionApplications +
@@ -52,6 +59,12 @@ public class LinkIDVoucherOrganizationDetails implements Serializable {
     public LinkIDVoucherOrganization getOrganization() {
 
         return organization;
+    }
+
+    @Nullable
+    public LinkIDVoucherOrganizationStats getStats() {
+
+        return stats;
     }
 
     public List<String> getRewardPermissionApplications() {

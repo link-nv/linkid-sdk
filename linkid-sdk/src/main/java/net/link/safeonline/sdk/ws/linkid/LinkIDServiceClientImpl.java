@@ -1475,11 +1475,18 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDVoucherOrganizationDetails> voucherOrganizationList()
+    public List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable final List<String> voucherOrganizationIds, final boolean includeStats)
             throws LinkIDVoucherOrganizationListException {
 
+        // request
+        VoucherOrganizationListRequest request = new VoucherOrganizationListRequest();
+        if (null != voucherOrganizationIds) {
+            request.getOrganizationIds().addAll( voucherOrganizationIds );
+        }
+        request.setIncludeStats( includeStats );
+
         // operate
-        VoucherOrganizationListResponse response = getPort().voucherOrganizationList( new VoucherOrganizationListRequest() );
+        VoucherOrganizationListResponse response = getPort().voucherOrganizationList( request );
 
         // convert response
         if (null != response.getError()) {

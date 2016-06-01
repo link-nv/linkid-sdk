@@ -716,11 +716,27 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        List<LinkIDVoucherOrganizationDetails> organizations = client.voucherOrganizationList();
+        List<LinkIDVoucherOrganizationDetails> organizations = client.voucherOrganizationList( null, false );
 
         // verify
         assertNotNull( organizations );
         for (LinkIDVoucherOrganizationDetails organization : organizations) {
+            logger.dbg( "Voucher organization: %s", organization );
+        }
+    }
+
+    //    @Test
+    public void testVoucherOrganizationListFilteredWithStats()
+            throws Exception {
+
+        // operate
+        List<LinkIDVoucherOrganizationDetails> organizations = client.voucherOrganizationList(
+                Collections.singletonList( "urn:be:linkid:example-mobile:theme:test" ), true );
+
+        // verify
+        assertNotNull( organizations );
+        for (LinkIDVoucherOrganizationDetails organization : organizations) {
+            assertNotNull( organization.getStats() );
             logger.dbg( "Voucher organization: %s", organization );
         }
     }
