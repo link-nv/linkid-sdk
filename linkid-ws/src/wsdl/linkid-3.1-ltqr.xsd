@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  LTQR                                                                          *
+         **************************************************************************************************************************************************  -->
+
+    <!-- LTQR: Push request -->
+
+    <element name="LTQRPushRequest">
+		<complexType>
+            <sequence>
+                <element name="content" type="tns:LTQRContent" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The content of this LTQR</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="userAgent" type="string" use="optional">
+                <annotation>
+                    <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="lockType" type="tns:LTQRLockType" use="required">
+                <annotation>
+                    <documentation>LTQR lock type</documentation>
+                </annotation>
+            </attribute>
+		</complexType>
+	</element>
+
+    <element name="LTQRPushResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LTQRPushSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LTQRPushError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- LTQR: Bulk Push request -->
+
+    <element name="LTQRBulkPushRequest">
+        <complexType>
+            <sequence>
+                <element name="requests" type="tns:LTQRPushContent" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The LTQR Push requests</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="LTQRBulkPushResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LTQRBulkPushSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LTQRBulkPushError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- LTQR: Change request -->
+
+    <element name="LTQRChangeRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>LTQR Reference of the long term QR to change.</documentation>
+                    </annotation>
+                </element>
+                <element name="content" type="tns:LTQRContent" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The content of this LTQR</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="userAgent" type="string" use="optional">
+                <annotation>
+                    <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="unlock" type="boolean" use="required">
+                <annotation>
+                    <documentation>Unlock the LTQR if applicable (check the lock type) the LTQR.</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="unblock" type="boolean" use="required">
+                <annotation>
+                    <documentation>Unblock the LTQR if applicable (if waitForUnblock is set). When the first linkID user finishes this LTQR and waitForUnblock=true, it will again be in a blocked state.</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="LTQRChangeResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LTQRChangeSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LTQRChangeError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- LTQR: Pull Request -->
+
+    <element name="LTQRPullRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>List of LTQR References to fetch. If none are specified, all LTQR sessions and client session are returned.</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentOrderReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of Payment order References to fetch. If none are specified, all are fetched for the LTQR References specified above.</documentation>
+                    </annotation>
+                </element>
+                <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are fetched for the LTQR References specified above</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="LTQRPullResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LTQRPullSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LTQRPullError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- LTQR: Remove Request -->
+
+    <element name="LTQRRemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReferences" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>List of LTQR References to remove.</documentation>
+                    </annotation>
+                </element>
+                <element name="paymentOrderReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of Payment order References to remove. If none are specified, all are removed for the LTQR References specified above.</documentation>
+                    </annotation>
+                </element>
+                <element name="clientSessionIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of client sessionIds to fetch. If none are specified, all are removed for the LTQR References specified above</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="LTQRRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LTQRRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LTQRRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- LTQR: Info Request -->
+
+    <element name="LTQRInfoRequest">
+        <complexType>
+            <sequence>
+                <element name="ltqrReferences" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>List of LTQR References to fetch info for.</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="userAgent" type="string" use="optional">
+                <annotation>
+                    <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="LTQRInfoResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:LTQRInfoSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:LTQRInfoError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- LTQR: Common -->
+
+    <complexType name="LTQRContent">
+        <sequence>
+            <element name="authenticationMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional client authentication message, if a payment is involved this will be ignored</documentation>
+                </annotation>
+            </element>
+            <element name="finishedMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional client finished message.</documentation>
+                </annotation>
+            </element>
+            <element name="paymentContext" type="tns:PaymentContext" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment context</documentation>
+                </annotation>
+            </element>
+            <element name="callback" type="tns:Callback" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional callback</documentation>
+                </annotation>
+            </element>
+            <element name="identityProfile" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional identity profile</documentation>
+                </annotation>
+            </element>
+            <element name="sessionExpiryOverride" type="long" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional session expiry (seconds)</documentation>
+                </annotation>
+            </element>
+            <element name="theme" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional theme, if not specified default application theme will be chosen</documentation>
+                </annotation>
+            </element>
+            <element name="mobileLandingSuccess" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                </annotation>
+            </element>
+            <element name="mobileLandingError" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                </annotation>
+            </element>
+            <element name="mobileLandingCancel" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional landing page for an authn/payment started on iOS browser</documentation>
+                </annotation>
+            </element>
+            <element name="pollingConfiguration" type="tns:LTQRPollingConfiguration" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional polling configuration, if not specified linkID defaults</documentation>
+                </annotation>
+            </element>
+            <element name="ltqrStatusLocation" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional LTQR status location override</documentation>
+                </annotation>
+            </element>
+            <element name="favoritesConfiguration" type="tns:FavoritesConfiguration" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional favorites configuration, if not present the LTQR code will not be favoritable</documentation>
+                </annotation>
+            </element>
+            <element name="notificationLocation" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional notification location override</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="expiryDate" type="dateTime" use="optional">
+            <annotation>
+                <documentation>Expiry date of the long term session.</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="expiryDuration" type="long" use="optional">
+            <annotation>
+                <documentation>Expiry duration of the long term session. Expressed in number of seconds starting from the creation.
+                    Do not mix this attribute with expiryDate. If so, expiryDate will be preferred.</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="waitForUnblock" type="boolean" use="required">
+            <annotation>
+                <documentation>LTQR code marked to block users until a changeRequest with unblock=true.</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="LTQRPushSuccess">
+        <sequence>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference of this long term QR
+                        This LTQR reference will be used in the notifications to the Service Provider.</documentation>
+                </annotation>
+            </element>
+            <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment order reference for this LTQR. If no payment is attached to this LTQR this will be empty.
+                        If there is, this will equal the orderReference you specified in the PaymentContext or will be a UUID generated by linkID.
+                        This payment order reference will be used in the notifications to the Service Provider if applicable.</documentation>
+                </annotation>
+            </element>
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>linkID QR Code Information</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRPushError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:LTQRPushErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="LTQRPushContent">
+        <sequence>
+            <element name="content" type="tns:LTQRContent" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The content of this LTQR</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="userAgent" type="string" use="optional">
+            <annotation>
+                <documentation>Optional user agent string, for adding e.g. callback params to the QR code URL, android chrome URL needs to be http://linkidmauthurl/MAUTH/2/zUC8oA/eA==, ...</documentation>
+            </annotation>
+        </attribute>
+        <attribute name="lockType" type="tns:LTQRLockType" use="required">
+            <annotation>
+                <documentation>LTQR lock type</documentation>
+            </annotation>
+        </attribute>
+    </complexType>
+
+    <complexType name="LTQRBulkPushSuccess">
+        <sequence>
+            <element name="responses" type="tns:LTQRPushResponse2" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The LTQR codes or error response if one failed</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRPushResponse2">
+        <sequence>
+            <element name="success" type="tns:LTQRPushSuccess" minOccurs="0" maxOccurs="1" />
+            <element name="error" type="tns:LTQRPushError" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRBulkPushError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:LTQRBulkPushErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="LTQRBulkPushErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.too.many.requests">
+				<annotation>
+					<documentation>Too many requests, please send less in one bulk</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="LTQRChangeSuccess">
+        <sequence>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment order reference</documentation>
+                </annotation>
+            </element>
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>linkID QR Code Information</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRChangeError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:LTQRChangeErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="LTQRPullSuccess">
+        <sequence>
+            <element name="sessions" type="tns:LTQRClientSession" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The client sessions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRPullError">
+        <attribute name="errorCode" type="tns:LTQRErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="LTQRRemoveSuccess" />
+
+    <complexType name="LTQRRemoveError">
+        <attribute name="errorCode" type="tns:LTQRErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="LTQRInfoSuccess">
+        <sequence>
+            <element name="results" type="tns:LTQRInfo" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The client sessions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRInfoError">
+        <attribute name="errorCode" type="tns:LTQRErrorCode" use="required" />
+    </complexType>
+
+    <complexType name="LTQRInfo">
+        <sequence>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
+            <element name="sessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The sessionID, this is the number that is in the LTQR url</documentation>
+                </annotation>
+            </element>
+            <element name="created" type="dateTime" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Creation date</documentation>
+                </annotation>
+            </element>
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>linkID QR Code Information</documentation>
+                </annotation>
+            </element>
+            <element name="content" type="tns:LTQRContent" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
+            <element name="lockType" type="tns:LTQRLockType" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>LTQR's lockType</documentation>
+                </annotation>
+            </element>
+            <element name="locked" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the LTQR currently blocked?</documentation>
+                </annotation>
+            </element>
+            <element name="waitForUnblock" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the LTQR configured waitForUnblock?</documentation>
+                </annotation>
+            </element>
+            <element name="blocked" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the LTQR currently blocked?</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LTQRClientSession">
+        <sequence>
+            <element name="ltqrReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentOrderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment order reference</documentation>
+                </annotation>
+            </element>
+            <element name="qrCodeInfo" type="tns:QRCodeInfo" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>linkID QR Code Information</documentation>
+                </annotation>
+            </element>
+            <element name="clientSessionId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The LTQR client session ID</documentation>
+                </annotation>
+            </element>
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The userId</documentation>
+                </annotation>
+            </element>
+            <element name="created" type="dateTime" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Client session creation date</documentation>
+                </annotation>
+            </element>
+            <element name="paymentStatus" minOccurs="0" maxOccurs="1" type="tns:PaymentStatusType">
+                <annotation>
+                    <documentation>Payment status (optional)</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <simpleType name="LTQRLockType">
+		<annotation>
+			<documentation>LTQR Lock types</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="NEVER">
+				<annotation>
+					<documentation>LTQR is never locked</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="on.scan">
+				<annotation>
+					<documentation>LTQR is locked when first user scans the LTQR, that first user is then the only one able to continue, rest will fail. Unlock the LTQR code for with a change request with unlock=true/</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="on.finish">
+				<annotation>
+					<documentation>LTQR is locked when first user finishes the linkID QR session created from the LTQR. If no payment context is attached, this means when he is authenticated, else when the order is payed. Unlock the LTQR code for with a change request with unlock=true/</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="LTQRErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.context.invalid">
+				<annotation>
+					<documentation>The LTQR context is not valid, e.g. identity profile not allowed, ... check the error message for more info.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="LTQRPushErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.context.invalid">
+				<annotation>
+					<documentation>The LTQR context is not valid, e.g. identity profile not allowed, ... check the error message for more info.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.logo.encoding">
+				<annotation>
+					<documentation>The favorites logo was not encoded correctly ( base64 ).</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.logo.format">
+				<annotation>
+					<documentation>The favorites logo is not of a support image format.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.logo.size">
+				<annotation>
+					<documentation>The favorites logo is too big.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.background.color.invalid">
+				<annotation>
+					<documentation>The favorites background color is invalid ( valid is e.g. #000000 ).</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.text.color.invalid">
+				<annotation>
+					<documentation>The favorites text color is invalid ( valid is e.g. #000000 ).</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="LTQRChangeErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.credentials.invalid">
+				<annotation>
+					<documentation>The provided Service Provider credentials are not correct.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.context.invalid">
+				<annotation>
+					<documentation>The LTQR context is not valid, e.g. identity profile not allowed, ... check the error message for more info.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.not.found">
+				<annotation>
+					<documentation>The LTQR was not found.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.logo.encoding">
+				<annotation>
+					<documentation>The favorites logo was not encoded correctly ( base64 ).</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.logo.format">
+				<annotation>
+					<documentation>The favorites logo is not of a support image format.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.logo.size">
+				<annotation>
+					<documentation>The favorites logo is too big.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.backgroundColor.invalid">
+				<annotation>
+					<documentation>The favorites background color is invalid ( valid is e.g. #000000 ).</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.favorites.textColor.invalid">
+				<annotation>
+					<documentation>The favorites text color is invalid ( valid is e.g. #000000 ).</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.conflict">
+				<annotation>
+					<documentation>LTQR could not be modified right now, please retry...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="LTQRPollingConfiguration">
+        <sequence>
+            <element name="pollAttempts" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Maximum poll attempts if LTQR is configured waitForUnlock=true. If not specified linkID will default. If waitForUnlock not specified ignored.</documentation>
+                </annotation>
+            </element>
+            <element name="pollInterval" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Poll interval (in seconds) if LTQR is configured waitForUnlock=true. If not specified linkID will default. If waitForUnlock not specified ignored. Minimum is 2s.</documentation>
+                </annotation>
+            </element>
+            <element name="paymentPollAttempts" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Maximum payment poll attempts. If LTQR without payment context ignored.</documentation>
+                </annotation>
+            </element>
+            <element name="paymentPollInterval" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Payment poll interval (in seconds). If LTQR without payment context ignored. Minimum is 2s.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+</schema>

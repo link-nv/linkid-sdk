@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Common                                                                        *
+         **************************************************************************************************************************************************  -->
+
+    <complexType name="ReportPageFilter">
+        <attribute name="firstResult" type="int" use="required" />
+        <attribute name="maxResults" type="int" use="required" />
+    </complexType>
+
+    <complexType name="ReportDateFilter">
+        <attribute name="startDate" type="dateTime" use="required" />
+        <attribute name="endDate" type="dateTime" use="optional" />
+    </complexType>
+
+    <complexType name="ReportApplicationFilter">
+        <attribute name="applicationName" type="string" use="required" />
+    </complexType>
+
+    <complexType name="ReportWalletFilter">
+        <attribute name="walletId" type="string" use="required" />
+    </complexType>
+
+    <simpleType name="PaymentStatusType">
+		<annotation>
+			<documentation>Payment status</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="STARTED">
+				<annotation>
+					<documentation>Payment is being processed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="AUTHORIZED">
+				<annotation>
+					<documentation>Payment is authorized</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="FAILED">
+				<annotation>
+					<documentation>Payment has failed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="REFUNDED">
+				<annotation>
+					<documentation>Payment has been refunded</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="REFUND_STARTED">
+				<annotation>
+					<documentation>Payment refund operation has started</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="WAITING_FOR_UPDATE">
+				<annotation>
+					<documentation>linkID stopped waiting for status update, SP will be informed on payment status change</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <simpleType name="Currency">
+		<annotation>
+			<documentation>Currency</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="EUR">
+				<annotation>
+					<documentation>euro</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="PaymentContext">
+        <sequence>
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The amount to be payed ( in cents )</documentation>
+                </annotation>
+            </element>
+            <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment amount currency, if null have to specify wallet coin</documentation>
+                </annotation>
+            </element>
+            <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment amount wallet coin, if null have to specify currency</documentation>
+                </annotation>
+            </element>
+            <element name="description" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment description</documentation>
+                </annotation>
+            </element>
+            <element name="orderReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional order reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentProfile" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment profile</documentation>
+                </annotation>
+            </element>
+            <element name="validationTime" type="int" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional maximum time to wait for payment validation (expressed in seconds), if not specified defaults to 5s</documentation>
+                </annotation>
+            </element>
+            <element name="allowPartial" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>allow partial payments via wallets, this flag does make sense if you allow normal payment methods</documentation>
+                </annotation>
+            </element>
+            <element name="onlyWallets" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>allow only wallets for this payment</documentation>
+                </annotation>
+            </element>
+            <element name="mandate" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate or not</documentation>
+                </annotation>
+            </element>
+            <element name="mandateDescription" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate description</documentation>
+                </annotation>
+            </element>
+            <element name="mandateReference" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>mandate reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentStatusLocation" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional payment status location</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Callback">
+        <sequence>
+            <element name="location" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>location the linkID client will load when finished</documentation>
+                </annotation>
+            </element>
+            <element name="appSessionId" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>optional sessionId a SP can provide to load in session state before linkID was started</documentation>
+                </annotation>
+            </element>
+            <element name="inApp" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>display the location inApp (webView) or via the client's browser</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentTransaction">
+        <sequence>
+            <element name="id" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentMethodType" type="tns:PaymentMethodType" minOccurs="1" maxOccurs="1" />
+            <element name="paymentMethod" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="authorizationDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="capturedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="refundedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="docdataReference" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="tns:Currency" minOccurs="1" maxOccurs="1" />
+            <element name="refundAmount" type="double" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PaymentMethodType">
+		<annotation>
+			<documentation>Payment method types ( not wallets )</documentation>
+		</annotation>
+        <restriction base="string">
+            <enumeration value="UNKNOWN" />
+            <enumeration value="VISA" />
+            <enumeration value="MASTERCARD" />
+            <enumeration value="SEPA" />
+            <enumeration value="KLARNA" />
+        </restriction>
+    </simpleType>
+
+    <complexType name="WalletTransaction">
+        <sequence>
+            <element name="walletId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="walletOrganizationFriendly" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="creationDate" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="transactionId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1" />
+            <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="refundAmount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="refundedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="committedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentOrder">
+        <sequence>
+            <element name="profile" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="amount" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1" />
+            <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="description" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+            <element name="amountPayed" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="amountRefunded" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="authorized" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="authorizedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="captured" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="capturedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="refunded" type="boolean" minOccurs="0" maxOccurs="1" />
+            <element name="refundedDate" type="dateTime" minOccurs="0" maxOccurs="1" />
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="email" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="givenName" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="familyName" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="transactions" type="tns:PaymentTransaction" minOccurs="0" maxOccurs="unbounded" />
+            <element name="walletTransactions" type="tns:WalletTransaction" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+    </complexType>
+
+    <complexType name="ParkingSession">
+        <sequence>
+            <element name="date" type="dateTime" minOccurs="1" maxOccurs="1" />
+            <element name="barCode" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="ticketNumber" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="dtaKey" type="string" minOccurs="0" maxOccurs="1" />
+            <element name="parking" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="turnover" type="double" minOccurs="1" maxOccurs="1" />
+            <element name="validated" type="boolean" minOccurs="1" maxOccurs="1" />
+            <element name="paymentOrderReference" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="paymentState" type="tns:PaymentStatusType" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="QRCodeInfo">
+        <sequence>
+            <element name="qrEncoded" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Base64 encoded QR code image</documentation>
+                </annotation>
+            </element>
+            <element name="qrURL" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>QR code URL</documentation>
+                </annotation>
+            </element>
+            <element name="qrContent" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>QR code content, everything but the protocol</documentation>
+                </annotation>
+            </element>
+            <element name="mobile" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>If user agent was specified, will return whether the request was started from a mobile client or not. Else is false</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="FavoritesConfiguration">
+        <sequence>
+            <element name="title" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional title to display in the user's favorites. If not present, the application name is used</documentation>
+                </annotation>
+            </element>
+            <element name="info" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional info to display in the user's favorites. If not present, the application description is used</documentation>
+                </annotation>
+            </element>
+            <element name="logoUrl" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional logo image url to display in the user's favorites. If not present, the application logo is used. Note that there are size restrictions</documentation>
+                </annotation>
+            </element>
+            <element name="backgroundColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background color (#xxxxxx) to use in the user's favorites. If not present the application's default theme's bg color is used</documentation>
+                </annotation>
+            </element>
+            <element name="textColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application text color (#xxxxxx) to use in the user's favorites. If not present the application's default theme's text color is used</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LinkIDApplication">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The non localized application name</documentation>
+                </annotation>
+            </element>
+            <element name="friendlyName" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The localized application name</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Localization">
+        <sequence>
+            <element name="languageCode" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 language code. Optional, default is en</documentation>
+                </annotation>
+            </element>
+            <element name="value" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The localization value</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+</schema>

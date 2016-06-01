@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Themes                                                                        *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Themes: Add request -->
+
+    <element name="ThemeAddRequest">
+        <annotation>
+            <documentation>Request a new linkID theme</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="application" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The application the owner is requesting a theme for</documentation>
+                    </annotation>
+                </element>
+                <element name="config" type="tns:ThemeConfig" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The config of this theme</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ThemeAddResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ThemeAddSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ThemeAddError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- Themes: Remove request -->
+
+    <element name="ThemeRemoveRequest">
+        <annotation>
+            <documentation>Request to delete a linkID theme</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="application" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The application the owner is requesting a theme for</documentation>
+                    </annotation>
+                </element>
+                <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The theme name</documentation>
+                    </annotation>
+                </element>
+                <element name="removeReleased" type="boolean" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Remove a released theme or a pending?</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ThemeRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ThemeRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ThemeRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <!-- Themes: Status request -->
+
+    <element name="ThemeStatusRequest">
+        <annotation>
+            <documentation>Fetch status of a pending linkID theme</documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Name of the theme status is being fetched for</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ThemeStatusResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ThemeStatusSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ThemeStatusError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ThemesRequest">
+        <complexType>
+            <attribute name="name" type="string" use="optional" />
+            <attribute name="statusCode" type="tns:ThemeStatusCode" use="optional" />
+        </complexType>
+	</element>
+
+    <element name="ThemesResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ThemesSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ThemesError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ThemesSuccess">
+        <sequence>
+            <element name="themes" type="tns:Themes" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The theme(s)</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <!-- Themes: common -->
+
+    <complexType name="ThemeConfig">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The theme name</documentation>
+                </annotation>
+            </element>
+            <element name="friendlyName" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The theme friendly name</documentation>
+                </annotation>
+            </element>
+            <element name="defaultTheme" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Default theme?</documentation>
+                </annotation>
+            </element>
+            <element name="logo" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application logo, shown in the manage linkID section</documentation>
+                </annotation>
+            </element>
+            <element name="authLogo" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application logo, shown during an authentication/payment</documentation>
+                </annotation>
+            </element>
+            <element name="background" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in phone size devices</documentation>
+                </annotation>
+            </element>
+            <element name="tabletBackground" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in tablet size devices</documentation>
+                </annotation>
+            </element>
+            <element name="alternativeBackground" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in alternative size devices</documentation>
+                </annotation>
+            </element>
+            <element name="backgroundColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background color (#xxxxxx), shown if no background images are defined, or they are being loaded</documentation>
+                </annotation>
+            </element>
+            <element name="textColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application text color (#xxxxxx), e.g. for the pinpad, ...</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LocalizedImages">
+        <sequence>
+            <element name="images" type="tns:LocalizedImage" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The localized images</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="LocalizedImage">
+        <sequence>
+            <element name="url" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The image url</documentation>
+                </annotation>
+            </element>
+            <element name="language" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Locale of the image</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ThemeAddSuccess">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The official technical name of the theme</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ThemeAddError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+            <element name="error" type="tns:ThemeError" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error information if e.g a color was invalid,...</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:ThemeAddErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ThemeAddErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Theme cannot be added, e.g. invalid name, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="ThemeError">
+        <annotation>
+            <documentation>What parts of the theme config were not ok</documentation>
+        </annotation>
+        <sequence>
+            <element name="backgroundColorError" type="tns:ThemeColorError" minOccurs="0" maxOccurs="1" />
+            <element name="textColorError" type="tns:ThemeColorError" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <complexType name="ThemeRemoveSuccess">
+    </complexType>
+
+    <complexType name="ThemeRemoveError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:ThemeRemoveErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ThemeRemoveErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Theme cannot be removed, e.g. not owner of it, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.not.found">
+				<annotation>
+					<documentation>No such theme, nothing to remove...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="ThemeStatusSuccess">
+        <sequence>
+            <element name="infoMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional info message containing additional info</documentation>
+                </annotation>
+            </element>
+            <element name="errorReport" type="tns:ThemeStatusErrorReport" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error information if e.g image was invalid,...</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="statusCode" type="tns:ThemeStatusCode" use="required" />
+    </complexType>
+
+    <complexType name="ThemeStatusErrorReport">
+        <annotation>
+            <documentation>What parts of the theme config were not ok</documentation>
+        </annotation>
+        <sequence>
+            <element name="logoErrors" type="tns:ThemeImageError" minOccurs="1" maxOccurs="unbounded" />
+            <element name="authLogoErrors" type="tns:ThemeImageError" minOccurs="1" maxOccurs="unbounded" />
+            <element name="backgroundErrors" type="tns:ThemeImageError" minOccurs="1" maxOccurs="unbounded" />
+            <element name="tabletBackgroundErrors" type="tns:ThemeImageError" minOccurs="1" maxOccurs="unbounded" />
+            <element name="alternativeBackgroundErrors" type="tns:ThemeImageError" minOccurs="1" maxOccurs="unbounded" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="ThemeStatusCode">
+		<annotation>
+			<documentation>Status codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="status.rejected">
+				<annotation>
+					<documentation>Theme was rejected, check the errors why</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="status.pending">
+				<annotation>
+					<documentation>Theme is pending further approval</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="status.accepted">
+				<annotation>
+					<documentation>Theme is accepted</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="status.released">
+				<annotation>
+					<documentation>Theme is released</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="ThemeStatusError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:ThemeStatusErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ThemeStatusErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Permission denied, e.g. not owner</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.not.found">
+				<annotation>
+					<documentation>Theme was not found</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="ThemeImageError">
+        <annotation>
+            <documentation>Image was rejected, contains why</documentation>
+        </annotation>
+        <sequence>
+            <element name="language" type="string" minOccurs="1" maxOccurs="1" />
+            <element name="errorMessage" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+        <attribute name="errorCode" type="tns:ThemeImageErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ThemeImageErrorCode">
+		<annotation>
+			<documentation>Image error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.format">
+				<annotation>
+					<documentation>The image format is not supported</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.size">
+				<annotation>
+					<documentation>The image size is big.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.dimension">
+				<annotation>
+					<documentation>The image dimension is not ok.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="ThemeColorError">
+        <annotation>
+            <documentation>Color was rejected, contains why</documentation>
+        </annotation>
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+        <attribute name="errorCode" type="tns:ThemeColorErrorCode" use="required" />
+    </complexType>
+
+        <simpleType name="ThemeColorErrorCode">
+		<annotation>
+			<documentation>Color result codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.format">
+				<annotation>
+					<documentation>The color format is not valid ( valid is e.g. #000000 )</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="ThemesError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="errorCode" type="tns:ThemesErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ThemesErrorCode">
+		<annotation>
+			<documentation>Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <complexType name="Themes">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The theme name</documentation>
+                </annotation>
+            </element>
+            <element name="friendlyName" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The theme friendly name</documentation>
+                </annotation>
+            </element>
+            <element name="defaultTheme" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Default theme?</documentation>
+                </annotation>
+            </element>
+            <element name="owner" type="boolean" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the application fetching the theme the owner of it?</documentation>
+                </annotation>
+            </element>
+            <element name="logo" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application logo, shown in the manage linkID section</documentation>
+                </annotation>
+            </element>
+            <element name="authLogo" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application logo, shown during an authentication/payment</documentation>
+                </annotation>
+            </element>
+            <element name="background" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in phone size devices</documentation>
+                </annotation>
+            </element>
+            <element name="tabletBackground" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in tablet size devices</documentation>
+                </annotation>
+            </element>
+            <element name="alternativeBackground" type="tns:LocalizedImages" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background, shown in alternative size devices</documentation>
+                </annotation>
+            </element>
+            <element name="backgroundColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application background color (#xxxxxx), shown if no background images are defined, or they are being loaded</documentation>
+                </annotation>
+            </element>
+            <element name="textColor" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The application text color (#xxxxxx), e.g. for the pinpad, ...</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="statusCode" type="tns:ThemeStatusCode" use="required" />
+    </complexType>
+
+</schema>

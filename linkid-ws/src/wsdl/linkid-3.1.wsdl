@@ -258,6 +258,12 @@
 	<message name="voucherOrganizationListResponse">
 		<part name="response" element="tns:VoucherOrganizationListResponse" />
 	</message>
+    <!--<message name="voucherOrganizationListUsersRequest">-->
+		<!--<part name="request" element="tns:VoucherOrganizationListUsersRequest" />-->
+	<!--</message>-->
+	<!--<message name="voucherOrganizationListUsersResponse">-->
+		<!--<part name="response" element="tns:VoucherOrganizationListUsersResponse" />-->
+	<!--</message>-->
     <message name="voucherOrganizationRemoveRequest">
 		<part name="request" element="tns:VoucherOrganizationRemoveRequest" />
 	</message>
@@ -453,6 +459,10 @@
 			<input message="tns:voucherOrganizationListRequest" />
 			<output message="tns:voucherOrganizationListResponse" />
 		</operation>
+		<!--<operation name="voucherOrganizationListUsers">-->
+			<!--<input message="tns:voucherOrganizationListUsersRequest" />-->
+			<!--<output message="tns:voucherOrganizationListUsersResponse" />-->
+		<!--</operation>-->
 		<operation name="voucherOrganizationRemove">
 			<input message="tns:voucherOrganizationRemoveRequest" />
 			<output message="tns:voucherOrganizationRemoveResponse" />
@@ -825,6 +835,15 @@
                 <soap:body use="literal" />
             </output>
         </operation>
+        <!--<operation name="voucherOrganizationListUsers">-->
+            <!--<soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationListUsers" />-->
+            <!--<input>-->
+                <!--<soap:body use="literal" />-->
+            <!--</input>-->
+            <!--<output>-->
+                <!--<soap:body use="literal" />-->
+            <!--</output>-->
+        <!--</operation>-->
         <operation name="voucherOrganizationRemove">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationRemove" />
             <input>

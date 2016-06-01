@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Payments                                                                      *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Payment: Status request -->
+
+    <element name="PaymentStatusRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+    <element name="PaymentStatusResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PaymentStatusSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PaymentStatusError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentStatusSuccess">
+        <sequence>
+            <element name="orderReference" minOccurs="1" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>The payment order reference</documentation>
+                </annotation>
+            </element>
+            <element name="userId" minOccurs="1" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>The linkID user's ID that made this order</documentation>
+                </annotation>
+            </element>
+            <element name="paymentStatus" minOccurs="1" maxOccurs="1" type="tns:PaymentStatusType">
+                <annotation>
+                    <documentation>Order payment status</documentation>
+                </annotation>
+            </element>
+            <element name="authorized" minOccurs="1" maxOccurs="1" type="boolean">
+                <annotation>
+                    <documentation>Order authorized?</documentation>
+                </annotation>
+            </element>
+            <element name="captured" minOccurs="1" maxOccurs="1" type="boolean">
+                <annotation>
+                    <documentation>Order captured? Only makes sense for orders with Docdata transactions for a merchant with automatic capture disabled</documentation>
+                </annotation>
+            </element>
+            <element name="amountPayed" minOccurs="1" maxOccurs="1" type="double">
+                <annotation>
+                    <documentation>How much of the order was payed (in cents)? This only makes sense if partial payments were allowed for this order</documentation>
+                </annotation>
+            </element>
+            <element name="amount" minOccurs="1" maxOccurs="1" type="double">
+                <annotation>
+                    <documentation>Amount that was intended to be payed, i.e. what was specified in the linkID payment context</documentation>
+                </annotation>
+            </element>
+            <element name="refundAmount" minOccurs="1" maxOccurs="1" type="double">
+                <annotation>
+                    <documentation>Amount that has been refunded</documentation>
+                </annotation>
+            </element>
+            <element name="currency" minOccurs="0" maxOccurs="1" type="tns:Currency">
+                <annotation>
+                    <documentation>Optional payment amount currency</documentation>
+                </annotation>
+            </element>
+            <element name="walletCoin" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment amount wallet coin</documentation>
+                </annotation>
+            </element>
+            <element name="description" minOccurs="0" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>Optional payment description as is passed on in the linkID payment context</documentation>
+                </annotation>
+            </element>
+            <element name="profile" minOccurs="0" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>Optional linkID payment profile used</documentation>
+                </annotation>
+            </element>
+            <element name="created" minOccurs="1" maxOccurs="1" type="dateTime">
+                <annotation>
+                    <documentation>When was the order created</documentation>
+                </annotation>
+            </element>
+            <element name="mandateReference" minOccurs="0" maxOccurs="1" type="string">
+                <annotation>
+                    <documentation>Optional mandate reference</documentation>
+                </annotation>
+            </element>
+            <element name="paymentDetails" minOccurs="1" maxOccurs="1" type="tns:PaymentDetails">
+                <annotation>
+                    <documentation>Order payment details</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentDetails">
+        <sequence>
+            <element name="paymentTransactions" minOccurs="0" maxOccurs="unbounded" type="tns:PaymentTransaction">
+                <annotation>
+                    <documentation>Regular payment transactions, VISA, MASTERCARD, SEPA, ...</documentation>
+                </annotation>
+            </element>
+            <element name="walletTransactions" minOccurs="0" maxOccurs="unbounded" type="tns:WalletTransaction">
+                <annotation>
+                    <documentation>Wallet payment transactions</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentStatusError">
+        <attribute name="errorCode" type="tns:PaymentStatusErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="PaymentStatusErrorCode">
+		<annotation>
+			<documentation>Payment status Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.not.found">
+				<annotation>
+					<documentation>The payment order was not found.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.multiple.orders.found">
+				<annotation>
+					<documentation>Multiple payment orders exist for this payment order reference, this should not happend. Contact someone from linkID.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Payment: Capture request -->
+
+    <element name="PaymentCaptureRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="PaymentCaptureResponse">
+        <complexType>
+            <sequence>
+                <element name="error" type="tns:PaymentCaptureError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="PaymentCaptureError">
+        <attribute name="errorCode" type="tns:PaymentCaptureErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="PaymentCaptureErrorCode">
+		<annotation>
+			<documentation>Payment Capture Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.capture.unknown">
+				<annotation>
+					<documentation>No payment transaction found with that orderReference</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.capture.token.not.found">
+				<annotation>
+					<documentation>Could not capture this payment because the payment token has been removed</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.capture.failed">
+				<annotation>
+					<documentation>Could not capture this payment for an unexpected reason</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Payment: Refund request -->
+
+    <element name="PaymentRefundRequest">
+		<complexType>
+            <attribute name="orderReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="PaymentRefundResponse">
+        <complexType>
+            <sequence>
+                <element name="error" type="tns:PaymentRefundError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+	<complexType name="PaymentRefundError">
+        <attribute name="errorCode" type="tns:PaymentRefundErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="PaymentRefundErrorCode">
+		<annotation>
+			<documentation>Payment Refund Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.order.unknown">
+				<annotation>
+					<documentation>No payment order found with that orderReference</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.order.already.refunded">
+				<annotation>
+					<documentation>Payment order was already refunded</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.refund.failed">
+				<annotation>
+					<documentation>Could not refund this payment for an unexpected reason</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Payment: mandate payment request -->
+
+    <element name="MandatePaymentRequest">
+		<complexType>
+            <sequence>
+                <element name="paymentContext" type="tns:PaymentContext" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional payment context</documentation>
+                    </annotation>
+                </element>
+                <element name="notificationLocation" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional notification location override</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+            <attribute name="mandateReference" type="string" use="required" />
+		</complexType>
+	</element>
+
+	<element name="MandatePaymentResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:MandatePaymentSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:MandatePaymentError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="MandatePaymentSuccess">
+        <sequence>
+            <element name="orderReference" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The order reference of this mandate payment</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="MandatePaymentError">
+        <attribute name="errorCode" type="tns:MandatePaymentErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="MandatePaymentErrorCode">
+		<annotation>
+			<documentation>Mandate payment Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.mandate.archived">
+				<annotation>
+					<documentation>The mandate has been archived and is no longer usable.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.mandate.unknown">
+				<annotation>
+					<documentation>Mo mandate has been found with this reference.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.mandate.payment.failed">
+				<annotation>
+					<documentation>Something is wrong with the payment method for this mandate, payment failed.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happenend.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>
