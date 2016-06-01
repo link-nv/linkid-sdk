@@ -656,7 +656,7 @@ public class LinkIDWSClientTest {
         descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "nl: Test voucher description" ) );
 
         LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test",
-                "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 5, nameLocalizations, descriptionLocalizations );
+                "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 5, true, nameLocalizations, descriptionLocalizations );
 
         // operate
         String voucherName = client.voucherOrganizationAddUpdate( voucherOrganization );
@@ -711,7 +711,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    //    @Test
+    @Test
     public void testVoucherOrganizationList()
             throws Exception {
 

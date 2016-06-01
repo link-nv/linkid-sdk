@@ -1760,7 +1760,7 @@ public class LinkIDServiceUtils {
 
     public static LinkIDVoucherOrganization convert(final VoucherOrganization request) {
 
-        return new LinkIDVoucherOrganization( request.getVoucherOrganizationId(), request.getLogoUrl(), request.getVoucherLimit(),
+        return new LinkIDVoucherOrganization( request.getVoucherOrganizationId(), request.getLogoUrl(), request.getVoucherLimit(), request.isActive(),
                 convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ) );
 
     }

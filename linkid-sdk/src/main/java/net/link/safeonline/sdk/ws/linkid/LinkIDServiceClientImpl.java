@@ -1326,6 +1326,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         organization.setVoucherOrganizationId( voucherOrganization.getId() );
         organization.setLogoUrl( voucherOrganization.getLogoUrl() );
         organization.setVoucherLimit( voucherOrganization.getVoucherLimit() );
+        organization.setActive( voucherOrganization.isActive() );
 
         if (!CollectionUtils.isEmpty( voucherOrganization.getNameLocalizations() )) {
             for (LinkIDLocalizationValue nameValue : voucherOrganization.getNameLocalizations()) {

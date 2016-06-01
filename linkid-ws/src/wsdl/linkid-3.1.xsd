@@ -3500,6 +3500,11 @@
                     <documentation>The size of the voucher</documentation>
                 </annotation>
             </element>
+            <element name="active" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Is the voucher organization active?</documentation>
+                </annotation>
+            </element>
             <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
                 <annotation>
                     <documentation>The voucher organization name localizations</documentation>

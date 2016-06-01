@@ -22,15 +22,17 @@ public class LinkIDVoucherOrganization implements Serializable {
     private final String                        id;
     private final String                        logoUrl;
     private final long                          voucherLimit;
+    private final boolean                       active;
     private final List<LinkIDLocalizationValue> nameLocalizations;
     private final List<LinkIDLocalizationValue> descriptionLocalizations;
 
-    public LinkIDVoucherOrganization(final String id, final String logoUrl, final long voucherLimit, final List<LinkIDLocalizationValue> nameLocalizations,
-                                     final List<LinkIDLocalizationValue> descriptionLocalizations) {
+    public LinkIDVoucherOrganization(final String id, final String logoUrl, final long voucherLimit, final boolean active,
+                                     final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations) {
 
         this.id = id;
         this.logoUrl = logoUrl;
         this.voucherLimit = voucherLimit;
+        this.active = active;
         this.nameLocalizations = nameLocalizations;
         this.descriptionLocalizations = descriptionLocalizations;
     }
@@ -44,6 +46,7 @@ public class LinkIDVoucherOrganization implements Serializable {
                "id='" + id + '\'' +
                ", logoUrl='" + logoUrl + '\'' +
                ", voucherLimit=" + voucherLimit +
+               ", active=" + active +
                ", nameLocalizations=" + nameLocalizations +
                ", descriptionLocalizations=" + descriptionLocalizations +
                '}';
@@ -64,6 +67,11 @@ public class LinkIDVoucherOrganization implements Serializable {
     public long getVoucherLimit() {
 
         return voucherLimit;
+    }
+
+    public boolean isActive() {
+
+        return active;
     }
 
     public List<LinkIDLocalizationValue> getNameLocalizations() {
