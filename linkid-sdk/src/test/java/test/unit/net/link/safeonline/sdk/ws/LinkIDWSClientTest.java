@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
+import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -36,8 +38,10 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEventType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
@@ -781,9 +785,17 @@ public class LinkIDWSClientTest {
         client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:theme:test", false );
     }
 
-    @Test
+    //    @Test
     public void testVoucherOrganizationHistory()
             throws Exception {
+
+        // setup
+        LinkIDVoucherEventTypeFilter eventTypeFilter = new LinkIDVoucherEventTypeFilter(
+                Collections.singletonList( LinkIDVoucherHistoryEventType.VOUCHER_EVENT_ACTIVATE ) );
+        LinkIDUserFilter userFilter = new LinkIDUserFilter( Collections.singletonList( "5A878718-C846-4092-AFFE-93CCCDDA83E6" ) );
+        LinkIDApplicationFilter applicationFilter = new LinkIDApplicationFilter( Collections.singletonList( "example-mobile" ) );
+        LinkIDReportDateFilter dateFilter = new LinkIDReportDateFilter( new DateTime().minusDays( 30 ).toDate(), null );
+        LinkIDReportPageFilter pageFilter = new LinkIDReportPageFilter( 0, 5 );
 
         // operate
         LinkIDVoucherHistory history = client.voucherOrganizationHistory( "urn:be:linkid:example-mobile:theme:test", null, null, null, null, null );
