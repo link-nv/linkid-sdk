@@ -17,6 +17,8 @@ import java.util.Map;
 import net.lin_k.linkid._3_1.core.*;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
+import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
@@ -43,6 +45,9 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
@@ -92,6 +97,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedEx
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
@@ -1604,6 +1610,51 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
 
             return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public LinkIDVoucherHistory voucherOrganizationHistory(final String voucherOrganizationId, @Nullable final LinkIDVoucherEventTypeFilter eventTypeFilter,
+                                                           @Nullable final LinkIDUserFilter userFilter,
+                                                           @Nullable final LinkIDApplicationFilter applicationFilter,
+                                                           @Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
+            throws LinkIDVoucherOrganizationHistoryException {
+
+        // request
+        VoucherOrganizationHistoryRequest request = new VoucherOrganizationHistoryRequest();
+
+        // input
+        request.setVoucherOrganizationId( voucherOrganizationId );
+        request.setEventTypeFilter( LinkIDServiceUtils.convert( eventTypeFilter ) );
+        request.setUserFilter( LinkIDServiceUtils.convert( userFilter ) );
+        request.setApplicationFilter( LinkIDServiceUtils.convert( applicationFilter ) );
+        request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
+
+        // operate
+        VoucherOrganizationHistoryResponse response = getPort().voucherOrganizationHistory( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDVoucherOrganizationHistoryException( response.getError().getErrorMessage(),
+                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDVoucherHistoryEvent> events = Lists.newLinkedList();
+            for (VoucherHistoryEvent wsEvent : response.getSuccess().getEvents()) {
+                events.add( LinkIDServiceUtils.convert( wsEvent ) );
+            }
+
+            return new LinkIDVoucherHistory( events, response.getSuccess().getTotal() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

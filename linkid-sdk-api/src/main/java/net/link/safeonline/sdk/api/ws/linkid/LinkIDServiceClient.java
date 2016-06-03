@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Locale;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
+import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -28,6 +30,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
@@ -73,6 +77,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedEx
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
@@ -590,6 +595,23 @@ public interface LinkIDServiceClient {
      */
     void voucherOrganizationActivate(String voucherOrganizationId, boolean active)
             throws LinkIDVoucherOrganizationActivateException;
+
+    /**
+     * Fetch voucher history for specified organization, filtered if wanted
+     *
+     * @param voucherOrganizationId the voucher organization ID
+     * @param eventTypeFilter       optional voucher history event type filter
+     * @param userFilter            optional user ID filter
+     * @param applicationFilter     optional  application filter
+     * @param dateFilter            optional date filter
+     * @param pageFilter            optional page filter
+     *
+     * @throws LinkIDVoucherOrganizationHistoryException something went wrong, check the error code in the exception
+     */
+    LinkIDVoucherHistory voucherOrganizationHistory(String voucherOrganizationId, @Nullable LinkIDVoucherEventTypeFilter eventTypeFilter,
+                                                    @Nullable LinkIDUserFilter userFilter, @Nullable LinkIDApplicationFilter applicationFilter,
+                                                    @Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
+            throws LinkIDVoucherOrganizationHistoryException;
 
     /**
      * Request a new linkID Theme

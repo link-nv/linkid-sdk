@@ -913,6 +913,120 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Voucher organizations: history -->
+
+    <element name="VoucherOrganizationHistoryRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher organization</documentation>
+                    </annotation>
+                </element>
+                <element name="eventTypeFilter" type="tns:VoucherEventTypeFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional voucher event filter</documentation>
+                    </annotation>
+                </element>
+                <element name="userFilter" type="tns:UserFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional user filter</documentation>
+                    </annotation>
+                </element>
+                <element name="applicationFilter" type="tns:ApplicationFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional application filter</documentation>
+                    </annotation>
+                </element>
+                <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional date filter</documentation>
+                    </annotation>
+                </element>
+                <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional page filter</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherEventTypeFilter">
+        <sequence>
+            <element name="eventTypes" type="tns:VoucherHistoryEventType" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Voucher history event type(s) to filter on</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <element name="VoucherOrganizationHistoryResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherOrganizationHistorySuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherOrganizationHistoryError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherOrganizationHistorySuccess">
+        <sequence>
+            <element name="events" type="tns:VoucherHistoryEvent" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+        <attribute name="total" type="long" use="required" />
+    </complexType>
+
+    <complexType name="VoucherOrganizationHistoryError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:VoucherOrganizationHistoryErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherOrganizationHistoryErrorCode">
+		<annotation>
+			<documentation>Voucher organization activate error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.voucher.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.too.many.results">
+				<annotation>
+					<documentation>There are too many results to return, please narrow down your search</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.invalid.page">
+				<annotation>
+					<documentation>Invalid page filter config, e.g. firstResult > total</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Not owner, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Voucher: common -->
 
     <complexType name="VoucherOrganizationDetails">
@@ -1079,5 +1193,52 @@
         </sequence>
     </complexType>
 
+    <complexType name="VoucherHistoryEvent">
+        <sequence>
+            <element name="id" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>History event ID</documentation>
+                </annotation>
+            </element>
+            <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The voucher's organization ID</documentation>
+                </annotation>
+            </element>
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The user ID</documentation>
+                </annotation>
+            </element>
+            <element name="voucherId" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The ID of the specific voucher if applicable</documentation>
+                </annotation>
+            </element>
+            <element name="points" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Voucher points in event (if applicable)</documentation>
+                </annotation>
+            </element>
+            <element name="applicationName" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The application responsible for this event</documentation>
+                </annotation>
+            </element>
+            <element name="eventType" type="tns:VoucherHistoryEventType" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The event type</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <simpleType name="VoucherHistoryEventType">
+        <restriction base="string">
+            <enumeration value="voucher.event.reward" />
+            <enumeration value="voucher.event.activate" />
+            <enumeration value="voucher.event.redeem" />
+        </restriction>
+    </simpleType>
 
 </schema>

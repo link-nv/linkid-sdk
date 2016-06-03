@@ -24,6 +24,26 @@
         <attribute name="walletId" type="string" use="required" />
     </complexType>
 
+    <complexType name="UserFilter">
+        <sequence>
+            <element name="userIds" type="string" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of userId(s) to filter on</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ApplicationFilter">
+        <sequence>
+            <element name="applications" type="string" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of application(s) to filter on</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
     <simpleType name="PaymentStatusType">
 		<annotation>
 			<documentation>Payment status</documentation>

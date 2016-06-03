@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import net.lin_k.linkid._3_1.core.ApplicationFilter;
 import net.lin_k.linkid._3_1.core.AuthCancelErrorCode;
 import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
 import net.lin_k.linkid._3_1.core.AuthStartErrorCode;
@@ -55,7 +56,11 @@ import net.lin_k.linkid._3_1.core.ThemeStatusErrorCode;
 import net.lin_k.linkid._3_1.core.ThemeStatusErrorReport;
 import net.lin_k.linkid._3_1.core.Themes;
 import net.lin_k.linkid._3_1.core.ThemesErrorCode;
+import net.lin_k.linkid._3_1.core.UserFilter;
 import net.lin_k.linkid._3_1.core.Voucher;
+import net.lin_k.linkid._3_1.core.VoucherEventTypeFilter;
+import net.lin_k.linkid._3_1.core.VoucherHistoryEvent;
+import net.lin_k.linkid._3_1.core.VoucherHistoryEventType;
 import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganization;
@@ -63,6 +68,7 @@ import net.lin_k.linkid._3_1.core.VoucherOrganizationActivateErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddPermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationDetails;
+import net.lin_k.linkid._3_1.core.VoucherOrganizationHistoryErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListUsersErrorCode;
@@ -86,6 +92,8 @@ import net.lin_k.linkid._3_1.core.WalletReportTypeFilter;
 import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
+import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
@@ -109,6 +117,9 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeImageErrorCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusErrorReport;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEventType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationStats;
@@ -145,6 +156,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedEr
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersErrorCode;
@@ -1284,6 +1296,44 @@ public class LinkIDServiceUtils {
         return null;
     }
 
+    @Nullable
+    public static VoucherEventTypeFilter convert(@Nullable final LinkIDVoucherEventTypeFilter filter) {
+
+        if (null != filter) {
+            VoucherEventTypeFilter wsFilter = new VoucherEventTypeFilter();
+            for (LinkIDVoucherHistoryEventType eventType : filter.getEventTypes()) {
+                wsFilter.getEventTypes().add( convert( eventType ) );
+            }
+            return wsFilter;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static UserFilter convert(@Nullable final LinkIDUserFilter filter) {
+
+        if (null != filter) {
+            UserFilter wsFilter = new UserFilter();
+            wsFilter.getUserIds().addAll( filter.getUserIds() );
+            return wsFilter;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static ApplicationFilter convert(@Nullable final LinkIDApplicationFilter filter) {
+
+        if (null != filter) {
+            ApplicationFilter wsFilter = new ApplicationFilter();
+            wsFilter.getApplications().addAll( filter.getApplications() );
+            return wsFilter;
+        }
+
+        return null;
+    }
+
     public static LinkIDVoucher convert(final Voucher voucher) {
 
         return new LinkIDVoucher( voucher.getId(), voucher.getName(), voucher.getDescription(), voucher.getLogoUrl(), voucher.getCounter(), voucher.getLimit(),
@@ -1847,6 +1897,31 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
+    public static LinkIDVoucherOrganizationHistoryErrorCode convert(final VoucherOrganizationHistoryErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
+                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_TOO_MANY_RESULTS:
+                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_TOO_MANY_RESULTS;
+            case ERROR_INVALID_PAGE:
+                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_INVALID_PAGE;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
     public static LinkIDConfigApplicationsErrorCode convert(final ConfigApplicationsErrorCode errorCode) {
 
         if (null == errorCode) {
@@ -1863,5 +1938,41 @@ public class LinkIDServiceUtils {
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
+
+    public static LinkIDVoucherHistoryEvent convert(final VoucherHistoryEvent wsEvent) {
+
+        return new LinkIDVoucherHistoryEvent( wsEvent.getId(), wsEvent.getVoucherOrganizationId(), wsEvent.getUserId(), wsEvent.getVoucherId(),
+                wsEvent.getPoints(), wsEvent.getApplicationName(), convert( wsEvent.getEventType() ) );
+    }
+
+    public static LinkIDVoucherHistoryEventType convert(final VoucherHistoryEventType eventType) {
+
+        switch (eventType) {
+
+            case VOUCHER_EVENT_REWARD:
+                return LinkIDVoucherHistoryEventType.VOUCHER_EVENT_REWARD;
+            case VOUCHER_EVENT_ACTIVATE:
+                return LinkIDVoucherHistoryEventType.VOUCHER_EVENT_ACTIVATE;
+            case VOUCHER_EVENT_REDEEM:
+                return LinkIDVoucherHistoryEventType.VOUCHER_EVENT_REDEEM;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported event type: \"%s\"", eventType.name() ) );
+    }
+
+    public static VoucherHistoryEventType convert(final LinkIDVoucherHistoryEventType eventType) {
+
+        switch (eventType) {
+
+            case VOUCHER_EVENT_REWARD:
+                return VoucherHistoryEventType.VOUCHER_EVENT_REWARD;
+            case VOUCHER_EVENT_ACTIVATE:
+                return VoucherHistoryEventType.VOUCHER_EVENT_ACTIVATE;
+            case VOUCHER_EVENT_REDEEM:
+                return VoucherHistoryEventType.VOUCHER_EVENT_REDEEM;
+        }
+        throw new InternalInconsistencyException( String.format( "Unsupported event type: \"%s\"", eventType.name() ) );
+    }
+
 
 }

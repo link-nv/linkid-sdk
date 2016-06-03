@@ -36,6 +36,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
@@ -779,6 +781,21 @@ public class LinkIDWSClientTest {
         client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:theme:test", false );
     }
 
+    @Test
+    public void testVoucherOrganizationHistory()
+            throws Exception {
+
+        // operate
+        LinkIDVoucherHistory history = client.voucherOrganizationHistory( "urn:be:linkid:example-mobile:theme:test", null, null, null, null, null );
+
+        // verify
+        assertNotNull( history );
+        logger.dbg( "History.total: %d", history.getTotal() );
+        for (LinkIDVoucherHistoryEvent event : history.getEvents()) {
+            logger.dbg( "%s", event );
+        }
+    }
+
     //    @Test
     public void testVoucherReward()
             throws Exception {
@@ -791,7 +808,7 @@ public class LinkIDWSClientTest {
         client.voucherReward( userId, voucherOrganizationId, 3 );
     }
 
-    @Test
+    //    @Test
     public void testVoucherList()
             throws Exception {
 

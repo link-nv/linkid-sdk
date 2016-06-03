@@ -276,6 +276,12 @@
 	<message name="voucherOrganizationActivateResponse">
 		<part name="response" element="tns:VoucherOrganizationActivateResponse" />
 	</message>
+    <message name="voucherOrganizationHistoryRequest">
+		<part name="request" element="tns:VoucherOrganizationHistoryRequest" />
+	</message>
+	<message name="voucherOrganizationHistoryResponse">
+		<part name="response" element="tns:VoucherOrganizationHistoryResponse" />
+	</message>
 
     <!-- =================== Themes ========================= -->
 
@@ -470,6 +476,10 @@
 		<operation name="voucherOrganizationActivate">
 			<input message="tns:voucherOrganizationActivateRequest" />
 			<output message="tns:voucherOrganizationActivateResponse" />
+		</operation>
+		<operation name="voucherOrganizationHistory">
+			<input message="tns:voucherOrganizationHistoryRequest" />
+			<output message="tns:voucherOrganizationHistoryResponse" />
 		</operation>
 		<operation name="themeAdd">
 			<input message="tns:themeAddRequest" />
@@ -855,6 +865,15 @@
         </operation>
         <operation name="voucherOrganizationActivate">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationActivate" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="voucherOrganizationHistory">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationHistory" />
             <input>
                 <soap:body use="literal" />
             </input>
