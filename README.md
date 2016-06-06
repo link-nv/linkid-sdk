@@ -139,7 +139,7 @@ v4.8.1
   * Voucher support
   * configApplications operation added
 
-v4.x.y
+v4.12.0
 ----
   * Voucher organization activate/deactivate support
   * List voucher organizations: filtering on id(s) support + includeStats support
