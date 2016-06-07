@@ -53,6 +53,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
@@ -109,6 +110,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -1197,6 +1199,49 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
             // all good <o/
             return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable final List<String> walletOrganizationIds, final boolean includeStats,
+                                                                        @Nullable final Locale locale)
+            throws LinkIDWalletOrganizationListException {
+
+        // request
+        WalletOrganizationListRequest request = new WalletOrganizationListRequest();
+
+        // input
+        if (null != walletOrganizationIds) {
+            request.getOrganizationIds().addAll( walletOrganizationIds );
+        }
+        request.setIncludeStats( includeStats );
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
+
+        // operate
+        WalletOrganizationListResponse response = getPort().walletOrganizationList( request );
+
+        // convert response
+        if (null != response.getError()) {
+
+            if (null != response.getError().getErrorCode()) {
+                throw new LinkIDWalletOrganizationListException( response.getError().getErrorMessage(),
+                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            } else {
+                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
+            }
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDWalletOrganizationDetails> organizations = Lists.newLinkedList();
+
+            for (WalletOrganizationDetails details : response.getSuccess().getOrganizationDetails()) {
+                organizations.add( LinkIDServiceUtils.convert( details ) );
+            }
+
+            return organizations;
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

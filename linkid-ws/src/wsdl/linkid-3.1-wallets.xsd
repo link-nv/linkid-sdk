@@ -603,6 +603,84 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Wallet organizations: list -->
+
+    <element name="WalletOrganizationListRequest">
+        <complexType>
+            <sequence>
+                <element name="organizationIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional list of organization ID's to fetch</documentation>
+                    </annotation>
+                </element>
+                <element name="includeStats" type="boolean" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Include organization statistics?</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="WalletOrganizationListResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletOrganizationListSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletOrganizationListError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="WalletOrganizationListSuccess">
+        <sequence>
+            <element name="organizationDetails" type="tns:WalletOrganizationDetails" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization details the caller application owns</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletOrganizationListError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="errorCode" type="tns:WalletOrganizationListErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="WalletOrganizationListErrorCode">
+		<annotation>
+			<documentation>Wallet organization list error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Not owner, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
     <!-- Wallet common -->
 
     <complexType name="WalletReportInfo">
@@ -615,6 +693,96 @@
             <element name="description" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>optional description</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletOrganizationDetails">
+        <sequence>
+            <element name="organization" type="tns:WalletOrganization" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Wallet organization configuration</documentation>
+                </annotation>
+            </element>
+            <element name="stats" type="tns:WalletOrganizationStats" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional wallet organization stats, if requested</documentation>
+                </annotation>
+            </element>
+            <element name="permissionAddCreditApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the ADD CREDIT permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionRemoveCreditApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the REMOVE CREDIT permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionRemoveApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the REMOVE permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionEnrollApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the ENROLL permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionUseApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the USE permission</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletOrganization">
+        <sequence>
+            <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The ID of the wallet organization</documentation>
+                </annotation>
+            </element>
+            <element name="logoUrl" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The url of the wallet logo</documentation>
+                </annotation>
+            </element>
+            <element name="expirationInSecs" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Expiration of reserved wallet transactions in secs</documentation>
+                </annotation>
+            </element>
+            <element name="sticky" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Sticky as in even if balance is 0, it will be shown during payments</documentation>
+                </annotation>
+            </element>
+            <element name="autoEnroll" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Auto enroll users in wallet if trying to pay for an application allowed to use it</documentation>
+                </annotation>
+            </element>
+            <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization name localizations</documentation>
+                </annotation>
+            </element>
+            <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization description localizations</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletOrganizationStats">
+        <sequence>
+            <element name="numberOfWallets" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Total number of wallets</documentation>
                 </annotation>
             </element>
         </sequence>

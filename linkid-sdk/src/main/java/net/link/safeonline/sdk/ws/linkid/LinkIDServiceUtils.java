@@ -83,6 +83,10 @@ import net.lin_k.linkid._3_1.core.WalletCommitErrorCode;
 import net.lin_k.linkid._3_1.core.WalletEnrollErrorCode;
 import net.lin_k.linkid._3_1.core.WalletGetInfoErrorCode;
 import net.lin_k.linkid._3_1.core.WalletInfoReportErrorCode;
+import net.lin_k.linkid._3_1.core.WalletOrganization;
+import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
+import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
+import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
@@ -124,6 +128,9 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationStats;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
@@ -168,6 +175,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCo
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
@@ -1974,5 +1982,48 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unsupported event type: \"%s\"", eventType.name() ) );
     }
 
+    public static LinkIDWalletOrganizationListErrorCode convert(final WalletOrganizationListErrorCode errorCode) {
+
+        if (null == errorCode) {
+            return null;
+        }
+
+        switch (errorCode) {
+
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDWalletOrganizationListErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDWalletOrganizationListErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDWalletOrganizationListErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDWalletOrganizationDetails convert(final WalletOrganizationDetails details) {
+
+        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), convert( details.getStats() ),
+                details.getPermissionAddCreditApplications(), details.getPermissionRemoveCreditApplications(), details.getPermissionRemoveApplications(),
+                details.getPermissionEnrollApplications(), details.getPermissionUseApplications() );
+
+    }
+
+    public static LinkIDWalletOrganization convert(final WalletOrganization request) {
+
+        return new LinkIDWalletOrganization( request.getWalletOrganizationId(), request.getLogoUrl(), request.getExpirationInSecs(), request.isSticky(),
+                request.isAutoEnroll(), convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ) );
+
+    }
+
+    @Nullable
+    public static LinkIDWalletOrganizationStats convert(@Nullable final WalletOrganizationStats stats) {
+
+        if (null != stats) {
+            return new LinkIDWalletOrganizationStats( stats.getNumberOfWallets() );
+        }
+
+        return null;
+    }
 
 }

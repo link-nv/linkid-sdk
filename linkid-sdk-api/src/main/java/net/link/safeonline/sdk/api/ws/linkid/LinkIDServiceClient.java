@@ -37,6 +37,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
@@ -89,6 +90,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -441,6 +443,20 @@ public interface LinkIDServiceClient {
      */
     void walletRelease(String userId, String walletId, String walletTransactionId)
             throws LinkIDWalletReleaseException;
+
+    /**
+     * Returns the list of wallet organizations the caller application owns
+     *
+     * @param walletOrganizationIds optional list of wallet organization IDs
+     * @param includeStats          include stats?
+     * @param locale                optional language (default is en)
+     *
+     * @return the list of owned wallet organizations
+     *
+     * @throws LinkIDWalletOrganizationListException something went wrong, check the error code in the exception
+     */
+    List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds, boolean includeStats, @Nullable Locale locale)
+            throws LinkIDWalletOrganizationListException;
 
     /**
      * Add points for specified user and specified voucher organization.

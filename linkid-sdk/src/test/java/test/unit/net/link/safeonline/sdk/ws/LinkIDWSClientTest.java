@@ -48,6 +48,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
@@ -71,6 +72,7 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRe
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
@@ -333,6 +335,26 @@ public class LinkIDWSClientTest {
         }
         catch (LinkIDWalletRemoveException e) {
             logger.err( "Remove error: %s", e.getErrorCode() );
+            fail();
+        }
+    }
+
+    @Test
+    public void testWalletOrganizationList()
+            throws Exception {
+
+        // setup
+        List<String> walletOrganizationIds = Collections.singletonList( "urn:linkid:wallet:fake:visa" );
+
+        // operate
+        try {
+            List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( walletOrganizationIds, true, Locale.ENGLISH );
+            for (LinkIDWalletOrganizationDetails organization : organizations) {
+                logger.dbg( "Organization: %s", organization );
+            }
+        }
+        catch (LinkIDWalletOrganizationListException e) {
+            logger.err( "Error: %s", e.getErrorCode() );
             fail();
         }
     }
