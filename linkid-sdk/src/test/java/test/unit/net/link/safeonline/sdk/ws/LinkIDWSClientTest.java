@@ -24,6 +24,7 @@ import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
@@ -342,10 +343,12 @@ public class LinkIDWSClientTest {
 
         // setup
         String language = "be";
-        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 100, LinkIDCurrency.EUR ) ).build();
+        LinkIDPaymentContext paymentContext = new LinkIDPaymentContext.Builder( new LinkIDPaymentAmount( 100, LinkIDCurrency.EUR ) ).orderReference(
+                "288A6627-81DA-4A4C-9244-C6035B73025A" ).mandate( new LinkIDPaymentMandate( "blaat", "4f3dbedf-b2f4-44f5-92e9-64bd6614089d" ) ).build();
 
         LinkIDAuthenticationContext context = new LinkIDAuthenticationContext.Builder( APP_NAME ).language( new Locale( language ) )
                                                                                                  .notificationLocation( "https://demo.linkid.be" )
+                                                                                                 .paymentContext( paymentContext )
                                                                                                  .build();
 
         // operate: start
@@ -362,6 +365,7 @@ public class LinkIDWSClientTest {
         catch (LinkIDAuthException e) {
             logger.inf( "Error message: %s", e.getMessage() );
             assertNotNull( e.getMessage() );
+            fail();
         }
 
     }
