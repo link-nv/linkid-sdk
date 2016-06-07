@@ -339,7 +339,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testWalletOrganizationList()
             throws Exception {
 
@@ -348,7 +348,7 @@ public class LinkIDWSClientTest {
 
         // operate
         try {
-            List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( walletOrganizationIds, true, Locale.ENGLISH );
+            List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, true, Locale.ENGLISH );
             for (LinkIDWalletOrganizationDetails organization : organizations) {
                 logger.dbg( "Organization: %s", organization );
             }

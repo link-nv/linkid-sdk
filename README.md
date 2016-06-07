@@ -144,3 +144,7 @@ v4.12.0
   * Voucher organization activate/deactivate support
   * List voucher organizations: filtering on id(s) support + includeStats support
   * Voucher organization list users support
+
+v4.x.y
+----
+  * walletOrganizationList support
