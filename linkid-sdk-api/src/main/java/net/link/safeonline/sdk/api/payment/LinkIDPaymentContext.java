@@ -23,6 +23,7 @@ public class LinkIDPaymentContext implements Serializable {
     public static final String DESCRIPTION_KEY         = "PaymentContext.description";
     public static final String ORDER_REFERENCE_KEY     = "PaymentContext.orderReference";
     public static final String PROFILE_KEY             = "PaymentContext.profile";
+    public static final String CONFIGURATION_KEY       = "PaymentContext.configuration";
     public static final String VALIDATION_TIME_KEY     = "PaymentContext.validationTime";
     public static final String MANDATE_KEY             = "PaymentContext.mandate";
     public static final String MANDATE_DESCRIPTION_KEY = "PaymentContext.mandateDescription";
@@ -42,6 +43,9 @@ public class LinkIDPaymentContext implements Serializable {
     // optional payment profile
     private final String               paymentProfile;
     //
+    // optional payment configuration
+    private       String               configuration;
+    //
     // maximum time to wait for payment validation, if not specified defaults to 5s
     private final int                  paymentValidationTime;
     //
@@ -55,16 +59,17 @@ public class LinkIDPaymentContext implements Serializable {
     //
     // wallet related flags
     private final boolean              allowPartial;       // allow partial payments via wallets, this flag does make sense if you allow normal payment methods
+    @Deprecated
     private final boolean              onlyWallets;        // allow only wallets for this payment
 
     private LinkIDPaymentContext(final Builder builder) {
 
         // validate payment context
         if (null == builder.amount.getCurrency() && null == builder.amount.getWalletCoin()) {
-            throw new IllegalStateException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are null" );
+            throw new IllegalStateException( "LinkIDPaymentContext.amount needs or currency or walletCoin specified, both are null" );
         }
         if (null != builder.amount.getCurrency() && null != builder.amount.getWalletCoin()) {
-            throw new IllegalStateException( "LinkIDPaymentContext.amount needs or currecy or walletCoin specified, both are specified" );
+            throw new IllegalStateException( "LinkIDPaymentContext.amount needs or currency or walletCoin specified, both are specified" );
         }
         // TODO: disabled as some customers seem to not know that LTQR codes can also be created without a payment context
         //        if (builder.amount.getAmount() <= 0) {
@@ -75,6 +80,7 @@ public class LinkIDPaymentContext implements Serializable {
         this.amount = builder.amount;
         this.description = builder.description;
         this.orderReference = builder.orderReference;
+        this.configuration = builder.configuration;
         this.paymentProfile = builder.paymentProfile;
         this.paymentValidationTime = builder.paymentValidationTime;
         this.mandate = builder.mandate;
@@ -102,6 +108,9 @@ public class LinkIDPaymentContext implements Serializable {
         }
         if (null != orderReference) {
             map.put( ORDER_REFERENCE_KEY, orderReference );
+        }
+        if (null != configuration) {
+            map.put( CONFIGURATION_KEY, configuration );
         }
         if (null != paymentProfile) {
             map.put( PROFILE_KEY, paymentProfile );
@@ -152,6 +161,7 @@ public class LinkIDPaymentContext implements Serializable {
         Builder builder = new Builder( new LinkIDPaymentAmount( amount, LinkIDCurrency.parse( paymentContextMap.get( CURRENCY_KEY ) ), walletCoin ) );
         builder.description( paymentContextMap.get( DESCRIPTION_KEY ) );
         builder.orderReference( paymentContextMap.get( ORDER_REFERENCE_KEY ) );
+        builder.configuration( paymentContextMap.get( CONFIGURATION_KEY ) );
         builder.paymentProfile( paymentContextMap.get( PROFILE_KEY ) );
         builder.paymentValidationTime( Integer.parseInt( paymentContextMap.get( VALIDATION_TIME_KEY ) ) );
         builder.allowPartial( getBoolean( paymentContextMap, ALLOW_PARTIAL_KEY ) );
@@ -184,6 +194,7 @@ public class LinkIDPaymentContext implements Serializable {
                "amount=" + amount +
                ", description='" + description + '\'' +
                ", orderReference='" + orderReference + '\'' +
+               ", configuration='" + configuration + '\'' +
                ", paymentProfile='" + paymentProfile + '\'' +
                ", paymentValidationTime=" + paymentValidationTime +
                ", mandate=" + mandate +
@@ -205,6 +216,7 @@ public class LinkIDPaymentContext implements Serializable {
         private String               description           = null;
         private String               orderReference        = null;
         private String               paymentProfile        = null;
+        private String               configuration         = null;
         private int                  paymentValidationTime = 5;
         private LinkIDPaymentMandate mandate               = null;
         private String               paymentStatusLocation = null;
@@ -239,6 +251,12 @@ public class LinkIDPaymentContext implements Serializable {
             return this;
         }
 
+        public Builder configuration(final String configuration) {
+
+            this.configuration = configuration;
+            return this;
+        }
+
         public Builder paymentValidationTime(final int paymentValidationTime) {
 
             this.paymentValidationTime = paymentValidationTime;
@@ -263,6 +281,7 @@ public class LinkIDPaymentContext implements Serializable {
             return this;
         }
 
+        @Deprecated
         public Builder onlyWallets(final boolean onlyWallets) {
 
             this.onlyWallets = onlyWallets;
@@ -285,6 +304,11 @@ public class LinkIDPaymentContext implements Serializable {
     public String getOrderReference() {
 
         return orderReference;
+    }
+
+    public String getConfiguration() {
+
+        return configuration;
     }
 
     public String getPaymentProfile() {
@@ -317,5 +341,10 @@ public class LinkIDPaymentContext implements Serializable {
     public boolean isOnlyWallets() {
 
         return onlyWallets;
+    }
+
+    public void setConfiguration(final String configuration) {
+
+        this.configuration = configuration;
     }
 }
