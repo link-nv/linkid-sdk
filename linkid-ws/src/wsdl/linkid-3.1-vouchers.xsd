@@ -716,6 +716,16 @@
                         <documentation>Voucher organization ID</documentation>
                     </annotation>
                 </element>
+                <element name="userAttributeFilter" type="tns:UserAttributeFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional user attribute filter</documentation>
+                    </annotation>
+                </element>
+                <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional page filter</documentation>
+                    </annotation>
+                </element>
             </sequence>
         </complexType>
     </element>

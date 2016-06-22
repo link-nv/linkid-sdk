@@ -778,7 +778,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        List<String> userIds = client.voucherOrganizationListUsers( "urn:be:linkid:example-mobile:theme:test" );
+        List<String> userIds = client.voucherOrganizationListUsers( "urn:be:linkid:example-mobile:theme:test", null, null );
 
         // verify
         assertNotNull( userIds );

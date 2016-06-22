@@ -18,6 +18,7 @@ import net.lin_k.linkid._3_1.core.*;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
@@ -1567,12 +1568,15 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<String> voucherOrganizationListUsers(final String voucherOrganizationId)
+    public List<String> voucherOrganizationListUsers(final String voucherOrganizationId, @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
+                                                     @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDVoucherOrganizationListUsersException {
 
         // request
         VoucherOrganizationListUsersRequest request = new VoucherOrganizationListUsersRequest();
         request.setOrganizationId( voucherOrganizationId );
+        request.setUserAttributeFilter( LinkIDServiceUtils.convert( userAttributeFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
 
         // operate
         VoucherOrganizationListUsersResponse response = getPort().voucherOrganizationListUsers( request );

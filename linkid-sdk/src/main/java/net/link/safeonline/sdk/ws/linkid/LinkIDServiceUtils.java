@@ -56,6 +56,7 @@ import net.lin_k.linkid._3_1.core.ThemeStatusErrorCode;
 import net.lin_k.linkid._3_1.core.ThemeStatusErrorReport;
 import net.lin_k.linkid._3_1.core.Themes;
 import net.lin_k.linkid._3_1.core.ThemesErrorCode;
+import net.lin_k.linkid._3_1.core.UserAttributeFilter;
 import net.lin_k.linkid._3_1.core.UserFilter;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherEventTypeFilter;
@@ -97,6 +98,7 @@ import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -1261,6 +1263,19 @@ public class LinkIDServiceUtils {
             wsPageFilter.setFirstResult( pageFilter.getFirstResult() );
             wsPageFilter.setMaxResults( pageFilter.getMaxResults() );
             return wsPageFilter;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static UserAttributeFilter convert(final LinkIDUserAttributeFilter userAttributeFilter) {
+
+        if (null != userAttributeFilter) {
+            UserAttributeFilter wsUserAttributeFilter = new UserAttributeFilter();
+            wsUserAttributeFilter.setAttributeName( LinkIDProfileConstants.EMAIL_ADDRESS );
+            wsUserAttributeFilter.setAttributeValue( userAttributeFilter.getEmail() );
+            return wsUserAttributeFilter;
         }
 
         return null;

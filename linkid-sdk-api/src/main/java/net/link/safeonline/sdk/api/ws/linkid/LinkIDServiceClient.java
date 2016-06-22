@@ -12,6 +12,7 @@ import java.util.Locale;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -585,7 +586,8 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDVoucherOrganizationListUsersException something went wrong, check the error code in the exception
      */
-    List<String> voucherOrganizationListUsers(String voucherOrganizationId)
+    List<String> voucherOrganizationListUsers(String voucherOrganizationId, @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
+                                              @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDVoucherOrganizationListUsersException;
 
     /**
