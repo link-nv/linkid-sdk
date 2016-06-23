@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ safe-online - linkid-ws
+  ~
+  ~ Copyright 2006-2016 linkID Inc. All rights reserved.
+  ~ linkID Inc. proprietary/confidential. Use is subject to license terms.
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Payment configurations                                                        *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Add -->
+
+    <element name="PaymentConfigurationAddRequest">
+        <complexType>
+            <sequence>
+                <element name="configuration" type="tns:PaymentConfiguration" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The payment configuration</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="PaymentConfigurationAddResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PaymentConfigurationAddSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PaymentConfigurationAddError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentConfigurationAddSuccess">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The official technical name of the payment configuration</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentConfigurationAddError">
+        <sequence>
+            <element name="errorCode" type="tns:PaymentConfigurationAddErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="errorMessage" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PaymentConfigurationAddErrorCode">
+		<annotation>
+			<documentation>Payment configuration add error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.configuration.already.exists">
+				<annotation>
+					<documentation>Payment configuration already exists</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.configuration.invalid">
+				<annotation>
+					<documentation>Something is wrong with the configuration</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Common -->
+
+    <complexType name="PaymentConfiguration">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The configuration name</documentation>
+                </annotation>
+            </element>
+            <element name="walletOrganizations" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Optional wallet organization(s) restriction</documentation>
+                </annotation>
+            </element>
+            <element name="paymentMethods" type="tns:PaymentMethodType" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Optional payment methods(s) restriction</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="defaultConfiguration" type="boolean" use="required" />
+        <attribute name="onlyWallets" type="boolean" use="required" />
+        <attribute name="noWallets" type="boolean" use="required" />
+    </complexType>
+
+
+</schema>

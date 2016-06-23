@@ -25,9 +25,11 @@ import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
+import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
@@ -893,6 +895,23 @@ public class LinkIDWSClientTest {
 
         // Operate
         client.voucherRedeem( voucherId );
+    }
+
+    //    @Test
+    public void testPaymentConfigurationAdd()
+            throws Exception {
+
+        // Setup
+        List<String> walletOrganizations = Collections.singletonList( "urn:linkid:wallet:fake:visa" );
+        List<LinkIDPaymentMethodType> paymentMethods = Collections.singletonList( LinkIDPaymentMethodType.VISA );
+        LinkIDPaymentConfiguration paymentConfiguration = new LinkIDPaymentConfiguration( "test", false, true, false, walletOrganizations, paymentMethods );
+
+        // Operate
+        String technicalName = client.paymentConfigurationAdd( paymentConfiguration );
+
+        // Verify
+        assertNotNull( technicalName );
+
     }
 
     // Auth

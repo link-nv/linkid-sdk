@@ -28,6 +28,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
+import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
@@ -90,6 +91,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentDetails;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
@@ -1826,6 +1828,32 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         return new LinkIDThemes( linkIDThemes );
+    }
+
+    @Override
+    public String paymentConfigurationAdd(final LinkIDPaymentConfiguration paymentConfiguration)
+            throws LinkIDPaymentConfigurationAddException {
+
+        // Setup
+        PaymentConfigurationAddRequest request = new PaymentConfigurationAddRequest();
+        request.setConfiguration( LinkIDServiceUtils.convert( paymentConfiguration ) );
+
+        // Operate
+        PaymentConfigurationAddResponse response = getPort().paymentConfigurationAdd( request );
+
+        // Response
+        if (null != response.getError()) {
+
+            throw new LinkIDPaymentConfigurationAddException( response.getError().getErrorMessage(),
+                    LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            return response.getSuccess().getName();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
 }

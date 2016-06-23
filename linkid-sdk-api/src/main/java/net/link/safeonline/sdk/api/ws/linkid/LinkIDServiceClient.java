@@ -16,6 +16,7 @@ import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
@@ -70,6 +71,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureExcepti
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
@@ -675,4 +677,15 @@ public interface LinkIDServiceClient {
     LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDThemeStatusCode themeStatusCode)
             throws LinkIDThemesException;
 
+    /**
+     * Add a new payment configuration
+     *
+     * @param paymentConfiguration the payment configuration
+     *
+     * @return the official technical name of the payment configuration
+     *
+     * @throws LinkIDPaymentConfigurationAddException something went wrong, check the error code in the exception
+     */
+    String paymentConfigurationAdd(LinkIDPaymentConfiguration paymentConfiguration)
+            throws LinkIDPaymentConfigurationAddException;
 }

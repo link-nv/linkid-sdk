@@ -1,5 +1,8 @@
 package net.link.safeonline.sdk.ws.linkid;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Date;
@@ -34,6 +37,8 @@ import net.lin_k.linkid._3_1.core.LocalizedImage;
 import net.lin_k.linkid._3_1.core.LocalizedImages;
 import net.lin_k.linkid._3_1.core.MandatePaymentErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentCaptureErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentConfiguration;
+import net.lin_k.linkid._3_1.core.PaymentConfigurationAddErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentContext;
 import net.lin_k.linkid._3_1.core.PaymentMethodType;
 import net.lin_k.linkid._3_1.core.PaymentRefundErrorCode;
@@ -105,6 +110,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
+import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
@@ -155,6 +161,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentErrorCo
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
@@ -1447,6 +1454,28 @@ public class LinkIDServiceUtils {
         return net.lin_k.safe_online.common.PaymentMethodType.UNKNOWN;
     }
 
+    public static PaymentMethodType convertPaymentMethod(final LinkIDPaymentMethodType linkIDPaymentMethodType) {
+
+        if (null == linkIDPaymentMethodType)
+            return null;
+
+        switch (linkIDPaymentMethodType) {
+
+            case UNKNOWN:
+                return PaymentMethodType.UNKNOWN;
+            case VISA:
+                return PaymentMethodType.VISA;
+            case MASTERCARD:
+                return PaymentMethodType.MASTERCARD;
+            case SEPA:
+                return PaymentMethodType.SEPA;
+            case KLARNA:
+                return PaymentMethodType.KLARNA;
+        }
+
+        return PaymentMethodType.UNKNOWN;
+    }
+
     public static LinkIDPaymentMethodType convert(final net.lin_k.safe_online.common.PaymentMethodType paymentMethodType) {
 
         if (null == paymentMethodType)
@@ -2028,4 +2057,58 @@ public class LinkIDServiceUtils {
         return null;
     }
 
+    public static LinkIDPaymentConfigurationAddErrorCode convert(final PaymentConfigurationAddErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CONFIGURATION_ALREADY_EXISTS:
+                return LinkIDPaymentConfigurationAddErrorCode.ERROR_CONFIGURATION_ALREADY_EXISTS;
+            case ERROR_CONFIGURATION_INVALID:
+                return LinkIDPaymentConfigurationAddErrorCode.ERROR_CONFIGURATION_INVALID;
+            case ERROR_UNEXPECTED:
+                return LinkIDPaymentConfigurationAddErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDPaymentConfigurationAddErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static PaymentConfiguration convert(final LinkIDPaymentConfiguration paymentConfiguration) {
+
+        PaymentConfiguration configuration = new PaymentConfiguration();
+        configuration.setName( paymentConfiguration.getName() );
+        configuration.setDefaultConfiguration( paymentConfiguration.isDefaultConfiguration() );
+        configuration.setOnlyWallets( paymentConfiguration.isOnlyWallets() );
+        configuration.setNoWallets( paymentConfiguration.isNoWallets() );
+        if (!CollectionUtils.isEmpty( paymentConfiguration.getWalletOrganizations() )) {
+            configuration.getWalletOrganizations().addAll( paymentConfiguration.getWalletOrganizations() );
+        }
+        if (!CollectionUtils.isEmpty( paymentConfiguration.getPaymentMethods() )) {
+            for (LinkIDPaymentMethodType paymentMethod : paymentConfiguration.getPaymentMethods()) {
+                configuration.getPaymentMethods().add( convertPaymentMethod( paymentMethod ) );
+            }
+        }
+        return configuration;
+    }
+
+    public static LinkIDPaymentConfiguration convert(final PaymentConfiguration paymentConfiguration) {
+
+        List<LinkIDPaymentMethodType> paymentMethods = Lists.newLinkedList();
+        if (!CollectionUtils.isEmpty( paymentConfiguration.getPaymentMethods() )) {
+            paymentMethods = ImmutableList.copyOf(
+                    Collections2.transform( paymentConfiguration.getPaymentMethods(), new Function<PaymentMethodType, LinkIDPaymentMethodType>() {
+                        @javax.annotation.Nullable
+                        @Override
+                        public LinkIDPaymentMethodType apply(@javax.annotation.Nullable final PaymentMethodType input) {
+
+                            return convert( input );
+
+                        }
+                    } ) );
+        }
+
+        return new LinkIDPaymentConfiguration( paymentConfiguration.getName(), paymentConfiguration.isDefaultConfiguration(),
+                paymentConfiguration.isOnlyWallets(), paymentConfiguration.isNoWallets(), paymentConfiguration.getWalletOrganizations(), paymentMethods );
+    }
 }
