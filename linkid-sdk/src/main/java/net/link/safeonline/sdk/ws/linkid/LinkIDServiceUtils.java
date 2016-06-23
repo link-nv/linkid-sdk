@@ -380,6 +380,7 @@ public class LinkIDServiceUtils {
         paymentContext.setDescription( linkIDPaymentContext.getDescription() );
         paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
         paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
+        paymentContext.setConfiguration( linkIDPaymentContext.getConfiguration() );
         paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
         paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
         paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
@@ -609,6 +610,7 @@ public class LinkIDServiceUtils {
                     new LinkIDPaymentAmount( wsPaymentContext.getAmount(), convert( wsPaymentContext.getCurrency() ),
                             wsPaymentContext.getWalletCoin() ) ).description( wsPaymentContext.getDescription() )
                                                                 .orderReference( wsPaymentContext.getOrderReference() )
+                                                                .configuration( wsPaymentContext.getConfiguration() )
                                                                 .paymentProfile( wsPaymentContext.getPaymentProfile() )
                                                                 .paymentValidationTime( wsPaymentContext.getValidationTime() )
                                                                 .allowPartial( convert( wsPaymentContext.isAllowPartial() ) )
