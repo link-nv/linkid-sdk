@@ -930,7 +930,14 @@ public class LinkIDWSClientTest {
 
         // Verify
         assertNotNull( technicalName );
+    }
 
+    @Test
+    public void testPaymentConfigurationRemove()
+            throws Exception {
+
+        // Operate
+        client.paymentConfigurationRemove( "urn:be:linkid:example-mobile:payment:configuration:test" );
     }
 
     // Auth

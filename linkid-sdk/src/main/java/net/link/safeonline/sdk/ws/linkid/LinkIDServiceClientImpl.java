@@ -92,6 +92,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundExceptio
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
@@ -1878,6 +1879,32 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
 
             return response.getSuccess().getName();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void paymentConfigurationRemove(final String name)
+            throws LinkIDPaymentConfigurationRemoveException {
+
+        // Setup
+        PaymentConfigurationRemoveRequest request = new PaymentConfigurationRemoveRequest();
+        request.setName( name );
+
+        // Operate
+        PaymentConfigurationRemoveResponse response = getPort().paymentConfigurationRemove( request );
+
+        // Response
+        if (null != response.getError()) {
+
+            throw new LinkIDPaymentConfigurationRemoveException( response.getError().getErrorMessage(),
+                    LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            return;
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

@@ -155,6 +155,67 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Remove -->
+
+    <element name="PaymentConfigurationRemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The payment configuration name</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="PaymentConfigurationRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PaymentConfigurationRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PaymentConfigurationRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentConfigurationRemoveSuccess">
+    </complexType>
+
+    <complexType name="PaymentConfigurationRemoveError">
+        <sequence>
+            <element name="errorCode" type="tns:PaymentConfigurationRemoveErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="errorMessage" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PaymentConfigurationRemoveErrorCode">
+		<annotation>
+			<documentation>Payment configuration remove error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.configuration.not.exists">
+				<annotation>
+					<documentation>Payment configuration not exists</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>No permission, i.e. not your payment configuration, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Common -->
 
     <complexType name="PaymentConfiguration">
