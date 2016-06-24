@@ -39,6 +39,7 @@ import net.lin_k.linkid._3_1.core.MandatePaymentErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentCaptureErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentConfiguration;
 import net.lin_k.linkid._3_1.core.PaymentConfigurationAddErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentConfigurationUpdateErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentContext;
 import net.lin_k.linkid._3_1.core.PaymentMethodType;
 import net.lin_k.linkid._3_1.core.PaymentRefundErrorCode;
@@ -162,6 +163,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureErrorCo
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
@@ -2069,6 +2071,25 @@ public class LinkIDServiceUtils {
                 return LinkIDPaymentConfigurationAddErrorCode.ERROR_UNEXPECTED;
             case ERROR_MAINTENANCE:
                 return LinkIDPaymentConfigurationAddErrorCode.ERROR_MAINTENANCE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDPaymentConfigurationUpdateErrorCode convert(final PaymentConfigurationUpdateErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CONFIGURATION_NOT_EXISTS:
+                return LinkIDPaymentConfigurationUpdateErrorCode.ERROR_CONFIGURATION_NOT_EXISTS;
+            case ERROR_CONFIGURATION_INVALID:
+                return LinkIDPaymentConfigurationUpdateErrorCode.ERROR_CONFIGURATION_INVALID;
+            case ERROR_PERMISSION_DENIED:
+                return LinkIDPaymentConfigurationUpdateErrorCode.ERROR_PERMISSION_DENIED;
+            case ERROR_UNEXPECTED:
+                return LinkIDPaymentConfigurationUpdateErrorCode.ERROR_UNEXPECTED;
+            case ERROR_MAINTENANCE:
+                return LinkIDPaymentConfigurationUpdateErrorCode.ERROR_MAINTENANCE;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

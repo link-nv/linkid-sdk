@@ -92,6 +92,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundExceptio
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
@@ -1845,6 +1846,32 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getError()) {
 
             throw new LinkIDPaymentConfigurationAddException( response.getError().getErrorMessage(),
+                    LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            return response.getSuccess().getName();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public String paymentConfigurationUpdate(final LinkIDPaymentConfiguration paymentConfiguration)
+            throws LinkIDPaymentConfigurationUpdateException {
+
+        // Setup
+        PaymentConfigurationUpdateRequest request = new PaymentConfigurationUpdateRequest();
+        request.setConfiguration( LinkIDServiceUtils.convert( paymentConfiguration ) );
+
+        // Operate
+        PaymentConfigurationUpdateResponse response = getPort().paymentConfigurationUpdate( request );
+
+        // Response
+        if (null != response.getError()) {
+
+            throw new LinkIDPaymentConfigurationUpdateException( response.getError().getErrorMessage(),
                     LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
         }
 

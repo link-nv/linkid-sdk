@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -908,6 +909,24 @@ public class LinkIDWSClientTest {
 
         // Operate
         String technicalName = client.paymentConfigurationAdd( paymentConfiguration );
+
+        // Verify
+        assertNotNull( technicalName );
+
+    }
+
+    //    @Test
+    public void testPaymentConfigurationUpdate()
+            throws Exception {
+
+        // Setup
+        List<String> walletOrganizations = new LinkedList<>();
+        List<LinkIDPaymentMethodType> paymentMethods = Arrays.asList( LinkIDPaymentMethodType.MASTERCARD, LinkIDPaymentMethodType.SEPA );
+        LinkIDPaymentConfiguration paymentConfiguration = new LinkIDPaymentConfiguration( "urn:be:linkid:example-mobile:payment:configuration:test", false,
+                true, false, walletOrganizations, paymentMethods );
+
+        // Operate
+        String technicalName = client.paymentConfigurationUpdate( paymentConfiguration );
 
         // Verify
         assertNotNull( technicalName );

@@ -324,6 +324,12 @@
 	<message name="paymentConfigurationAddResponse">
 		<part name="response" element="tns:PaymentConfigurationAddResponse" />
 	</message>
+	<message name="paymentConfigurationUpdateRequest">
+		<part name="request" element="tns:PaymentConfigurationUpdateRequest" />
+	</message>
+	<message name="paymentConfigurationUpdateResponse">
+		<part name="response" element="tns:PaymentConfigurationUpdateResponse" />
+	</message>
 
     <!-- =========================== Ports ========================== -->
 
@@ -519,6 +525,10 @@
 		<operation name="paymentConfigurationAdd">
 			<input message="tns:paymentConfigurationAddRequest" />
 			<output message="tns:paymentConfigurationAddResponse" />
+		</operation>
+		<operation name="paymentConfigurationUpdate">
+			<input message="tns:paymentConfigurationUpdateRequest" />
+			<output message="tns:paymentConfigurationUpdateResponse" />
 		</operation>
     </portType>
 
@@ -951,6 +961,15 @@
         </operation>
         <operation name="paymentConfigurationAdd">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentConfigurationAdd" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentConfigurationUpdate">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentConfigurationUpdate" />
             <input>
                 <soap:body use="literal" />
             </input>

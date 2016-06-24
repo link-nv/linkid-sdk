@@ -82,6 +82,79 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Update -->
+
+    <element name="PaymentConfigurationUpdateRequest">
+        <complexType>
+            <sequence>
+                <element name="configuration" type="tns:PaymentConfiguration" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The payment configuration</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="PaymentConfigurationUpdateResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PaymentConfigurationUpdateSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PaymentConfigurationUpdateError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentConfigurationUpdateSuccess">
+        <sequence>
+            <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The official technical name of the payment configuration</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentConfigurationUpdateError">
+        <sequence>
+            <element name="errorCode" type="tns:PaymentConfigurationUpdateErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="errorMessage" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PaymentConfigurationUpdateErrorCode">
+		<annotation>
+			<documentation>Payment configuration update error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.configuration.not.exists">
+				<annotation>
+					<documentation>Payment configuration not exists</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.configuration.invalid">
+				<annotation>
+					<documentation>Something is wrong with the configuration</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>No permission, i.e. not your payment configuration, ...</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Common -->
 
     <complexType name="PaymentConfiguration">

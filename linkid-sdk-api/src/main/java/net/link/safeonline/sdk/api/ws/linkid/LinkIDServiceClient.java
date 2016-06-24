@@ -72,6 +72,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundExceptio
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
@@ -688,4 +689,16 @@ public interface LinkIDServiceClient {
      */
     String paymentConfigurationAdd(LinkIDPaymentConfiguration paymentConfiguration)
             throws LinkIDPaymentConfigurationAddException;
+
+    /**
+     * Update an existing payment configuration
+     *
+     * @param paymentConfiguration the payment configuration
+     *
+     * @return the official technical name of the payment configuration
+     *
+     * @throws LinkIDPaymentConfigurationUpdateException something went wrong, check the error code in the exception
+     */
+    String paymentConfigurationUpdate(LinkIDPaymentConfiguration paymentConfiguration)
+            throws LinkIDPaymentConfigurationUpdateException;
 }
