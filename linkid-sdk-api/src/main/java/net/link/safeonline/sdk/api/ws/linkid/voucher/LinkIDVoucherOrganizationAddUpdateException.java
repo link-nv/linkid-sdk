@@ -13,7 +13,7 @@ public class LinkIDVoucherOrganizationAddUpdateException extends Exception {
 
     public LinkIDVoucherOrganizationAddUpdateException(final String message, final LinkIDVoucherOrganizationAddUpdateErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

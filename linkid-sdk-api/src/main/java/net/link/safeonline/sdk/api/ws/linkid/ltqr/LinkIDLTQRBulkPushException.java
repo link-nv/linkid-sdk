@@ -19,9 +19,9 @@ public class LinkIDLTQRBulkPushException extends Exception {
 
     private final LinkIDLTQRBulkPushErrorCode errorCode;
 
-    public LinkIDLTQRBulkPushException(final LinkIDLTQRBulkPushErrorCode errorCode, @Nullable final String errorMessage) {
+    public LinkIDLTQRBulkPushException(final LinkIDLTQRBulkPushErrorCode errorCode, @Nullable final String message) {
 
-        super( errorMessage );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

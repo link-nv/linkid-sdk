@@ -19,6 +19,7 @@ public class LinkIDAuthCancelException extends Exception {
 
     public LinkIDAuthCancelException(final LinkIDAuthCancelErrorCode errorCode, final String info) {
 
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, info ) );
         this.errorCode = errorCode;
         this.info = info;
     }

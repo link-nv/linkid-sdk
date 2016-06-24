@@ -16,7 +16,7 @@ public class LinkIDPaymentConfigurationRemoveException extends Exception {
 
     public LinkIDPaymentConfigurationRemoveException(final String message, @NotNull final LinkIDPaymentConfigurationRemoveErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

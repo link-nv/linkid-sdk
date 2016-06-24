@@ -13,7 +13,7 @@ public class LinkIDThemeRemoveException extends Exception {
 
     public LinkIDThemeRemoveException(final String message, final LinkIDThemeRemoveErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

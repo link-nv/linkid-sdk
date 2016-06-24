@@ -16,7 +16,7 @@ public class LinkIDPaymentConfigurationUpdateException extends Exception {
 
     public LinkIDPaymentConfigurationUpdateException(final String message, @NotNull final LinkIDPaymentConfigurationUpdateErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

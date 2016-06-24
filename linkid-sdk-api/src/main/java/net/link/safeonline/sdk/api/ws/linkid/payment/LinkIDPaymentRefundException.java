@@ -13,6 +13,7 @@ public class LinkIDPaymentRefundException extends Exception {
 
     public LinkIDPaymentRefundException(final LinkIDPaymentRefundErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 

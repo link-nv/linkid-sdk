@@ -13,6 +13,7 @@ public class LinkIDVoucherRedeemException extends Exception {
 
     public LinkIDVoucherRedeemException(final LinkIDVoucherRedeemErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 

@@ -18,7 +18,7 @@ public class LinkIDAuthException extends Exception {
 
     public LinkIDAuthException(final LinkIDAuthErrorCode errorCode, final String message) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

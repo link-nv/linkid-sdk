@@ -21,7 +21,7 @@ public class LinkIDLTQRPushException extends Exception {
 
     public LinkIDLTQRPushException(final LinkIDLTQRPushErrorCode errorCode, @Nullable final String errorMessage) {
 
-        super( errorMessage );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, errorMessage ) );
         this.errorCode = errorCode;
     }
 

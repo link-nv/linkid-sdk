@@ -13,7 +13,7 @@ public class LinkIDVoucherOrganizationListPermissionsException extends Exception
 
     public LinkIDVoucherOrganizationListPermissionsException(final String message, final LinkIDVoucherOrganizationListPermissionsErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

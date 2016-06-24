@@ -13,7 +13,7 @@ public class LinkIDVoucherOrganizationHistoryException extends Exception {
 
     public LinkIDVoucherOrganizationHistoryException(final String message, final LinkIDVoucherOrganizationHistoryErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

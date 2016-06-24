@@ -15,9 +15,10 @@ public class LinkIDThemeAddException extends Exception {
 
     private final LinkIDThemeError error;
 
-    public LinkIDThemeAddException(@NotNull final LinkIDThemeError error) {
+    public LinkIDThemeAddException(@NotNull final LinkIDThemeError errorCode) {
 
-        this.error = error;
+        super( String.format( "Error code: \"%s\"", errorCode ) );
+        this.error = errorCode;
 
     }
 

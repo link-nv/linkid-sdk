@@ -13,7 +13,7 @@ public class LinkIDPaymentConfigurationAddException extends Exception {
 
     public LinkIDPaymentConfigurationAddException(final String message, final LinkIDPaymentConfigurationAddErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

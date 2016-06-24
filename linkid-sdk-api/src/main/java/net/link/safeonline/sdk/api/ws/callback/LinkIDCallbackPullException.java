@@ -12,6 +12,7 @@ package net.link.safeonline.sdk.api.ws.callback;
  * Date: 14/01/14
  * Time: 11:03
  */
+@SuppressWarnings("unused")
 public class LinkIDCallbackPullException extends Exception {
 
     private final LinkIDCallbackPullErrorCode errorCode;
@@ -19,7 +20,7 @@ public class LinkIDCallbackPullException extends Exception {
 
     public LinkIDCallbackPullException(final LinkIDCallbackPullErrorCode errorCode, final String info) {
 
-        super( String.format( "Error code: %s, info: %s", errorCode, info ) );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, info ) );
         this.errorCode = errorCode;
         this.info = info;
     }

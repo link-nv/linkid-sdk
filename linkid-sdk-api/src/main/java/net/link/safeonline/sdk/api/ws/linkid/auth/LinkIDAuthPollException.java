@@ -19,6 +19,7 @@ public class LinkIDAuthPollException extends Exception {
 
     public LinkIDAuthPollException(final LinkIDAuthPollErrorCode errorCode, final String info) {
 
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, info ) );
         this.errorCode = errorCode;
         this.info = info;
     }

@@ -11,6 +11,7 @@ public class LinkIDReportException extends Exception {
 
     public LinkIDReportException(final LinkIDReportErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 
