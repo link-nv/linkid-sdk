@@ -905,7 +905,7 @@ public class LinkIDWSClientTest {
         // Setup
         List<String> walletOrganizations = Collections.singletonList( "urn:linkid:wallet:fake:visa" );
         List<LinkIDPaymentMethodType> paymentMethods = Collections.singletonList( LinkIDPaymentMethodType.VISA );
-        LinkIDPaymentConfiguration paymentConfiguration = new LinkIDPaymentConfiguration( "test", false, true, false, walletOrganizations, paymentMethods );
+        LinkIDPaymentConfiguration paymentConfiguration = new LinkIDPaymentConfiguration( "test", false, false, false, walletOrganizations, paymentMethods );
 
         // Operate
         String technicalName = client.paymentConfigurationAdd( paymentConfiguration );
@@ -923,7 +923,7 @@ public class LinkIDWSClientTest {
         List<String> walletOrganizations = new LinkedList<>();
         List<LinkIDPaymentMethodType> paymentMethods = Arrays.asList( LinkIDPaymentMethodType.MASTERCARD, LinkIDPaymentMethodType.SEPA );
         LinkIDPaymentConfiguration paymentConfiguration = new LinkIDPaymentConfiguration( "urn:be:linkid:example-mobile:payment:configuration:test", false,
-                true, false, walletOrganizations, paymentMethods );
+                false, false, walletOrganizations, paymentMethods );
 
         // Operate
         String technicalName = client.paymentConfigurationUpdate( paymentConfiguration );
