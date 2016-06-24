@@ -92,6 +92,7 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundExceptio
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationListException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
@@ -1905,6 +1906,35 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
 
             return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public List<LinkIDPaymentConfiguration> paymentConfigurationList()
+            throws LinkIDPaymentConfigurationListException {
+
+        // Setup
+        PaymentConfigurationListRequest request = new PaymentConfigurationListRequest();
+
+        // Operate
+        PaymentConfigurationListResponse response = getPort().paymentConfigurationList( request );
+
+        // Response
+        if (null != response.getError()) {
+
+            throw new LinkIDPaymentConfigurationListException( response.getError().getErrorMessage(),
+                    LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDPaymentConfiguration> configurations = Lists.newLinkedList();
+            for (PaymentConfiguration paymentConfiguration : response.getSuccess().getConfigurations()) {
+                configurations.add( LinkIDServiceUtils.convert( paymentConfiguration ) );
+            }
+            return configurations;
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

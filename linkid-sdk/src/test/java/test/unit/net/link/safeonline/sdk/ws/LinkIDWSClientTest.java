@@ -932,12 +932,26 @@ public class LinkIDWSClientTest {
         assertNotNull( technicalName );
     }
 
-    @Test
+    //    @Test
     public void testPaymentConfigurationRemove()
             throws Exception {
 
         // Operate
         client.paymentConfigurationRemove( "urn:be:linkid:example-mobile:payment:configuration:test" );
+    }
+
+    //    @Test
+    public void testPaymentConfigurationList()
+            throws Exception {
+
+        // Operate
+        List<LinkIDPaymentConfiguration> paymentConfigurations = client.paymentConfigurationList();
+
+        // Verify
+        assertNotNull( paymentConfigurations );
+        for (LinkIDPaymentConfiguration configuration : paymentConfigurations) {
+            logger.inf( "Payment configuration: %s", configuration );
+        }
     }
 
     // Auth

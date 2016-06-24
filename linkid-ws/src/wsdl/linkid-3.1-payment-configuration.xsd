@@ -216,6 +216,53 @@
 		</restriction>
 	</simpleType>
 
+    <!-- List -->
+
+    <element name="PaymentConfigurationListRequest">
+        <complexType>
+        </complexType>
+    </element>
+
+    <element name="PaymentConfigurationListResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PaymentConfigurationListSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PaymentConfigurationListError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentConfigurationListSuccess">
+        <sequence>
+            <element name="configurations" type="tns:PaymentConfiguration" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentConfigurationListError">
+        <sequence>
+            <element name="errorCode" type="tns:PaymentConfigurationListErrorCode" minOccurs="1" maxOccurs="1" />
+            <element name="errorMessage" type="string" minOccurs="1" maxOccurs="1" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="PaymentConfigurationListErrorCode">
+		<annotation>
+			<documentation>Payment configuration list error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Common -->
 
     <complexType name="PaymentConfiguration">
