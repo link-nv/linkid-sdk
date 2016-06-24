@@ -145,7 +145,8 @@ v4.12.0
   * List voucher organizations: filtering on id(s) support + includeStats support
   * Voucher organization list users support
 
-v4.11.3
+v4.11.4
 ----
   * walletOrganizationList support
   * paymentConfiguration support in auth/mandates and LTQRs
+  * paymentConfiguration{add/update/delete/list} support
