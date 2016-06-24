@@ -5,16 +5,15 @@
  * linkID Inc. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.linkid.configuration;
+package net.link.safeonline.sdk.api.exception;
 
 /**
+ * Something unexpected, contact a linkID developer
+ * <p>
  * Created by wvdhaute
- * Date: 21/01/16
- * Time: 15:30
+ * Date: 24/06/16
+ * Time: 14:25
  */
-public enum LinkIDConfigApplicationsErrorCode {
-
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
+public class LinkIDUnexpectedException extends RuntimeException {
 
 }

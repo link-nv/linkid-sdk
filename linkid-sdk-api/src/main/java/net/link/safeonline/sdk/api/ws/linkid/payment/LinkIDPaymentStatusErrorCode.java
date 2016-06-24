@@ -11,6 +11,4 @@ public enum LinkIDPaymentStatusErrorCode {
 
     ERROR_NOT_FOUND,
     ERROR_MULTIPLE_ORDERS_FOUND,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
 }

@@ -12,6 +12,5 @@ public enum LinkIDPaymentRefundErrorCode {
     ERROR_ORDER_UNKNOWN,
     ERROR_ORDER_ALREADY_REFUNDED,
     ERROR_REFUND_FAILED,
-    ERROR_MAINTENANCE
 
 }

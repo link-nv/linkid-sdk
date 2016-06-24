@@ -15,6 +15,4 @@ package net.link.safeonline.sdk.api.ws.callback;
 public enum LinkIDCallbackPullErrorCode {
 
     ERROR_RESPONSE_INVALID_SESSION_ID,
-    ERROR_MAINTENANCE,
-    ERROR_UNEXPECTED
 }

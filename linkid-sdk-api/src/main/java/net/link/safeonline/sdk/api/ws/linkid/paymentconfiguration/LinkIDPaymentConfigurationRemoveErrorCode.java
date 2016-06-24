@@ -10,8 +10,5 @@ package net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration;
 public enum LinkIDPaymentConfigurationRemoveErrorCode {
 
     ERROR_CONFIGURATION_NOT_EXISTS,
-    ERROR_PERMISSION_DENIED,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
 
 }

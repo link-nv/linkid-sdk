@@ -12,8 +12,5 @@ public enum LinkIDVoucherOrganizationAddUpdateErrorCode {
     ERROR_LOGO_FORMAT,
     ERROR_LOGO_SIZE,
     ERROR_LOGO_DIMENSION,
-    ERROR_PERMISSION_DENIED,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
 
 }

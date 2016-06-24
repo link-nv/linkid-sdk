@@ -13,7 +13,6 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
-import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
@@ -25,7 +24,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
-import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
@@ -47,12 +45,9 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDetails;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
@@ -72,7 +67,6 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundExceptio
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
-import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationListException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
@@ -84,7 +78,6 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAc
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
@@ -95,7 +88,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
-import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -180,11 +172,8 @@ public interface LinkIDServiceClient {
      * @param keys the keys to fetch localization for
      *
      * @return the localizations
-     *
-     * @throws LinkIDLocalizationException something went wrong, check the error code in the exception
      */
-    List<LinkIDLocalization> getLocalization(List<String> keys)
-            throws LinkIDLocalizationException;
+    List<LinkIDLocalization> getLocalization(List<String> keys);
 
     /**
      * Fetch application details for the specified list of technical application names. If not found, it's not in the result list.
@@ -193,11 +182,8 @@ public interface LinkIDServiceClient {
      * @param locale           the locale
      *
      * @return the application details
-     *
-     * @throws LinkIDConfigApplicationsException something went wrong, check the error code in the exception
      */
-    List<LinkIDApplicationDetails> configApplications(List<String> applicationNames, Locale locale)
-            throws LinkIDConfigApplicationsException;
+    List<LinkIDApplicationDetails> configApplications(List<String> applicationNames, Locale locale);
 
     /**
      * Fetch the payment status of specified order
@@ -327,12 +313,10 @@ public interface LinkIDServiceClient {
      * @param pageFilter        optional page filter
      *
      * @return The payment orders matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     LinkIDPaymentReport paymentReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> orderReferences,
                                       @Nullable List<String> mandateReferences, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
+            throws LinkIDReportException;
 
     /**
      * @param dateFilter    optional date filter
@@ -343,12 +327,10 @@ public interface LinkIDServiceClient {
      * @param pageFilter    optional page filter
      *
      * @return The parking sessions matching your search. If none found an empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     LinkIDParkingReport parkingReport(@Nullable LinkIDReportDateFilter dateFilter, @Nullable List<String> parkings, @Nullable List<String> barCodes,
                                       @Nullable List<String> ticketNumbers, @Nullable List<String> dtaKeys, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
+            throws LinkIDReportException;
 
     /**
      * @param locale                 optional locale, if not specified will default to en
@@ -359,24 +341,19 @@ public interface LinkIDServiceClient {
      * @param pageFilter             optional page filter
      *
      * @return the wallet transactions matching your search. If none found and empty list is returned
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
     LinkIDWalletReport walletReport(@Nullable Locale locale, String walletOrganizationId, @Nullable LinkIDReportApplicationFilter applicationFilter,
                                     @Nullable LinkIDReportWalletFilter walletFilter, @Nullable LinkIDWalletReportTypeFilter walletReportTypeFilter,
                                     @Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
-            throws LinkIDWSClientTransportException, LinkIDReportException;
+            throws LinkIDReportException;
 
     /**
      * @param locale    optional locale, if not specified will default to en
      * @param walletIds the list of walletIds to get info about
      *
      * @return list of wallet report info objects for the specified walletIds. If a walletId was not found it will be skipped
-     *
-     * @throws LinkIDWSClientTransportException could not contact the linkID web service
      */
-    List<LinkIDWalletInfoReport> walletInfoReport(@Nullable Locale locale, List<String> walletIds)
-            throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException;
+    List<LinkIDWalletInfoReport> walletInfoReport(@Nullable Locale locale, List<String> walletIds);
 
     /**
      * Enroll users for a wallet. Optionally specify initial credit to add to wallet if applicable
@@ -457,11 +434,8 @@ public interface LinkIDServiceClient {
      * @param locale                optional language (default is en)
      *
      * @return the list of owned wallet organizations
-     *
-     * @throws LinkIDWalletOrganizationListException something went wrong, check the error code in the exception
      */
-    List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds, boolean includeStats, @Nullable Locale locale)
-            throws LinkIDWalletOrganizationListException;
+    List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds, boolean includeStats, @Nullable Locale locale);
 
     /**
      * Add points for specified user and specified voucher organization.
@@ -575,11 +549,8 @@ public interface LinkIDServiceClient {
      * @param includeStats           include stats?
      *
      * @return the list of owned voucher organizations
-     *
-     * @throws LinkIDVoucherOrganizationListException something went wrong, check the error code in the exception
      */
-    List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable List<String> voucherOrganizationIds, boolean includeStats)
-            throws LinkIDVoucherOrganizationListException;
+    List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable List<String> voucherOrganizationIds, boolean includeStats);
 
     /**
      * Returns the list of users that have a voucher for specified voucher organization
@@ -674,11 +645,8 @@ public interface LinkIDServiceClient {
      *
      * @param themeName       optional theme name for filtering
      * @param themeStatusCode optional status code for filtering
-     *
-     * @throws LinkIDThemesException something went wrong, check the error code in the exception
      */
-    LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDThemeStatusCode themeStatusCode)
-            throws LinkIDThemesException;
+    LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDThemeStatusCode themeStatusCode);
 
     /**
      * Add a new payment configuration
@@ -716,9 +684,6 @@ public interface LinkIDServiceClient {
 
     /**
      * List all payment configurations
-     *
-     * @throws LinkIDPaymentConfigurationListException something went wrong, check the error code in the exception
      */
-    List<LinkIDPaymentConfiguration> paymentConfigurationList()
-            throws LinkIDPaymentConfigurationListException;
+    List<LinkIDPaymentConfiguration> paymentConfigurationList();
 }

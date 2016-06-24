@@ -62,7 +62,6 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRInfo;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
@@ -75,7 +74,6 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRe
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
-import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
@@ -350,15 +348,9 @@ public class LinkIDWSClientTest {
         List<String> walletOrganizationIds = Collections.singletonList( "urn:linkid:wallet:fake:visa" );
 
         // operate
-        try {
-            List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, true, Locale.ENGLISH );
-            for (LinkIDWalletOrganizationDetails organization : organizations) {
-                logger.dbg( "Organization: %s", organization );
-            }
-        }
-        catch (LinkIDWalletOrganizationListException e) {
-            logger.err( "Error: %s", e.getErrorCode() );
-            fail();
+        List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, true, Locale.ENGLISH );
+        for (LinkIDWalletOrganizationDetails organization : organizations) {
+            logger.dbg( "Organization: %s", organization );
         }
     }
 
@@ -664,17 +656,11 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        try {
-            //            LinkIDThemes linkIDThemes = client.themes( "urn:be:linkid:example-mobile:theme:themeTest", null );
-            LinkIDThemes linkIDThemes = client.themes( null, null );
-            assertNotNull( linkIDThemes );
-            for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
-                logger.dbg( "Theme: %s", linkIDTheme );
-            }
-        }
-        catch (LinkIDThemesException e) {
-            logger.err( "Themes error: %s", e.getErrorCode() );
-            fail();
+        //            LinkIDThemes linkIDThemes = client.themes( "urn:be:linkid:example-mobile:theme:themeTest", null );
+        LinkIDThemes linkIDThemes = client.themes( null, null );
+        assertNotNull( linkIDThemes );
+        for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
+            logger.dbg( "Theme: %s", linkIDTheme );
         }
     }
 

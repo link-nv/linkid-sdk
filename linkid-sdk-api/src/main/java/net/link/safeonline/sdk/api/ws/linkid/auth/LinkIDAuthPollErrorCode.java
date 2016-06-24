@@ -15,5 +15,4 @@ package net.link.safeonline.sdk.api.ws.linkid.auth;
 public enum LinkIDAuthPollErrorCode {
 
     ERROR_RESPONSE_INVALID_SESSION_ID,
-    ERROR_MAINTENANCE
 }

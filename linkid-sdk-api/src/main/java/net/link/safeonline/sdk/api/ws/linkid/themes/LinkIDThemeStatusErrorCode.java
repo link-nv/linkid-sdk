@@ -9,9 +9,6 @@ package net.link.safeonline.sdk.api.ws.linkid.themes;
 
 public enum LinkIDThemeStatusErrorCode {
 
-    ERROR_PERMISSION_DENIED,
     ERROR_NOT_FOUND,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
 
 }

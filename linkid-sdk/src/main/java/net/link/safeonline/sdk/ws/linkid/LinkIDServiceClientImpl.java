@@ -37,7 +37,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReport;
-import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportException;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
@@ -65,13 +64,10 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDetails;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
@@ -92,7 +88,6 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundExceptio
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
-import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationListException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
@@ -104,7 +99,6 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAc
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
@@ -115,7 +109,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
-import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -371,8 +364,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDLocalization> getLocalization(final List<String> keys)
-            throws LinkIDLocalizationException {
+    public List<LinkIDLocalization> getLocalization(final List<String> keys) {
 
         // request
         ConfigLocalizationRequest request = new ConfigLocalizationRequest();
@@ -384,7 +376,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         ConfigLocalizationResponse response = getPort().configLocalization( request );
 
         if (null != response.getError()) {
-            throw new LinkIDLocalizationException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            LinkIDServiceUtils.convert( response.getError().getErrorCode() );
         }
 
         // all good
@@ -400,8 +392,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDApplicationDetails> configApplications(final List<String> applicationNames, final Locale locale)
-            throws LinkIDConfigApplicationsException {
+    public List<LinkIDApplicationDetails> configApplications(final List<String> applicationNames, final Locale locale) {
 
         // request
         ConfigApplicationsRequest request = new ConfigApplicationsRequest();
@@ -417,8 +408,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getError()) {
 
             if (null != response.getError().getErrorCode()) {
-                throw new LinkIDConfigApplicationsException( response.getError().getErrorMessage(),
-                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+                LinkIDServiceUtils.convert( response.getError().getErrorCode() );
             } else {
                 throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
             }
@@ -962,8 +952,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDWalletInfoReport> walletInfoReport(@Nullable final Locale locale, final List<String> walletIds)
-            throws LinkIDWSClientTransportException, LinkIDWalletInfoReportException {
+    public List<LinkIDWalletInfoReport> walletInfoReport(@Nullable final Locale locale, final List<String> walletIds) {
 
         // request
         WalletInfoReportRequest request = new WalletInfoReportRequest();
@@ -978,7 +967,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             WalletInfoReportResponse response = getPort().walletInfoReport( request );
 
             if (null != response.getError()) {
-                throw new LinkIDWalletInfoReportException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+                LinkIDServiceUtils.convert( response.getError().getErrorCode() );
             }
 
             List<LinkIDWalletInfoReport> result = Lists.newLinkedList();
@@ -1211,8 +1200,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
     @Override
     public List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable final List<String> walletOrganizationIds, final boolean includeStats,
-                                                                        @Nullable final Locale locale)
-            throws LinkIDWalletOrganizationListException {
+                                                                        @Nullable final Locale locale) {
 
         // request
         WalletOrganizationListRequest request = new WalletOrganizationListRequest();
@@ -1231,8 +1219,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getError()) {
 
             if (null != response.getError().getErrorCode()) {
-                throw new LinkIDWalletOrganizationListException( response.getError().getErrorMessage(),
-                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+                LinkIDServiceUtils.convert( response.getError().getErrorCode() );
             } else {
                 throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
             }
@@ -1533,8 +1520,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable final List<String> voucherOrganizationIds, final boolean includeStats)
-            throws LinkIDVoucherOrganizationListException {
+    public List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable final List<String> voucherOrganizationIds, final boolean includeStats) {
 
         // request
         VoucherOrganizationListRequest request = new VoucherOrganizationListRequest();
@@ -1550,8 +1536,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getError()) {
 
             if (null != response.getError().getErrorCode()) {
-                throw new LinkIDVoucherOrganizationListException( response.getError().getErrorMessage(),
-                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+                LinkIDServiceUtils.convert( response.getError().getErrorCode() );
             } else {
                 throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
             }
@@ -1736,7 +1721,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getError()) {
 
             if (null != response.getError().getErrorCode()) {
-                throw new LinkIDThemeAddException( response.getError().getErrorMessage(), LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+                LinkIDServiceUtils.convert( response.getError().getErrorCode() );
             } else if (null != response.getError().getError()) {
 
                 ThemeError themeError = response.getError().getError();
@@ -1809,8 +1794,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDThemes themes(@Nullable final String themeName, @Nullable final LinkIDThemeStatusCode linkIDThemeStatusCode)
-            throws LinkIDThemesException {
+    public LinkIDThemes themes(@Nullable final String themeName, @Nullable final LinkIDThemeStatusCode linkIDThemeStatusCode) {
 
         ThemesRequest request = new ThemesRequest();
         request.setName( themeName );
@@ -1820,7 +1804,9 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         ThemesResponse response = getPort().themes( request );
 
         if (null != response.getError()) {
-            throw new LinkIDThemesException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+
+            LinkIDServiceUtils.convert( response.getError().getErrorCode() );
+
         }
 
         // all good...
@@ -1831,6 +1817,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         return new LinkIDThemes( linkIDThemes );
+
     }
 
     @Override
@@ -1912,8 +1899,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDPaymentConfiguration> paymentConfigurationList()
-            throws LinkIDPaymentConfigurationListException {
+    public List<LinkIDPaymentConfiguration> paymentConfigurationList() {
 
         // Setup
         PaymentConfigurationListRequest request = new PaymentConfigurationListRequest();
@@ -1924,11 +1910,9 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         // Response
         if (null != response.getError()) {
 
-            throw new LinkIDPaymentConfigurationListException( response.getError().getErrorMessage(),
-                    LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-        }
+            LinkIDServiceUtils.convert( response.getError().getErrorCode() );
 
-        if (null != response.getSuccess()) {
+        } else if (null != response.getSuccess()) {
 
             List<LinkIDPaymentConfiguration> configurations = Lists.newLinkedList();
             for (PaymentConfiguration paymentConfiguration : response.getSuccess().getConfigurations()) {
