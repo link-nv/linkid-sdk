@@ -94,6 +94,7 @@ import net.lin_k.linkid._3_1.core.WalletInfoReportErrorCode;
 import net.lin_k.linkid._3_1.core.WalletOrganization;
 import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
 import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
+import net.lin_k.linkid._3_1.core.WalletOrganizationPermission;
 import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
@@ -141,6 +142,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationStats;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationPermission;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
@@ -2023,10 +2025,40 @@ public class LinkIDServiceUtils {
 
     public static LinkIDWalletOrganizationDetails convert(final WalletOrganizationDetails details) {
 
-        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), convert( details.getStats() ),
-                details.getPermissionAddCreditApplications(), details.getPermissionRemoveCreditApplications(), details.getPermissionRemoveApplications(),
-                details.getPermissionEnrollApplications(), details.getPermissionUseApplications() );
+        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), convertPermissions( details.getPermissions() ),
+                convert( details.getStats() ), details.getPermissionAddCreditApplications(), details.getPermissionRemoveCreditApplications(),
+                details.getPermissionRemoveApplications(), details.getPermissionEnrollApplications(), details.getPermissionUseApplications() );
 
+    }
+
+    private static List<LinkIDWalletOrganizationPermission> convertPermissions(final List<WalletOrganizationPermission> permissions) {
+
+        List<LinkIDWalletOrganizationPermission> sdkPermissions = Lists.newLinkedList();
+
+        for (WalletOrganizationPermission permission : permissions) {
+            sdkPermissions.add( convert( permission ) );
+        }
+
+        return sdkPermissions;
+    }
+
+    private static LinkIDWalletOrganizationPermission convert(final WalletOrganizationPermission permission) {
+
+        switch (permission) {
+
+            case PERMISSION_ADD_CREDIT:
+                return LinkIDWalletOrganizationPermission.ADD_CREDIT;
+            case PERMISSION_REMOVE_CREDIT:
+                return LinkIDWalletOrganizationPermission.REMOVE_CREDIT;
+            case PERMISSION_REMOVE:
+                return LinkIDWalletOrganizationPermission.REMOVE;
+            case PERMISSION_ENROLL:
+                return LinkIDWalletOrganizationPermission.ENROLL;
+            case PERMISSION_USE:
+                return LinkIDWalletOrganizationPermission.USE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected permission %s!", permission.name() ) );
     }
 
     public static LinkIDWalletOrganization convert(final WalletOrganization request) {
