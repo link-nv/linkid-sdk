@@ -606,6 +606,8 @@ public class LinkIDWSClientTest {
         String applicationName = "test-shop";
         List<LinkIDLocalizedImage> logos = Collections.singletonList(
                 new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png" ) );
+        //        List<LinkIDLocalizedImage> logos = Collections.singletonList(
+        //                new LinkIDLocalizedImage( "https://service.linkid.be/linkid-static/js/linkid.extra.js" ) );
         //        List<LinkIDLocalizedImage> logos = Collections.singletonList( new LinkIDLocalizedImage( "http://www.kaagent.be/assets/images/icons/icon_200.jpg" ) );
         List<LinkIDLocalizedImage> backgrounds = Collections.singletonList(
                 new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/bg/phone/iwish.png" ) );
@@ -613,8 +615,6 @@ public class LinkIDWSClientTest {
                 new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/bg/tablet/iwish.png" ) );
         List<LinkIDLocalizedImage> altBackgrounds = Collections.singletonList(
                 new LinkIDLocalizedImage( "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/bg/alternative/iwish.png" ) );
-        //        List<LinkIDLocalizedImage> logos = Collections.singletonList(
-        //                new LinkIDLocalizedImage( "https://service.linkid.be/linkid-static/js/linkid.extra.js" ) );
 
         //        LinkIDThemeConfig config = new LinkIDThemeConfig( "urn:be:linkid:example-mobile:theme:themeTest", "Theme test", false, logos, backgrounds,
         //                tabletBackgrounds, altBackgrounds, "#000000", "#FFFFFF" );
@@ -634,7 +634,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        LinkIDThemeStatus status = client.themeStatus( "urn:be:linkid:example-mobile:themeTest" );
+        LinkIDThemeStatus status = client.themeStatus( "urn:be:linkid:example-mobile:theme:themeTest" );
 
         // verify
         assertNotNull( status );
