@@ -95,6 +95,7 @@ import net.lin_k.linkid._3_1.core.WalletReportInfo;
 import net.lin_k.linkid._3_1.core.WalletReportType;
 import net.lin_k.linkid._3_1.core.WalletReportTypeFilter;
 import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
+import net.link.safeonline.attribute.provider.profile.LinkIDProfileConstants;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
