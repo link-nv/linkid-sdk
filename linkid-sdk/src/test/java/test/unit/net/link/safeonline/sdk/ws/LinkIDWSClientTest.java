@@ -647,6 +647,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
+        //        client.themeRemove( "urn:be:linkid:example-mobile:theme:themeTest", false );
         client.themeRemove( "template-blue", true );
 
     }
