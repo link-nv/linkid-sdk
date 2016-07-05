@@ -18,6 +18,7 @@ import net.lin_k.linkid._3_1.core.*;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
@@ -43,7 +44,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
-import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
@@ -1794,11 +1794,11 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDThemes themes(@Nullable final String themeName, @Nullable final LinkIDThemeStatusCode linkIDThemeStatusCode) {
+    public LinkIDThemes themes(@Nullable final String themeName, @Nullable final LinkIDRequestStatusCode linkIDRequestStatusCode) {
 
         ThemesRequest request = new ThemesRequest();
         request.setName( themeName );
-        request.setStatusCode( LinkIDConversionUtils.convert( linkIDThemeStatusCode ) );
+        request.setStatusCode( LinkIDConversionUtils.convert( linkIDRequestStatusCode ) );
 
         // operate
         ThemesResponse response = getPort().themes( request );

@@ -28,7 +28,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
-import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
@@ -646,7 +646,7 @@ public interface LinkIDServiceClient {
      * @param themeName       optional theme name for filtering
      * @param themeStatusCode optional status code for filtering
      */
-    LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDThemeStatusCode themeStatusCode);
+    LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDRequestStatusCode themeStatusCode);
 
     /**
      * Add a new payment configuration

@@ -106,6 +106,7 @@ import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDMaintenanceException;
 import net.link.safeonline.sdk.api.exception.LinkIDPermissionDeniedException;
@@ -130,7 +131,6 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeColorError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeColorErrorCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeImageError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeImageErrorCode;
-import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusErrorReport;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
@@ -1543,7 +1543,7 @@ public class LinkIDServiceUtils {
     }
 
     @Nullable
-    public static LinkIDThemeStatusCode convert(@Nullable final ThemeStatusCode themeStatusCode) {
+    public static LinkIDRequestStatusCode convert(@Nullable final ThemeStatusCode themeStatusCode) {
 
         if (null == themeStatusCode) {
             return null;
@@ -1552,13 +1552,13 @@ public class LinkIDServiceUtils {
         switch (themeStatusCode) {
 
             case STATUS_REJECTED:
-                return LinkIDThemeStatusCode.REJECTED;
+                return LinkIDRequestStatusCode.REJECTED;
             case STATUS_PENDING:
-                return LinkIDThemeStatusCode.PENDING;
+                return LinkIDRequestStatusCode.PENDING;
             case STATUS_ACCEPTED:
-                return LinkIDThemeStatusCode.ACCEPTED;
+                return LinkIDRequestStatusCode.ACCEPTED;
             case STATUS_RELEASED:
-                return LinkIDThemeStatusCode.RELEASED;
+                return LinkIDRequestStatusCode.RELEASED;
         }
 
         throw new InternalInconsistencyException( String.format( "Unsupported themeStatusCode: \"%s\"", themeStatusCode.name() ) );

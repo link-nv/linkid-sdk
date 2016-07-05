@@ -2,7 +2,7 @@ package net.link.safeonline.sdk.ws.linkid;
 
 import net.lin_k.linkid._3_1.core.ThemeStatusCode;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
-import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
 import net.link.util.InternalInconsistencyException;
 import org.jetbrains.annotations.Nullable;
@@ -221,13 +221,13 @@ public abstract class LinkIDConversionUtils {
     }
 
     @Nullable
-    public static ThemeStatusCode convert(@Nullable final LinkIDThemeStatusCode linkIDThemeStatusCode) {
+    public static ThemeStatusCode convert(@Nullable final LinkIDRequestStatusCode linkIDRequestStatusCode) {
 
-        if (null == linkIDThemeStatusCode) {
+        if (null == linkIDRequestStatusCode) {
             return null;
         }
 
-        switch (linkIDThemeStatusCode) {
+        switch (linkIDRequestStatusCode) {
 
             case REJECTED:
                 return ThemeStatusCode.STATUS_REJECTED;
@@ -239,7 +239,7 @@ public abstract class LinkIDConversionUtils {
                 return ThemeStatusCode.STATUS_RELEASED;
         }
 
-        throw new InternalInconsistencyException( String.format( "Invalid LinkIDThemeStatusCode %s!", linkIDThemeStatusCode ) );
+        throw new InternalInconsistencyException( String.format( "Invalid LinkIDThemeStatusCode %s!", linkIDRequestStatusCode ) );
 
     }
 }
