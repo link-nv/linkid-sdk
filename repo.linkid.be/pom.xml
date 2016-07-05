@@ -29,11 +29,11 @@
     <distributionManagement>
         <repository>
             <id>repo.linkid.be</id>
-            <url>s3://repo.linkid.be/home/maven/repository/releases</url>
+            <url>s3://repo.linkid.be/releases</url>
         </repository>
         <snapshotRepository>
             <id>repo.linkid.be</id>
-            <url>s3://repo.linkid.be/home/maven/repository/snapshots</url>
+            <url>s3://repo.linkid.be/snapshots</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>

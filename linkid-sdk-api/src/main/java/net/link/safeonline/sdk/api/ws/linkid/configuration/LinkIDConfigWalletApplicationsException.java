@@ -11,6 +11,7 @@ public class LinkIDConfigWalletApplicationsException extends Exception {
 
     public LinkIDConfigWalletApplicationsException(final LinkIDConfigWalletApplicationsErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 

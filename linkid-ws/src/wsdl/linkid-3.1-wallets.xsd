@@ -705,6 +705,11 @@
                     <documentation>Wallet organization configuration</documentation>
                 </annotation>
             </element>
+			<element name="permissions" type="tns:WalletOrganizationPermission" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>What permissions do you have?</documentation>
+				</annotation>
+			</element>
             <element name="stats" type="tns:WalletOrganizationStats" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional wallet organization stats, if requested</documentation>
@@ -737,6 +742,20 @@
             </element>
         </sequence>
     </complexType>
+
+	    <simpleType name="WalletOrganizationPermission">
+		<annotation>
+			<documentation>Wallet organization permission types</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="permission.add.credit" />
+			<enumeration value="permission.remove.credit" />
+			<enumeration value="permission.remove" />
+			<enumeration value="permission.enroll" />
+			<enumeration value="permission.use" />
+		</restriction>
+	</simpleType>
+
 
     <complexType name="WalletOrganization">
         <sequence>

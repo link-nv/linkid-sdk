@@ -8,8 +8,5 @@ package net.link.safeonline.sdk.api.ws.linkid.configuration;
 public enum LinkIDConfigWalletApplicationsErrorCode {
 
     ERROR_UNKNOWN_WALLET_ORGANIZATION,
-    ERROR_PERMISSION_DENIED,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
 
 }

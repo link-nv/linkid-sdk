@@ -25,5 +25,6 @@
     <include schemaLocation="linkid-3.1-wallets.xsd" />
     <include schemaLocation="linkid-3.1-themes.xsd" />
     <include schemaLocation="linkid-3.1-vouchers.xsd" />
+    <include schemaLocation="linkid-3.1-payment-configuration.xsd" />
 
 </schema>

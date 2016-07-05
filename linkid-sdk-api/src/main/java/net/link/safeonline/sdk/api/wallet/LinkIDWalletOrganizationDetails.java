@@ -17,26 +17,30 @@ import org.jetbrains.annotations.Nullable;
  * Date: 29/04/16
  * Time: 14:56
  */
+@SuppressWarnings({ "InstanceVariableNamingConvention", "unused", "MethodParameterNamingConvention" })
 public class LinkIDWalletOrganizationDetails implements Serializable {
 
-    private final LinkIDWalletOrganization      organization;
+    private final LinkIDWalletOrganization                 organization;
+    //
+    private final List<LinkIDWalletOrganizationPermission> permissions;
     //
     @Nullable
-    private final LinkIDWalletOrganizationStats stats;
+    private final LinkIDWalletOrganizationStats            stats;
     //
     // permissions
-    private final List<String>                  permissionAddCreditApplications;
-    private final List<String>                  permissionRemoveCreditApplications;
-    private final List<String>                  permissionRemoveApplications;
-    private final List<String>                  permissionEnrollApplications;
-    private final List<String>                  permissionUseApplications;
+    private final List<String>                             permissionAddCreditApplications;
+    private final List<String>                             permissionRemoveCreditApplications;
+    private final List<String>                             permissionRemoveApplications;
+    private final List<String>                             permissionEnrollApplications;
+    private final List<String>                             permissionUseApplications;
 
-    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, @Nullable final LinkIDWalletOrganizationStats stats,
-                                           final List<String> permissionAddCreditApplications, final List<String> permissionRemoveCreditApplications,
-                                           final List<String> permissionRemoveApplications, final List<String> permissionEnrollApplications,
-                                           final List<String> permissionUseApplications) {
+    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, final List<LinkIDWalletOrganizationPermission> permissions,
+                                           @Nullable final LinkIDWalletOrganizationStats stats, final List<String> permissionAddCreditApplications,
+                                           final List<String> permissionRemoveCreditApplications, final List<String> permissionRemoveApplications,
+                                           final List<String> permissionEnrollApplications, final List<String> permissionUseApplications) {
 
         this.organization = organization;
+        this.permissions = permissions;
         this.stats = stats;
         this.permissionAddCreditApplications = permissionAddCreditApplications;
         this.permissionRemoveCreditApplications = permissionRemoveCreditApplications;
@@ -52,6 +56,7 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
 
         return "LinkIDWalletOrganizationDetails{" +
                "organization=" + organization +
+               ", permissions=" + permissions +
                ", stats=" + stats +
                ", permissionAddCreditApplications=" + permissionAddCreditApplications +
                ", permissionRemoveCreditApplications=" + permissionRemoveCreditApplications +
@@ -66,6 +71,11 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     public LinkIDWalletOrganization getOrganization() {
 
         return organization;
+    }
+
+    public List<LinkIDWalletOrganizationPermission> getPermissions() {
+
+        return permissions;
     }
 
     @Nullable

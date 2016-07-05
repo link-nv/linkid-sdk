@@ -13,6 +13,7 @@ public class LinkIDWalletCommitException extends Exception {
 
     public LinkIDWalletCommitException(final LinkIDWalletCommitErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 

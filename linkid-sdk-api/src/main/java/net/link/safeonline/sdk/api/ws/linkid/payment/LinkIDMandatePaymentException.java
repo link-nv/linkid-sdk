@@ -11,9 +11,10 @@ public class LinkIDMandatePaymentException extends Exception {
 
     private final LinkIDMandatePaymentErrorCode linkIDMandatePaymentErrorCode;
 
-    public LinkIDMandatePaymentException(final LinkIDMandatePaymentErrorCode linkIDMandatePaymentErrorCode) {
+    public LinkIDMandatePaymentException(final LinkIDMandatePaymentErrorCode errorCode) {
 
-        this.linkIDMandatePaymentErrorCode = linkIDMandatePaymentErrorCode;
+        super( String.format( "Error code: \"%s\"", errorCode ) );
+        this.linkIDMandatePaymentErrorCode = errorCode;
     }
 
     public LinkIDMandatePaymentErrorCode getErrorCode() {

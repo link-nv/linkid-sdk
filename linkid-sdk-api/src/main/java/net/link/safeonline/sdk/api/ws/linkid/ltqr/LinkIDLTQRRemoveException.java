@@ -16,9 +16,10 @@ public class LinkIDLTQRRemoveException extends Exception {
 
     private final LinkIDLTQRErrorCode linkIDErrorCode;
 
-    public LinkIDLTQRRemoveException(final LinkIDLTQRErrorCode linkIDErrorCode) {
+    public LinkIDLTQRRemoveException(final LinkIDLTQRErrorCode errorCode) {
 
-        this.linkIDErrorCode = linkIDErrorCode;
+        super( String.format( "Error code: \"%s\"", errorCode ) );
+        this.linkIDErrorCode = errorCode;
     }
 
     public LinkIDLTQRErrorCode getErrorCode() {

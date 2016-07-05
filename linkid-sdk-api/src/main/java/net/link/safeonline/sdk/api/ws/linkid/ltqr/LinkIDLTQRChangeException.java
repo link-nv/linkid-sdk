@@ -19,9 +19,9 @@ public class LinkIDLTQRChangeException extends Exception {
 
     private final LinkIDLTQRChangeErrorCode errorCode;
 
-    public LinkIDLTQRChangeException(final LinkIDLTQRChangeErrorCode errorCode, @Nullable final String errorMessage) {
+    public LinkIDLTQRChangeException(final LinkIDLTQRChangeErrorCode errorCode, @Nullable final String message) {
 
-        super( errorMessage );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

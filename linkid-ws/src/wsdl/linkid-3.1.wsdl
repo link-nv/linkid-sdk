@@ -316,6 +316,33 @@
 		<part name="response" element="tns:ThemesResponse" />
 	</message>
 
+	<!-- =================== Payment configurations==================== -->
+
+	<message name="paymentConfigurationAddRequest">
+		<part name="request" element="tns:PaymentConfigurationAddRequest" />
+	</message>
+	<message name="paymentConfigurationAddResponse">
+		<part name="response" element="tns:PaymentConfigurationAddResponse" />
+	</message>
+	<message name="paymentConfigurationUpdateRequest">
+		<part name="request" element="tns:PaymentConfigurationUpdateRequest" />
+	</message>
+	<message name="paymentConfigurationUpdateResponse">
+		<part name="response" element="tns:PaymentConfigurationUpdateResponse" />
+	</message>
+	<message name="paymentConfigurationRemoveRequest">
+		<part name="request" element="tns:PaymentConfigurationRemoveRequest" />
+	</message>
+	<message name="paymentConfigurationRemoveResponse">
+		<part name="response" element="tns:PaymentConfigurationRemoveResponse" />
+	</message>
+	<message name="paymentConfigurationListRequest">
+		<part name="request" element="tns:PaymentConfigurationListRequest" />
+	</message>
+	<message name="paymentConfigurationListResponse">
+		<part name="response" element="tns:PaymentConfigurationListResponse" />
+	</message>
+
     <!-- =========================== Ports ========================== -->
 
     <portType name="LinkIDServicePort">
@@ -506,6 +533,22 @@
 		<operation name="themes">
 			<input message="tns:themesRequest" />
 			<output message="tns:themesResponse" />
+		</operation>
+		<operation name="paymentConfigurationAdd">
+			<input message="tns:paymentConfigurationAddRequest" />
+			<output message="tns:paymentConfigurationAddResponse" />
+		</operation>
+		<operation name="paymentConfigurationUpdate">
+			<input message="tns:paymentConfigurationUpdateRequest" />
+			<output message="tns:paymentConfigurationUpdateResponse" />
+		</operation>
+		<operation name="paymentConfigurationRemove">
+			<input message="tns:paymentConfigurationRemoveRequest" />
+			<output message="tns:paymentConfigurationRemoveResponse" />
+		</operation>
+		<operation name="paymentConfigurationList">
+			<input message="tns:paymentConfigurationListRequest" />
+			<output message="tns:paymentConfigurationListResponse" />
 		</operation>
     </portType>
 
@@ -929,6 +972,43 @@
         </operation>
         <operation name="themes">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:themes" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentConfigurationAdd">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentConfigurationAdd" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentConfigurationUpdate">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentConfigurationUpdate" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentConfigurationRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentConfigurationRemove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+
+        <operation name="paymentConfigurationList">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentConfigurationList" />
             <input>
                 <soap:body use="literal" />
             </input>

@@ -15,7 +15,4 @@ package net.link.safeonline.sdk.api.ws.linkid.auth;
 public enum LinkIDAuthCancelErrorCode {
 
     ERROR_INVALID_SESSION_ID,
-    ERROR_PERMISSION_DENIED,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
 }

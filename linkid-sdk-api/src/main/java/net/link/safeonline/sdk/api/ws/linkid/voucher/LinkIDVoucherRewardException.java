@@ -13,6 +13,7 @@ public class LinkIDVoucherRewardException extends Exception {
 
     public LinkIDVoucherRewardException(final LinkIDVoucherRewardErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 

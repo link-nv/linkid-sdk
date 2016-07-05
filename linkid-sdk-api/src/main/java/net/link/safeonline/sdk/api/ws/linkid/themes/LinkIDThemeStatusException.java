@@ -13,7 +13,7 @@ public class LinkIDThemeStatusException extends Exception {
 
     public LinkIDThemeStatusException(final String message, final LinkIDThemeStatusErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

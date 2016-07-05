@@ -13,7 +13,7 @@ public class LinkIDVoucherOrganizationRemovePermissionException extends Exceptio
 
     public LinkIDVoucherOrganizationRemovePermissionException(final String message, final LinkIDVoucherOrganizationRemovePermissionErrorCode errorCode) {
 
-        super( message );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

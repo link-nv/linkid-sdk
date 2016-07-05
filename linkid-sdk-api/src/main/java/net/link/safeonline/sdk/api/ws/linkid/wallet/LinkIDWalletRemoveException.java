@@ -13,6 +13,7 @@ public class LinkIDWalletRemoveException extends Exception {
 
     public LinkIDWalletRemoveException(final LinkIDWalletRemoveErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 

@@ -1,5 +1,8 @@
 package net.link.safeonline.sdk.ws.linkid;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Date;
@@ -34,6 +37,11 @@ import net.lin_k.linkid._3_1.core.LocalizedImage;
 import net.lin_k.linkid._3_1.core.LocalizedImages;
 import net.lin_k.linkid._3_1.core.MandatePaymentErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentCaptureErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentConfiguration;
+import net.lin_k.linkid._3_1.core.PaymentConfigurationAddErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentConfigurationListErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentConfigurationRemoveErrorCode;
+import net.lin_k.linkid._3_1.core.PaymentConfigurationUpdateErrorCode;
 import net.lin_k.linkid._3_1.core.PaymentContext;
 import net.lin_k.linkid._3_1.core.PaymentMethodType;
 import net.lin_k.linkid._3_1.core.PaymentRefundErrorCode;
@@ -87,6 +95,7 @@ import net.lin_k.linkid._3_1.core.WalletInfoReportErrorCode;
 import net.lin_k.linkid._3_1.core.WalletOrganization;
 import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
 import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
+import net.lin_k.linkid._3_1.core.WalletOrganizationPermission;
 import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
@@ -101,6 +110,9 @@ import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
+import net.link.safeonline.sdk.api.exception.LinkIDMaintenanceException;
+import net.link.safeonline.sdk.api.exception.LinkIDPermissionDeniedException;
+import net.link.safeonline.sdk.api.exception.LinkIDUnexpectedException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
@@ -108,13 +120,13 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
+import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportErrorCode;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportPageFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportWalletFilter;
-import net.link.safeonline.sdk.api.reporting.LinkIDWalletInfoReportErrorCode;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportType;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeColorError;
@@ -133,19 +145,17 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationStats;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationPermission;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigApplicationsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKeyType;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImages;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
-import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemesErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDFavoritesConfiguration;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeErrorCode;
@@ -158,7 +168,9 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentErrorCo
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
@@ -167,7 +179,6 @@ import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAc
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveErrorCode;
@@ -178,7 +189,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCo
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
@@ -210,7 +220,7 @@ public class LinkIDServiceUtils {
             case ERROR_REQUEST_INVALID:
                 return LinkIDAuthErrorCode.ERROR_REQUEST_INVALID;
             case ERROR_MAINTENANCE:
-                return LinkIDAuthErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -223,7 +233,7 @@ public class LinkIDServiceUtils {
             case ERROR_RESPONSE_INVALID_SESSION_ID:
                 return LinkIDAuthPollErrorCode.ERROR_RESPONSE_INVALID_SESSION_ID;
             case ERROR_MAINTENANCE:
-                return LinkIDAuthPollErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -236,11 +246,11 @@ public class LinkIDServiceUtils {
             case ERROR_INVALID_SESSION_ID:
                 return LinkIDAuthCancelErrorCode.ERROR_INVALID_SESSION_ID;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDAuthCancelErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDAuthCancelErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDAuthCancelErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -280,37 +290,37 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_WALLET_ORGANIZATION:
                 return LinkIDConfigWalletApplicationsErrorCode.ERROR_UNKNOWN_WALLET_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDConfigWalletApplicationsErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDConfigWalletApplicationsErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDConfigWalletApplicationsErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDThemesErrorCode convert(final ThemesErrorCode errorCode) {
+    public static void convert(final ThemesErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_UNEXPECTED:
-                return LinkIDThemesErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDThemesErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDLocalizationErrorCode convert(final ConfigLocalizationErrorCode errorCode) {
+    public static void convert(final ConfigLocalizationErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_UNEXPECTED:
-                return LinkIDLocalizationErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDLocalizationErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -323,9 +333,9 @@ public class LinkIDServiceUtils {
             case ERROR_RESPONSE_INVALID_SESSION_ID:
                 return LinkIDCallbackPullErrorCode.ERROR_RESPONSE_INVALID_SESSION_ID;
             case ERROR_UNEXPECTED:
-                return LinkIDCallbackPullErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDCallbackPullErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -342,7 +352,7 @@ public class LinkIDServiceUtils {
             case ERROR_CAPTURE_TOKEN_NOT_FOUND:
                 return LinkIDPaymentCaptureErrorCode.ERROR_CAPTURE_TOKEN_NOT_FOUND;
             case ERROR_MAINTENANCE:
-                return LinkIDPaymentCaptureErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -359,7 +369,7 @@ public class LinkIDServiceUtils {
             case ERROR_REFUND_FAILED:
                 return LinkIDPaymentRefundErrorCode.ERROR_REFUND_FAILED;
             case ERROR_MAINTENANCE:
-                return LinkIDPaymentRefundErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -383,6 +393,7 @@ public class LinkIDServiceUtils {
         paymentContext.setDescription( linkIDPaymentContext.getDescription() );
         paymentContext.setOrderReference( linkIDPaymentContext.getOrderReference() );
         paymentContext.setPaymentProfile( linkIDPaymentContext.getPaymentProfile() );
+        paymentContext.setConfiguration( linkIDPaymentContext.getConfiguration() );
         paymentContext.setValidationTime( linkIDPaymentContext.getPaymentValidationTime() );
         paymentContext.setAllowPartial( linkIDPaymentContext.isAllowPartial() );
         paymentContext.setOnlyWallets( linkIDPaymentContext.isOnlyWallets() );
@@ -612,6 +623,7 @@ public class LinkIDServiceUtils {
                     new LinkIDPaymentAmount( wsPaymentContext.getAmount(), convert( wsPaymentContext.getCurrency() ),
                             wsPaymentContext.getWalletCoin() ) ).description( wsPaymentContext.getDescription() )
                                                                 .orderReference( wsPaymentContext.getOrderReference() )
+                                                                .configuration( wsPaymentContext.getConfiguration() )
                                                                 .paymentProfile( wsPaymentContext.getPaymentProfile() )
                                                                 .paymentValidationTime( wsPaymentContext.getValidationTime() )
                                                                 .allowPartial( convert( wsPaymentContext.isAllowPartial() ) )
@@ -673,9 +685,9 @@ public class LinkIDServiceUtils {
             case ERROR_CONTEXT_INVALID:
                 return LinkIDLTQRErrorCode.ERROR_CONTEXT_INVALID;
             case ERROR_UNEXPECTED:
-                return LinkIDLTQRErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDLTQRErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -700,9 +712,9 @@ public class LinkIDServiceUtils {
             case ERROR_FAVORITES_TEXT_COLOR_INVALID:
                 return LinkIDLTQRPushErrorCode.ERROR_FAVORITES_TEXT_COLOR_INVALID;
             case ERROR_UNEXPECTED:
-                return LinkIDLTQRPushErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDLTQRPushErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -717,9 +729,9 @@ public class LinkIDServiceUtils {
             case ERROR_TOO_MANY_REQUESTS:
                 return LinkIDLTQRBulkPushErrorCode.ERROR_TOO_MANY_REQUESTS;
             case ERROR_UNEXPECTED:
-                return LinkIDLTQRBulkPushErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDLTQRBulkPushErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -748,9 +760,9 @@ public class LinkIDServiceUtils {
             case ERROR_CONFLICT:
                 return LinkIDLTQRChangeErrorCode.ERROR_CONFLICT;
             case ERROR_UNEXPECTED:
-                return LinkIDLTQRChangeErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDLTQRChangeErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -832,26 +844,26 @@ public class LinkIDServiceUtils {
             case ERROR_INVALID_PAGE:
                 return LinkIDReportErrorCode.ERROR_INVALID_PAGE;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDReportErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDReportErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDReportErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDWalletInfoReportErrorCode convert(final WalletInfoReportErrorCode errorCode) {
+    public static void convert(final WalletInfoReportErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_PERMISSION_DENIED:
-                return LinkIDWalletInfoReportErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDWalletInfoReportErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletInfoReportErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected wallet info report error code %s!", errorCode.name() ) );
@@ -868,9 +880,9 @@ public class LinkIDServiceUtils {
             case ERROR_MANDATE_PAYMENT_FAILED:
                 return LinkIDMandatePaymentErrorCode.ERROR_MANDATE_PAYMENT_FAILED;
             case ERROR_UNEXPECTED:
-                return LinkIDMandatePaymentErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDMandatePaymentErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -885,9 +897,9 @@ public class LinkIDServiceUtils {
             case ERROR_MULTIPLE_ORDERS_FOUND:
                 return LinkIDPaymentStatusErrorCode.ERROR_MULTIPLE_ORDERS_FOUND;
             case ERROR_UNEXPECTED:
-                return LinkIDPaymentStatusErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDPaymentStatusErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -908,11 +920,11 @@ public class LinkIDServiceUtils {
             case ERROR_USER_ALREADY_ENROLLED:
                 return LinkIDWalletEnrollErrorCode.ERROR_USER_ALREADY_ENROLLED;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDWalletEnrollErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDWalletEnrollErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletEnrollErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -927,11 +939,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletGetInfoErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDWalletGetInfoErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDWalletGetInfoErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletGetInfoErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -950,11 +962,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDWalletAddCreditErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDWalletAddCreditErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletAddCreditErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -973,11 +985,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDWalletRemoveCreditErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDWalletRemoveCreditErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletRemoveCreditErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -992,11 +1004,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_USER:
                 return LinkIDWalletRemoveErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDWalletRemoveErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDWalletRemoveErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletRemoveErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1013,9 +1025,9 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_WALLET_TRANSACTION:
                 return LinkIDWalletCommitErrorCode.ERROR_UNKNOWN_WALLET_TRANSACTION;
             case ERROR_UNEXPECTED:
-                return LinkIDWalletCommitErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletCommitErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1032,9 +1044,9 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_WALLET_TRANSACTION:
                 return LinkIDWalletReleaseErrorCode.ERROR_UNKNOWN_WALLET_TRANSACTION;
             case ERROR_UNEXPECTED:
-                return LinkIDWalletReleaseErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletReleaseErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1045,15 +1057,15 @@ public class LinkIDServiceUtils {
         switch (errorCode) {
 
             case ERROR_UNKNOWN_USER:
-                return LinkIDVoucherRewardErrorCode.ERROR_UNEXPECTED;
+                return LinkIDVoucherRewardErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherRewardErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherRewardErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherRewardErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherRewardErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1068,11 +1080,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherListErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherListErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherListErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherListErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1091,11 +1103,11 @@ public class LinkIDServiceUtils {
             case ERROR_INVALID_PAGE:
                 return LinkIDVoucherListRedeemedErrorCode.ERROR_INVALID_PAGE;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherListRedeemedErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherListRedeemedErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherListRedeemedErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1110,11 +1122,11 @@ public class LinkIDServiceUtils {
             case ERROR_ALREADY_REDEEMED:
                 return LinkIDVoucherRedeemErrorCode.ERROR_ALREADY_REDEEMED;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherRedeemErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherRedeemErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherRedeemErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1131,11 +1143,11 @@ public class LinkIDServiceUtils {
             case ERROR_LOGO_DIMENSION:
                 return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_LOGO_DIMENSION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationAddUpdateErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1461,6 +1473,28 @@ public class LinkIDServiceUtils {
         return net.lin_k.safe_online.common.PaymentMethodType.UNKNOWN;
     }
 
+    public static PaymentMethodType convertPaymentMethod(final LinkIDPaymentMethodType linkIDPaymentMethodType) {
+
+        if (null == linkIDPaymentMethodType)
+            return null;
+
+        switch (linkIDPaymentMethodType) {
+
+            case UNKNOWN:
+                return PaymentMethodType.UNKNOWN;
+            case VISA:
+                return PaymentMethodType.VISA;
+            case MASTERCARD:
+                return PaymentMethodType.MASTERCARD;
+            case SEPA:
+                return PaymentMethodType.SEPA;
+            case KLARNA:
+                return PaymentMethodType.KLARNA;
+        }
+
+        return PaymentMethodType.UNKNOWN;
+    }
+
     public static LinkIDPaymentMethodType convert(final net.lin_k.safe_online.common.PaymentMethodType paymentMethodType) {
 
         if (null == paymentMethodType)
@@ -1576,20 +1610,16 @@ public class LinkIDServiceUtils {
         return localizedImages;
     }
 
-    public static LinkIDThemeAddErrorCode convert(final ThemeAddErrorCode errorCode) {
-
-        if (null == errorCode) {
-            return null;
-        }
+    public static void convert(final ThemeAddErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_PERMISSION_DENIED:
-                return LinkIDThemeAddErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDThemeAddErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDThemeAddErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1621,14 +1651,14 @@ public class LinkIDServiceUtils {
 
         switch (errorCode) {
 
-            case ERROR_PERMISSION_DENIED:
-                return LinkIDThemeRemoveErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_NOT_FOUND:
                 return LinkIDThemeRemoveErrorCode.ERROR_NOT_FOUND;
+            case ERROR_PERMISSION_DENIED:
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDThemeRemoveErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDThemeRemoveErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1638,14 +1668,14 @@ public class LinkIDServiceUtils {
 
         switch (errorCode) {
 
-            case ERROR_PERMISSION_DENIED:
-                return LinkIDThemeStatusErrorCode.ERROR_PERMISSION_DENIED;
             case ERROR_NOT_FOUND:
                 return LinkIDThemeStatusErrorCode.ERROR_NOT_FOUND;
+            case ERROR_PERMISSION_DENIED:
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDThemeStatusErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDThemeStatusErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1761,11 +1791,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_APPLICATION:
                 return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_UNKNOWN_APPLICATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1784,11 +1814,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_APPLICATION:
                 return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNKNOWN_APPLICATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1805,28 +1835,24 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherOrganizationListPermissionsErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationListPermissionsErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationListPermissionsErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDVoucherOrganizationListErrorCode convert(final VoucherOrganizationListErrorCode errorCode) {
-
-        if (null == errorCode) {
-            return null;
-        }
+    public static void convert(final VoucherOrganizationListErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationListErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationListErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationListErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1843,11 +1869,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1890,11 +1916,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherOrganizationRemoveErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationRemoveErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationRemoveErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationRemoveErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1911,11 +1937,11 @@ public class LinkIDServiceUtils {
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherOrganizationActivateErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationActivateErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationActivateErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationActivateErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1936,28 +1962,28 @@ public class LinkIDServiceUtils {
             case ERROR_INVALID_PAGE:
                 return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_INVALID_PAGE;
             case ERROR_PERMISSION_DENIED:
-                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDVoucherOrganizationHistoryErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static LinkIDConfigApplicationsErrorCode convert(final ConfigApplicationsErrorCode errorCode) {
+    public static void convert(final ConfigApplicationsErrorCode errorCode) {
 
         if (null == errorCode) {
-            return null;
+            throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
         }
 
         switch (errorCode) {
 
             case ERROR_UNEXPECTED:
-                return LinkIDConfigApplicationsErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDConfigApplicationsErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -1998,20 +2024,16 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unsupported event type: \"%s\"", eventType.name() ) );
     }
 
-    public static LinkIDWalletOrganizationListErrorCode convert(final WalletOrganizationListErrorCode errorCode) {
-
-        if (null == errorCode) {
-            return null;
-        }
+    public static void convert(final WalletOrganizationListErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_PERMISSION_DENIED:
-                return LinkIDWalletOrganizationListErrorCode.ERROR_PERMISSION_DENIED;
+                throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:
-                return LinkIDWalletOrganizationListErrorCode.ERROR_UNEXPECTED;
+                throw new LinkIDUnexpectedException();
             case ERROR_MAINTENANCE:
-                return LinkIDWalletOrganizationListErrorCode.ERROR_MAINTENANCE;
+                throw new LinkIDMaintenanceException();
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -2019,10 +2041,40 @@ public class LinkIDServiceUtils {
 
     public static LinkIDWalletOrganizationDetails convert(final WalletOrganizationDetails details) {
 
-        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), convert( details.getStats() ),
-                details.getPermissionAddCreditApplications(), details.getPermissionRemoveCreditApplications(), details.getPermissionRemoveApplications(),
-                details.getPermissionEnrollApplications(), details.getPermissionUseApplications() );
+        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), convertPermissions( details.getPermissions() ),
+                convert( details.getStats() ), details.getPermissionAddCreditApplications(), details.getPermissionRemoveCreditApplications(),
+                details.getPermissionRemoveApplications(), details.getPermissionEnrollApplications(), details.getPermissionUseApplications() );
 
+    }
+
+    private static List<LinkIDWalletOrganizationPermission> convertPermissions(final List<WalletOrganizationPermission> permissions) {
+
+        List<LinkIDWalletOrganizationPermission> sdkPermissions = Lists.newLinkedList();
+
+        for (WalletOrganizationPermission permission : permissions) {
+            sdkPermissions.add( convert( permission ) );
+        }
+
+        return sdkPermissions;
+    }
+
+    private static LinkIDWalletOrganizationPermission convert(final WalletOrganizationPermission permission) {
+
+        switch (permission) {
+
+            case PERMISSION_ADD_CREDIT:
+                return LinkIDWalletOrganizationPermission.ADD_CREDIT;
+            case PERMISSION_REMOVE_CREDIT:
+                return LinkIDWalletOrganizationPermission.REMOVE_CREDIT;
+            case PERMISSION_REMOVE:
+                return LinkIDWalletOrganizationPermission.REMOVE;
+            case PERMISSION_ENROLL:
+                return LinkIDWalletOrganizationPermission.ENROLL;
+            case PERMISSION_USE:
+                return LinkIDWalletOrganizationPermission.USE;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected permission %s!", permission.name() ) );
     }
 
     public static LinkIDWalletOrganization convert(final WalletOrganization request) {
@@ -2042,4 +2094,107 @@ public class LinkIDServiceUtils {
         return null;
     }
 
+    public static LinkIDPaymentConfigurationAddErrorCode convert(final PaymentConfigurationAddErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CONFIGURATION_ALREADY_EXISTS:
+                return LinkIDPaymentConfigurationAddErrorCode.ERROR_CONFIGURATION_ALREADY_EXISTS;
+            case ERROR_CONFIGURATION_INVALID:
+                return LinkIDPaymentConfigurationAddErrorCode.ERROR_CONFIGURATION_INVALID;
+            case ERROR_UNEXPECTED:
+                throw new LinkIDUnexpectedException();
+            case ERROR_MAINTENANCE:
+                throw new LinkIDMaintenanceException();
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDPaymentConfigurationUpdateErrorCode convert(final PaymentConfigurationUpdateErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CONFIGURATION_NOT_EXISTS:
+                return LinkIDPaymentConfigurationUpdateErrorCode.ERROR_CONFIGURATION_NOT_EXISTS;
+            case ERROR_CONFIGURATION_INVALID:
+                return LinkIDPaymentConfigurationUpdateErrorCode.ERROR_CONFIGURATION_INVALID;
+            case ERROR_PERMISSION_DENIED:
+                throw new LinkIDPermissionDeniedException();
+            case ERROR_UNEXPECTED:
+                throw new LinkIDUnexpectedException();
+            case ERROR_MAINTENANCE:
+                throw new LinkIDMaintenanceException();
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDPaymentConfigurationRemoveErrorCode convert(final PaymentConfigurationRemoveErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_CONFIGURATION_NOT_EXISTS:
+                return LinkIDPaymentConfigurationRemoveErrorCode.ERROR_CONFIGURATION_NOT_EXISTS;
+            case ERROR_PERMISSION_DENIED:
+                throw new LinkIDPermissionDeniedException();
+            case ERROR_UNEXPECTED:
+                throw new LinkIDUnexpectedException();
+            case ERROR_MAINTENANCE:
+                throw new LinkIDMaintenanceException();
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static void convert(final PaymentConfigurationListErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNEXPECTED:
+                throw new LinkIDUnexpectedException();
+            case ERROR_MAINTENANCE:
+                throw new LinkIDMaintenanceException();
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static PaymentConfiguration convert(final LinkIDPaymentConfiguration paymentConfiguration) {
+
+        PaymentConfiguration configuration = new PaymentConfiguration();
+        configuration.setName( paymentConfiguration.getName() );
+        configuration.setDefaultConfiguration( paymentConfiguration.isDefaultConfiguration() );
+        configuration.setOnlyWallets( paymentConfiguration.isOnlyWallets() );
+        configuration.setNoWallets( paymentConfiguration.isNoWallets() );
+        if (!CollectionUtils.isEmpty( paymentConfiguration.getWalletOrganizations() )) {
+            configuration.getWalletOrganizations().addAll( paymentConfiguration.getWalletOrganizations() );
+        }
+        if (!CollectionUtils.isEmpty( paymentConfiguration.getPaymentMethods() )) {
+            for (LinkIDPaymentMethodType paymentMethod : paymentConfiguration.getPaymentMethods()) {
+                configuration.getPaymentMethods().add( convertPaymentMethod( paymentMethod ) );
+            }
+        }
+        return configuration;
+    }
+
+    public static LinkIDPaymentConfiguration convert(final PaymentConfiguration paymentConfiguration) {
+
+        List<LinkIDPaymentMethodType> paymentMethods = Lists.newLinkedList();
+        if (!CollectionUtils.isEmpty( paymentConfiguration.getPaymentMethods() )) {
+            paymentMethods = ImmutableList.copyOf(
+                    Collections2.transform( paymentConfiguration.getPaymentMethods(), new Function<PaymentMethodType, LinkIDPaymentMethodType>() {
+                        @javax.annotation.Nullable
+                        @Override
+                        public LinkIDPaymentMethodType apply(@javax.annotation.Nullable final PaymentMethodType input) {
+
+                            return convert( input );
+
+                        }
+                    } ) );
+        }
+
+        return new LinkIDPaymentConfiguration( paymentConfiguration.getName(), paymentConfiguration.isDefaultConfiguration(),
+                paymentConfiguration.isOnlyWallets(), paymentConfiguration.isNoWallets(), paymentConfiguration.getWalletOrganizations(), paymentMethods );
+    }
 }

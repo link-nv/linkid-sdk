@@ -15,5 +15,4 @@ package net.link.safeonline.sdk.api.ws.linkid.auth;
 public enum LinkIDAuthErrorCode {
 
     ERROR_REQUEST_INVALID,
-    ERROR_MAINTENANCE
 }

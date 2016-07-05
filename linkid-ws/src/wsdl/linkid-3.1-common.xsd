@@ -132,6 +132,11 @@
                     <documentation>Optional payment profile</documentation>
                 </annotation>
             </element>
+            <element name="configuration" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional payment configuration</documentation>
+                </annotation>
+            </element>
             <element name="validationTime" type="int" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional maximum time to wait for payment validation (expressed in seconds), if not specified defaults to 5s</documentation>
@@ -144,7 +149,7 @@
             </element>
             <element name="onlyWallets" type="boolean" minOccurs="0" maxOccurs="1">
                 <annotation>
-                    <documentation>allow only wallets for this payment</documentation>
+                    <documentation>allow only wallets for this payment, NOTE: deprecated: use payment configurations</documentation>
                 </annotation>
             </element>
             <element name="mandate" type="boolean" minOccurs="0" maxOccurs="1">

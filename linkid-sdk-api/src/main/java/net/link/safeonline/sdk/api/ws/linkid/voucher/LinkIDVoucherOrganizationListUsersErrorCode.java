@@ -10,8 +10,5 @@ package net.link.safeonline.sdk.api.ws.linkid.voucher;
 public enum LinkIDVoucherOrganizationListUsersErrorCode {
 
     ERROR_UNKNOWN_VOUCHER_ORGANIZATION,
-    ERROR_PERMISSION_DENIED,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
 
 }

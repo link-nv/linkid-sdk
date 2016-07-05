@@ -5,12 +5,10 @@
  * linkID Inc. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.linkid.themes;
+package net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration;
 
-public enum LinkIDThemeAddErrorCode {
+public enum LinkIDPaymentConfigurationRemoveErrorCode {
 
-    ERROR_PERMISSION_DENIED,
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
+    ERROR_CONFIGURATION_NOT_EXISTS,
 
 }

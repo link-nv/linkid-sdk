@@ -5,16 +5,19 @@
  * linkID Inc. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.linkid.configuration;
+package net.link.safeonline.sdk.api.wallet;
 
 /**
  * Created by wvdhaute
- * Date: 21/01/16
- * Time: 15:30
+ * Date: 27/06/16
+ * Time: 10:20
  */
-public enum LinkIDConfigApplicationsErrorCode {
+public enum LinkIDWalletOrganizationPermission {
 
-    ERROR_UNEXPECTED,
-    ERROR_MAINTENANCE
+    ADD_CREDIT,
+    REMOVE_CREDIT,
+    REMOVE,
+    ENROLL,
+    USE
 
 }

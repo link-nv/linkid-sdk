@@ -16,9 +16,10 @@ public class LinkIDLTQRPullException extends Exception {
 
     private final LinkIDLTQRErrorCode linkIDErrorCode;
 
-    public LinkIDLTQRPullException(final LinkIDLTQRErrorCode linkIDErrorCode) {
+    public LinkIDLTQRPullException(final LinkIDLTQRErrorCode errorCode) {
 
-        this.linkIDErrorCode = linkIDErrorCode;
+        super( String.format( "Error code: \"%s\"", errorCode ) );
+        this.linkIDErrorCode = errorCode;
     }
 
     public LinkIDLTQRErrorCode getErrorCode() {

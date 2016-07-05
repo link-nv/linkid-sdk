@@ -13,6 +13,7 @@ public class LinkIDPaymentStatusException extends Exception {
 
     public LinkIDPaymentStatusException(final LinkIDPaymentStatusErrorCode errorCode) {
 
+        super( String.format( "Error code: \"%s\"", errorCode ) );
         this.errorCode = errorCode;
     }
 
