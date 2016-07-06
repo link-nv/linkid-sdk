@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.wallet;
 
 import java.io.Serializable;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -19,10 +20,12 @@ import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 public class LinkIDWalletPolicyBalance implements Serializable {
 
     private final double         balance;
+    @Nullable
     private final LinkIDCurrency currency;
+    @Nullable
     private final String         coinId;
 
-    public LinkIDWalletPolicyBalance(final double balance, final LinkIDCurrency currency, final String coinId) {
+    public LinkIDWalletPolicyBalance(final double balance, @Nullable final LinkIDCurrency currency, @Nullable final String coinId) {
 
         this.balance = balance;
         this.currency = currency;
@@ -48,11 +51,13 @@ public class LinkIDWalletPolicyBalance implements Serializable {
         return balance;
     }
 
+    @Nullable
     public LinkIDCurrency getCurrency() {
 
         return currency;
     }
 
+    @Nullable
     public String getCoinId() {
 
         return coinId;

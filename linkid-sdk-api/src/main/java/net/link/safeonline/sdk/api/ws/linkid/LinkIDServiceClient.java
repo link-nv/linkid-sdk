@@ -36,6 +36,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
@@ -88,6 +89,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -425,6 +427,18 @@ public interface LinkIDServiceClient {
      */
     void walletRelease(String userId, String walletId, String walletTransactionId)
             throws LinkIDWalletReleaseException;
+
+    /**
+     * Request a new wallet organization
+     *
+     * @param walletOrganization the wallet organization configuration
+     *
+     * @return the technical name of the wallet organization to be added
+     *
+     * @throws LinkIDWalletOrganizationAddException something went wrong, check the error code in the exception
+     */
+    String walletOrganizationAdd(final LinkIDWalletOrganization walletOrganization)
+            throws LinkIDWalletOrganizationAddException;
 
     /**
      * Returns the list of wallet organizations the caller application owns

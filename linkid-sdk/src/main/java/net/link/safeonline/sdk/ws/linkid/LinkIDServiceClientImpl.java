@@ -53,6 +53,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
@@ -109,6 +110,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -1193,6 +1195,34 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
             // all good <o/
             return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public String walletOrganizationAdd(final LinkIDWalletOrganization walletOrganization)
+            throws LinkIDWalletOrganizationAddException {
+
+        // request
+        WalletOrganizationAddRequest request = new WalletOrganizationAddRequest();
+
+        // input
+        request.setOrganization( LinkIDServiceUtils.convert( walletOrganization ) );
+
+        // operate
+        WalletOrganizationAddResponse response = getPort().walletOrganizationAdd( request );
+
+        // response
+        if (null != response.getError()) {
+
+            LinkIDServiceUtils.handle( response.getError() );
+
+        } else if (null != response.getSuccess()) {
+
+            // all good <o/
+            return response.getSuccess().getName();
+
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

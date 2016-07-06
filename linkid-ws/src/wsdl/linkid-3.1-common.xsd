@@ -391,5 +391,16 @@
 		</restriction>
 	</simpleType>
 
+    <simpleType name="CommonErrorCode">
+		<annotation>
+			<documentation>Common error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.permission.denied" />
+			<enumeration value="error.unexpected" />
+			<enumeration value="error.maintenance" />
+		</restriction>
+	</simpleType>
+
 
 </schema>

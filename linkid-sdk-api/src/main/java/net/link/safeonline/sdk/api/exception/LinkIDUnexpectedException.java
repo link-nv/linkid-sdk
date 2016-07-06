@@ -16,4 +16,9 @@ package net.link.safeonline.sdk.api.exception;
  */
 public class LinkIDUnexpectedException extends RuntimeException {
 
+    public LinkIDUnexpectedException(final String message) {
+
+        super( message );
+    }
+
 }

@@ -201,6 +201,12 @@
 	<message name="walletReleaseResponse">
 		<part name="response" element="tns:WalletReleaseResponse" />
 	</message>
+    <message name="walletOrganizationAddRequest">
+		<part name="request" element="tns:WalletOrganizationAddRequest" />
+	</message>
+	<message name="walletOrganizationAddResponse">
+		<part name="response" element="tns:WalletOrganizationAddResponse" />
+	</message>
     <message name="walletOrganizationListRequest">
 		<part name="request" element="tns:WalletOrganizationListRequest" />
 	</message>
@@ -465,6 +471,10 @@
 		<operation name="walletOrganizationList">
 			<input message="tns:walletOrganizationListRequest" />
 			<output message="tns:walletOrganizationListResponse" />
+		</operation>
+		<operation name="walletOrganizationAdd">
+			<input message="tns:walletOrganizationAddRequest" />
+			<output message="tns:walletOrganizationAddResponse" />
 		</operation>
 		<operation name="voucherReward">
 			<input message="tns:voucherRewardRequest" />
@@ -810,6 +820,15 @@
         </operation>
         <operation name="walletRelease">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletRelease" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletOrganizationAdd">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletOrganizationAdd" />
             <input>
                 <soap:body use="literal" />
             </input>

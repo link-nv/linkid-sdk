@@ -52,7 +52,9 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
@@ -339,6 +341,30 @@ public class LinkIDWSClientTest {
             logger.err( "Remove error: %s", e.getErrorCode() );
             fail();
         }
+    }
+
+    @Test
+    public void testWalletOrganizationAdd()
+            throws Exception {
+
+        // setup
+        String logoUrl = "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png";
+        List<LinkIDLocalizationValue> nameLocalizations = new LinkedList<>();
+        nameLocalizations.add( new LinkIDLocalizationValue( "en", "iWish-en" ) );
+        nameLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish-nl" ) );
+        List<LinkIDLocalizationValue> descriptionLocalizations = new LinkedList<>();
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "en", "iWish description-en" ) );
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish description-nl" ) );
+
+        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 99999, LinkIDCurrency.EUR, null );
+
+        LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "testWallet", logoUrl, 5000, false, true, nameLocalizations,
+                descriptionLocalizations, policyBalance );
+
+        // operate
+        String name = client.walletOrganizationAdd( walletOrganization );
+        assertNotNull( name );
+        logger.dbg( "Organization name: %s\n", name );
     }
 
     //    @Test

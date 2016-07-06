@@ -36,6 +36,14 @@ public class LinkIDWalletOrganization implements Serializable {
 
     public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
                                     final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
+                                    @Nullable final LinkIDWalletPolicyBalance policyBalance) {
+
+        this( id, logoUrl, expirationInSecs, sticky, autoEnroll, nameLocalizations, descriptionLocalizations, policyBalance, LinkIDRequestStatusCode.PENDING );
+
+    }
+
+    public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
+                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
                                     @Nullable final LinkIDWalletPolicyBalance policyBalance, final LinkIDRequestStatusCode statusCode) {
 
         this.id = id;
