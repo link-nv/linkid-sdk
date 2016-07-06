@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.List;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -28,11 +29,14 @@ public class LinkIDWalletOrganization implements Serializable {
     private final List<LinkIDLocalizationValue> nameLocalizations;
     private final List<LinkIDLocalizationValue> descriptionLocalizations;
     //
+    @Nullable
+    private final LinkIDWalletPolicyBalance     policyBalance;
+    //
     private final LinkIDRequestStatusCode       statusCode;
 
     public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
                                     final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
-                                    final LinkIDRequestStatusCode statusCode) {
+                                    @Nullable final LinkIDWalletPolicyBalance policyBalance, final LinkIDRequestStatusCode statusCode) {
 
         this.id = id;
         this.logoUrl = logoUrl;
@@ -41,6 +45,7 @@ public class LinkIDWalletOrganization implements Serializable {
         this.autoEnroll = autoEnroll;
         this.nameLocalizations = nameLocalizations;
         this.descriptionLocalizations = descriptionLocalizations;
+        this.policyBalance = policyBalance;
         this.statusCode = statusCode;
     }
 
@@ -57,6 +62,7 @@ public class LinkIDWalletOrganization implements Serializable {
                ", autoEnroll=" + autoEnroll +
                ", nameLocalizations=" + nameLocalizations +
                ", descriptionLocalizations=" + descriptionLocalizations +
+               ", policyBalance=" + policyBalance +
                ", status=" + statusCode +
                '}';
     }
@@ -98,8 +104,15 @@ public class LinkIDWalletOrganization implements Serializable {
         return descriptionLocalizations;
     }
 
+    @Nullable
+    public LinkIDWalletPolicyBalance getPolicyBalance() {
+
+        return policyBalance;
+    }
+
     public LinkIDRequestStatusCode getStatusCode() {
 
         return statusCode;
     }
+
 }

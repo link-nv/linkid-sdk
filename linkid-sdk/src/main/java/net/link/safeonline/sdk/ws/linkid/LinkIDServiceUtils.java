@@ -98,6 +98,7 @@ import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
 import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
 import net.lin_k.linkid._3_1.core.WalletOrganizationPermission;
 import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
+import net.lin_k.linkid._3_1.core.WalletPolicyBalance;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
@@ -146,6 +147,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationPermission;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
@@ -2091,8 +2093,18 @@ public class LinkIDServiceUtils {
 
         return new LinkIDWalletOrganization( request.getWalletOrganizationId(), request.getLogoUrl(), request.getExpirationInSecs(), request.isSticky(),
                 request.isAutoEnroll(), convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ),
-                convert( request.getStatusCode() ) );
+                convert( request.getPolicyBalance() ), convert( request.getStatusCode() ) );
 
+    }
+
+    @Nullable
+    public static LinkIDWalletPolicyBalance convert(@Nullable final WalletPolicyBalance walletPolicyBalance) {
+
+        if (null == walletPolicyBalance) {
+            return null;
+        }
+
+        return new LinkIDWalletPolicyBalance( walletPolicyBalance.getBalance(), convert( walletPolicyBalance.getCurrency() ), walletPolicyBalance.getCoinId() );
     }
 
     @Nullable

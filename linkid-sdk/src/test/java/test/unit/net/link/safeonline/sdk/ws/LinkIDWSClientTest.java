@@ -341,7 +341,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testWalletOrganizationList()
             throws Exception {
 
