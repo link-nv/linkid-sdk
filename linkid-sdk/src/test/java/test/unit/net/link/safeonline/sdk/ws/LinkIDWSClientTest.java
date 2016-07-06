@@ -343,7 +343,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testWalletOrganizationAdd()
             throws Exception {
 
