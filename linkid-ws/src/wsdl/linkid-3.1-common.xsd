@@ -363,4 +363,33 @@
         </sequence>
     </complexType>
 
+    <simpleType name="RequestStatusCode">
+		<annotation>
+			<documentation>Request Status codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="status.rejected">
+				<annotation>
+					<documentation>Request was rejected, check the errors why</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="status.pending">
+				<annotation>
+					<documentation>Request is pending further approval</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="status.accepted">
+				<annotation>
+					<documentation>Request is accepted</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="status.released">
+				<annotation>
+					<documentation>Request is released</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
 </schema>

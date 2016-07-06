@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.wallet;
 
 import java.io.Serializable;
 import java.util.List;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 
 
@@ -26,9 +27,12 @@ public class LinkIDWalletOrganization implements Serializable {
     private final boolean                       autoEnroll;
     private final List<LinkIDLocalizationValue> nameLocalizations;
     private final List<LinkIDLocalizationValue> descriptionLocalizations;
+    //
+    private final LinkIDRequestStatusCode       statusCode;
 
     public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
-                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations) {
+                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
+                                    final LinkIDRequestStatusCode statusCode) {
 
         this.id = id;
         this.logoUrl = logoUrl;
@@ -37,6 +41,7 @@ public class LinkIDWalletOrganization implements Serializable {
         this.autoEnroll = autoEnroll;
         this.nameLocalizations = nameLocalizations;
         this.descriptionLocalizations = descriptionLocalizations;
+        this.statusCode = statusCode;
     }
 
     // Helper methods
@@ -52,6 +57,7 @@ public class LinkIDWalletOrganization implements Serializable {
                ", autoEnroll=" + autoEnroll +
                ", nameLocalizations=" + nameLocalizations +
                ", descriptionLocalizations=" + descriptionLocalizations +
+               ", status=" + statusCode +
                '}';
     }
 
@@ -90,5 +96,10 @@ public class LinkIDWalletOrganization implements Serializable {
     public List<LinkIDLocalizationValue> getDescriptionLocalizations() {
 
         return descriptionLocalizations;
+    }
+
+    public LinkIDRequestStatusCode getStatusCode() {
+
+        return statusCode;
     }
 }

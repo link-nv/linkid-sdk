@@ -12,6 +12,7 @@ import java.util.Locale;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -28,7 +29,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
-import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
@@ -430,12 +430,15 @@ public interface LinkIDServiceClient {
      * Returns the list of wallet organizations the caller application owns
      *
      * @param walletOrganizationIds optional list of wallet organization IDs
+     * @param requestStatusCode     optional status code for filtering
      * @param includeStats          include stats?
      * @param locale                optional language (default is en)
      *
      * @return the list of owned wallet organizations
      */
-    List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds, boolean includeStats, @Nullable Locale locale);
+    List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds,
+                                                                 @Nullable LinkIDRequestStatusCode requestStatusCode, boolean includeStats,
+                                                                 @Nullable Locale locale);
 
     /**
      * Add points for specified user and specified voucher organization.
@@ -643,10 +646,10 @@ public interface LinkIDServiceClient {
     /**
      * Fetch the application's themes, if needed filtered by themeName, status code
      *
-     * @param themeName       optional theme name for filtering
-     * @param themeStatusCode optional status code for filtering
+     * @param themeName         optional theme name for filtering
+     * @param requestStatusCode optional status code for filtering
      */
-    LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDRequestStatusCode themeStatusCode);
+    LinkIDThemes themeList(@Nullable String themeName, @Nullable LinkIDRequestStatusCode requestStatusCode);
 
     /**
      * Add a new payment configuration

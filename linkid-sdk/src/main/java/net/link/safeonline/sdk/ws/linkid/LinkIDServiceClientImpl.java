@@ -233,7 +233,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
 
             // authenticate state
-            LinkIDAuthenticationState linkIDAuthenticationState = LinkIDConversionUtils.convert( response.getSuccess().getAuthenticationState() );
+            LinkIDAuthenticationState linkIDAuthenticationState = LinkIDServiceUtils.convert( response.getSuccess().getAuthenticationState() );
 
             LinkIDPaymentState paymentState = null;
             if (null != response.getSuccess().getPaymentState()) {
@@ -1199,13 +1199,15 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable final List<String> walletOrganizationIds, final boolean includeStats,
+    public List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable final List<String> walletOrganizationIds,
+                                                                        @Nullable final LinkIDRequestStatusCode requestStatusCode, final boolean includeStats,
                                                                         @Nullable final Locale locale) {
 
         // request
         WalletOrganizationListRequest request = new WalletOrganizationListRequest();
 
         // input
+        request.setStatusCode( LinkIDServiceUtils.convert( requestStatusCode ) );
         if (null != walletOrganizationIds) {
             request.getOrganizationIds().addAll( walletOrganizationIds );
         }
@@ -1794,11 +1796,11 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDThemes themes(@Nullable final String themeName, @Nullable final LinkIDRequestStatusCode linkIDRequestStatusCode) {
+    public LinkIDThemes themeList(@Nullable final String themeName, @Nullable final LinkIDRequestStatusCode requestStatusCode) {
 
         ThemesRequest request = new ThemesRequest();
         request.setName( themeName );
-        request.setStatusCode( LinkIDConversionUtils.convert( linkIDRequestStatusCode ) );
+        request.setStatusCode( LinkIDServiceUtils.convertOld( requestStatusCode ) );
 
         // operate
         ThemesResponse response = getPort().themes( request );

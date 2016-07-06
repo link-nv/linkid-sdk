@@ -613,6 +613,11 @@
                         <documentation>Optional list of organization ID's to fetch</documentation>
                     </annotation>
                 </element>
+				<element name="statusCode" type="tns:RequestStatusCode" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional status code filter</documentation>
+                    </annotation>
+				</element>
                 <element name="includeStats" type="boolean" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>Include organization statistics?</documentation>
@@ -794,6 +799,11 @@
                     <documentation>The wallet organization description localizations</documentation>
                 </annotation>
             </element>
+			<element name="statusCode" type="tns:RequestStatusCode" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>The status code of this wallet organization</documentation>
+				</annotation>
+			</element>
         </sequence>
     </complexType>
 

@@ -14,6 +14,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.linkid._3_1.core.ApplicationFilter;
+import net.lin_k.linkid._3_1.core.AuthAuthenticationState;
 import net.lin_k.linkid._3_1.core.AuthCancelErrorCode;
 import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
 import net.lin_k.linkid._3_1.core.AuthStartErrorCode;
@@ -53,6 +54,7 @@ import net.lin_k.linkid._3_1.core.ReportDateFilter;
 import net.lin_k.linkid._3_1.core.ReportErrorCode;
 import net.lin_k.linkid._3_1.core.ReportPageFilter;
 import net.lin_k.linkid._3_1.core.ReportWalletFilter;
+import net.lin_k.linkid._3_1.core.RequestStatusCode;
 import net.lin_k.linkid._3_1.core.ThemeAddErrorCode;
 import net.lin_k.linkid._3_1.core.ThemeColorError;
 import net.lin_k.linkid._3_1.core.ThemeColorErrorCode;
@@ -148,6 +150,7 @@ import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKeyType;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
@@ -1565,6 +1568,29 @@ public class LinkIDServiceUtils {
 
     }
 
+    @Nullable
+    public static LinkIDRequestStatusCode convert(@Nullable final RequestStatusCode requestStatusCode) {
+
+        if (null == requestStatusCode) {
+            return null;
+        }
+
+        switch (requestStatusCode) {
+
+            case STATUS_REJECTED:
+                return LinkIDRequestStatusCode.REJECTED;
+            case STATUS_PENDING:
+                return LinkIDRequestStatusCode.PENDING;
+            case STATUS_ACCEPTED:
+                return LinkIDRequestStatusCode.ACCEPTED;
+            case STATUS_RELEASED:
+                return LinkIDRequestStatusCode.RELEASED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unsupported requestStatusCode: \"%s\"", requestStatusCode.name() ) );
+
+    }
+
     public static LinkIDTheme convert(@Nullable final Themes themes) {
 
         if (null == themes) {
@@ -2064,7 +2090,8 @@ public class LinkIDServiceUtils {
     public static LinkIDWalletOrganization convert(final WalletOrganization request) {
 
         return new LinkIDWalletOrganization( request.getWalletOrganizationId(), request.getLogoUrl(), request.getExpirationInSecs(), request.isSticky(),
-                request.isAutoEnroll(), convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ) );
+                request.isAutoEnroll(), convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ),
+                convert( request.getStatusCode() ) );
 
     }
 
@@ -2181,4 +2208,72 @@ public class LinkIDServiceUtils {
         return new LinkIDPaymentConfiguration( paymentConfiguration.getName(), paymentConfiguration.isDefaultConfiguration(),
                 paymentConfiguration.isOnlyWallets(), paymentConfiguration.isNoWallets(), paymentConfiguration.getWalletOrganizations(), paymentMethods );
     }
+
+    public static LinkIDAuthenticationState convert(final AuthAuthenticationState authenticationState) {
+
+        switch (authenticationState) {
+
+            case LINKID_STATE_STARTED:
+                return LinkIDAuthenticationState.STARTED;
+            case LINKID_STATE_RETRIEVED:
+                return LinkIDAuthenticationState.RETRIEVED;
+            case LINKID_STATE_AUTHENTICATED:
+                return LinkIDAuthenticationState.AUTHENTICATED;
+            case LINKID_STATE_EXPIRED:
+                return LinkIDAuthenticationState.EXPIRED;
+            case LINKID_STATE_FAILED:
+                return LinkIDAuthenticationState.FAILED;
+            case LINKID_STATE_PAYMENT_ADD:
+                return LinkIDAuthenticationState.FAILED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Invalid authentication state %s!", authenticationState ) );
+    }
+
+    @Nullable
+    public static ThemeStatusCode convertOld(@Nullable final LinkIDRequestStatusCode linkIDRequestStatusCode) {
+
+        if (null == linkIDRequestStatusCode) {
+            return null;
+        }
+
+        switch (linkIDRequestStatusCode) {
+
+            case REJECTED:
+                return ThemeStatusCode.STATUS_REJECTED;
+            case PENDING:
+                return ThemeStatusCode.STATUS_PENDING;
+            case ACCEPTED:
+                return ThemeStatusCode.STATUS_ACCEPTED;
+            case RELEASED:
+                return ThemeStatusCode.STATUS_RELEASED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Invalid LinkIDThemeStatusCode %s!", linkIDRequestStatusCode ) );
+
+    }
+
+    @Nullable
+    public static RequestStatusCode convert(@Nullable final LinkIDRequestStatusCode linkIDRequestStatusCode) {
+
+        if (null == linkIDRequestStatusCode) {
+            return null;
+        }
+
+        switch (linkIDRequestStatusCode) {
+
+            case REJECTED:
+                return RequestStatusCode.STATUS_REJECTED;
+            case PENDING:
+                return RequestStatusCode.STATUS_PENDING;
+            case ACCEPTED:
+                return RequestStatusCode.STATUS_ACCEPTED;
+            case RELEASED:
+                return RequestStatusCode.STATUS_RELEASED;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Invalid LinkIDRequestStatusCode %s!", linkIDRequestStatusCode ) );
+
+    }
+
 }

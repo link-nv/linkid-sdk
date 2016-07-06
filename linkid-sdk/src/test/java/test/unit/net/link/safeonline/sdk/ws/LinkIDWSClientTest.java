@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
@@ -340,7 +341,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    //    @Test
+    @Test
     public void testWalletOrganizationList()
             throws Exception {
 
@@ -348,7 +349,7 @@ public class LinkIDWSClientTest {
         List<String> walletOrganizationIds = Collections.singletonList( "urn:linkid:wallet:fake:visa" );
 
         // operate
-        List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, true, Locale.ENGLISH );
+        List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, LinkIDRequestStatusCode.RELEASED, false, Locale.ENGLISH );
         for (LinkIDWalletOrganizationDetails organization : organizations) {
             logger.dbg( "Organization: %s\n", organization );
         }
@@ -658,7 +659,7 @@ public class LinkIDWSClientTest {
 
         // operate
         //            LinkIDThemes linkIDThemes = client.themes( "urn:be:linkid:example-mobile:theme:themeTest", null );
-        LinkIDThemes linkIDThemes = client.themes( null, null );
+        LinkIDThemes linkIDThemes = client.themeList( null, null );
         assertNotNull( linkIDThemes );
         for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
             logger.dbg( "Theme: %s", linkIDTheme );
