@@ -17,6 +17,7 @@ v4.14.0
 ---
   * net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode -> net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode
   * themes -> themeList
+  * walletOrganizationAdd support
 
 v4.12.0
 ----
