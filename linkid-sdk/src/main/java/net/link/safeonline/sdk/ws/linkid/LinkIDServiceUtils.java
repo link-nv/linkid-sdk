@@ -147,6 +147,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationPermission;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
+import net.link.safeonline.sdk.api.ws.LinkIDWSQueryConstants;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
@@ -195,6 +196,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.util.InternalInconsistencyException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.jetbrains.annotations.Nullable;
@@ -1287,6 +1289,13 @@ public class LinkIDServiceUtils {
         if (null != userAttributeFilter) {
             UserAttributeFilter wsUserAttributeFilter = new UserAttributeFilter();
             wsUserAttributeFilter.setAttributeName( LinkIDProfileConstants.EMAIL_ADDRESS );
+
+            if (StringUtils.isBlank( userAttributeFilter.getEmail() )
+                || userAttributeFilter.getEmail().length() < LinkIDWSQueryConstants.MIN_ATTRIBUTE_VALUE_QUERY_LENGTH) {
+                throw new IllegalArgumentException( String.format( "The minimum length of the user attribute value should be %d.",
+                        LinkIDWSQueryConstants.MIN_ATTRIBUTE_VALUE_QUERY_LENGTH ) );
+            }
+
             wsUserAttributeFilter.setAttributeValue( userAttributeFilter.getEmail() );
             return wsUserAttributeFilter;
         }
