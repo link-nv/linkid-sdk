@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
@@ -44,7 +45,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
-import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
@@ -54,6 +54,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
@@ -110,6 +111,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -234,7 +236,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
 
             // authenticate state
-            LinkIDAuthenticationState linkIDAuthenticationState = LinkIDConversionUtils.convert( response.getSuccess().getAuthenticationState() );
+            LinkIDAuthenticationState linkIDAuthenticationState = LinkIDServiceUtils.convert( response.getSuccess().getAuthenticationState() );
 
             LinkIDPaymentState paymentState = null;
             if (null != response.getSuccess().getPaymentState()) {
@@ -1200,13 +1202,43 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable final List<String> walletOrganizationIds, final boolean includeStats,
+    public String walletOrganizationAdd(final LinkIDWalletOrganization walletOrganization)
+            throws LinkIDWalletOrganizationAddException {
+
+        // request
+        WalletOrganizationAddRequest request = new WalletOrganizationAddRequest();
+
+        // input
+        request.setOrganization( LinkIDServiceUtils.convert( walletOrganization ) );
+
+        // operate
+        WalletOrganizationAddResponse response = getPort().walletOrganizationAdd( request );
+
+        // response
+        if (null != response.getError()) {
+
+            LinkIDServiceUtils.handle( response.getError() );
+
+        } else if (null != response.getSuccess()) {
+
+            // all good <o/
+            return response.getSuccess().getName();
+
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable final List<String> walletOrganizationIds,
+                                                                        @Nullable final LinkIDRequestStatusCode requestStatusCode, final boolean includeStats,
                                                                         @Nullable final Locale locale) {
 
         // request
         WalletOrganizationListRequest request = new WalletOrganizationListRequest();
 
         // input
+        request.setStatusCode( LinkIDServiceUtils.convert( requestStatusCode ) );
         if (null != walletOrganizationIds) {
             request.getOrganizationIds().addAll( walletOrganizationIds );
         }
@@ -1798,11 +1830,11 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDThemes themes(@Nullable final String themeName, @Nullable final LinkIDThemeStatusCode linkIDThemeStatusCode) {
+    public LinkIDThemes themeList(@Nullable final String themeName, @Nullable final LinkIDRequestStatusCode requestStatusCode) {
 
         ThemesRequest request = new ThemesRequest();
         request.setName( themeName );
-        request.setStatusCode( LinkIDConversionUtils.convert( linkIDThemeStatusCode ) );
+        request.setStatusCode( LinkIDServiceUtils.convertOld( requestStatusCode ) );
 
         // operate
         ThemesResponse response = getPort().themes( request );

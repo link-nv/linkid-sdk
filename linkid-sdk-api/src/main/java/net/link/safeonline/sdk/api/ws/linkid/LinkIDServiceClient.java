@@ -12,6 +12,7 @@ import java.util.Locale;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -29,7 +30,6 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
-import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
@@ -37,6 +37,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
@@ -89,6 +90,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditExcepti
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -428,15 +430,30 @@ public interface LinkIDServiceClient {
             throws LinkIDWalletReleaseException;
 
     /**
+     * Request a new wallet organization
+     *
+     * @param walletOrganization the wallet organization configuration
+     *
+     * @return the technical name of the wallet organization to be added
+     *
+     * @throws LinkIDWalletOrganizationAddException something went wrong, check the error code in the exception
+     */
+    String walletOrganizationAdd(final LinkIDWalletOrganization walletOrganization)
+            throws LinkIDWalletOrganizationAddException;
+
+    /**
      * Returns the list of wallet organizations the caller application owns
      *
      * @param walletOrganizationIds optional list of wallet organization IDs
+     * @param requestStatusCode     optional status code for filtering
      * @param includeStats          include stats?
      * @param locale                optional language (default is en)
      *
      * @return the list of owned wallet organizations
      */
-    List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds, boolean includeStats, @Nullable Locale locale);
+    List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds,
+                                                                 @Nullable LinkIDRequestStatusCode requestStatusCode, boolean includeStats,
+                                                                 @Nullable Locale locale);
 
     /**
      * Add points for specified user and specified voucher organization.
@@ -645,10 +662,10 @@ public interface LinkIDServiceClient {
     /**
      * Fetch the application's themes, if needed filtered by themeName, status code
      *
-     * @param themeName       optional theme name for filtering
-     * @param themeStatusCode optional status code for filtering
+     * @param themeName         optional theme name for filtering
+     * @param requestStatusCode optional status code for filtering
      */
-    LinkIDThemes themes(@Nullable String themeName, @Nullable LinkIDThemeStatusCode themeStatusCode);
+    LinkIDThemes themeList(@Nullable String themeName, @Nullable LinkIDRequestStatusCode requestStatusCode);
 
     /**
      * Add a new payment configuration

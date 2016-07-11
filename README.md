@@ -13,6 +13,12 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v4.14.0
+---
+  * net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode -> net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode
+  * themes -> themeList
+  * walletOrganizationAdd support
+
 v4.12.0
 ----
   * Unexpected, Maintenace, Permission denied error codes now thrown as runtime exceptions ( LinkIDUnexpectedException, LinkIDMaintenanceException, LinkIDPermissionDeniedException)

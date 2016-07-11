@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.api.themes;
 
 import java.io.Serializable;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 
 
 /**
@@ -17,11 +18,11 @@ import java.io.Serializable;
  */
 public class LinkIDThemeStatus implements Serializable {
 
-    private final LinkIDThemeStatusCode        status;
+    private final LinkIDRequestStatusCode      status;
     private final String                       infoMessage;
     private final LinkIDThemeStatusErrorReport statusReport;
 
-    public LinkIDThemeStatus(final LinkIDThemeStatusCode status, final String infoMessage, final LinkIDThemeStatusErrorReport statusReport) {
+    public LinkIDThemeStatus(final LinkIDRequestStatusCode status, final String infoMessage, final LinkIDThemeStatusErrorReport statusReport) {
 
         this.status = status;
         this.infoMessage = infoMessage;
@@ -42,7 +43,7 @@ public class LinkIDThemeStatus implements Serializable {
 
     // Accessors
 
-    public LinkIDThemeStatusCode getStatus() {
+    public LinkIDRequestStatusCode getStatus() {
 
         return status;
     }

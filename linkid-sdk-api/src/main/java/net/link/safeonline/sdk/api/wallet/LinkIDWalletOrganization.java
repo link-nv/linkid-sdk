@@ -9,7 +9,9 @@ package net.link.safeonline.sdk.api.wallet;
 
 import java.io.Serializable;
 import java.util.List;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -26,9 +28,23 @@ public class LinkIDWalletOrganization implements Serializable {
     private final boolean                       autoEnroll;
     private final List<LinkIDLocalizationValue> nameLocalizations;
     private final List<LinkIDLocalizationValue> descriptionLocalizations;
+    //
+    @Nullable
+    private final LinkIDWalletPolicyBalance     policyBalance;
+    //
+    private final LinkIDRequestStatusCode       statusCode;
 
     public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
-                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations) {
+                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
+                                    @Nullable final LinkIDWalletPolicyBalance policyBalance) {
+
+        this( id, logoUrl, expirationInSecs, sticky, autoEnroll, nameLocalizations, descriptionLocalizations, policyBalance, LinkIDRequestStatusCode.PENDING );
+
+    }
+
+    public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
+                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
+                                    @Nullable final LinkIDWalletPolicyBalance policyBalance, final LinkIDRequestStatusCode statusCode) {
 
         this.id = id;
         this.logoUrl = logoUrl;
@@ -37,6 +53,8 @@ public class LinkIDWalletOrganization implements Serializable {
         this.autoEnroll = autoEnroll;
         this.nameLocalizations = nameLocalizations;
         this.descriptionLocalizations = descriptionLocalizations;
+        this.policyBalance = policyBalance;
+        this.statusCode = statusCode;
     }
 
     // Helper methods
@@ -52,6 +70,8 @@ public class LinkIDWalletOrganization implements Serializable {
                ", autoEnroll=" + autoEnroll +
                ", nameLocalizations=" + nameLocalizations +
                ", descriptionLocalizations=" + descriptionLocalizations +
+               ", policyBalance=" + policyBalance +
+               ", status=" + statusCode +
                '}';
     }
 
@@ -91,4 +111,16 @@ public class LinkIDWalletOrganization implements Serializable {
 
         return descriptionLocalizations;
     }
+
+    @Nullable
+    public LinkIDWalletPolicyBalance getPolicyBalance() {
+
+        return policyBalance;
+    }
+
+    public LinkIDRequestStatusCode getStatusCode() {
+
+        return statusCode;
+    }
+
 }

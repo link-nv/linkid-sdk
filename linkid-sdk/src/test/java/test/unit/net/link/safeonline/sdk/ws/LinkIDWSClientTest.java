@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
@@ -51,7 +52,9 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
@@ -341,6 +344,30 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
+    public void testWalletOrganizationAdd()
+            throws Exception {
+
+        // setup
+        String logoUrl = "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png";
+        List<LinkIDLocalizationValue> nameLocalizations = new LinkedList<>();
+        nameLocalizations.add( new LinkIDLocalizationValue( "en", "iWish-en" ) );
+        nameLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish-nl" ) );
+        List<LinkIDLocalizationValue> descriptionLocalizations = new LinkedList<>();
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "en", "iWish description-en" ) );
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish description-nl" ) );
+
+        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 99999, LinkIDCurrency.EUR, null );
+
+        LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "testWallet", logoUrl, 5000, false, true, nameLocalizations,
+                descriptionLocalizations, policyBalance );
+
+        // operate
+        String name = client.walletOrganizationAdd( walletOrganization );
+        assertNotNull( name );
+        logger.dbg( "Organization name: %s\n", name );
+    }
+
+    //    @Test
     public void testWalletOrganizationList()
             throws Exception {
 
@@ -348,7 +375,7 @@ public class LinkIDWSClientTest {
         List<String> walletOrganizationIds = Collections.singletonList( "urn:linkid:wallet:fake:visa" );
 
         // operate
-        List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, true, Locale.ENGLISH );
+        List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, LinkIDRequestStatusCode.RELEASED, false, Locale.ENGLISH );
         for (LinkIDWalletOrganizationDetails organization : organizations) {
             logger.dbg( "Organization: %s\n", organization );
         }
@@ -647,6 +674,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
+        //        client.themeRemove( "urn:be:linkid:example-mobile:theme:themeTest", false );
         client.themeRemove( "template-blue", true );
 
     }
@@ -657,7 +685,7 @@ public class LinkIDWSClientTest {
 
         // operate
         //            LinkIDThemes linkIDThemes = client.themes( "urn:be:linkid:example-mobile:theme:themeTest", null );
-        LinkIDThemes linkIDThemes = client.themes( null, null );
+        LinkIDThemes linkIDThemes = client.themeList( null, null );
         assertNotNull( linkIDThemes );
         for (LinkIDTheme linkIDTheme : linkIDThemes.getThemes()) {
             logger.dbg( "Theme: %s", linkIDTheme );

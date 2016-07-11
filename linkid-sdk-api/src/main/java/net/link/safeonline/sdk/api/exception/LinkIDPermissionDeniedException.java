@@ -16,4 +16,9 @@ package net.link.safeonline.sdk.api.exception;
  */
 public class LinkIDPermissionDeniedException extends RuntimeException {
 
+    public LinkIDPermissionDeniedException(final String message) {
+
+        super( message );
+    }
+
 }

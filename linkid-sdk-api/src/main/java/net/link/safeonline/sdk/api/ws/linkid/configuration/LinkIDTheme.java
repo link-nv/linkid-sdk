@@ -1,7 +1,7 @@
 package net.link.safeonline.sdk.api.ws.linkid.configuration;
 
 import java.io.Serializable;
-import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
+import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 
 
 /**
@@ -12,21 +12,21 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode;
 @SuppressWarnings("unused")
 public class LinkIDTheme implements Serializable {
 
-    private final String                name;
-    private final String                friendlyName;
-    private final LinkIDThemeStatusCode status;
-    private final boolean               defaultTheme;
-    private final boolean               owner;
+    private final String                  name;
+    private final String                  friendlyName;
+    private final LinkIDRequestStatusCode status;
+    private final boolean                 defaultTheme;
+    private final boolean                 owner;
     //
-    private final LinkIDLocalizedImages logo;
-    private final LinkIDLocalizedImages background;
-    private final LinkIDLocalizedImages tabletBackground;
-    private final LinkIDLocalizedImages alternativeBackground;
+    private final LinkIDLocalizedImages   logo;
+    private final LinkIDLocalizedImages   background;
+    private final LinkIDLocalizedImages   tabletBackground;
+    private final LinkIDLocalizedImages   alternativeBackground;
     //
-    private final String                backgroundColor;
-    private final String                textColor;
+    private final String                  backgroundColor;
+    private final String                  textColor;
 
-    public LinkIDTheme(final String name, final String friendlyName, final LinkIDThemeStatusCode status, final boolean defaultTheme, final boolean owner,
+    public LinkIDTheme(final String name, final String friendlyName, final LinkIDRequestStatusCode status, final boolean defaultTheme, final boolean owner,
                        final LinkIDLocalizedImages logo, final LinkIDLocalizedImages background, final LinkIDLocalizedImages tabletBackground,
                        final LinkIDLocalizedImages alternativeBackground, final String backgroundColor, final String textColor) {
 
@@ -75,7 +75,7 @@ public class LinkIDTheme implements Serializable {
         return friendlyName;
     }
 
-    public LinkIDThemeStatusCode getStatus() {
+    public LinkIDRequestStatusCode getStatus() {
 
         return status;
     }
