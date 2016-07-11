@@ -1062,6 +1062,8 @@ public class LinkIDServiceUtils {
                 return LinkIDVoucherRewardErrorCode.ERROR_UNKNOWN_USER;
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherRewardErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
+            case ERROR_INACTIVE_VOUCHER:
+                return LinkIDVoucherRewardErrorCode.ERROR_INACTIVE_VOUCHER;
             case ERROR_PERMISSION_DENIED:
                 throw new LinkIDPermissionDeniedException();
             case ERROR_UNEXPECTED:

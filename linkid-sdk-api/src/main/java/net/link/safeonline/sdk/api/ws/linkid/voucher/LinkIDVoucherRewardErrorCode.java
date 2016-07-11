@@ -11,4 +11,5 @@ public enum LinkIDVoucherRewardErrorCode {
 
     ERROR_UNKNOWN_USER,
     ERROR_UNKNOWN_VOUCHER_ORGANIZATION,
+    ERROR_INACTIVE_VOUCHER
 }

@@ -58,6 +58,11 @@
 					<documentation>No such user</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.inactive.voucher">
+				<annotation>
+					<documentation>Voucher is inactive</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.unknown.voucher.organization">
 				<annotation>
 					<documentation>No such voucher organization</documentation>
