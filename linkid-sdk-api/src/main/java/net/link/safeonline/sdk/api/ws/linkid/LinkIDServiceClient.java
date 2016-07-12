@@ -616,12 +616,14 @@ public interface LinkIDServiceClient {
      * @param applicationFilter     optional  application filter
      * @param dateFilter            optional date filter
      * @param pageFilter            optional page filter
+     * @param language              optional language (default is en)
      *
      * @throws LinkIDVoucherOrganizationHistoryException something went wrong, check the error code in the exception
      */
-    LinkIDVoucherHistory voucherOrganizationHistory(String voucherOrganizationId, @Nullable LinkIDVoucherEventTypeFilter eventTypeFilter,
-                                                    @Nullable LinkIDUserFilter userFilter, @Nullable LinkIDApplicationFilter applicationFilter,
-                                                    @Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
+    LinkIDVoucherHistory voucherOrganizationHistory(String voucherOrganizationId,
+                                                    @Nullable LinkIDVoucherEventTypeFilter eventTypeFilter, @Nullable LinkIDUserFilter userFilter,
+                                                    @Nullable LinkIDApplicationFilter applicationFilter, @Nullable LinkIDReportDateFilter dateFilter,
+                                                    @Nullable LinkIDReportPageFilter pageFilter, @Nullable String language)
             throws LinkIDVoucherOrganizationHistoryException;
 
     /**

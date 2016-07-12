@@ -969,6 +969,11 @@
                     </annotation>
                 </element>
             </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
         </complexType>
     </element>
 
@@ -1220,6 +1225,11 @@
                     <documentation>History event ID</documentation>
                 </annotation>
             </element>
+            <element name="date" minOccurs="1" maxOccurs="1" type="dateTime">
+                <annotation>
+                    <documentation>When did the event occur</documentation>
+                </annotation>
+            </element>
             <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The voucher's organization ID</documentation>
@@ -1242,7 +1252,12 @@
             </element>
             <element name="applicationName" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
-                    <documentation>The application responsible for this event</documentation>
+                    <documentation>The id of the application responsible for this event</documentation>
+                </annotation>
+            </element>
+            <element name="applicationNameFriendly" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The friendly name of the application responsible for this event</documentation>
                 </annotation>
             </element>
             <element name="eventType" type="tns:VoucherHistoryEventType" minOccurs="1" maxOccurs="1">

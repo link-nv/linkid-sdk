@@ -211,7 +211,6 @@ import org.apache.xml.security.utils.Base64;
 import org.jetbrains.annotations.Nullable;
 
 
-
 /**
  * Created by wvdhaute
  * Date: 08/10/15
@@ -2035,8 +2034,9 @@ public class LinkIDServiceUtils {
 
     public static LinkIDVoucherHistoryEvent convert(final VoucherHistoryEvent wsEvent) {
 
-        return new LinkIDVoucherHistoryEvent( wsEvent.getId(), wsEvent.getVoucherOrganizationId(), wsEvent.getUserId(), wsEvent.getVoucherId(),
-                wsEvent.getPoints(), wsEvent.getApplicationName(), convert( wsEvent.getEventType() ) );
+        return new LinkIDVoucherHistoryEvent( wsEvent.getId(), LinkIDServiceUtils.convert( wsEvent.getDate() ), wsEvent.getVoucherOrganizationId(),
+                wsEvent.getUserId(), wsEvent.getVoucherId(), wsEvent.getPoints(), wsEvent.getApplicationName(), wsEvent.getApplicationNameFriendly(),
+                convert( wsEvent.getEventType() ) );
     }
 
     public static LinkIDVoucherHistoryEventType convert(final VoucherHistoryEventType eventType) {

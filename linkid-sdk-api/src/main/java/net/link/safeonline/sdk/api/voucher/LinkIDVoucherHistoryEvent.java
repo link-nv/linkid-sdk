@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.api.voucher;
 
 import java.io.Serializable;
+import java.util.Date;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -19,23 +20,28 @@ import org.jetbrains.annotations.Nullable;
 public class LinkIDVoucherHistoryEvent implements Serializable {
 
     private final String                        id;
+    private final Date                          date;
     private final String                        voucherOrganizationId;
     private final String                        userId;
     @Nullable
     private final String                        voucherId;
     private final long                          points;
     private final String                        applicationName;
+    private final String                        applicationNameFriendly;
     private final LinkIDVoucherHistoryEventType eventType;
 
-    public LinkIDVoucherHistoryEvent(final String id, final String voucherOrganizationId, final String userId, @Nullable final String voucherId,
-                                     final long points, final String applicationName, final LinkIDVoucherHistoryEventType eventType) {
+    public LinkIDVoucherHistoryEvent(final String id, final Date date, final String voucherOrganizationId, final String userId,
+                                     @Nullable final String voucherId, final long points, final String applicationName, final String applicationNameFriendly,
+                                     final LinkIDVoucherHistoryEventType eventType) {
 
         this.id = id;
+        this.date = date;
         this.voucherOrganizationId = voucherOrganizationId;
         this.userId = userId;
         this.voucherId = voucherId;
         this.points = points;
         this.applicationName = applicationName;
+        this.applicationNameFriendly = applicationNameFriendly;
         this.eventType = eventType;
     }
 
@@ -51,6 +57,7 @@ public class LinkIDVoucherHistoryEvent implements Serializable {
                ", voucherId='" + voucherId + '\'' +
                ", points=" + points +
                ", applicationName='" + applicationName + '\'' +
+               ", applicationNameFriendly='" + applicationNameFriendly + '\'' +
                ", eventType=" + eventType +
                '}';
     }
@@ -60,6 +67,11 @@ public class LinkIDVoucherHistoryEvent implements Serializable {
     public String getId() {
 
         return id;
+    }
+
+    public Date getDate() {
+
+        return date;
     }
 
     public String getVoucherOrganizationId() {
@@ -86,6 +98,11 @@ public class LinkIDVoucherHistoryEvent implements Serializable {
     public String getApplicationName() {
 
         return applicationName;
+    }
+
+    public String getApplicationNameFriendly() {
+
+        return applicationNameFriendly;
     }
 
     public LinkIDVoucherHistoryEventType getEventType() {

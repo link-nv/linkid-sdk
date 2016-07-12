@@ -18,8 +18,8 @@ import net.lin_k.linkid._3_1.core.*;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
-import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
+import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
@@ -1690,7 +1690,8 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     public LinkIDVoucherHistory voucherOrganizationHistory(final String voucherOrganizationId, @Nullable final LinkIDVoucherEventTypeFilter eventTypeFilter,
                                                            @Nullable final LinkIDUserFilter userFilter,
                                                            @Nullable final LinkIDApplicationFilter applicationFilter,
-                                                           @Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
+                                                           @Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
+                                                           @Nullable final String language)
             throws LinkIDVoucherOrganizationHistoryException {
 
         // request
@@ -1703,6 +1704,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         request.setApplicationFilter( LinkIDServiceUtils.convert( applicationFilter ) );
         request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
         request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
+        request.setLanguage( language );
 
         // operate
         VoucherOrganizationHistoryResponse response = getPort().voucherOrganizationHistory( request );
