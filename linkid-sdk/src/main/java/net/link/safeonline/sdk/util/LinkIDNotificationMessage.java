@@ -35,6 +35,9 @@ public class LinkIDNotificationMessage implements Serializable {
     //
     // Vouchers
     private final String                  voucherOrganizationId;
+    //
+    // ID
+    private final String                  id;
 
     public LinkIDNotificationMessage(final HttpServletRequest request) {
 
@@ -49,6 +52,7 @@ public class LinkIDNotificationMessage implements Serializable {
         this.ltqrPaymentOrderReference = request.getParameter( LinkIDNotificationConstants.LTQR_PAYMENT_ORDER_REF_PARAM );
         this.themeName = request.getParameter( LinkIDNotificationConstants.THEME_NAME_PARAM );
         this.voucherOrganizationId = request.getParameter( LinkIDNotificationConstants.VOUCHER_ORGANIZATION_ID_PARAM );
+        this.id = request.getParameter( LinkIDNotificationConstants.ID_PARAM );
     }
 
     // Helper methods
@@ -68,6 +72,7 @@ public class LinkIDNotificationMessage implements Serializable {
                ", ltqrPaymentOrderReference='" + ltqrPaymentOrderReference + '\'' +
                ", themeName='" + themeName + '\'' +
                ", voucherOrganizationId='" + voucherOrganizationId + '\'' +
+               ", id='" + id + '\'' +
                '}';
     }
 
@@ -126,5 +131,10 @@ public class LinkIDNotificationMessage implements Serializable {
     public String getVoucherOrganizationId() {
 
         return voucherOrganizationId;
+    }
+
+    public String getId() {
+
+        return id;
     }
 }

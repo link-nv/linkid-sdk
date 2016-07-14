@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.wallet;
 
 import java.io.Serializable;
 import java.util.List;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -20,21 +21,21 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings({ "InstanceVariableNamingConvention", "unused", "MethodParameterNamingConvention" })
 public class LinkIDWalletOrganizationDetails implements Serializable {
 
-    private final LinkIDWalletOrganization                 organization;
+    private final LinkIDWalletOrganization              organization;
     //
-    private final List<LinkIDWalletOrganizationPermission> permissions;
+    private final List<LinkIDApplicationPermissionType> permissions;
     //
     @Nullable
-    private final LinkIDWalletOrganizationStats            stats;
+    private final LinkIDWalletOrganizationStats         stats;
     //
     // permissions
-    private final List<String>                             permissionAddCreditApplications;
-    private final List<String>                             permissionRemoveCreditApplications;
-    private final List<String>                             permissionRemoveApplications;
-    private final List<String>                             permissionEnrollApplications;
-    private final List<String>                             permissionUseApplications;
+    private final List<String>                          permissionAddCreditApplications;
+    private final List<String>                          permissionRemoveCreditApplications;
+    private final List<String>                          permissionRemoveApplications;
+    private final List<String>                          permissionEnrollApplications;
+    private final List<String>                          permissionUseApplications;
 
-    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, final List<LinkIDWalletOrganizationPermission> permissions,
+    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, final List<LinkIDApplicationPermissionType> permissions,
                                            @Nullable final LinkIDWalletOrganizationStats stats, final List<String> permissionAddCreditApplications,
                                            final List<String> permissionRemoveCreditApplications, final List<String> permissionRemoveApplications,
                                            final List<String> permissionEnrollApplications, final List<String> permissionUseApplications) {
@@ -73,7 +74,7 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
         return organization;
     }
 
-    public List<LinkIDWalletOrganizationPermission> getPermissions() {
+    public List<LinkIDApplicationPermissionType> getPermissions() {
 
         return permissions;
     }

@@ -3,6 +3,7 @@
         elementFormDefault="qualified">
 
     <include schemaLocation="linkid-3.1-common.xsd" />
+	<include schemaLocation="linkid-3.1-application-permissions.xsd" />
 
     <!-- **************************************************************************************************************************************************
          *                                                                  Wallets                                                                       *
@@ -754,7 +755,6 @@
 		</restriction>
 	</simpleType>
 
-
     <!-- Wallet common -->
 
     <complexType name="WalletReportInfo">
@@ -779,7 +779,7 @@
                     <documentation>Wallet organization configuration</documentation>
                 </annotation>
             </element>
-			<element name="permissions" type="tns:WalletOrganizationPermission" minOccurs="0" maxOccurs="unbounded">
+			<element name="permissions" type="tns:ApplicationPermissionType" minOccurs="0" maxOccurs="unbounded">
 				<annotation>
 					<documentation>What permissions do you have?</documentation>
 				</annotation>
@@ -816,20 +816,6 @@
             </element>
         </sequence>
     </complexType>
-
-	    <simpleType name="WalletOrganizationPermission">
-		<annotation>
-			<documentation>Wallet organization permission types</documentation>
-		</annotation>
-		<restriction base="string">
-			<enumeration value="permission.add.credit" />
-			<enumeration value="permission.remove.credit" />
-			<enumeration value="permission.remove" />
-			<enumeration value="permission.enroll" />
-			<enumeration value="permission.use" />
-		</restriction>
-	</simpleType>
-
 
     <complexType name="WalletOrganization">
         <sequence>

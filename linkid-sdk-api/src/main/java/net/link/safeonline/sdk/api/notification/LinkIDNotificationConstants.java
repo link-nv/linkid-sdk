@@ -30,5 +30,8 @@ public interface LinkIDNotificationConstants {
     //
     // Vouchers
     String VOUCHER_ORGANIZATION_ID_PARAM = "voucherOrganizationId";
+    //
+    // ID
+    String ID_PARAM                      = "id";
 
 }

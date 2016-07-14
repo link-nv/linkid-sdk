@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
@@ -35,7 +36,6 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationUsers;
-import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
@@ -72,19 +72,19 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusExceptio
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionAddException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionListException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -523,45 +523,6 @@ public interface LinkIDServiceClient {
             throws LinkIDVoucherOrganizationAddUpdateException;
 
     /**
-     * Add a permission for specified voucher organization to specified application. Have to be owner of the voucher organization to do this
-     *
-     * @param voucherOrganizationId the voucher organization ID
-     * @param applicationName       the application's technical name
-     * @param permissionType        what permission to give
-     *
-     * @throws LinkIDVoucherOrganizationAddPermissionException something went wrong, check the error code in the exception
-     */
-    void voucherOrganizationAddPermission(String voucherOrganizationId, String applicationName, LinkIDVoucherPermissionType permissionType)
-            throws LinkIDVoucherOrganizationAddPermissionException;
-
-    /**
-     * Remove a permission for specified voucher organization.
-     * <p>
-     * If no application name is specified the permission for your application will be removed.
-     * If an application name is specified, you'll have to be owner of the voucher organization to remove the permission
-     *
-     * @param voucherOrganizationId the voucher organization ID
-     * @param applicationName       optional application name if the owner wants to remove the permission
-     * @param permissionType        what permission to remove
-     *
-     * @throws LinkIDVoucherOrganizationRemovePermissionException something went wrong, check the error code in the exception
-     */
-    void voucherOrganizationRemovePermission(String voucherOrganizationId, @Nullable String applicationName, LinkIDVoucherPermissionType permissionType)
-            throws LinkIDVoucherOrganizationRemovePermissionException;
-
-    /**
-     * Returns the list of permissions the caller application has for specified voucher organization
-     *
-     * @param voucherOrganizationId the voucher organization ID
-     *
-     * @return the list of permissions
-     *
-     * @throws LinkIDVoucherOrganizationListPermissionsException something went wrong, check the error code in the exception
-     */
-    List<LinkIDVoucherPermissionType> voucherOrganizationListPermissions(String voucherOrganizationId)
-            throws LinkIDVoucherOrganizationListPermissionsException;
-
-    /**
      * Returns the list of voucher organizations the caller application owns
      *
      * @param voucherOrganizationIds optional list of voucher organization IDs
@@ -708,4 +669,44 @@ public interface LinkIDServiceClient {
      * List all payment configurations
      */
     List<LinkIDPaymentConfiguration> paymentConfigurationList();
+
+    /**
+     * Add a permission for specified entity to specified application. Have to be owner of the entity behind the ID to do this
+     *
+     * @param id              the ID of the entity to give permission to ( voucher organization ID, wallet organization ID )
+     * @param applicationName the application's technical name
+     * @param permissionType  what permission to give
+     *
+     * @throws LinkIDApplicationPermissionAddException something went wrong, check the error code in the exception
+     */
+    void applicationPermissionAdd(String id, String applicationName, LinkIDApplicationPermissionType permissionType)
+            throws LinkIDApplicationPermissionAddException;
+
+    /**
+     * Remove a permission for specified entity. Have to be owner of the entity behind the ID to do this
+     * <p>
+     * If no application name is specified the permission for your application will be removed.
+     * If an application name is specified, you'll have to be owner of the entity to remove the permission
+     *
+     * @param id              the ID of the entity to give permission to ( voucher organization ID, wallet organization ID )
+     * @param applicationName optional application name if the owner wants to remove the permission
+     * @param permissionType  what permission to remove
+     *
+     * @throws LinkIDApplicationPermissionRemoveException something went wrong, check the error code in the exception
+     */
+    void applicationPermissionRemove(String id, @Nullable String applicationName, LinkIDApplicationPermissionType permissionType)
+            throws LinkIDApplicationPermissionRemoveException;
+
+    /**
+     * Returns the list of permissions the caller application has for specified entity
+     *
+     * @param id the ID of the entity to give permission to ( voucher organization ID, wallet organization ID )
+     *
+     * @return the list of permissions
+     *
+     * @throws LinkIDApplicationPermissionListException something went wrong, check the error code in the exception
+     */
+    List<LinkIDApplicationPermissionType> applicationPermissionList(String id)
+            throws LinkIDApplicationPermissionListException;
+
 }

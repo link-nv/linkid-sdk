@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
-        elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" elementFormDefault="qualified">
 
 	<annotation>
 		<documentation>
@@ -26,5 +25,6 @@
     <include schemaLocation="linkid-3.1-themes.xsd" />
     <include schemaLocation="linkid-3.1-vouchers.xsd" />
     <include schemaLocation="linkid-3.1-payment-configuration.xsd" />
+    <include schemaLocation="linkid-3.1-application-permissions.xsd" />
 
 </schema>
