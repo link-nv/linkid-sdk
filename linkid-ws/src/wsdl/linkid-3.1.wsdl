@@ -213,6 +213,12 @@
 	<message name="walletOrganizationListResponse">
 		<part name="response" element="tns:WalletOrganizationListResponse" />
 	</message>
+    <message name="walletOrganizationRemoveRequest">
+		<part name="request" element="tns:WalletOrganizationRemoveRequest" />
+	</message>
+	<message name="walletOrganizationRemoveResponse">
+		<part name="response" element="tns:WalletOrganizationRemoveResponse" />
+	</message>
 
     <!-- =================== Vouchers ================================ -->
 
@@ -472,13 +478,17 @@
 			<input message="tns:walletReleaseRequest" />
 			<output message="tns:walletReleaseResponse" />
 		</operation>
+		<operation name="walletOrganizationAdd">
+			<input message="tns:walletOrganizationAddRequest" />
+			<output message="tns:walletOrganizationAddResponse" />
+		</operation>
 		<operation name="walletOrganizationList">
 			<input message="tns:walletOrganizationListRequest" />
 			<output message="tns:walletOrganizationListResponse" />
 		</operation>
-		<operation name="walletOrganizationAdd">
-			<input message="tns:walletOrganizationAddRequest" />
-			<output message="tns:walletOrganizationAddResponse" />
+		<operation name="walletOrganizationRemove">
+			<input message="tns:walletOrganizationRemoveRequest" />
+			<output message="tns:walletOrganizationRemoveResponse" />
 		</operation>
 		<operation name="voucherReward">
 			<input message="tns:voucherRewardRequest" />
@@ -842,6 +852,15 @@
         </operation>
         <operation name="walletOrganizationList">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletOrganizationList" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="walletOrganizationRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:walletOrganizationRemove" />
             <input>
                 <soap:body use="literal" />
             </input>

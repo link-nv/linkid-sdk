@@ -92,6 +92,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -455,6 +456,17 @@ public interface LinkIDServiceClient {
     List<LinkIDWalletOrganizationDetails> walletOrganizationList(@Nullable List<String> walletOrganizationIds,
                                                                  @Nullable LinkIDRequestStatusCode requestStatusCode, boolean includeStats,
                                                                  @Nullable Locale locale);
+
+    /**
+     * Request to remove a linkID wallet organization
+     *
+     * @param walletOrganizationId the wallet organization ID
+     * @param removeReleased       is the wallet organization a pending wallet organization or an already released one
+     *
+     * @throws LinkIDWalletOrganizationRemoveException something went wrong, check the error code and info message
+     */
+    void walletOrganizationRemove(String walletOrganizationId, boolean removeReleased)
+            throws LinkIDWalletOrganizationRemoveException;
 
     /**
      * Add points for specified user and specified voucher organization.

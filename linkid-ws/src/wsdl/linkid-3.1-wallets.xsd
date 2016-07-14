@@ -755,6 +755,63 @@
 		</restriction>
 	</simpleType>
 
+	<!-- Wallet organizations: remove -->
+
+	<element name="WalletOrganizationRemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the wallet organization</documentation>
+                    </annotation>
+                </element>
+                <element name="removeReleased" type="boolean" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Remove a released wallet organization or a pending?</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="WalletOrganizationRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletOrganizationRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletOrganizationRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="WalletOrganizationRemoveSuccess">
+    </complexType>
+
+    <complexType name="WalletOrganizationRemoveError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+		<attribute name="errorCode" type="tns:WalletOrganizationRemoveErrorCode" use="optional" />
+    </complexType>
+
+    <simpleType name="WalletOrganizationRemoveErrorCode">
+		<annotation>
+			<documentation>Wallet organization list error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet.organization">
+				<annotation>
+					<documentation>No such voucher organization</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
     <!-- Wallet common -->
 
     <complexType name="WalletReportInfo">

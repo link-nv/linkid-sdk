@@ -113,6 +113,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletCommitException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -1271,6 +1272,33 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void walletOrganizationRemove(final String walletOrganizationId, final boolean removeReleased)
+            throws LinkIDWalletOrganizationRemoveException {
+
+        // request
+        WalletOrganizationRemoveRequest request = new WalletOrganizationRemoveRequest();
+
+        // input
+        request.setWalletOrganizationId( walletOrganizationId );
+        request.setRemoveReleased( removeReleased );
+
+        // operate
+        WalletOrganizationRemoveResponse response = getPort().walletOrganizationRemove( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+
+        } else if (null != response.getSuccess()) {
+            // do nothing
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
     }
 
     @Override

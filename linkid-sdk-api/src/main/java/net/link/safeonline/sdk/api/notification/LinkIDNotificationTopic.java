@@ -33,6 +33,8 @@ public enum LinkIDNotificationTopic {
     THEME_UPDATE( "urn:net:lin-k:linkid:topic:theme:update" ),
     THEME_REMOVAL_SUCCESS( "urn:net:lin-k:linkid:topic:theme:removal:success" ),
     THEME_REMOVAL_REJECTED( "urn:net:lin-k:linkid:topic:theme:removal:rejected" ),
+    WALLET_ORGANIZATION_REMOVAL_SUCCESS( "urn:net:lin-k:linkid:topic:wallet:organization:removal:success" ),
+    WALLET_ORGANIZATION_REMOVAL_REJECTED( "urn:net:lin-k:linkid:topic:wallet:organization:removal:rejected" ),
     VOUCHER_REWARD( "urn:net:lin-k:linkid:topic:voucher:reward" ),
     VOUCHER_ACTIVATE( "urn:net:lin-k:linkid:topic:voucher:activate" ),
     VOUCHER_REDEEM( "urn:net:lin-k:linkid:topic:voucher:redeem" ),

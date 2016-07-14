@@ -99,6 +99,7 @@ import net.lin_k.linkid._3_1.core.WalletOrganization;
 import net.lin_k.linkid._3_1.core.WalletOrganizationAddError;
 import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
 import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
+import net.lin_k.linkid._3_1.core.WalletOrganizationRemoveError;
 import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
 import net.lin_k.linkid._3_1.core.WalletPolicyBalance;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
@@ -200,6 +201,8 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationRemoveErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
@@ -2273,6 +2276,23 @@ public class LinkIDServiceUtils {
                     throw new LinkIDWalletOrganizationAddException( error.getErrorMessage(), LinkIDWalletOrganizationAddErrorCode.ERROR_LOGO_SIZE );
                 case ERROR_LOGO_DIMENSION:
                     throw new LinkIDWalletOrganizationAddException( error.getErrorMessage(), LinkIDWalletOrganizationAddErrorCode.ERROR_LOGO_DIMENSION );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+    }
+
+    public static void handle(final WalletOrganizationRemoveError error)
+            throws LinkIDWalletOrganizationRemoveException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_WALLET_ORGANIZATION:
+                    throw new LinkIDWalletOrganizationRemoveException( error.getErrorMessage(),
+                            LinkIDWalletOrganizationRemoveErrorCode.ERROR_UNKNOWN_WALLET_ORGANIZATION );
             }
         } else {
             throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
