@@ -5,11 +5,11 @@
  * linkID Inc. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.ws.linkid.voucher;
+package net.link.safeonline.sdk.api.ws.linkid.permissions;
 
-public enum LinkIDVoucherOrganizationAddPermissionErrorCode {
+public enum LinkIDApplicationPermissionAddErrorCode {
 
-    ERROR_UNKNOWN_VOUCHER_ORGANIZATION,
+    ERROR_UNKNOWN_ID,
     ERROR_UNKNOWN_APPLICATION,
 
 }

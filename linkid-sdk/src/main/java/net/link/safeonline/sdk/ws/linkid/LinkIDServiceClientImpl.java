@@ -31,6 +31,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
@@ -51,7 +52,6 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
-import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
@@ -92,19 +92,19 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusExceptio
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionAddException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionListException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
@@ -1447,112 +1447,6 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public void voucherOrganizationAddPermission(final String voucherOrganizationId, final String applicationName,
-                                                 final LinkIDVoucherPermissionType permissionType)
-            throws LinkIDVoucherOrganizationAddPermissionException {
-
-        // request
-        VoucherOrganizationAddPermissionRequest request = new VoucherOrganizationAddPermissionRequest();
-
-        // input
-        request.setVoucherOrganizationId( voucherOrganizationId );
-        request.setApplicationName( applicationName );
-        request.setPermissionType( LinkIDServiceUtils.convert( permissionType ) );
-
-        // operate
-        VoucherOrganizationAddPermissionResponse response = getPort().voucherOrganizationAddPermission( request );
-
-        // convert response
-        if (null != response.getError()) {
-
-            if (null != response.getError().getErrorCode()) {
-                throw new LinkIDVoucherOrganizationAddPermissionException( response.getError().getErrorMessage(),
-                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            } else {
-                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
-            }
-        }
-
-        if (null != response.getSuccess()) {
-            return;
-        }
-
-        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
-    }
-
-    @Override
-    public void voucherOrganizationRemovePermission(final String voucherOrganizationId, @Nullable final String applicationName,
-                                                    final LinkIDVoucherPermissionType permissionType)
-            throws LinkIDVoucherOrganizationRemovePermissionException {
-
-        // request
-        VoucherOrganizationRemovePermissionRequest request = new VoucherOrganizationRemovePermissionRequest();
-
-        // input
-        request.setVoucherOrganizationId( voucherOrganizationId );
-        request.setApplicationName( applicationName );
-        request.setPermissionType( LinkIDServiceUtils.convert( permissionType ) );
-
-        // operate
-        VoucherOrganizationRemovePermissionResponse response = getPort().voucherOrganizationRemovePermission( request );
-
-        // convert response
-        if (null != response.getError()) {
-
-            if (null != response.getError().getErrorCode()) {
-                throw new LinkIDVoucherOrganizationRemovePermissionException( response.getError().getErrorMessage(),
-                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            } else {
-                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
-            }
-        }
-
-        if (null != response.getSuccess()) {
-            return;
-        }
-
-        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
-    }
-
-    @Override
-    public List<LinkIDVoucherPermissionType> voucherOrganizationListPermissions(final String voucherOrganizationId)
-            throws LinkIDVoucherOrganizationListPermissionsException {
-
-        // request
-        VoucherOrganizationListPermissionsRequest request = new VoucherOrganizationListPermissionsRequest();
-
-        // input
-        request.setVoucherOrganizationId( voucherOrganizationId );
-
-        // operate
-        VoucherOrganizationListPermissionsResponse response = getPort().voucherOrganizationListPermissions( request );
-
-        // convert response
-        if (null != response.getError()) {
-
-            if (null != response.getError().getErrorCode()) {
-                throw new LinkIDVoucherOrganizationListPermissionsException( response.getError().getErrorMessage(),
-                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            } else {
-                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
-            }
-        }
-
-        if (null != response.getSuccess()) {
-
-            List<LinkIDVoucherPermissionType> permissions = Lists.newLinkedList();
-
-            for (VoucherOrganizationPermissionType permissionType : response.getSuccess().getPermissions()) {
-                permissions.add( LinkIDServiceUtils.convert( permissionType ) );
-            }
-
-            return permissions;
-        }
-
-        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
-    }
-
-    @Override
     public List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable final List<String> voucherOrganizationIds, final boolean includeStats) {
 
         // request
@@ -1960,6 +1854,94 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void applicationPermissionAdd(final String id, final String applicationName, final LinkIDApplicationPermissionType permissionType)
+            throws LinkIDApplicationPermissionAddException {
+
+        // request
+        ApplicationPermissionAddRequest request = new ApplicationPermissionAddRequest();
+
+        // input
+        request.setId( id );
+        request.setApplicationName( applicationName );
+        request.setPermissionType( LinkIDServiceUtils.convert( permissionType ) );
+
+        // operate
+        ApplicationPermissionAddResponse response = getPort().applicationPermissionAdd( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
+    }
+
+    @Override
+    public void applicationPermissionRemove(final String id, @Nullable final String applicationName, final LinkIDApplicationPermissionType permissionType)
+            throws LinkIDApplicationPermissionRemoveException {
+
+        // request
+        ApplicationPermissionRemoveRequest request = new ApplicationPermissionRemoveRequest();
+
+        // input
+        request.setId( id );
+        request.setApplicationName( applicationName );
+        request.setPermissionType( LinkIDServiceUtils.convert( permissionType ) );
+
+        // operate
+        ApplicationPermissionRemoveResponse response = getPort().applicationPermissionRemove( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public List<LinkIDApplicationPermissionType> applicationPermissionList(final String id)
+            throws LinkIDApplicationPermissionListException {
+
+        // request
+        ApplicationPermissionListRequest request = new ApplicationPermissionListRequest();
+
+        // input
+        request.setId( id );
+
+        // operate
+        ApplicationPermissionListResponse response = getPort().applicationPermissionList( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDApplicationPermissionType> permissions = Lists.newLinkedList();
+
+            for (ApplicationPermissionType permissionType : response.getSuccess().getPermissions()) {
+                permissions.add( LinkIDServiceUtils.convert( permissionType ) );
+            }
+
+            return permissions;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
     }
 
 }

@@ -32,6 +32,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
@@ -49,7 +50,6 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEventType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
-import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
@@ -72,8 +72,8 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushContent;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatus;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionAddException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
@@ -716,51 +716,6 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testVoucherOrganizationAddPermission()
-            throws Exception {
-
-        // operate
-        try {
-            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.LIST );
-            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REWARD );
-            client.voucherOrganizationAddPermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REDEEM );
-        }
-        catch (LinkIDVoucherOrganizationAddPermissionException e) {
-            fail();
-        }
-    }
-
-    //    @Test
-    public void testVoucherOrganizationRemovePermission()
-            throws Exception {
-
-        // operate
-        try {
-            //            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", null, LinkIDVoucherPermissionType.LIST );
-            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.LIST );
-            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REWARD );
-            client.voucherOrganizationRemovePermission( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDVoucherPermissionType.REDEEM );
-        }
-        catch (LinkIDVoucherOrganizationRemovePermissionException e) {
-            fail();
-        }
-    }
-
-    //    @Test
-    public void testVoucherOrganizationListPermissions()
-            throws Exception {
-
-        // operate
-        List<LinkIDVoucherPermissionType> permissions = client.voucherOrganizationListPermissions( "urn:be:linkid:example-mobile:theme:test" );
-
-        // verify
-        assertNotNull( permissions );
-        for (LinkIDVoucherPermissionType permission : permissions) {
-            logger.dbg( "Permission: %s", permission );
-        }
-    }
-
-    //    @Test
     public void testVoucherOrganizationList()
             throws Exception {
 
@@ -965,6 +920,46 @@ public class LinkIDWSClientTest {
         assertNotNull( paymentConfigurations );
         for (LinkIDPaymentConfiguration configuration : paymentConfigurations) {
             logger.inf( "Payment configuration: %s", configuration );
+        }
+    }
+
+    //    @Test
+    public void testApplicationPermissionAdd()
+            throws Exception {
+
+        // operate
+        try {
+            client.applicationPermissionAdd( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDApplicationPermissionType.VOUCHER_LIST );
+        }
+        catch (LinkIDApplicationPermissionAddException e) {
+            fail();
+        }
+    }
+
+    //    @Test
+    public void testApplicationPermissionRemove()
+            throws Exception {
+
+        // operate
+        try {
+            client.applicationPermissionRemove( "urn:be:linkid:example-mobile:theme:test", "linkID-oper", LinkIDApplicationPermissionType.VOUCHER_LIST );
+        }
+        catch (LinkIDApplicationPermissionRemoveException e) {
+            fail();
+        }
+    }
+
+    //    @Test
+    public void testApplicationPermissionList()
+            throws Exception {
+
+        // operate
+        List<LinkIDApplicationPermissionType> permissions = client.applicationPermissionList( "urn:be:linkid:example-mobile:theme:test" );
+
+        // verify
+        assertNotNull( permissions );
+        for (LinkIDApplicationPermissionType permission : permissions) {
+            logger.dbg( "Permission: %s", permission );
         }
     }
 

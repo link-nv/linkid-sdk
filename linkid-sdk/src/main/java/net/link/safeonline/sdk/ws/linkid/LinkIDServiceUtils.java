@@ -14,6 +14,10 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.lin_k.linkid._3_1.core.ApplicationFilter;
+import net.lin_k.linkid._3_1.core.ApplicationPermissionAddError;
+import net.lin_k.linkid._3_1.core.ApplicationPermissionListError;
+import net.lin_k.linkid._3_1.core.ApplicationPermissionRemoveError;
+import net.lin_k.linkid._3_1.core.ApplicationPermissionType;
 import net.lin_k.linkid._3_1.core.AuthAuthenticationState;
 import net.lin_k.linkid._3_1.core.AuthCancelErrorCode;
 import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
@@ -77,16 +81,12 @@ import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganization;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationActivateErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationAddPermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationDetails;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationHistoryErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationListPermissionsErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListUsersErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationPermissionType;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemoveErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationRemovePermissionErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationStats;
 import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherRewardErrorCode;
@@ -99,7 +99,6 @@ import net.lin_k.linkid._3_1.core.WalletOrganization;
 import net.lin_k.linkid._3_1.core.WalletOrganizationAddError;
 import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
 import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
-import net.lin_k.linkid._3_1.core.WalletOrganizationPermission;
 import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
 import net.lin_k.linkid._3_1.core.WalletPolicyBalance;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
@@ -127,6 +126,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
 import net.link.safeonline.sdk.api.qr.LinkIDQRInfo;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
@@ -147,10 +147,8 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEventType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationStats;
-import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
-import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationPermission;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
 import net.link.safeonline.sdk.api.ws.LinkIDWSQueryConstants;
@@ -179,18 +177,21 @@ import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentStatusErrorCod
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationAddErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.paymentconfiguration.LinkIDPaymentConfigurationUpdateErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionAddErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionAddException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionListErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionListException;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionRemoveErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddPermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListPermissionsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemovePermissionErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletAddCreditErrorCode;
@@ -1781,111 +1782,6 @@ public class LinkIDServiceUtils {
         return values;
     }
 
-    public static VoucherOrganizationPermissionType convert(final LinkIDVoucherPermissionType permissionType) {
-
-        if (null == permissionType) {
-            return null;
-        }
-
-        switch (permissionType) {
-
-            case REWARD:
-                return VoucherOrganizationPermissionType.PERMISSION_REWARD;
-            case LIST:
-                return VoucherOrganizationPermissionType.PERMISSION_LIST;
-            case REDEEM:
-                return VoucherOrganizationPermissionType.PERMISSION_REDEEM;
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected permission type %s!", permissionType.name() ) );
-
-    }
-
-    public static LinkIDVoucherPermissionType convert(final VoucherOrganizationPermissionType permissionType) {
-
-        if (null == permissionType) {
-            return null;
-        }
-
-        switch (permissionType) {
-
-            case PERMISSION_REWARD:
-                return LinkIDVoucherPermissionType.REWARD;
-            case PERMISSION_LIST:
-                return LinkIDVoucherPermissionType.LIST;
-            case PERMISSION_REDEEM:
-                return LinkIDVoucherPermissionType.REDEEM;
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected permission type %s!", permissionType.name() ) );
-
-    }
-
-    public static LinkIDVoucherOrganizationAddPermissionErrorCode convert(final VoucherOrganizationAddPermissionErrorCode errorCode) {
-
-        if (null == errorCode) {
-            return null;
-        }
-
-        switch (errorCode) {
-
-            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
-                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
-            case ERROR_UNKNOWN_APPLICATION:
-                return LinkIDVoucherOrganizationAddPermissionErrorCode.ERROR_UNKNOWN_APPLICATION;
-            case ERROR_PERMISSION_DENIED:
-                throw new LinkIDPermissionDeniedException( errorCode.value() );
-            case ERROR_UNEXPECTED:
-                throw new LinkIDUnexpectedException( errorCode.value() );
-            case ERROR_MAINTENANCE:
-                throw new LinkIDMaintenanceException( errorCode.value() );
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
-    }
-
-    public static LinkIDVoucherOrganizationRemovePermissionErrorCode convert(final VoucherOrganizationRemovePermissionErrorCode errorCode) {
-
-        if (null == errorCode) {
-            return null;
-        }
-
-        switch (errorCode) {
-
-            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
-                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
-            case ERROR_UNKNOWN_APPLICATION:
-                return LinkIDVoucherOrganizationRemovePermissionErrorCode.ERROR_UNKNOWN_APPLICATION;
-            case ERROR_PERMISSION_DENIED:
-                throw new LinkIDPermissionDeniedException( errorCode.value() );
-            case ERROR_UNEXPECTED:
-                throw new LinkIDUnexpectedException( errorCode.value() );
-            case ERROR_MAINTENANCE:
-                throw new LinkIDMaintenanceException( errorCode.value() );
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
-    }
-
-    public static LinkIDVoucherOrganizationListPermissionsErrorCode convert(final VoucherOrganizationListPermissionsErrorCode errorCode) {
-
-        if (null == errorCode) {
-            return null;
-        }
-
-        switch (errorCode) {
-
-            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
-                return LinkIDVoucherOrganizationListPermissionsErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
-            case ERROR_UNEXPECTED:
-                throw new LinkIDUnexpectedException( errorCode.value() );
-            case ERROR_MAINTENANCE:
-                throw new LinkIDMaintenanceException( errorCode.value() );
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
-    }
-
     public static void convert(final VoucherOrganizationListErrorCode errorCode) {
 
         switch (errorCode) {
@@ -1909,6 +1805,8 @@ public class LinkIDServiceUtils {
 
         switch (errorCode) {
 
+            case ERROR_INVALID_ARGUMENT:
+                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_INVALID_ARGUMENT;
             case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
                 return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
@@ -2034,8 +1932,8 @@ public class LinkIDServiceUtils {
 
     public static LinkIDVoucherHistoryEvent convert(final VoucherHistoryEvent wsEvent) {
 
-        return new LinkIDVoucherHistoryEvent( wsEvent.getId(), LinkIDServiceUtils.convert( wsEvent.getDate() ), wsEvent.getVoucherOrganizationId(),
-                wsEvent.getUserId(), wsEvent.getVoucherId(), wsEvent.getPoints(), wsEvent.getApplicationName(), wsEvent.getApplicationNameFriendly(),
+        return new LinkIDVoucherHistoryEvent( wsEvent.getId(), convert( wsEvent.getDate() ), wsEvent.getVoucherOrganizationId(), wsEvent.getUserId(),
+                wsEvent.getVoucherId(), wsEvent.getPoints(), wsEvent.getApplicationName(), wsEvent.getApplicationNameFriendly(),
                 convert( wsEvent.getEventType() ) );
     }
 
@@ -2136,34 +2034,15 @@ public class LinkIDServiceUtils {
 
     }
 
-    private static List<LinkIDWalletOrganizationPermission> convertPermissions(final List<WalletOrganizationPermission> permissions) {
+    private static List<LinkIDApplicationPermissionType> convertPermissions(final List<ApplicationPermissionType> permissions) {
 
-        List<LinkIDWalletOrganizationPermission> sdkPermissions = Lists.newLinkedList();
+        List<LinkIDApplicationPermissionType> sdkPermissions = Lists.newLinkedList();
 
-        for (WalletOrganizationPermission permission : permissions) {
+        for (ApplicationPermissionType permission : permissions) {
             sdkPermissions.add( convert( permission ) );
         }
 
         return sdkPermissions;
-    }
-
-    private static LinkIDWalletOrganizationPermission convert(final WalletOrganizationPermission permission) {
-
-        switch (permission) {
-
-            case PERMISSION_ADD_CREDIT:
-                return LinkIDWalletOrganizationPermission.ADD_CREDIT;
-            case PERMISSION_REMOVE_CREDIT:
-                return LinkIDWalletOrganizationPermission.REMOVE_CREDIT;
-            case PERMISSION_REMOVE:
-                return LinkIDWalletOrganizationPermission.REMOVE;
-            case PERMISSION_ENROLL:
-                return LinkIDWalletOrganizationPermission.ENROLL;
-            case PERMISSION_USE:
-                return LinkIDWalletOrganizationPermission.USE;
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected permission %s!", permission.name() ) );
     }
 
     public static LinkIDWalletOrganization convert(final WalletOrganization request) {
@@ -2398,5 +2277,123 @@ public class LinkIDServiceUtils {
         } else {
             throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
         }
+    }
+
+    public static ApplicationPermissionType convert(final LinkIDApplicationPermissionType permissionType) {
+
+        if (null == permissionType) {
+            return null;
+        }
+
+        switch (permissionType) {
+
+            case WALLET_ADD_CREDIT:
+                return ApplicationPermissionType.PERMISSION_WALLET_ADD_CREDIT;
+            case WALLET_REMOVE_CREDIT:
+                return ApplicationPermissionType.PERMISSION_WALLET_REMOVE_CREDIT;
+            case WALLET_REMOVE:
+                return ApplicationPermissionType.PERMISSION_WALLET_REMOVE;
+            case WALLET_ENROLL:
+                return ApplicationPermissionType.PERMISSION_WALLET_ENROLL;
+            case WALLET_USE:
+                return ApplicationPermissionType.PERMISSION_WALLET_USE;
+            case VOUCHER_REWARD:
+                return ApplicationPermissionType.PERMISSION_VOUCHER_REWARD;
+            case VOUCHER_LIST:
+                return ApplicationPermissionType.PERMISSION_VOUCHER_LIST;
+            case VOUCHER_REDEEM:
+                return ApplicationPermissionType.PERMISSION_VOUCHER_REDEEM;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected permission type %s!", permissionType.name() ) );
+
+    }
+
+    public static LinkIDApplicationPermissionType convert(final ApplicationPermissionType permissionType) {
+
+        if (null == permissionType) {
+            return null;
+        }
+
+        switch (permissionType) {
+
+            case PERMISSION_WALLET_ADD_CREDIT:
+                return LinkIDApplicationPermissionType.WALLET_ADD_CREDIT;
+            case PERMISSION_WALLET_REMOVE_CREDIT:
+                return LinkIDApplicationPermissionType.WALLET_REMOVE_CREDIT;
+            case PERMISSION_WALLET_REMOVE:
+                return LinkIDApplicationPermissionType.WALLET_REMOVE;
+            case PERMISSION_WALLET_ENROLL:
+                return LinkIDApplicationPermissionType.WALLET_ENROLL;
+            case PERMISSION_WALLET_USE:
+                return LinkIDApplicationPermissionType.WALLET_USE;
+            case PERMISSION_VOUCHER_REWARD:
+                return LinkIDApplicationPermissionType.VOUCHER_REWARD;
+            case PERMISSION_VOUCHER_LIST:
+                return LinkIDApplicationPermissionType.VOUCHER_LIST;
+            case PERMISSION_VOUCHER_REDEEM:
+                return LinkIDApplicationPermissionType.VOUCHER_REDEEM;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected permission type %s!", permissionType.name() ) );
+
+    }
+
+    public static void handle(final ApplicationPermissionAddError error)
+            throws LinkIDApplicationPermissionAddException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_ID:
+                    throw new LinkIDApplicationPermissionAddException( error.getErrorMessage(), LinkIDApplicationPermissionAddErrorCode.ERROR_UNKNOWN_ID );
+                case ERROR_UNKNOWN_APPLICATION:
+                    throw new LinkIDApplicationPermissionAddException( error.getErrorMessage(),
+                            LinkIDApplicationPermissionAddErrorCode.ERROR_UNKNOWN_APPLICATION );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static void handle(final ApplicationPermissionRemoveError error)
+            throws LinkIDApplicationPermissionRemoveException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_ID:
+                    throw new LinkIDApplicationPermissionRemoveException( error.getErrorMessage(),
+                            LinkIDApplicationPermissionRemoveErrorCode.ERROR_UNKNOWN_ID );
+                case ERROR_UNKNOWN_APPLICATION:
+                    throw new LinkIDApplicationPermissionRemoveException( error.getErrorMessage(),
+                            LinkIDApplicationPermissionRemoveErrorCode.ERROR_UNKNOWN_APPLICATION );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static void handle(final ApplicationPermissionListError error)
+            throws LinkIDApplicationPermissionListException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_ID:
+                    throw new LinkIDApplicationPermissionListException( error.getErrorMessage(), LinkIDApplicationPermissionListErrorCode.ERROR_UNKNOWN_ID );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
     }
 }

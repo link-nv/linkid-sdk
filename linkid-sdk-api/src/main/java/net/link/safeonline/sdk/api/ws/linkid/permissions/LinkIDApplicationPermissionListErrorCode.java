@@ -5,15 +5,10 @@
  * linkID Inc. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.api.voucher;
+package net.link.safeonline.sdk.api.ws.linkid.permissions;
 
-/**
- * Created by wvdhaute
- * Date: 02/05/16
- * Time: 10:08
- */
-public enum LinkIDVoucherPermissionType {
+public enum LinkIDApplicationPermissionListErrorCode {
 
-    REWARD, LIST, REDEEM
+    ERROR_UNKNOWN_ID,
 
 }

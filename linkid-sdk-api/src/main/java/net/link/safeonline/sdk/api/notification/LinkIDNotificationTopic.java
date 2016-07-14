@@ -33,10 +33,10 @@ public enum LinkIDNotificationTopic {
     THEME_UPDATE( "urn:net:lin-k:linkid:topic:theme:update" ),
     THEME_REMOVAL_SUCCESS( "urn:net:lin-k:linkid:topic:theme:removal:success" ),
     THEME_REMOVAL_REJECTED( "urn:net:lin-k:linkid:topic:theme:removal:rejected" ),
-    VOUCHER_PERMISSION_UPDATE( "urn:net:lin-k:linkid:topic:voucher:permission:update" ),
     VOUCHER_REWARD( "urn:net:lin-k:linkid:topic:voucher:reward" ),
     VOUCHER_ACTIVATE( "urn:net:lin-k:linkid:topic:voucher:activate" ),
-    VOUCHER_REDEEM( "urn:net:lin-k:linkid:topic:voucher:redeem" );
+    VOUCHER_REDEEM( "urn:net:lin-k:linkid:topic:voucher:redeem" ),
+    PERMISSION_UPDATE( "urn:net:lin-k:linkid:topic:application:permission:update" );
 
     private final String topicUri;
 

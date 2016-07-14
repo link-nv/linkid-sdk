@@ -246,24 +246,6 @@
 	<message name="voucherOrganizationAddUpdateResponse">
 		<part name="response" element="tns:VoucherOrganizationAddUpdateResponse" />
 	</message>
-    <message name="voucherOrganizationAddPermissionRequest">
-		<part name="request" element="tns:VoucherOrganizationAddPermissionRequest" />
-	</message>
-	<message name="voucherOrganizationAddPermissionResponse">
-		<part name="response" element="tns:VoucherOrganizationAddPermissionResponse" />
-	</message>
-    <message name="voucherOrganizationRemovePermissionRequest">
-		<part name="request" element="tns:VoucherOrganizationRemovePermissionRequest" />
-	</message>
-	<message name="voucherOrganizationRemovePermissionResponse">
-		<part name="response" element="tns:VoucherOrganizationRemovePermissionResponse" />
-	</message>
-    <message name="voucherOrganizationListPermissionsRequest">
-		<part name="request" element="tns:VoucherOrganizationListPermissionsRequest" />
-	</message>
-	<message name="voucherOrganizationListPermissionsResponse">
-		<part name="response" element="tns:VoucherOrganizationListPermissionsResponse" />
-	</message>
     <message name="voucherOrganizationListRequest">
 		<part name="request" element="tns:VoucherOrganizationListRequest" />
 	</message>
@@ -349,7 +331,29 @@
 		<part name="response" element="tns:PaymentConfigurationListResponse" />
 	</message>
 
-    <!-- =========================== Ports ========================== -->
+	<!-- =================== Application permissions ==================== -->
+
+	<message name="applicationPermissionAddRequest">
+		<part name="request" element="tns:ApplicationPermissionAddRequest" />
+	</message>
+	<message name="applicationPermissionAddResponse">
+		<part name="response" element="tns:ApplicationPermissionAddResponse" />
+	</message>
+    <message name="applicationPermissionRemoveRequest">
+		<part name="request" element="tns:ApplicationPermissionRemoveRequest" />
+	</message>
+	<message name="applicationPermissionRemoveResponse">
+		<part name="response" element="tns:ApplicationPermissionRemoveResponse" />
+	</message>
+    <message name="applicationPermissionListRequest">
+		<part name="request" element="tns:ApplicationPermissionListRequest" />
+	</message>
+	<message name="applicationPermissionListResponse">
+		<part name="response" element="tns:ApplicationPermissionListResponse" />
+	</message>
+
+
+	<!-- =========================== Ports ========================== -->
 
     <portType name="LinkIDServicePort">
 		<operation name="authStart">
@@ -496,18 +500,6 @@
 			<input message="tns:voucherOrganizationAddUpdateRequest" />
 			<output message="tns:voucherOrganizationAddUpdateResponse" />
 		</operation>
-		<operation name="voucherOrganizationAddPermission">
-			<input message="tns:voucherOrganizationAddPermissionRequest" />
-			<output message="tns:voucherOrganizationAddPermissionResponse" />
-		</operation>
-		<operation name="voucherOrganizationRemovePermission">
-			<input message="tns:voucherOrganizationRemovePermissionRequest" />
-			<output message="tns:voucherOrganizationRemovePermissionResponse" />
-		</operation>
-		<operation name="voucherOrganizationListPermissions">
-			<input message="tns:voucherOrganizationListPermissionsRequest" />
-			<output message="tns:voucherOrganizationListPermissionsResponse" />
-		</operation>
 		<operation name="voucherOrganizationList">
 			<input message="tns:voucherOrganizationListRequest" />
 			<output message="tns:voucherOrganizationListResponse" />
@@ -559,6 +551,18 @@
 		<operation name="paymentConfigurationList">
 			<input message="tns:paymentConfigurationListRequest" />
 			<output message="tns:paymentConfigurationListResponse" />
+		</operation>
+		<operation name="applicationPermissionAdd">
+			<input message="tns:applicationPermissionAddRequest" />
+			<output message="tns:applicationPermissionAddResponse" />
+		</operation>
+		<operation name="applicationPermissionRemove">
+			<input message="tns:applicationPermissionRemoveRequest" />
+			<output message="tns:applicationPermissionRemoveResponse" />
+		</operation>
+		<operation name="applicationPermissionList">
+			<input message="tns:applicationPermissionListRequest" />
+			<output message="tns:applicationPermissionListResponse" />
 		</operation>
     </portType>
 
@@ -890,33 +894,6 @@
                 <soap:body use="literal" />
             </output>
         </operation>
-        <operation name="voucherOrganizationAddPermission">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationAddPermission" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="voucherOrganizationRemovePermission">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationRemovePermission" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
-        <operation name="voucherOrganizationListPermissions">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationListPermissions" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
         <operation name="voucherOrganizationList">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationList" />
             <input>
@@ -1025,9 +1002,35 @@
                 <soap:body use="literal" />
             </output>
         </operation>
-
-        <operation name="paymentConfigurationList">
+		<operation name="paymentConfigurationList">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentConfigurationList" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="applicationPermissionAdd">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:applicationPermissionAdd" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="applicationPermissionRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:applicationPermissionRemove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="applicationPermissionList">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:applicationPermissionList" />
             <input>
                 <soap:body use="literal" />
             </input>

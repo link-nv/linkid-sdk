@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ safe-online - linkid-ws
+  ~
+  ~ Copyright 2006-2016 linkID Inc. All rights reserved.
+  ~ linkID Inc. proprietary/confidential. Use is subject to license terms.
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Application permissions                                                       *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Add permission -->
+
+    <element name="ApplicationPermissionAddRequest">
+        <complexType>
+            <sequence>
+                <element name="id" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher/wallet organization</documentation>
+                    </annotation>
+                </element>
+                <element name="applicationName" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The technical name of the application</documentation>
+                    </annotation>
+                </element>
+                <element name="permissionType" type="tns:ApplicationPermissionType" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Which permission type</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ApplicationPermissionAddResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ApplicationPermissionAddSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ApplicationPermissionAddError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ApplicationPermissionAddSuccess">
+    </complexType>
+
+    <complexType name="ApplicationPermissionAddError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+		<attribute name="errorCode" type="tns:ApplicationPermissionAddErrorCode" use="optional" />
+    </complexType>
+
+    <simpleType name="ApplicationPermissionAddErrorCode">
+		<annotation>
+			<documentation>Add permission error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.id">
+				<annotation>
+					<documentation>No such wallet/voucher organization with that ID</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.application">
+				<annotation>
+					<documentation>No application with that name is connected to linkID</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Wallet organizations: remove permission -->
+
+    <element name="ApplicationPermissionRemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="id" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher/wallet organization</documentation>
+                    </annotation>
+                </element>
+                <element name="applicationName" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>The technical name of the application</documentation>
+                    </annotation>
+                </element>
+                <element name="permissionType" type="tns:ApplicationPermissionType" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Which permission type</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ApplicationPermissionRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ApplicationPermissionRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ApplicationPermissionRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ApplicationPermissionRemoveSuccess">
+    </complexType>
+
+    <complexType name="ApplicationPermissionRemoveError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+		<attribute name="errorCode" type="tns:ApplicationPermissionRemoveErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ApplicationPermissionRemoveErrorCode">
+		<annotation>
+			<documentation>Remove permission error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.id">
+				<annotation>
+					<documentation>No such wallet/voucher organization with that ID</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.application">
+				<annotation>
+					<documentation>No application with that name is connected to linkID</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Wallet organizations: list permissions -->
+
+    <element name="ApplicationPermissionListRequest">
+        <complexType>
+            <sequence>
+                <element name="id" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher/wallet organization</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ApplicationPermissionListResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ApplicationPermissionListSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ApplicationPermissionListError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ApplicationPermissionListSuccess">
+        <sequence>
+            <element name="permissions" type="tns:ApplicationPermissionType" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The list of permissions the caller application has</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ApplicationPermissionListError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+		<attribute name="errorCode" type="tns:ApplicationPermissionListErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="ApplicationPermissionListErrorCode">
+		<annotation>
+			<documentation>List permissions error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.id">
+				<annotation>
+					<documentation>No such wallet/voucher organization with that ID</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Common -->
+
+    <simpleType name="ApplicationPermissionType">
+		<annotation>
+			<documentation>Application permission types</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="permission.wallet.add.credit">
+				<annotation>
+					<documentation>Permission to add credit to wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="permission.wallet.remove.credit">
+				<annotation>
+					<documentation>Permission to remove credit from wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="permission.wallet.remove">
+				<annotation>
+					<documentation>Permission to remove a wallet</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="permission.wallet.enroll">
+				<annotation>
+					<documentation>Permission to enroll a user for a wallet organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="permission.wallet.use">
+				<annotation>
+					<documentation>Permission to use a wallet organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="permission.voucher.reward">
+				<annotation>
+					<documentation>Permission to give a reward for a voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="permission.voucher.list">
+				<annotation>
+					<documentation>Permission to list vouchers for a voucher organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="permission.voucher.redeem">
+				<annotation>
+					<documentation>Permission to redeem a voucher of a voucher organization</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
+</schema>
