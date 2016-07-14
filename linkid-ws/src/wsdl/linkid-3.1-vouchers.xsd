@@ -744,6 +744,7 @@
         </complexType>
     </element>
 
+
     <complexType name="VoucherOrganizationListUsersSuccess">
         <sequence>
             <element name="userIds" type="string" minOccurs="0" maxOccurs="unbounded">
@@ -752,6 +753,7 @@
                 </annotation>
             </element>
         </sequence>
+        <attribute name="total" type="long" use="required" />
     </complexType>
 
     <complexType name="VoucherOrganizationListUsersError">

@@ -51,6 +51,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -1590,8 +1591,9 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<String> voucherOrganizationListUsers(final String voucherOrganizationId, @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
-                                                     @Nullable final LinkIDReportPageFilter pageFilter)
+    public LinkIDVoucherOrganizationUsers voucherOrganizationListUsers(final String voucherOrganizationId,
+                                                                       @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
+                                                                       @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDVoucherOrganizationListUsersException {
 
         // request
@@ -1615,7 +1617,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         if (null != response.getSuccess()) {
-            return response.getSuccess().getUserIds();
+            return new LinkIDVoucherOrganizationUsers( response.getSuccess().getUserIds(), response.getSuccess().getTotal() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

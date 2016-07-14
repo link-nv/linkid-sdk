@@ -34,6 +34,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherPermissionType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
@@ -579,8 +580,8 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDVoucherOrganizationListUsersException something went wrong, check the error code in the exception
      */
-    List<String> voucherOrganizationListUsers(String voucherOrganizationId, @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
-                                              @Nullable final LinkIDReportPageFilter pageFilter)
+    LinkIDVoucherOrganizationUsers voucherOrganizationListUsers(String voucherOrganizationId, @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
+                                                                @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDVoucherOrganizationListUsersException;
 
     /**
@@ -620,10 +621,10 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDVoucherOrganizationHistoryException something went wrong, check the error code in the exception
      */
-    LinkIDVoucherHistory voucherOrganizationHistory(String voucherOrganizationId,
-                                                    @Nullable LinkIDVoucherEventTypeFilter eventTypeFilter, @Nullable LinkIDUserFilter userFilter,
-                                                    @Nullable LinkIDApplicationFilter applicationFilter, @Nullable LinkIDReportDateFilter dateFilter,
-                                                    @Nullable LinkIDReportPageFilter pageFilter, @Nullable String language)
+    LinkIDVoucherHistory voucherOrganizationHistory(String voucherOrganizationId, @Nullable LinkIDVoucherEventTypeFilter eventTypeFilter,
+                                                    @Nullable LinkIDUserFilter userFilter, @Nullable LinkIDApplicationFilter applicationFilter,
+                                                    @Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter,
+                                                    @Nullable String language)
             throws LinkIDVoucherOrganizationHistoryException;
 
     /**
