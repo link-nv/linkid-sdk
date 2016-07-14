@@ -767,7 +767,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        client.voucherOrganizationRemove( "urn:be:linkid:example-mobile:theme:test" );
+        client.voucherOrganizationRemove( "urn:be:linkid:example-mobile:voucher:test" );
     }
 
     //    @Test
@@ -775,7 +775,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:theme:test", true );
+        client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:voucher:test", true );
     }
 
     //    @Test
@@ -783,7 +783,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:theme:test", false );
+        client.voucherOrganizationActivate( "urn:be:linkid:example-mobile:voucher:test", false );
     }
 
     //    @Test
