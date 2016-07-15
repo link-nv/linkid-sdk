@@ -13,6 +13,11 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v4.17.0
+---
+  * WalletOrganization: add/update/remove/list support
+
+
 v4.14.0
 ---
   * net.link.safeonline.sdk.api.themes.LinkIDThemeStatusCode -> net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode
