@@ -30,8 +30,9 @@ public class LinkIDNotificationMessage implements Serializable {
     private final String                  ltqrClientSessionId;
     private final String                  ltqrPaymentOrderReference;
     //
-    // Theme
-    private final String                  themeName;
+    // URN
+    private final String                  urn;
+    private final String                  commentId;
     //
     // Vouchers
     private final String                  voucherOrganizationId;
@@ -50,7 +51,8 @@ public class LinkIDNotificationMessage implements Serializable {
         this.ltqrReference = request.getParameter( LinkIDNotificationConstants.LTQR_REF_PARAM );
         this.ltqrClientSessionId = request.getParameter( LinkIDNotificationConstants.LTQR_CLIENT_SESSION_ID_PARAM );
         this.ltqrPaymentOrderReference = request.getParameter( LinkIDNotificationConstants.LTQR_PAYMENT_ORDER_REF_PARAM );
-        this.themeName = request.getParameter( LinkIDNotificationConstants.THEME_NAME_PARAM );
+        this.urn = request.getParameter( LinkIDNotificationConstants.URN_PARAM );
+        this.commentId = request.getParameter( LinkIDNotificationConstants.COMMENT_ID_PARAM );
         this.voucherOrganizationId = request.getParameter( LinkIDNotificationConstants.VOUCHER_ORGANIZATION_ID_PARAM );
         this.id = request.getParameter( LinkIDNotificationConstants.ID_PARAM );
     }
@@ -60,20 +62,10 @@ public class LinkIDNotificationMessage implements Serializable {
     @Override
     public String toString() {
 
-        return "LinkIDNotificationMessage{" +
-               "topic=" + topic +
-               ", applicationName='" + applicationName + '\'' +
-               ", userId='" + userId + '\'' +
-               ", filter='" + filter + '\'' +
-               ", info='" + info + '\'' +
-               ", paymentOrderReference='" + paymentOrderReference + '\'' +
-               ", ltqrReference='" + ltqrReference + '\'' +
-               ", ltqrClientSessionId='" + ltqrClientSessionId + '\'' +
-               ", ltqrPaymentOrderReference='" + ltqrPaymentOrderReference + '\'' +
-               ", themeName='" + themeName + '\'' +
-               ", voucherOrganizationId='" + voucherOrganizationId + '\'' +
-               ", id='" + id + '\'' +
-               '}';
+        return "LinkIDNotificationMessage{" + "topic=" + topic + ", applicationName='" + applicationName + '\'' + ", userId='" + userId + '\'' + ", filter='"
+               + filter + '\'' + ", info='" + info + '\'' + ", paymentOrderReference='" + paymentOrderReference + '\'' + ", ltqrReference='" + ltqrReference
+               + '\'' + ", ltqrClientSessionId='" + ltqrClientSessionId + '\'' + ", ltqrPaymentOrderReference='" + ltqrPaymentOrderReference + '\'' + ", urn='"
+               + urn + '\'' + ", commentId='" + commentId + '\'' + ", voucherOrganizationId='" + voucherOrganizationId + '\'' + ", id='" + id + '\'' + '}';
     }
 
     // Accessors
@@ -123,9 +115,14 @@ public class LinkIDNotificationMessage implements Serializable {
         return ltqrPaymentOrderReference;
     }
 
-    public String getThemeName() {
+    public String getUrn() {
 
-        return themeName;
+        return urn;
+    }
+
+    public String getCommentId() {
+
+        return commentId;
     }
 
     public String getVoucherOrganizationId() {

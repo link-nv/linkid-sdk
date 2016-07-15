@@ -25,8 +25,9 @@ public interface LinkIDNotificationConstants {
     String LTQR_PAYMENT_ORDER_REF_PARAM  = "paymentOrderRef";
     String LTQR_CLIENT_SESSION_ID_PARAM  = "clientSessionId";
     //
-    // Theme
-    String THEME_NAME_PARAM              = "themeName";
+    // URN
+    String URN_PARAM                     = "urn";
+    String COMMENT_ID_PARAM              = "commentId";
     //
     // Vouchers
     String VOUCHER_ORGANIZATION_ID_PARAM = "voucherOrganizationId";
