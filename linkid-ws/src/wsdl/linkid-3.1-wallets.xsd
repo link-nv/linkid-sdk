@@ -634,6 +634,11 @@
                     <documentation>The official technical name of the wallet organization</documentation>
                 </annotation>
             </element>
+			<element name="coinName" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The official technical name of the wallet coin if applicable</documentation>
+                </annotation>
+            </element>
         </sequence>
     </complexType>
 
@@ -672,9 +677,9 @@
 		</restriction>
 	</simpleType>
 
-	<!-- Wallet organizations: update -->
+    <!-- Wallet organizations: update -->
 
-	<element name="WalletOrganizationUpdateRequest">
+    <element name="WalletOrganizationUpdateRequest">
 		<complexType>
 			<sequence>
 				<element name="organization" type="tns:WalletOrganization" minOccurs="1" maxOccurs="1">
@@ -700,6 +705,11 @@
 			<element name="name" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The official technical name of the wallet organization</documentation>
+                </annotation>
+            </element>
+			<element name="coinName" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The official technical name of the wallet coin if applicable</documentation>
                 </annotation>
             </element>
         </sequence>
@@ -828,9 +838,9 @@
 		</restriction>
 	</simpleType>
 
-	<!-- Wallet organizations: remove -->
+    <!-- Wallet organizations: remove -->
 
-	<element name="WalletOrganizationRemoveRequest">
+    <element name="WalletOrganizationRemoveRequest">
         <complexType>
             <sequence>
                 <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
@@ -982,6 +992,16 @@
             <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
                 <annotation>
                     <documentation>The wallet organization description localizations</documentation>
+                </annotation>
+            </element>
+            <element name="coinNameLocalization" type="tns:Localization" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization coin name localizations</documentation>
+                </annotation>
+            </element>
+            <element name="coinNameMultipleLocalization" type="tns:Localization" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization coin name localizations</documentation>
                 </annotation>
             </element>
 			<element name="statusCode" type="tns:RequestStatusCode" minOccurs="0" maxOccurs="1">

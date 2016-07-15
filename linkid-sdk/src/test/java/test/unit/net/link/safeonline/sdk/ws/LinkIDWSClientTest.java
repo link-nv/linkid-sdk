@@ -55,6 +55,7 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
+import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationResult;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
@@ -357,15 +358,20 @@ public class LinkIDWSClientTest {
         descriptionLocalizations.add( new LinkIDLocalizationValue( "en", "iWish description-en" ) );
         descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish description-nl" ) );
 
-        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 99999, LinkIDCurrency.EUR, null );
+        List<LinkIDLocalizationValue> coinNameLocalization = new LinkedList<>();
+        coinNameLocalization.add( new LinkIDLocalizationValue( "en", "Test coin-en" ) );
+        List<LinkIDLocalizationValue> coinNameMultipleLocalization = new LinkedList<>();
+        coinNameMultipleLocalization.add( new LinkIDLocalizationValue( "en", "Test coins-en" ) );
+
+        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 99999, null, "testCoin" );
 
         LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "testWallet", logoUrl, 5000, false, true, nameLocalizations,
-                descriptionLocalizations, policyBalance );
+                descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, policyBalance );
 
         // operate
-        String name = client.walletOrganizationAdd( walletOrganization );
-        assertNotNull( name );
-        logger.dbg( "Organization name: %s\n", name );
+        LinkIDWalletOrganizationResult result = client.walletOrganizationAdd( walletOrganization );
+        assertNotNull( result );
+        logger.dbg( "Organization result: %s\n", result );
     }
 
     @Test
@@ -381,15 +387,21 @@ public class LinkIDWSClientTest {
         descriptionLocalizations.add( new LinkIDLocalizationValue( "en", "iWish description update-en" ) );
         descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish description update-nl" ) );
 
-        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 150, LinkIDCurrency.EUR, null );
+        List<LinkIDLocalizationValue> coinNameLocalization = new LinkedList<>();
+        coinNameLocalization.add( new LinkIDLocalizationValue( "en", "Test coin update-en" ) );
+        List<LinkIDLocalizationValue> coinNameMultipleLocalization = new LinkedList<>();
+        coinNameMultipleLocalization.add( new LinkIDLocalizationValue( "en", "Test coins update-en" ) );
+
+        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 150, null,
+                "urn:be:linkid:example-mobile:wallet:organization:testWallet:coin:testCoin" );
 
         LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "urn:be:linkid:example-mobile:wallet:organization:testWallet", logoUrl,
-                5000, true, false, nameLocalizations, descriptionLocalizations, policyBalance );
+                5000, true, false, nameLocalizations, descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, policyBalance );
 
         // operate
-        String name = client.walletOrganizationUpdate( walletOrganization );
-        assertNotNull( name );
-        logger.dbg( "Organization name: %s\n", name );
+        LinkIDWalletOrganizationResult result = client.walletOrganizationUpdate( walletOrganization );
+        assertNotNull( result );
+        logger.dbg( "Organization result: %s\n", result );
     }
 
     //    @Test

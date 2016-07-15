@@ -1998,6 +1998,8 @@ public class LinkIDServiceUtils {
         wsOrganization.setPolicyBalance( convert( organization.getPolicyBalance() ) );
         wsOrganization.getNameLocalization().addAll( convertSDKLocalizations( organization.getNameLocalizations() ) );
         wsOrganization.getDescriptionLocalization().addAll( convertSDKLocalizations( organization.getDescriptionLocalizations() ) );
+        wsOrganization.getCoinNameLocalization().addAll( convertSDKLocalizations( organization.getCoinNameLocalization() ) );
+        wsOrganization.getCoinNameMultipleLocalization().addAll( convertSDKLocalizations( organization.getCoinNameMultipleLocalization() ) );
         return wsOrganization;
     }
 
@@ -2055,6 +2057,7 @@ public class LinkIDServiceUtils {
 
         return new LinkIDWalletOrganization( request.getWalletOrganizationId(), request.getLogoUrl(), request.getExpirationInSecs(), request.isSticky(),
                 request.isAutoEnroll(), convertLocalizations( request.getNameLocalization() ), convertLocalizations( request.getDescriptionLocalization() ),
+                convertLocalizations( request.getCoinNameLocalization() ), convertLocalizations( request.getCoinNameMultipleLocalization() ),
                 convert( request.getPolicyBalance() ), convert( request.getStatusCode() ) );
 
     }
