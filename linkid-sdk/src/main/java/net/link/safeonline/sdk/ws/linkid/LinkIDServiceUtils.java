@@ -101,6 +101,7 @@ import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
 import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
 import net.lin_k.linkid._3_1.core.WalletOrganizationRemoveError;
 import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
+import net.lin_k.linkid._3_1.core.WalletOrganizationUpdateError;
 import net.lin_k.linkid._3_1.core.WalletPolicyBalance;
 import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
 import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
@@ -203,6 +204,8 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddE
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationRemoveException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationUpdateErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
@@ -2276,6 +2279,29 @@ public class LinkIDServiceUtils {
                     throw new LinkIDWalletOrganizationAddException( error.getErrorMessage(), LinkIDWalletOrganizationAddErrorCode.ERROR_LOGO_SIZE );
                 case ERROR_LOGO_DIMENSION:
                     throw new LinkIDWalletOrganizationAddException( error.getErrorMessage(), LinkIDWalletOrganizationAddErrorCode.ERROR_LOGO_DIMENSION );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+    }
+
+    public static void handle(final WalletOrganizationUpdateError error)
+            throws LinkIDWalletOrganizationUpdateException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_WALLET_ORGANIZATION:
+                    throw new LinkIDWalletOrganizationUpdateException( error.getErrorMessage(),
+                            LinkIDWalletOrganizationUpdateErrorCode.ERROR_UNKNOWN_WALLET_ORGANIZATION );
+                case ERROR_LOGO_FORMAT:
+                    throw new LinkIDWalletOrganizationUpdateException( error.getErrorMessage(), LinkIDWalletOrganizationUpdateErrorCode.ERROR_LOGO_FORMAT );
+                case ERROR_LOGO_SIZE:
+                    throw new LinkIDWalletOrganizationUpdateException( error.getErrorMessage(), LinkIDWalletOrganizationUpdateErrorCode.ERROR_LOGO_SIZE );
+                case ERROR_LOGO_DIMENSION:
+                    throw new LinkIDWalletOrganizationUpdateException( error.getErrorMessage(), LinkIDWalletOrganizationUpdateErrorCode.ERROR_LOGO_DIMENSION );
             }
         } else {
             throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );

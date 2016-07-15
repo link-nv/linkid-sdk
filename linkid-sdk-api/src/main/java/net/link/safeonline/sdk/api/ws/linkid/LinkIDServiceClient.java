@@ -93,6 +93,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletEnrollException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationRemoveException;
+import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletOrganizationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReleaseException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
@@ -442,6 +443,18 @@ public interface LinkIDServiceClient {
      */
     String walletOrganizationAdd(final LinkIDWalletOrganization walletOrganization)
             throws LinkIDWalletOrganizationAddException;
+
+    /**
+     * Update aa new wallet organization request
+     *
+     * @param walletOrganization the wallet organization configuration
+     *
+     * @return the technical name of the wallet organization to be added
+     *
+     * @throws LinkIDWalletOrganizationUpdateException something went wrong, check the error code in the exception
+     */
+    String walletOrganizationUpdate(final LinkIDWalletOrganization walletOrganization)
+            throws LinkIDWalletOrganizationUpdateException;
 
     /**
      * Returns the list of wallet organizations the caller application owns

@@ -368,6 +368,30 @@ public class LinkIDWSClientTest {
         logger.dbg( "Organization name: %s\n", name );
     }
 
+    @Test
+    public void testWalletOrganizationUpdate()
+            throws Exception {
+
+        // setup
+        String logoUrl = "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png";
+        List<LinkIDLocalizationValue> nameLocalizations = new LinkedList<>();
+        nameLocalizations.add( new LinkIDLocalizationValue( "en", "iWish update-en" ) );
+        nameLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish update-nl" ) );
+        List<LinkIDLocalizationValue> descriptionLocalizations = new LinkedList<>();
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "en", "iWish description update-en" ) );
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish description update-nl" ) );
+
+        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 150, LinkIDCurrency.EUR, null );
+
+        LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "urn:be:linkid:example-mobile:wallet:organization:testWallet", logoUrl,
+                5000, true, false, nameLocalizations, descriptionLocalizations, policyBalance );
+
+        // operate
+        String name = client.walletOrganizationUpdate( walletOrganization );
+        assertNotNull( name );
+        logger.dbg( "Organization name: %s\n", name );
+    }
+
     //    @Test
     public void testWalletOrganizationList()
             throws Exception {
@@ -388,6 +412,7 @@ public class LinkIDWSClientTest {
 
         // setup
         String walletOrganizationId = "urn:be:linkid:example-mobile:wallet:organization:testWallet";
+        //        String walletOrganizationId = "urn:linkid:wallet:fake:visa";
 
         // operate
         client.walletOrganizationRemove( walletOrganizationId, false );

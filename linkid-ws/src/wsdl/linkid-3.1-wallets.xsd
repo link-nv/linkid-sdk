@@ -672,6 +672,79 @@
 		</restriction>
 	</simpleType>
 
+	<!-- Wallet organizations: update -->
+
+	<element name="WalletOrganizationUpdateRequest">
+		<complexType>
+			<sequence>
+				<element name="organization" type="tns:WalletOrganization" minOccurs="1" maxOccurs="1">
+					<annotation>
+						<documentation>The wallet organization config</documentation>
+					</annotation>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="WalletOrganizationUpdateResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:WalletOrganizationUpdateSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:WalletOrganizationUpdateError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="WalletOrganizationUpdateSuccess">
+        <sequence>
+			<element name="name" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The official technical name of the wallet organization</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletOrganizationUpdateError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+		<attribute name="errorCode" type="tns:WalletOrganizationUpdateErrorCode" use="optional" />
+    </complexType>
+
+	<simpleType name="WalletOrganizationUpdateErrorCode">
+		<annotation>
+			<documentation>Wallet organization add error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.wallet.organization">
+				<annotation>
+					<documentation>No such pending wallet organization</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.logo.format">
+				<annotation>
+					<documentation>The image format is not supported</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.logo.size">
+				<annotation>
+					<documentation>The image size is big.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.logo.dimension">
+				<annotation>
+					<documentation>The image dimension is not ok.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
 
     <!-- Wallet organizations: list -->
 
