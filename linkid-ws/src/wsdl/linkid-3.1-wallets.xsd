@@ -984,6 +984,11 @@
                     <documentation>Auto enroll users in wallet if trying to pay for an application allowed to use it</documentation>
                 </annotation>
             </element>
+            <element name="removeWalletOnUnsubscribe" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>If user unsubscribes from application that owns this wallet organization, remove the wallet with it?</documentation>
+                </annotation>
+            </element>
             <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
                 <annotation>
                     <documentation>The wallet organization name localizations</documentation>

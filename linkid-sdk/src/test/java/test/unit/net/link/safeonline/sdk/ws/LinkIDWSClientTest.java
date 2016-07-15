@@ -365,7 +365,7 @@ public class LinkIDWSClientTest {
 
         LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 99999, null, "testCoin" );
 
-        LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "testWallet", logoUrl, 5000, false, true, nameLocalizations,
+        LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "testWallet", logoUrl, 5000, false, true, true, nameLocalizations,
                 descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, policyBalance );
 
         // operate
@@ -374,7 +374,7 @@ public class LinkIDWSClientTest {
         logger.dbg( "Organization result: %s\n", result );
     }
 
-    @Test
+    //    @Test
     public void testWalletOrganizationUpdate()
             throws Exception {
 
@@ -396,7 +396,7 @@ public class LinkIDWSClientTest {
                 "urn:be:linkid:example-mobile:wallet:organization:testWallet:coin:testCoin" );
 
         LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "urn:be:linkid:example-mobile:wallet:organization:testWallet", logoUrl,
-                5000, true, false, nameLocalizations, descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, policyBalance );
+                5000, true, false, false, nameLocalizations, descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, policyBalance );
 
         // operate
         LinkIDWalletOrganizationResult result = client.walletOrganizationUpdate( walletOrganization );

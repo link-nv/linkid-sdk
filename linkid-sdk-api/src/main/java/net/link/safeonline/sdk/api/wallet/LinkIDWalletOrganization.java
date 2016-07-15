@@ -26,6 +26,7 @@ public class LinkIDWalletOrganization implements Serializable {
     private final long                          expirationInSecs;
     private final boolean                       sticky;
     private final boolean                       autoEnroll;
+    private final boolean                       removeWalletOnUnsubscribe;
     private final List<LinkIDLocalizationValue> nameLocalizations;
     private final List<LinkIDLocalizationValue> descriptionLocalizations;
     @Nullable
@@ -39,18 +40,20 @@ public class LinkIDWalletOrganization implements Serializable {
     private final LinkIDRequestStatusCode       statusCode;
 
     public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
-                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
+                                    final boolean removeWalletOnUnsubscribe, final List<LinkIDLocalizationValue> nameLocalizations,
+                                    final List<LinkIDLocalizationValue> descriptionLocalizations,
                                     @Nullable final List<LinkIDLocalizationValue> coinNameLocalization,
                                     @Nullable final List<LinkIDLocalizationValue> coinNameMultipleLocalization,
                                     @Nullable final LinkIDWalletPolicyBalance policyBalance) {
 
-        this( id, logoUrl, expirationInSecs, sticky, autoEnroll, nameLocalizations, descriptionLocalizations, coinNameLocalization,
+        this( id, logoUrl, expirationInSecs, sticky, autoEnroll, removeWalletOnUnsubscribe, nameLocalizations, descriptionLocalizations, coinNameLocalization,
                 coinNameMultipleLocalization, policyBalance, LinkIDRequestStatusCode.PENDING );
 
     }
 
     public LinkIDWalletOrganization(final String id, final String logoUrl, final long expirationInSecs, final boolean sticky, final boolean autoEnroll,
-                                    final List<LinkIDLocalizationValue> nameLocalizations, final List<LinkIDLocalizationValue> descriptionLocalizations,
+                                    final boolean removeWalletOnUnsubscribe, final List<LinkIDLocalizationValue> nameLocalizations,
+                                    final List<LinkIDLocalizationValue> descriptionLocalizations,
                                     @Nullable final List<LinkIDLocalizationValue> coinNameLocalization,
                                     @Nullable final List<LinkIDLocalizationValue> coinNameMultipleLocalization,
                                     @Nullable final LinkIDWalletPolicyBalance policyBalance, final LinkIDRequestStatusCode statusCode) {
@@ -60,6 +63,7 @@ public class LinkIDWalletOrganization implements Serializable {
         this.expirationInSecs = expirationInSecs;
         this.sticky = sticky;
         this.autoEnroll = autoEnroll;
+        this.removeWalletOnUnsubscribe = removeWalletOnUnsubscribe;
         this.nameLocalizations = nameLocalizations;
         this.descriptionLocalizations = descriptionLocalizations;
         this.coinNameLocalization = coinNameLocalization;
@@ -74,9 +78,9 @@ public class LinkIDWalletOrganization implements Serializable {
     public String toString() {
 
         return "LinkIDWalletOrganization{" + "id='" + id + '\'' + ", logoUrl='" + logoUrl + '\'' + ", expirationInSecs=" + expirationInSecs + ", sticky="
-               + sticky + ", autoEnroll=" + autoEnroll + ", nameLocalizations=" + nameLocalizations + ", descriptionLocalizations=" + descriptionLocalizations
-               + ", coinNameLocalization=" + coinNameLocalization + ", coinNameMultipleLocalization=" + coinNameMultipleLocalization + ", policyBalance="
-               + policyBalance + ", statusCode=" + statusCode + '}';
+               + sticky + ", autoEnroll=" + autoEnroll + ", removeWalletOnUnsubscribe=" + removeWalletOnUnsubscribe + ", nameLocalizations=" + nameLocalizations
+               + ", descriptionLocalizations=" + descriptionLocalizations + ", coinNameLocalization=" + coinNameLocalization + ", coinNameMultipleLocalization="
+               + coinNameMultipleLocalization + ", policyBalance=" + policyBalance + ", statusCode=" + statusCode + '}';
     }
 
     // Helper methods
@@ -104,6 +108,11 @@ public class LinkIDWalletOrganization implements Serializable {
     public boolean isAutoEnroll() {
 
         return autoEnroll;
+    }
+
+    public boolean isRemoveWalletOnUnsubscribe() {
+
+        return removeWalletOnUnsubscribe;
     }
 
     public List<LinkIDLocalizationValue> getNameLocalizations() {
