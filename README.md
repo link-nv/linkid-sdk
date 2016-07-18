@@ -18,6 +18,7 @@ v4.17.0
   * WalletOrganization: add/update/remove/list support
   * commentGet support
   * themeName in notifications changed to urn ( and optional commentId if applicable )
+  * urn:net:lin-k:linkid:topic:user:subscribe notification topic support
 
 
 v4.14.0
