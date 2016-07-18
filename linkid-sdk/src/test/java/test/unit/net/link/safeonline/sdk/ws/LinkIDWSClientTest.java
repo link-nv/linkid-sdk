@@ -1014,7 +1014,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testCommentGet()
             throws Exception {
 

@@ -16,6 +16,8 @@ Migration notes
 v4.17.0
 ---
   * WalletOrganization: add/update/remove/list support
+  * commentGet support
+  * themeName in notifications changed to urn ( and optional commentId if applicable )
 
 
 v4.14.0
