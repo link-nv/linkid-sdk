@@ -19,6 +19,9 @@ v4.17.0
   * commentGet support
   * themeName in notifications changed to urn ( and optional commentId if applicable )
   * urn:net:lin-k:linkid:topic:user:subscribe notification topic support
+  * voucherOrganizationListUsers moved to userList
+  * userList extended with wallet organization filter
+  
 
 
 v4.14.0
