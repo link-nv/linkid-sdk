@@ -13,6 +13,7 @@ import net.link.util.InternalInconsistencyException;
 public enum LinkIDNotificationTopic {
 
     REMOVE_USER( "urn:net:lin-k:linkid:topic:user:remove" ),
+    SUBSCRIBE_USER( "urn:net:lin-k:linkid:topic:user:subscribe" ),
     UNSUBSCRIBE_USER( "urn:net:lin-k:linkid:topic:user:unsubscribe" ),
     ATTRIBUTE_UPDATE( "urn:net:lin-k:linkid:topic:user:attribute:update" ),
     ATTRIBUTE_REMOVAL( "urn:net:lin-k:linkid:topic:user:attribute:remove" ),
