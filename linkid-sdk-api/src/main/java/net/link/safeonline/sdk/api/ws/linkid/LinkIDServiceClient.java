@@ -13,7 +13,6 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
-import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -31,11 +30,11 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
+import net.link.safeonline.sdk.api.users.LinkIDUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
-import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
@@ -80,12 +79,12 @@ import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermis
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
@@ -560,19 +559,6 @@ public interface LinkIDServiceClient {
     List<LinkIDVoucherOrganizationDetails> voucherOrganizationList(@Nullable List<String> voucherOrganizationIds, boolean includeStats);
 
     /**
-     * Returns the list of users that have a voucher for specified voucher organization
-     *
-     * @param voucherOrganizationId the voucher organization ID
-     *
-     * @return the user IDs
-     *
-     * @throws LinkIDVoucherOrganizationListUsersException something went wrong, check the error code in the exception
-     */
-    LinkIDVoucherOrganizationUsers voucherOrganizationListUsers(String voucherOrganizationId, @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
-                                                                @Nullable final LinkIDReportPageFilter pageFilter)
-            throws LinkIDVoucherOrganizationListUsersException;
-
-    /**
      * Remove specified voucher organization
      * <p>
      * NOTE: this can only be done if no vouchers exist for it. Once a voucher has been created ( not necessarily redeemed ) there is no way to remove this
@@ -747,5 +733,22 @@ public interface LinkIDServiceClient {
      */
     String commentGet(String id)
             throws LinkIDCommentGetException;
+
+    /**
+     * Query the list of users that have a subscription to your application, optionally filtered by...
+     *
+     * @param voucherOrganizationId list only users who have a voucher for specified voucher organization ID
+     * @param walletOrganizationId  list only users who have a voucher for specified voucher organization ID
+     * @param createdFilter         Optional date filter on when user created a subscription
+     * @param authenticatedFilter   Optional date filter on when user authenticated for your application for the last time
+     * @param pageFilter            optional page filter if too many results
+     *
+     * @return the users
+     *
+     * @throws LinkIDUserListException something went wrong, check the error code in the exception
+     */
+    LinkIDUsers userList(@Nullable String voucherOrganizationId, @Nullable String walletOrganizationId, @Nullable final LinkIDReportDateFilter createdFilter,
+                         @Nullable final LinkIDReportDateFilter authenticatedFilter, @Nullable final LinkIDReportPageFilter pageFilter)
+            throws LinkIDUserListException;
 
 }

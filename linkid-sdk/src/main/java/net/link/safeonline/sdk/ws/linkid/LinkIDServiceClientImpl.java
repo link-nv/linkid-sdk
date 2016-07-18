@@ -19,7 +19,6 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
-import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
@@ -46,13 +45,14 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
+import net.link.safeonline.sdk.api.users.LinkIDUser;
+import net.link.safeonline.sdk.api.users.LinkIDUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
-import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
@@ -101,12 +101,12 @@ import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermis
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryException;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardException;
@@ -1544,39 +1544,6 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDVoucherOrganizationUsers voucherOrganizationListUsers(final String voucherOrganizationId,
-                                                                       @Nullable final LinkIDUserAttributeFilter userAttributeFilter,
-                                                                       @Nullable final LinkIDReportPageFilter pageFilter)
-            throws LinkIDVoucherOrganizationListUsersException {
-
-        // request
-        VoucherOrganizationListUsersRequest request = new VoucherOrganizationListUsersRequest();
-        request.setOrganizationId( voucherOrganizationId );
-        request.setUserAttributeFilter( LinkIDServiceUtils.convert( userAttributeFilter ) );
-        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
-
-        // operate
-        VoucherOrganizationListUsersResponse response = getPort().voucherOrganizationListUsers( request );
-
-        // convert response
-        if (null != response.getError()) {
-
-            if (null != response.getError().getErrorCode()) {
-                throw new LinkIDVoucherOrganizationListUsersException( response.getError().getErrorMessage(),
-                        LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
-            } else {
-                throw new InternalInconsistencyException( "No error nor error code element in the response error ?!" );
-            }
-        }
-
-        if (null != response.getSuccess()) {
-            return new LinkIDVoucherOrganizationUsers( response.getSuccess().getUserIds(), response.getSuccess().getTotal() );
-        }
-
-        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
-    }
-
-    @Override
     public void voucherOrganizationRemove(final String voucherOrganizationId)
             throws LinkIDVoucherOrganizationRemoveException {
 
@@ -2028,6 +1995,45 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public LinkIDUsers userList(@Nullable final String voucherOrganizationId, @Nullable final String walletOrganizationId,
+                                @Nullable final LinkIDReportDateFilter createdFilter, @Nullable final LinkIDReportDateFilter authenticatedFilter,
+                                @Nullable final LinkIDReportPageFilter pageFilter)
+            throws LinkIDUserListException {
+
+        // request
+        UserListRequest request = new UserListRequest();
+
+        // input
+        request.setVoucherOrganizationId( voucherOrganizationId );
+        request.setWalletOrganizationId( walletOrganizationId );
+        request.setCreatedFilter( LinkIDServiceUtils.convert( createdFilter ) );
+        request.setAuthenticatedFilter( LinkIDServiceUtils.convert( authenticatedFilter ) );
+        request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
+
+        // operate
+        UserListResponse response = getPort().userList( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+
+            List<LinkIDUser> users = Lists.newLinkedList();
+
+            for (User user : response.getSuccess().getUsers()) {
+                users.add( LinkIDServiceUtils.convert( user ) );
+            }
+
+            return new LinkIDUsers( users, response.getSuccess().getTotal() );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
     }
 
 }

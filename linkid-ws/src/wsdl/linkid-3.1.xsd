@@ -27,5 +27,6 @@
     <include schemaLocation="linkid-3.1-payment-configuration.xsd" />
     <include schemaLocation="linkid-3.1-application-permissions.xsd" />
     <include schemaLocation="linkid-3.1-comments.xsd" />
+    <include schemaLocation="linkid-3.1-users.xsd" />
 
 </schema>

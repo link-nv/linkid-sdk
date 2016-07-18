@@ -43,6 +43,8 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTransaction;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
+import net.link.safeonline.sdk.api.users.LinkIDUser;
+import net.link.safeonline.sdk.api.users.LinkIDUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
@@ -50,7 +52,6 @@ import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEventType;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationDetails;
-import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganizationUsers;
 import net.link.safeonline.sdk.api.voucher.LinkIDVouchers;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletInfo;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
@@ -795,22 +796,6 @@ public class LinkIDWSClientTest {
     }
 
     //    @Test
-    public void testVoucherOrganizationListUsers()
-            throws Exception {
-
-        // operate
-        LinkIDVoucherOrganizationUsers linkIDVoucherOrganizationUsers = client.voucherOrganizationListUsers( "urn:be:linkid:example-mobile:theme:test", null,
-                null );
-
-        // verify
-        assertNotNull( linkIDVoucherOrganizationUsers );
-        assertNotNull( linkIDVoucherOrganizationUsers.getUserIds() );
-        for (String userId : linkIDVoucherOrganizationUsers.getUserIds()) {
-            logger.dbg( "Voucher user: %s", userId );
-        }
-    }
-
-    //    @Test
     public void testVoucherOrganizationRemove()
             throws Exception {
 
@@ -1024,6 +1009,28 @@ public class LinkIDWSClientTest {
         // verify
         assertNotNull( comment );
         logger.dbg( "Comment: %s", comment );
+    }
+
+    //    @Test
+    public void testListUsers()
+            throws Exception {
+
+        // Setup
+        String voucherOrganizationId = null;
+        String walletOrganizationId = null;
+        LinkIDReportDateFilter createdFilter = null;
+        LinkIDReportDateFilter authenticatedFilter = null;
+        LinkIDReportPageFilter pageFilter = null;
+
+        //        operate
+        LinkIDUsers users = client.userList( voucherOrganizationId, walletOrganizationId, createdFilter, authenticatedFilter, pageFilter );
+
+        // verify
+        assertNotNull( users );
+        logger.dbg( "Total: %d", users.getTotal() );
+        for (LinkIDUser user : users.getUsers()) {
+            logger.dbg( "User: %s", user );
+        }
     }
 
     // Auth

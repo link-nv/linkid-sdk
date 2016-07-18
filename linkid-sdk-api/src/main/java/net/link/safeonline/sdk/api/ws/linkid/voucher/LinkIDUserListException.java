@@ -7,17 +7,17 @@
 
 package net.link.safeonline.sdk.api.ws.linkid.voucher;
 
-public class LinkIDVoucherOrganizationListUsersException extends Exception {
+public class LinkIDUserListException extends Exception {
 
-    private final LinkIDVoucherOrganizationListUsersErrorCode errorCode;
+    private final LinkIDUserListErrorCode errorCode;
 
-    public LinkIDVoucherOrganizationListUsersException(final String message, final LinkIDVoucherOrganizationListUsersErrorCode errorCode) {
+    public LinkIDUserListException(final String message, final LinkIDUserListErrorCode errorCode) {
 
         super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 
-    public LinkIDVoucherOrganizationListUsersErrorCode getErrorCode() {
+    public LinkIDUserListErrorCode getErrorCode() {
 
         return errorCode;
     }

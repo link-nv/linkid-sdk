@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ safe-online - linkid-ws
+  ~
+  ~ Copyright 2006-2016 linkID Inc. All rights reserved.
+  ~ linkID Inc. proprietary/confidential. Use is subject to license terms.
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Users                                                                         *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Get -->
+
+    <element name="UserListRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherOrganizationId" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>List only users who have a voucher for specified voucher organization ID</documentation>
+                    </annotation>
+                </element>
+                <element name="walletOrganizationId" type="string" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>List only users who have a wallet for specified wallet organization ID</documentation>
+                    </annotation>
+                </element>
+                <element name="createdFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional date filter on when user created a subscription</documentation>
+                    </annotation>
+                </element>
+                <element name="authenticatedFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional date filter on when user authenticated for your application for the last time</documentation>
+                    </annotation>
+                </element>
+                <element name="pageFilter" type="tns:ReportPageFilter" minOccurs="0" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional page filter</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="UserListResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:UserListSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:UserListError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="UserListSuccess">
+        <sequence>
+            <element name="users" type="tns:User" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The users</documentation>
+                </annotation>
+            </element>
+        </sequence>
+        <attribute name="total" type="long" use="required" />
+    </complexType>
+
+    <complexType name="UserListError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+		<attribute name="errorCode" type="tns:UserListErrorCode" use="optional" />
+    </complexType>
+
+    <simpleType name="UserListErrorCode">
+		<annotation>
+			<documentation>User list error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.voucher.organization.id">
+				<annotation>
+					<documentation>No voucher organization with specified ID</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unknown.wallet.organization.id">
+				<annotation>
+					<documentation>No wallet organization with specified ID</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Common -->
+
+    <complexType name="User">
+        <sequence>
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The scoped user ID</documentation>
+                </annotation>
+            </element>
+            <element name="created" type="dateTime" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>When the user subscribed to your application</documentation>
+                </annotation>
+            </element>
+            <element name="lastAuthenticated" type="dateTime" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>When the user last authenticated for your application</documentation>
+                </annotation>
+            </element>
+            <element name="removed" type="dateTime" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>When the user removed his subscription to your application</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+
+</schema>

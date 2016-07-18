@@ -20,11 +20,6 @@
         <attribute name="applicationName" type="string" use="required" />
     </complexType>
 
-    <complexType name="UserAttributeFilter">
-        <attribute name="attributeName" type="string" use="required" />
-        <attribute name="attributeValue" type="string" use="required" />
-    </complexType>
-
     <complexType name="ReportWalletFilter">
         <attribute name="walletId" type="string" use="required" />
     </complexType>

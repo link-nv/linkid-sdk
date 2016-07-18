@@ -7,9 +7,8 @@
 
 package net.link.safeonline.sdk.api.ws.linkid.voucher;
 
-public enum LinkIDVoucherOrganizationListUsersErrorCode {
+public enum LinkIDUserListErrorCode {
 
-    ERROR_UNKNOWN_VOUCHER_ORGANIZATION,
-    ERROR_INVALID_ARGUMENT
+    ERROR_UNKNOWN_VOUCHER_ORGANIZATION, ERROR_UNKNOWN_WALLET_ORGANIZATION,
 
 }

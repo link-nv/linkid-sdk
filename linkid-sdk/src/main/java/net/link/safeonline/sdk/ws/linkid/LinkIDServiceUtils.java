@@ -72,8 +72,9 @@ import net.lin_k.linkid._3_1.core.ThemeStatusErrorCode;
 import net.lin_k.linkid._3_1.core.ThemeStatusErrorReport;
 import net.lin_k.linkid._3_1.core.Themes;
 import net.lin_k.linkid._3_1.core.ThemesErrorCode;
-import net.lin_k.linkid._3_1.core.UserAttributeFilter;
+import net.lin_k.linkid._3_1.core.User;
 import net.lin_k.linkid._3_1.core.UserFilter;
+import net.lin_k.linkid._3_1.core.UserListError;
 import net.lin_k.linkid._3_1.core.Voucher;
 import net.lin_k.linkid._3_1.core.VoucherEventTypeFilter;
 import net.lin_k.linkid._3_1.core.VoucherHistoryEvent;
@@ -86,7 +87,6 @@ import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationDetails;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationHistoryErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationListErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationListUsersErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationRemoveErrorCode;
 import net.lin_k.linkid._3_1.core.VoucherOrganizationStats;
 import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
@@ -111,12 +111,10 @@ import net.lin_k.linkid._3_1.core.WalletReportInfo;
 import net.lin_k.linkid._3_1.core.WalletReportType;
 import net.lin_k.linkid._3_1.core.WalletReportTypeFilter;
 import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
-import net.link.safeonline.attribute.provider.profile.LinkIDProfileConstants;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
-import net.link.safeonline.sdk.api.common.LinkIDUserAttributeFilter;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.exception.LinkIDMaintenanceException;
 import net.link.safeonline.sdk.api.exception.LinkIDPermissionDeniedException;
@@ -143,6 +141,7 @@ import net.link.safeonline.sdk.api.themes.LinkIDThemeColorErrorCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeImageError;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeImageErrorCode;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatusErrorReport;
+import net.link.safeonline.sdk.api.users.LinkIDUser;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistoryEvent;
@@ -154,7 +153,6 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
-import net.link.safeonline.sdk.api.ws.LinkIDWSQueryConstants;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
@@ -190,12 +188,13 @@ import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermis
 import net.link.safeonline.sdk.api.ws.linkid.permissions.LinkIDApplicationPermissionRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationAddUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationHistoryErrorCode;
-import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationListUsersErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRedeemErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherRewardErrorCode;
@@ -215,7 +214,6 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.util.InternalInconsistencyException;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.jetbrains.annotations.Nullable;
@@ -1305,26 +1303,6 @@ public class LinkIDServiceUtils {
     }
 
     @Nullable
-    public static UserAttributeFilter convert(final LinkIDUserAttributeFilter userAttributeFilter) {
-
-        if (null != userAttributeFilter) {
-            UserAttributeFilter wsUserAttributeFilter = new UserAttributeFilter();
-            wsUserAttributeFilter.setAttributeName( LinkIDProfileConstants.EMAIL_ADDRESS );
-
-            if (StringUtils.isBlank( userAttributeFilter.getEmail() )
-                || userAttributeFilter.getEmail().length() < LinkIDWSQueryConstants.MIN_ATTRIBUTE_VALUE_QUERY_LENGTH) {
-                throw new IllegalArgumentException( String.format( "The minimum length of the user attribute value should be %d.",
-                        LinkIDWSQueryConstants.MIN_ATTRIBUTE_VALUE_QUERY_LENGTH ) );
-            }
-
-            wsUserAttributeFilter.setAttributeValue( userAttributeFilter.getEmail() );
-            return wsUserAttributeFilter;
-        }
-
-        return null;
-    }
-
-    @Nullable
     public static ReportApplicationFilter convert(@Nullable final LinkIDReportApplicationFilter applicationFilter) {
 
         if (null != applicationFilter) {
@@ -1795,29 +1773,6 @@ public class LinkIDServiceUtils {
 
         switch (errorCode) {
 
-            case ERROR_PERMISSION_DENIED:
-                throw new LinkIDPermissionDeniedException( errorCode.value() );
-            case ERROR_UNEXPECTED:
-                throw new LinkIDUnexpectedException( errorCode.value() );
-            case ERROR_MAINTENANCE:
-                throw new LinkIDMaintenanceException( errorCode.value() );
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
-    }
-
-    public static LinkIDVoucherOrganizationListUsersErrorCode convert(final VoucherOrganizationListUsersErrorCode errorCode) {
-
-        if (null == errorCode) {
-            return null;
-        }
-
-        switch (errorCode) {
-
-            case ERROR_INVALID_ARGUMENT:
-                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_INVALID_ARGUMENT;
-            case ERROR_UNKNOWN_VOUCHER_ORGANIZATION:
-                return LinkIDVoucherOrganizationListUsersErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION;
             case ERROR_PERMISSION_DENIED:
                 throw new LinkIDPermissionDeniedException( errorCode.value() );
             case ERROR_UNEXPECTED:
@@ -2465,5 +2420,29 @@ public class LinkIDServiceUtils {
             throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
         }
 
+    }
+
+    public static void handle(final UserListError error)
+            throws LinkIDUserListException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_VOUCHER_ORGANIZATION_ID:
+                    throw new LinkIDUserListException( error.getErrorMessage(), LinkIDUserListErrorCode.ERROR_UNKNOWN_VOUCHER_ORGANIZATION );
+                case ERROR_UNKNOWN_WALLET_ORGANIZATION_ID:
+                    throw new LinkIDUserListException( error.getErrorMessage(), LinkIDUserListErrorCode.ERROR_UNKNOWN_WALLET_ORGANIZATION );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static LinkIDUser convert(final User user) {
+
+        return new LinkIDUser( user.getUserId(), convert( user.getCreated() ), convert( user.getLastAuthenticated() ), convert( user.getRemoved() ) );
     }
 }

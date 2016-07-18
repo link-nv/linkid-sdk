@@ -264,12 +264,6 @@
 	<message name="voucherOrganizationListResponse">
 		<part name="response" element="tns:VoucherOrganizationListResponse" />
 	</message>
-    <message name="voucherOrganizationListUsersRequest">
-		<part name="request" element="tns:VoucherOrganizationListUsersRequest" />
-	</message>
-	<message name="voucherOrganizationListUsersResponse">
-		<part name="response" element="tns:VoucherOrganizationListUsersResponse" />
-	</message>
     <message name="voucherOrganizationRemoveRequest">
 		<part name="request" element="tns:VoucherOrganizationRemoveRequest" />
 	</message>
@@ -364,7 +358,7 @@
 		<part name="response" element="tns:ApplicationPermissionListResponse" />
 	</message>
 
-	<!-- =================== Application permissions ==================== -->
+	<!-- ======================== Comments =========================== -->
 
     <message name="commentGetRequest">
 		<part name="request" element="tns:CommentGetRequest" />
@@ -372,6 +366,16 @@
 	<message name="commentGetResponse">
 		<part name="response" element="tns:CommentGetResponse" />
 	</message>
+
+    <!-- ======================== Users ============================= -->
+
+    <message name="userListRequest">
+		<part name="request" element="tns:UserListRequest" />
+	</message>
+	<message name="userListResponse">
+		<part name="response" element="tns:UserListResponse" />
+	</message>
+
 
 	<!-- =========================== Ports ========================== -->
 
@@ -532,10 +536,6 @@
 			<input message="tns:voucherOrganizationListRequest" />
 			<output message="tns:voucherOrganizationListResponse" />
 		</operation>
-		<operation name="voucherOrganizationListUsers">
-			<input message="tns:voucherOrganizationListUsersRequest" />
-			<output message="tns:voucherOrganizationListUsersResponse" />
-		</operation>
 		<operation name="voucherOrganizationRemove">
 			<input message="tns:voucherOrganizationRemoveRequest" />
 			<output message="tns:voucherOrganizationRemoveResponse" />
@@ -595,6 +595,10 @@
 		<operation name="commentGet">
 			<input message="tns:commentGetRequest" />
 			<output message="tns:commentGetResponse" />
+		</operation>
+		<operation name="userList">
+			<input message="tns:userListRequest" />
+			<output message="tns:userListResponse" />
 		</operation>
     </portType>
 
@@ -953,15 +957,6 @@
                 <soap:body use="literal" />
             </output>
         </operation>
-        <operation name="voucherOrganizationListUsers">
-            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationListUsers" />
-            <input>
-                <soap:body use="literal" />
-            </input>
-            <output>
-                <soap:body use="literal" />
-            </output>
-        </operation>
         <operation name="voucherOrganizationRemove">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherOrganizationRemove" />
             <input>
@@ -1090,6 +1085,15 @@
         </operation>
         <operation name="commentGet">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:commentGet" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="userList">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:userList" />
             <input>
                 <soap:body use="literal" />
             </input>
