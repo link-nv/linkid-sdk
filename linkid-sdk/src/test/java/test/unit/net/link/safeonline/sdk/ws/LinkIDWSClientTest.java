@@ -1014,6 +1014,18 @@ public class LinkIDWSClientTest {
         }
     }
 
+    @Test
+    public void testCommentGet()
+            throws Exception {
+
+        // operate
+        String comment = client.commentGet( "14b540a1-e665-430d-a72c-70cdd8eace69" );
+
+        // verify
+        assertNotNull( comment );
+        logger.dbg( "Comment: %s", comment );
+    }
+
     // Auth
 
     private LinkIDServiceClient getLinkIDServiceClient() {

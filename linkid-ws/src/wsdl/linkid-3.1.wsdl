@@ -364,6 +364,14 @@
 		<part name="response" element="tns:ApplicationPermissionListResponse" />
 	</message>
 
+	<!-- =================== Application permissions ==================== -->
+
+    <message name="commentGetRequest">
+		<part name="request" element="tns:CommentGetRequest" />
+	</message>
+	<message name="commentGetResponse">
+		<part name="response" element="tns:CommentGetResponse" />
+	</message>
 
 	<!-- =========================== Ports ========================== -->
 
@@ -583,6 +591,10 @@
 		<operation name="applicationPermissionList">
 			<input message="tns:applicationPermissionListRequest" />
 			<output message="tns:applicationPermissionListResponse" />
+		</operation>
+		<operation name="commentGet">
+			<input message="tns:commentGetRequest" />
+			<output message="tns:commentGetResponse" />
 		</operation>
     </portType>
 
@@ -1069,6 +1081,15 @@
         </operation>
         <operation name="applicationPermissionList">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:applicationPermissionList" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="commentGet">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:commentGet" />
             <input>
                 <soap:body use="literal" />
             </input>

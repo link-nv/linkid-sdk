@@ -47,6 +47,7 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
+import net.link.safeonline.sdk.api.ws.linkid.comments.LinkIDCommentGetException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDetails;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
@@ -734,5 +735,17 @@ public interface LinkIDServiceClient {
      */
     List<LinkIDApplicationPermissionType> applicationPermissionList(String id)
             throws LinkIDApplicationPermissionListException;
+
+    /**
+     * Get the comment with specified ID
+     *
+     * @param id the id of the comment
+     *
+     * @return the comment
+     *
+     * @throws LinkIDCommentGetException something went wrong, check the error code in the exception
+     */
+    String commentGet(String id)
+            throws LinkIDCommentGetException;
 
 }

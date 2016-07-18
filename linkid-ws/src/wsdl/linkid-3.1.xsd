@@ -26,5 +26,6 @@
     <include schemaLocation="linkid-3.1-vouchers.xsd" />
     <include schemaLocation="linkid-3.1-payment-configuration.xsd" />
     <include schemaLocation="linkid-3.1-application-permissions.xsd" />
+    <include schemaLocation="linkid-3.1-comments.xsd" />
 
 </schema>

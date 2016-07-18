@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ safe-online - linkid-ws
+  ~
+  ~ Copyright 2006-2016 linkID Inc. All rights reserved.
+  ~ linkID Inc. proprietary/confidential. Use is subject to license terms.
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Comments                                                                      *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Get -->
+
+    <element name="CommentGetRequest">
+        <complexType>
+            <sequence>
+                <element name="id" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the comment to get</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="CommentGetResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:CommentGetSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:CommentGetError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="CommentGetSuccess">
+        <sequence>
+            <element name="comment" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The comment</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="CommentGetError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+		<attribute name="errorCode" type="tns:CommentGetErrorCode" use="optional" />
+    </complexType>
+
+    <simpleType name="CommentGetErrorCode">
+		<annotation>
+			<documentation>Comment get error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.id">
+				<annotation>
+					<documentation>No such comment</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+</schema>

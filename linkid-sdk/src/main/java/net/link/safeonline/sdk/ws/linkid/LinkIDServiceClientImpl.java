@@ -66,6 +66,7 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollResponse;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthSession;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
+import net.link.safeonline.sdk.api.ws.linkid.comments.LinkIDCommentGetException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplication;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDetails;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
@@ -2002,6 +2003,31 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
 
+    }
+
+    @Override
+    public String commentGet(final String id)
+            throws LinkIDCommentGetException {
+
+        // request
+        CommentGetRequest request = new CommentGetRequest();
+
+        // input
+        request.setId( id );
+
+        // operate
+        CommentGetResponse response = getPort().commentGet( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+            return response.getSuccess().getComment();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
 }

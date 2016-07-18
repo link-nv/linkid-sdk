@@ -24,6 +24,7 @@ import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
 import net.lin_k.linkid._3_1.core.AuthStartErrorCode;
 import net.lin_k.linkid._3_1.core.Callback;
 import net.lin_k.linkid._3_1.core.CallbackPullErrorCode;
+import net.lin_k.linkid._3_1.core.CommentGetError;
 import net.lin_k.linkid._3_1.core.CommonErrorCode;
 import net.lin_k.linkid._3_1.core.ConfigApplicationsErrorCode;
 import net.lin_k.linkid._3_1.core.ConfigLocalizationErrorCode;
@@ -159,6 +160,8 @@ import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthenticationState;
+import net.link.safeonline.sdk.api.ws.linkid.comments.LinkIDCommentGetErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.comments.LinkIDCommentGetException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKeyType;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
@@ -2440,6 +2443,23 @@ public class LinkIDServiceUtils {
 
                 case ERROR_UNKNOWN_ID:
                     throw new LinkIDApplicationPermissionListException( error.getErrorMessage(), LinkIDApplicationPermissionListErrorCode.ERROR_UNKNOWN_ID );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static void handle(final CommentGetError error)
+            throws LinkIDCommentGetException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_ID:
+                    throw new LinkIDCommentGetException( error.getErrorMessage(), LinkIDCommentGetErrorCode.ERROR_UNKNOWN_ID );
             }
         } else {
             throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
