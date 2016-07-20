@@ -376,6 +376,14 @@
 		<part name="response" element="tns:UserListResponse" />
 	</message>
 
+	<!-- ======================== Credentials========================= -->
+
+	<message name="credentialGetRequest">
+		<part name="request" element="tns:CredentialGetRequest" />
+	</message>
+	<message name="credentialGetResponse">
+		<part name="response" element="tns:CredentialGetResponse" />
+	</message>
 
 	<!-- =========================== Ports ========================== -->
 
@@ -599,6 +607,10 @@
 		<operation name="userList">
 			<input message="tns:userListRequest" />
 			<output message="tns:userListResponse" />
+		</operation>
+		<operation name="credentialGet">
+			<input message="tns:credentialGetRequest" />
+			<output message="tns:credentialGetResponse" />
 		</operation>
     </portType>
 
@@ -1094,6 +1106,15 @@
         </operation>
         <operation name="userList">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:userList" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="credentialGet">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:credentialGet" />
             <input>
                 <soap:body use="literal" />
             </input>

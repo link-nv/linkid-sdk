@@ -14,6 +14,8 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
@@ -750,5 +752,14 @@ public interface LinkIDServiceClient {
     LinkIDUsers userList(@Nullable String voucherOrganizationId, @Nullable String walletOrganizationId, @Nullable final LinkIDReportDateFilter createdFilter,
                          @Nullable final LinkIDReportDateFilter authenticatedFilter, @Nullable final LinkIDReportPageFilter pageFilter)
             throws LinkIDUserListException;
+
+    /**
+     * Request credentials of specified type
+     *
+     * @param type the credential type
+     *
+     * @return the credential request, e.g. download URL, ... don't forget to confirm the credential after the download
+     */
+    LinkIDCredentialRequest credentialGet(LinkIDCredentialType type);
 
 }

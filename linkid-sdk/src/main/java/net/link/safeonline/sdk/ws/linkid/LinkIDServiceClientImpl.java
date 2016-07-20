@@ -20,6 +20,8 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
@@ -2034,6 +2036,31 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
 
+    }
+
+    @Override
+    public LinkIDCredentialRequest credentialGet(final LinkIDCredentialType type) {
+
+        // request
+        CredentialGetRequest request = new CredentialGetRequest();
+
+        // input
+        request.setType( LinkIDServiceUtils.convert( type ) );
+
+        // operate
+        CredentialGetResponse response = getPort().credentialGet( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+            return new LinkIDCredentialRequest( response.getSuccess().getDownloadUrl(), response.getSuccess().getSessionId(),
+                    LinkIDServiceUtils.convert( response.getSuccess().getExpiryDate() ) );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
 }

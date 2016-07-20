@@ -28,5 +28,6 @@
     <include schemaLocation="linkid-3.1-application-permissions.xsd" />
     <include schemaLocation="linkid-3.1-comments.xsd" />
     <include schemaLocation="linkid-3.1-users.xsd" />
+    <include schemaLocation="linkid-3.1-credentials.xsd" />
 
 </schema>

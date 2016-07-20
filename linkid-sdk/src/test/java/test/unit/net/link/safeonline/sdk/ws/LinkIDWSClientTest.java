@@ -21,6 +21,8 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -1031,6 +1033,21 @@ public class LinkIDWSClientTest {
         for (LinkIDUser user : users.getUsers()) {
             logger.dbg( "User: %s", user );
         }
+    }
+
+    @Test
+    public void testCredentialGet()
+            throws Exception {
+
+        // Setup
+        LinkIDCredentialType type = LinkIDCredentialType.PASSWORD;
+
+        // operate
+        LinkIDCredentialRequest request = client.credentialGet( type );
+
+        // verify
+        assertNotNull( request );
+        logger.dbg( "Request: %s", request );
     }
 
     // Auth

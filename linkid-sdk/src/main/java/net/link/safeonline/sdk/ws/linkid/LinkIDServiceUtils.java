@@ -13,109 +13,14 @@ import java.util.Map;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import net.lin_k.linkid._3_1.core.ApplicationFilter;
-import net.lin_k.linkid._3_1.core.ApplicationPermissionAddError;
-import net.lin_k.linkid._3_1.core.ApplicationPermissionListError;
-import net.lin_k.linkid._3_1.core.ApplicationPermissionRemoveError;
-import net.lin_k.linkid._3_1.core.ApplicationPermissionType;
-import net.lin_k.linkid._3_1.core.AuthAuthenticationState;
-import net.lin_k.linkid._3_1.core.AuthCancelErrorCode;
-import net.lin_k.linkid._3_1.core.AuthPollErrorCode;
-import net.lin_k.linkid._3_1.core.AuthStartErrorCode;
-import net.lin_k.linkid._3_1.core.Callback;
-import net.lin_k.linkid._3_1.core.CallbackPullErrorCode;
-import net.lin_k.linkid._3_1.core.CommentGetError;
-import net.lin_k.linkid._3_1.core.CommonErrorCode;
-import net.lin_k.linkid._3_1.core.ConfigApplicationsErrorCode;
-import net.lin_k.linkid._3_1.core.ConfigLocalizationErrorCode;
-import net.lin_k.linkid._3_1.core.ConfigLocalizationKeyType;
-import net.lin_k.linkid._3_1.core.ConfigWalletApplicationsErrorCode;
-import net.lin_k.linkid._3_1.core.Currency;
-import net.lin_k.linkid._3_1.core.FavoritesConfiguration;
-import net.lin_k.linkid._3_1.core.LTQRBulkPushErrorCode;
-import net.lin_k.linkid._3_1.core.LTQRChangeErrorCode;
-import net.lin_k.linkid._3_1.core.LTQRContent;
-import net.lin_k.linkid._3_1.core.LTQRErrorCode;
-import net.lin_k.linkid._3_1.core.LTQRLockType;
-import net.lin_k.linkid._3_1.core.LTQRPollingConfiguration;
-import net.lin_k.linkid._3_1.core.LTQRPushErrorCode;
-import net.lin_k.linkid._3_1.core.Localization;
-import net.lin_k.linkid._3_1.core.LocalizedImage;
-import net.lin_k.linkid._3_1.core.LocalizedImages;
-import net.lin_k.linkid._3_1.core.MandatePaymentErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentCaptureErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentConfiguration;
-import net.lin_k.linkid._3_1.core.PaymentConfigurationAddErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentConfigurationListErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentConfigurationRemoveErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentConfigurationUpdateErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentContext;
-import net.lin_k.linkid._3_1.core.PaymentMethodType;
-import net.lin_k.linkid._3_1.core.PaymentRefundErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentStatusErrorCode;
-import net.lin_k.linkid._3_1.core.PaymentStatusType;
-import net.lin_k.linkid._3_1.core.QRCodeInfo;
-import net.lin_k.linkid._3_1.core.ReportApplicationFilter;
-import net.lin_k.linkid._3_1.core.ReportDateFilter;
-import net.lin_k.linkid._3_1.core.ReportErrorCode;
-import net.lin_k.linkid._3_1.core.ReportPageFilter;
-import net.lin_k.linkid._3_1.core.ReportWalletFilter;
-import net.lin_k.linkid._3_1.core.RequestStatusCode;
-import net.lin_k.linkid._3_1.core.ThemeAddErrorCode;
-import net.lin_k.linkid._3_1.core.ThemeColorError;
-import net.lin_k.linkid._3_1.core.ThemeColorErrorCode;
-import net.lin_k.linkid._3_1.core.ThemeImageError;
-import net.lin_k.linkid._3_1.core.ThemeImageErrorCode;
-import net.lin_k.linkid._3_1.core.ThemeRemoveErrorCode;
-import net.lin_k.linkid._3_1.core.ThemeStatusCode;
-import net.lin_k.linkid._3_1.core.ThemeStatusErrorCode;
-import net.lin_k.linkid._3_1.core.ThemeStatusErrorReport;
-import net.lin_k.linkid._3_1.core.Themes;
-import net.lin_k.linkid._3_1.core.ThemesErrorCode;
-import net.lin_k.linkid._3_1.core.User;
-import net.lin_k.linkid._3_1.core.UserFilter;
-import net.lin_k.linkid._3_1.core.UserListError;
-import net.lin_k.linkid._3_1.core.Voucher;
-import net.lin_k.linkid._3_1.core.VoucherEventTypeFilter;
-import net.lin_k.linkid._3_1.core.VoucherHistoryEvent;
-import net.lin_k.linkid._3_1.core.VoucherHistoryEventType;
-import net.lin_k.linkid._3_1.core.VoucherListErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherListRedeemedErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganization;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationActivateErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationAddUpdateErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationDetails;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationHistoryErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationListErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationRemoveErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherOrganizationStats;
-import net.lin_k.linkid._3_1.core.VoucherRedeemErrorCode;
-import net.lin_k.linkid._3_1.core.VoucherRewardErrorCode;
-import net.lin_k.linkid._3_1.core.WalletAddCreditErrorCode;
-import net.lin_k.linkid._3_1.core.WalletCommitErrorCode;
-import net.lin_k.linkid._3_1.core.WalletEnrollErrorCode;
-import net.lin_k.linkid._3_1.core.WalletGetInfoErrorCode;
-import net.lin_k.linkid._3_1.core.WalletInfoReportErrorCode;
-import net.lin_k.linkid._3_1.core.WalletOrganization;
-import net.lin_k.linkid._3_1.core.WalletOrganizationAddError;
-import net.lin_k.linkid._3_1.core.WalletOrganizationDetails;
-import net.lin_k.linkid._3_1.core.WalletOrganizationListErrorCode;
-import net.lin_k.linkid._3_1.core.WalletOrganizationRemoveError;
-import net.lin_k.linkid._3_1.core.WalletOrganizationStats;
-import net.lin_k.linkid._3_1.core.WalletOrganizationUpdateError;
-import net.lin_k.linkid._3_1.core.WalletPolicyBalance;
-import net.lin_k.linkid._3_1.core.WalletReleaseErrorCode;
-import net.lin_k.linkid._3_1.core.WalletRemoveCreditErrorCode;
-import net.lin_k.linkid._3_1.core.WalletRemoveErrorCode;
-import net.lin_k.linkid._3_1.core.WalletReportInfo;
-import net.lin_k.linkid._3_1.core.WalletReportType;
-import net.lin_k.linkid._3_1.core.WalletReportTypeFilter;
+import net.lin_k.linkid._3_1.core.*;
 import net.lin_k.safe_online.ltqr._5.PollingConfiguration;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.callback.LinkIDCallback;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.exception.LinkIDMaintenanceException;
 import net.link.safeonline.sdk.api.exception.LinkIDPermissionDeniedException;
 import net.link.safeonline.sdk.api.exception.LinkIDUnexpectedException;
@@ -2444,5 +2349,33 @@ public class LinkIDServiceUtils {
     public static LinkIDUser convert(final User user) {
 
         return new LinkIDUser( user.getUserId(), convert( user.getCreated() ), convert( user.getLastAuthenticated() ), convert( user.getRemoved() ) );
+    }
+
+    public static CredentialType convert(final LinkIDCredentialType type) {
+
+        if (null == type) {
+            return null;
+        }
+
+        switch (type) {
+
+            case PASSWORD:
+                return CredentialType.PASSWORD;
+            case X509:
+                return CredentialType.X_509;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected type %s!", type.name() ) );
+
+    }
+
+    public static void handle(final CredentialGetError error) {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
     }
 }
