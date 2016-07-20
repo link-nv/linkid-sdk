@@ -1040,7 +1040,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // Setup
-        LinkIDCredentialType type = LinkIDCredentialType.PASSWORD;
+        LinkIDCredentialType type = LinkIDCredentialType.X509;
 
         // operate
         LinkIDCredentialRequest request = client.credentialGet( type );

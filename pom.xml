@@ -454,7 +454,7 @@
 
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
         <release.version>1.18</release.version>
-        <link-util.version>1.77</link-util.version>
+        <link-util.version>GIT-SNAPSHOT</link-util.version>
         <jtrust.version>2.0.1</jtrust.version>
         <bouncycastle.version>1.49</bouncycastle.version>
 
