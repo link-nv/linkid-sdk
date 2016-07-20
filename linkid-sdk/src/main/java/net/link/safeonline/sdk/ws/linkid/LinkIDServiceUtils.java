@@ -2361,8 +2361,8 @@ public class LinkIDServiceUtils {
 
             case PASSWORD:
                 return CredentialType.PASSWORD;
-            case X509:
-                return CredentialType.X_509;
+            case JKS:
+                return CredentialType.JKS;
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected type %s!", type.name() ) );

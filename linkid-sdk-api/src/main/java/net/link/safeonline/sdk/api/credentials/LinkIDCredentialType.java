@@ -14,6 +14,6 @@ package net.link.safeonline.sdk.api.credentials;
  */
 public enum LinkIDCredentialType {
 
-    PASSWORD, X509
+    PASSWORD, JKS
 
 }
