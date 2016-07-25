@@ -597,7 +597,7 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDVoucherOrganizationHistoryException something went wrong, check the error code in the exception
      */
-    LinkIDVoucherHistory voucherOrganizationHistory(String voucherOrganizationId, @Nullable LinkIDVoucherEventTypeFilter eventTypeFilter,
+    LinkIDVoucherHistory voucherOrganizationHistory(@Nullable List<String> voucherOrganizationIds, @Nullable LinkIDVoucherEventTypeFilter eventTypeFilter,
                                                     @Nullable LinkIDUserFilter userFilter, @Nullable LinkIDApplicationFilter applicationFilter,
                                                     @Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter,
                                                     @Nullable String language)

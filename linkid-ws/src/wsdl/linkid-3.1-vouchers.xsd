@@ -624,9 +624,9 @@
     <element name="VoucherOrganizationHistoryRequest">
         <complexType>
             <sequence>
-                <element name="voucherOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <element name="voucherOrganizationIds" type="string" minOccurs="0" maxOccurs="unbounded">
                     <annotation>
-                        <documentation>The ID of the voucher organization</documentation>
+                        <documentation>The IDs of the requested voucher organization</documentation>
                     </annotation>
                 </element>
                 <element name="eventTypeFilter" type="tns:VoucherEventTypeFilter" minOccurs="0" maxOccurs="1">

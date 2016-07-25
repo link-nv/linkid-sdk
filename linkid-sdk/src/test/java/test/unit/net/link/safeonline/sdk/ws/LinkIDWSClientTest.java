@@ -839,7 +839,8 @@ public class LinkIDWSClientTest {
         LinkIDReportPageFilter pageFilter = new LinkIDReportPageFilter( 0, 5 );
 
         // operate
-        LinkIDVoucherHistory history = client.voucherOrganizationHistory( "urn:be:linkid:example-mobile:theme:test", null, null, null, null, null, "nl" );
+        LinkIDVoucherHistory history = client.voucherOrganizationHistory( Collections.singletonList( "urn:be:linkid:example-mobile:theme:test" ), null, null,
+                null, null, null, "nl" );
 
         // verify
         assertNotNull( history );

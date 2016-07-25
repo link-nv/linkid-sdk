@@ -1611,7 +1611,8 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDVoucherHistory voucherOrganizationHistory(final String voucherOrganizationId, @Nullable final LinkIDVoucherEventTypeFilter eventTypeFilter,
+    public LinkIDVoucherHistory voucherOrganizationHistory(@Nullable final List<String> voucherOrganizationIds,
+                                                           @Nullable final LinkIDVoucherEventTypeFilter eventTypeFilter,
                                                            @Nullable final LinkIDUserFilter userFilter,
                                                            @Nullable final LinkIDApplicationFilter applicationFilter,
                                                            @Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter,
@@ -1622,7 +1623,9 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         VoucherOrganizationHistoryRequest request = new VoucherOrganizationHistoryRequest();
 
         // input
-        request.setVoucherOrganizationId( voucherOrganizationId );
+        if (null != voucherOrganizationIds && !voucherOrganizationIds.isEmpty()) {
+            request.getVoucherOrganizationIds().addAll( voucherOrganizationIds );
+        }
         request.setEventTypeFilter( LinkIDServiceUtils.convert( eventTypeFilter ) );
         request.setUserFilter( LinkIDServiceUtils.convert( userFilter ) );
         request.setApplicationFilter( LinkIDServiceUtils.convert( applicationFilter ) );
