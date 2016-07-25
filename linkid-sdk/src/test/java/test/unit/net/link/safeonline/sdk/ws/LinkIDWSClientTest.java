@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import javax.imageio.ImageIO;
+import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
@@ -85,9 +86,12 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletGetInfoException
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveCreditException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
+import net.link.safeonline.sdk.configuration.LinkIDConfig;
+import net.link.safeonline.sdk.ws.LinkIDSDKWSSecurityConfiguration;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
 import net.link.util.common.ApplicationMode;
+import net.link.util.keyprovider.ResourceKeyStoreKeyProvider;
 import net.link.util.logging.Logger;
 import net.link.util.ws.security.username.AbstractWSSecurityUsernameTokenCallback;
 import net.link.util.ws.security.username.WSSecurityUsernameTokenCallback;
@@ -108,7 +112,8 @@ public class LinkIDWSClientTest {
     private static final Logger logger = Logger.get( LinkIDWSClientTest.class );
 
     //private static final String WS_LOCATION = "https://demo.linkid.be/linkid-ws-username";
-    private static final String WS_LOCATION = "https://192.168.5.14:8443/linkid-ws-username";
+    //    private static final String WS_LOCATION = "https://192.168.5.14:8443/linkid-ws-username";
+    private static final String WS_LOCATION = "https://192.168.5.14:8443/linkid-ws";
 
     // demo config
     private static final String APP_NAME     = "example-mobile";
@@ -1035,15 +1040,16 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testCredentialGet()
             throws Exception {
 
         // Setup
-        LinkIDCredentialType type = LinkIDCredentialType.JKS;
+        LinkIDServiceClient clientX509 = getLinkIDServiceClientX509();
+        LinkIDCredentialType type = LinkIDCredentialType.PASSWORD;
 
         // operate
-        LinkIDCredentialRequest request = client.credentialGet( type );
+        LinkIDCredentialRequest request = clientX509.credentialGet( type );
 
         // verify
         assertNotNull( request );
@@ -1055,6 +1061,14 @@ public class LinkIDWSClientTest {
     private LinkIDServiceClient getLinkIDServiceClient() {
 
         return new LinkIDServiceClientImpl( wsLocation, null, getUsernameTokenCallback() );
+    }
+
+    private LinkIDServiceClient getLinkIDServiceClientX509() {
+
+        String password = "641de402-5dd6-4548-a888-54e4d4ed6567";
+
+        return new LinkIDServiceClientImpl( wsLocation, null, new LinkIDSDKWSSecurityConfiguration( LinkIDConfig.get(),
+                new ResourceKeyStoreKeyProvider( "test-linkid-credentials.jks", password, LinkIDConstants.IDENTITY_ALIAS, password ) ) );
     }
 
     private static WSSecurityUsernameTokenCallback getUsernameTokenCallback() {
