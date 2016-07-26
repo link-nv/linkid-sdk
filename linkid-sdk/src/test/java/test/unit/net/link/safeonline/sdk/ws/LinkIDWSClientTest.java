@@ -1040,7 +1040,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testCredentialGet()
             throws Exception {
 
@@ -1048,7 +1048,7 @@ public class LinkIDWSClientTest {
         LinkIDCredentialType type = LinkIDCredentialType.PASSWORD;
 
         // operate
-        LinkIDCredentialRequest request = client.credentialGet( "Unit test", type );
+        LinkIDCredentialRequest request = client.credentialGet( "Unit test 2", type );
 
         // verify
         assertNotNull( request );
@@ -1074,7 +1074,7 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String name = "example-mobile:0Ju1Rr4A1E";
+        String name = "CN=example-mobile:54tblmQktG";
 
         // operate
         client.credentialRemove( name );

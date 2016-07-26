@@ -13,6 +13,10 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v4.19.0
+---
+  * Credentials: label support
+
 v4.18.0
 ---
   * Credential support: password and X.509
