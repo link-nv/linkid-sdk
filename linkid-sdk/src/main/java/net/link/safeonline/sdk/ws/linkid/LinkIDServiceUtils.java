@@ -70,6 +70,8 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizationKey
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImage;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalizedImages;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
+import net.link.safeonline.sdk.api.ws.linkid.credentials.LinkIDCredentialRemoveErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.credentials.LinkIDCredentialRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDFavoritesConfiguration;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeErrorCode;
@@ -2369,7 +2371,52 @@ public class LinkIDServiceUtils {
 
     }
 
+    public static LinkIDCredentialType convert(final CredentialType type) {
+
+        if (null == type) {
+            return null;
+        }
+
+        switch (type) {
+
+            case PASSWORD:
+                return LinkIDCredentialType.PASSWORD;
+            case JKS:
+                return LinkIDCredentialType.JKS;
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected type %s!", type.name() ) );
+
+    }
+
     public static void handle(final CredentialGetError error) {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static void handle(final CredentialRemoveError error)
+            throws LinkIDCredentialRemoveException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_CREDENTIAL:
+                    throw new LinkIDCredentialRemoveException( error.getErrorMessage(), LinkIDCredentialRemoveErrorCode.ERROR_UNKNOWN_CREDENTIAL );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static void handle(final CredentialListError error) {
 
         if (null != error.getCommonErrorCode()) {
             handle( error.getCommonErrorCode(), error.getErrorMessage() );

@@ -20,6 +20,7 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
@@ -75,6 +76,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApp
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDTheme;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
+import net.link.safeonline.sdk.api.ws.linkid.credentials.LinkIDCredentialRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
@@ -1623,7 +1625,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         VoucherOrganizationHistoryRequest request = new VoucherOrganizationHistoryRequest();
 
         // input
-        if (null != voucherOrganizationIds && !voucherOrganizationIds.isEmpty()) {
+        if (CollectionUtils.isNotEmpty( voucherOrganizationIds )) {
             request.getVoucherOrganizationIds().addAll( voucherOrganizationIds );
         }
         request.setEventTypeFilter( LinkIDServiceUtils.convert( eventTypeFilter ) );
@@ -2064,6 +2066,58 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void credentialRemove(final String name)
+            throws LinkIDCredentialRemoveException {
+
+        // request
+        CredentialRemoveRequest request = new CredentialRemoveRequest();
+
+        // input
+        request.setName( name );
+
+        // operate
+        CredentialRemoveResponse response = getPort().credentialRemove( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+
+            // success!
+            return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public List<LinkIDCredential> credentialList() {
+
+        // operate
+        CredentialListResponse response = getPort().credentialList( null );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        }
+
+        if (null != response.getSuccess()) {
+
+            // success!
+            List<LinkIDCredential> credentials = Lists.newLinkedList();
+            for (Credential credential : response.getSuccess().getCredentials()) {
+                credentials.add( new LinkIDCredential( credential.getName(), LinkIDServiceUtils.convert( credential.getType() ) ) );
+            }
+            return credentials;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+
     }
 
 }

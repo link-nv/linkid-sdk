@@ -14,6 +14,7 @@ import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
+import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -54,6 +55,7 @@ import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDApplicationDeta
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDConfigWalletApplicationsException;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDLocalization;
 import net.link.safeonline.sdk.api.ws.linkid.configuration.LinkIDThemes;
+import net.link.safeonline.sdk.api.ws.linkid.credentials.LinkIDCredentialRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRBulkPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRChangeException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRClientSession;
@@ -587,13 +589,13 @@ public interface LinkIDServiceClient {
     /**
      * Fetch voucher history for specified organization, filtered if wanted
      *
-     * @param voucherOrganizationId the voucher organization ID
-     * @param eventTypeFilter       optional voucher history event type filter
-     * @param userFilter            optional user ID filter
-     * @param applicationFilter     optional  application filter
-     * @param dateFilter            optional date filter
-     * @param pageFilter            optional page filter
-     * @param language              optional language (default is en)
+     * @param voucherOrganizationIds the voucher organization IDs
+     * @param eventTypeFilter        optional voucher history event type filter
+     * @param userFilter             optional user ID filter
+     * @param applicationFilter      optional  application filter
+     * @param dateFilter             optional date filter
+     * @param pageFilter             optional page filter
+     * @param language               optional language (default is en)
      *
      * @throws LinkIDVoucherOrganizationHistoryException something went wrong, check the error code in the exception
      */
@@ -761,5 +763,22 @@ public interface LinkIDServiceClient {
      * @return the credential request, e.g. download URL, ... don't forget to confirm the credential after the download
      */
     LinkIDCredentialRequest credentialGet(LinkIDCredentialType type);
+
+    /**
+     * Remove the specified credential
+     *
+     * @param name the username or certificate subject
+     *
+     * @throws LinkIDCredentialRemoveException something went wrong, check the error code in the exception
+     */
+    void credentialRemove(String name)
+            throws LinkIDCredentialRemoveException;
+
+    /**
+     * Get the credentials available for this application
+     *
+     * @return the credentials
+     */
+    List<LinkIDCredential> credentialList();
 
 }
