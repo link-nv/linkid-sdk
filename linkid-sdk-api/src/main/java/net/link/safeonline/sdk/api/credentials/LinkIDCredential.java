@@ -18,11 +18,13 @@ import java.io.Serializable;
  */
 public class LinkIDCredential implements Serializable {
 
+    private final String               label;
     private final String               name;
     private final LinkIDCredentialType type;
 
-    public LinkIDCredential(final String name, final LinkIDCredentialType type) {
+    public LinkIDCredential(final String label, final String name, final LinkIDCredentialType type) {
 
+        this.label = label;
         this.name = name;
         this.type = type;
     }
@@ -32,10 +34,15 @@ public class LinkIDCredential implements Serializable {
     @Override
     public String toString() {
 
-        return MoreObjects.toStringHelper( this ).add( "name", name ).add( "type", type ).toString();
+        return MoreObjects.toStringHelper( this ).add( "label", label ).add( "name", name ).add( "type", type ).toString();
     }
 
     // Accessors
+
+    public String getLabel() {
+
+        return label;
+    }
 
     public String getName() {
 

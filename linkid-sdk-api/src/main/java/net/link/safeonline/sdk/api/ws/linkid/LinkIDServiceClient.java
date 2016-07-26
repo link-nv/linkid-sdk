@@ -758,11 +758,12 @@ public interface LinkIDServiceClient {
     /**
      * Request credentials of specified type
      *
-     * @param type the credential type
+     * @param label human friendly label for the credential
+     * @param type  the credential type
      *
      * @return the credential request, e.g. download URL, ... don't forget to confirm the credential after the download
      */
-    LinkIDCredentialRequest credentialGet(LinkIDCredentialType type);
+    LinkIDCredentialRequest credentialGet(String label, LinkIDCredentialType type);
 
     /**
      * Remove the specified credential

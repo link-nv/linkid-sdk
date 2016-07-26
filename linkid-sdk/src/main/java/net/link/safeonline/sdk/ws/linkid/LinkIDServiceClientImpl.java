@@ -2044,12 +2044,13 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDCredentialRequest credentialGet(final LinkIDCredentialType type) {
+    public LinkIDCredentialRequest credentialGet(final String label, final LinkIDCredentialType type) {
 
         // request
         CredentialGetRequest request = new CredentialGetRequest();
 
         // input
+        request.setLabel( label );
         request.setType( LinkIDServiceUtils.convert( type ) );
 
         // operate
@@ -2111,7 +2112,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             // success!
             List<LinkIDCredential> credentials = Lists.newLinkedList();
             for (Credential credential : response.getSuccess().getCredentials()) {
-                credentials.add( new LinkIDCredential( credential.getName(), LinkIDServiceUtils.convert( credential.getType() ) ) );
+                credentials.add( new LinkIDCredential( credential.getLabel(), credential.getName(), LinkIDServiceUtils.convert( credential.getType() ) ) );
             }
             return credentials;
         }
