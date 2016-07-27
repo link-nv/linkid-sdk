@@ -97,6 +97,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherInfoErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateErrorCode;
@@ -1030,6 +1031,23 @@ public class LinkIDServiceUtils {
                 return LinkIDVoucherListRedeemedErrorCode.ERROR_TOO_MANY_RESULTS;
             case ERROR_INVALID_PAGE:
                 return LinkIDVoucherListRedeemedErrorCode.ERROR_INVALID_PAGE;
+            case ERROR_PERMISSION_DENIED:
+                throw new LinkIDPermissionDeniedException( errorCode.value() );
+            case ERROR_UNEXPECTED:
+                throw new LinkIDUnexpectedException( errorCode.value() );
+            case ERROR_MAINTENANCE:
+                throw new LinkIDMaintenanceException( errorCode.value() );
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
+    }
+
+    public static LinkIDVoucherInfoErrorCode convert(final VoucherInfoErrorCode errorCode) {
+
+        switch (errorCode) {
+
+            case ERROR_UNKNOWN_VOUCHER_ID:
+                return LinkIDVoucherInfoErrorCode.ERROR_UNKNOWN_VOUCHER_ID;
             case ERROR_PERMISSION_DENIED:
                 throw new LinkIDPermissionDeniedException( errorCode.value() );
             case ERROR_UNEXPECTED:

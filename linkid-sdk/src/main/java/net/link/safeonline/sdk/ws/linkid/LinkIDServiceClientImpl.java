@@ -106,6 +106,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
@@ -1391,6 +1392,37 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 vouchers.add( LinkIDServiceUtils.convert( voucher ) );
             }
             return new LinkIDVouchers( vouchers, response.getSuccess().getTotal() );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public LinkIDVoucher voucherInfo(final String voucherId, final Locale locale)
+            throws LinkIDVoucherInfoException {
+
+        // request
+        VoucherInfoRequest request = new VoucherInfoRequest();
+
+        // input
+        request.setVoucherId( voucherId );
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
+
+        // operate
+        VoucherInfoResponse response = getPort().voucherInfo( request );
+
+        // response
+        if (null != response.getError()) {
+            throw new LinkIDVoucherInfoException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+        }
+
+        if (null != response.getSuccess()) {
+
+            if (null == response.getSuccess().getVoucher()) {
+                return null;
+            }
+
+            return LinkIDServiceUtils.convert( response.getSuccess().getVoucher() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
