@@ -297,7 +297,7 @@
         <sequence>
             <element name="voucher" type="tns:Voucher" minOccurs="0" maxOccurs="1">
                 <annotation>
-                    The voucher info
+                    <documentation>The voucher info</documentation>
                 </annotation>
             </element>
         </sequence>
@@ -905,6 +905,11 @@
             <element name="id" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The ID of the specific voucher</documentation>
+                </annotation>
+            </element>
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The ID of the user the voucher belongs to</documentation>
                 </annotation>
             </element>
             <element name="name" type="string" minOccurs="1" maxOccurs="1">

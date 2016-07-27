@@ -12,6 +12,9 @@ import java.util.Date;
 public class LinkIDVoucher implements Serializable {
 
     private final String id;
+
+    private final String userId;
+
     private final String name;
     private final String description;
     private final String logoUrl;
@@ -23,10 +26,12 @@ public class LinkIDVoucher implements Serializable {
     //
     private final String voucherOrganizationId;
 
-    public LinkIDVoucher(final String id, final String name, final String description, final String logoUrl, final long counter, final long limit,
-                         final Date activated, final Date redeemed, final String voucherOrganizationId) {
+    public LinkIDVoucher(final String id, final String userId, final String name, final String description, final String logoUrl, final long counter,
+                         final long limit, final Date activated, final Date redeemed, final String voucherOrganizationId) {
 
         this.id = id;
+
+        this.userId = userId;
 
         this.name = name;
         this.description = description;
@@ -45,17 +50,9 @@ public class LinkIDVoucher implements Serializable {
     @Override
     public String toString() {
 
-        return "LinkIDVoucher{" +
-               "id='" + id + '\'' +
-               ", name='" + name + '\'' +
-               ", description='" + description + '\'' +
-               ", logoUrl='" + logoUrl + '\'' +
-               ", counter=" + counter +
-               ", limit=" + limit +
-               ", activated=" + activated +
-               ", redeemed=" + redeemed +
-               ", voucherOrganizationId='" + voucherOrganizationId + '\'' +
-               '}';
+        return "LinkIDVoucher{" + "id='" + id + '\'' + ", userId='" + userId + '\'' + ", name='" + name + '\'' + ", description='" + description + '\''
+               + ", logoUrl='" + logoUrl + '\'' + ", counter=" + counter + ", limit=" + limit + ", activated=" + activated + ", redeemed=" + redeemed
+               + ", voucherOrganizationId='" + voucherOrganizationId + '\'' + '}';
     }
 
     // Accessors
@@ -63,6 +60,11 @@ public class LinkIDVoucher implements Serializable {
     public String getId() {
 
         return id;
+    }
+
+    public String getUserId() {
+
+        return userId;
     }
 
     public String getName() {

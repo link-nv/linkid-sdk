@@ -1305,8 +1305,8 @@ public class LinkIDServiceUtils {
 
     public static LinkIDVoucher convert(final Voucher voucher) {
 
-        return new LinkIDVoucher( voucher.getId(), voucher.getName(), voucher.getDescription(), voucher.getLogoUrl(), voucher.getCounter(), voucher.getLimit(),
-                convert( voucher.getActivated() ), convert( voucher.getRedeemed() ), voucher.getVoucherOrganizationId() );
+        return new LinkIDVoucher( voucher.getId(), voucher.getUserId(), voucher.getName(), voucher.getDescription(), voucher.getLogoUrl(), voucher.getCounter(),
+                voucher.getLimit(), convert( voucher.getActivated() ), convert( voucher.getRedeemed() ), voucher.getVoucherOrganizationId() );
     }
 
     public static XMLGregorianCalendar convert(final Date date) {
