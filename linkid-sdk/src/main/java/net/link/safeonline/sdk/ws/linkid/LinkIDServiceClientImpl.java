@@ -1413,7 +1413,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         // response
         if (null != response.getError()) {
-            throw new LinkIDVoucherInfoException( LinkIDServiceUtils.convert( response.getError().getErrorCode() ) );
+            LinkIDServiceUtils.handle( response.getError() );
         }
 
         if (null != response.getSuccess()) {

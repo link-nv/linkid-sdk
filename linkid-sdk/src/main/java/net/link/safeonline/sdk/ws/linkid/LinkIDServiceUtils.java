@@ -98,6 +98,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherInfoErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateErrorCode;
@@ -1042,18 +1043,28 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
+    public static void handle(final VoucherInfoError error)
+            throws LinkIDVoucherInfoException {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_UNKNOWN_VOUCHER_ID:
+                    throw new LinkIDVoucherInfoException( error.getErrorMessage(), LinkIDVoucherInfoErrorCode.ERROR_UNKNOWN_VOUCHER_ID );
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+    }
+
     public static LinkIDVoucherInfoErrorCode convert(final VoucherInfoErrorCode errorCode) {
 
         switch (errorCode) {
 
             case ERROR_UNKNOWN_VOUCHER_ID:
                 return LinkIDVoucherInfoErrorCode.ERROR_UNKNOWN_VOUCHER_ID;
-            case ERROR_PERMISSION_DENIED:
-                throw new LinkIDPermissionDeniedException( errorCode.value() );
-            case ERROR_UNEXPECTED:
-                throw new LinkIDUnexpectedException( errorCode.value() );
-            case ERROR_MAINTENANCE:
-                throw new LinkIDMaintenanceException( errorCode.value() );
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );

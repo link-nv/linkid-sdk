@@ -11,9 +11,9 @@ public class LinkIDVoucherInfoException extends Exception {
 
     private final LinkIDVoucherInfoErrorCode errorCode;
 
-    public LinkIDVoucherInfoException(final LinkIDVoucherInfoErrorCode errorCode) {
+    public LinkIDVoucherInfoException(final String message, final LinkIDVoucherInfoErrorCode errorCode) {
 
-        super( String.format( "Error code: \"%s\"", errorCode ) );
+        super( String.format( "Error code: \"%s\", message=\"%s\"", errorCode, message ) );
         this.errorCode = errorCode;
     }
 

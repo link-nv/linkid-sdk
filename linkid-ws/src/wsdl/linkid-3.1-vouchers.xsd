@@ -304,6 +304,14 @@
     </complexType>
 
     <complexType name="VoucherInfoError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
 		<attribute name="errorCode" type="tns:VoucherInfoErrorCode" use="required" />
     </complexType>
 
@@ -315,21 +323,6 @@
 			<enumeration value="error.unknown.voucher.id">
 				<annotation>
 					<documentation>No such voucher ID exists</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="error.permission.denied">
-				<annotation>
-					<documentation>Application not allowed to access voucher info for requested voucher</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="error.unexpected">
-				<annotation>
-					<documentation>Something unexpected happened</documentation>
-				</annotation>
-			</enumeration>
-			<enumeration value="error.maintenance">
-				<annotation>
-					<documentation>linkID is down for maintenance</documentation>
 				</annotation>
 			</enumeration>
 		</restriction>
