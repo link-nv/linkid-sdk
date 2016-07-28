@@ -265,6 +265,76 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Vouchers: voucher info -->
+
+    <element name="VoucherInfoRequest">
+        <complexType>
+            <sequence>
+                <element name="voucherId" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The ID of the voucher for which info is required</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+        </complexType>
+    </element>
+
+    <element name="VoucherInfoResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:VoucherInfoSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:VoucherInfoError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="VoucherInfoSuccess">
+        <sequence>
+            <element name="voucher" type="tns:Voucher" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>The voucher info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="VoucherInfoError">
+		<attribute name="errorCode" type="tns:VoucherInfoErrorCode" use="required" />
+    </complexType>
+
+    <simpleType name="VoucherInfoErrorCode">
+		<annotation>
+			<documentation>Voucher Info Error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.unknown.voucher.id">
+				<annotation>
+					<documentation>No such voucher ID exists</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.permission.denied">
+				<annotation>
+					<documentation>Application not allowed to access voucher info for requested voucher</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.unexpected">
+				<annotation>
+					<documentation>Something unexpected happened</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.maintenance">
+				<annotation>
+					<documentation>linkID is down for maintenance</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Vouchers: redeem -->
 
     <element name="VoucherRedeemRequest">
@@ -835,6 +905,11 @@
             <element name="id" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The ID of the specific voucher</documentation>
+                </annotation>
+            </element>
+            <element name="userId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The ID of the user the voucher belongs to</documentation>
                 </annotation>
             </element>
             <element name="name" type="string" minOccurs="1" maxOccurs="1">

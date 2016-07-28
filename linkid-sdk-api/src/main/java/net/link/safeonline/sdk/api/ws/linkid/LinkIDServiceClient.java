@@ -34,6 +34,7 @@ import net.link.safeonline.sdk.api.reporting.LinkIDWalletReportTypeFilter;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeConfig;
 import net.link.safeonline.sdk.api.themes.LinkIDThemeStatus;
 import net.link.safeonline.sdk.api.users.LinkIDUsers;
+import net.link.safeonline.sdk.api.voucher.LinkIDVoucher;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherEventTypeFilter;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherHistory;
 import net.link.safeonline.sdk.api.voucher.LinkIDVoucherOrganization;
@@ -84,6 +85,7 @@ import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeAddException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.themes.LinkIDThemeStatusException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDUserListException;
+import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherInfoException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherListRedeemedException;
 import net.link.safeonline.sdk.api.ws.linkid.voucher.LinkIDVoucherOrganizationActivateException;
@@ -512,6 +514,19 @@ public interface LinkIDServiceClient {
      */
     LinkIDVouchers voucherList(String userId, @Nullable String voucherOrganizationId, boolean includeInactive, Locale locale)
             throws LinkIDVoucherListException;
+
+    /**
+     * Get info about a voucher for a given voucherId
+     *
+     * @param voucherId the voucher ID for which info is required
+     * @param locale    locale for returning localization voucher organization name, description
+     *
+     * @return the voucher info
+     *
+     * @throws LinkIDVoucherInfoException something went wrong, check the error code in the exception
+     */
+    LinkIDVoucher voucherInfo(String voucherId, Locale locale)
+            throws LinkIDVoucherInfoException;
 
     /**
      * List the redeemed vouchers specified user has for specified voucher organization

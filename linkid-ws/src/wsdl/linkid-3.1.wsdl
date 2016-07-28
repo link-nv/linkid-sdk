@@ -246,6 +246,12 @@
 	<message name="voucherListRedeemedResponse">
 		<part name="response" element="tns:VoucherListRedeemedResponse" />
 	</message>
+    <message name="voucherInfoRequest">
+		<part name="request" element="tns:VoucherInfoRequest" />
+	</message>
+	<message name="voucherInfoResponse">
+		<part name="response" element="tns:VoucherInfoResponse" />
+	</message>
     <message name="voucherRedeemRequest">
 		<part name="request" element="tns:VoucherRedeemRequest" />
 	</message>
@@ -310,9 +316,9 @@
 		<part name="response" element="tns:ThemesResponse" />
 	</message>
 
-	<!-- =================== Payment configurations==================== -->
+    <!-- =================== Payment configurations==================== -->
 
-	<message name="paymentConfigurationAddRequest">
+    <message name="paymentConfigurationAddRequest">
 		<part name="request" element="tns:PaymentConfigurationAddRequest" />
 	</message>
 	<message name="paymentConfigurationAddResponse">
@@ -337,9 +343,9 @@
 		<part name="response" element="tns:PaymentConfigurationListResponse" />
 	</message>
 
-	<!-- =================== Application permissions ==================== -->
+    <!-- =================== Application permissions ==================== -->
 
-	<message name="applicationPermissionAddRequest">
+    <message name="applicationPermissionAddRequest">
 		<part name="request" element="tns:ApplicationPermissionAddRequest" />
 	</message>
 	<message name="applicationPermissionAddResponse">
@@ -358,7 +364,7 @@
 		<part name="response" element="tns:ApplicationPermissionListResponse" />
 	</message>
 
-	<!-- ======================== Comments =========================== -->
+    <!-- ======================== Comments =========================== -->
 
     <message name="commentGetRequest">
 		<part name="request" element="tns:CommentGetRequest" />
@@ -376,9 +382,9 @@
 		<part name="response" element="tns:UserListResponse" />
 	</message>
 
-	<!-- ======================== Credentials========================= -->
+    <!-- ======================== Credentials========================= -->
 
-	<message name="credentialGetRequest">
+    <message name="credentialGetRequest">
 		<part name="request" element="tns:CredentialGetRequest" />
 	</message>
 	<message name="credentialGetResponse">
@@ -397,7 +403,7 @@
 		<part name="response" element="tns:CredentialListResponse" />
 	</message>
 
-	<!-- =========================== Ports ========================== -->
+    <!-- =========================== Ports ========================== -->
 
     <portType name="LinkIDServicePort">
 		<operation name="authStart">
@@ -543,6 +549,10 @@
 		<operation name="voucherListRedeemed">
 			<input message="tns:voucherListRedeemedRequest" />
 			<output message="tns:voucherListRedeemedResponse" />
+		</operation>
+		<operation name="voucherInfo">
+			<input message="tns:voucherInfoRequest" />
+			<output message="tns:voucherInfoResponse" />
 		</operation>
 		<operation name="voucherRedeem">
 			<input message="tns:voucherRedeemRequest" />
@@ -955,6 +965,15 @@
         </operation>
         <operation name="voucherListRedeemed">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherListRedeemed" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="voucherInfo">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:voucherInfo" />
             <input>
                 <soap:body use="literal" />
             </input>
