@@ -775,8 +775,11 @@ public class LinkIDWSClientTest {
     public void testVoucherOrganizationList()
             throws Exception {
 
+        // setup
+        List<String> organizationIds = Arrays.asList( null, "foo", "bar" );
+
         // operate
-        List<LinkIDVoucherOrganizationDetails> organizations = client.voucherOrganizationList( null, false );
+        List<LinkIDVoucherOrganizationDetails> organizations = client.voucherOrganizationList( organizationIds, false );
 
         // verify
         assertNotNull( organizations );
