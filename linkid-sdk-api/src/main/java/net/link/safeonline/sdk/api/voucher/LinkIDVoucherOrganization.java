@@ -42,14 +42,8 @@ public class LinkIDVoucherOrganization implements Serializable {
     @Override
     public String toString() {
 
-        return "LinkIDVoucherOrganization{" +
-               "id='" + id + '\'' +
-               ", logoUrl='" + logoUrl + '\'' +
-               ", voucherLimit=" + voucherLimit +
-               ", active=" + active +
-               ", nameLocalizations=" + nameLocalizations +
-               ", descriptionLocalizations=" + descriptionLocalizations +
-               '}';
+        return "LinkIDVoucherOrganization{" + "id='" + id + '\'' + ", logoUrl='" + logoUrl + '\'' + ", voucherLimit=" + voucherLimit + ", active=" + active
+               + ", nameLocalizations=" + nameLocalizations + ", descriptionLocalizations=" + descriptionLocalizations + '}';
     }
 
     // Accessors

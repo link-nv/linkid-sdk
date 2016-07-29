@@ -21,7 +21,10 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings({ "InstanceVariableNamingConvention", "unused", "MethodParameterNamingConvention" })
 public class LinkIDWalletOrganizationDetails implements Serializable {
 
-    private final LinkIDWalletOrganization              organization;
+    private final LinkIDWalletOrganization organization;
+
+    private final boolean owner;
+
     //
     private final List<LinkIDApplicationPermissionType> permissions;
     //
@@ -35,12 +38,14 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     private final List<String>                          permissionEnrollApplications;
     private final List<String>                          permissionUseApplications;
 
-    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, final List<LinkIDApplicationPermissionType> permissions,
-                                           @Nullable final LinkIDWalletOrganizationStats stats, final List<String> permissionAddCreditApplications,
-                                           final List<String> permissionRemoveCreditApplications, final List<String> permissionRemoveApplications,
-                                           final List<String> permissionEnrollApplications, final List<String> permissionUseApplications) {
+    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, final boolean owner,
+                                           final List<LinkIDApplicationPermissionType> permissions, @Nullable final LinkIDWalletOrganizationStats stats,
+                                           final List<String> permissionAddCreditApplications, final List<String> permissionRemoveCreditApplications,
+                                           final List<String> permissionRemoveApplications, final List<String> permissionEnrollApplications,
+                                           final List<String> permissionUseApplications) {
 
         this.organization = organization;
+        this.owner = owner;
         this.permissions = permissions;
         this.stats = stats;
         this.permissionAddCreditApplications = permissionAddCreditApplications;
@@ -55,16 +60,10 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     @Override
     public String toString() {
 
-        return "LinkIDWalletOrganizationDetails{" +
-               "organization=" + organization +
-               ", permissions=" + permissions +
-               ", stats=" + stats +
-               ", permissionAddCreditApplications=" + permissionAddCreditApplications +
-               ", permissionRemoveCreditApplications=" + permissionRemoveCreditApplications +
-               ", permissionRemoveApplications=" + permissionRemoveApplications +
-               ", permissionEnrollApplications=" + permissionEnrollApplications +
-               ", permissionUseApplications=" + permissionUseApplications +
-               '}';
+        return "LinkIDWalletOrganizationDetails{" + "organization=" + organization + ", owner=" + owner + ", permissions=" + permissions + ", stats=" + stats
+               + ", permissionAddCreditApplications=" + permissionAddCreditApplications + ", permissionRemoveCreditApplications="
+               + permissionRemoveCreditApplications + ", permissionRemoveApplications=" + permissionRemoveApplications + ", permissionEnrollApplications="
+               + permissionEnrollApplications + ", permissionUseApplications=" + permissionUseApplications + '}';
     }
 
     // Accessors
@@ -72,6 +71,11 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     public LinkIDWalletOrganization getOrganization() {
 
         return organization;
+    }
+
+    public boolean isOwner() {
+
+        return owner;
     }
 
     public List<LinkIDApplicationPermissionType> getPermissions() {

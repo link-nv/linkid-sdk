@@ -38,6 +38,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissions;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportDateFilter;
@@ -779,7 +780,7 @@ public class LinkIDWSClientTest {
         descriptionLocalizations.add( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "en: Test voucher description" ) );
         descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "nl: Test voucher description" ) );
 
-        LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test",
+        LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test", true,
                 "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 5, true, nameLocalizations, descriptionLocalizations );
 
         // operate
@@ -1019,11 +1020,11 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // operate
-        List<LinkIDApplicationPermissionType> permissions = client.applicationPermissionList( "urn:be:linkid:example-mobile:theme:test" );
+        LinkIDApplicationPermissions linkIDApplicationPermissions = client.applicationPermissionList( "urn:be:linkid:example-mobile:theme:test" );
 
         // verify
-        assertNotNull( permissions );
-        for (LinkIDApplicationPermissionType permission : permissions) {
+        assertNotNull( linkIDApplicationPermissions );
+        for (LinkIDApplicationPermissionType permission : linkIDApplicationPermissions.getPermissions()) {
             logger.dbg( "Permission: %s", permission );
         }
     }

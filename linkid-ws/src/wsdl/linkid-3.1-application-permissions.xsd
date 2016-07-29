@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
   ~ safe-online - linkid-ws
   ~
   ~ Copyright 2006-2016 linkID Inc. All rights reserved.
@@ -172,7 +171,7 @@
 
     <complexType name="ApplicationPermissionListSuccess">
         <sequence>
-            <element name="permissions" type="tns:ApplicationPermissionType" minOccurs="0" maxOccurs="unbounded">
+            <element name="permissions" type="tns:ApplicationPermissions" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>The list of permissions the caller application has</documentation>
                 </annotation>
@@ -254,6 +253,21 @@
 			</enumeration>
 		</restriction>
 	</simpleType>
+
+    <complexType name="ApplicationPermissions">
+        <sequence>
+            <element name="owner" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Whether or not the requesting application is owner of the resource</documentation>
+                </annotation>
+            </element>
+			<element name="permissions" type="tns:ApplicationPermissionType" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The list of permissions the caller application has</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
 
 
 </schema>

@@ -1723,9 +1723,9 @@ public class LinkIDServiceUtils {
 
     public static LinkIDVoucherOrganizationDetails convert(final VoucherOrganizationDetails voucherOrganizationDetails) {
 
-        return new LinkIDVoucherOrganizationDetails( convert( voucherOrganizationDetails.getOrganization() ), convert( voucherOrganizationDetails.getStats() ),
-                voucherOrganizationDetails.getRewardPermissionApplications(), voucherOrganizationDetails.getListPermissionApplications(),
-                voucherOrganizationDetails.getRedeemPermissionApplications() );
+        return new LinkIDVoucherOrganizationDetails( convert( voucherOrganizationDetails.getOrganization() ), voucherOrganizationDetails.isOwner(),
+                convert( voucherOrganizationDetails.getStats() ), voucherOrganizationDetails.getRewardPermissionApplications(),
+                voucherOrganizationDetails.getListPermissionApplications(), voucherOrganizationDetails.getRedeemPermissionApplications() );
 
     }
 
@@ -1932,7 +1932,7 @@ public class LinkIDServiceUtils {
 
     public static LinkIDWalletOrganizationDetails convert(final WalletOrganizationDetails details) {
 
-        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), convertPermissions( details.getPermissions() ),
+        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), details.isOwner(), convertPermissions( details.getPermissions() ),
                 convert( details.getStats() ), details.getPermissionAddCreditApplications(), details.getPermissionRemoveCreditApplications(),
                 details.getPermissionRemoveApplications(), details.getPermissionEnrollApplications(), details.getPermissionUseApplications() );
 
