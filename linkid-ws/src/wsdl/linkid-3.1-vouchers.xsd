@@ -810,6 +810,11 @@
                     <documentation>Voucher organization configuration</documentation>
                 </annotation>
             </element>
+            <element name="owner" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Whether or not the requesting application owns the voucher organization</documentation>
+                </annotation>
+            </element>
             <element name="stats" type="tns:VoucherOrganizationStats" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional voucher organization stats, if requested</documentation>

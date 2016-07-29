@@ -35,6 +35,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
 import net.link.safeonline.sdk.api.payment.LinkIDWalletTransaction;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissions;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
@@ -2013,7 +2014,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public List<LinkIDApplicationPermissionType> applicationPermissionList(final String id)
+    public LinkIDApplicationPermissions applicationPermissionList(final String id)
             throws LinkIDApplicationPermissionListException {
 
         // request
@@ -2032,13 +2033,17 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         if (null != response.getSuccess()) {
 
-            List<LinkIDApplicationPermissionType> permissions = Lists.newLinkedList();
+            ApplicationPermissions applicationPermissions = response.getSuccess().getPermissions();
 
-            for (ApplicationPermissionType permissionType : response.getSuccess().getPermissions()) {
-                permissions.add( LinkIDServiceUtils.convert( permissionType ) );
+            List<LinkIDApplicationPermissionType> permissions = Lists.newLinkedList();
+            if (!CollectionUtils.isEmpty( applicationPermissions.getPermissions() )) {
+
+                for (ApplicationPermissionType permissionType : applicationPermissions.getPermissions()) {
+                    permissions.add( LinkIDServiceUtils.convert( permissionType ) );
+                }
             }
 
-            return permissions;
+            return new LinkIDApplicationPermissions( applicationPermissions.isOwner(), permissions );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

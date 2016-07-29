@@ -22,6 +22,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissions;
 import net.link.safeonline.sdk.api.reporting.LinkIDParkingReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDPaymentReport;
 import net.link.safeonline.sdk.api.reporting.LinkIDReportApplicationFilter;
@@ -749,7 +750,7 @@ public interface LinkIDServiceClient {
      *
      * @throws LinkIDApplicationPermissionListException something went wrong, check the error code in the exception
      */
-    List<LinkIDApplicationPermissionType> applicationPermissionList(String id)
+    LinkIDApplicationPermissions applicationPermissionList(String id)
             throws LinkIDApplicationPermissionListException;
 
     /**

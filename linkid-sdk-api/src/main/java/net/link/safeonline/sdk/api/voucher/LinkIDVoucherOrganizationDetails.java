@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class LinkIDVoucherOrganizationDetails implements Serializable {
 
     private final LinkIDVoucherOrganization      organization;
+    private final boolean                        owner;
     //
     @Nullable
     private final LinkIDVoucherOrganizationStats stats;
@@ -29,11 +30,12 @@ public class LinkIDVoucherOrganizationDetails implements Serializable {
     private final List<String>                   listPermissionApplications;
     private final List<String>                   redeemPermissionApplications;
 
-    public LinkIDVoucherOrganizationDetails(final LinkIDVoucherOrganization organization, @Nullable final LinkIDVoucherOrganizationStats stats,
-                                            final List<String> rewardPermissionApplications, final List<String> listPermissionApplications,
-                                            final List<String> redeemPermissionApplications) {
+    public LinkIDVoucherOrganizationDetails(final LinkIDVoucherOrganization organization, final boolean owner,
+                                            @Nullable final LinkIDVoucherOrganizationStats stats, final List<String> rewardPermissionApplications,
+                                            final List<String> listPermissionApplications, final List<String> redeemPermissionApplications) {
 
         this.organization = organization;
+        this.owner = owner;
         this.stats = stats;
         this.rewardPermissionApplications = rewardPermissionApplications;
         this.listPermissionApplications = listPermissionApplications;
@@ -45,13 +47,9 @@ public class LinkIDVoucherOrganizationDetails implements Serializable {
     @Override
     public String toString() {
 
-        return "LinkIDVoucherOrganization{" +
-               "organization='" + organization + '\'' +
-               ", stats=" + stats +
-               ", rewardPermissionApplications=" + rewardPermissionApplications +
-               ", listPermissionApplications=" + listPermissionApplications +
-               ", redeemPermissionApplications=" + redeemPermissionApplications +
-               '}';
+        return "LinkIDVoucherOrganizationDetails{" + "organization=" + organization + ", owner=" + owner + ", stats=" + stats
+               + ", rewardPermissionApplications=" + rewardPermissionApplications + ", listPermissionApplications=" + listPermissionApplications
+               + ", redeemPermissionApplications=" + redeemPermissionApplications + '}';
     }
 
     // Accessors
@@ -59,6 +57,11 @@ public class LinkIDVoucherOrganizationDetails implements Serializable {
     public LinkIDVoucherOrganization getOrganization() {
 
         return organization;
+    }
+
+    public boolean isOwner() {
+
+        return owner;
     }
 
     @Nullable
