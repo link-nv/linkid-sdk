@@ -31,6 +31,7 @@ import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentInfo;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMethodType;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
@@ -780,7 +781,7 @@ public class LinkIDWSClientTest {
         descriptionLocalizations.add( new LinkIDLocalizationValue( Locale.ENGLISH.getLanguage(), "en: Test voucher description" ) );
         descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "nl: Test voucher description" ) );
 
-        LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test", true,
+        LinkIDVoucherOrganization voucherOrganization = new LinkIDVoucherOrganization( "test",
                 "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png", 5, true, nameLocalizations, descriptionLocalizations );
 
         // operate
@@ -1101,6 +1102,18 @@ public class LinkIDWSClientTest {
 
         // operate
         client.credentialRemove( name );
+    }
+
+    //    @Test
+    public void testPaymentInfo()
+            throws Exception {
+
+        // operate
+        LinkIDPaymentInfo linkIDPaymentInfo = client.paymentInfo( Locale.ENGLISH );
+
+        // verify
+        assertNotNull( linkIDPaymentInfo );
+        logger.dbg( "Result: %s", linkIDPaymentInfo );
     }
 
     // Auth
