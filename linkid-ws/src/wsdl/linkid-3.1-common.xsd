@@ -333,6 +333,151 @@
         </sequence>
     </complexType>
 
+    <complexType name="WalletOrganization">
+        <sequence>
+            <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The ID of the wallet organization</documentation>
+                </annotation>
+            </element>
+            <element name="logoUrl" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The url of the wallet logo</documentation>
+                </annotation>
+            </element>
+            <element name="expirationInSecs" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Expiration of reserved wallet transactions in secs</documentation>
+                </annotation>
+            </element>
+            <element name="sticky" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Sticky as in even if balance is 0, it will be shown during payments</documentation>
+                </annotation>
+            </element>
+            <element name="autoEnroll" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Auto enroll users in wallet if trying to pay for an application allowed to use it</documentation>
+                </annotation>
+            </element>
+            <element name="removeWalletOnUnsubscribe" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>If user unsubscribes from application that owns this wallet organization, remove the wallet with it?</documentation>
+                </annotation>
+            </element>
+            <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization name localizations</documentation>
+                </annotation>
+            </element>
+            <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization description localizations</documentation>
+                </annotation>
+            </element>
+            <element name="coinNameLocalization" type="tns:Localization" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization coin name localizations</documentation>
+                </annotation>
+            </element>
+            <element name="coinNameMultipleLocalization" type="tns:Localization" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization coin name localizations</documentation>
+                </annotation>
+            </element>
+			<element name="statusCode" type="tns:RequestStatusCode" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>The status code of this wallet organization</documentation>
+				</annotation>
+			</element>
+			<element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>Currency of the wallet if applicable</documentation>
+				</annotation>
+			</element>
+			<element name="coinId" type="string" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>Wallet coin ID of the wallet if applicable</documentation>
+				</annotation>
+			</element>
+			<element name="policyBalance" type="tns:WalletPolicyBalance" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>Balance policy configuration if applicable</documentation>
+				</annotation>
+			</element>
+        </sequence>
+    </complexType>
+
+	<complexType name="WalletPolicyBalance">
+		<sequence>
+			<element name="balance" type="double" minOccurs="1" maxOccurs="1">
+				<annotation>
+					<documentation>Optional initial balance given to users when the wallet is created</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+    <complexType name="WalletOrganizationDetails">
+        <sequence>
+            <element name="organization" type="tns:WalletOrganization" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Wallet organization configuration</documentation>
+                </annotation>
+            </element>
+            <element name="owner" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Whether or not the requesting application owns the wallet</documentation>
+                </annotation>
+            </element>
+			<element name="permissions" type="tns:ApplicationPermissionType" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>What permissions do you have?</documentation>
+				</annotation>
+			</element>
+            <element name="stats" type="tns:WalletOrganizationStats" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional wallet organization stats, if requested</documentation>
+                </annotation>
+            </element>
+            <element name="permissionAddCreditApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the ADD CREDIT permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionRemoveCreditApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the REMOVE CREDIT permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionRemoveApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the REMOVE permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionEnrollApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the ENROLL permission</documentation>
+                </annotation>
+            </element>
+            <element name="permissionUseApplications" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>List of applications that have the USE permission</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="WalletOrganizationStats">
+        <sequence>
+            <element name="numberOfWallets" type="long" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Total number of wallets</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
     <complexType name="LinkIDApplication">
         <sequence>
             <element name="name" type="string" minOccurs="1" maxOccurs="1">

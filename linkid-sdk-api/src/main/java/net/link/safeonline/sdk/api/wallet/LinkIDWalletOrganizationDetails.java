@@ -21,10 +21,9 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings({ "InstanceVariableNamingConvention", "unused", "MethodParameterNamingConvention" })
 public class LinkIDWalletOrganizationDetails implements Serializable {
 
-    private final LinkIDWalletOrganization organization;
-
-    private final boolean owner;
-
+    private final LinkIDWalletOrganization              organization;
+    //
+    private final boolean                               owner;
     //
     private final List<LinkIDApplicationPermissionType> permissions;
     //

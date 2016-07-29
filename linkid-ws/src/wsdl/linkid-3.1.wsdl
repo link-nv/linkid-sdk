@@ -66,6 +66,12 @@
 
     <!-- =================== Payments ========================= -->
 
+    <message name="paymentInfoRequest">
+		<part name="request" element="tns:PaymentInfoRequest" />
+	</message>
+	<message name="paymentInfoResponse">
+		<part name="response" element="tns:PaymentInfoResponse" />
+	</message>
     <message name="paymentStatusRequest">
 		<part name="request" element="tns:PaymentStatusRequest" />
 	</message>
@@ -448,6 +454,10 @@
 			<input message="tns:paymentStatusRequest" />
 			<output message="tns:paymentStatusResponse" />
 		</operation>
+		<operation name="paymentInfo">
+			<input message="tns:paymentInfoRequest" />
+			<output message="tns:paymentInfoResponse" />
+		</operation>
 		<operation name="paymentCapture">
 			<input message="tns:paymentCaptureRequest" />
 			<output message="tns:paymentCaptureResponse" />
@@ -732,6 +742,15 @@
         </operation>
         <operation name="paymentStatus">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentStatus" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="paymentInfo">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:paymentInfo" />
             <input>
                 <soap:body use="literal" />
             </input>

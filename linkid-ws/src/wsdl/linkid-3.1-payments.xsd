@@ -8,6 +8,49 @@
          *                                                                  Payments                                                                      *
          **************************************************************************************************************************************************  -->
 
+    <!-- Payment: info request -->
+
+    <element name="PaymentInfoRequest">
+		<complexType>
+            <attribute name="language" type="string" use="optional">
+                <annotation>
+                    <documentation>ISO 639 alpha-2 or alpha-3 language code. Optional, default is en</documentation>
+                </annotation>
+            </attribute>
+		</complexType>
+	</element>
+
+	<element name="PaymentInfoResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:PaymentInfoSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:PaymentInfoError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="PaymentInfoSuccess">
+        <sequence>
+            <element name="walletOrganizationDetails" type="tns:WalletOrganizationDetails" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The wallet organization details the caller application owns</documentation>
+                </annotation>
+            </element>
+            <element name="paymentMethods" type="tns:PaymentMethodType" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Payment methods(s) available</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="PaymentInfoError">
+        <complexContent>
+            <extension base="tns:CommonError">
+            </extension>
+        </complexContent>
+    </complexType>
+
     <!-- Payment: Status request -->
 
     <element name="PaymentStatusRequest">

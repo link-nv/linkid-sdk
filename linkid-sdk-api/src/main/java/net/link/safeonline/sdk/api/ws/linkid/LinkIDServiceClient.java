@@ -20,6 +20,7 @@ import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentInfo;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
 import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissions;
@@ -199,6 +200,13 @@ public interface LinkIDServiceClient {
      * @return the application details
      */
     List<LinkIDApplicationDetails> configApplications(List<String> applicationNames, Locale locale);
+
+    /**
+     * Get payment info, e.g. what wallet organizations you can use, what payment methods you can use
+     *
+     * @return the payment info
+     */
+    LinkIDPaymentInfo paymentInfo(Locale locale);
 
     /**
      * Fetch the payment status of specified order

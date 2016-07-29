@@ -29,6 +29,7 @@ import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
+import net.link.safeonline.sdk.api.payment.LinkIDPaymentInfo;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentTransaction;
@@ -444,6 +445,39 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
 
+    }
+
+    @Override
+    public LinkIDPaymentInfo paymentInfo(final Locale locale) {
+
+        // request
+        PaymentInfoRequest request = new PaymentInfoRequest();
+
+        // input
+        request.setLanguage( LinkIDServiceUtils.convert( locale ) );
+
+        // operate
+        PaymentInfoResponse response = getPort().paymentInfo( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError(), new LinkIDServiceUtils.ErrorHandler<PaymentInfoError>() {
+                @Override
+                public void handle(final PaymentInfoError error) {
+                    // nothing to do
+                }
+            } );
+        } else if (null != response.getSuccess()) {
+
+            List<LinkIDWalletOrganizationDetails> organizations = Lists.newLinkedList();
+            for (WalletOrganizationDetails details : response.getSuccess().getWalletOrganizationDetails()) {
+                organizations.add( LinkIDServiceUtils.convert( details ) );
+            }
+
+            return new LinkIDPaymentInfo( organizations, LinkIDServiceUtils.convertPaymentMethods( response.getSuccess().getPaymentMethods() ) );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
     @Override

@@ -2063,12 +2063,12 @@ public class LinkIDServiceUtils {
         return configuration;
     }
 
-    public static LinkIDPaymentConfiguration convert(final PaymentConfiguration paymentConfiguration) {
+    public static List<LinkIDPaymentMethodType> convertPaymentMethods(final List<PaymentMethodType> paymentMethods) {
 
-        List<LinkIDPaymentMethodType> paymentMethods = Lists.newLinkedList();
-        if (!CollectionUtils.isEmpty( paymentConfiguration.getPaymentMethods() )) {
-            paymentMethods = ImmutableList.copyOf(
-                    Collections2.transform( paymentConfiguration.getPaymentMethods(), new Function<PaymentMethodType, LinkIDPaymentMethodType>() {
+        List<LinkIDPaymentMethodType> linkIDPaymentMethodTypes = Lists.newLinkedList();
+        if (!CollectionUtils.isEmpty( paymentMethods )) {
+            linkIDPaymentMethodTypes = ImmutableList.copyOf(
+                    Collections2.transform( paymentMethods, new Function<PaymentMethodType, LinkIDPaymentMethodType>() {
                         @javax.annotation.Nullable
                         @Override
                         public LinkIDPaymentMethodType apply(@javax.annotation.Nullable final PaymentMethodType input) {
@@ -2079,8 +2079,14 @@ public class LinkIDServiceUtils {
                     } ) );
         }
 
+        return linkIDPaymentMethodTypes;
+    }
+
+    public static LinkIDPaymentConfiguration convert(final PaymentConfiguration paymentConfiguration) {
+
         return new LinkIDPaymentConfiguration( paymentConfiguration.getName(), paymentConfiguration.isDefaultConfiguration(),
-                paymentConfiguration.isOnlyWallets(), paymentConfiguration.isNoWallets(), paymentConfiguration.getWalletOrganizations(), paymentMethods );
+                paymentConfiguration.isOnlyWallets(), paymentConfiguration.isNoWallets(), paymentConfiguration.getWalletOrganizations(),
+                convertPaymentMethods( paymentConfiguration.getPaymentMethods() ) );
     }
 
     public static LinkIDAuthenticationState convert(final AuthAuthenticationState authenticationState) {
