@@ -1014,6 +1014,16 @@
 					<documentation>The status code of this wallet organization</documentation>
 				</annotation>
 			</element>
+			<element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>Currency of the wallet if applicable</documentation>
+				</annotation>
+			</element>
+			<element name="coinId" type="string" minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>Wallet coin ID of the wallet if applicable</documentation>
+				</annotation>
+			</element>
 			<element name="policyBalance" type="tns:WalletPolicyBalance" minOccurs="0" maxOccurs="1">
 				<annotation>
 					<documentation>Balance policy configuration if applicable</documentation>
@@ -1027,16 +1037,6 @@
 			<element name="balance" type="double" minOccurs="1" maxOccurs="1">
 				<annotation>
 					<documentation>Optional initial balance given to users when the wallet is created</documentation>
-				</annotation>
-			</element>
-			<element name="currency" type="tns:Currency" minOccurs="0" maxOccurs="1">
-				<annotation>
-					<documentation>Currency of the wallet if applicable</documentation>
-				</annotation>
-			</element>
-			<element name="coinId" type="string" minOccurs="0" maxOccurs="1">
-				<annotation>
-					<documentation>Wallet coin ID of the wallet if applicable</documentation>
 				</annotation>
 			</element>
 		</sequence>

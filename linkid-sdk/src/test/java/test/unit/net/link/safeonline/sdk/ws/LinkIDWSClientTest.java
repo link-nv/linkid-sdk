@@ -374,10 +374,10 @@ public class LinkIDWSClientTest {
         List<LinkIDLocalizationValue> coinNameMultipleLocalization = new LinkedList<>();
         coinNameMultipleLocalization.add( new LinkIDLocalizationValue( "en", "Test coins-en" ) );
 
-        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 99999, null, "testCoin" );
+        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 99999 );
 
         LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "testWallet", logoUrl, 5000, false, true, true, nameLocalizations,
-                descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, policyBalance );
+                descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, null, "testCoin", policyBalance );
 
         // operate
         LinkIDWalletOrganizationResult result = client.walletOrganizationAdd( walletOrganization );
@@ -403,11 +403,11 @@ public class LinkIDWSClientTest {
         List<LinkIDLocalizationValue> coinNameMultipleLocalization = new LinkedList<>();
         coinNameMultipleLocalization.add( new LinkIDLocalizationValue( "en", "Test coins update-en" ) );
 
-        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 150, null,
-                "urn:be:linkid:example-mobile:wallet:organization:testWallet:coin:testCoin" );
+        LinkIDWalletPolicyBalance policyBalance = new LinkIDWalletPolicyBalance( 150 );
 
         LinkIDWalletOrganization walletOrganization = new LinkIDWalletOrganization( "urn:be:linkid:example-mobile:wallet:organization:testWallet", logoUrl,
-                5000, true, false, false, nameLocalizations, descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, policyBalance );
+                5000, true, false, false, nameLocalizations, descriptionLocalizations, coinNameLocalization, coinNameMultipleLocalization, null,
+                "urn:be:linkid:example-mobile:wallet:organization:testWallet:coin:testCoin", policyBalance );
 
         // operate
         LinkIDWalletOrganizationResult result = client.walletOrganizationUpdate( walletOrganization );

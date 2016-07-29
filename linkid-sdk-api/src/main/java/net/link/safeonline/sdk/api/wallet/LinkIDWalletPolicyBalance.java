@@ -8,8 +8,6 @@
 package net.link.safeonline.sdk.api.wallet;
 
 import java.io.Serializable;
-import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
-import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -19,17 +17,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LinkIDWalletPolicyBalance implements Serializable {
 
-    private final double         balance;
-    @Nullable
-    private final LinkIDCurrency currency;
-    @Nullable
-    private final String         coinId;
+    private final double balance;
 
-    public LinkIDWalletPolicyBalance(final double balance, @Nullable final LinkIDCurrency currency, @Nullable final String coinId) {
+    public LinkIDWalletPolicyBalance(final double balance) {
 
         this.balance = balance;
-        this.currency = currency;
-        this.coinId = coinId;
     }
 
     // Helper methods
@@ -37,11 +29,7 @@ public class LinkIDWalletPolicyBalance implements Serializable {
     @Override
     public String toString() {
 
-        return "LinkIDWalletPolicyBalance{" +
-               "balance=" + balance +
-               ", currency=" + currency +
-               ", coinId='" + coinId + '\'' +
-               '}';
+        return "LinkIDWalletPolicyBalance{" + "balance=" + balance + '}';
     }
 
     // Accessors
@@ -51,15 +39,4 @@ public class LinkIDWalletPolicyBalance implements Serializable {
         return balance;
     }
 
-    @Nullable
-    public LinkIDCurrency getCurrency() {
-
-        return currency;
-    }
-
-    @Nullable
-    public String getCoinId() {
-
-        return coinId;
-    }
 }

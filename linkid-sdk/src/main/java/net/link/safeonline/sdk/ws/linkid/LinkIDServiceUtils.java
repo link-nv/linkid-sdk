@@ -1891,6 +1891,8 @@ public class LinkIDServiceUtils {
         wsOrganization.setSticky( organization.isSticky() );
         wsOrganization.setAutoEnroll( organization.isAutoEnroll() );
         wsOrganization.setRemoveWalletOnUnsubscribe( organization.isRemoveWalletOnUnsubscribe() );
+        wsOrganization.setCurrency( convert( organization.getCurrency() ) );
+        wsOrganization.setCoinId( organization.getCoinId() );
         wsOrganization.setPolicyBalance( convert( organization.getPolicyBalance() ) );
         wsOrganization.getNameLocalization().addAll( convertSDKLocalizations( organization.getNameLocalizations() ) );
         wsOrganization.getDescriptionLocalization().addAll( convertSDKLocalizations( organization.getDescriptionLocalizations() ) );
@@ -1925,8 +1927,6 @@ public class LinkIDServiceUtils {
 
         WalletPolicyBalance balancePolicy = new WalletPolicyBalance();
         balancePolicy.setBalance( walletPolicyBalance.getBalance() );
-        balancePolicy.setCurrency( convert( walletPolicyBalance.getCurrency() ) );
-        balancePolicy.setCoinId( walletPolicyBalance.getCoinId() );
         return balancePolicy;
     }
 
@@ -1954,7 +1954,8 @@ public class LinkIDServiceUtils {
         return new LinkIDWalletOrganization( request.getWalletOrganizationId(), request.getLogoUrl(), request.getExpirationInSecs(), request.isSticky(),
                 request.isAutoEnroll(), request.isRemoveWalletOnUnsubscribe(), convertLocalizations( request.getNameLocalization() ),
                 convertLocalizations( request.getDescriptionLocalization() ), convertLocalizations( request.getCoinNameLocalization() ),
-                convertLocalizations( request.getCoinNameMultipleLocalization() ), convert( request.getPolicyBalance() ), convert( request.getStatusCode() ) );
+                convertLocalizations( request.getCoinNameMultipleLocalization() ), convert( request.getCurrency() ), request.getCoinId(),
+                convert( request.getPolicyBalance() ), convert( request.getStatusCode() ) );
 
     }
 
@@ -1965,7 +1966,7 @@ public class LinkIDServiceUtils {
             return null;
         }
 
-        return new LinkIDWalletPolicyBalance( walletPolicyBalance.getBalance(), convert( walletPolicyBalance.getCurrency() ), walletPolicyBalance.getCoinId() );
+        return new LinkIDWalletPolicyBalance( walletPolicyBalance.getBalance() );
     }
 
     @Nullable
