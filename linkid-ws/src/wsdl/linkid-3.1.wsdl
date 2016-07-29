@@ -90,6 +90,12 @@
 	<message name="mandatePaymentResponse">
 		<part name="response" element="tns:MandatePaymentResponse" />
 	</message>
+    <message name="mandateRemoveRequest">
+		<part name="request" element="tns:MandateRemoveRequest" />
+	</message>
+	<message name="mandateRemoveResponse">
+		<part name="response" element="tns:MandateRemoveResponse" />
+	</message>
 
     <!-- =================== LTQR ==================================== -->
 
@@ -454,6 +460,10 @@
 			<input message="tns:mandatePaymentRequest" />
 			<output message="tns:mandatePaymentResponse" />
 		</operation>
+		<operation name="mandateRemove">
+			<input message="tns:mandateRemoveRequest" />
+			<output message="tns:mandateRemoveResponse" />
+		</operation>
 		<operation name="ltqrPush">
 			<input message="tns:ltqrPushRequest" />
 			<output message="tns:ltqrPushResponse" />
@@ -749,6 +759,15 @@
         </operation>
         <operation name="mandatePayment">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:mandatePayment" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="mandateRemove">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:mandateRemove" />
             <input>
                 <soap:body use="literal" />
             </input>

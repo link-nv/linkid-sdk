@@ -28,6 +28,7 @@ import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentMandate;
@@ -117,9 +118,12 @@ public class LinkIDWSClientTest {
     private static final String WS_LOCATION          = "https://192.168.5.14:8443/linkid-ws";
 
     // demo config
-    private static final String APP_NAME     = "example-mobile";
-    private static final String APP_USERNAME = "example-mobile";
-    private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+    //    private static final String APP_NAME     = "example-mobile";
+    //    private static final String APP_USERNAME = "example-mobile";
+    //    private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
+    private static final String APP_NAME     = "linkID-oper";
+    private static final String APP_USERNAME = "linkid-oper";
+    private static final String APP_PASSWORD = "EA14AC59-335B-494E-94D3-E70D597516BD";
 
     private LinkIDServiceClient client;
 
@@ -606,6 +610,21 @@ public class LinkIDWSClientTest {
 
         // verify
         assertNotNull( orderReference );
+    }
+
+    //    @Test
+    public void testMandateRemove()
+            throws Exception {
+
+        // setup
+        List<String> mandateReferences = Arrays.asList( "foo", "bar", "0c9a7c3e-7571-4a0e-8bfc-0a98a0c58e5b" );
+
+        // operate
+        LinkIDMandateRemoveResult result = client.mandateRemove( mandateReferences, false );
+
+        // verify
+        assertNotNull( result );
+        logger.dbg( "Result: %s", result );
     }
 
     //    @Test

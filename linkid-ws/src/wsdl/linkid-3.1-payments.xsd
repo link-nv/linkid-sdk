@@ -329,4 +329,59 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Payment: mandate remove request -->
+
+    <element name="MandateRemoveRequest">
+		<complexType>
+            <sequence>
+                <element name="mandateReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Mandate references to remove</documentation>
+                    </annotation>
+                </element>
+                <element name="noEmail" type="boolean" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Optional flag to override sending an e-mail to the user</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+		</complexType>
+	</element>
+
+	<element name="MandateRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:MandateRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:MandateRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="MandateRemoveSuccess">
+        <sequence>
+            <element name="removedReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Successfully removed mandate references</documentation>
+                </annotation>
+            </element>
+            <element name="notFoundReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Not found mandate references</documentation>
+                </annotation>
+            </element>
+            <element name="alreadyArchivedReferences" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Already archived mandate references</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="MandateRemoveError">
+        <complexContent>
+            <extension base="tns:CommonError">
+            </extension>
+        </complexContent>
+    </complexType>
+
 </schema>

@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.paymentconfiguration.LinkIDPaymentConfiguration;
 import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
@@ -235,6 +236,16 @@ public interface LinkIDServiceClient {
      */
     String mandatePayment(String mandateReference, LinkIDPaymentContext paymentContext, @Nullable String notificationLocation, Locale locale)
             throws LinkIDMandatePaymentException;
+
+    /**
+     * Remove specified mandates
+     *
+     * @param mandateReferences the mandate references to remove
+     * @param noEmail           don't send users an e-mail
+     *
+     * @return result containing 3 lists, the successfully removed, not found ones and already archived ones
+     */
+    LinkIDMandateRemoveResult mandateRemove(List<String> mandateReferences, boolean noEmail);
 
     /**
      * Push a long term QR session to linkID.

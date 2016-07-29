@@ -21,6 +21,7 @@ import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
 import net.link.safeonline.sdk.api.common.LinkIDRequestStatusCode;
 import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
+import net.link.safeonline.sdk.api.exception.LinkIDDeprecatedException;
 import net.link.safeonline.sdk.api.exception.LinkIDMaintenanceException;
 import net.link.safeonline.sdk.api.exception.LinkIDPermissionDeniedException;
 import net.link.safeonline.sdk.api.exception.LinkIDUnexpectedException;
@@ -2158,6 +2159,8 @@ public class LinkIDServiceUtils {
                 throw new LinkIDUnexpectedException( message );
             case ERROR_MAINTENANCE:
                 throw new LinkIDMaintenanceException( message );
+            case ERROR_DEPRECATED:
+                throw new LinkIDDeprecatedException( message );
         }
 
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
@@ -2452,7 +2455,20 @@ public class LinkIDServiceUtils {
         } else {
             throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
         }
+    }
 
+    public static <E extends CommonError> void handle(final E error, final ErrorHandler<E> handler) {
+
+        if (null != error.getCommonErrorCode()) {
+            handle( error.getCommonErrorCode(), error.getErrorMessage() );
+        } else {
+            handler.handle( error );
+        }
+    }
+
+    public interface ErrorHandler<E extends CommonError> {
+
+        void handle(E error);
     }
 
 }

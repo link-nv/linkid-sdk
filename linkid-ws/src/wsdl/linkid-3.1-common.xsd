@@ -391,6 +391,18 @@
 		</restriction>
 	</simpleType>
 
+    <complexType name="CommonError">
+        <sequence>
+            <element name="errorMessage" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional error message containing additional info</documentation>
+                </annotation>
+            </element>
+        </sequence>
+		<attribute name="commonErrorCode" type="tns:CommonErrorCode" use="optional" />
+    </complexType>
+
+
     <simpleType name="CommonErrorCode">
 		<annotation>
 			<documentation>Common error codes</documentation>
@@ -399,6 +411,7 @@
 			<enumeration value="error.permission.denied" />
 			<enumeration value="error.unexpected" />
 			<enumeration value="error.maintenance" />
+            <enumeration value="error.deprecated" />
 		</restriction>
 	</simpleType>
 

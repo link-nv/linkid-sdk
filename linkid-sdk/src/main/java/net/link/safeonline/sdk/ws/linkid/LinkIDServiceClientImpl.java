@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
+import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentOrder;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentState;
@@ -570,6 +571,39 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         if (null != response.getSuccess()) {
 
             return response.getSuccess().getOrderReference();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public LinkIDMandateRemoveResult mandateRemove(final List<String> mandateReferences, final boolean noEmail) {
+
+        // request
+        MandateRemoveRequest request = new MandateRemoveRequest();
+
+        // input
+        if (CollectionUtils.isEmpty( mandateReferences )) {
+            throw new InternalInconsistencyException( "No mandates to remove..." );
+        }
+        request.getMandateReferences().addAll( mandateReferences );
+        request.setNoEmail( noEmail );
+
+        // operate
+        MandateRemoveResponse response = getPort().mandateRemove( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError(), new LinkIDServiceUtils.ErrorHandler<MandateRemoveError>() {
+                @Override
+                public void handle(final MandateRemoveError error) {
+                    // nothing to do
+                }
+            } );
+        } else if (null != response.getSuccess()) {
+
+            return new LinkIDMandateRemoveResult( response.getSuccess().getRemovedReferences(), response.getSuccess().getNotFoundReferences(),
+                    response.getSuccess().getAlreadyArchivedReferences() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
