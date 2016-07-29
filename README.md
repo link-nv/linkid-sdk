@@ -13,6 +13,14 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v4.22.0
+---
+  * MandateRemove operation added
+
+v4.21.0
+---
+  * VoucherInfo operation added
+
 v4.19.0
 ---
   * Credentials: label support
