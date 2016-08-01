@@ -27,6 +27,8 @@ import net.link.safeonline.sdk.api.exception.LinkIDMaintenanceException;
 import net.link.safeonline.sdk.api.exception.LinkIDPermissionDeniedException;
 import net.link.safeonline.sdk.api.exception.LinkIDUnexpectedException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationLocation;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopic;
 import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
@@ -2517,7 +2519,7 @@ public class LinkIDServiceUtils {
         throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
-    public static List<NotificationTopic> convertTopics(List<LinkIDNotificationTopicConfiguration> topics) {
+    public static List<NotificationTopic> convertTopics(final List<LinkIDNotificationTopicConfiguration> topics) {
 
         if (CollectionUtils.isEmpty( topics )) {
             return new LinkedList<>();
@@ -2538,5 +2540,46 @@ public class LinkIDServiceUtils {
                 return notificationTopic;
             }
         } );
+    }
+
+    public static List<LinkIDNotificationTopicConfiguration> convertWSTopics(final List<NotificationTopic> topics) {
+
+        if (CollectionUtils.isEmpty( topics )) {
+            return new LinkedList<>();
+        }
+
+        return Lists.transform( topics, new Function<NotificationTopic, LinkIDNotificationTopicConfiguration>() {
+            @javax.annotation.Nullable
+            @Override
+            public LinkIDNotificationTopicConfiguration apply(@javax.annotation.Nullable final NotificationTopic input) {
+
+                if (null == input) {
+                    return null;
+                }
+
+                return new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.to( input.getUri() ), input.getFilter() );
+            }
+        } );
+    }
+
+    public static List<LinkIDNotificationLocation> convertNotificationLocations(final List<NotificationLocation> notificationLocations) {
+
+        if (CollectionUtils.isEmpty( notificationLocations )) {
+            return new LinkedList<>();
+        }
+
+        return Lists.transform( notificationLocations, new Function<NotificationLocation, LinkIDNotificationLocation>() {
+            @javax.annotation.Nullable
+            @Override
+            public LinkIDNotificationLocation apply(@javax.annotation.Nullable final NotificationLocation input) {
+
+                if (null == input) {
+                    return null;
+                }
+
+                return new LinkIDNotificationLocation( input.getUrn(), input.getLabel(), input.getLocation(), convertWSTopics( input.getTopics() ) );
+            }
+        } );
+
     }
 }

@@ -429,6 +429,12 @@
 	<message name="notificationUpdateResponse">
 		<part name="response" element="tns:NotificationUpdateResponse" />
 	</message>
+	<message name="notificationListRequest">
+		<part name="request" element="tns:NotificationListRequest" />
+	</message>
+	<message name="notificationListResponse">
+		<part name="response" element="tns:NotificationListResponse" />
+	</message>
 
     <!-- =========================== Ports ========================== -->
 
@@ -684,6 +690,10 @@
 		<operation name="notificationUpdate">
 			<input message="tns:notificationUpdateRequest" />
 			<output message="tns:notificationUpdateResponse" />
+		</operation>
+		<operation name="notificationList">
+			<input message="tns:notificationListRequest" />
+			<output message="tns:notificationListResponse" />
 		</operation>
     </portType>
 
@@ -1251,6 +1261,15 @@
         </operation>
         <operation name="notificationUpdate">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:notificationUpdate" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="notificationList">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:notificationList" />
             <input>
                 <soap:body use="literal" />
             </input>

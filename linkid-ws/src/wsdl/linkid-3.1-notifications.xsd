@@ -24,9 +24,9 @@
                         <documentation>Human friendly label for this location</documentation>
                     </annotation>
                 </element>
-                <element name="url" type="string" minOccurs="1" maxOccurs="1">
+                <element name="location" type="string" minOccurs="1" maxOccurs="1">
                     <annotation>
-                        <documentation>The notification location url</documentation>
+                        <documentation>The notification location</documentation>
                     </annotation>
                 </element>
                 <element name="topics" type="tns:NotificationTopic" minOccurs="1" maxOccurs="unbounded">
@@ -93,7 +93,7 @@
                         <documentation>Human friendly label for this location</documentation>
                     </annotation>
                 </element>
-                <element name="url" type="string" minOccurs="1" maxOccurs="1">
+                <element name="location" type="string" minOccurs="1" maxOccurs="1">
                     <annotation>
                         <documentation>The notification location url</documentation>
                     </annotation>
@@ -136,7 +136,61 @@
 
     <simpleType name="NotificationUpdateErrorCode">
 		<annotation>
-			<documentation>Notification add error codes</documentation>
+			<documentation>Notification update error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.invalid.url">
+				<annotation>
+					<documentation>The notification location URL is not valid</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- List -->
+
+    <element name="NotificationListRequest">
+        <complexType>
+            <sequence>
+                <element name="urns" type="string" minOccurs="0" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Optional location URNs</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="NotificationListResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:NotificationListSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:NotificationListError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="NotificationListSuccess">
+        <sequence>
+            <element name="notificationLocations" type="tns:NotificationLocation" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The notification locations</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="NotificationListError">
+        <complexContent>
+            <extension base="tns:CommonError">
+        		<attribute name="errorCode" type="tns:NotificationListErrorCode" use="optional" />
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <simpleType name="NotificationListErrorCode">
+		<annotation>
+			<documentation>Notification list error codes</documentation>
 		</annotation>
 		<restriction base="string">
 			<enumeration value="error.invalid.url">
@@ -159,6 +213,31 @@
             <element name="filter" type="string" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional filter</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="NotificationLocation">
+        <sequence>
+            <element name="urn" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The notification location's URN</documentation>
+                </annotation>
+            </element>
+            <element name="label" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>Human friendly label for this location</documentation>
+                </annotation>
+            </element>
+            <element name="location" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The notification location url</documentation>
+                </annotation>
+            </element>
+            <element name="topics" type="tns:NotificationTopic" minOccurs="1" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>The topics to subscribe to for this location</documentation>
                 </annotation>
             </element>
         </sequence>

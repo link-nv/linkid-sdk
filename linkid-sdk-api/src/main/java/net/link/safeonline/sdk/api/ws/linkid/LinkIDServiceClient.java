@@ -17,6 +17,7 @@ import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationLocation;
 import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
@@ -823,30 +824,38 @@ public interface LinkIDServiceClient {
     /**
      * Add a new notification location
      *
-     * @param label  human readable label for this location
-     * @param url    the url
-     * @param topics the topics to be subscribed to
+     * @param label    human readable label for this location
+     * @param location the location
+     * @param topics   the topics to be subscribed to
      *
      * @return the technical URN to be used in update, delete calls
      *
      * @throws LinkIDNotificationAddException something went wrong, check the error code in the exception
      */
-    String notificationAdd(String label, String url, List<LinkIDNotificationTopicConfiguration> topics)
+    String notificationAdd(String label, String location, List<LinkIDNotificationTopicConfiguration> topics)
             throws LinkIDNotificationAddException;
 
     /**
      * Add a new notification location
      *
-     * @param urn    the technical urn
-     * @param label  human readable label for this location
-     * @param url    the url
-     * @param topics the topics to be subscribed to
+     * @param urn      the technical urn
+     * @param label    human readable label for this location
+     * @param location the location
+     * @param topics   the topics to be subscribed to
      *
      * @return the technical URN to be used in update, delete calls
      *
      * @throws LinkIDNotificationUpdateException something went wrong, check the error code in the exception
      */
-    String notificationUpdate(String urn, String label, String url, List<LinkIDNotificationTopicConfiguration> topics)
+    String notificationUpdate(String urn, String label, String location, List<LinkIDNotificationTopicConfiguration> topics)
             throws LinkIDNotificationUpdateException;
 
+    /**
+     * Get notification location info
+     *
+     * @param urns optional URN list, if empty returns all
+     *
+     * @return the notification locations
+     */
+    List<LinkIDNotificationLocation> notificationList(final List<String> urns);
 }

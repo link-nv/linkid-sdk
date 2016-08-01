@@ -25,6 +25,7 @@ import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationLocation;
 import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -2228,7 +2229,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         // input
         request.setLabel( label );
-        request.setUrl( url );
+        request.setLocation( url );
         request.getTopics().addAll( LinkIDServiceUtils.convertTopics( topics ) );
 
         // operate
@@ -2255,7 +2256,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         // input
         request.setUrn( urn );
         request.setLabel( label );
-        request.setUrl( url );
+        request.setLocation( url );
         request.getTopics().addAll( LinkIDServiceUtils.convertTopics( topics ) );
 
         // operate
@@ -2267,6 +2268,30 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         } else if (null != response.getSuccess()) {
 
             return response.getSuccess().getUrn();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public List<LinkIDNotificationLocation> notificationList(final List<String> urns) {
+
+        // operate
+        NotificationListRequest request = new NotificationListRequest();
+
+        // input
+        if (CollectionUtils.isNotEmpty( urns )) {
+            request.getUrns().addAll( urns );
+        }
+
+        // operate
+        NotificationListResponse response = getPort().notificationList( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handleCommon( response.getError() );
+        } else if (null != response.getSuccess()) {
+            return LinkIDServiceUtils.convertNotificationLocations( response.getSuccess().getNotificationLocations() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

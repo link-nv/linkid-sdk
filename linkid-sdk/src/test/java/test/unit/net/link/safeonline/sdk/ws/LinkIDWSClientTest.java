@@ -26,6 +26,7 @@ import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationLocation;
 import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopic;
 import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
@@ -1135,14 +1136,13 @@ public class LinkIDWSClientTest {
         logger.dbg( "Result: %s", urn );
     }
 
-    @Test
+    //    @Test
     public void testNotificationUpdate()
             throws Exception {
 
         // Setup
         String urn = "urn:be:linkid:linkID-oper:notification:lRpunl";
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
-        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_CANCELED, null ) );
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_SUCCESS, null ) );
 
         // operate
@@ -1151,6 +1151,23 @@ public class LinkIDWSClientTest {
         // verify
         assertNotNull( urn );
         logger.dbg( "Result: %s", urn );
+    }
+
+    @Test
+    public void testNotificationList()
+            throws Exception {
+
+        // Setup
+        List<String> urns = Arrays.asList( "urn:be:linkid:linkID-oper:notification:lRpunl", "foo" );
+
+        // operate
+        List<LinkIDNotificationLocation> locations = client.notificationList( urns );
+
+        // verify
+        assertNotNull( locations );
+        for (LinkIDNotificationLocation location : locations) {
+            logger.dbg( "Location: %s", location );
+        }
     }
 
     // Auth
