@@ -17,6 +17,7 @@ import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -73,6 +74,8 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundException;
@@ -816,5 +819,34 @@ public interface LinkIDServiceClient {
      * @return the credentials
      */
     List<LinkIDCredential> credentialList();
+
+    /**
+     * Add a new notification location
+     *
+     * @param label  human readable label for this location
+     * @param url    the url
+     * @param topics the topics to be subscribed to
+     *
+     * @return the technical URN to be used in update, delete calls
+     *
+     * @throws LinkIDNotificationAddException something went wrong, check the error code in the exception
+     */
+    String notificationAdd(String label, String url, List<LinkIDNotificationTopicConfiguration> topics)
+            throws LinkIDNotificationAddException;
+
+    /**
+     * Add a new notification location
+     *
+     * @param urn    the technical urn
+     * @param label  human readable label for this location
+     * @param url    the url
+     * @param topics the topics to be subscribed to
+     *
+     * @return the technical URN to be used in update, delete calls
+     *
+     * @throws LinkIDNotificationUpdateException something went wrong, check the error code in the exception
+     */
+    String notificationUpdate(String urn, String label, String url, List<LinkIDNotificationTopicConfiguration> topics)
+            throws LinkIDNotificationUpdateException;
 
 }

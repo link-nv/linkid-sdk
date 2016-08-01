@@ -26,6 +26,8 @@ import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopic;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
@@ -1114,6 +1116,41 @@ public class LinkIDWSClientTest {
         // verify
         assertNotNull( linkIDPaymentInfo );
         logger.dbg( "Result: %s", linkIDPaymentInfo );
+    }
+
+    //    @Test
+    public void testNotificationAdd()
+            throws Exception {
+
+        // Setup
+        List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, "foo" ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.CONFIGURATION_UPDATE, null ) );
+
+        // operate
+        String urn = client.notificationAdd( "Unit test", "https://linkid.be", configurations );
+
+        // verify
+        assertNotNull( urn );
+        logger.dbg( "Result: %s", urn );
+    }
+
+    @Test
+    public void testNotificationUpdate()
+            throws Exception {
+
+        // Setup
+        String urn = "urn:be:linkid:linkID-oper:notification:lRpunl";
+        List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_CANCELED, null ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_SUCCESS, null ) );
+
+        // operate
+        urn = client.notificationUpdate( urn, "Unit test update", "https://service.linkid.be", configurations );
+
+        // verify
+        assertNotNull( urn );
+        logger.dbg( "Result: %s", urn );
     }
 
     // Auth

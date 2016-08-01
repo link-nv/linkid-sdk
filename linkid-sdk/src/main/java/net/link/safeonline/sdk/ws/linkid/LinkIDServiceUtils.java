@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,6 +27,7 @@ import net.link.safeonline.sdk.api.exception.LinkIDMaintenanceException;
 import net.link.safeonline.sdk.api.exception.LinkIDPermissionDeniedException;
 import net.link.safeonline.sdk.api.exception.LinkIDUnexpectedException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentAmount;
 import net.link.safeonline.sdk.api.payment.LinkIDPaymentContext;
@@ -81,6 +83,10 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRLockType;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPollingConfiguration;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentRefundErrorCode;
@@ -2156,23 +2162,6 @@ public class LinkIDServiceUtils {
 
     }
 
-    public static void handle(final CommonErrorCode errorCode, final String message) {
-
-        switch (errorCode) {
-
-            case ERROR_PERMISSION_DENIED:
-                throw new LinkIDPermissionDeniedException( message );
-            case ERROR_UNEXPECTED:
-                throw new LinkIDUnexpectedException( message );
-            case ERROR_MAINTENANCE:
-                throw new LinkIDMaintenanceException( message );
-            case ERROR_DEPRECATED:
-                throw new LinkIDDeprecatedException( message );
-        }
-
-        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
-    }
-
     public static void handle(final WalletOrganizationAddError error)
             throws LinkIDWalletOrganizationAddException {
 
@@ -2464,18 +2453,90 @@ public class LinkIDServiceUtils {
         }
     }
 
-    public static <E extends CommonError> void handle(final E error, final ErrorHandler<E> handler) {
+    public static void handle(final NotificationAddError error)
+            throws LinkIDNotificationAddException {
+
+        handleCommon( error );
+
+        if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_INVALID_URL:
+                    throw new LinkIDNotificationAddException( error.getErrorMessage(), LinkIDNotificationAddErrorCode.ERROR_INVALID_URL );
+
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static void handle(final NotificationUpdateError error)
+            throws LinkIDNotificationUpdateException {
+
+        handleCommon( error );
+
+        if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_INVALID_URL:
+                    throw new LinkIDNotificationUpdateException( error.getErrorMessage(), LinkIDNotificationUpdateErrorCode.ERROR_INVALID_URL );
+
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static <E extends CommonError> void handleCommon(final E error) {
+
+        if (null == error) {
+            return;
+        }
 
         if (null != error.getCommonErrorCode()) {
             handle( error.getCommonErrorCode(), error.getErrorMessage() );
-        } else {
-            handler.handle( error );
         }
     }
 
-    public interface ErrorHandler<E extends CommonError> {
+    public static void handle(final CommonErrorCode errorCode, final String message) {
 
-        void handle(E error);
+        switch (errorCode) {
+
+            case ERROR_PERMISSION_DENIED:
+                throw new LinkIDPermissionDeniedException( message );
+            case ERROR_UNEXPECTED:
+                throw new LinkIDUnexpectedException( message );
+            case ERROR_MAINTENANCE:
+                throw new LinkIDMaintenanceException( message );
+            case ERROR_DEPRECATED:
+                throw new LinkIDDeprecatedException( message );
+        }
+
+        throw new InternalInconsistencyException( String.format( "Unexpected error code %s!", errorCode.name() ) );
     }
 
+    public static List<NotificationTopic> convertTopics(List<LinkIDNotificationTopicConfiguration> topics) {
+
+        if (CollectionUtils.isEmpty( topics )) {
+            return new LinkedList<>();
+        }
+
+        return Lists.transform( topics, new Function<LinkIDNotificationTopicConfiguration, NotificationTopic>() {
+            @javax.annotation.Nullable
+            @Override
+            public NotificationTopic apply(@javax.annotation.Nullable final LinkIDNotificationTopicConfiguration input) {
+
+                if (null == input) {
+                    return null;
+                }
+
+                NotificationTopic notificationTopic = new NotificationTopic();
+                notificationTopic.setUri( input.getTopic().getTopicUri() );
+                notificationTopic.setFilter( input.getFilter() );
+                return notificationTopic;
+            }
+        } );
+    }
 }

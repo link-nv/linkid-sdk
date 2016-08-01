@@ -20,6 +20,7 @@ public abstract class LinkIDURN {
     private static final String PAYMENT_CONFIGURATION_PART = "payment:configuration";
     private static final String WALLET_ORGANIZATION_PART   = "wallet:organization";
     private static final String WALLET_COIN_PART           = "coin";
+    private static final String NOTIFICATION_LOCATION_PART = "notification";
 
     private LinkIDURN() {
 
@@ -101,6 +102,19 @@ public abstract class LinkIDURN {
     public static String getWalletCoinURN(final String walletOrganizationId, final String walletCoinName) {
 
         return String.format( "%s:%s:%s", walletOrganizationId, WALLET_COIN_PART, walletCoinName );
+    }
+
+    /**
+     * Get the notification location organization URN
+     *
+     * @param applicationName the application name
+     * @param locationID      the notification location ID
+     *
+     * @return the notification location URN
+     */
+    public static String getNotificationLocationURN(final String applicationName, final String locationID) {
+
+        return String.format( "%s:%s:%s", getApplicationURN( applicationName ), NOTIFICATION_LOCATION_PART, locationID );
     }
 
 }

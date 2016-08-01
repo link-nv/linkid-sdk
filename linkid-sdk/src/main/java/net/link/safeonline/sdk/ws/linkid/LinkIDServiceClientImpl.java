@@ -25,6 +25,7 @@ import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
+import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.parking.LinkIDParkingSession;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
 import net.link.safeonline.sdk.api.payment.LinkIDMandateRemoveResult;
@@ -93,6 +94,8 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentDetails;
@@ -461,12 +464,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         // convert response
         if (null != response.getError()) {
-            LinkIDServiceUtils.handle( response.getError(), new LinkIDServiceUtils.ErrorHandler<PaymentInfoError>() {
-                @Override
-                public void handle(final PaymentInfoError error) {
-                    // nothing to do
-                }
-            } );
+            LinkIDServiceUtils.handleCommon( response.getError() );
         } else if (null != response.getSuccess()) {
 
             List<LinkIDWalletOrganizationDetails> organizations = Lists.newLinkedList();
@@ -629,12 +627,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         // convert response
         if (null != response.getError()) {
-            LinkIDServiceUtils.handle( response.getError(), new LinkIDServiceUtils.ErrorHandler<MandateRemoveError>() {
-                @Override
-                public void handle(final MandateRemoveError error) {
-                    // nothing to do
-                }
-            } );
+            LinkIDServiceUtils.handleCommon( response.getError() );
         } else if (null != response.getSuccess()) {
 
             return new LinkIDMandateRemoveResult( response.getSuccess().getRemovedReferences(), response.getSuccess().getNotFoundReferences(),
@@ -2224,6 +2217,59 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
 
+    }
+
+    @Override
+    public String notificationAdd(final String label, final String url, final List<LinkIDNotificationTopicConfiguration> topics)
+            throws LinkIDNotificationAddException {
+
+        // operate
+        NotificationAddRequest request = new NotificationAddRequest();
+
+        // input
+        request.setLabel( label );
+        request.setUrl( url );
+        request.getTopics().addAll( LinkIDServiceUtils.convertTopics( topics ) );
+
+        // operate
+        NotificationAddResponse response = getPort().notificationAdd( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        } else if (null != response.getSuccess()) {
+
+            return response.getSuccess().getUrn();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public String notificationUpdate(final String urn, final String label, final String url, final List<LinkIDNotificationTopicConfiguration> topics)
+            throws LinkIDNotificationUpdateException {
+
+        // operate
+        NotificationUpdateRequest request = new NotificationUpdateRequest();
+
+        // input
+        request.setUrn( urn );
+        request.setLabel( label );
+        request.setUrl( url );
+        request.getTopics().addAll( LinkIDServiceUtils.convertTopics( topics ) );
+
+        // operate
+        NotificationUpdateResponse response = getPort().notificationUpdate( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        } else if (null != response.getSuccess()) {
+
+            return response.getSuccess().getUrn();
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
     }
 
 }

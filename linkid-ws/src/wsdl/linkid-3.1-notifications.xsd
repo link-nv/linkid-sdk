@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ safe-online - linkid-ws
+  ~
+  ~ Copyright 2006-2016 linkID Inc. All rights reserved.
+  ~ linkID Inc. proprietary/confidential. Use is subject to license terms.
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                      Notifications                                                             *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Add -->
+
+    <element name="NotificationAddRequest">
+        <complexType>
+            <sequence>
+                <element name="label" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Human friendly label for this location</documentation>
+                    </annotation>
+                </element>
+                <element name="url" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The notification location url</documentation>
+                    </annotation>
+                </element>
+                <element name="topics" type="tns:NotificationTopic" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The topics to subscribe to for this location</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="NotificationAddResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:NotificationAddSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:NotificationAddError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="NotificationAddSuccess">
+        <sequence>
+            <element name="urn" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The technical urn of the notification location</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="NotificationAddError">
+        <complexContent>
+            <extension base="tns:CommonError">
+        		<attribute name="errorCode" type="tns:NotificationAddErrorCode" use="optional" />
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <simpleType name="NotificationAddErrorCode">
+		<annotation>
+			<documentation>Notification add error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.invalid.url">
+				<annotation>
+					<documentation>The notification location URL is not valid</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Update -->
+
+    <element name="NotificationUpdateRequest">
+        <complexType>
+            <sequence>
+                <element name="urn" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The technical urn of the notification location</documentation>
+                    </annotation>
+                </element>
+                <element name="label" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>Human friendly label for this location</documentation>
+                    </annotation>
+                </element>
+                <element name="url" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The notification location url</documentation>
+                    </annotation>
+                </element>
+                <element name="topics" type="tns:NotificationTopic" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The topics to subscribe to for this location</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="NotificationUpdateResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:NotificationUpdateSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:NotificationUpdateError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="NotificationUpdateSuccess">
+        <sequence>
+            <element name="urn" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The technical urn of the notification location</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="NotificationUpdateError">
+        <complexContent>
+            <extension base="tns:CommonError">
+        		<attribute name="errorCode" type="tns:NotificationUpdateErrorCode" use="optional" />
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <simpleType name="NotificationUpdateErrorCode">
+		<annotation>
+			<documentation>Notification add error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.invalid.url">
+				<annotation>
+					<documentation>The notification location URL is not valid</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+    <!-- Common -->
+
+    <complexType name="NotificationTopic">
+        <sequence>
+            <element name="uri" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The topic URI</documentation>
+                </annotation>
+            </element>
+            <element name="filter" type="string" minOccurs="0" maxOccurs="1">
+                <annotation>
+                    <documentation>Optional filter</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+</schema>

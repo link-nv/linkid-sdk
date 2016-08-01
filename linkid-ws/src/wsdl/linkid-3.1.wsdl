@@ -415,6 +415,21 @@
 		<part name="response" element="tns:CredentialListResponse" />
 	</message>
 
+	<!-- ======================== Credentials========================= -->
+
+	<message name="notificationAddRequest">
+		<part name="request" element="tns:NotificationAddRequest" />
+	</message>
+	<message name="notificationAddResponse">
+		<part name="response" element="tns:NotificationAddResponse" />
+	</message>
+	<message name="notificationUpdateRequest">
+		<part name="request" element="tns:NotificationUpdateRequest" />
+	</message>
+	<message name="notificationUpdateResponse">
+		<part name="response" element="tns:NotificationUpdateResponse" />
+	</message>
+
     <!-- =========================== Ports ========================== -->
 
     <portType name="LinkIDServicePort">
@@ -661,6 +676,14 @@
 		<operation name="credentialList">
 			<input message="tns:credentialListRequest" />
 			<output message="tns:credentialListResponse" />
+		</operation>
+		<operation name="notificationAdd">
+			<input message="tns:notificationAddRequest" />
+			<output message="tns:notificationAddResponse" />
+		</operation>
+		<operation name="notificationUpdate">
+			<input message="tns:notificationUpdateRequest" />
+			<output message="tns:notificationUpdateResponse" />
 		</operation>
     </portType>
 
@@ -1210,6 +1233,24 @@
         </operation>
         <operation name="credentialList">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:credentialList" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="notificationAdd">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:notificationAdd" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="notificationUpdate">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:notificationUpdate" />
             <input>
                 <soap:body use="literal" />
             </input>
