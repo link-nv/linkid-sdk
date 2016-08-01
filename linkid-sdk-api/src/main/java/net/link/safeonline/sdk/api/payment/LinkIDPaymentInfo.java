@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
  * Date: 29/07/16
  * Time: 15:00
  */
+@SuppressWarnings("unused")
 public class LinkIDPaymentInfo implements Serializable {
 
     private final List<LinkIDWalletOrganizationDetails> walletOrganizations;

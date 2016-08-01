@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.api.wallet;
 
+import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.util.List;
 import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
@@ -59,10 +60,17 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     @Override
     public String toString() {
 
-        return "LinkIDWalletOrganizationDetails{" + "organization=" + organization + ", owner=" + owner + ", permissions=" + permissions + ", stats=" + stats
-               + ", permissionAddCreditApplications=" + permissionAddCreditApplications + ", permissionRemoveCreditApplications="
-               + permissionRemoveCreditApplications + ", permissionRemoveApplications=" + permissionRemoveApplications + ", permissionEnrollApplications="
-               + permissionEnrollApplications + ", permissionUseApplications=" + permissionUseApplications + '}';
+        return MoreObjects.toStringHelper( this )
+                          .add( "organization", organization )
+                          .add( "owner", owner )
+                          .add( "permissions", permissions )
+                          .add( "stats", stats )
+                          .add( "permissionAddCreditApplications", permissionAddCreditApplications )
+                          .add( "permissionRemoveCreditApplications", permissionRemoveCreditApplications )
+                          .add( "permissionRemoveApplications", permissionRemoveApplications )
+                          .add( "permissionEnrollApplications", permissionEnrollApplications )
+                          .add( "permissionUseApplications", permissionUseApplications )
+                          .toString();
     }
 
     // Accessors
