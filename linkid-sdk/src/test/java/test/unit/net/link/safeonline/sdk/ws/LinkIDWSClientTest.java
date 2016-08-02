@@ -1155,7 +1155,7 @@ public class LinkIDWSClientTest {
         logger.dbg( "Result: %s", urn );
     }
 
-    @Test
+    //    @Test
     public void testNotificationList()
             throws Exception {
 
