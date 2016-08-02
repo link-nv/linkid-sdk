@@ -13,6 +13,10 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v4.24.0
+---
+  * Notification location add/update/list/remove support
+
 v4.22.0
 ---
   * MandateRemove operation added
