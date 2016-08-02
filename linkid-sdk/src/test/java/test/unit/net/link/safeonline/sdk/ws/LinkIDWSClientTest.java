@@ -124,12 +124,9 @@ public class LinkIDWSClientTest {
     private static final String WS_LOCATION          = "https://192.168.5.14:8443/linkid-ws";
 
     // demo config
-    //    private static final String APP_NAME     = "example-mobile";
-    //    private static final String APP_USERNAME = "example-mobile";
-    //    private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
-    private static final String APP_NAME     = "linkID-oper";
-    private static final String APP_USERNAME = "linkid-oper";
-    private static final String APP_PASSWORD = "EA14AC59-335B-494E-94D3-E70D597516BD";
+    private static final String APP_NAME     = "example-mobile";
+    private static final String APP_USERNAME = "example-mobile";
+    private static final String APP_PASSWORD = "6E6C1CB7-965C-48A0-B2B0-6B65674BE19F";
 
     private LinkIDServiceClient client;
 
@@ -1126,7 +1123,7 @@ public class LinkIDWSClientTest {
 
         // Setup
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
-        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, "foo" ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, LinkIDProfileConstants.EMAIL ) );
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.CONFIGURATION_UPDATE, null ) );
 
         // operate
@@ -1145,7 +1142,7 @@ public class LinkIDWSClientTest {
         String urn = "urn:be:linkid:linkID-oper:notification:lRpunl";
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_SUCCESS, null ) );
-        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, LinkIDProfileConstants.EMAIL ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_REMOVAL, LinkIDProfileConstants.EMAIL ) );
 
         // operate
         urn = client.notificationUpdate( urn, "Unit test update", "https://service.linkid.be", configurations );
