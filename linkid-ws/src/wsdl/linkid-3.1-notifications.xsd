@@ -201,6 +201,53 @@
 		</restriction>
 	</simpleType>
 
+    <!-- Remove -->
+
+    <element name="NotificationRemoveRequest">
+        <complexType>
+            <sequence>
+                <element name="urns" type="string" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>Locations to remove</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="NotificationRemoveResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:NotificationRemoveSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:NotificationRemoveError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="NotificationRemoveSuccess">
+    </complexType>
+
+    <complexType name="NotificationRemoveError">
+        <complexContent>
+            <extension base="tns:CommonError">
+        		<attribute name="errorCode" type="tns:NotificationRemoveErrorCode" use="optional" />
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <simpleType name="NotificationRemoveErrorCode">
+		<annotation>
+			<documentation>Notification remove error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.not.found">
+				<annotation>
+					<documentation>No such notification location</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
     <!-- Common -->
 
     <complexType name="NotificationTopic">

@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -96,6 +97,7 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureException;
@@ -2198,7 +2200,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     @Override
     public List<LinkIDCredential> credentialList() {
 
-        // operate
+        // request
         CredentialListResponse response = getPort().credentialList( null );
 
         // convert response
@@ -2224,7 +2226,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     public String notificationAdd(final String label, final String url, final List<LinkIDNotificationTopicConfiguration> topics)
             throws LinkIDNotificationAddException {
 
-        // operate
+        // request
         NotificationAddRequest request = new NotificationAddRequest();
 
         // input
@@ -2250,7 +2252,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     public String notificationUpdate(final String urn, final String label, final String url, final List<LinkIDNotificationTopicConfiguration> topics)
             throws LinkIDNotificationUpdateException {
 
-        // operate
+        // request
         NotificationUpdateRequest request = new NotificationUpdateRequest();
 
         // input
@@ -2276,12 +2278,14 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     @Override
     public List<LinkIDNotificationLocation> notificationList(final List<String> urns) {
 
-        // operate
+        // request
         NotificationListRequest request = new NotificationListRequest();
 
         // input
         if (CollectionUtils.isNotEmpty( urns )) {
             request.getUrns().addAll( urns );
+        } else {
+            return new LinkedList<>();
         }
 
         // operate
@@ -2292,6 +2296,34 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             LinkIDServiceUtils.handleCommon( response.getError() );
         } else if (null != response.getSuccess()) {
             return LinkIDServiceUtils.convertNotificationLocations( response.getSuccess().getNotificationLocations() );
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public void notificationRemove(final List<String> urns)
+            throws LinkIDNotificationRemoveException {
+
+        // request
+        NotificationRemoveRequest request = new NotificationRemoveRequest();
+
+        // input
+        if (CollectionUtils.isNotEmpty( urns )) {
+            request.getUrns().addAll( urns );
+        } else {
+            return;
+        }
+
+        // operate
+        NotificationRemoveResponse response = getPort().notificationRemove( request );
+
+        // convert response
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        } else if (null != response.getSuccess()) {
+            return;
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

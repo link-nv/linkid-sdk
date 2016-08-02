@@ -87,6 +87,8 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPollingConfiguration
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationRemoveErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentErrorCode;
@@ -2582,4 +2584,23 @@ public class LinkIDServiceUtils {
         } );
 
     }
+
+    public static void handle(final NotificationRemoveError error)
+            throws LinkIDNotificationRemoveException {
+
+        handleCommon( error );
+
+        if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_NOT_FOUND:
+                    throw new LinkIDNotificationRemoveException( error.getErrorMessage(), LinkIDNotificationRemoveErrorCode.ERROR_NOT_FOUND );
+
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
 }

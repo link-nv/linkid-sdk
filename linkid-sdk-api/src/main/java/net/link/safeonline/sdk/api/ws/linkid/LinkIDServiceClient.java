@@ -76,6 +76,7 @@ import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRPushResponse;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.ltqr.LinkIDLTQRSession;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationAddException;
+import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.notifications.LinkIDNotificationUpdateException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDMandatePaymentException;
 import net.link.safeonline.sdk.api.ws.linkid.payment.LinkIDPaymentCaptureException;
@@ -857,5 +858,15 @@ public interface LinkIDServiceClient {
      *
      * @return the notification locations
      */
-    List<LinkIDNotificationLocation> notificationList(final List<String> urns);
+    List<LinkIDNotificationLocation> notificationList(List<String> urns);
+
+    /**
+     * Remove the notification locations with specified URNs
+     *
+     * @param urns the URNs
+     *
+     * @throws LinkIDNotificationRemoveException something went wrong, check the error code in the exception
+     */
+    void notificationRemove(List<String> urns)
+            throws LinkIDNotificationRemoveException;
 }

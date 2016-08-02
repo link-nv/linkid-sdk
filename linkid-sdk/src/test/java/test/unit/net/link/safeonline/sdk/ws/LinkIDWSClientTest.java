@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import javax.imageio.ImageIO;
+import net.link.safeonline.attribute.provider.profile.LinkIDProfileConstants;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
@@ -1144,6 +1145,7 @@ public class LinkIDWSClientTest {
         String urn = "urn:be:linkid:linkID-oper:notification:lRpunl";
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_SUCCESS, null ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, LinkIDProfileConstants.EMAIL ) );
 
         // operate
         urn = client.notificationUpdate( urn, "Unit test update", "https://service.linkid.be", configurations );
@@ -1168,6 +1170,17 @@ public class LinkIDWSClientTest {
         for (LinkIDNotificationLocation location : locations) {
             logger.dbg( "Location: %s", location );
         }
+    }
+
+    //    @Test
+    public void testNotificationRemove()
+            throws Exception {
+
+        // Setup
+        List<String> urns = Collections.singletonList( "urn:be:linkid:linkID-oper:notification:lRpunl" );
+
+        // operate
+        client.notificationRemove( urns );
     }
 
     // Auth
