@@ -980,7 +980,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
     }
 
     @Override
-    public LinkIDWalletReport walletReport(@Nullable final Locale locale, final String walletOrganizationId,
+    public LinkIDWalletReport walletReport(@Nullable final Locale locale, final String walletOrganizationId, @Nullable final LinkIDUserFilter userFilter,
                                            @Nullable final LinkIDReportApplicationFilter applicationFilter,
                                            @Nullable final LinkIDReportWalletFilter walletFilter, @Nullable LinkIDWalletReportTypeFilter walletReportTypeFilter,
                                            @Nullable final LinkIDReportDateFilter dateFilter, @Nullable final LinkIDReportPageFilter pageFilter)
@@ -992,6 +992,7 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         // input
         request.setLanguage( LinkIDServiceUtils.convert( locale ) );
         request.setWalletOrganizationId( walletOrganizationId );
+        request.setUserFilter( LinkIDServiceUtils.convert( userFilter ) );
         request.setDateFilter( LinkIDServiceUtils.convert( dateFilter ) );
         request.setPageFilter( LinkIDServiceUtils.convert( pageFilter ) );
         request.setApplicationFilter( LinkIDServiceUtils.convert( applicationFilter ) );

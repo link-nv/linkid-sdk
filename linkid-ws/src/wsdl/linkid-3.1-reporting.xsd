@@ -69,6 +69,7 @@
                     </annotation>
                 </element>
                 <element name="walletOrganizationId" type="string" minOccurs="1" maxOccurs="1" />
+                <element name="userFilter" type="tns:UserFilter" minOccurs="0" maxOccurs="1" />
                 <element name="dateFilter" type="tns:ReportDateFilter" minOccurs="0" maxOccurs="1" />
                 <element name="applicationFilter" type="tns:ReportApplicationFilter" minOccurs="0" maxOccurs="1" />
                 <element name="walletFilter" type="tns:ReportWalletFilter" minOccurs="0" maxOccurs="1" />

@@ -380,9 +380,10 @@ public interface LinkIDServiceClient {
      *
      * @return the wallet transactions matching your search. If none found and empty list is returned
      */
-    LinkIDWalletReport walletReport(@Nullable Locale locale, String walletOrganizationId, @Nullable LinkIDReportApplicationFilter applicationFilter,
-                                    @Nullable LinkIDReportWalletFilter walletFilter, @Nullable LinkIDWalletReportTypeFilter walletReportTypeFilter,
-                                    @Nullable LinkIDReportDateFilter dateFilter, @Nullable LinkIDReportPageFilter pageFilter)
+    LinkIDWalletReport walletReport(@Nullable Locale locale, String walletOrganizationId, @Nullable LinkIDUserFilter userFilter,
+                                    @Nullable LinkIDReportApplicationFilter applicationFilter, @Nullable LinkIDReportWalletFilter walletFilter,
+                                    @Nullable LinkIDWalletReportTypeFilter walletReportTypeFilter, @Nullable LinkIDReportDateFilter dateFilter,
+                                    @Nullable LinkIDReportPageFilter pageFilter)
             throws LinkIDReportException;
 
     /**
