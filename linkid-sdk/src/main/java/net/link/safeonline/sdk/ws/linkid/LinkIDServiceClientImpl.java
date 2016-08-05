@@ -69,6 +69,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationResult;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
+import net.link.safeonline.sdk.api.ws.linkid.applications.LinkIDApplicationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
@@ -2320,11 +2321,38 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         NotificationRemoveResponse response = getPort().notificationRemove( request );
 
         // convert response
-        // convert response
         if (null != response.getError()) {
             LinkIDServiceUtils.handle( response.getError() );
         } else if (null != response.getSuccess()) {
             return;
+        }
+
+        throw new InternalInconsistencyException( "No success nor error element in the response ?!" );
+    }
+
+    @Override
+    public String applicationAdd(final String name, final String applicationUrl, final String logoUrl, final List<LinkIDLocalizationValue> nameLocalizations,
+                                 final List<LinkIDLocalizationValue> descriptionLocalizations)
+            throws LinkIDApplicationAddException {
+
+        // request
+        ApplicationAddRequest request = new ApplicationAddRequest();
+
+        // input
+        request.setName( name );
+        request.setApplicationUrl( applicationUrl );
+        request.setLogoUrl( logoUrl );
+        request.getNameLocalization().addAll( LinkIDServiceUtils.convertSDKLocalizations( nameLocalizations ) );
+        request.getDescriptionLocalization().addAll( LinkIDServiceUtils.convertSDKLocalizations( descriptionLocalizations ) );
+
+        // operate
+        ApplicationAddResponse response = getPort().applicationAdd( request );
+
+        // convert response
+        if (null != response.getError()) {
+            LinkIDServiceUtils.handle( response.getError() );
+        } else if (null != response.getSuccess()) {
+            return response.getSuccess().getUrn();
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

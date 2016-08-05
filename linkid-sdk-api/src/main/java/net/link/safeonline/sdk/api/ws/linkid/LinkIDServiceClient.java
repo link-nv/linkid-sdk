@@ -17,6 +17,7 @@ import net.link.safeonline.sdk.api.common.LinkIDUserFilter;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredential;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialRequest;
 import net.link.safeonline.sdk.api.credentials.LinkIDCredentialType;
+import net.link.safeonline.sdk.api.localization.LinkIDLocalizationValue;
 import net.link.safeonline.sdk.api.notification.LinkIDNotificationLocation;
 import net.link.safeonline.sdk.api.notification.LinkIDNotificationTopicConfiguration;
 import net.link.safeonline.sdk.api.payment.LinkIDCurrency;
@@ -50,6 +51,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationResult;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullException;
+import net.link.safeonline.sdk.api.ws.linkid.applications.LinkIDApplicationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollException;
@@ -870,4 +872,21 @@ public interface LinkIDServiceClient {
      */
     void notificationRemove(List<String> urns)
             throws LinkIDNotificationRemoveException;
+
+    /**
+     * Request a new application
+     *
+     * @param name                     the application name
+     * @param applicationUrl           the application url
+     * @param logoUrl                  the application logo url
+     * @param nameLocalizations        the name i18n
+     * @param descriptionLocalizations the description i18n
+     *
+     * @return the URN of the application
+     *
+     * @throws LinkIDApplicationAddException something went wrong, check the error code in the exception
+     */
+    String applicationAdd(String name, String applicationUrl, String logoUrl, List<LinkIDLocalizationValue> nameLocalizations,
+                          List<LinkIDLocalizationValue> descriptionLocalizations)
+            throws LinkIDApplicationAddException;
 }

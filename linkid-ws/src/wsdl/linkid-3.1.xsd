@@ -30,5 +30,6 @@
     <include schemaLocation="linkid-3.1-users.xsd" />
     <include schemaLocation="linkid-3.1-credentials.xsd" />
     <include schemaLocation="linkid-3.1-notifications.xsd" />
+    <include schemaLocation="linkid-3.1-applications.xsd" />
 
 </schema>

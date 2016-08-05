@@ -442,6 +442,15 @@
 		<part name="response" element="tns:NotificationRemoveResponse" />
 	</message>
 
+	<!-- ======================== Credentials========================= -->
+
+	<message name="applicationAddRequest">
+		<part name="request" element="tns:ApplicationAddRequest" />
+	</message>
+	<message name="applicationAddResponse">
+		<part name="response" element="tns:ApplicationAddResponse" />
+	</message>
+
     <!-- =========================== Ports ========================== -->
 
     <portType name="LinkIDServicePort">
@@ -704,6 +713,10 @@
 		<operation name="notificationRemove">
 			<input message="tns:notificationRemoveRequest" />
 			<output message="tns:notificationRemoveResponse" />
+		</operation>
+		<operation name="applicationAdd">
+			<input message="tns:applicationAddRequest" />
+			<output message="tns:applicationAddResponse" />
 		</operation>
     </portType>
 
@@ -1289,6 +1302,15 @@
         </operation>
         <operation name="notificationRemove">
             <soap:operation soapAction="urn:net:lin-k:linkid:3.1:notificationRemove" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="applicationAdd">
+            <soap:operation soapAction="urn:net:lin-k:linkid:3.1:applicationAdd" />
             <input>
                 <soap:body use="literal" />
             </input>

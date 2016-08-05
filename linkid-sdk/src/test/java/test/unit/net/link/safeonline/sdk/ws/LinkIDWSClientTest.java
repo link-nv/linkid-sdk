@@ -221,7 +221,7 @@ public class LinkIDWSClientTest {
 
         //        LinkIDWalletReportTypeFilter walletReportTypeFilter = new LinkIDWalletReportTypeFilter( Arrays.asList( LinkIDWalletReportType.USER_TRANSACTION ) );
 
-        LinkIDWalletReport walletReport = client.walletReport( new Locale( "nl" ), "urn:linkid:wallet:fake:visa", null,
+        LinkIDWalletReport walletReport = client.walletReport( new Locale( "nl" ), "urn:linkid:wallet:fake:visa", null, null,
                 new LinkIDReportWalletFilter( "53EB61D1-731C-4711-A4D4-20AF824AB86C" ), null,
                 new LinkIDReportDateFilter( DateTime.now().minusYears( 1 ).toDate(), null ), new LinkIDReportPageFilter( 0, 40 ) );
         logger.inf( "Total = %d", walletReport.getTotal() );
@@ -1178,6 +1178,29 @@ public class LinkIDWSClientTest {
 
         // operate
         client.notificationRemove( urns );
+    }
+
+    @Test
+    public void testApplicationAdd()
+            throws Exception {
+
+        // Setup
+        String name = "UnitTest";
+        String applicationUrl = "https://linkid.be";
+        String logoUrl = "https://s3-eu-west-1.amazonaws.com/linkid-production/image/apps/iwish.png";
+        List<LinkIDLocalizationValue> nameLocalizations = new LinkedList<>();
+        nameLocalizations.add( new LinkIDLocalizationValue( "en", "iWish-en" ) );
+        nameLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish-nl" ) );
+        List<LinkIDLocalizationValue> descriptionLocalizations = new LinkedList<>();
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "en", "iWish description-en" ) );
+        descriptionLocalizations.add( new LinkIDLocalizationValue( "nl", "iWish description-nl" ) );
+
+        // operate
+        String urn = client.applicationAdd( name, applicationUrl, logoUrl, nameLocalizations, descriptionLocalizations );
+
+        // verify
+        assertNotNull( urn );
+        logger.dbg( "URN: %s", urn );
     }
 
     // Auth

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ safe-online - linkid-ws
+  ~
+  ~ Copyright 2006-2016 linkID Inc. All rights reserved.
+  ~ linkID Inc. proprietary/confidential. Use is subject to license terms.
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:net:lin-k:linkid:3.1:core" xmlns:tns="urn:net:lin-k:linkid:3.1:core"
+        elementFormDefault="qualified">
+
+    <include schemaLocation="linkid-3.1-common.xsd" />
+
+    <!-- **************************************************************************************************************************************************
+         *                                                                  Application requests                                                          *
+         **************************************************************************************************************************************************  -->
+
+    <!-- Add -->
+
+    <element name="ApplicationAddRequest">
+        <complexType>
+            <sequence>
+                <element name="name" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The application name (not the URN, this is generated and returned in the response)</documentation>
+                    </annotation>
+                </element>
+                <element name="applicationUrl" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The application URL</documentation>
+                    </annotation>
+                </element>
+                <element name="logoUrl" type="string" minOccurs="1" maxOccurs="1">
+                    <annotation>
+                        <documentation>The application logo url</documentation>
+                    </annotation>
+                </element>
+                <element name="nameLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The application name localizations</documentation>
+                    </annotation>
+                </element>
+                <element name="descriptionLocalization" type="tns:Localization" minOccurs="1" maxOccurs="unbounded">
+                    <annotation>
+                        <documentation>The application description localizations</documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="ApplicationAddResponse">
+        <complexType>
+            <sequence>
+                <element name="success" type="tns:ApplicationAddSuccess" minOccurs="0" maxOccurs="1" />
+                <element name="error" type="tns:ApplicationAddError" minOccurs="0" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="ApplicationAddSuccess">
+        <sequence>
+            <element name="urn" type="string" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>The application URN</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ApplicationAddError">
+        <complexContent>
+            <extension base="tns:CommonError">
+        		<attribute name="errorCode" type="tns:ApplicationAddErrorCode" use="optional" />
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <simpleType name="ApplicationAddErrorCode">
+		<annotation>
+			<documentation>Application add error codes</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="error.invalid.application.url">
+				<annotation>
+					<documentation>Not a valid application URL</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.application.already.exists">
+				<annotation>
+					<documentation>Already an application exists with that name</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="error.logo.size" />
+            <enumeration value="error.logo.dimension" />
+            <enumeration value="error.logo.format" />
+		</restriction>
+	</simpleType>
+
+</schema>

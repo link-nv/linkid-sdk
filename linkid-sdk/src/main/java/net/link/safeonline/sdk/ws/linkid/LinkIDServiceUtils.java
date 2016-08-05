@@ -64,6 +64,8 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationStats;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
 import net.link.safeonline.sdk.api.ws.callback.LinkIDCallbackPullErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.applications.LinkIDApplicationAddErrorCode;
+import net.link.safeonline.sdk.api.ws.linkid.applications.LinkIDApplicationAddException;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthCancelErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthErrorCode;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthPollErrorCode;
@@ -2596,6 +2598,31 @@ public class LinkIDServiceUtils {
                 case ERROR_NOT_FOUND:
                     throw new LinkIDNotificationRemoveException( error.getErrorMessage(), LinkIDNotificationRemoveErrorCode.ERROR_NOT_FOUND );
 
+            }
+        } else {
+            throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
+        }
+
+    }
+
+    public static void handle(final ApplicationAddError error)
+            throws LinkIDApplicationAddException {
+
+        handleCommon( error );
+
+        if (null != error.getErrorCode()) {
+            switch (error.getErrorCode()) {
+
+                case ERROR_INVALID_APPLICATION_URL:
+                    throw new LinkIDApplicationAddException( error.getErrorMessage(), LinkIDApplicationAddErrorCode.ERROR_INVALID_APPLICATION_URL );
+                case ERROR_APPLICATION_ALREADY_EXISTS:
+                    throw new LinkIDApplicationAddException( error.getErrorMessage(), LinkIDApplicationAddErrorCode.ERROR_APPLICATION_ALREADY_EXISTS );
+                case ERROR_LOGO_SIZE:
+                    throw new LinkIDApplicationAddException( error.getErrorMessage(), LinkIDApplicationAddErrorCode.ERROR_LOGO_SIZE );
+                case ERROR_LOGO_DIMENSION:
+                    throw new LinkIDApplicationAddException( error.getErrorMessage(), LinkIDApplicationAddErrorCode.ERROR_LOGO_DIMENSION );
+                case ERROR_LOGO_FORMAT:
+                    throw new LinkIDApplicationAddException( error.getErrorMessage(), LinkIDApplicationAddErrorCode.ERROR_LOGO_FORMAT );
             }
         } else {
             throw new InternalInconsistencyException( String.format( "No error code found in error, message=\"%s\"", error.getErrorMessage() ) );
