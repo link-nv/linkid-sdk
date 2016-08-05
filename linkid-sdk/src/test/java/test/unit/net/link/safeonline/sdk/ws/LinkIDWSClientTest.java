@@ -1180,7 +1180,7 @@ public class LinkIDWSClientTest {
         client.notificationRemove( urns );
     }
 
-    @Test
+    //    @Test
     public void testApplicationAdd()
             throws Exception {
 
