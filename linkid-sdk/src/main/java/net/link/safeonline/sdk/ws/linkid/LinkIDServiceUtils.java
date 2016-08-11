@@ -2194,6 +2194,8 @@ public class LinkIDServiceUtils {
         } else if (null != error.getErrorCode()) {
             switch (error.getErrorCode()) {
 
+                case ERROR_ALREADY_EXISTS:
+                    throw new LinkIDWalletOrganizationAddException( error.getErrorMessage(), LinkIDWalletOrganizationAddErrorCode.ERROR_ALREADY_EXISTS );
                 case ERROR_LOGO_FORMAT:
                     throw new LinkIDWalletOrganizationAddException( error.getErrorMessage(), LinkIDWalletOrganizationAddErrorCode.ERROR_LOGO_FORMAT );
                 case ERROR_LOGO_SIZE:

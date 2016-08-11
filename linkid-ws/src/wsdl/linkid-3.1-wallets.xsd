@@ -659,6 +659,11 @@
 			<documentation>Wallet organization add error codes</documentation>
 		</annotation>
 		<restriction base="string">
+			<enumeration value="error.already.exists">
+				<annotation>
+					<documentation>A pending wallet organization request already exists</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.logo.format">
 				<annotation>
 					<documentation>The image format is not supported</documentation>
