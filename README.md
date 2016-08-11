@@ -13,6 +13,10 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v4.27.0
+---
+  * PaymentInfo: extended to return supported currencies and wallet coin IDs
+
 v4.26.0
 ---
   * Application add support
