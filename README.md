@@ -16,6 +16,8 @@ Migration notes
 v4.27.0
 ---
   * PaymentInfo: extended to return supported currencies and wallet coin IDs
+  * WalletOrganizationList: pendingRemoval flag support
+  * Add wallet organization: seperate error code if already exists pending request
 
 v4.26.0
 ---
