@@ -418,7 +418,7 @@ public class LinkIDWSClientTest {
         logger.dbg( "Organization result: %s\n", result );
     }
 
-    @Test
+    //    @Test
     public void testWalletOrganizationList()
             throws Exception {
 
