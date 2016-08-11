@@ -14,13 +14,13 @@ package net.link.safeonline.sdk.api;
  */
 public abstract class LinkIDURN {
 
-    private static final String URN_PREFIX                 = "urn:be:linkid";
-    private static final String THEME_PART                 = "theme";
-    private static final String VOUCHER_PART               = "voucher";
-    private static final String PAYMENT_CONFIGURATION_PART = "payment:configuration";
-    private static final String WALLET_ORGANIZATION_PART   = "wallet:organization";
-    private static final String WALLET_COIN_PART           = "coin";
-    private static final String NOTIFICATION_LOCATION_PART = "notification";
+    public static final String URN_PREFIX                 = "urn:be:linkid";
+    public static final String THEME_PART                 = "theme";
+    public static final String VOUCHER_PART               = "voucher";
+    public static final String PAYMENT_CONFIGURATION_PART = "payment:configuration";
+    public static final String WALLET_ORGANIZATION_PART   = "wallet:organization";
+    public static final String WALLET_COIN_PART           = "coin";
+    public static final String NOTIFICATION_LOCATION_PART = "notification";
 
     private LinkIDURN() {
 
