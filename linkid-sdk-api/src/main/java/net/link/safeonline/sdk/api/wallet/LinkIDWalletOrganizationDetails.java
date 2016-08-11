@@ -25,6 +25,7 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     private final LinkIDWalletOrganization              organization;
     //
     private final boolean                               owner;
+    private final boolean                               pendingRemoval;
     //
     private final List<LinkIDApplicationPermissionType> permissions;
     //
@@ -38,7 +39,7 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     private final List<String>                          permissionEnrollApplications;
     private final List<String>                          permissionUseApplications;
 
-    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, final boolean owner,
+    public LinkIDWalletOrganizationDetails(final LinkIDWalletOrganization organization, final boolean owner, final boolean pendingRemoval,
                                            final List<LinkIDApplicationPermissionType> permissions, @Nullable final LinkIDWalletOrganizationStats stats,
                                            final List<String> permissionAddCreditApplications, final List<String> permissionRemoveCreditApplications,
                                            final List<String> permissionRemoveApplications, final List<String> permissionEnrollApplications,
@@ -46,6 +47,7 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
 
         this.organization = organization;
         this.owner = owner;
+        this.pendingRemoval = pendingRemoval;
         this.permissions = permissions;
         this.stats = stats;
         this.permissionAddCreditApplications = permissionAddCreditApplications;
@@ -63,6 +65,7 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
         return MoreObjects.toStringHelper( this )
                           .add( "organization", organization )
                           .add( "owner", owner )
+                          .add( "pendingRemoval", pendingRemoval )
                           .add( "permissions", permissions )
                           .add( "stats", stats )
                           .add( "permissionAddCreditApplications", permissionAddCreditApplications )
@@ -83,6 +86,11 @@ public class LinkIDWalletOrganizationDetails implements Serializable {
     public boolean isOwner() {
 
         return owner;
+    }
+
+    public boolean isPendingRemoval() {
+
+        return pendingRemoval;
     }
 
     public List<LinkIDApplicationPermissionType> getPermissions() {

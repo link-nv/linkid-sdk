@@ -430,6 +430,11 @@
                     <documentation>Whether or not the requesting application owns the wallet</documentation>
                 </annotation>
             </element>
+            <element name="pendingRemoval" type="boolean" minOccurs="1" maxOccurs="1">
+                <annotation>
+                    <documentation>For released wallet organizations indicates whether a pending removal request exists</documentation>
+                </annotation>
+            </element>
 			<element name="permissions" type="tns:ApplicationPermissionType" minOccurs="0" maxOccurs="unbounded">
 				<annotation>
 					<documentation>What permissions do you have?</documentation>

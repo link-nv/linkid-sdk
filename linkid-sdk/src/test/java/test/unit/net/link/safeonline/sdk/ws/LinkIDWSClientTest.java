@@ -418,7 +418,7 @@ public class LinkIDWSClientTest {
         logger.dbg( "Organization result: %s\n", result );
     }
 
-    //    @Test
+    @Test
     public void testWalletOrganizationList()
             throws Exception {
 
@@ -426,7 +426,7 @@ public class LinkIDWSClientTest {
         List<String> walletOrganizationIds = Collections.singletonList( "urn:linkid:wallet:fake:visa" );
 
         // operate
-        List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, LinkIDRequestStatusCode.PENDING, false, Locale.ENGLISH );
+        List<LinkIDWalletOrganizationDetails> organizations = client.walletOrganizationList( null, LinkIDRequestStatusCode.RELEASED, false, Locale.ENGLISH );
         for (LinkIDWalletOrganizationDetails organization : organizations) {
             logger.dbg( "Organization: %s\n", organization );
         }
@@ -437,11 +437,10 @@ public class LinkIDWSClientTest {
             throws Exception {
 
         // setup
-        String walletOrganizationId = "urn:be:linkid:example-mobile:wallet:organization:testWallet";
-        //        String walletOrganizationId = "urn:linkid:wallet:fake:visa";
+        String walletOrganizationId = "urn:linkid:wallet:fake:visa";
 
         // operate
-        client.walletOrganizationRemove( walletOrganizationId, false );
+        client.walletOrganizationRemove( walletOrganizationId, true );
     }
 
     //    @Test

@@ -1944,9 +1944,10 @@ public class LinkIDServiceUtils {
 
     public static LinkIDWalletOrganizationDetails convert(final WalletOrganizationDetails details) {
 
-        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), details.isOwner(), convertPermissions( details.getPermissions() ),
-                convert( details.getStats() ), details.getPermissionAddCreditApplications(), details.getPermissionRemoveCreditApplications(),
-                details.getPermissionRemoveApplications(), details.getPermissionEnrollApplications(), details.getPermissionUseApplications() );
+        return new LinkIDWalletOrganizationDetails( convert( details.getOrganization() ), details.isOwner(), details.isPendingRemoval(),
+                convertPermissions( details.getPermissions() ), convert( details.getStats() ), details.getPermissionAddCreditApplications(),
+                details.getPermissionRemoveCreditApplications(), details.getPermissionRemoveApplications(), details.getPermissionEnrollApplications(),
+                details.getPermissionUseApplications() );
 
     }
 
