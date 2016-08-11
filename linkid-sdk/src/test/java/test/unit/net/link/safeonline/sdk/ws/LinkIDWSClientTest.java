@@ -1105,7 +1105,7 @@ public class LinkIDWSClientTest {
         client.credentialRemove( name );
     }
 
-    //    @Test
+    @Test
     public void testPaymentInfo()
             throws Exception {
 

@@ -476,7 +476,8 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
                 organizations.add( LinkIDServiceUtils.convert( details ) );
             }
 
-            return new LinkIDPaymentInfo( organizations, LinkIDServiceUtils.convertPaymentMethods( response.getSuccess().getPaymentMethods() ) );
+            return new LinkIDPaymentInfo( organizations, LinkIDServiceUtils.convertPaymentMethods( response.getSuccess().getPaymentMethods() ),
+                    LinkIDServiceUtils.convertCurrencies( response.getSuccess().getCurrencies() ), response.getSuccess().getWalletCoinIds() );
         }
 
         throw new InternalInconsistencyException( "No success nor error element in the response ?!" );

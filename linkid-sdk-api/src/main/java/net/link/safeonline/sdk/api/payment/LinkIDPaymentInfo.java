@@ -23,11 +23,16 @@ public class LinkIDPaymentInfo implements Serializable {
 
     private final List<LinkIDWalletOrganizationDetails> walletOrganizations;
     private final List<LinkIDPaymentMethodType>         paymentMethods;
+    private final List<LinkIDCurrency>                  currencies;
+    private final List<String>                          walletCoinIds;
 
-    public LinkIDPaymentInfo(final List<LinkIDWalletOrganizationDetails> walletOrganizations, final List<LinkIDPaymentMethodType> paymentMethods) {
+    public LinkIDPaymentInfo(final List<LinkIDWalletOrganizationDetails> walletOrganizations, final List<LinkIDPaymentMethodType> paymentMethods,
+                             final List<LinkIDCurrency> currencies, final List<String> walletCoinIds) {
 
         this.walletOrganizations = walletOrganizations;
         this.paymentMethods = paymentMethods;
+        this.currencies = currencies;
+        this.walletCoinIds = walletCoinIds;
     }
 
     // Helper methods
@@ -35,7 +40,12 @@ public class LinkIDPaymentInfo implements Serializable {
     @Override
     public String toString() {
 
-        return MoreObjects.toStringHelper( this ).add( "walletOrganizations", walletOrganizations ).add( "paymentMethods", paymentMethods ).toString();
+        return MoreObjects.toStringHelper( this )
+                          .add( "walletOrganizations", walletOrganizations )
+                          .add( "paymentMethods", paymentMethods )
+                          .add( "currencies", currencies )
+                          .add( "walletCoinIds", walletCoinIds )
+                          .toString();
     }
 
     // Accessors
@@ -48,5 +58,15 @@ public class LinkIDPaymentInfo implements Serializable {
     public List<LinkIDPaymentMethodType> getPaymentMethods() {
 
         return paymentMethods;
+    }
+
+    public List<LinkIDCurrency> getCurrencies() {
+
+        return currencies;
+    }
+
+    public List<String> getWalletCoinIds() {
+
+        return walletCoinIds;
     }
 }

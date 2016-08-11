@@ -41,6 +41,16 @@
                     <documentation>Payment methods(s) available</documentation>
                 </annotation>
             </element>
+            <element name="currencies" type="tns:Currency" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Currencies available to pay with</documentation>
+                </annotation>
+            </element>
+            <element name="walletCoinIds" type="string" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>Wallet coin IDs available to pay with</documentation>
+                </annotation>
+            </element>
         </sequence>
     </complexType>
 

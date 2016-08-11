@@ -2094,6 +2094,24 @@ public class LinkIDServiceUtils {
         return linkIDPaymentMethodTypes;
     }
 
+    public static List<LinkIDCurrency> convertCurrencies(final List<Currency> currencies) {
+
+        List<LinkIDCurrency> linkIDCurrencies = Lists.newLinkedList();
+        if (!CollectionUtils.isEmpty( currencies )) {
+            linkIDCurrencies = ImmutableList.copyOf( Collections2.transform( currencies, new Function<Currency, LinkIDCurrency>() {
+                @javax.annotation.Nullable
+                @Override
+                public LinkIDCurrency apply(@javax.annotation.Nullable final Currency input) {
+
+                    return convert( input );
+
+                }
+            } ) );
+        }
+
+        return linkIDCurrencies;
+    }
+
     public static LinkIDPaymentConfiguration convert(final PaymentConfiguration paymentConfiguration) {
 
         return new LinkIDPaymentConfiguration( paymentConfiguration.getName(), paymentConfiguration.isDefaultConfiguration(),
