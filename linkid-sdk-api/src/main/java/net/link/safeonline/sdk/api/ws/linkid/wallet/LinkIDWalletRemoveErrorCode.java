@@ -10,5 +10,5 @@ package net.link.safeonline.sdk.api.ws.linkid.wallet;
 public enum LinkIDWalletRemoveErrorCode {
 
     ERROR_UNKNOWN_USER,
-    ERROR_UNKNOWN_WALLET,
+    ERROR_UNKNOWN_WALLET
 }

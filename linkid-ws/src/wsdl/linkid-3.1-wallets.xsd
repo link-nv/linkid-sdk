@@ -893,12 +893,11 @@
 		<restriction base="string">
 			<enumeration value="error.unknown.wallet.organization">
 				<annotation>
-					<documentation>No such voucher organization</documentation>
+					<documentation>No such wallet organization</documentation>
 				</annotation>
 			</enumeration>
 		</restriction>
 	</simpleType>
-
 
     <!-- Wallet common -->
 

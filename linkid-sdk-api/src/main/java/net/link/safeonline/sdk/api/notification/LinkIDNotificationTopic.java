@@ -35,6 +35,7 @@ public enum LinkIDNotificationTopic {
     THEME_REMOVAL_SUCCESS( "urn:net:lin-k:linkid:topic:theme:removal:success" ),                                           //
     THEME_REMOVAL_REJECTED( "urn:net:lin-k:linkid:topic:theme:removal:rejected" ),                                         //
     THEME_REJECTED( "urn:net:lin-k:linkid:topic:theme:rejected" ),                                                         //
+    WALLET_ORGANIZATION_UPDATE( "urn:net:lin-k:linkid:topic:wallet:organization:update" ),                                 //
     WALLET_ORGANIZATION_REMOVAL_SUCCESS( "urn:net:lin-k:linkid:topic:wallet:organization:removal:success" ),               //
     WALLET_ORGANIZATION_REMOVAL_REJECTED( "urn:net:lin-k:linkid:topic:wallet:organization:removal:rejected" ),             //
     WALLET_ORGANIZATION_REJECTED( "urn:net:lin-k:linkid:topic:wallet:organization:rejected" ),                             //
