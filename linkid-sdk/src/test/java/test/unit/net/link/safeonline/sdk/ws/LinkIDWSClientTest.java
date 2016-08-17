@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import javax.imageio.ImageIO;
-import net.link.safeonline.attribute.provider.profile.LinkIDProfileConstants;
+import net.link.safeonline.sdk.api.attribute.profile.LinkIDProfileConstants;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;

@@ -1,11 +1,11 @@
 /*
- * linkID project.
+ * safe-online - linkid-sdk-api
  *
- * Copyright 2006-2014 Lin.k N.V. All rights reserved.
- * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ * Copyright 2006-2016 linkID Inc. All rights reserved.
+ * linkID Inc. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.attribute.provider.profile;
+package net.link.safeonline.sdk.api.attribute.profile;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -31,9 +31,9 @@ public class LinkIDEmail implements Serializable {
     public static List<LinkIDEmail> getEmails(final List<LinkIDAttribute<Serializable>> emailAttributes) {
 
         if (null == emailAttributes)
-            return new LinkedList<LinkIDEmail>();
+            return new LinkedList<>();
 
-        List<LinkIDEmail> linkIDEmails = new LinkedList<LinkIDEmail>();
+        List<LinkIDEmail> linkIDEmails = new LinkedList<>();
         for (LinkIDAttribute<Serializable> emailAttribute : emailAttributes) {
 
             LinkIDCompound emailLinkIDCompound = (LinkIDCompound) emailAttribute.getValue();

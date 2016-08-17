@@ -98,20 +98,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Attribute Provider SDKs -->
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.attribute</groupId>
-            <artifactId>linkid-attribute-provider-profile-sdk</artifactId>
-            <type>jar</type>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.attribute</groupId>
-            <artifactId>linkid-attribute-provider-avatar-sdk</artifactId>
-            <type>jar</type>
-            <version>${project.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>
