@@ -15,6 +15,7 @@ import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
 
 
 @SuppressWarnings("UnusedDeclaration")
+@Deprecated
 public class LinkIDAddress implements Serializable {
 
     private final String        street;

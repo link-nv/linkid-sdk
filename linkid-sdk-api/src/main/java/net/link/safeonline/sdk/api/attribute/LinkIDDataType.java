@@ -18,12 +18,7 @@ package net.link.safeonline.sdk.api.attribute;
  */
 public enum LinkIDDataType {
 
-    STRING( "string" ),
-    BOOLEAN( "boolean" ),
-    INTEGER( "integer" ),
-    DOUBLE( "double" ),
-    DATE( "date" ),
-    COMPOUNDED( "compound" );
+    STRING( "string" ), BOOLEAN( "boolean" ), INTEGER( "integer" ), DOUBLE( "double" ), DATE( "date" ), CUSTOM( "custom" ), COMPOUNDED( "compound" );
 
     private final String friendlyName;
 
