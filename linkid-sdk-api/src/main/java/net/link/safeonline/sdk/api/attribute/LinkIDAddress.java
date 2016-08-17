@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.attribute;
 
 import com.google.common.base.MoreObjects;
 import java.io.Serializable;
+import net.link.safeonline.sdk.api.attribute.profile.LinkIDCountry;
 
 
 /**
@@ -18,26 +19,26 @@ import java.io.Serializable;
  */
 public class LinkIDAddress implements Serializable {
 
-    private String street;
-    private String streetNumber;
-    private String streetBus;
-    private String postalCode;
-    private String city;
-    private String countryCode;
+    private String        street;
+    private String        streetNumber;
+    private String        streetBus;
+    private String        postalCode;
+    private String        city;
+    private LinkIDCountry country;
 
     public LinkIDAddress() {
 
     }
 
     public LinkIDAddress(final String street, final String streetNumber, final String streetBus, final String postalCode, final String city,
-                         final String countryCode) {
+                         final LinkIDCountry country) {
 
         this.street = street;
         this.streetNumber = streetNumber;
         this.streetBus = streetBus;
         this.postalCode = postalCode;
         this.city = city;
-        this.countryCode = countryCode;
+        this.country = country;
     }
 
     // Helper methods
@@ -51,7 +52,7 @@ public class LinkIDAddress implements Serializable {
                           .add( "streetBus", streetBus )
                           .add( "postalCode", postalCode )
                           .add( "city", city )
-                          .add( "countryCode", countryCode )
+                          .add( "country", country )
                           .toString();
     }
 
@@ -82,9 +83,9 @@ public class LinkIDAddress implements Serializable {
         return city;
     }
 
-    public String getCountryCode() {
+    public LinkIDCountry getCountry() {
 
-        return countryCode;
+        return country;
     }
 
     public void setStreet(final String street) {
@@ -112,8 +113,8 @@ public class LinkIDAddress implements Serializable {
         this.city = city;
     }
 
-    public void setCountryCode(final String countryCode) {
+    public void setCountryCode(final LinkIDCountry country) {
 
-        this.countryCode = countryCode;
+        this.country = country;
     }
 }

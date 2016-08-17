@@ -105,6 +105,12 @@ public enum LinkIDCountry {
         return isoNumericCode;
     }
 
+    @Override
+    public String toString() {
+
+        return isoAlpha2Code;
+    }
+
     public static LinkIDCountry toCountryAlpha2(String isoAlpha2Code) {
 
         if (null == isoAlpha2Code) {
