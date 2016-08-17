@@ -43,6 +43,15 @@ public class LinkIDAddress implements Serializable {
 
     // Helper methods
 
+    public String getStreetNumberAndBus() {
+
+        if (null != streetBus) {
+            return String.format( "%s %s", streetNumber, streetBus );
+        }
+
+        return streetNumber;
+    }
+
     @Override
     public String toString() {
 
