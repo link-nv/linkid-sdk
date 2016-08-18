@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.credentials;
 
 import com.google.common.base.MoreObjects;
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -19,12 +20,14 @@ import java.io.Serializable;
 public class LinkIDCredential implements Serializable {
 
     private final String               label;
+    private final Date                 created;
     private final String               name;
     private final LinkIDCredentialType type;
 
-    public LinkIDCredential(final String label, final String name, final LinkIDCredentialType type) {
+    public LinkIDCredential(final String label, final Date created, final String name, final LinkIDCredentialType type) {
 
         this.label = label;
+        this.created = created;
         this.name = name;
         this.type = type;
     }
@@ -34,7 +37,7 @@ public class LinkIDCredential implements Serializable {
     @Override
     public String toString() {
 
-        return MoreObjects.toStringHelper( this ).add( "label", label ).add( "name", name ).add( "type", type ).toString();
+        return MoreObjects.toStringHelper( this ).add( "label", label ).add( "created", created ).add( "name", name ).add( "type", type ).toString();
     }
 
     // Accessors
@@ -42,6 +45,11 @@ public class LinkIDCredential implements Serializable {
     public String getLabel() {
 
         return label;
+    }
+
+    public Date getCreated() {
+
+        return created;
     }
 
     public String getName() {

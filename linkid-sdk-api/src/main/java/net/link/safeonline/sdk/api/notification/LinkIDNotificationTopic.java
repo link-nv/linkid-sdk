@@ -42,7 +42,9 @@ public enum LinkIDNotificationTopic {
     VOUCHER_REWARD( "urn:net:lin-k:linkid:topic:voucher:reward" ),                                                         //
     VOUCHER_ACTIVATE( "urn:net:lin-k:linkid:topic:voucher:activate" ),                                                     //
     VOUCHER_REDEEM( "urn:net:lin-k:linkid:topic:voucher:redeem" ),                                                         //
-    PERMISSION_UPDATE( "urn:net:lin-k:linkid:topic:application:permission:update" );                                       //
+    PERMISSION_UPDATE( "urn:net:lin-k:linkid:topic:application:permission:update" ),                                       //
+    CREDENTIAL_CONFIRM( "urn:net:lin-k:linkid:topic:application:credential:confirm" ),                                     //
+    CREDENTIAL_REQUEST_EXPIRED( "urn:net:lin-k:linkid:topic:application:credential:request:expired" );                     //
 
     private final String  topicUri;
     private final boolean filterable;                 // does this topic have an optional filter, e.g. attribute related topics have an optional attribute name filter

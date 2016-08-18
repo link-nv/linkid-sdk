@@ -2216,7 +2216,8 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             // success!
             List<LinkIDCredential> credentials = Lists.newLinkedList();
             for (Credential credential : response.getSuccess().getCredentials()) {
-                credentials.add( new LinkIDCredential( credential.getLabel(), credential.getName(), LinkIDServiceUtils.convert( credential.getType() ) ) );
+                credentials.add( new LinkIDCredential( credential.getLabel(), LinkIDServiceUtils.convert( credential.getCreated() ), credential.getName(),
+                        LinkIDServiceUtils.convert( credential.getType() ) ) );
             }
             return credentials;
         }
