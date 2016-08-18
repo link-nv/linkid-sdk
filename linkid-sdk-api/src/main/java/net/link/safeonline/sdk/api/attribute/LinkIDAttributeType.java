@@ -15,17 +15,17 @@ import java.util.List;
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDAttributeType implements Serializable {
 
-    private String         name;
-    private LinkIDDataType type;
-    private String         providerJndi;            // backwards compatibility, ios clients crashes on it...
-    private boolean        userVisible;
-    private boolean        userEditable;
-    private boolean        userRemovable;
-    private boolean        multivalued;
-
+    private String                    name;
+    private LinkIDDataType            type;
+    private String                    providerJndi;            // backwards compatibility, ios clients crashes on it...
+    private boolean                   userVisible;
+    private boolean                   userEditable;
+    private boolean                   userRemovable;
+    private boolean                   multivalued;
+    private boolean                   required;
+    //
     // only sensible for compounds
     private boolean                   compoundMember;
-    private boolean                   required;
     private List<LinkIDAttributeType> members;
 
     public LinkIDAttributeType() {

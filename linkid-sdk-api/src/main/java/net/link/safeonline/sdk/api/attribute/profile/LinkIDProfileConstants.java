@@ -22,9 +22,9 @@ public class LinkIDProfileConstants {
     public static final String MOBILE        = "profile.mobile";
     public static final String PHONE         = "profile.phone";
 
-    // address
+    // old compound attribute, still in here for backwards compatibility
     public static final String ADDRESS               = "profile.address";
-    // old compound member attributes, still in here for backwards compatibility
+    // address
     public static final String ADDRESS_STREET        = "profile.address.street";
     public static final String ADDRESS_STREET_NUMBER = "profile.address.streetNumber";
     public static final String ADDRESS_STREET_BUS    = "profile.address.streetBus";
@@ -32,9 +32,9 @@ public class LinkIDProfileConstants {
     public static final String ADDRESS_CITY          = "profile.address.city";
     public static final String ADDRESS_COUNTRY       = "profile.address.country";
 
-    // email
+    // old compound attribute, still in here for backwards compatibility
     public static final String EMAIL           = "profile.email";
-    // old compound member attributes, still in here for backwards compatibility
+    // email
     public static final String EMAIL_ADDRESS   = "profile.email.address";
     public static final String EMAIL_CONFIRMED = "profile.email.confirmed";
 }
