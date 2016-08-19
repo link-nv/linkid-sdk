@@ -8,43 +8,32 @@
 package net.link.safeonline.sdk.api.attribute;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 
 
 @SuppressWarnings("UnusedDeclaration")
 public class LinkIDAttributeType implements Serializable {
 
-    private String                    name;
-    private LinkIDDataType            type;
-    private String                    providerJndi;            // backwards compatibility, ios clients crashes on it...
-    private boolean                   userVisible;
-    private boolean                   userEditable;
-    private boolean                   userRemovable;
-    private boolean                   multivalued;
-    private boolean                   required;
-    //
-    // only sensible for compounds
-    private boolean                   compoundMember;
-    private List<LinkIDAttributeType> members;
-
-    public LinkIDAttributeType() {
-
-        this.members = new LinkedList<>();
-    }
+    private String         name;
+    private LinkIDDataType type;
+    private String         providerJndi;            // backwards compatibility, ios clients crashes on it...
+    private boolean        userVisible;
+    private boolean        userEditable;
+    private boolean        userRemovable;
+    private boolean        multivalued;
+    private boolean        required;
 
     public LinkIDAttributeType(final String name) {
 
-        this( name, null, false, false, false, false, false, false );
+        this( name, null, false, false, false, false, false );
     }
 
     public LinkIDAttributeType(String name, LinkIDDataType type, boolean userVisible, boolean userEditable, boolean multivalued, boolean required) {
 
-        this( name, type, userVisible, userEditable, false, multivalued, false, required );
+        this( name, type, userVisible, userEditable, false, multivalued, required );
     }
 
     public LinkIDAttributeType(String name, LinkIDDataType type, boolean userVisible, boolean userEditable, boolean userRemovable, boolean multivalued,
-                               boolean compoundMember, boolean required) {
+                               boolean required) {
 
         this.name = name;
         this.type = type;
@@ -53,9 +42,7 @@ public class LinkIDAttributeType implements Serializable {
         this.userEditable = userEditable;
         this.userRemovable = userRemovable;
         this.multivalued = multivalued;
-        this.compoundMember = compoundMember;
         this.required = required;
-        this.members = new LinkedList<>();
     }
 
     public String getName() {
@@ -88,19 +75,9 @@ public class LinkIDAttributeType implements Serializable {
         return multivalued;
     }
 
-    public boolean isCompoundMember() {
-
-        return compoundMember;
-    }
-
     public boolean isRequired() {
 
         return required;
-    }
-
-    public List<LinkIDAttributeType> getMembers() {
-
-        return members;
     }
 
     public void setName(final String name) {
@@ -133,19 +110,9 @@ public class LinkIDAttributeType implements Serializable {
         this.multivalued = multivalued;
     }
 
-    public void setCompoundMember(final boolean compoundMember) {
-
-        this.compoundMember = compoundMember;
-    }
-
     public void setRequired(final boolean required) {
 
         this.required = required;
-    }
-
-    public void setMembers(final List<LinkIDAttributeType> members) {
-
-        this.members = members;
     }
 
     public String getProviderJndi() {

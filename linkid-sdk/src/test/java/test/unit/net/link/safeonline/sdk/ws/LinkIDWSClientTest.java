@@ -171,7 +171,7 @@ public class LinkIDWSClientTest {
         client.setAttributeValue( userId, attributes );
     }
 
-    //    @Test
+    @Test
     public void testAttributeMap()
             throws Exception {
 
