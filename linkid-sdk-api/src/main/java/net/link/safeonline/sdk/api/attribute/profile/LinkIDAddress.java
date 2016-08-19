@@ -42,40 +42,40 @@ public class LinkIDAddress implements Serializable {
             if (attribute.getName().equals( LinkIDProfileConstants.ADDRESS_STREET )) {
                 if (null == linkIDAddress) {
                     linkIDAddress = new LinkIDAddress();
-                    linkIDAddress.setStreet( (String) attribute.getValue() );
                 }
+                linkIDAddress.setStreet( (String) attribute.getValue() );
             }
             if (attribute.getName().equals( LinkIDProfileConstants.ADDRESS_STREET_NUMBER )) {
                 if (null == linkIDAddress) {
                     linkIDAddress = new LinkIDAddress();
-                    linkIDAddress.setStreetNumber( (String) attribute.getValue() );
                 }
+                linkIDAddress.setStreetNumber( (String) attribute.getValue() );
             }
             if (attribute.getName().equals( LinkIDProfileConstants.ADDRESS_STREET_BUS )) {
                 if (null == linkIDAddress) {
                     linkIDAddress = new LinkIDAddress();
-                    linkIDAddress.setStreetBus( (String) attribute.getValue() );
                 }
+                linkIDAddress.setStreetBus( (String) attribute.getValue() );
             }
             if (attribute.getName().equals( LinkIDProfileConstants.ADDRESS_POSTAL_CODE )) {
                 if (null == linkIDAddress) {
                     linkIDAddress = new LinkIDAddress();
-                    linkIDAddress.setPostalCode( (String) attribute.getValue() );
                 }
+                linkIDAddress.setPostalCode( (String) attribute.getValue() );
             }
             if (attribute.getName().equals( LinkIDProfileConstants.ADDRESS_CITY )) {
                 if (null == linkIDAddress) {
                     linkIDAddress = new LinkIDAddress();
-                    linkIDAddress.setCity( (String) attribute.getValue() );
                 }
+                linkIDAddress.setCity( (String) attribute.getValue() );
             }
 
             if (attribute.getName().equals( LinkIDProfileConstants.ADDRESS_COUNTRY )) {
                 if (null == linkIDAddress) {
                     linkIDAddress = new LinkIDAddress();
-                    LinkIDCountry country = LinkIDCountry.toCountryAlpha2( (String) attribute.getValue() );
-                    linkIDAddress.setLinkIDCountry( country );
                 }
+                LinkIDCountry country = LinkIDCountry.toCountryAlpha2( (String) attribute.getValue() );
+                linkIDAddress.setLinkIDCountry( country );
             }
         }
 
