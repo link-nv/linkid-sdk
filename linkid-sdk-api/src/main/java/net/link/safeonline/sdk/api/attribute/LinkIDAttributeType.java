@@ -88,12 +88,6 @@ public class LinkIDAttributeType implements Serializable {
         return multivalued;
     }
 
-    @Deprecated
-    public boolean isCompound() {
-
-        return type == LinkIDDataType.COMPOUNDED;
-    }
-
     public boolean isCompoundMember() {
 
         return compoundMember;

@@ -20,7 +20,7 @@ public enum LinkIDDataType {
 
     // NOTE: COMPOUNDED is still in here for backwards compatibility
 
-    STRING( "string" ), BOOLEAN( "boolean" ), INTEGER( "integer" ), DOUBLE( "double" ), DATE( "date" ), COMPOUNDED( "compound" );
+    STRING( "string" ), BOOLEAN( "boolean" ), INTEGER( "integer" ), DOUBLE( "double" ), DATE( "date" );
 
     private final String friendlyName;
 
