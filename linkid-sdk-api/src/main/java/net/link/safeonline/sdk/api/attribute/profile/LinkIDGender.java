@@ -7,10 +7,12 @@
 
 package net.link.safeonline.sdk.api.attribute.profile;
 
+import net.link.util.InternalInconsistencyException;
+
+
 public enum LinkIDGender {
 
-    MALE( "M" ),
-    FEMALE( "F" );
+    MALE( "M" ), FEMALE( "F" );
 
     private final String stringValue;
 
@@ -34,6 +36,6 @@ public enum LinkIDGender {
                 return linkIDGender;
         }
 
-        throw new RuntimeException( String.format( "Invalid gender \"%s\"!", stringValue ) );
+        throw new InternalInconsistencyException( String.format( "Invalid gender \"%s\"!", stringValue ) );
     }
 }
