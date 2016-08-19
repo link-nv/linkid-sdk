@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
-import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.ws.LinkIDWebServiceConstants;
@@ -109,20 +108,23 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
         for (Attribute attribute : attributeStatement.getAttributes()) {
 
-            LinkIDAttribute<Serializable> linkIDAttribute = getAttributeSDK( attribute );
+            LinkIDAttribute<Serializable> linkIDAttribute = findAttributeSDK( attribute );
+            if (null != linkIDAttribute) {
 
-            List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( linkIDAttribute.getName() );
-            if (null == attributes) {
-                attributes = new LinkedList<>();
+                List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( linkIDAttribute.getName() );
+                if (null == attributes) {
+                    attributes = new LinkedList<>();
+                }
+                attributes.add( linkIDAttribute );
+                attributeMap.put( linkIDAttribute.getName(), attributes );
             }
-            attributes.add( linkIDAttribute );
-            attributeMap.put( linkIDAttribute.getName(), attributes );
         }
 
         return attributeMap;
     }
 
-    private static LinkIDAttribute<Serializable> getAttributeSDK(Attribute attributeType) {
+    @Nullable
+    private static LinkIDAttribute<Serializable> findAttributeSDK(Attribute attributeType) {
 
         String attributeId = attributeType.getUnknownAttributes().get( LinkIDWebServiceConstants.ATTRIBUTE_ID );
         LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<>( attributeId, attributeType.getName(), null );
@@ -133,19 +135,8 @@ public abstract class LinkIDSaml2Utils extends Saml2Utils {
 
         XMLObject xmlValue = attributeValues.get( 0 );
         if (null != xmlValue.getOrderedChildren() && !xmlValue.getOrderedChildren().isEmpty()) {
-
-            // compound
-            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<>();
-            for (XMLObject memberAttributeObject : attributeValues.get( 0 ).getOrderedChildren()) {
-
-                Attribute memberAttribute = (Attribute) memberAttributeObject;
-                LinkIDAttribute<Serializable> member = new LinkIDAttribute<>( attributeId, memberAttribute.getName(), null );
-                if (!memberAttribute.getAttributeValues().isEmpty()) {
-                    member.setValue( toJavaObject( memberAttribute.getAttributeValues().get( 0 ) ) );
-                }
-                compoundMembers.add( member );
-            }
-            attribute.setValue( new LinkIDCompound( compoundMembers ) );
+            // old compound, ignore
+            return null;
         } else {
             // single/multi valued
             attribute.setValue( toJavaObject( xmlValue ) );

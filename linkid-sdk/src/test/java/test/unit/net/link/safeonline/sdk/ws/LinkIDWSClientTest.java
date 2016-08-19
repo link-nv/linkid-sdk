@@ -19,7 +19,6 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
-import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
 import net.link.safeonline.sdk.api.attribute.profile.LinkIDProfileConstants;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
@@ -188,14 +187,7 @@ public class LinkIDWSClientTest {
         for (Map.Entry<String, List<LinkIDAttribute<Serializable>>> entry : attributeMap.entrySet()) {
             logger.dbg( entry.getKey() );
             for (LinkIDAttribute<Serializable> attribute : entry.getValue()) {
-                if (attribute.getValue() instanceof LinkIDCompound) {
-                    LinkIDCompound compound = (LinkIDCompound) attribute.getValue();
-                    for (LinkIDAttribute<? extends Serializable> member : compound.getMembers()) {
-                        logger.dbg( "  * Member: %s - %s", member.getName(), member.getValue() );
-                    }
-                } else {
-                    logger.dbg( "  * Attribute: %s", attribute.getValue() );
-                }
+                logger.dbg( "  * Attribute: %s", attribute.getValue() );
             }
         }
     }
@@ -215,15 +207,7 @@ public class LinkIDWSClientTest {
         // verify
         assertNotNull( attributes );
         for (LinkIDAttribute<Serializable> attribute : attributes) {
-            if (attribute.getValue() instanceof LinkIDCompound) {
-                logger.dbg( "Attribute: %s", attribute.getName() );
-                LinkIDCompound compound = (LinkIDCompound) attribute.getValue();
-                for (LinkIDAttribute<? extends Serializable> member : compound.getMembers()) {
-                    logger.dbg( "  * Member: %s - %s", member.getName(), member.getValue() );
-                }
-            } else {
-                logger.dbg( "Attribute: %s - %s", attribute.getName(), attribute.getValue() );
-            }
+            logger.dbg( "Attribute: %s - %s", attribute.getName(), attribute.getValue() );
         }
     }
 

@@ -35,7 +35,6 @@ import liberty.dst._2006_08.ref.safe_online.QueryType;
 import liberty.dst._2006_08.ref.safe_online.SelectType;
 import liberty.util._2006_08.StatusType;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
-import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
 import net.link.safeonline.sdk.api.exception.LinkIDRequestDeniedException;
 import net.link.safeonline.sdk.api.exception.LinkIDWSClientTransportException;
 import net.link.safeonline.sdk.api.ws.LinkIDWebServiceConstants;
@@ -51,6 +50,7 @@ import net.link.util.ws.security.username.WSSecurityUsernameTokenHandler;
 import net.link.util.ws.security.x509.WSSecurityConfiguration;
 import net.link.util.ws.security.x509.WSSecurityX509TokenHandler;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -174,7 +174,10 @@ public class LinkIDDataClientImpl extends LinkIDAbstractWSClient<DataServicePort
         for (DataType data : dataList) {
             AttributeType attribute = data.getAttribute();
             //noinspection unchecked
-            attributes.add( (LinkIDAttribute<T>) getAttributeSDK( attribute ) );
+            LinkIDAttribute<? extends Serializable> linkIDAttribute = findAttributeSDK( attribute );
+            if (null != linkIDAttribute) {
+                attributes.add( (LinkIDAttribute<T>) linkIDAttribute );
+            }
         }
 
         return attributes;
@@ -274,31 +277,13 @@ public class LinkIDDataClientImpl extends LinkIDAbstractWSClient<DataServicePort
         }
 
         if (null != attribute.getValue()) {
-            if (attribute.getValue() instanceof LinkIDCompound) {
-
-                // wrap members
-                AttributeType compoundValueAttribute = new AttributeType();
-                attributeType.getAttributeValue().add( compoundValueAttribute );
-
-                // compounded
-                LinkIDCompound linkIDCompound = (LinkIDCompound) attribute.getValue();
-                for (LinkIDAttribute<?> memberAttribute : linkIDCompound.getMembers()) {
-
-                    AttributeType memberAttributeType = new AttributeType();
-                    memberAttributeType.setName( memberAttribute.getName() );
-                    memberAttributeType.getAttributeValue().add( convertFromXmlDatatypeToClient( memberAttribute.getValue() ) );
-
-                    compoundValueAttribute.getAttributeValue().add( memberAttributeType );
-                }
-            } else {
-                // single/multi valued
-                attributeType.getAttributeValue().add( convertFromXmlDatatypeToClient( attribute.getValue() ) );
-            }
+            attributeType.getAttributeValue().add( convertFromXmlDatatypeToClient( attribute.getValue() ) );
         }
         return attributeType;
     }
 
-    private static LinkIDAttribute<? extends Serializable> getAttributeSDK(AttributeType attributeType) {
+    @Nullable
+    private static LinkIDAttribute<? extends Serializable> findAttributeSDK(AttributeType attributeType) {
 
         String attributeId = findAttributeId( attributeType );
         LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<>( attributeId, attributeType.getName(), null );
@@ -309,22 +294,8 @@ public class LinkIDDataClientImpl extends LinkIDAbstractWSClient<DataServicePort
         }
 
         if (attributeValues.get( 0 ) instanceof AttributeType) {
-
-            // compound value
-            AttributeType compoundValue = (AttributeType) attributeValues.get( 0 );
-
-            // compound
-            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<>();
-            for (Object memberAttributeObject : compoundValue.getAttributeValue()) {
-
-                AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-                LinkIDAttribute<Serializable> member = new LinkIDAttribute<>( attributeId, memberAttribute.getName(), null );
-                if (!memberAttribute.getAttributeValue().isEmpty()) {
-                    member.setValue( convertFromXmlDatatypeToClient( memberAttribute.getAttributeValue().get( 0 ) ) );
-                }
-                compoundMembers.add( member );
-            }
-            attribute.setValue( new LinkIDCompound( compoundMembers ) );
+            // compound, ignore
+            return null;
         } else {
             // single/multi valued
             attribute.setValue( convertFromXmlDatatypeToClient( attributeValues.get( 0 ) ) );

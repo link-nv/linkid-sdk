@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
-import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
 import net.link.safeonline.sdk.api.exception.LinkIDAttributeNotFoundException;
 import net.link.safeonline.sdk.api.exception.LinkIDAttributeUnavailableException;
 import net.link.safeonline.sdk.api.exception.LinkIDRequestDeniedException;
@@ -205,21 +204,24 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
         for (Object attributeTypeObject : attributeStatement.getAttributeOrEncryptedAttribute()) {
             AttributeType attributeType = (AttributeType) attributeTypeObject;
 
-            LinkIDAttribute<Serializable> attribute = getAttributeSDK( attributeType );
+            LinkIDAttribute<Serializable> attribute = findAttributeSDK( attributeType );
+            if (null != attribute) {
 
-            List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( attribute.getName() );
-            if (null == attributes) {
-                attributes = new LinkedList<LinkIDAttribute<Serializable>>();
+                List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( attribute.getName() );
+                if (null == attributes) {
+                    attributes = new LinkedList<>();
+                }
+                attributes.add( attribute );
+                attributeMap.put( attribute.getName(), attributes );
             }
-            attributes.add( attribute );
-            attributeMap.put( attribute.getName(), attributes );
         }
     }
 
-    private static LinkIDAttribute<Serializable> getAttributeSDK(AttributeType attributeType) {
+    @Nullable
+    private static LinkIDAttribute<Serializable> findAttributeSDK(AttributeType attributeType) {
 
         String attributeId = findAttributeId( attributeType );
-        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<Serializable>( attributeId, attributeType.getName(), null );
+        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<>( attributeId, attributeType.getName(), null );
 
         List<Object> attributeValues = attributeType.getAttributeValue();
         if (attributeValues.isEmpty()) {
@@ -227,24 +229,11 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
         }
 
         if (attributeType.getAttributeValue().get( 0 ) instanceof AttributeType) {
-
-            AttributeType compoundValueAttribute = (AttributeType) attributeType.getAttributeValue().get( 0 );
-
-            // compound
-            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<LinkIDAttribute<?>>();
-            for (Object memberAttributeObject : compoundValueAttribute.getAttributeValue()) {
-
-                AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-                LinkIDAttribute<Serializable> member = new LinkIDAttribute<Serializable>( attributeId, memberAttribute.getName(), null );
-                if (!memberAttribute.getAttributeValue().isEmpty()) {
-                    member.setValue( convertFromXmlDatatypeToClient( memberAttribute.getAttributeValue().get( 0 ) ) );
-                }
-                compoundMembers.add( member );
-            }
-            attribute.setValue( new LinkIDCompound( compoundMembers ) );
+            // compound, ignore
+            return null;
         } else {
             // single/multi valued
-            attribute.setValue( convertFromXmlDatatypeToClient( attributeValues.get( 0 ) ) );
+            attribute.setValue( convertFromXmlDataTypeToClient( attributeValues.get( 0 ) ) );
         }
         return attribute;
     }
@@ -259,7 +248,7 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
             throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
                    LinkIDSubjectNotFoundException {
 
-        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<String, List<LinkIDAttribute<Serializable>>>();
+        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<>();
         AttributeQueryType request = getAttributeQuery( userId, attributes );
         ResponseType response = getResponse( request );
         validateStatus( response );
@@ -272,7 +261,7 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
             throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
                    LinkIDSubjectNotFoundException {
 
-        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<String, List<LinkIDAttribute<Serializable>>>();
+        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<>();
         AttributeQueryType request = getAttributeQuery( userId, attributeName );
         ResponseType response = getResponse( request );
         validateStatus( response );
@@ -284,7 +273,7 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
     }
 
     @Nullable
-    private static Serializable convertFromXmlDatatypeToClient(Object value) {
+    private static Serializable convertFromXmlDataTypeToClient(Object value) {
 
         if (null == value) {
             return null;
