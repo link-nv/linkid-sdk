@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.attrib;
 
+import com.google.common.collect.Lists;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
@@ -98,84 +99,6 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
         return "linkid.ws.attribute.path";
     }
 
-    private ResponseType getResponse(AttributeQueryType request)
-            throws LinkIDWSClientTransportException {
-
-        try {
-            return getPort().attributeQuery( request );
-        }
-        catch (ClientTransportException e) {
-            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
-        }
-    }
-
-    private static void validateStatus(ResponseType response)
-            throws LinkIDAttributeNotFoundException, LinkIDRequestDeniedException, LinkIDAttributeUnavailableException, LinkIDSubjectNotFoundException {
-
-        StatusType status = response.getStatus();
-        StatusCodeType statusCode = status.getStatusCode();
-        String statusCodeValue = statusCode.getValue();
-        LinkIDSamlpTopLevelErrorCode linkIDSamlpTopLevelErrorCode = LinkIDSamlpTopLevelErrorCode.getSamlpTopLevelErrorCode( statusCodeValue );
-        if (LinkIDSamlpTopLevelErrorCode.SUCCESS != linkIDSamlpTopLevelErrorCode) {
-            StatusCodeType secondLevelStatusCode = statusCode.getStatusCode();
-            if (null != secondLevelStatusCode) {
-                String secondLevelStatusCodeValue = secondLevelStatusCode.getValue();
-                LinkIDSamlpSecondLevelErrorCode linkIDSamlpSecondLevelErrorCode = LinkIDSamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode(
-                        secondLevelStatusCodeValue );
-
-                if (LinkIDSamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == linkIDSamlpSecondLevelErrorCode) {
-                    throw new LinkIDAttributeNotFoundException();
-                }
-
-                if (LinkIDSamlpSecondLevelErrorCode.REQUEST_DENIED == linkIDSamlpSecondLevelErrorCode) {
-                    throw new LinkIDRequestDeniedException();
-                }
-
-                if (LinkIDSamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == linkIDSamlpSecondLevelErrorCode) {
-                    throw new LinkIDAttributeUnavailableException();
-                }
-
-                if (LinkIDSamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == linkIDSamlpSecondLevelErrorCode) {
-                    throw new LinkIDSubjectNotFoundException();
-                }
-
-                logger.dbg( "second level status code: %s", secondLevelStatusCode.getValue() );
-            }
-            throw new InternalInconsistencyException( String.format( "error: %s", statusCodeValue ) );
-        }
-    }
-
-    private static AttributeQueryType getAttributeQuery(String userId, String attributeName) {
-
-        Set<String> attributeNames = Collections.singleton( attributeName );
-        return getAttributeQuery( userId, attributeNames );
-    }
-
-    private static AttributeQueryType getAttributeQuery(String userId, Set<String> attributeNames) {
-
-        ObjectFactory samlObjectFactory = new ObjectFactory();
-        AttributeQueryType attributeQuery = new AttributeQueryType();
-        SubjectType subject = new SubjectType();
-        NameIDType subjectName = new NameIDType();
-        subjectName.setValue( userId );
-        subject.getContent().add( samlObjectFactory.createNameID( subjectName ) );
-        attributeQuery.setSubject( subject );
-
-        List<AttributeType> attributes = attributeQuery.getAttribute();
-        for (String attributeName : attributeNames) {
-            AttributeType attribute = new AttributeType();
-            attribute.setName( attributeName );
-            attributes.add( attribute );
-        }
-        return attributeQuery;
-    }
-
-    private static AttributeQueryType getAttributeQuery(String userId, Map<String, List<LinkIDAttribute<Serializable>>> attributes) {
-
-        Set<String> attributeNames = attributes.keySet();
-        return getAttributeQuery( userId, attributeNames );
-    }
-
     @Override
     public void getAttributes(String userId, Map<String, List<LinkIDAttribute<Serializable>>> attributes)
             throws LinkIDAttributeNotFoundException, LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeUnavailableException,
@@ -184,10 +107,53 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
         AttributeQueryType request = getAttributeQuery( userId, attributes );
         ResponseType response = getResponse( request );
         validateStatus( response );
-        getAttributeValues( response, attributes );
+        fillAttributeMap( response, attributes );
     }
 
-    private static void getAttributeValues(ResponseType response, Map<String, List<LinkIDAttribute<Serializable>>> attributeMap) {
+    @Override
+    public Map<String, List<LinkIDAttribute<Serializable>>> getAttributes(String userId)
+            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
+                   LinkIDSubjectNotFoundException {
+
+        Map<String, List<LinkIDAttribute<Serializable>>> attributeMap = new HashMap<>();
+        AttributeQueryType request = getAttributeQuery( userId, attributeMap );
+        ResponseType response = getResponse( request );
+        validateStatus( response );
+        fillAttributeMap( response, attributeMap );
+        return attributeMap;
+    }
+
+    @Override
+    public <T extends Serializable> List<LinkIDAttribute<T>> getAttributes(String userId, String attributeName)
+            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
+                   LinkIDSubjectNotFoundException {
+
+        Map<String, List<LinkIDAttribute<Serializable>>> attributeMap = new HashMap<>();
+        AttributeQueryType request = getAttributeQuery( userId, attributeName );
+        ResponseType response = getResponse( request );
+        validateStatus( response );
+        fillAttributeMap( response, attributeMap );
+
+        List<LinkIDAttribute<T>> attributes = Lists.newLinkedList();
+
+        for (List<LinkIDAttribute<Serializable>> list : attributeMap.values()) {
+            for (LinkIDAttribute<Serializable> attribute : list) {
+                attributes.add( (LinkIDAttribute<T>) attribute );
+            }
+        }
+
+        return attributes;
+    }
+
+    // Helper methods
+
+    private static AttributeQueryType getAttributeQuery(String userId, Map<String, List<LinkIDAttribute<Serializable>>> attributes) {
+
+        Set<String> attributeNames = attributes.keySet();
+        return getAttributeQuery( userId, attributeNames );
+    }
+
+    private static void fillAttributeMap(ResponseType response, Map<String, List<LinkIDAttribute<Serializable>>> attributeMap) {
 
         List<Serializable> assertions = response.getAssertionOrEncryptedAssertion();
         if (assertions.isEmpty()) {
@@ -243,35 +209,6 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
         return attribute.getOtherAttributes().get( LinkIDWebServiceConstants.ATTRIBUTE_ID );
     }
 
-    @Override
-    public Map<String, List<LinkIDAttribute<Serializable>>> getAttributes(String userId)
-            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
-                   LinkIDSubjectNotFoundException {
-
-        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<>();
-        AttributeQueryType request = getAttributeQuery( userId, attributes );
-        ResponseType response = getResponse( request );
-        validateStatus( response );
-        getAttributeValues( response, attributes );
-        return attributes;
-    }
-
-    @Override
-    public List<LinkIDAttribute<Serializable>> getAttributes(String userId, String attributeName)
-            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
-                   LinkIDSubjectNotFoundException {
-
-        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<>();
-        AttributeQueryType request = getAttributeQuery( userId, attributeName );
-        ResponseType response = getResponse( request );
-        validateStatus( response );
-        getAttributeValues( response, attributes );
-        if (attributes.size() != 1) {
-            throw new InternalInconsistencyException( "Requested 1 specified attribute but received multiple ?!" );
-        }
-        return attributes.get( attributeName );
-    }
-
     @Nullable
     private static Serializable convertFromXmlDataTypeToClient(Object value) {
 
@@ -284,5 +221,77 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
             result = calendar.toGregorianCalendar().getTime();
         }
         return (Serializable) result;
+    }
+
+    private static AttributeQueryType getAttributeQuery(String userId, String attributeName) {
+
+        Set<String> attributeNames = Collections.singleton( attributeName );
+        return getAttributeQuery( userId, attributeNames );
+    }
+
+    private static AttributeQueryType getAttributeQuery(String userId, Set<String> attributeNames) {
+
+        ObjectFactory samlObjectFactory = new ObjectFactory();
+        AttributeQueryType attributeQuery = new AttributeQueryType();
+        SubjectType subject = new SubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue( userId );
+        subject.getContent().add( samlObjectFactory.createNameID( subjectName ) );
+        attributeQuery.setSubject( subject );
+
+        List<AttributeType> attributes = attributeQuery.getAttribute();
+        for (String attributeName : attributeNames) {
+            AttributeType attribute = new AttributeType();
+            attribute.setName( attributeName );
+            attributes.add( attribute );
+        }
+        return attributeQuery;
+    }
+
+    private ResponseType getResponse(AttributeQueryType request)
+            throws LinkIDWSClientTransportException {
+
+        try {
+            return getPort().attributeQuery( request );
+        }
+        catch (ClientTransportException e) {
+            throw new LinkIDWSClientTransportException( getBindingProvider(), e );
+        }
+    }
+
+    private static void validateStatus(ResponseType response)
+            throws LinkIDAttributeNotFoundException, LinkIDRequestDeniedException, LinkIDAttributeUnavailableException, LinkIDSubjectNotFoundException {
+
+        StatusType status = response.getStatus();
+        StatusCodeType statusCode = status.getStatusCode();
+        String statusCodeValue = statusCode.getValue();
+        LinkIDSamlpTopLevelErrorCode linkIDSamlpTopLevelErrorCode = LinkIDSamlpTopLevelErrorCode.getSamlpTopLevelErrorCode( statusCodeValue );
+        if (LinkIDSamlpTopLevelErrorCode.SUCCESS != linkIDSamlpTopLevelErrorCode) {
+            StatusCodeType secondLevelStatusCode = statusCode.getStatusCode();
+            if (null != secondLevelStatusCode) {
+                String secondLevelStatusCodeValue = secondLevelStatusCode.getValue();
+                LinkIDSamlpSecondLevelErrorCode linkIDSamlpSecondLevelErrorCode = LinkIDSamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode(
+                        secondLevelStatusCodeValue );
+
+                if (LinkIDSamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == linkIDSamlpSecondLevelErrorCode) {
+                    throw new LinkIDAttributeNotFoundException();
+                }
+
+                if (LinkIDSamlpSecondLevelErrorCode.REQUEST_DENIED == linkIDSamlpSecondLevelErrorCode) {
+                    throw new LinkIDRequestDeniedException();
+                }
+
+                if (LinkIDSamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == linkIDSamlpSecondLevelErrorCode) {
+                    throw new LinkIDAttributeUnavailableException();
+                }
+
+                if (LinkIDSamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == linkIDSamlpSecondLevelErrorCode) {
+                    throw new LinkIDSubjectNotFoundException();
+                }
+
+                logger.dbg( "second level status code: %s", secondLevelStatusCode.getValue() );
+            }
+            throw new InternalInconsistencyException( String.format( "error: %s", statusCodeValue ) );
+        }
     }
 }

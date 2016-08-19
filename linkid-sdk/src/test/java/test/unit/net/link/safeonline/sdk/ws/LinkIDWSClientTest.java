@@ -192,7 +192,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testAttributes()
             throws Exception {
 
@@ -202,7 +202,7 @@ public class LinkIDWSClientTest {
         LinkIDAttributeClient client = new LinkIDAttributeClientImpl( WS_LOCATION_USERNAME, null, getUsernameTokenCallback() );
 
         // operate
-        List<LinkIDAttribute<Serializable>> attributes = client.getAttributes( userId, LinkIDProfileConstants.ADDRESS_STREET );
+        List<LinkIDAttribute<Serializable>> attributes = client.getAttributes( userId, "profile.address.street" );
 
         // verify
         assertNotNull( attributes );
