@@ -170,7 +170,7 @@ public class LinkIDWSClientTest {
         client.setAttributeValue( userId, attributes );
     }
 
-    @Test
+    //    @Test
     public void testAttributeMap()
             throws Exception {
 
@@ -192,7 +192,7 @@ public class LinkIDWSClientTest {
         }
     }
 
-    //    @Test
+    @Test
     public void testAttributes()
             throws Exception {
 
@@ -202,7 +202,7 @@ public class LinkIDWSClientTest {
         LinkIDAttributeClient client = new LinkIDAttributeClientImpl( WS_LOCATION_USERNAME, null, getUsernameTokenCallback() );
 
         // operate
-        List<LinkIDAttribute<Serializable>> attributes = client.getAttributes( userId, LinkIDProfileConstants.FAMILY_NAME );
+        List<LinkIDAttribute<Serializable>> attributes = client.getAttributes( userId, LinkIDProfileConstants.ADDRESS_STREET );
 
         // verify
         assertNotNull( attributes );
@@ -1167,7 +1167,7 @@ public class LinkIDWSClientTest {
 
         // Setup
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
-        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, LinkIDProfileConstants.EMAIL ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, LinkIDProfileConstants.EMAIL_ADDRESS ) );
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.CONFIGURATION_UPDATE, null ) );
 
         // operate
@@ -1186,7 +1186,7 @@ public class LinkIDWSClientTest {
         String urn = "urn:be:linkid:linkID-oper:notification:lRpunl";
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_SUCCESS, null ) );
-        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_REMOVAL, LinkIDProfileConstants.EMAIL ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_REMOVAL, LinkIDProfileConstants.EMAIL_ADDRESS ) );
 
         // operate
         urn = client.notificationUpdate( urn, "Unit test update", "https://service.linkid.be", configurations );

@@ -14,16 +14,14 @@ public class LinkIDProfileConstants {
     }
 
     // attribute names
-    public static final String GIVEN_NAME    = "profile.givenName";
-    public static final String FAMILY_NAME   = "profile.familyName";
-    public static final String DATE_OF_BIRTH = "profile.dob";
-    public static final String GENDER        = "profile.gender";
-    public static final String LANGUAGE      = "profile.language";
-    public static final String MOBILE        = "profile.mobile";
-    public static final String PHONE         = "profile.phone";
-
-    // old compound attribute, still in here for backwards compatibility
-    public static final String ADDRESS               = "profile.address";
+    public static final String GIVEN_NAME            = "profile.givenName";
+    public static final String FAMILY_NAME           = "profile.familyName";
+    public static final String DATE_OF_BIRTH         = "profile.dob";
+    public static final String GENDER                = "profile.gender";
+    public static final String LANGUAGE              = "profile.language";
+    public static final String MOBILE                = "profile.mobile";
+    public static final String PHONE                 = "profile.phone";
+    //
     // address
     public static final String ADDRESS_STREET        = "profile.address.street";
     public static final String ADDRESS_STREET_NUMBER = "profile.address.streetNumber";
@@ -31,10 +29,8 @@ public class LinkIDProfileConstants {
     public static final String ADDRESS_POSTAL_CODE   = "profile.address.postalCode";
     public static final String ADDRESS_CITY          = "profile.address.city";
     public static final String ADDRESS_COUNTRY       = "profile.address.country";
-
-    // old compound attribute, still in here for backwards compatibility
-    public static final String EMAIL           = "profile.email";
+    //
     // email
-    public static final String EMAIL_ADDRESS   = "profile.email.address";
-    public static final String EMAIL_CONFIRMED = "profile.email.confirmed";
+    public static final String EMAIL_ADDRESS         = "profile.email.address";
+    public static final String EMAIL_CONFIRMED       = "profile.email.confirmed";
 }
