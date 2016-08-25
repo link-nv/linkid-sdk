@@ -18,12 +18,9 @@ package net.link.safeonline.sdk.api.attribute;
  */
 public enum LinkIDDataType {
 
-    STRING( "string" ),
-    BOOLEAN( "boolean" ),
-    INTEGER( "integer" ),
-    DOUBLE( "double" ),
-    DATE( "date" ),
-    COMPOUNDED( "compound" );
+    // NOTE: COMPOUNDED is still in here for backwards compatibility
+
+    STRING( "string" ), BOOLEAN( "boolean" ), INTEGER( "integer" ), DOUBLE( "double" ), DATE( "date" );
 
     private final String friendlyName;
 
@@ -43,12 +40,4 @@ public enum LinkIDDataType {
         return friendlyName;
     }
 
-    public static LinkIDDataType getDataType(String dataTypeValue) {
-
-        for (LinkIDDataType linkIDDataType : LinkIDDataType.values())
-            if (linkIDDataType.friendlyName.equals( dataTypeValue ))
-                return linkIDDataType;
-
-        throw new IllegalArgumentException( "unknown dataType: " + dataTypeValue );
-    }
 }

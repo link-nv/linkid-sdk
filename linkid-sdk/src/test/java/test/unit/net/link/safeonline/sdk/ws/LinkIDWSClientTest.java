@@ -8,16 +8,18 @@ import com.google.common.collect.Lists;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import javax.imageio.ImageIO;
-import net.link.safeonline.attribute.provider.profile.LinkIDProfileConstants;
 import net.link.safeonline.sdk.api.LinkIDConstants;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
+import net.link.safeonline.sdk.api.attribute.profile.LinkIDProfileConstants;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthenticationContext;
 import net.link.safeonline.sdk.api.auth.LinkIDAuthnResponse;
 import net.link.safeonline.sdk.api.common.LinkIDApplicationFilter;
@@ -69,6 +71,7 @@ import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganization;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationDetails;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletOrganizationResult;
 import net.link.safeonline.sdk.api.wallet.LinkIDWalletPolicyBalance;
+import net.link.safeonline.sdk.api.ws.attrib.LinkIDAttributeClient;
 import net.link.safeonline.sdk.api.ws.data.client.LinkIDDataClient;
 import net.link.safeonline.sdk.api.ws.linkid.LinkIDServiceClient;
 import net.link.safeonline.sdk.api.ws.linkid.auth.LinkIDAuthException;
@@ -96,6 +99,7 @@ import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletRemoveException;
 import net.link.safeonline.sdk.api.ws.linkid.wallet.LinkIDWalletReportInfo;
 import net.link.safeonline.sdk.configuration.LinkIDConfig;
 import net.link.safeonline.sdk.ws.LinkIDSDKWSSecurityConfiguration;
+import net.link.safeonline.sdk.ws.attrib.LinkIDAttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.LinkIDDataClientImpl;
 import net.link.safeonline.sdk.ws.linkid.LinkIDServiceClientImpl;
 import net.link.util.common.ApplicationMode;
@@ -164,6 +168,47 @@ public class LinkIDWSClientTest {
         client.removeAttribute( userId, "profile.givenName", attribute.getId() );
 
         client.setAttributeValue( userId, attributes );
+    }
+
+    //    @Test
+    public void testAttributeMap()
+            throws Exception {
+
+        // Setup
+        String userId = "5A878718-C846-4092-AFFE-93CCCDDA83E6";
+
+        LinkIDAttributeClient client = new LinkIDAttributeClientImpl( WS_LOCATION_USERNAME, null, getUsernameTokenCallback() );
+
+        // operate
+        Map<String, List<LinkIDAttribute<Serializable>>> attributeMap = client.getAttributes( userId );
+
+        // verify
+        assertNotNull( attributeMap );
+        for (Map.Entry<String, List<LinkIDAttribute<Serializable>>> entry : attributeMap.entrySet()) {
+            logger.dbg( entry.getKey() );
+            for (LinkIDAttribute<Serializable> attribute : entry.getValue()) {
+                logger.dbg( "  * Attribute: %s", attribute.getValue() );
+            }
+        }
+    }
+
+    //    @Test
+    public void testAttributes()
+            throws Exception {
+
+        // Setup
+        String userId = "5A878718-C846-4092-AFFE-93CCCDDA83E6";
+
+        LinkIDAttributeClient client = new LinkIDAttributeClientImpl( WS_LOCATION_USERNAME, null, getUsernameTokenCallback() );
+
+        // operate
+        List<LinkIDAttribute<Serializable>> attributes = client.getAttributes( userId, "profile.address.street" );
+
+        // verify
+        assertNotNull( attributes );
+        for (LinkIDAttribute<Serializable> attribute : attributes) {
+            logger.dbg( "Attribute: %s - %s", attribute.getName(), attribute.getValue() );
+        }
     }
 
     //    @Test
@@ -1122,7 +1167,7 @@ public class LinkIDWSClientTest {
 
         // Setup
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
-        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, LinkIDProfileConstants.EMAIL ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_UPDATE, LinkIDProfileConstants.EMAIL_ADDRESS ) );
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.CONFIGURATION_UPDATE, null ) );
 
         // operate
@@ -1141,7 +1186,7 @@ public class LinkIDWSClientTest {
         String urn = "urn:be:linkid:linkID-oper:notification:lRpunl";
         List<LinkIDNotificationTopicConfiguration> configurations = Lists.newLinkedList();
         configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.AUTHENTICATION_SUCCESS, null ) );
-        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_REMOVAL, LinkIDProfileConstants.EMAIL ) );
+        configurations.add( new LinkIDNotificationTopicConfiguration( LinkIDNotificationTopic.ATTRIBUTE_REMOVAL, LinkIDProfileConstants.EMAIL_ADDRESS ) );
 
         // operate
         urn = client.notificationUpdate( urn, "Unit test update", "https://service.linkid.be", configurations );

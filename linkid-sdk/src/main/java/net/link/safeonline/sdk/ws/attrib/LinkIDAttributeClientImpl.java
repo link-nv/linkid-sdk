@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.attrib;
 
+import com.google.common.collect.Lists;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
@@ -18,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.datatype.XMLGregorianCalendar;
 import net.link.safeonline.sdk.api.attribute.LinkIDAttribute;
-import net.link.safeonline.sdk.api.attribute.LinkIDCompound;
 import net.link.safeonline.sdk.api.exception.LinkIDAttributeNotFoundException;
 import net.link.safeonline.sdk.api.exception.LinkIDAttributeUnavailableException;
 import net.link.safeonline.sdk.api.exception.LinkIDRequestDeniedException;
@@ -99,6 +99,155 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
         return "linkid.ws.attribute.path";
     }
 
+    @Override
+    public void getAttributes(String userId, Map<String, List<LinkIDAttribute<Serializable>>> attributes)
+            throws LinkIDAttributeNotFoundException, LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeUnavailableException,
+                   LinkIDSubjectNotFoundException {
+
+        AttributeQueryType request = getAttributeQuery( userId, attributes );
+        ResponseType response = getResponse( request );
+        validateStatus( response );
+        fillAttributeMap( response, attributes );
+    }
+
+    @Override
+    public Map<String, List<LinkIDAttribute<Serializable>>> getAttributes(String userId)
+            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
+                   LinkIDSubjectNotFoundException {
+
+        Map<String, List<LinkIDAttribute<Serializable>>> attributeMap = new HashMap<>();
+        AttributeQueryType request = getAttributeQuery( userId, attributeMap );
+        ResponseType response = getResponse( request );
+        validateStatus( response );
+        fillAttributeMap( response, attributeMap );
+        return attributeMap;
+    }
+
+    @Override
+    public <T extends Serializable> List<LinkIDAttribute<T>> getAttributes(String userId, String attributeName)
+            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
+                   LinkIDSubjectNotFoundException {
+
+        Map<String, List<LinkIDAttribute<Serializable>>> attributeMap = new HashMap<>();
+        AttributeQueryType request = getAttributeQuery( userId, attributeName );
+        ResponseType response = getResponse( request );
+        validateStatus( response );
+        fillAttributeMap( response, attributeMap );
+
+        List<LinkIDAttribute<T>> attributes = Lists.newLinkedList();
+
+        for (List<LinkIDAttribute<Serializable>> list : attributeMap.values()) {
+            for (LinkIDAttribute<Serializable> attribute : list) {
+                attributes.add( (LinkIDAttribute<T>) attribute );
+            }
+        }
+
+        return attributes;
+    }
+
+    // Helper methods
+
+    private static AttributeQueryType getAttributeQuery(String userId, Map<String, List<LinkIDAttribute<Serializable>>> attributes) {
+
+        Set<String> attributeNames = attributes.keySet();
+        return getAttributeQuery( userId, attributeNames );
+    }
+
+    private static void fillAttributeMap(ResponseType response, Map<String, List<LinkIDAttribute<Serializable>>> attributeMap) {
+
+        List<Serializable> assertions = response.getAssertionOrEncryptedAssertion();
+        if (assertions.isEmpty()) {
+            throw new InternalInconsistencyException( "No assertions in response" );
+        }
+        AssertionType assertion = (AssertionType) assertions.get( 0 );
+
+        List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        if (statements.isEmpty()) {
+            throw new InternalInconsistencyException( "No statements in response assertion" );
+        }
+        AttributeStatementType attributeStatement = (AttributeStatementType) statements.get( 0 );
+
+        for (Object attributeTypeObject : attributeStatement.getAttributeOrEncryptedAttribute()) {
+            AttributeType attributeType = (AttributeType) attributeTypeObject;
+
+            LinkIDAttribute<Serializable> attribute = findAttributeSDK( attributeType );
+            if (null != attribute) {
+
+                List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( attribute.getName() );
+                if (null == attributes) {
+                    attributes = new LinkedList<>();
+                }
+                attributes.add( attribute );
+                attributeMap.put( attribute.getName(), attributes );
+            }
+        }
+    }
+
+    @Nullable
+    private static LinkIDAttribute<Serializable> findAttributeSDK(AttributeType attributeType) {
+
+        String attributeId = findAttributeId( attributeType );
+        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<>( attributeId, attributeType.getName(), null );
+
+        List<Object> attributeValues = attributeType.getAttributeValue();
+        if (attributeValues.isEmpty()) {
+            return attribute;
+        }
+
+        if (attributeType.getAttributeValue().get( 0 ) instanceof AttributeType) {
+            // compound, ignore
+            return null;
+        } else {
+            // single/multi valued
+            attribute.setValue( convertFromXmlDataTypeToClient( attributeValues.get( 0 ) ) );
+        }
+        return attribute;
+    }
+
+    private static String findAttributeId(AttributeType attribute) {
+
+        return attribute.getOtherAttributes().get( LinkIDWebServiceConstants.ATTRIBUTE_ID );
+    }
+
+    @Nullable
+    private static Serializable convertFromXmlDataTypeToClient(Object value) {
+
+        if (null == value) {
+            return null;
+        }
+        Object result = value;
+        if (value instanceof XMLGregorianCalendar) {
+            XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
+            result = calendar.toGregorianCalendar().getTime();
+        }
+        return (Serializable) result;
+    }
+
+    private static AttributeQueryType getAttributeQuery(String userId, String attributeName) {
+
+        Set<String> attributeNames = Collections.singleton( attributeName );
+        return getAttributeQuery( userId, attributeNames );
+    }
+
+    private static AttributeQueryType getAttributeQuery(String userId, Set<String> attributeNames) {
+
+        ObjectFactory samlObjectFactory = new ObjectFactory();
+        AttributeQueryType attributeQuery = new AttributeQueryType();
+        SubjectType subject = new SubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue( userId );
+        subject.getContent().add( samlObjectFactory.createNameID( subjectName ) );
+        attributeQuery.setSubject( subject );
+
+        List<AttributeType> attributes = attributeQuery.getAttribute();
+        for (String attributeName : attributeNames) {
+            AttributeType attribute = new AttributeType();
+            attribute.setName( attributeName );
+            attributes.add( attribute );
+        }
+        return attributeQuery;
+    }
+
     private ResponseType getResponse(AttributeQueryType request)
             throws LinkIDWSClientTransportException {
 
@@ -144,156 +293,5 @@ public class LinkIDAttributeClientImpl extends LinkIDAbstractWSClient<SAMLAttrib
             }
             throw new InternalInconsistencyException( String.format( "error: %s", statusCodeValue ) );
         }
-    }
-
-    private static AttributeQueryType getAttributeQuery(String userId, String attributeName) {
-
-        Set<String> attributeNames = Collections.singleton( attributeName );
-        return getAttributeQuery( userId, attributeNames );
-    }
-
-    private static AttributeQueryType getAttributeQuery(String userId, Set<String> attributeNames) {
-
-        ObjectFactory samlObjectFactory = new ObjectFactory();
-        AttributeQueryType attributeQuery = new AttributeQueryType();
-        SubjectType subject = new SubjectType();
-        NameIDType subjectName = new NameIDType();
-        subjectName.setValue( userId );
-        subject.getContent().add( samlObjectFactory.createNameID( subjectName ) );
-        attributeQuery.setSubject( subject );
-
-        List<AttributeType> attributes = attributeQuery.getAttribute();
-        for (String attributeName : attributeNames) {
-            AttributeType attribute = new AttributeType();
-            attribute.setName( attributeName );
-            attributes.add( attribute );
-        }
-        return attributeQuery;
-    }
-
-    private static AttributeQueryType getAttributeQuery(String userId, Map<String, List<LinkIDAttribute<Serializable>>> attributes) {
-
-        Set<String> attributeNames = attributes.keySet();
-        return getAttributeQuery( userId, attributeNames );
-    }
-
-    @Override
-    public void getAttributes(String userId, Map<String, List<LinkIDAttribute<Serializable>>> attributes)
-            throws LinkIDAttributeNotFoundException, LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeUnavailableException,
-                   LinkIDSubjectNotFoundException {
-
-        AttributeQueryType request = getAttributeQuery( userId, attributes );
-        ResponseType response = getResponse( request );
-        validateStatus( response );
-        getAttributeValues( response, attributes );
-    }
-
-    private static void getAttributeValues(ResponseType response, Map<String, List<LinkIDAttribute<Serializable>>> attributeMap) {
-
-        List<Serializable> assertions = response.getAssertionOrEncryptedAssertion();
-        if (assertions.isEmpty()) {
-            throw new InternalInconsistencyException( "No assertions in response" );
-        }
-        AssertionType assertion = (AssertionType) assertions.get( 0 );
-
-        List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-        if (statements.isEmpty()) {
-            throw new InternalInconsistencyException( "No statements in response assertion" );
-        }
-        AttributeStatementType attributeStatement = (AttributeStatementType) statements.get( 0 );
-
-        for (Object attributeTypeObject : attributeStatement.getAttributeOrEncryptedAttribute()) {
-            AttributeType attributeType = (AttributeType) attributeTypeObject;
-
-            LinkIDAttribute<Serializable> attribute = getAttributeSDK( attributeType );
-
-            List<LinkIDAttribute<Serializable>> attributes = attributeMap.get( attribute.getName() );
-            if (null == attributes) {
-                attributes = new LinkedList<LinkIDAttribute<Serializable>>();
-            }
-            attributes.add( attribute );
-            attributeMap.put( attribute.getName(), attributes );
-        }
-    }
-
-    private static LinkIDAttribute<Serializable> getAttributeSDK(AttributeType attributeType) {
-
-        String attributeId = findAttributeId( attributeType );
-        LinkIDAttribute<Serializable> attribute = new LinkIDAttribute<Serializable>( attributeId, attributeType.getName(), null );
-
-        List<Object> attributeValues = attributeType.getAttributeValue();
-        if (attributeValues.isEmpty()) {
-            return attribute;
-        }
-
-        if (attributeType.getAttributeValue().get( 0 ) instanceof AttributeType) {
-
-            AttributeType compoundValueAttribute = (AttributeType) attributeType.getAttributeValue().get( 0 );
-
-            // compound
-            List<LinkIDAttribute<?>> compoundMembers = new LinkedList<LinkIDAttribute<?>>();
-            for (Object memberAttributeObject : compoundValueAttribute.getAttributeValue()) {
-
-                AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-                LinkIDAttribute<Serializable> member = new LinkIDAttribute<Serializable>( attributeId, memberAttribute.getName(), null );
-                if (!memberAttribute.getAttributeValue().isEmpty()) {
-                    member.setValue( convertFromXmlDatatypeToClient( memberAttribute.getAttributeValue().get( 0 ) ) );
-                }
-                compoundMembers.add( member );
-            }
-            attribute.setValue( new LinkIDCompound( compoundMembers ) );
-        } else {
-            // single/multi valued
-            attribute.setValue( convertFromXmlDatatypeToClient( attributeValues.get( 0 ) ) );
-        }
-        return attribute;
-    }
-
-    private static String findAttributeId(AttributeType attribute) {
-
-        return attribute.getOtherAttributes().get( LinkIDWebServiceConstants.ATTRIBUTE_ID );
-    }
-
-    @Override
-    public Map<String, List<LinkIDAttribute<Serializable>>> getAttributes(String userId)
-            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
-                   LinkIDSubjectNotFoundException {
-
-        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<String, List<LinkIDAttribute<Serializable>>>();
-        AttributeQueryType request = getAttributeQuery( userId, attributes );
-        ResponseType response = getResponse( request );
-        validateStatus( response );
-        getAttributeValues( response, attributes );
-        return attributes;
-    }
-
-    @Override
-    public List<LinkIDAttribute<Serializable>> getAttributes(String userId, String attributeName)
-            throws LinkIDRequestDeniedException, LinkIDWSClientTransportException, LinkIDAttributeNotFoundException, LinkIDAttributeUnavailableException,
-                   LinkIDSubjectNotFoundException {
-
-        Map<String, List<LinkIDAttribute<Serializable>>> attributes = new HashMap<String, List<LinkIDAttribute<Serializable>>>();
-        AttributeQueryType request = getAttributeQuery( userId, attributeName );
-        ResponseType response = getResponse( request );
-        validateStatus( response );
-        getAttributeValues( response, attributes );
-        if (attributes.size() != 1) {
-            throw new InternalInconsistencyException( "Requested 1 specified attribute but received multiple ?!" );
-        }
-        return attributes.get( attributeName );
-    }
-
-    @Nullable
-    private static Serializable convertFromXmlDatatypeToClient(Object value) {
-
-        if (null == value) {
-            return null;
-        }
-        Object result = value;
-        if (value instanceof XMLGregorianCalendar) {
-            XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
-            result = calendar.toGregorianCalendar().getTime();
-        }
-        return (Serializable) result;
     }
 }

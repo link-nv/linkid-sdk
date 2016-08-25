@@ -67,11 +67,6 @@
             <version>GIT-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>net.lin-k.linkid.client.sdk.attribute</groupId>
-            <artifactId>linkid-attribute-provider-profile-sdk</artifactId>
-            <version>GIT-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>net.lin-k.util</groupId>
             <artifactId>util-common</artifactId>
         </dependency>
