@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.notification;
 
 import com.google.common.base.MoreObjects;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 
@@ -21,13 +22,16 @@ public class LinkIDNotificationLocation implements Serializable {
 
     private final String                                     urn;
     private final String                                     label;
+    private final Date                                       created;
     private final String                                     location;
     private final List<LinkIDNotificationTopicConfiguration> topics;
 
-    public LinkIDNotificationLocation(final String urn, final String label, final String location, final List<LinkIDNotificationTopicConfiguration> topics) {
+    public LinkIDNotificationLocation(final String urn, final String label, final Date created, final String location,
+                                      final List<LinkIDNotificationTopicConfiguration> topics) {
 
         this.urn = urn;
         this.label = label;
+        this.created = created;
         this.location = location;
         this.topics = topics;
     }
@@ -37,7 +41,13 @@ public class LinkIDNotificationLocation implements Serializable {
     @Override
     public String toString() {
 
-        return MoreObjects.toStringHelper( this ).add( "urn", urn ).add( "label", label ).add( "location", location ).add( "topics", topics ).toString();
+        return MoreObjects.toStringHelper( this )
+                          .add( "urn", urn )
+                          .add( "label", label )
+                          .add( "created", created )
+                          .add( "location", location )
+                          .add( "topics", topics )
+                          .toString();
     }
 
     // Accessors
@@ -50,6 +60,11 @@ public class LinkIDNotificationLocation implements Serializable {
     public String getLabel() {
 
         return label;
+    }
+
+    public Date getCreated() {
+
+        return created;
     }
 
     public String getLocation() {

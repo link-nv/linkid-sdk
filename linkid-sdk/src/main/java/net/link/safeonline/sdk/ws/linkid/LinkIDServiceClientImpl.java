@@ -11,7 +11,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.xml.ws.client.ClientTransportException;
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -2216,7 +2215,8 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
             // success!
             List<LinkIDCredential> credentials = Lists.newLinkedList();
             for (Credential credential : response.getSuccess().getCredentials()) {
-                credentials.add( new LinkIDCredential( credential.getLabel(), credential.getName(), LinkIDServiceUtils.convert( credential.getType() ) ) );
+                credentials.add( new LinkIDCredential( credential.getLabel(), LinkIDServiceUtils.convert( credential.getCreated() ), credential.getName(),
+                        LinkIDServiceUtils.convert( credential.getType() ) ) );
             }
             return credentials;
         }
@@ -2287,8 +2287,6 @@ public class LinkIDServiceClientImpl extends LinkIDAbstractWSClient<LinkIDServic
         // input
         if (CollectionUtils.isNotEmpty( urns )) {
             request.getUrns().addAll( urns );
-        } else {
-            return new LinkedList<>();
         }
 
         // operate
