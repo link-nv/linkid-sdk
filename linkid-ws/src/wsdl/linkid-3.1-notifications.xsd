@@ -277,6 +277,11 @@
                     <documentation>Human friendly label for this location</documentation>
                 </annotation>
             </element>
+            <element name="created" minOccurs="1" maxOccurs="1" type="dateTime">
+                <annotation>
+                    <documentation>Creation date of the notification location</documentation>
+                </annotation>
+            </element>
             <element name="location" type="string" minOccurs="1" maxOccurs="1">
                 <annotation>
                     <documentation>The notification location url</documentation>

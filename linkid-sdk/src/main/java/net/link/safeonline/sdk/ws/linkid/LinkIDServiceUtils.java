@@ -2602,7 +2602,8 @@ public class LinkIDServiceUtils {
                     return null;
                 }
 
-                return new LinkIDNotificationLocation( input.getUrn(), input.getLabel(), input.getLocation(), convertWSTopics( input.getTopics() ) );
+                return new LinkIDNotificationLocation( input.getUrn(), input.getLabel(), LinkIDServiceUtils.convert( input.getCreated() ), input.getLocation(),
+                        convertWSTopics( input.getTopics() ) );
             }
         } );
 
