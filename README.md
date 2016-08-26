@@ -13,6 +13,12 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v5.0.2
+---
+  * Compound attribute tpye is no longer supported
+  * Extra error codes for walletCreditAdd/Remove in case of an invalid amount
+  * CREDENTIAL_CONFIRM and CREDENTIAL_REQUEST_EXPIRED notifiation topics added
+
 v4.27.0
 ---
   * PaymentInfo: extended to return supported currencies and wallet coin IDs
