@@ -896,6 +896,8 @@ public class LinkIDServiceUtils {
 
             case ERROR_UNKNOWN_WALLET:
                 return LinkIDWalletAddCreditErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_WALLET_INVALID_AMOUNT_NEGATIVE:
+                return LinkIDWalletAddCreditErrorCode.ERROR_WALLET_INVALID_AMOUNT_NEGATIVE;
             case ERROR_WALLET_INVALID_CURRENCY:
                 return LinkIDWalletAddCreditErrorCode.ERROR_WALLET_INVALID_CURRENCY;
             case ERROR_UNKNOWN_WALLET_COIN:

@@ -259,6 +259,11 @@
 					<documentation>No such linkID wallet</documentation>
 				</annotation>
 			</enumeration>
+			<enumeration value="error.wallet.invalid.amount.negative">
+				<annotation>
+					<documentation>You cannot remove a negative amount</documentation>
+				</annotation>
+			</enumeration>
 			<enumeration value="error.wallet.invalid.currency">
 				<annotation>
 					<documentation>Invalid currency</documentation>
