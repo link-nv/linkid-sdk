@@ -919,6 +919,10 @@ public class LinkIDServiceUtils {
 
             case ERROR_UNKNOWN_WALLET:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_UNKNOWN_WALLET;
+            case ERROR_WALLET_INVALID_AMOUNT_NEGATIVE:
+                return LinkIDWalletRemoveCreditErrorCode.ERROR_WALLET_INVALID_AMOUNT_NEGATIVE;
+            case ERROR_WALLET_INVALID_AMOUNT_TOO_MUCH:
+                return LinkIDWalletRemoveCreditErrorCode.ERROR_WALLET_INVALID_AMOUNT_TOO_MUCH;
             case ERROR_WALLET_INVALID_CURRENCY:
                 return LinkIDWalletRemoveCreditErrorCode.ERROR_WALLET_INVALID_CURRENCY;
             case ERROR_UNKNOWN_WALLET_COIN:
@@ -2602,7 +2606,7 @@ public class LinkIDServiceUtils {
                     return null;
                 }
 
-                return new LinkIDNotificationLocation( input.getUrn(), input.getLabel(), LinkIDServiceUtils.convert( input.getCreated() ), input.getLocation(),
+                return new LinkIDNotificationLocation( input.getUrn(), input.getLabel(), convert( input.getCreated() ), input.getLocation(),
                         convertWSTopics( input.getTopics() ) );
             }
         } );
