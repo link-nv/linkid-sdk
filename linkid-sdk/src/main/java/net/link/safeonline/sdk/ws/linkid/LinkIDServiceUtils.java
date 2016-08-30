@@ -1742,8 +1742,9 @@ public class LinkIDServiceUtils {
     public static LinkIDVoucherOrganizationDetails convert(final VoucherOrganizationDetails voucherOrganizationDetails) {
 
         return new LinkIDVoucherOrganizationDetails( convert( voucherOrganizationDetails.getOrganization() ), voucherOrganizationDetails.isOwner(),
-                convert( voucherOrganizationDetails.getStats() ), voucherOrganizationDetails.getRewardPermissionApplications(),
-                voucherOrganizationDetails.getListPermissionApplications(), voucherOrganizationDetails.getRedeemPermissionApplications() );
+                convertPermissions( voucherOrganizationDetails.getPermissions() ), convert( voucherOrganizationDetails.getStats() ),
+                voucherOrganizationDetails.getRewardPermissionApplications(), voucherOrganizationDetails.getListPermissionApplications(),
+                voucherOrganizationDetails.getRedeemPermissionApplications() );
 
     }
 

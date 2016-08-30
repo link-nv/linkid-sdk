@@ -815,6 +815,11 @@
                     <documentation>Whether or not the requesting application owns the voucher organization</documentation>
                 </annotation>
             </element>
+			<element name="permissions" type="tns:ApplicationPermissionType" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>What permissions do you have?</documentation>
+				</annotation>
+			</element>
             <element name="stats" type="tns:VoucherOrganizationStats" minOccurs="0" maxOccurs="1">
                 <annotation>
                     <documentation>Optional voucher organization stats, if requested</documentation>

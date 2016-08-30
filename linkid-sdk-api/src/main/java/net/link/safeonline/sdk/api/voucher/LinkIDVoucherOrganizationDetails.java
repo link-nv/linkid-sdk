@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.api.voucher;
 
 import java.io.Serializable;
 import java.util.List;
+import net.link.safeonline.sdk.api.permissions.LinkIDApplicationPermissionType;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -19,23 +20,27 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LinkIDVoucherOrganizationDetails implements Serializable {
 
-    private final LinkIDVoucherOrganization      organization;
-    private final boolean                        owner;
+    private final LinkIDVoucherOrganization             organization;
+    private final boolean                               owner;
+    //
+    private final List<LinkIDApplicationPermissionType> permissions;
     //
     @Nullable
-    private final LinkIDVoucherOrganizationStats stats;
+    private final LinkIDVoucherOrganizationStats        stats;
     //
     // permissions
-    private final List<String>                   rewardPermissionApplications;
-    private final List<String>                   listPermissionApplications;
-    private final List<String>                   redeemPermissionApplications;
+    private final List<String>                          rewardPermissionApplications;
+    private final List<String>                          listPermissionApplications;
+    private final List<String>                          redeemPermissionApplications;
 
     public LinkIDVoucherOrganizationDetails(final LinkIDVoucherOrganization organization, final boolean owner,
-                                            @Nullable final LinkIDVoucherOrganizationStats stats, final List<String> rewardPermissionApplications,
-                                            final List<String> listPermissionApplications, final List<String> redeemPermissionApplications) {
+                                            final List<LinkIDApplicationPermissionType> permissions, @Nullable final LinkIDVoucherOrganizationStats stats,
+                                            final List<String> rewardPermissionApplications, final List<String> listPermissionApplications,
+                                            final List<String> redeemPermissionApplications) {
 
         this.organization = organization;
         this.owner = owner;
+        this.permissions = permissions;
         this.stats = stats;
         this.rewardPermissionApplications = rewardPermissionApplications;
         this.listPermissionApplications = listPermissionApplications;
@@ -62,6 +67,11 @@ public class LinkIDVoucherOrganizationDetails implements Serializable {
     public boolean isOwner() {
 
         return owner;
+    }
+
+    public List<LinkIDApplicationPermissionType> getPermissions() {
+
+        return permissions;
     }
 
     @Nullable
