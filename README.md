@@ -13,6 +13,10 @@ A good starting point if you want to know how to integrate linkID in your webapp
 Migration notes
 ===============
 
+v5.0.3
+---
+  * voucherOrganizationList: permission list added
+
 v5.0.2
 ---
   * Compound attribute tpye is no longer supported
