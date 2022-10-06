@@ -461,7 +461,7 @@
         <commons-codec.version>1.8</commons-codec.version>
 
         <slf4j.version>1.5.11</slf4j.version>
-        <logback.version>1.1.11</logback.version>
+        <logback.version>1.2.7</logback.version>
         <simpledb-appender.version>0.9-linkid</simpledb-appender.version>
 
         <!-- JAX-WS -->
@@ -475,11 +475,11 @@
         <jetbrains-annotations.version>7.0.2</jetbrains-annotations.version>
 
         <!-- DEFAULT VERSIONS for Test Dependencies -->
-        <junit.version>4.8.1</junit.version>
+        <junit.version>4.13.1</junit.version>
         <junit-addons.version>1.4</junit-addons.version>
         <easymock.version>2.3</easymock.version>
         <easymockclassextension.version>2.2.2</easymockclassextension.version>
-        <jetty.version>6.1.7</jetty.version>
+        <jetty.version>6.1.22</jetty.version>
         <catalina.version>5.5.15</catalina.version>
         <antlr.version>2.7.7</antlr.version>
         <javassist.version>3.6.0.GA</javassist.version>
