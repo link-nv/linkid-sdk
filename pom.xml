@@ -479,7 +479,7 @@
         <junit-addons.version>1.4</junit-addons.version>
         <easymock.version>2.3</easymock.version>
         <easymockclassextension.version>2.2.2</easymockclassextension.version>
-        <jetty.version>6.1.7</jetty.version>
+        <jetty.version>6.1.17</jetty.version>
         <catalina.version>5.5.15</catalina.version>
         <antlr.version>2.7.7</antlr.version>
         <javassist.version>3.6.0.GA</javassist.version>
